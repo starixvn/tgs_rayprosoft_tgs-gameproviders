@@ -1,0 +1,23 @@
+﻿using TGS.GameProviders.ApiClients.KY;
+using TGS.GameProviders.ApiClients.VR;
+using TGS.GameProviders.ApiClients.WGHorse;
+using TGS.GameProviders.ApiClients.WGSports;
+
+namespace Microsoft.Extensions.DependencyInjection
+{
+    public static class ClientConfigurationExtensions
+    {
+        public static IServiceCollection AddApiClients(this IServiceCollection services)
+        {
+            services.AddScoped<IKYUtility, KYUtility>()
+                .AddScoped<IVRUtility, VRUtility>()
+                .AddScoped<IWGHorseUtility, WGHorseUtility>()
+                .AddScoped<IWGSportsUtility, WGSportsUtility>();
+
+            return services.AddTransient<IKYApiClient, KYApiClient>()
+                .AddTransient<IVRApiClient, VRApiClient>()
+                .AddTransient<IWGHorseApiClient, WGHorseApiClient>()
+                .AddTransient<IWGSportsApiClient, WGSportsApiClient>();
+        }
+    }
+}
