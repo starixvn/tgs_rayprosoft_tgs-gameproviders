@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using TGS.GameProviders.ApiClients.Evolution.Models.Commons.EvolutionGamHistoryRound.Commons.BlackJack;
 
 namespace TGS.GameProviders.ApiClients.Evolution.Models.Commons.EvolutionGamHistoryRound.Commons.BlackJack
 {

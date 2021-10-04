@@ -126,7 +126,7 @@ namespace TGS.GameProviders.ApiClients.BigGaming
             var response = default(BigGamingResponse);
 
             HttpContent content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
-            
+
             var httpResponseMessage = await _client.PostAsync(apiUrl, content);
             sw.Stop();
             using (var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result))

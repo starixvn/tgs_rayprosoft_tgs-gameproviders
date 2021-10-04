@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using TGS.GameProviders.ApiClients.Evolution.Models.Commons.EvolutionGamHistoryRound;
 
 namespace TGS.GameProviders.ApiClients.Evolution.Models.Commons.EvolutionGamHistoryRound
 {

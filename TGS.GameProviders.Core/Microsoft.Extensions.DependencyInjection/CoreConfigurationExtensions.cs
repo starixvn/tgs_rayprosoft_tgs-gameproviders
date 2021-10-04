@@ -2,6 +2,7 @@
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.GameRecordProcessor;
 using TGS.GameProviders.Core.KY;
+using TGS.GameProviders.Core.SexyGaming;
 using TGS.GameProviders.Core.VR;
 using TGS.GameProviders.Core.WGHorse;
 using TGS.GameProviders.Core.WGSports;
@@ -21,7 +22,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IVRService, VRService>()
                 .AddTransient<IWGHorseService, WGHorseService>()
                 .AddTransient<IWGSportsService, WGSportsService>()
-                .AddTransient<IBigGamingService, BigGamingService>();
+                .AddTransient<IBigGamingService, BigGamingService>()
+                .AddTransient<ISexyGamingService, SexyGamingService>();
         }
     }
 }

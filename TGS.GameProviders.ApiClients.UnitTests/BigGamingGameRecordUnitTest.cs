@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
@@ -12,26 +10,41 @@ namespace TGS.GameProviders.ApiClients.UnitTests
     public class BigGamingGameRecordUnitTest
     {
         private Dictionary<int, string> pokerMapper;
+
         public BigGamingGameRecordUnitTest()
         {
             InitoPoker();
         }
 
         [Test]
-        public void 骰宝()
+        public void testc()
         {
-            var value = 196870;
-            var 骰宝1 = value >> 16;
-            var 骰宝2 = (value & 0xFF00) >> 8;
-            var 骰宝3 = value & 0xFF;
-            Assert.AreEqual(true, true);
+            var 下注闲1平倍 = Convert.ToString(3489660929, 16);
+            var 下注闲1翻倍 = Convert.ToString(3489660930, 16);
+            var 下注闲2平倍 = Convert.ToString(3489660932, 16);
+            var 下注闲2翻倍 = Convert.ToString(3489660936, 16);
+            var 下注闲3平倍 = Convert.ToString(3489660944, 16);
+            var 下注闲3翻倍 = Convert.ToString(3489660960, 16);
+            var 下注闲1平倍10進制 = Convert.ToUInt32(下注闲1平倍, 16);
+            var 下注闲1翻倍10進制 = Convert.ToUInt32(下注闲1翻倍, 16);
+            var 下注闲2平倍10進制 = Convert.ToUInt32(下注闲2平倍, 16);
+            var 下注闲2翻倍10進制 = Convert.ToUInt32(下注闲2翻倍, 16);
+            var 下注闲3平倍10進制 = Convert.ToUInt32(下注闲3平倍, 16);
+            var 下注闲3翻倍10進制 = Convert.ToUInt32(下注闲3翻倍, 16);
         }
-
 
         [Test]
         public void 牛牛()
         {
             var result = GetBullBullGameHistory(Convert.FromBase64String("CyQJJyMEFiUPNC8ZExQyBy0CIBE="));
+
+            Assert.AreEqual(true, true);
+        }
+
+        [Test]
+        public void 多彩百家乐()
+        {
+            var result = GetFullColorBaccaratGameHistory(Convert.FromBase64String("MAEFGhYr"));
 
             Assert.AreEqual(true, true);
         }
@@ -53,28 +66,33 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         }
 
         [Test]
-        public void 多彩百家乐()
+        public void 骰宝()
         {
-            var result = GetFullColorBaccaratGameHistory(Convert.FromBase64String("MAEFGhYr"));
-
+            var value = 196870;
+            var 骰宝1 = value >> 16;
+            var 骰宝2 = (value & 0xFF00) >> 8;
+            var 骰宝3 = value & 0xFF;
             Assert.AreEqual(true, true);
         }
 
-        [Test]
-        public void testc()
+        private string GetBaccaratGameHistory(byte[] values)
         {
-            var 下注闲1平倍 = Convert.ToString(3489660929, 16);
-            var 下注闲1翻倍 = Convert.ToString(3489660930, 16);
-            var 下注闲2平倍 = Convert.ToString(3489660932, 16);
-            var 下注闲2翻倍 = Convert.ToString(3489660936, 16);
-            var 下注闲3平倍 = Convert.ToString(3489660944, 16);
-            var 下注闲3翻倍 = Convert.ToString(3489660960, 16);
-            var 下注闲1平倍10進制 = Convert.ToUInt32(下注闲1平倍, 16);
-            var 下注闲1翻倍10進制 = Convert.ToUInt32(下注闲1翻倍, 16);
-            var 下注闲2平倍10進制 = Convert.ToUInt32(下注闲2平倍, 16);
-            var 下注闲2翻倍10進制 = Convert.ToUInt32(下注闲2翻倍, 16);
-            var 下注闲3平倍10進制 = Convert.ToUInt32(下注闲3平倍, 16);
-            var 下注闲3翻倍10進制 = Convert.ToUInt32(下注闲3翻倍, 16);
+            string[] banker = new string[3] {
+                pokerMapper.Where(x => x.Key == values[1]).First().Value,
+                pokerMapper.Where(x => x.Key == values[3]).First().Value,
+                pokerMapper.Where(x => x.Key == values[5]).First().Value,
+            };
+            string[] player = new string[3]{
+                pokerMapper.Where(x => x.Key == values[0]).First().Value,
+                pokerMapper.Where(x => x.Key == values[2]).First().Value,
+                pokerMapper.Where(x => x.Key == values[4]).First().Value,
+            };
+
+            return JsonSerializer.Serialize(
+                           new Dictionary<string, string>() {
+                        { "player",string.Join(',', player)},
+                        { "banker",string.Join(',', banker)}
+                               });
         }
 
         private string GetBullBullGameHistory(byte[] values)
@@ -104,44 +122,21 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 });
         }
 
-        private string GetBaccaratGameHistory(byte[] values)
+        private string GetCard(int cardIndex) => cardIndex switch
         {
-            string[] banker = new string[3] {
-                pokerMapper.Where(x => x.Key == values[1]).First().Value,
-                pokerMapper.Where(x => x.Key == values[3]).First().Value,
-                pokerMapper.Where(x => x.Key == values[5]).First().Value,
-            };
-            string[] player = new string[3]{
-                pokerMapper.Where(x => x.Key == values[0]).First().Value,
-                pokerMapper.Where(x => x.Key == values[2]).First().Value,
-                pokerMapper.Where(x => x.Key == values[4]).First().Value,
-            };
+            1 => "♥",
+            2 => "♣",
+            3 => "♦",
+            _ => "♠"
+        };
 
-            return JsonSerializer.Serialize(
-                           new Dictionary<string, string>() {
-                        { "player",string.Join(',', player)},
-                        { "banker",string.Join(',', banker)}
-                               });
-        }
-
-        private string GetWinThreeCardsGameHistory(byte[] values)
+        private string GetFullColor(int value)
         {
-            string[] dragon = new string[3] {
-                pokerMapper.Where(x => x.Key == values[0]).First().Value,
-                pokerMapper.Where(x => x.Key == values[1]).First().Value,
-                pokerMapper.Where(x => x.Key == values[2]).First().Value,
-            };
-            string[] phoenix = new string[3]{
-                pokerMapper.Where(x => x.Key == values[3]).First().Value,
-                pokerMapper.Where(x => x.Key == values[4]).First().Value,
-                pokerMapper.Where(x => x.Key == values[5]).First().Value,
-            };
-
-            return JsonSerializer.Serialize(
-                           new Dictionary<string, string>() {
-                        { "dragon",string.Join(',', dragon)},
-                        { "phoenix",string.Join(',', phoenix)}
-                               });
+            if (0 < value && value < 12) return "Green";
+            else if (11 < value && value < 23) return "Orange";
+            else if (22 < value && value < 34) return "Purple";
+            else if (33 < value && value < 45) return "Blue";
+            else return "White";
         }
 
         private string GetFullColorBaccaratGameHistory(byte[] values)
@@ -173,6 +168,33 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                            });
         }
 
+        private string GetNumber(int value) => value switch
+        {
+            11 => "J",
+            12 => "Q",
+            13 => "K",
+            _ => value.ToString()
+        };
+
+        private string GetWinThreeCardsGameHistory(byte[] values)
+        {
+            string[] dragon = new string[3] {
+                pokerMapper.Where(x => x.Key == values[0]).First().Value,
+                pokerMapper.Where(x => x.Key == values[1]).First().Value,
+                pokerMapper.Where(x => x.Key == values[2]).First().Value,
+            };
+            string[] phoenix = new string[3]{
+                pokerMapper.Where(x => x.Key == values[3]).First().Value,
+                pokerMapper.Where(x => x.Key == values[4]).First().Value,
+                pokerMapper.Where(x => x.Key == values[5]).First().Value,
+            };
+
+            return JsonSerializer.Serialize(
+                           new Dictionary<string, string>() {
+                        { "dragon",string.Join(',', dragon)},
+                        { "phoenix",string.Join(',', phoenix)}
+                               });
+        }
 
         private void InitoPoker()
         {
@@ -189,32 +211,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                     i++;
                 }
             }
-
-        }
-
-        private string GetCard(int cardIndex) => cardIndex switch
-        {
-            1 => "♥",
-            2 => "♣",
-            3 => "♦",
-            _ => "♠"
-        };
-
-        private string GetNumber(int value) => value switch
-        {
-            11 => "J",
-            12 => "Q",
-            13 => "K",
-            _ => value.ToString()
-        };
-
-        private string GetFullColor(int value)
-        {
-            if (0 < value && value < 12) return "Green";
-            else if (11 < value && value < 23) return "Orange";
-            else if (22 < value && value < 34) return "Purple";
-            else if (33 < value && value < 45) return "Blue";
-            else return "White";
         }
     }
 }

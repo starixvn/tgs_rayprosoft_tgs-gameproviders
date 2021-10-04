@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.ApiClients.Evolution;
@@ -15,9 +14,9 @@ namespace TGS.GameProviders.ApiClients.UnitTests
     [TestFixture]
     public class EvolutionGameRecordUnitTest
     {
-
         private readonly IEvolutionApiClient _client;
         private readonly EvolutionConfiguration _configuration;
+
         public EvolutionGameRecordUnitTest()
         {
             var client = new HttpClient();
@@ -25,7 +24,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             //_client = new EvolutionApiClient(client);
             _configuration = new EvolutionConfiguration
             {
-
                 ApiUrl = new Uri("https://babylonqm.uat1.evo-test.com/"),
                 CasinoID = "babylonqm0000001",
                 Ua2Token = "test123",
@@ -73,7 +71,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                         Mobile = false
                     }
                 }
-
             };
 
             _ = await _client.GetGameUrlAsync(_configuration, request);

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
+﻿using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
 
 namespace TGS.GameProviders.Domains.SettingConfiguration
 {
