@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.ApiClients.KY;
 using TGS.GameProviders.ApiClients.KY.Models;
@@ -20,8 +21,8 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         {
             _utility = new KYUtility();
             var client = new HttpClient();
-            //_client = Substitute.For<IKYApiClient>();
-            _client = new KYApiClient(client, _utility);
+            _client = Substitute.For<IKYApiClient>();
+            //_client = new KYApiClient(client, _utility);
             _agentMapper = new KYAgentMapper
             {
                 AgentId = "72412",

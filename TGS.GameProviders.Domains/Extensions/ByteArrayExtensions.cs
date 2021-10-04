@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TGS.GameProviders.Domains.Extensions
+{
+    public static class ByteArrayExtensions
+    {
+        public static string ToBase64String(this byte[] byteArray) =>
+            Convert.ToBase64String(byteArray);
+
+        public static string ToHexString(this byte[] byteArray)
+        {
+            var sb = new StringBuilder();
+            foreach (var t in byteArray)
+            {
+                sb.Append(t.ToString("x2"));
+            }
+            return sb.ToString();
+        }
+    }
+}

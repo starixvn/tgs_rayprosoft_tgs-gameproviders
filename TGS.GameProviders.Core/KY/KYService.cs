@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.KY;
@@ -105,7 +106,7 @@ namespace TGS.GameProviders.Core.KY
 
         public async Task<KYBrandMerchant> GetBrandMerchantAsync(string brandCode)
         {
-            var configuration = await GetSettingConfigurationAsync().ConfigureAwait(false);
+            var configuration = await _settingRepository.GetConfigurationAsync<KYConfiguration>(GameProviderConfigurations.KY).ConfigureAwait(false);
             var brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
             if (brandMerchant == null)
             {

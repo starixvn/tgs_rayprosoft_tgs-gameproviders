@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
