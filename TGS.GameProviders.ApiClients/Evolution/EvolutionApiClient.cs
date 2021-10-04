@@ -56,10 +56,6 @@ namespace TGS.GameProviders.ApiClients.Evolution
             return response;
         }
 
-        private Dictionary<string, string> GettHeaders(string casinoKey, string apiToken) => new Dictionary<string, string> {
-             { "Authorization", $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{casinoKey}:{apiToken}"))}" }
-        };
-
         private async ValueTask<TResult> PostAsync<TSource, TResult>(Uri apiUrl, TSource source, string prefix)
         {
             prefix = $"{GameProviderType.Evolution }.{prefix}";
