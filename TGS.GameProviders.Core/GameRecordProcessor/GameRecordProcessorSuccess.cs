@@ -7,7 +7,7 @@ using TGS.GameProviders.Repositories.Domains.Models.Rounds;
 
 namespace TGS.GameProviders.Core.GameRecordProcessor
 {
-    internal sealed class GameRecordProcessorSuccess : IGameRecordProcessorSuccess
+    internal class GameRecordProcessorSuccess : IGameRecordProcessorSuccess
     {
         private readonly IRoundRepository _roundRepository;
 

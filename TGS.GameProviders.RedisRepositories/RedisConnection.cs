@@ -5,7 +5,7 @@ using TGS.GameProviders.RedisRepositories.Options;
 
 namespace TGS.GameProviders.RedisRepositories
 {
-    internal sealed class RedisConnection : IRedisConnection
+    internal class RedisConnection : IRedisConnection
     {
         private readonly Lazy<ConnectionMultiplexer> _lazyConnection;
         private readonly RedisOption _redisOption;

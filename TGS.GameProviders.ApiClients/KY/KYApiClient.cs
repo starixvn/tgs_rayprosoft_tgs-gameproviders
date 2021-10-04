@@ -11,7 +11,7 @@ using TGS.GameProviders.Domains.SettingConfiguration.KY;
 
 namespace TGS.GameProviders.ApiClients.KY
 {
-    internal sealed class KYApiClient : IKYApiClient
+    internal class KYApiClient : IKYApiClient
     {
         private readonly HttpClient _client;
         private readonly IKYUtility _utility;

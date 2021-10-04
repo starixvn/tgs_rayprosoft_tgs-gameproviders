@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace TGS.GameProviders.ApiClients.VR
 {
-    internal sealed class VRUtility : IVRUtility
+    internal class VRUtility : IVRUtility
     {
         public string AesDecrypt(string str, string key, bool isDecodeUrl = true)
         {

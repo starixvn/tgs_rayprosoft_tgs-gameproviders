@@ -7,7 +7,7 @@ using TGS.GameProviders.MongoRepositories.Options;
 
 namespace TGS.GameProviders.MongoRepositories
 {
-    internal sealed class GameProviderScheduleRepository : IGameProviderScheduleRepository
+    internal class GameProviderScheduleRepository : IGameProviderScheduleRepository
     {
         private readonly IMongoCollection<GameProviderSchedule> _collection;
         private readonly IMongoDatabase _database;

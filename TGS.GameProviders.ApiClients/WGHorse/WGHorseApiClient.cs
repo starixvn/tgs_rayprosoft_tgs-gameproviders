@@ -11,7 +11,7 @@ using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.ApiClients.WGHorse
 {
-    internal sealed class WGHorseApiClient : IWGHorseApiClient
+    internal class WGHorseApiClient : IWGHorseApiClient
     {
         private readonly HttpClient _client;
         private readonly IWGHorseUtility _utility;

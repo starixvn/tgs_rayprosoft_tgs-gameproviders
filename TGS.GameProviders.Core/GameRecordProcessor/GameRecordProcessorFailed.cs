@@ -6,7 +6,7 @@ using TGS.GameProviders.Repositories.Domains.Models.FailedGameRecordOperation;
 
 namespace TGS.GameProviders.Core.GameRecordProcessor
 {
-    internal sealed class GameRecordProcessorFailed : IGameRecordProcessorFailed
+    internal class GameRecordProcessorFailed : IGameRecordProcessorFailed
     {
         private readonly IFailedGameRecordOperationRepository _failedGameRecordOperationRepository;
 

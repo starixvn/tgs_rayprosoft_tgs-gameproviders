@@ -13,7 +13,7 @@ using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.ApiClients.SexyGaming
 {
-    internal sealed class SexyGamingApiClient : ISexyGamingApiClient
+    internal class SexyGamingApiClient : ISexyGamingApiClient
     {
         private readonly HttpClient _client;
 

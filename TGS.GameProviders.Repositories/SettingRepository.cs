@@ -8,7 +8,7 @@ using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories
 {
-    internal sealed class SettingRepository : ISettingRepository
+    internal class SettingRepository : ISettingRepository
     {
         private readonly TgsContext _context;
         private readonly ILogger<SettingRepository> _logger;

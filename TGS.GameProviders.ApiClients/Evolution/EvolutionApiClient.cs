@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -13,7 +12,7 @@ using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.ApiClients.Evolution
 {
-    internal sealed class EvolutionApiClient : IEvolutionApiClient
+    internal class EvolutionApiClient : IEvolutionApiClient
     {
         private readonly HttpClient _client;
 

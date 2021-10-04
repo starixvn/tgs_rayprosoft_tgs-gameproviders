@@ -10,7 +10,7 @@ using TGS.GameProviders.Repositories.ModelMappings;
 
 namespace TGS.GameProviders.Repositories
 {
-    internal sealed class PlayerRepository : IPlayerRepository
+    internal class PlayerRepository : IPlayerRepository
     {
         private readonly TgsContext _context;
         private readonly ILogger<PlayerRepository> _logger;

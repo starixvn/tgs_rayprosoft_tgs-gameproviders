@@ -7,7 +7,7 @@ using TGS.GameProviders.RedisRepositories.Models;
 
 namespace TGS.GameProviders.RedisRepositories
 {
-    internal sealed class GameProviderScheduleLockRepository : IGameProviderScheduleLockRepository
+    internal class GameProviderScheduleLockRepository : IGameProviderScheduleLockRepository
     {
         private readonly IRedisConnection _connection;
         private readonly string _prefix = "GameProviderScheduleLock";

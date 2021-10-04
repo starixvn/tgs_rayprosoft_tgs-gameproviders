@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TGS.GameProviders.ApiClients.WGSports
 {
-    internal sealed class WGSportsUtility : IWGSportsUtility
+    internal class WGSportsUtility : IWGSportsUtility
     {
         public string AesDecrypt(string data, string secretKey, string secretIV, bool isDecodeUrl = true)
         {

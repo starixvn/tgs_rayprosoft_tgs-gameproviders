@@ -11,7 +11,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecordReceiver.JobWorkerCommand.KY
 {
-    internal sealed class KYJobWorkerCommandService : ICommandService<KYJobWorkerCommand>
+    internal class KYJobWorkerCommandService : ICommandService<KYJobWorkerCommand>
     {
         private readonly IGameProviderScheduleLockRepository _gameProviderScheduleLockRepository;
         private readonly IKYService _service;

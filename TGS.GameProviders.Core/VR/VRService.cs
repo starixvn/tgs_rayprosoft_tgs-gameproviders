@@ -6,12 +6,11 @@ using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.VR;
 using TGS.GameProviders.Repositories;
-using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Core.VR
 {
-    internal sealed class VRService : IVRService
+    internal class VRService : IVRService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly ISettingRepository _settingRepository;

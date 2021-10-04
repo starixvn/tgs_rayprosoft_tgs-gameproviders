@@ -4,7 +4,7 @@ using TGS.GameProviders.Domains.Extensions;
 
 namespace TGS.GameProviders.ApiClients.BigGaming
 {
-    internal sealed class BigGamingUtility : IBigGamingUtility
+    internal class BigGamingUtility : IBigGamingUtility
     {
         public string GetHashMD5(string plainText)
         {

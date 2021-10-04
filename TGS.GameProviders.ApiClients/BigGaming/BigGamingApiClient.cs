@@ -14,7 +14,7 @@ using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
 
 namespace TGS.GameProviders.ApiClients.BigGaming
 {
-    internal sealed class BigGamingApiClient : IBigGamingApiClient
+    internal class BigGamingApiClient : IBigGamingApiClient
     {
         private readonly HttpClient _client;
         private readonly IBigGamingUtility _utility;

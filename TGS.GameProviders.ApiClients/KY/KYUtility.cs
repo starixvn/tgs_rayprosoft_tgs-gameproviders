@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace TGS.GameProviders.ApiClients.KY
 {
-    internal sealed class KYUtility : IKYUtility
+    internal class KYUtility : IKYUtility
     {
         public string AesDecrypt(string data, string key, bool isDecodeUrl = true)
         {

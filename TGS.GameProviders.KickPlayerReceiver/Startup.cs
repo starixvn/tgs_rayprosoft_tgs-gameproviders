@@ -221,6 +221,7 @@ namespace TGS.GameProviders.KickPlayerReceiver
                                 "amq.fanout",
                                 $"gp.kickplayer.wgfm",
                                 new Dictionary<string, object>());
+
                             channel.QueueDeclare(
                               queue: "gp.kickplayer.biggaming",
                               durable: true,
@@ -233,13 +234,27 @@ namespace TGS.GameProviders.KickPlayerReceiver
                                 "amq.fanout",
                                 $"gp.kickplayer.biggaming",
                                 new Dictionary<string, object>());
+
+                            channel.QueueDeclare(
+                             queue: "gp.kickplayer.tcg",
+                             durable: true,
+                             exclusive: false,
+                             autoDelete: false,
+                             arguments: null);
+
+                            channel.QueueBind(
+                                "gp.kickplayer.tcg",
+                                "amq.fanout",
+                                $"gp.kickplayer.tcg",
+                                new Dictionary<string, object>());
                         };
                     })
                    .AddHandler<KYKickPlayerReceiveHandler>("gp.kickplayer.ky", false)
                    .AddHandler<VRKickPlayerReceiveHandler>("gp.kickplayer.vr", false)
                    .AddHandler<WGHorseKickPlayerReceiveHandler>("gp.kickplayer.wgvia", false)
                    .AddHandler<WGSportsKickPlayerReceiveHandler>("gp.kickplayer.wgfm", false)
-                   .AddHandler<BigGamingKickPlayerReceiveHandler>("gp.kickplayer.biggaming", false);
+                   .AddHandler<BigGamingKickPlayerReceiveHandler>("gp.kickplayer.biggaming", false)
+                   .AddHandler<TCGKickPlayerReceiveHandler>("gp.kickplayer.tcg", false);
             });
             services
                 .AddKickPlayerHandles();

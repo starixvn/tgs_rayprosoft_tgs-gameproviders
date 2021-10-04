@@ -6,7 +6,7 @@ using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories
 {
-    internal sealed class GameProviderRepository : IGameProviderRepository
+    internal class GameProviderRepository : IGameProviderRepository
     {
         private readonly TgsContext _context;
         private readonly ILogger<GameProviderRepository> _logger;

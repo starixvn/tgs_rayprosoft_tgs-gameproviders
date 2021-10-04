@@ -10,7 +10,7 @@ using TGS.GameProviders.Repositories.ModelMappings;
 
 namespace TGS.GameProviders.Repositories
 {
-    internal sealed class FailedGameRecordOperationRepository : IFailedGameRecordOperationRepository
+    internal class FailedGameRecordOperationRepository : IFailedGameRecordOperationRepository
     {
         private readonly BetContext _context;
         private readonly ILogger<FailedGameRecordOperationRepository> _logger;

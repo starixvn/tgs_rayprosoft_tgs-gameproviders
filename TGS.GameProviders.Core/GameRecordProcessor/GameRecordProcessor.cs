@@ -6,7 +6,7 @@ using TGS.GameProviders.Repositories.Domains.Models.Rounds;
 
 namespace TGS.GameProviders.Core.GameRecordProcessor
 {
-    internal sealed class GameRecordProcessor : IGameRecordProcessor
+    internal class GameRecordProcessor : IGameRecordProcessor
     {
         private readonly IGameRecordProcessorFailed _gameRecordProcessorFailed;
         private readonly IGameRecordProcessorSuccess _gameRecordProcessorSuccess;

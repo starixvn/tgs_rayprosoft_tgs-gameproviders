@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -16,25 +14,11 @@ namespace TGS.GameProviders.ApiClients.Skywind
 {
     public class SkywindApiClient : ISkywindApiClient
     {
-
         private readonly HttpClient _client;
+
         public SkywindApiClient(HttpClient client)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
-        }
-
-        public async ValueTask<SkywindGameUrlResponse> GetGameUrlAsync(SkywindConfiguration configuration, string getaccessToken, SkywindGameUrlRequest request)
-        {
-            var apiUrl = new Uri($"{configuration.ApiUrl}/players/{request.PlayerCode}/games/{request.GameCode}?ticket={request.Ticket}&language={request.Language}");
-
-            return await GetAsync<SkywindGameUrlResponse>(apiUrl, getaccessToken, "UserLogin").ConfigureAwait(false);
-        }
-
-        public async ValueTask<SkywindGamHistoryRoundDetailsResponse> GetGamHistoryRoundDetailsAsync(SkywindConfiguration configuration, string getaccessToken, SkywindGamHistoryRoundDetailsRequest request)
-        {
-            var apiUrl = new Uri($"{configuration.ApiUrl}/history/game/{request.RoundId}/image?language={request.Language}");
-
-            return await GetAsync<SkywindGamHistoryRoundDetailsResponse>(apiUrl, getaccessToken, "GamHistoryRoundDetails").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -54,6 +38,20 @@ namespace TGS.GameProviders.ApiClients.Skywind
                 Password = configuration.Password
             };
             return await PostAsync<SkywindUserLoginRequest, SkywindUserLoginResponse>(apiUrl, source, "UserLogin").ConfigureAwait(false);
+        }
+
+        public async ValueTask<SkywindGameUrlResponse> GetGameUrlAsync(SkywindConfiguration configuration, string getaccessToken, SkywindGameUrlRequest request)
+        {
+            var apiUrl = new Uri($"{configuration.ApiUrl}/players/{request.PlayerCode}/games/{request.GameCode}?ticket={request.Ticket}&language={request.Language}");
+
+            return await GetAsync<SkywindGameUrlResponse>(apiUrl, getaccessToken, "UserLogin").ConfigureAwait(false);
+        }
+
+        public async ValueTask<SkywindGamHistoryRoundDetailsResponse> GetGamHistoryRoundDetailsAsync(SkywindConfiguration configuration, string getaccessToken, SkywindGamHistoryRoundDetailsRequest request)
+        {
+            var apiUrl = new Uri($"{configuration.ApiUrl}/history/game/{request.RoundId}/image?language={request.Language}");
+
+            return await GetAsync<SkywindGamHistoryRoundDetailsResponse>(apiUrl, getaccessToken, "GamHistoryRoundDetails").ConfigureAwait(false);
         }
 
         private async ValueTask<TResult> GetAsync<TResult>(Uri apiUrl, string getaccessToken, string prefix)

@@ -12,7 +12,7 @@ using TGS.GameProviders.Domains.SettingConfiguration.VR;
 
 namespace TGS.GameProviders.ApiClients.VR
 {
-    internal sealed class VRApiClient : IVRApiClient
+    internal class VRApiClient : IVRApiClient
     {
         private readonly HttpClient _client;
         private readonly IVRUtility _utility;

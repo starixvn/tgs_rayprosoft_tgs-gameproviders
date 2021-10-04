@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -26,13 +23,16 @@ namespace TGS.GameProviders.Core.SexyGaming
 
         public Task<GameProvider> GetGameProviderAsync()
             => _gameProviderRepository.GetGameProviderAsync(GameProviderType.SexyGaming);
+
         public string GetGameProviderCode()
             => GameProviderType.SexyGaming;
+
         public async Task<Guid> GetGameProviderIdAsync()
         {
             var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.SexyGaming).ConfigureAwait(false);
             return gameProvider.Id;
         }
+
         public Task<SexyGamingConfiguration> GetSettingConfigurationAsync()
             => _settingRepository.GetConfigurationAsync<SexyGamingConfiguration>(GameProviderConfigurations.SexyGaming);
     }

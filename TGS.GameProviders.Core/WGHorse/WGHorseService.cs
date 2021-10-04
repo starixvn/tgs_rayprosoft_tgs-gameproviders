@@ -3,12 +3,11 @@ using System.Threading.Tasks;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Repositories;
-using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Core.WGHorse
 {
-    internal sealed class WGHorseService : IWGHorseService
+    internal class WGHorseService : IWGHorseService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly ISettingRepository _settingRepository;

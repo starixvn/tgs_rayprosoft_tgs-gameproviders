@@ -6,7 +6,7 @@ using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories
 {
-    internal sealed class BrandRepository : IBrandRepository
+    internal class BrandRepository : IBrandRepository
     {
         private readonly TgsContext _context;
         private readonly ILogger<BrandRepository> _logger;

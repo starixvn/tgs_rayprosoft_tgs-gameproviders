@@ -14,7 +14,7 @@ using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Core.KY
 {
-    internal sealed class KYService : IKYService
+    internal class KYService : IKYService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameProviderScheduleRepository _gameProviderScheduleRepository;

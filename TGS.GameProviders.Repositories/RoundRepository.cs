@@ -10,7 +10,7 @@ using TGS.GameProviders.Repositories.ModelMappings;
 
 namespace TGS.GameProviders.Repositories
 {
-    internal sealed class RoundRepository : IRoundRepository
+    internal class RoundRepository : IRoundRepository
     {
         private readonly BetContext _context;
         private readonly ILogger<RoundRepository> _logger;

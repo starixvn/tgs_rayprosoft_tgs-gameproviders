@@ -12,7 +12,7 @@ using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.ApiClients.WGSports
 {
-    internal sealed class WGSportsApiClient : IWGSportsApiClient
+    internal class WGSportsApiClient : IWGSportsApiClient
     {
         private readonly HttpClient _client;
         private readonly IWGSportsUtility _utility;
