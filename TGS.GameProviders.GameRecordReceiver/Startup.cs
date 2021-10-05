@@ -122,9 +122,23 @@ namespace TGS.GameProviders.GameRecordReceiver
                                 "amq.direct",
                                 $"tgs.gp.gamerecord.ky",
                                 new Dictionary<string, object>());
+
+                            channel.QueueDeclare(
+                                queue: "gp.gamerecord.vr",
+                                durable: true,
+                                exclusive: false,
+                                autoDelete: false,
+                                arguments: null);
+
+                            channel.QueueBind(
+                                "gp.gamerecord.vr",
+                                "amq.direct",
+                                $"tgs.gp.gamerecord.vr",
+                                new Dictionary<string, object>());
                         };
                     })
-                    .AddHandler<KYGameRecordReceiveHandler>("gp.gamerecord.ky", false);
+                    .AddHandler<KYGameRecordReceiveHandler>("gp.gamerecord.ky", false)
+                    .AddHandler<VRGameRecordReceiveHandler>("gp.gamerecord.vr", false);
             }).AddNatsMessageQueue(natsConfig =>
             {
                 natsConfig
