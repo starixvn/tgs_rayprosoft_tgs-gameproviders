@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.Logging;
 using TGS.GameProviders.ApiClients.BigGaming;
 using TGS.GameProviders.ApiClients.BigGaming.Models;
 using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
@@ -20,8 +22,10 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         {
             _utility = new BigGamingUtility();
             var client = new HttpClient();
+            var faceLog = NullLogger<BigGamingApiClient>.Instance;
+            var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<IBigGamingApiClient>();
-            //_client = new BigGamingApiClient(client, _utility);
+            //_client = new BigGamingApiClient(client, faceLog, faceTgsLog, _utility);
             _merchant = new BigGamingBrandMerchant
             {
                 ApiUrl = new Uri("http://openapi-uat.bytechn.com/open-cloud/api/"),

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.Logging;
 using TGS.GameProviders.ApiClients.Skywind;
 using TGS.GameProviders.ApiClients.Skywind.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -21,8 +20,10 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         public SkywindApiClientUnitTest()
         {
             var client = new HttpClient();
+            var faceLog = NullLogger<SkywindApiClient>.Instance;
+            var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<ISkywindApiClient>();
-            //_client = new SkywindApiClient(client);
+            //_client = new SkywindApiClient(client, faceLog, faceTgsLog);
             _configuration = new SkywindConfiguration
             {
                 ApiUrl = new Uri("https://api.gcpstg.m27613.com/v1"),
@@ -33,7 +34,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 Username = "PG_merchant_api_stg",
                 Password = "3VSNMGFvbzBJacJT",
                 ServiceEndpointUrl = new Uri("http://game-sw")
-
             };
         }
 

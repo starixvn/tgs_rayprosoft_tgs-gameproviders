@@ -4,8 +4,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.Logging;
 using TGS.GameProviders.ApiClients.SexyGaming;
 using TGS.GameProviders.ApiClients.SexyGaming.Models;
 using TGS.GameProviders.Domains.Extensions;
@@ -65,8 +67,10 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         public SexyGamingApiClientUnitTest()
         {
             var client = new HttpClient();
+            var faceLog = NullLogger<SexyGamingApiClient>.Instance;
+            var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<ISexyGamingApiClient>();
-            //_client = new SexyGamingApiClient(client);
+            //_client = new SexyGamingApiClient(client, faceLog, faceTgsLog);
             _configuration = new SexyGamingConfiguration
             {
                 ServiceEndpointUrl = new Uri("http://game-sg"),
@@ -99,7 +103,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var request = new SexyGamingLogoutRequest()
             {
                 PlayerCode = "4ucmqplxb029",
-
             };
 
             _ = await _client.LogoutAsync(_configuration, request);

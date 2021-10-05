@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.Logging;
 using TGS.GameProviders.ApiClients.WGSports;
 using TGS.GameProviders.ApiClients.WGSports.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -19,10 +21,11 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         public WGSportsApiClientUnitTest()
         {
             _utility = new WGSportsUtility();
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("ContentType", "application/x-www-form-urlencoded");
+            var client = new HttpClient();
+            var faceLog = NullLogger<WGSportsApiClient>.Instance;
+            var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<IWGSportsApiClient>();
-            //_client = new WGSportsApiClient(httpClient, _utility);
+            //_client = new WGSportsApiClient(client, faceLog, faceTgsLog, _utility);
             _configuration = new WGSportsConfiguration
             {
                 ApiUrl = new Uri("https://api.jsc080.net/"),

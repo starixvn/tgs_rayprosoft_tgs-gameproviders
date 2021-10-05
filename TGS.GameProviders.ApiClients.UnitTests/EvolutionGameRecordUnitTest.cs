@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.Logging;
 using TGS.GameProviders.ApiClients.Evolution;
 using TGS.GameProviders.ApiClients.Evolution.Models;
 using TGS.GameProviders.ApiClients.Evolution.Models.Commons.EvolutionGameUrl;
@@ -20,8 +22,10 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         public EvolutionGameRecordUnitTest()
         {
             var client = new HttpClient();
+            var faceLog = NullLogger<EvolutionApiClient>.Instance;
+            var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<IEvolutionApiClient>();
-            //_client = new EvolutionApiClient(client);
+            //_client = new EvolutionApiClient(client, faceLog, faceTgsLog);
             _configuration = new EvolutionConfiguration
             {
                 ApiUrl = new Uri("https://babylonqm.uat1.evo-test.com/"),

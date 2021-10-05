@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.Logging;
 using TGS.GameProviders.ApiClients.WGHorse;
 using TGS.GameProviders.ApiClients.WGHorse.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -20,8 +22,10 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         {
             _utility = new WGHorseUtility();
             var client = new HttpClient();
+            var faceLog = NullLogger<WGHorseApiClient>.Instance;
+            var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<IWGHorseApiClient>();
-            //_client = new WGHorseApiClient(client, _utility);
+            //_client = new WGHorseApiClient(client, faceLog, faceTgsLog, _utility);
             _configuration = new WGHorseConfiguration
             {
                 ApiUrl = new Uri("http://61.56.84.139/via6"),
