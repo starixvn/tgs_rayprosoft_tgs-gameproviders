@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +11,6 @@ using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
-using TGS.GameProviders.Repositories.Entities;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.WGHorse
@@ -86,8 +84,6 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.WGHorse
                     break;
                 }
 
-
-
                 page++;
 
                 var sysDateTimeOffset = DateTimeOffset.UtcNow;
@@ -97,7 +93,6 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.WGHorse
                 {
                     count++;
                     var gameRecord = record;
-
 
                     if (!players.TryGetValue(gameRecord.MemberCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
                     {
@@ -153,8 +148,6 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.WGHorse
                         Success = success
                     });
                     lastGameRecordTime = externalClosedOn;
-
-
                 }
             }
             return new WGHorseGameRecordHandlerResult()

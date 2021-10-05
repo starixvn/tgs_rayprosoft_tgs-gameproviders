@@ -7,25 +7,29 @@ using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.MongoRepositories;
 using TGS.GameProviders.MongoRepositories.Models;
 using TGS.GameProviders.Repositories;
+using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Core.WGSports
 {
     internal class WGSportsService : IWGSportsService
     {
+        private readonly ISettingRepository _settingRepository;
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameProviderScheduleRepository _gameProviderScheduleRepository;
-        private readonly ISettingRepository _settingRepository;
+        private readonly IGameRepository _gameRepository;
 
         public WGSportsService(
             ISettingRepository settingRepository,
             IGameProviderRepository gameProviderRepository,
-            IGameProviderScheduleRepository gameProviderScheduleRepository
+            IGameProviderScheduleRepository gameProviderScheduleRepository,
+            IGameRepository gameRepository
             )
         {
             _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
             _gameProviderScheduleRepository = gameProviderScheduleRepository ?? throw new ArgumentNullException(nameof(gameProviderScheduleRepository));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         }
 
         public async ValueTask<GameProviderSchedule> GameProviderScheduleInitAsync(Guid gameProviderId)
@@ -89,6 +93,15 @@ namespace TGS.GameProviders.Core.WGSports
             }
         }
 
+        public ClientRoundStatus GetClientRound(decimal playerWinLoss)
+           => playerWinLoss switch
+           {
+               > 0 => ClientRoundStatus.Win,
+               <= 0 => ClientRoundStatus.Loss,
+           };
+
+        public async ValueTask<Game> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
+            => await _gameRepository.GetGameAsync(gameProviderId, externalGameId).ConfigureAwait(false);
         public Task<GameProvider> GetGameProviderAsync()
             => _gameProviderRepository.GetGameProviderAsync(GameProviderType.WGSports);
 
