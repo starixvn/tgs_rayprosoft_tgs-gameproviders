@@ -16,9 +16,9 @@ namespace TGS.GameProviders.Core.VR
 {
     internal class VRService : IVRService
     {
-        private readonly ISettingRepository _settingRepository;
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameProviderScheduleRepository _gameProviderScheduleRepository;
+        private readonly ISettingRepository _settingRepository;
 
         public VRService(
             ISettingRepository settingRepository,
@@ -61,6 +61,7 @@ namespace TGS.GameProviders.Core.VR
 
             return gameProviderSchedule;
         }
+
         public async ValueTask<GameProviderSchedule> GameProviderScheduleUpdateAsync(GameProviderSchedule gameProviderSchedule, DateTimeOffset? lastGameRecorTime, DateTimeOffset sysTime)
         {
             var config = JsonSerializer.Deserialize<VRGameProviderScheduleConfig>(gameProviderSchedule.Config);
@@ -126,8 +127,10 @@ namespace TGS.GameProviders.Core.VR
 
         public ValueTask<GameProviderSchedule> GetGameProviderScheduleAsync(Guid gameProviderId, string brandCode, string merchantid)
             => _gameProviderScheduleRepository.GetAsync(gameProviderId, brandCode, merchantid, string.Empty);
+
         public VRGameProviderScheduleConfig GetGameProviderScheduleConfig(GameProviderSchedule gameProviderSchedule)
             => JsonSerializer.Deserialize<VRGameProviderScheduleConfig>(gameProviderSchedule.Config);
+
         public RoundStatus GetRoundStatus(int state) =>
            state switch
            {
