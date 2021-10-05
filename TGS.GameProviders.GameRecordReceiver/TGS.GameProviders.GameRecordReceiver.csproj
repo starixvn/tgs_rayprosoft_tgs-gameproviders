@@ -28,4 +28,8 @@
     <ProjectReference Include="..\TGS.GameProviders.Repositories\TGS.GameProviders.Repositories.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ApplicationServices\WGSports\" />
+  </ItemGroup>
+
 </Project>

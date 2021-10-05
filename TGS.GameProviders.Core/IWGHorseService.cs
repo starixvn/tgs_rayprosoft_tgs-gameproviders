@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using TGS.GameProviders.Core.WGHorse;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.MongoRepositories.Models;
+using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Core
@@ -48,5 +49,9 @@ namespace TGS.GameProviders.Core
         WGHorseGameProviderScheduleConfig GetGameProviderScheduleConfig(GameProviderSchedule gameProviderSchedule);
 
         Task<WGHorseConfiguration> GetSettingConfigurationAsync();
+
+        ValueTask<Game> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
+
+        ClientRoundStatus GetClientRound(decimal playerWinLoss);
     }
 }
