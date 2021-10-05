@@ -6,6 +6,8 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Tgs.Logging;
 using TGS.GameProviders.ApiClients.BigGaming.Models;
 using TGS.GameProviders.ApiClients.BigGaming.Models.Commons;
 using TGS.GameProviders.Domains;
@@ -17,12 +19,20 @@ namespace TGS.GameProviders.ApiClients.BigGaming
     internal class BigGamingApiClient : IBigGamingApiClient
     {
         private readonly HttpClient _client;
+        private readonly ILogger<BigGamingApiClient> _logger;
+        private readonly ITgsLog _tgsLog;
         private readonly IBigGamingUtility _utility;
 
-        public BigGamingApiClient(HttpClient client, IBigGamingUtility utility)
+        public BigGamingApiClient(
+            HttpClient client,
+            ILogger<BigGamingApiClient> logger,
+            ITgsLog tgsLog,
+            IBigGamingUtility utility)
 
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
             _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         }
 
@@ -110,10 +120,17 @@ namespace TGS.GameProviders.ApiClients.BigGaming
             return await GetAPIAsync(brandMerchant.ApiUrl, request, "open.user.logout", prefix).ConfigureAwait(false);
         }
 
-        private async ValueTask<BigGamingResponse> GetAPIAsync<TSource>(Uri apiUrl, TSource source, string method, string prefix)
+        public async ValueTask<BigGamingResponse> KickPlayerGameAsync(BigGamingBrandMerchant brandMerchant, BigGamingKickPlayerGameRequest request)
         {
-            prefix = $"{GameProviderType.BigGaming }.{prefix}";
-            var request = new BigGamingRequest()
+            request.Digest = _utility.GetHashMD5($"{request.Random }{request.Sn}{request.LoginId}{_utility.GetSecretCode(brandMerchant.AgentLoginIdPassword)}");
+            var prefix = $"KickPlayerGame";
+            return await GetAPIAsync(brandMerchant.ApiUrl, request, "open.user.bg.logout", prefix).ConfigureAwait(false);
+        }
+
+        private async ValueTask<BigGamingResponse> GetAPIAsync<TSource>(Uri apiUrl, TSource source, string method, string logPrefix)
+        {
+            logPrefix = $"{GameProviderType.BigGaming }.{logPrefix}";
+            var data = new BigGamingRequest()
             {
                 Id = GuidExtensions.NewSequentialGuid().ToString(),
                 Method = method,
@@ -125,7 +142,7 @@ namespace TGS.GameProviders.ApiClients.BigGaming
             var responseMessage = default(string);
             var response = default(BigGamingResponse);
 
-            HttpContent content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
+            HttpContent content = new StringContent(JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
 
             var httpResponseMessage = await _client.PostAsync(apiUrl, content);
             sw.Stop();
@@ -134,9 +151,43 @@ namespace TGS.GameProviders.ApiClients.BigGaming
                 responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
             }
 
+            _tgsLog.LogApi(new()
+            {
+                Ip = string.Empty,
+                Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
+                Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
+                Prefix = logPrefix,
+                ServerName = Environment.MachineName.NoLongerThan(128),
+                RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
+                RequestContent = JsonSerializer.Serialize(data),
+                ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
+                ResponseContent = responseMessage,
+                ResponseCode = (short)httpResponseMessage.StatusCode,
+                ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                RecordedOn = DateTimeOffset.UtcNow
+            });
+
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
                 response = JsonSerializer.Deserialize<BigGamingResponse>(responseMessage);
+            }
+            else
+            {
+                _logger.LogError(JsonSerializer.Serialize(new
+                {
+                    Ip = string.Empty,
+                    Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
+                    Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
+                    Prefix = logPrefix,
+                    ServerName = Environment.MachineName.NoLongerThan(128),
+                    RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
+                    RequestContent = JsonSerializer.Serialize(data),
+                    ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
+                    ResponseContent = responseMessage,
+                    ResponseCode = (short)httpResponseMessage.StatusCode,
+                    ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                    RecordedOn = DateTimeOffset.UtcNow
+                }));
             }
 
             return response;

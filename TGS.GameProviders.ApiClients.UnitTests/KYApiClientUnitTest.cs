@@ -6,6 +6,7 @@ using NUnit.Framework;
 using TGS.GameProviders.ApiClients.KY;
 using TGS.GameProviders.ApiClients.KY.Models;
 using TGS.GameProviders.Domains.SettingConfiguration.KY;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
@@ -21,8 +22,9 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         {
             _utility = new KYUtility();
             var client = new HttpClient();
+
             _client = Substitute.For<IKYApiClient>();
-            //_client = new KYApiClient(client, _utility);
+            //_client = new KYApiClient(client, NullLogger<KYApiClient>.Instance, _utility);
             _agentMapper = new KYAgentMapper
             {
                 AgentId = "72412",

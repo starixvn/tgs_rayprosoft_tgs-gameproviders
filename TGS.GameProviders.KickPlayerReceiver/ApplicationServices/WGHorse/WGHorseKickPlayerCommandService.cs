@@ -11,10 +11,10 @@ namespace TGS.GameProviders.KickPlayerReceiver.ApplicationServices.WGHorse
 {
     public class WGHorseKickPlayerCommandService : ICommandService<WGHorsePlayerKickCommand>
     {
-        private readonly IWGHorseApiClient _client;
         private readonly ILogger<WGHorseKickPlayerCommandService> _logger;
-        private readonly IPlayerRepository _playerRepository;
+        private readonly IWGHorseApiClient _client;
         private readonly IWGHorseService _service;
+        private readonly IPlayerRepository _playerRepository;
 
         public WGHorseKickPlayerCommandService(
             ILogger<WGHorseKickPlayerCommandService> logger,
@@ -36,6 +36,7 @@ namespace TGS.GameProviders.KickPlayerReceiver.ApplicationServices.WGHorse
             {
                 return;
             }
+
             var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(player.DefaultWalletCurrencyCode);
 
             if (gameProviderCurrencyCode == null)
@@ -55,7 +56,7 @@ namespace TGS.GameProviders.KickPlayerReceiver.ApplicationServices.WGHorse
                 return;
             }
 
-            var loginResponse = await _client.GetLoginAsync(configuration, new()
+            _ = await _client.GetLoginAsync(configuration, new()
             {
                 Token = prepareLoginResponse.Token,
                 Lang = "0"

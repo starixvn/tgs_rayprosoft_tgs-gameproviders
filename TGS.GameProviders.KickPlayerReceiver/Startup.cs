@@ -100,7 +100,10 @@ namespace TGS.GameProviders.KickPlayerReceiver
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(configure =>
+            {
+                configure.Filters.Add<ExceptionFilter>();
+            });
             services.AddSwaggerGen(c =>
             {
                 string[] xmlFileNames = null;
@@ -160,102 +163,114 @@ namespace TGS.GameProviders.KickPlayerReceiver
                 .AddApiClients();
             services
                 .AddCore();
-            services.AddRabbitMessageQueue(config =>
-            {
-                config
-                    .ConfigQueueOptions((options, sp) =>
-                    {
-                        var configuration = sp.GetRequiredService<IConfiguration>();
 
-                        configuration.GetSection("MessageQueue").Bind(options);
-                        options.OnSetupQueueAndExchange = channel =>
+            services
+                .AddRabbitMessageQueue(config =>
+                {
+                    config
+                        .ConfigQueueOptions((options, sp) =>
                         {
-                            channel.QueueDeclare(
-                                queue: "gp.kickplayer.ky",
-                                durable: true,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
+                            var configuration = sp.GetRequiredService<IConfiguration>();
 
-                            channel.QueueBind(
-                                "gp.kickplayer.ky",
-                                "amq.fanout",
-                                $"gp.kickplayer.ky",
-                                new Dictionary<string, object>());
+                            configuration.GetSection("MessageQueue").Bind(options);
+                            options.OnSetupQueueAndExchange = channel =>
+                            {
+                                channel.QueueDeclare(
+                                    queue: "gp.kickplayer.ky",
+                                    durable: true,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
 
-                            channel.QueueDeclare(
-                               queue: "gp.kickplayer.vr",
-                               durable: true,
-                               exclusive: false,
-                               autoDelete: false,
-                               arguments: null);
+                                channel.QueueBind(
+                                    "gp.kickplayer.ky",
+                                    "amq.fanout",
+                                    $"gp.kickplayer.ky",
+                                    new Dictionary<string, object>());
 
-                            channel.QueueBind(
-                                "gp.kickplayer.vr",
-                                "amq.fanout",
-                                $"gp.kickplayer.vr",
-                                new Dictionary<string, object>());
+                                channel.QueueDeclare(
+                                   queue: "gp.kickplayer.vr",
+                                   durable: true,
+                                   exclusive: false,
+                                   autoDelete: false,
+                                   arguments: null);
 
-                            channel.QueueDeclare(
-                              queue: "gp.kickplayer.wgvia",
-                              durable: true,
-                              exclusive: false,
-                              autoDelete: false,
-                              arguments: null);
+                                channel.QueueBind(
+                                    "gp.kickplayer.vr",
+                                    "amq.fanout",
+                                    $"gp.kickplayer.vr",
+                                    new Dictionary<string, object>());
 
-                            channel.QueueBind(
-                                "gp.kickplayer.wgvia",
-                                "amq.fanout",
-                                $"gp.kickplayer.wgvia",
-                                new Dictionary<string, object>());
+                                channel.QueueDeclare(
+                                  queue: "gp.kickplayer.wgvia",
+                                  durable: true,
+                                  exclusive: false,
+                                  autoDelete: false,
+                                  arguments: null);
 
-                            channel.QueueDeclare(
-                              queue: "gp.kickplayer.wgfm",
-                              durable: true,
-                              exclusive: false,
-                              autoDelete: false,
-                              arguments: null);
+                                channel.QueueBind(
+                                    "gp.kickplayer.wgvia",
+                                    "amq.fanout",
+                                    $"gp.kickplayer.wgvia",
+                                    new Dictionary<string, object>());
 
-                            channel.QueueBind(
-                                "gp.kickplayer.wgfm",
-                                "amq.fanout",
-                                $"gp.kickplayer.wgfm",
-                                new Dictionary<string, object>());
+                                channel.QueueDeclare(
+                                  queue: "gp.kickplayer.wgfm",
+                                  durable: true,
+                                  exclusive: false,
+                                  autoDelete: false,
+                                  arguments: null);
 
-                            channel.QueueDeclare(
-                              queue: "gp.kickplayer.biggaming",
-                              durable: true,
-                              exclusive: false,
-                              autoDelete: false,
-                              arguments: null);
+                                channel.QueueBind(
+                                    "gp.kickplayer.wgfm",
+                                    "amq.fanout",
+                                    $"gp.kickplayer.wgfm",
+                                    new Dictionary<string, object>());
 
-                            channel.QueueBind(
-                                "gp.kickplayer.biggaming",
-                                "amq.fanout",
-                                $"gp.kickplayer.biggaming",
-                                new Dictionary<string, object>());
+                                channel.QueueDeclare(
+                                  queue: "gp.kickplayer.biggaming",
+                                  durable: true,
+                                  exclusive: false,
+                                  autoDelete: false,
+                                  arguments: null);
 
-                            channel.QueueDeclare(
-                             queue: "gp.kickplayer.tcg",
-                             durable: true,
-                             exclusive: false,
-                             autoDelete: false,
-                             arguments: null);
+                                channel.QueueBind(
+                                    "gp.kickplayer.biggaming",
+                                    "amq.fanout",
+                                    $"gp.kickplayer.biggaming",
+                                    new Dictionary<string, object>());
 
-                            channel.QueueBind(
-                                "gp.kickplayer.tcg",
-                                "amq.fanout",
-                                $"gp.kickplayer.tcg",
-                                new Dictionary<string, object>());
-                        };
-                    })
-                   .AddHandler<KYKickPlayerReceiveHandler>("gp.kickplayer.ky", false)
-                   .AddHandler<VRKickPlayerReceiveHandler>("gp.kickplayer.vr", false)
-                   .AddHandler<WGHorseKickPlayerReceiveHandler>("gp.kickplayer.wgvia", false)
-                   .AddHandler<WGSportsKickPlayerReceiveHandler>("gp.kickplayer.wgfm", false)
-                   .AddHandler<BigGamingKickPlayerReceiveHandler>("gp.kickplayer.biggaming", false)
-                   .AddHandler<TCGKickPlayerReceiveHandler>("gp.kickplayer.tcg", false);
-            });
+                                channel.QueueDeclare(
+                                 queue: "gp.kickplayer.tcg",
+                                 durable: true,
+                                 exclusive: false,
+                                 autoDelete: false,
+                                 arguments: null);
+
+                                channel.QueueBind(
+                                    "gp.kickplayer.tcg",
+                                    "amq.fanout",
+                                    $"gp.kickplayer.tcg",
+                                    new Dictionary<string, object>());
+                            };
+                        })
+                       .AddHandler<KYKickPlayerReceiveHandler>("gp.kickplayer.ky", false)
+                       .AddHandler<VRKickPlayerReceiveHandler>("gp.kickplayer.vr", false)
+                       .AddHandler<WGHorseKickPlayerReceiveHandler>("gp.kickplayer.wgvia", false)
+                       .AddHandler<WGSportsKickPlayerReceiveHandler>("gp.kickplayer.wgfm", false)
+                       .AddHandler<BigGamingKickPlayerReceiveHandler>("gp.kickplayer.biggaming", false)
+                       .AddHandler<TCGKickPlayerReceiveHandler>("gp.kickplayer.tcg", false);
+                })
+                .AddNatsMessageQueue(natsConfig =>
+                {
+                    natsConfig
+                        .ConfigQueueOptions((options, sp) =>
+                        {
+                            var config = sp.GetRequiredService<IConfiguration>();
+                            options.Url = config.GetValue<string>("NatsSetting:Urls");
+                        });
+                })
+                .AddTgsLog();
             services
                 .AddKickPlayerHandles();
             services

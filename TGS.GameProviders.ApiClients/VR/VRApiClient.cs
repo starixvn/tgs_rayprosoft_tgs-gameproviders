@@ -6,8 +6,12 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Tgs.Logging;
 using TGS.GameProviders.ApiClients.VR.Models;
 using TGS.GameProviders.ApiClients.VR.Models.Commons;
+using TGS.GameProviders.Domains;
+using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration.VR;
 
 namespace TGS.GameProviders.ApiClients.VR
@@ -15,13 +19,19 @@ namespace TGS.GameProviders.ApiClients.VR
     internal class VRApiClient : IVRApiClient
     {
         private readonly HttpClient _client;
+        private readonly ILogger<VRApiClient> _logger;
+        private readonly ITgsLog _tgsLog;
         private readonly IVRUtility _utility;
 
         public VRApiClient(
             HttpClient client,
+            ILogger<VRApiClient> logger,
+            ITgsLog tgsLog,
             IVRUtility utility)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
             _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         }
 
@@ -64,6 +74,7 @@ namespace TGS.GameProviders.ApiClients.VR
 
         private async ValueTask<ResultData> GetAPIAsync<SourceData, ResultData>(VRBrandMerchant brandMerchant, VRAction action, SourceData request)
         {
+            var logPrefix = $"{GameProviderType.VR}{action}";
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(ResultData);
@@ -90,6 +101,21 @@ namespace TGS.GameProviders.ApiClients.VR
             {
                 responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
             }
+            _tgsLog.LogApi(new()
+            {
+                Ip = string.Empty,
+                Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
+                Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
+                Prefix = logPrefix,
+                ServerName = Environment.MachineName.NoLongerThan(128),
+                RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
+                RequestContent = JsonSerializer.Serialize(data),
+                ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
+                ResponseContent = responseMessage,
+                ResponseCode = (short)httpResponseMessage.StatusCode,
+                ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                RecordedOn = DateTimeOffset.UtcNow
+            });
 
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
@@ -99,6 +125,24 @@ namespace TGS.GameProviders.ApiClients.VR
                     responseMessage = contentDecrypt;
                     response = JsonSerializer.Deserialize<ResultData>(contentDecrypt);
                 }
+            }
+            else
+            {
+                _logger.LogError(JsonSerializer.Serialize(new
+                {
+                    Ip = string.Empty,
+                    Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
+                    Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
+                    Prefix = logPrefix,
+                    ServerName = Environment.MachineName.NoLongerThan(128),
+                    RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
+                    RequestContent = JsonSerializer.Serialize(data),
+                    ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
+                    ResponseContent = responseMessage,
+                    ResponseCode = (short)httpResponseMessage.StatusCode,
+                    ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                    RecordedOn = DateTimeOffset.UtcNow
+                }));
             }
             return response;
         }

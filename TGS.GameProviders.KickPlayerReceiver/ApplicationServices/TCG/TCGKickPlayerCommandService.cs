@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -13,10 +11,10 @@ namespace TGS.GameProviders.KickPlayerReceiver.ApplicationServices.TCG
 {
     public class TCGKickPlayerCommandService : ICommandService<TCGPlayerKickCommand>
     {
-        private readonly ILogger<TCGKickPlayerCommandService> _logger;
         private readonly ITCGApiClient _client;
-        private readonly ITCGService _service;
+        private readonly ILogger<TCGKickPlayerCommandService> _logger;
         private readonly IPlayerRepository _playerRepository;
+        private readonly ITCGService _service;
 
         public TCGKickPlayerCommandService(
             ILogger<TCGKickPlayerCommandService> logger,

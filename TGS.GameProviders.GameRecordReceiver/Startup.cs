@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -45,9 +47,18 @@ namespace TGS.GameProviders.GameRecordReceiver
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(configure =>
+            {
+                configure.Filters.Add<ExceptionFilter>();
+            });
             services.AddSwaggerGen(c =>
             {
+                string[] xmlFileNames = null;
+                xmlFileNames = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml");
+                foreach (var xmlFileName in xmlFileNames)
+                {
+                    c.IncludeXmlComments(xmlFileName);
+                }
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TGS.GameProviders.GameRecordReceiver", Version = "v1" });
             });
             services.AddDbTgsRepository(
@@ -114,7 +125,16 @@ namespace TGS.GameProviders.GameRecordReceiver
                         };
                     })
                     .AddHandler<KYGameRecordReceiveHandler>("gp.gamerecord.ky", false);
-            });
+            }).AddNatsMessageQueue(natsConfig =>
+            {
+                natsConfig
+                .ConfigQueueOptions((options, sp) =>
+                {
+                    var config = sp.GetRequiredService<IConfiguration>();
+                    options.Url = config.GetValue<string>("NatsSetting:Urls");
+                });
+            })
+            .AddTgsLog();
             services
                 .AddMongoRepository((options, sp) =>
                 {

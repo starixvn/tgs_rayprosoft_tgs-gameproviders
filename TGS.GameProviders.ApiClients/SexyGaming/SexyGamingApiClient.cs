@@ -6,9 +6,12 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Tgs.Logging;
 using TGS.GameProviders.ApiClients.SexyGaming.Models;
 using TGS.GameProviders.Domains;
+using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.ApiClients.SexyGaming
@@ -16,10 +19,18 @@ namespace TGS.GameProviders.ApiClients.SexyGaming
     internal class SexyGamingApiClient : ISexyGamingApiClient
     {
         private readonly HttpClient _client;
+        private readonly ILogger<SexyGamingApiClient> _logger;
+        private readonly ITgsLog _tgsLog;
 
-        public SexyGamingApiClient(HttpClient client)
+        public SexyGamingApiClient(
+            HttpClient client,
+            ILogger<SexyGamingApiClient> logger,
+            ITgsLog tgsLog
+            )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         }
 
         public async Task<SexyGamingCreateMemberResponse> CreatePlayerAsync(SexyGamingConfiguration configuration, SexyGamingCreateMemberRequest request)
@@ -50,9 +61,9 @@ namespace TGS.GameProviders.ApiClients.SexyGaming
             return await GetAPIAsync<SexyGamingLogoutRequest, SexyGamingLogoutResponse>(configuration, "/wallet/logout", request, "LogOut").ConfigureAwait(false);
         }
 
-        private async ValueTask<TResult> GetAPIAsync<TSource, TResult>(SexyGamingConfiguration configuration, string path, TSource source, string prefix)
+        private async ValueTask<TResult> GetAPIAsync<TSource, TResult>(SexyGamingConfiguration configuration, string path, TSource source, string logPrefix)
         {
-            prefix = $"{GameProviderType.SexyGaming}{prefix}";
+            logPrefix = $"{GameProviderType.SexyGaming}{logPrefix}";
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(TResult);
@@ -72,9 +83,43 @@ namespace TGS.GameProviders.ApiClients.SexyGaming
                 responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
             }
 
+            _tgsLog.LogApi(new()
+            {
+                Ip = string.Empty,
+                Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
+                Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
+                Prefix = logPrefix,
+                ServerName = Environment.MachineName.NoLongerThan(128),
+                RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
+                RequestContent = JsonConvert.SerializeObject(data),
+                ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
+                ResponseContent = responseMessage,
+                ResponseCode = (short)httpResponseMessage.StatusCode,
+                ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                RecordedOn = DateTimeOffset.UtcNow
+            });
+
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
                 response = System.Text.Json.JsonSerializer.Deserialize<TResult>(responseMessage);
+            }
+            else
+            {
+                _logger.LogError(System.Text.Json.JsonSerializer.Serialize(new
+                {
+                    Ip = string.Empty,
+                    Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
+                    Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
+                    Prefix = logPrefix,
+                    ServerName = Environment.MachineName.NoLongerThan(128),
+                    RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
+                    RequestContent = JsonConvert.SerializeObject(data),
+                    ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
+                    ResponseContent = responseMessage,
+                    ResponseCode = (short)httpResponseMessage.StatusCode,
+                    ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                    RecordedOn = DateTimeOffset.UtcNow
+                }));
             }
 
             return response;

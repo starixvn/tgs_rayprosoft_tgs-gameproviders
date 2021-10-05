@@ -30,5 +30,7 @@ namespace TGS.GameProviders.ApiClients.BigGaming
         ValueTask<BigGamingResponse> InfoPlayerAsync(BigGamingBrandMerchant brandMerchant, BigGamingInfoPlayerRequest request);
 
         ValueTask<BigGamingResponse> KickPlayerAsync(BigGamingBrandMerchant brandMerchant, BigGamingKickPlayerRequest request);
+
+        ValueTask<BigGamingResponse> KickPlayerGameAsync(BigGamingBrandMerchant brandMerchant, BigGamingKickPlayerGameRequest request);
     }
 }

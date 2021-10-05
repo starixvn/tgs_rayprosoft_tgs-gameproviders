@@ -31,9 +31,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ReceiveHandler
                  new EventId(1000, nameof(KYGameRecordReceiveHandler)),
                  command,
                  null,
-                 (state, ex) =>
-                 $"[{nameof(command.GameProviderCode)}]{command.GameProviderCode}{ Environment.NewLine}" +
-                 $"[{nameof(command.SendDateTime)}]{command.SendDateTime.ToLocalTime()}");
+                 (state, ex) => json);
             await _commandService.ExecuteAsync(command).ConfigureAwait(false);
         }
     }

@@ -5,8 +5,12 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Tgs.Logging;
 using TGS.GameProviders.ApiClients.KY.Models;
 using TGS.GameProviders.ApiClients.KY.Models.Commons;
+using TGS.GameProviders.Domains;
+using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration.KY;
 
 namespace TGS.GameProviders.ApiClients.KY
@@ -14,13 +18,19 @@ namespace TGS.GameProviders.ApiClients.KY
     internal class KYApiClient : IKYApiClient
     {
         private readonly HttpClient _client;
+        private readonly ILogger<KYApiClient> _logger;
+        private readonly ITgsLog _tgsLog;
         private readonly IKYUtility _utility;
 
         public KYApiClient(
             HttpClient client,
+            ILogger<KYApiClient> logger,
+            ITgsLog tgsLog,
             IKYUtility utility)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
             _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         }
 
@@ -42,7 +52,7 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYFnudResponse>(brandMerchant.ApiUrl, action, apiKYRequest);
+            return GetAPIAsync<KYFnudResponse>(brandMerchant.ApiUrl, action, apiKYRequest, "Fund");
         }
 
         public ValueTask<KYApiResponse<KYFundCheckingResponse>> FundCheckingAsync(KYBrandMerchant brandMerchant, string agentId, KYFundCheckingRequest request)
@@ -64,7 +74,7 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYFundCheckingResponse>(brandMerchant.ApiUrl, action, apiKYRequest);
+            return GetAPIAsync<KYFundCheckingResponse>(brandMerchant.ApiUrl, action, apiKYRequest, "FundChecking");
         }
 
         public ValueTask<KYApiResponse<KYGetBalanceResponse>> GetBalanceAsync(KYBrandMerchant brandMerchant, string agentId, KYGetBalanceRequest request)
@@ -86,7 +96,7 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYGetBalanceResponse>(brandMerchant.ApiUrl, action, apiKYRequest);
+            return GetAPIAsync<KYGetBalanceResponse>(brandMerchant.ApiUrl, action, apiKYRequest, "Balance");
         }
 
         public ValueTask<KYApiResponse<KYGameRecordResponse>> GetGameRecordAsync(KYBrandMerchant brandMerchant, string agentId, DateTimeOffset dateTimeOffset, KYGameRecordRequest request)
@@ -108,7 +118,7 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYGameRecordResponse>(brandMerchant.ApiRecordUrl, action, apiKYRequest);
+            return GetAPIAsync<KYGameRecordResponse>(brandMerchant.ApiRecordUrl, action, apiKYRequest, "GameRecord");
         }
 
         public ValueTask<KYApiResponse<KYGameUrlResponse>> GetGameUrlAsync(KYBrandMerchant brandMerchant, string agentId, DateTimeOffset dateTimeOffset, KYGameUrlRequest request)
@@ -130,7 +140,7 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYGameUrlResponse>(brandMerchant.ApiUrl, action, apiKYRequest);
+            return GetAPIAsync<KYGameUrlResponse>(brandMerchant.ApiUrl, action, apiKYRequest, "GameUrl");
         }
 
         public ValueTask<KYApiResponse<KYKickResponse>> KickAsync(KYBrandMerchant brandMerchant, string agentId, KYKickRequest request)
@@ -152,11 +162,12 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYKickResponse>(brandMerchant.ApiUrl, action, apiKYRequest);
+            return GetAPIAsync<KYKickResponse>(brandMerchant.ApiUrl, action, apiKYRequest, "Kick");
         }
 
-        private async ValueTask<KYApiResponse<TData>> GetAPIAsync<TData>(Uri apiUrl, KYAction action, KYApiRequest request)
+        private async ValueTask<KYApiResponse<TData>> GetAPIAsync<TData>(Uri apiUrl, KYAction action, KYApiRequest request, string logPrefix)
         {
+            logPrefix = $"{GameProviderType.TCG }.{logPrefix}";
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(KYApiResponse<TData>);
@@ -171,9 +182,43 @@ namespace TGS.GameProviders.ApiClients.KY
                 responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
             }
 
+            _tgsLog.LogApi(new()
+            {
+                Ip = string.Empty,
+                Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
+                Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
+                Prefix = logPrefix,
+                ServerName = Environment.MachineName.NoLongerThan(128),
+                RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
+                RequestContent = JsonSerializer.Serialize(request),
+                ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
+                ResponseContent = responseMessage,
+                ResponseCode = (short)httpResponseMessage.StatusCode,
+                ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                RecordedOn = DateTimeOffset.UtcNow
+            });
+
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
                 response = JsonSerializer.Deserialize<KYApiResponse<TData>>(responseMessage);
+            }
+            else
+            {
+                _logger.LogError(JsonSerializer.Serialize(new
+                {
+                    Ip = string.Empty,
+                    Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
+                    Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
+                    Prefix = logPrefix,
+                    ServerName = Environment.MachineName.NoLongerThan(128),
+                    RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
+                    RequestContent = JsonSerializer.Serialize(request),
+                    ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
+                    ResponseContent = responseMessage,
+                    ResponseCode = (short)httpResponseMessage.StatusCode,
+                    ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                    RecordedOn = DateTimeOffset.UtcNow
+                }));
             }
 
             return response;

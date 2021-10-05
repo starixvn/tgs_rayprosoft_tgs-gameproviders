@@ -55,7 +55,7 @@ namespace TGS.GameProviders.KickPlayerReceiver.ApplicationServices.WGSports
                 return;
             }
 
-            var loginResponse = await _client.GetLoginAsync(configuration, new()
+            _ = await _client.GetLoginAsync(configuration, new()
             {
                 Token = prepareLoginResponse.Token,
                 Lang = "0"
