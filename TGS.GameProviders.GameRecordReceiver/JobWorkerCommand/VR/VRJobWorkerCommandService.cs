@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core;
@@ -42,7 +41,6 @@ namespace TGS.GameProviders.GameRecordReceiver.JobWorkerCommand.VR
 
                 foreach (var brand in configuration.BrandMerchants.Where(x => x.Status))
                 {
-
                     Task t = Task.Run(async () =>
                     {
                         var gameProviderSchedule = await _service.GetGameProviderScheduleAsync(gameProviderId, brand.BrandCode, brand.Merchantid).ConfigureAwait(false);

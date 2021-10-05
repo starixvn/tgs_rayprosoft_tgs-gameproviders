@@ -46,13 +46,8 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.Ky
 
         public async ValueTask<KYGameRecordHandlerResult> GetAsync(KYGameRecordHandlerQuery query, CancellationToken cancellationToken = default)
         {
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
-            var brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals(query.BrandCode) && x.Status).FirstOrDefault();
-            if (brandMerchant == null)
-            {
-                brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals("Default") && x.Status).FirstOrDefault();
-            }
+            var brandMerchant = await _service.GetBrandMerchantAsync(query.BrandCode);
             var agentId = brandMerchant.AgentMappers.Where(x => x.CurrencyCode.IgnoreCaseEquals(query.CurrencyCode) && x.Status).FirstOrDefault()?.AgentId;
             if (string.IsNullOrEmpty(agentId))
             {

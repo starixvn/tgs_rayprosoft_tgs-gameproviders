@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +7,6 @@ using TGS.GameProviders.ApiClients.VR;
 using TGS.GameProviders.ApiClients.VR.Models;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.GameRecordProcessor;
-using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration.VR;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
@@ -27,12 +25,12 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.VR
         private readonly IPlayerRepository _playerRepository;
         private readonly IVRService _service;
 
-        private Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)> _players;
+        private int _count;
+        private int _failCount;
         private Dictionary<int, Game> _games;
         private DateTimeOffset? _lastGameRecordTime;
-        private int _count;
+        private Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)> _players;
         private int _successCount;
-        private int _failCount;
 
         public VRGameRecordHandler(
             IVRApiClient client,
@@ -53,7 +51,6 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.VR
 
         public async ValueTask<VRGameRecordHandlerResult> GetAsync(VRGameRecordHandlerQuery query, CancellationToken cancellationToken = default)
         {
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
             var brandMerchant = await _service.GetBrandMerchantAsync(query.BrandCode).ConfigureAwait(false);
             if (brandMerchant == null)
@@ -140,7 +137,6 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.VR
                 {
                     var sysDateTimeOffset = DateTimeOffset.UtcNow;
 
-
                     foreach (var recordBet in response.Records)
                     {
                         _count++;
@@ -163,7 +159,6 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.VR
                             playerInfo = new(player, brandGameProviderConfigurationId);
                             _players.Add(playerCode, playerInfo);
                         }
-
 
                         if (!_games.TryGetValue(recordBet.ChannelId, out Game game))
                         {
