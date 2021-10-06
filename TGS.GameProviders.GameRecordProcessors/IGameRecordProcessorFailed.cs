@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace TGS.GameProviders.Core.GameRecordProcessor
+namespace TGS.GameProviders.GameRecordProcessors
 {
     public interface IGameRecordProcessorFailed
     {

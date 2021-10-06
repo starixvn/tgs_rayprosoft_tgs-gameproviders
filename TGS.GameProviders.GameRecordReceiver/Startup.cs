@@ -106,7 +106,7 @@ namespace TGS.GameProviders.GameRecordReceiver
                     {
                         var configuration = sp.GetRequiredService<IConfiguration>();
 
-                        configuration.GetSection("MessageQueue").Bind(options);
+                        configuration.GetSection("RabbitMQ").Bind(options);
 
                         options.OnSetupQueueAndExchange = channel =>
                         {
@@ -172,8 +172,8 @@ namespace TGS.GameProviders.GameRecordReceiver
                 natsConfig
                 .ConfigQueueOptions((options, sp) =>
                 {
-                    var config = sp.GetRequiredService<IConfiguration>();
-                    options.Url = config.GetValue<string>("NatsSetting:Urls");
+                    var configuration = sp.GetRequiredService<IConfiguration>();
+                    options.Url = configuration.GetSection("NatsMQ:Url").Get<string>();
                 });
             })
             .AddTgsLog();
@@ -192,8 +192,10 @@ namespace TGS.GameProviders.GameRecordReceiver
             services
                 .AddHttpClient()
                 .AddApiClients();
-            services.AddCore();
-            services.AddGameRecordReceiver();
+            services
+                .AddCore()
+                .AddGameRecordProcessors()
+                .AddGameRecordReceiver();
         }
     }
 }

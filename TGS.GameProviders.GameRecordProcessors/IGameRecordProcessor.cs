@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using TGS.GameProviders.Repositories.Domains.Models.Rounds;
 
-namespace TGS.GameProviders.Core.GameRecordProcessor
+namespace TGS.GameProviders.GameRecordProcessors
 {
     public interface IGameRecordProcessor
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using TGS.GameProviders.Repositories.Domains;
 
-namespace TGS.GameProviders.Core.GameRecordProcessor
+namespace TGS.GameProviders.GameRecordProcessors
 {
     public record GameRoundsData
     {

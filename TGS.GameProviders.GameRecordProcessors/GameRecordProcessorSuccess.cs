@@ -5,7 +5,7 @@ using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Rounds;
 
-namespace TGS.GameProviders.Core.GameRecordProcessor
+namespace TGS.GameProviders.GameRecordProcessors
 {
     internal class GameRecordProcessorSuccess : IGameRecordProcessorSuccess
     {

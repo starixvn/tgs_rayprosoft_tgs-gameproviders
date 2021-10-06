@@ -172,7 +172,7 @@ namespace TGS.GameProviders.KickPlayerReceiver
                         {
                             var configuration = sp.GetRequiredService<IConfiguration>();
 
-                            configuration.GetSection("MessageQueue").Bind(options);
+                            configuration.GetSection("RabbitMQ").Bind(options);
                             options.OnSetupQueueAndExchange = channel =>
                             {
                                 channel.QueueDeclare(
@@ -266,8 +266,8 @@ namespace TGS.GameProviders.KickPlayerReceiver
                     natsConfig
                         .ConfigQueueOptions((options, sp) =>
                         {
-                            var config = sp.GetRequiredService<IConfiguration>();
-                            options.Url = config.GetValue<string>("NatsSetting:Urls");
+                            var configuration = sp.GetRequiredService<IConfiguration>();
+                            options.Url = configuration.GetSection("NatsMQ:Url").Get<string>();
                         });
                 })
                 .AddTgsLog();

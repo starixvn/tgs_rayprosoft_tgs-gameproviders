@@ -4,7 +4,7 @@ using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.FailedGameRecordOperation;
 
-namespace TGS.GameProviders.Core.GameRecordProcessor
+namespace TGS.GameProviders.GameRecordProcessors
 {
     internal class GameRecordProcessorFailed : IGameRecordProcessorFailed
     {
