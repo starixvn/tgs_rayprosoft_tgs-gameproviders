@@ -187,7 +187,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.WGSports
             {
                 return (false, 0, 0, 0, null);
             }
-            if (response.BetInfo == null)
+            if (response.BetInfo == null || response.BetInfo.Length == 0)
             {
                 return (true, 0, 0, 0, null);
             }
@@ -208,7 +208,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.WGSports
             {
                 return (false, 0, 0, 0, null);
             }
-            if (response.BetInfo == null)
+            if (response.BetInfo == null || response.BetInfo.Length == 0)
             {
                 return (true, 0, 0, 0, null);
             }
