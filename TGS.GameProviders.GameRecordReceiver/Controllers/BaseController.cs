@@ -5,7 +5,7 @@ using TGS.ServiceUtility;
 namespace TGS.GameProviders.GameRecordReceiver.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public abstract class BaseController<TQuery, TResult> : ControllerBase
     {
         [HttpPost]

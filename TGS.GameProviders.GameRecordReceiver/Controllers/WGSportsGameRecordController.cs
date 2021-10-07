@@ -14,14 +14,16 @@ namespace TGS.GameProviders.GameRecordReceiver.Controllers
         /// <param name="query">The query.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        /// Post
+        ///     Post 
+        ///     Parameter
         ///     {
-        ///      "startTime": "2021-09-24T02:00:00+00:00",
-        ///      "endTime": "2021-09-24T04:00:00+00:00"
+        ///         "startTime": "2021-08-24T00:00:00.3527908+00:00",
+        ///         "endTime": "2021-08-24T23:59:59.3527908+00:00"
         ///     }
         /// </remarks>
-        public override ValueTask<WGSportsGameRecordHandlerResult> KickPlayerAsync([FromServices] IGetService<WGSportsGameRecordHandlerQuery, WGSportsGameRecordHandlerResult> service, WGSportsGameRecordHandlerQuery query)
+        public override ValueTask<WGSportsGameRecordHandlerResult> KickPlayerAsync(
+            [FromServices] IGetService<WGSportsGameRecordHandlerQuery, WGSportsGameRecordHandlerResult> service, 
+            WGSportsGameRecordHandlerQuery query)
             => service.GetAsync(query);
     }
 }

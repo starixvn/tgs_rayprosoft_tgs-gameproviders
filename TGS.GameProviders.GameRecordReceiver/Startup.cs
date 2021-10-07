@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -28,9 +30,11 @@ namespace TGS.GameProviders.GameRecordReceiver
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TGS.GameProviders.GameRecordReceiver v1"));
+
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TGS.GameProviders.GameRecordReceiver v1"));
 
             app.UseHttpsRedirection();
 
@@ -180,15 +184,29 @@ namespace TGS.GameProviders.GameRecordReceiver
             services
                 .AddMongoRepository((options, sp) =>
                 {
-                    var config = sp.GetRequiredService<IConfiguration>();
-                    config.GetSection("MongoDBConnectionString").Bind(options);
+                    var configuration = sp.GetRequiredService<IConfiguration>();
+                    configuration.GetSection("MongoDBConnectionString").Bind(options);
                 });
             services
               .AddRedisRepository((options, sp) =>
               {
-                  var config = sp.GetRequiredService<IConfiguration>();
-                  config.GetSection("RedisConnectionString").Bind(options);
+                  var configuration = sp.GetRequiredService<IConfiguration>();
+                  configuration.GetSection("RedisConnectionString").Bind(options);
               });
+            services.AddTCGFtpServiceClient((options, sp) =>
+            {
+                var configuration = sp.GetRequiredService<IConfiguration>();
+                configuration.GetSection("TCGFtpApi").Bind(options);
+
+                options.JsonSerializerOptions = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    Converters =
+                        {
+                            new JsonStringEnumConverter()
+                        }
+                };
+            });
             services
                 .AddHttpClient()
                 .AddApiClients();

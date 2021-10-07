@@ -145,24 +145,19 @@ namespace TGS.GameProviders.Repositories
             round.ClientStatus = (short)source.ClientStatus;
             round.ReopenTurnoverAdjustment = source.ReopenTurnoverAdjustment;
             round.ReopenedOn = source.ReopenedOn.HasValue ? source.ReopenedOn.Value.DateTime : null;
-
+            var roundDetail = await _context.RoundDetails.SingleAsync(x => x.RoundId == round.Id).ConfigureAwait(false);
+            roundDetail.AdditionalData = source.AdditionalData;
             _context.Rounds.Update(round);
-            _context.RoundDetails.Update(new()
-            {
-                RoundId = round.Id,
-                AdditionalData = source.AdditionalData
-            });
+            _context.RoundDetails.Update(roundDetail);
 
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public async Task UpdateRoundDetailAsync(Guid roundId, string additionalData)
         {
-            _context.RoundDetails.Update(new()
-            {
-                RoundId = roundId,
-                AdditionalData = additionalData
-            });
+            var roundDetail = await _context.RoundDetails.SingleAsync(x => x.RoundId == roundId).ConfigureAwait(false);
+            roundDetail.AdditionalData = additionalData;
+            _context.RoundDetails.Update(roundDetail);
 
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
