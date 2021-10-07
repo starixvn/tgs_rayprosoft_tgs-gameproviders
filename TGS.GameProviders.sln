@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGS.GameProviders.GameRecor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.GameRecord.ReceiverServer", "TGS.GameProviders.GameRecord.ReceiverServer\TGS.GameProviders.GameRecord.ReceiverServer.csproj", "{F764C439-A927-430D-8FC9-2CB8C4FDFB80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGS.GameProviders.KickPlayer.Core", "TGS.GameProviders.KickPlayer.Core\TGS.GameProviders.KickPlayer.Core.csproj", "{3163CBA5-C755-4DBC-BCBF-819248AB5A30}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{F764C439-A927-430D-8FC9-2CB8C4FDFB80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F764C439-A927-430D-8FC9-2CB8C4FDFB80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F764C439-A927-430D-8FC9-2CB8C4FDFB80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3163CBA5-C755-4DBC-BCBF-819248AB5A30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3163CBA5-C755-4DBC-BCBF-819248AB5A30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3163CBA5-C755-4DBC-BCBF-819248AB5A30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3163CBA5-C755-4DBC-BCBF-819248AB5A30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

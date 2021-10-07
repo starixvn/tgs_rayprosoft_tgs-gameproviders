@@ -5,8 +5,9 @@ using Microsoft.Extensions.Logging;
 using TGS.GameProviders.ApiClients.SexyGaming;
 using TGS.GameProviders.Core;
 using TGS.ServiceUtility;
+using TGS.GameProviders.KickPlayer.Core.ApplicationServices.SexyGaming;
 
-namespace TGS.GameProviders.KickPlayerReceiver.ApplicationServices.SexyGaming
+namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.SexyGaming
 {
     public class SexyGamingKickPlayerCommandService : ICommandService<SexyGamingPlayerKickCommand>
     {

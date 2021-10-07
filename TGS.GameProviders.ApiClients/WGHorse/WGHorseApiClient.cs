@@ -88,7 +88,7 @@ namespace TGS.GameProviders.ApiClients.WGHorse
 
         private async ValueTask<TResult> GetAPIAsync<TSource, TResult>(Uri url, TSource request, string logPrefix)
         {
-            logPrefix = $"{GameProviderType.WGHorse}{logPrefix}";
+            logPrefix = $"{GameProviderType.WGHorse}.{logPrefix}";
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(TResult);

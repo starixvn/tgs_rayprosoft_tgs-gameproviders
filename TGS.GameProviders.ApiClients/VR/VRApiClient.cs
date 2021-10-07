@@ -74,7 +74,7 @@ namespace TGS.GameProviders.ApiClients.VR
 
         private async ValueTask<ResultData> GetAPIAsync<SourceData, ResultData>(VRBrandMerchant brandMerchant, VRAction action, SourceData request)
         {
-            var logPrefix = $"{GameProviderType.VR}{action}";
+            var logPrefix = $"{GameProviderType.VR}.{action}";
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(ResultData);

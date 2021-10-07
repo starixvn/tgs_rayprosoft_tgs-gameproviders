@@ -63,7 +63,7 @@ namespace TGS.GameProviders.ApiClients.SexyGaming
 
         private async ValueTask<TResult> GetAPIAsync<TSource, TResult>(SexyGamingConfiguration configuration, string path, TSource source, string logPrefix)
         {
-            logPrefix = $"{GameProviderType.SexyGaming}{logPrefix}";
+            logPrefix = $"{GameProviderType.SexyGaming}.{logPrefix}";
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(TResult);

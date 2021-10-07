@@ -11,11 +11,12 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class GameRecordCoreConfigurationExtensions
     {
-        public static IServiceCollection AddGameRecordCoreConfiguration(this IServiceCollection services
-            , Action<TCGFtpServiceClientOptions, IServiceProvider> ftpServiceClinet)
+        public static IServiceCollection AddGameRecordCoreConfiguration(
+            this IServiceCollection services,
+            Action<TCGFtpServiceClientOptions, IServiceProvider> ftpServiceClientConfigure)
         {
-            services.AddTCGFtpServiceClient(ftpServiceClinet);
-            
+            services.AddTCGFtpServiceClient(ftpServiceClientConfigure);
+
             return services
                 .RegisterAllServiceUtilityTypes(
                     Assembly.GetExecutingAssembly(),

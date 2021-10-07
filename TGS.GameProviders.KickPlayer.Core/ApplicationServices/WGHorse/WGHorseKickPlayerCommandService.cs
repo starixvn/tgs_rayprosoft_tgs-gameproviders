@@ -6,8 +6,9 @@ using TGS.GameProviders.ApiClients.WGHorse;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Repositories;
 using TGS.ServiceUtility;
+using TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGHorse;
 
-namespace TGS.GameProviders.KickPlayerReceiver.ApplicationServices.WGHorse
+namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGHorse
 {
     public class WGHorseKickPlayerCommandService : ICommandService<WGHorsePlayerKickCommand>
     {

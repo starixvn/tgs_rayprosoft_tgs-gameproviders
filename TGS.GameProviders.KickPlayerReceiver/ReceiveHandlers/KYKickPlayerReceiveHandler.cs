@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.MessageQueue;
-using TGS.GameProviders.KickPlayerReceiver.ApplicationServices.KY;
+using TGS.GameProviders.KickPlayer.Core.ApplicationServices.KY;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.KickPlayerReceiver.ReceiveHandlers

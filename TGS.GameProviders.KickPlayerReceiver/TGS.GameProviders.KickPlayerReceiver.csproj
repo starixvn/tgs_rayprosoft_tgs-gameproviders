@@ -31,6 +31,7 @@
 		<ProjectReference Include="..\TGS.GameProviders.ApiClients\TGS.GameProviders.ApiClients.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Core\TGS.GameProviders.Core.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Domains\TGS.GameProviders.Domains.csproj" />
+		<ProjectReference Include="..\TGS.GameProviders.KickPlayer.Core\TGS.GameProviders.KickPlayer.Core.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Repositories\TGS.GameProviders.Repositories.csproj" />
 	</ItemGroup>
 

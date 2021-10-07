@@ -6,8 +6,9 @@ using TGS.GameProviders.ApiClients.BigGaming;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Repositories;
 using TGS.ServiceUtility;
+using TGS.GameProviders.KickPlayer.Core.ApplicationServices.BigGaming;
 
-namespace TGS.GameProviders.KickPlayerReceiver.ApplicationServices.BigGaming
+namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.BigGaming
 {
     public class BigGamingKickPlayerCommandService : ICommandService<BigGamingPlayerKickCommand>
     {

@@ -88,7 +88,7 @@ namespace TGS.GameProviders.ApiClients.WGSports
 
         private async ValueTask<TResult> GetAPIAsync<TSource, TResult>(Uri url, TSource request, string logPrefix)
         {
-            logPrefix = $"{GameProviderType.WGSports}{logPrefix}";
+            logPrefix = $"{GameProviderType.WGSports}.{logPrefix}";
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(TResult);

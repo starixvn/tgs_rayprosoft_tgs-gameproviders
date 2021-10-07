@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.KickPlayerReceiver.ApplicationServices.WGHorse;
+using TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGHorse;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.KickPlayerReceiver.Controllers

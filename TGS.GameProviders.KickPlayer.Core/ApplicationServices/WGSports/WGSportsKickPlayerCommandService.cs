@@ -6,8 +6,9 @@ using TGS.GameProviders.ApiClients.WGSports;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Repositories;
 using TGS.ServiceUtility;
+using TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGSports;
 
-namespace TGS.GameProviders.KickPlayerReceiver.ApplicationServices.WGSports
+namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGSports
 {
     public class WGSportsKickPlayerCommandService : ICommandService<WGSportsPlayerKickCommand>
     {

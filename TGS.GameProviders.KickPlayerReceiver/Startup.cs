@@ -272,7 +272,7 @@ namespace TGS.GameProviders.KickPlayerReceiver
                 })
                 .AddTgsLog();
             services
-                .AddKickPlayerHandles();
+                .AddKickPlayerCoreConfiguration();
             services
                 .AddHealthChecks()
                 .AddMongoDb(Configuration.GetSection("MongoDBConnectionString:GameProvider").Get<string>(), name: "MongoDB GameProvider")

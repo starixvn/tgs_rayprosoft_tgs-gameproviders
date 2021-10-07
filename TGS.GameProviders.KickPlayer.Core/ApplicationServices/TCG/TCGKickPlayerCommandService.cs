@@ -6,8 +6,9 @@ using TGS.GameProviders.ApiClients.TCG;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Repositories;
 using TGS.ServiceUtility;
+using TGS.GameProviders.KickPlayer.Core.ApplicationServices.TCG;
 
-namespace TGS.GameProviders.KickPlayerReceiver.ApplicationServices.TCG
+namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.TCG
 {
     public class TCGKickPlayerCommandService : ICommandService<TCGPlayerKickCommand>
     {

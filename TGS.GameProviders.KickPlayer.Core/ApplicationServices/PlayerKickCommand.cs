@@ -1,4 +1,4 @@
-﻿namespace TGS.GameProviders.KickPlayerReceiver.ApplicationServices
+﻿namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices
 {
     public record PlayerKickCommand
     {
