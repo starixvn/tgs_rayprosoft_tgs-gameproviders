@@ -2,16 +2,16 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGSports;
+using TGS.GameProviders.KickPlayer.Core.ApplicationServices.VR;
 using TGS.ServiceUtility;
 
-namespace TGS.GameProviders.KickPlayerReceiver.Controllers
+namespace TGS.GameProviders.KickPlayer.ReceiverServer.Controllers
 {
-    public class WGSportsKickPlayerReceiveHandler : BaseController<WGSportsPlayerKickCommand>
+    public class VRKickPlayerController : BaseController<VRPlayerKickCommand>
     {
-        private readonly ILogger<WGSportsKickPlayerReceiveHandler> _logger;
+        private readonly ILogger<VRKickPlayerController> _logger;
 
-        public WGSportsKickPlayerReceiveHandler(ILogger<WGSportsKickPlayerReceiveHandler> logger)
+        public VRKickPlayerController(ILogger<VRKickPlayerController> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -29,7 +29,7 @@ namespace TGS.GameProviders.KickPlayerReceiver.Controllers
         ///      "playerCode": "4ucmqplxb029"
         ///     }
         /// </remarks>
-        public override ValueTask KickPlayerAsync([FromServices] ICommandService<WGSportsPlayerKickCommand> commandService, WGSportsPlayerKickCommand command)
+        public override ValueTask KickPlayerAsync([FromServices] ICommandService<VRPlayerKickCommand> commandService, VRPlayerKickCommand command)
             => commandService.ExecuteAsync(command);
     }
 }

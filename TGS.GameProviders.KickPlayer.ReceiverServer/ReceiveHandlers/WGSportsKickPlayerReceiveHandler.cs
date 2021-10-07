@@ -8,7 +8,7 @@ using Tgs.MessageQueue;
 using TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGSports;
 using TGS.ServiceUtility;
 
-namespace TGS.GameProviders.KickPlayerReceiver.ReceiveHandlers
+namespace TGS.GameProviders.KickPlayer.ReceiverServer.ReceiveHandlers
 {
     internal class WGSportsKickPlayerReceiveHandler : IMessageHandler
     {

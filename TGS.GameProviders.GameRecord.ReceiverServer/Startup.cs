@@ -101,112 +101,119 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer
 
                         dbBuilder.UseSnakeCaseNamingConvention();
                     });
-            services.AddRabbitMessageQueue(config =>
-            {
-                config
+
+            services
+                .AddMessageQueue()
+                .AddRabbitMessageQueue(config =>
+                {
+                    config
+                        .ConfigQueueOptions((options, sp) =>
+                        {
+                            var configuration = sp.GetRequiredService<IConfiguration>();
+
+                            configuration.GetSection("RabbitMQ").Bind(options);
+
+                            options.OnSetupQueueAndExchange = channel =>
+                            {
+                                channel.QueueDeclare(
+                                    queue: "gp.gamerecord.ky",
+                                    durable: true,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
+
+                                channel.QueueBind(
+                                    "gp.gamerecord.ky",
+                                    "amq.direct",
+                                    $"tgs.gp.gamerecord.ky",
+                                    new Dictionary<string, object>());
+
+                                channel.QueueDeclare(
+                                    queue: "gp.gamerecord.vr",
+                                    durable: true,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
+
+                                channel.QueueBind(
+                                    "gp.gamerecord.vr",
+                                    "amq.direct",
+                                    $"tgs.gp.gamerecord.vr",
+                                    new Dictionary<string, object>());
+
+                                channel.QueueDeclare(
+                                    queue: "gp.gamerecord.wgvia",
+                                    durable: true,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
+
+                                channel.QueueBind(
+                                    "gp.gamerecord.wgvia",
+                                    "amq.direct",
+                                    $"tgs.gp.gamerecord.wgvia",
+                                    new Dictionary<string, object>());
+
+                                channel.QueueDeclare(
+                                    queue: "gp.gamerecord.wgfm",
+                                    durable: true,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
+
+                                channel.QueueBind(
+                                    "gp.gamerecord.wgfm",
+                                    "amq.direct",
+                                    $"tgs.gp.gamerecord.wgfm",
+                                    new Dictionary<string, object>());
+
+                                channel.QueueDeclare(
+                                    queue: "gp.gamerecord.tcg",
+                                    durable: true,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
+
+                                channel.QueueBind(
+                                    "gp.gamerecord.tcg",
+                                    "amq.direct",
+                                    $"tgs.gp.gamerecord.tcg",
+                                    new Dictionary<string, object>());
+
+                                channel.QueueDeclare(
+                                    queue: "gp.gamerecord.biggaming.fishing",
+                                    durable: true,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
+
+                                channel.QueueBind(
+                                    "gp.gamerecord.biggaming.fishing",
+                                    "amq.direct",
+                                    $"tgs.gp.gamerecord.biggaming.fishing",
+                                    new Dictionary<string, object>());
+                            };
+                        })
+                        .AddHandler<KYGameRecordReceiveHandler>("gp.gamerecord.ky", false)
+                        .AddHandler<VRGameRecordReceiveHandler>("gp.gamerecord.vr", false)
+                        .AddHandler<WGHorseGameRecordReceiveHandler>("gp.gamerecord.wgvia", false)
+                        .AddHandler<WGSportsGameRecordReceiveHandler>("gp.gamerecord.wgfm", false)
+                        .AddHandler<TCGGameRecordReceiveHandler>("gp.gamerecord.tcg", false)
+                        .AddHandler<BigGamingFishingGameRecordReceiveHandler>("gp.gamerecord.biggaming.fishing", false);
+                })
+                .AddNatsMessageQueue(natsConfig =>
+                {
+                    natsConfig
                     .ConfigQueueOptions((options, sp) =>
                     {
                         var configuration = sp.GetRequiredService<IConfiguration>();
+                        options.Url = configuration.GetSection("NatsMQ:Url").Get<string>();
+                    });
+                })
+                .AddNatsGlobPatternExchange("*");
 
-                        configuration.GetSection("RabbitMQ").Bind(options);
-
-                        options.OnSetupQueueAndExchange = channel =>
-                        {
-                            channel.QueueDeclare(
-                                queue: "gp.gamerecord.ky",
-                                durable: true,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
-
-                            channel.QueueBind(
-                                "gp.gamerecord.ky",
-                                "amq.direct",
-                                $"tgs.gp.gamerecord.ky",
-                                new Dictionary<string, object>());
-
-                            channel.QueueDeclare(
-                                queue: "gp.gamerecord.vr",
-                                durable: true,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
-
-                            channel.QueueBind(
-                                "gp.gamerecord.vr",
-                                "amq.direct",
-                                $"tgs.gp.gamerecord.vr",
-                                new Dictionary<string, object>());
-
-                            channel.QueueDeclare(
-                                queue: "gp.gamerecord.wgvia",
-                                durable: true,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
-
-                            channel.QueueBind(
-                                "gp.gamerecord.wgvia",
-                                "amq.direct",
-                                $"tgs.gp.gamerecord.wgvia",
-                                new Dictionary<string, object>());
-
-                            channel.QueueDeclare(
-                                queue: "gp.gamerecord.wgfm",
-                                durable: true,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
-
-                            channel.QueueBind(
-                                "gp.gamerecord.wgfm",
-                                "amq.direct",
-                                $"tgs.gp.gamerecord.wgfm",
-                                new Dictionary<string, object>());
-
-                            channel.QueueDeclare(
-                                queue: "gp.gamerecord.tcg",
-                                durable: true,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
-
-                            channel.QueueBind(
-                                "gp.gamerecord.tcg",
-                                "amq.direct",
-                                $"tgs.gp.gamerecord.tcg",
-                                new Dictionary<string, object>());
-
-                            channel.QueueDeclare(
-                                queue: "gp.gamerecord.biggaming.fishing",
-                                durable: true,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
-
-                            channel.QueueBind(
-                                "gp.gamerecord.biggaming.fishing",
-                                "amq.direct",
-                                $"tgs.gp.gamerecord.biggaming.fishing",
-                                new Dictionary<string, object>());
-                        };
-                    })
-                    .AddHandler<KYGameRecordReceiveHandler>("gp.gamerecord.ky", false)
-                    .AddHandler<VRGameRecordReceiveHandler>("gp.gamerecord.vr", false)
-                    .AddHandler<WGHorseGameRecordReceiveHandler>("gp.gamerecord.wgvia", false)
-                    .AddHandler<WGSportsGameRecordReceiveHandler>("gp.gamerecord.wgfm", false)
-                    .AddHandler<TCGGameRecordReceiveHandler>("gp.gamerecord.tcg", false)
-                    .AddHandler<BigGamingFishingGameRecordReceiveHandler>("gp.gamerecord.biggaming.fishing", false);
-            }).AddNatsMessageQueue(natsConfig =>
-            {
-                natsConfig
-                .ConfigQueueOptions((options, sp) =>
-                {
-                    var configuration = sp.GetRequiredService<IConfiguration>();
-                    options.Url = configuration.GetSection("NatsMQ:Url").Get<string>();
-                });
-            })
-            .AddTgsLog();
+            services
+                .AddTgsLog();
             services
                 .AddMongoRepository((options, sp) =>
                 {

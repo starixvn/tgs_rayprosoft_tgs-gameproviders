@@ -15,9 +15,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using TGS.GameProviders.KickPlayerReceiver.ReceiveHandlers;
+using TGS.GameProviders.KickPlayer.ReceiverServer.ReceiveHandlers;
 
-namespace TGS.GameProviders.KickPlayerReceiver
+namespace TGS.GameProviders.KickPlayer.ReceiverServer
 {
     public class Startup
     {

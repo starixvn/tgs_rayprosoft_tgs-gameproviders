@@ -13,9 +13,9 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddGameRecordCoreConfiguration(
             this IServiceCollection services,
-            Action<TCGFtpServiceClientOptions, IServiceProvider> ftpServiceClientConfigure)
+            Action<TcgFtpServiceClientOptions, IServiceProvider> ftpServiceClientConfigure)
         {
-            services.AddTCGFtpServiceClient(ftpServiceClientConfigure);
+            services.AddTcgFtpServiceClient(ftpServiceClientConfigure);
 
             return services
                 .RegisterAllServiceUtilityTypes(

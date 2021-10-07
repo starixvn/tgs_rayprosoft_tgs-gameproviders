@@ -5,19 +5,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.MessageQueue;
-using TGS.GameProviders.KickPlayer.Core.ApplicationServices.KY;
+using TGS.GameProviders.KickPlayer.Core.ApplicationServices.VR;
 using TGS.ServiceUtility;
 
-namespace TGS.GameProviders.KickPlayerReceiver.ReceiveHandlers
+namespace TGS.GameProviders.KickPlayer.ReceiverServer.ReceiveHandlers
 {
-    internal class KYKickPlayerReceiveHandler : IMessageHandler
+    internal class VRKickPlayerReceiveHandler : IMessageHandler
     {
-        private readonly ICommandService<KYPlayerKickCommand> _commandService;
-        private readonly ILogger<KYKickPlayerReceiveHandler> _logger;
+        private readonly ICommandService<VRPlayerKickCommand> _commandService;
+        private readonly ILogger<VRKickPlayerReceiveHandler> _logger;
 
-        public KYKickPlayerReceiveHandler(
-            ILogger<KYKickPlayerReceiveHandler> logger,
-            ICommandService<KYPlayerKickCommand> commandService)
+        public VRKickPlayerReceiveHandler(
+            ILogger<VRKickPlayerReceiveHandler> logger,
+            ICommandService<VRPlayerKickCommand> commandService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -26,9 +26,9 @@ namespace TGS.GameProviders.KickPlayerReceiver.ReceiveHandlers
         public async ValueTask HandleAsync(byte[] data, CancellationToken cancellationToken = default)
         {
             var json = Encoding.UTF8.GetString(data);
-            var request = JsonSerializer.Deserialize<KYPlayerKickCommand>(json);
+            var request = JsonSerializer.Deserialize<VRPlayerKickCommand>(json);
             _logger.Log(LogLevel.Information,
-                new EventId(1000, nameof(KYKickPlayerReceiveHandler)),
+                new EventId(1000, nameof(VRKickPlayerReceiveHandler)),
                 request,
                 null,
                 (state, ex) => $"[{nameof(request.PlayerCode)}]{request.PlayerCode}");

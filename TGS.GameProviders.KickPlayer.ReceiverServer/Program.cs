@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace TGS.GameProviders.KickPlayerReceiver
+namespace TGS.GameProviders.KickPlayer.ReceiverServer
 {
     public class Program
     {
