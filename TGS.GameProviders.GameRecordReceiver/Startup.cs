@@ -165,12 +165,26 @@ namespace TGS.GameProviders.GameRecordReceiver
                                 "amq.direct",
                                 $"tgs.gp.gamerecord.wgfm",
                                 new Dictionary<string, object>());
+
+                            channel.QueueDeclare(
+                                queue: "gp.gamerecord.tcg",
+                                durable: true,
+                                exclusive: false,
+                                autoDelete: false,
+                                arguments: null);
+
+                            channel.QueueBind(
+                                "gp.gamerecord.tcg",
+                                "amq.direct",
+                                $"tgs.gp.gamerecord.tcg",
+                                new Dictionary<string, object>());
                         };
                     })
                     .AddHandler<KYGameRecordReceiveHandler>("gp.gamerecord.ky", false)
                     .AddHandler<VRGameRecordReceiveHandler>("gp.gamerecord.vr", false)
                     .AddHandler<WGHorseGameRecordReceiveHandler>("gp.gamerecord.wgvia", false)
-                    .AddHandler<WGSportsGameRecordReceiveHandler>("gp.gamerecord.wgfm", false);
+                    .AddHandler<WGSportsGameRecordReceiveHandler>("gp.gamerecord.wgfm", false)
+                    .AddHandler<TCGGameRecordReceiveHandler>("gp.gamerecord.tcg", false);
             }).AddNatsMessageQueue(natsConfig =>
             {
                 natsConfig
