@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.MessageQueue;
-using TGS.GameProviders.GameRecordReceiver.JobWorkerCommand.KY;
+using TGS.GameProviders.GameRecord.Core.JobWorkerCommand.KY;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecordReceiver.ReceiveHandler
@@ -13,7 +13,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ReceiveHandler
     internal class KYGameRecordReceiveHandler : IMessageHandler
     {
         private readonly ILogger<KYGameRecordReceiveHandler> _logger;
-        private ICommandService<KYJobWorkerCommand> _commandService;
+        private readonly ICommandService<KYJobWorkerCommand> _commandService;
 
         public KYGameRecordReceiveHandler(
             ILogger<KYGameRecordReceiveHandler> logger,

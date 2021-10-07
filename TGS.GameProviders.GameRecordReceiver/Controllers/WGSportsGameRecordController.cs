@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using TGS.GameProviders.GameRecordReceiver.ApplicationServices.WGSports;
+using TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecordReceiver.Controllers
@@ -14,7 +14,7 @@ namespace TGS.GameProviders.GameRecordReceiver.Controllers
         /// <param name="query">The query.</param>
         /// <returns></returns>
         /// <remarks>
-        ///     Post 
+        ///     Post
         ///     Parameter
         ///     {
         ///         "startTime": "2021-08-24T00:00:00.3527908+00:00",
@@ -22,7 +22,7 @@ namespace TGS.GameProviders.GameRecordReceiver.Controllers
         ///     }
         /// </remarks>
         public override ValueTask<WGSportsGameRecordHandlerResult> KickPlayerAsync(
-            [FromServices] IGetService<WGSportsGameRecordHandlerQuery, WGSportsGameRecordHandlerResult> service, 
+            [FromServices] IGetService<WGSportsGameRecordHandlerQuery, WGSportsGameRecordHandlerResult> service,
             WGSportsGameRecordHandlerQuery query)
             => service.GetAsync(query);
     }

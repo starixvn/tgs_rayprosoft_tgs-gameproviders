@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using TGS.GameProviders.GameRecordReceiver.Microsoft.Extensions.DependencyInjection;
 using TGS.GameProviders.GameRecordReceiver.ReceiveHandler;
 
 namespace TGS.GameProviders.GameRecordReceiver
@@ -30,7 +29,6 @@ namespace TGS.GameProviders.GameRecordReceiver
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
             }
 
             app.UseSwagger();
@@ -178,13 +176,27 @@ namespace TGS.GameProviders.GameRecordReceiver
                                 "amq.direct",
                                 $"tgs.gp.gamerecord.tcg",
                                 new Dictionary<string, object>());
+
+                            channel.QueueDeclare(
+                                queue: "gp.gamerecord.biggaming.fishing",
+                                durable: true,
+                                exclusive: false,
+                                autoDelete: false,
+                                arguments: null);
+
+                            channel.QueueBind(
+                                "gp.gamerecord.biggaming.fishing",
+                                "amq.direct",
+                                $"tgs.gp.gamerecord.biggaming.fishing",
+                                new Dictionary<string, object>());
                         };
                     })
                     .AddHandler<KYGameRecordReceiveHandler>("gp.gamerecord.ky", false)
                     .AddHandler<VRGameRecordReceiveHandler>("gp.gamerecord.vr", false)
                     .AddHandler<WGHorseGameRecordReceiveHandler>("gp.gamerecord.wgvia", false)
                     .AddHandler<WGSportsGameRecordReceiveHandler>("gp.gamerecord.wgfm", false)
-                    .AddHandler<TCGGameRecordReceiveHandler>("gp.gamerecord.tcg", false);
+                    .AddHandler<TCGGameRecordReceiveHandler>("gp.gamerecord.tcg", false)
+                    .AddHandler<BigGamingFishingGameRecordReceiveHandler>("gp.gamerecord.biggaming.fishing", false);
             }).AddNatsMessageQueue(natsConfig =>
             {
                 natsConfig
@@ -226,8 +238,7 @@ namespace TGS.GameProviders.GameRecordReceiver
                 .AddApiClients();
             services
                 .AddCore()
-                .AddGameRecordProcessors()
-                .AddGameRecordReceiver();
+                .AddGameRecordCoreConfiguration();
         }
     }
 }

@@ -9,16 +9,12 @@ namespace TGS.GameProviders.Repositories
     internal class GameProviderRepository : IGameProviderRepository
     {
         private readonly TgsContext _context;
-        private readonly ILogger<GameProviderRepository> _logger;
-
 
         public GameProviderRepository(
-            TgsContext context,
-            ILogger<GameProviderRepository> logger
+            TgsContext context
            )
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public Task<GameProvider> GetGameProviderAsync(string gameProviderCode)
@@ -27,14 +23,10 @@ namespace TGS.GameProviders.Repositories
         public Task<GameProvider> GetGameProviderAsync(Guid gameProviderId)
             => _context.GameProviders.FirstOrDefaultAsync(x => x.Id == gameProviderId);
 
-        public async Task<(bool IsCurrencyCode, string GameProviderCurrencyCode)> GetGameProviderCurrencyCode(Guid gameProviderId, string currencyCode)
+        public async Task<(bool IsCurrencyCode, string? GameProviderCurrencyCode)> GetGameProviderCurrencyCode(Guid gameProviderId, string currencyCode)
         {
             var gameProviderCurrency = await _context.GameProviderCurrencies.FirstOrDefaultAsync(x => x.GameProviderId == gameProviderId && x.CurrencyCode == currencyCode).ConfigureAwait(false);
-            if (gameProviderCurrency == null)
-            {
-                return new(false, null);
-            }
-            return new(true, gameProviderCurrency.GameProviderCurrencyCode);
+            return gameProviderCurrency == null ? (new(false, null)) : (new(true, gameProviderCurrency.GameProviderCurrencyCode));
         }
     }
 }

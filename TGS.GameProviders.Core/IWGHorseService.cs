@@ -27,6 +27,10 @@ namespace TGS.GameProviders.Core
         /// <returns></returns>
         ValueTask<GameProviderSchedule> GameProviderScheduleUpdateAsync(GameProviderSchedule gameProviderSchedule, DateTimeOffset? lastGameRecorTime, DateTimeOffset sysTime);
 
+        ClientRoundStatus GetClientRound(decimal playerWinLoss);
+
+        ValueTask<GetGame> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
+
         Task<GameProvider> GetGameProviderAsync();
 
         string GetGameProviderCode();
@@ -50,9 +54,5 @@ namespace TGS.GameProviders.Core
         WGHorseGameProviderScheduleConfig GetGameProviderScheduleConfig(GameProviderSchedule gameProviderSchedule);
 
         Task<WGHorseConfiguration> GetSettingConfigurationAsync();
-
-        ValueTask<GetGame> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
-
-        ClientRoundStatus GetClientRound(decimal playerWinLoss);
     }
 }

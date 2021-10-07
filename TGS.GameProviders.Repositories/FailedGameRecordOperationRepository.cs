@@ -15,17 +15,14 @@ namespace TGS.GameProviders.Repositories
     internal class FailedGameRecordOperationRepository : IFailedGameRecordOperationRepository
     {
         private readonly BetContext _context;
-        private readonly ILogger<FailedGameRecordOperationRepository> _logger;
         private readonly IMapper _mapper;
 
         public FailedGameRecordOperationRepository(
             BetContext context,
-            ILogger<FailedGameRecordOperationRepository> logger,
             IMapper mapper
             )
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 

@@ -20,6 +20,5 @@ namespace Microsoft.Extensions.DependencyInjection
             .AddTransient<IBigGamingService, BigGamingService>()
             .AddTransient<ISexyGamingService, SexyGamingService>()
             .AddTransient<ITCGService, TCGService>();
-
     }
 }

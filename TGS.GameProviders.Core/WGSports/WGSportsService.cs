@@ -15,10 +15,10 @@ namespace TGS.GameProviders.Core.WGSports
 {
     internal class WGSportsService : IWGSportsService
     {
-        private readonly ISettingRepository _settingRepository;
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameProviderScheduleRepository _gameProviderScheduleRepository;
         private readonly IGameRepository _gameRepository;
+        private readonly ISettingRepository _settingRepository;
 
         public WGSportsService(
             ISettingRepository settingRepository,
@@ -103,6 +103,7 @@ namespace TGS.GameProviders.Core.WGSports
 
         public async ValueTask<GetGame> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
             => await _gameRepository.GetGameAsync(gameProviderId, externalGameId).ConfigureAwait(false);
+
         public Task<GameProvider> GetGameProviderAsync()
             => _gameProviderRepository.GetGameProviderAsync(GameProviderType.WGSports);
 

@@ -78,19 +78,14 @@ namespace TGS.GameProviders.Core.KY
                 config.EndTime = (endTime > sysTime) ? sysTime : endTime;
             }
 
-            config.LastGameRecordTime = (lastGameRecorTime.HasValue) ? lastGameRecorTime.Value : config.LastGameRecordTime;
+            config.LastGameRecordTime = lastGameRecorTime ?? config.LastGameRecordTime;
             gameProviderSchedule.Config = JsonSerializer.Serialize(config);
             gameProviderSchedule.UpdatedOn = DateTimeOffset.UtcNow;
 
             var updateResult = await _gameProviderScheduleRepository.MergeAsync(gameProviderSchedule).ConfigureAwait(false);
-            if (updateResult.ModifiedCount > 0)
-            {
-                return await GetGameProviderScheduleAsync(gameProviderSchedule.GameProviderId, gameProviderSchedule.BrandCode, gameProviderSchedule.AgentId, gameProviderSchedule.CurrencyCode).ConfigureAwait(false);
-            }
-            else
-            {
-                return null;
-            }
+            return updateResult.ModifiedCount > 0
+                ? await GetGameProviderScheduleAsync(gameProviderSchedule.GameProviderId, gameProviderSchedule.BrandCode, gameProviderSchedule.AgentId, gameProviderSchedule.CurrencyCode).ConfigureAwait(false)
+                : null;
         }
 
         public async Task<string> GetAgentIdAsync(string brandCode, string currencyCode)

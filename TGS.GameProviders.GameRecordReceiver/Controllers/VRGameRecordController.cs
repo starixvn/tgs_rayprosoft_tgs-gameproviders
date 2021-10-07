@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using TGS.GameProviders.GameRecordReceiver.ApplicationServices.VR;
+using TGS.GameProviders.GameRecord.Core.ApplicationServices.VR;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecordReceiver.Controllers
@@ -14,7 +14,7 @@ namespace TGS.GameProviders.GameRecordReceiver.Controllers
         /// <param name="query">The query.</param>
         /// <returns></returns>
         /// <remarks>
-        ///     Post 
+        ///     Post
         ///     Parameter
         ///     {
         ///         "brandCode":"Default",

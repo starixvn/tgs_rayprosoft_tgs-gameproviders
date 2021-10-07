@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using TGS.GameProviders.GameRecordReceiver.ApplicationServices.TCG;
+using TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecordReceiver.Controllers
@@ -18,7 +14,7 @@ namespace TGS.GameProviders.GameRecordReceiver.Controllers
         /// <param name="query">The query.</param>
         /// <returns></returns>
         /// <remarks>
-        ///     Post 
+        ///     Post
         ///     Parameter
         ///     {
         ///         "subGP": "TCG_LOTTO",

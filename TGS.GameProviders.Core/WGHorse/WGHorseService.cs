@@ -15,10 +15,10 @@ namespace TGS.GameProviders.Core.WGHorse
 {
     internal class WGHorseService : IWGHorseService
     {
-        private readonly ISettingRepository _settingRepository;
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameProviderScheduleRepository _gameProviderScheduleRepository;
         private readonly IGameRepository _gameRepository;
+        private readonly ISettingRepository _settingRepository;
 
         public WGHorseService(
             ISettingRepository settingRepository,
@@ -101,6 +101,7 @@ namespace TGS.GameProviders.Core.WGHorse
                 > 0 => ClientRoundStatus.Win,
                 <= 0 => ClientRoundStatus.Loss,
             };
+
         public async ValueTask<GetGame> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
             => await _gameRepository.GetGameAsync(gameProviderId, externalGameId).ConfigureAwait(false);
 

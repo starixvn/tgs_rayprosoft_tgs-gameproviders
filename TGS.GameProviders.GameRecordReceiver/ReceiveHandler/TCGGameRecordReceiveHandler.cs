@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.MessageQueue;
-using TGS.GameProviders.GameRecordReceiver.JobWorkerCommand.TCG;
+using TGS.GameProviders.GameRecord.Core.JobWorkerCommand.TCG;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecordReceiver.ReceiveHandler
@@ -15,7 +13,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ReceiveHandler
     internal class TCGGameRecordReceiveHandler : IMessageHandler
     {
         private readonly ILogger<TCGGameRecordReceiveHandler> _logger;
-        private ICommandService<TCGJobWorkerCommand> _commandService;
+        private readonly ICommandService<TCGJobWorkerCommand> _commandService;
 
         public TCGGameRecordReceiveHandler(
             ILogger<TCGGameRecordReceiveHandler> logger,

@@ -11,23 +11,17 @@ namespace TGS.GameProviders.Core
 {
     public interface ITCGService
     {
+        ValueTask<GameProviderSchedule> GameProviderScheduleInitAsync(Guid gameProviderId, string subGP, string currencyCode, string merchantCode);
+
+        ValueTask GameProviderScheduleUpdateAsync(GameProviderSchedule gameProviderSchedule, string lastGameRecorDirectory, string lastGameRecorFile);
+
+        Task<GetGame[]> GetGameLotteryLobbyAsync(Guid gameProviderId);
+
         Task<GameProvider> GetGameProviderAsync();
 
         string GetGameProviderCode();
 
         Task<Guid> GetGameProviderIdAsync();
-
-        ValueTask<TCGMerchant> GetMerchantAsync(string currencyCode);
-
-        ValueTask<TCGMerchant> GetMerchantByMerchantCodeAsync(string merchantCode);
-
-        Task<TCGConfiguration> GetSettingConfigurationAsync();
-
-        Task<GetGame[]> GetGameLotteryLobbyAsync(Guid gameProviderId);
-
-        ValueTask<GameProviderSchedule> GameProviderScheduleInitAsync(Guid gameProviderId, string subGP, string currencyCode, string merchantCode);
-
-        ValueTask GameProviderScheduleUpdateAsync(GameProviderSchedule gameProviderSchedule, string lastGameRecorDirectory, string lastGameRecorFile);
 
         ValueTask<GameProviderSchedule> GetGameProviderScheduleAsync(Guid gameProviderId, string subGP, string currencyCode, string merchantCode);
 
@@ -35,7 +29,12 @@ namespace TGS.GameProviders.Core
 
         TCGGameProviderScheduleConfig GetGameProviderScheduleConfig(GameProviderSchedule gameProviderSchedule);
 
-        (string SubGP, string MerchantCode) GetSubGPAndMerchantCode(string agentId);
+        ValueTask<TCGMerchant> GetMerchantAsync(string currencyCode);
 
+        ValueTask<TCGMerchant> GetMerchantByMerchantCodeAsync(string merchantCode);
+
+        Task<TCGConfiguration> GetSettingConfigurationAsync();
+
+        (string SubGP, string MerchantCode) GetSubGPAndMerchantCode(string agentId);
     }
 }

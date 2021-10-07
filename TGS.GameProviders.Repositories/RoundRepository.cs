@@ -13,17 +13,14 @@ namespace TGS.GameProviders.Repositories
     internal class RoundRepository : IRoundRepository
     {
         private readonly BetContext _context;
-        private readonly ILogger<RoundRepository> _logger;
         private readonly IMapper _mapper;
 
         public RoundRepository(
             BetContext context,
-            ILogger<RoundRepository> logger,
             IMapper mapper
             )
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 

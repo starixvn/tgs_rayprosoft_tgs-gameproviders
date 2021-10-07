@@ -14,17 +14,14 @@ namespace TGS.GameProviders.Repositories
     internal class PlayerRepository : IPlayerRepository
     {
         private readonly TgsContext _context;
-        private readonly ILogger<PlayerRepository> _logger;
         private readonly IMapper _mapper;
 
         public PlayerRepository(
             TgsContext context,
-            ILogger<PlayerRepository> logger,
             IMapper mapper
             )
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 

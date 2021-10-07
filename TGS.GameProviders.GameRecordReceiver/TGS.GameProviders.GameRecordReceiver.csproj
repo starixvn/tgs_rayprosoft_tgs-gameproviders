@@ -29,7 +29,7 @@
 		<ProjectReference Include="..\TGS.GameProviders.ApiClients\TGS.GameProviders.ApiClients.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Core\TGS.GameProviders.Core.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Domains\TGS.GameProviders.Domains.csproj" />
-		<ProjectReference Include="..\TGS.GameProviders.GameRecordProcessors\TGS.GameProviders.GameRecordProcessors.csproj" />
+		<ProjectReference Include="..\TGS.GameProviders.GameRecord.Core\TGS.GameProviders.GameRecord.Core.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.MongoRepositories\TGS.GameProviders.MongoRepositories.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.RedisRepositories\TGS.GameProviders.RedisRepositories.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Repositories\TGS.GameProviders.Repositories.csproj" />
