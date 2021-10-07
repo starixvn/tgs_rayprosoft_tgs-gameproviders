@@ -32,6 +32,10 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.VR
         public async ValueTask ExecuteAsync(VRPlayerKickCommand command, CancellationToken cancellationToken = default)
         {
             var player = await _playerRepository.GetPlayerAsync(command.PlayerCode).ConfigureAwait(false);
+            if (player == null)
+            {
+                return;
+            }
             var brandMerchant = await _service.GetBrandMerchantAsync(player.BrandCode).ConfigureAwait(false);
             await _client.KickAsync(brandMerchant, new()
             {

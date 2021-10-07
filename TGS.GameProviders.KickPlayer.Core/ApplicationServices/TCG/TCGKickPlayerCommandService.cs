@@ -31,15 +31,19 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.TCG
 
         public async ValueTask ExecuteAsync(TCGPlayerKickCommand command, CancellationToken cancellationToken = default)
         {
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var player = await _playerRepository.GetPlayerAsync(command.PlayerCode).ConfigureAwait(false);
+            if (player == null)
+            {
+                return;
+            }
+            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var brandMerchant = await _service.GetMerchantAsync(player.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
             await _client.KickOutLottoPlayerAsync(
                 configuration.ApiUrl,
                 brandMerchant, new()
                 {
-                    UserName = "4ucmqplxb029"
+                    UserName = command.PlayerCode
                 }).ConfigureAwait(false);
         }
     }

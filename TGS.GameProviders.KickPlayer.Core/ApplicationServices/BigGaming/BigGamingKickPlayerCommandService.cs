@@ -7,6 +7,8 @@ using TGS.GameProviders.Core;
 using TGS.GameProviders.Repositories;
 using TGS.ServiceUtility;
 using TGS.GameProviders.KickPlayer.Core.ApplicationServices.BigGaming;
+using TGS.GameProviders.Repositories.Domains;
+using System.Collections.Generic;
 
 namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.BigGaming
 {
@@ -16,30 +18,61 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.BigGaming
         private readonly ILogger<BigGamingKickPlayerCommandService> _logger;
         private readonly IPlayerRepository _playerRepository;
         private readonly IBigGamingService _service;
-
+        private readonly IGameRepository _gameRepository;
         public BigGamingKickPlayerCommandService(
             ILogger<BigGamingKickPlayerCommandService> logger,
             IBigGamingApiClient client,
             IBigGamingService service,
-            IPlayerRepository playerRepository)
+            IPlayerRepository playerRepository,
+            IGameRepository gameRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         }
 
         public async ValueTask ExecuteAsync(BigGamingPlayerKickCommand command, CancellationToken cancellationToken = default)
         {
             var player = await _playerRepository.GetPlayerAsync(command.PlayerCode).ConfigureAwait(false);
+            if (player == null)
+            {
+                return;
+            }
+            var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
+            var games = await _gameRepository.GetGameList(gameProviderId, GameType.Fishing);
             var brandMerchant = await _service.GetBrandMerchantAsync(player.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
-            await _client.KickPlayerAsync(brandMerchant, new()
+            var tasks = new List<Task>();
+
+            foreach (var game in games)
             {
-                Random = Guid.NewGuid().ToString(),
-                Sn = brandMerchant.SecretCode,
-                LoginId = "4ucmqplxb029"
-            }).ConfigureAwait(false);
+                tasks.Add(Task.Run(async () =>
+                {
+                    await _client.KickPlayerGameAsync(brandMerchant, new()
+                    {
+                        Random = Guid.NewGuid().ToString(),
+                        Sn = brandMerchant.SecretCode,
+                        LoginId = command.PlayerCode,
+                        GameType = game.ExternalId
+                    })
+                   .ConfigureAwait(false);
+                }));
+            }
+
+            tasks.Add(Task.Run(async () =>
+            {
+                await _client.KickPlayerAsync(brandMerchant, new()
+                {
+                    Random = Guid.NewGuid().ToString(),
+                    Sn = brandMerchant.SecretCode,
+                    LoginId = command.PlayerCode
+                }).ConfigureAwait(false);
+            }));
+
+            await Task.WhenAll(tasks);
+
         }
     }
 }

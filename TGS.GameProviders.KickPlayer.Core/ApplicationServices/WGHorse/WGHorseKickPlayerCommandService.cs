@@ -31,13 +31,13 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGHorse
 
         public async ValueTask ExecuteAsync(WGHorsePlayerKickCommand command, CancellationToken cancellationToken = default)
         {
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+
             var player = await _playerRepository.GetPlayerAsync(command.PlayerCode).ConfigureAwait(false);
             if (player == null)
             {
                 return;
             }
-
+            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(player.DefaultWalletCurrencyCode);
 
             if (gameProviderCurrencyCode == null)

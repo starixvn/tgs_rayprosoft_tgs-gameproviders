@@ -32,6 +32,10 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.KY
         public async ValueTask ExecuteAsync(KYPlayerKickCommand command, CancellationToken cancellationToken = default)
         {
             var player = await _playerRepository.GetPlayerAsync(command.PlayerCode).ConfigureAwait(false);
+            if (player == null)
+            {
+                return;
+            }
             var brandMerchant = await _service.GetBrandMerchantAsync(player.BrandCode).ConfigureAwait(false);
             var agentId = await _service.GetAgentIdAsync(player.BrandCode, player.DefaultWalletCurrencyCode).ConfigureAwait(false);
             await _client.KickAsync(brandMerchant, agentId, new()

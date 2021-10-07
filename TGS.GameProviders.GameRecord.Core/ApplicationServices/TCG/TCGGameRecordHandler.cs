@@ -29,14 +29,14 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG
             _gameRoundsProcessor = gameRoundsProcessor ?? throw new ArgumentNullException(nameof(gameRoundsProcessor));
             _ftpServiceClient = ftpServiceClient ?? throw new ArgumentNullException(nameof(ftpServiceClient));
             _settledFileListMappers = new Dictionary<string, Func<string, string, ValueTask<string[]>>>() {
-            {"TCG_LOTTO",_ftpServiceClient.GetTCGELottoSettledFileListAsync},
-            {"TCG_LOTTO_VN",_ftpServiceClient.GetTCGLottoVNSettledFileListAsync},
-            {"TCG_SEA",_ftpServiceClient.GetTCGSEASettledFileListAsync}
+            {"TCG_LOTTO",_ftpServiceClient.GetTcgELottoSettledFileListAsync},
+            {"TCG_LOTTO_VN",_ftpServiceClient.GetTcgLottoVNSettledFileListAsync},
+            {"TCG_SEA",_ftpServiceClient.GetTcgSEASettledFileListAsync}
             };
             _settledFileContentMappers = new Dictionary<string, Func<string, string, string, ValueTask<GetSettledFileContentResponse>>>() {
-            {"TCG_LOTTO",_ftpServiceClient.GetTCGELottoSettledFileContentAsync},
-            {"TCG_LOTTO_VN",_ftpServiceClient.GetTCGELottoSettledFileContentAsync},
-            {"TCG_SEA",_ftpServiceClient.GetTCGSEASettledFileContentAsync}
+            {"TCG_LOTTO",_ftpServiceClient.GetTcgELottoSettledFileContentAsync},
+            {"TCG_LOTTO_VN",_ftpServiceClient.GetTcgELottoSettledFileContentAsync},
+            {"TCG_SEA",_ftpServiceClient.GetTcgSEASettledFileContentAsync}
             };
             _productTypeMappers = new Dictionary<string, string>() {
             {"TCG_LOTTO","2"},

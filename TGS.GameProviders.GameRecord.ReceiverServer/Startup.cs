@@ -61,7 +61,7 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer
                 {
                     c.IncludeXmlComments(xmlFileName);
                 }
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TGS.GameProviders.GameRecordReceiver", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TGS.GameProviders.GameRecord.ReceiverServer", Version = "v1" });
             });
             services.AddDbTgsRepository(
                     (sp, dbBuilder) =>
