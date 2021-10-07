@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports;
 using TGS.ServiceUtility;
 
-namespace TGS.GameProviders.GameRecordReceiver.Controllers
+namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
 {
     public class WGSportsGameRecordController : BaseController<WGSportsGameRecordHandlerQuery, WGSportsGameRecordHandlerResult>
     {

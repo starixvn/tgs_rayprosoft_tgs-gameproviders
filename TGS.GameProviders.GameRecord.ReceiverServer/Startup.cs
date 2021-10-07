@@ -10,9 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using TGS.GameProviders.GameRecordReceiver.ReceiveHandler;
+using TGS.GameProviders.GameRecord.ReceiverServer.ReceiveHandler;
 
-namespace TGS.GameProviders.GameRecordReceiver
+namespace TGS.GameProviders.GameRecord.ReceiverServer
 {
     public class Startup
     {
@@ -219,26 +219,25 @@ namespace TGS.GameProviders.GameRecordReceiver
                   var configuration = sp.GetRequiredService<IConfiguration>();
                   configuration.GetSection("RedisConnectionString").Bind(options);
               });
-            services.AddTCGFtpServiceClient((options, sp) =>
-            {
-                var configuration = sp.GetRequiredService<IConfiguration>();
-                configuration.GetSection("TCGFtpApi").Bind(options);
-
-                options.JsonSerializerOptions = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    Converters =
-                        {
-                            new JsonStringEnumConverter()
-                        }
-                };
-            });
             services
                 .AddHttpClient()
                 .AddApiClients();
             services
                 .AddCore()
-                .AddGameRecordCoreConfiguration();
+                .AddGameRecordCoreConfiguration((options, sp) =>
+                {
+                    var configuration = sp.GetRequiredService<IConfiguration>();
+                    configuration.GetSection("TCGFtpApi").Bind(options);
+
+                    options.JsonSerializerOptions = new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        Converters =
+                         {
+                            new JsonStringEnumConverter()
+                         }
+                    };
+                });
         }
     }
 }

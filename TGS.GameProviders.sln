@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.ApiClient
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.Repositories.UnitTests", "TGS.GameProviders.Repositories.UnitTests\TGS.GameProviders.Repositories.UnitTests.csproj", "{740F3020-0425-49B9-B84D-DC7A3AB87ED7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.GameRecordReceiver", "TGS.GameProviders.GameRecordReceiver\TGS.GameProviders.GameRecordReceiver.csproj", "{D96B1861-A5CA-467C-AFC4-96E1D6FE134C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.MongoRepositories", "TGS.GameProviders.MongoRepositories\TGS.GameProviders.MongoRepositories.csproj", "{D27B10AF-BCF2-4C06-B5F8-E4399A3BD74E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.MongoRepositories.UnitTests", "TGS.GameProviders.MongoRepositories.UnitTests\TGS.GameProviders.MongoRepositories.UnitTests.csproj", "{A5E6C60A-D89C-43D9-9AE2-D3BB41F6445F}"
@@ -36,6 +34,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.KickPlayerReceiver", "TGS.GameProviders.KickPlayerReceiver\TGS.GameProviders.KickPlayerReceiver.csproj", "{710694AC-B3A3-431F-87A8-E2C966100E48}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGS.GameProviders.GameRecord.Core", "TGS.GameProviders.GameRecord.Core\TGS.GameProviders.GameRecord.Core.csproj", "{0DA21D3C-CACD-43CC-8493-B1011F51F991}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.GameRecord.ReceiverServer", "TGS.GameProviders.GameRecord.ReceiverServer\TGS.GameProviders.GameRecord.ReceiverServer.csproj", "{F764C439-A927-430D-8FC9-2CB8C4FDFB80}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,10 +67,6 @@ Global
 		{740F3020-0425-49B9-B84D-DC7A3AB87ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{740F3020-0425-49B9-B84D-DC7A3AB87ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{740F3020-0425-49B9-B84D-DC7A3AB87ED7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D96B1861-A5CA-467C-AFC4-96E1D6FE134C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D96B1861-A5CA-467C-AFC4-96E1D6FE134C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D96B1861-A5CA-467C-AFC4-96E1D6FE134C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D96B1861-A5CA-467C-AFC4-96E1D6FE134C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D27B10AF-BCF2-4C06-B5F8-E4399A3BD74E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D27B10AF-BCF2-4C06-B5F8-E4399A3BD74E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D27B10AF-BCF2-4C06-B5F8-E4399A3BD74E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -99,6 +95,10 @@ Global
 		{0DA21D3C-CACD-43CC-8493-B1011F51F991}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DA21D3C-CACD-43CC-8493-B1011F51F991}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DA21D3C-CACD-43CC-8493-B1011F51F991}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F764C439-A927-430D-8FC9-2CB8C4FDFB80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F764C439-A927-430D-8FC9-2CB8C4FDFB80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F764C439-A927-430D-8FC9-2CB8C4FDFB80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F764C439-A927-430D-8FC9-2CB8C4FDFB80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

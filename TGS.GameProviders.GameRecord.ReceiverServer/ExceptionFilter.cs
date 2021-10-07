@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
-namespace TGS.GameProviders.GameRecordReceiver
+namespace TGS.GameProviders.GameRecord.ReceiverServer
 {
     public class ExceptionFilter : IExceptionFilter
     {

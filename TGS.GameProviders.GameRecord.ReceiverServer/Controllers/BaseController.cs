@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TGS.ServiceUtility;
 
-namespace TGS.GameProviders.GameRecordReceiver.Controllers
+namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

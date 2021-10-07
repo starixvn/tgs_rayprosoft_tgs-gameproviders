@@ -8,7 +8,7 @@ using Tgs.MessageQueue;
 using TGS.GameProviders.GameRecord.Core.JobWorkerCommand.VR;
 using TGS.ServiceUtility;
 
-namespace TGS.GameProviders.GameRecordReceiver.ReceiveHandler
+namespace TGS.GameProviders.GameRecord.ReceiverServer.ReceiveHandler
 {
     internal class VRGameRecordReceiveHandler : IMessageHandler
     {
