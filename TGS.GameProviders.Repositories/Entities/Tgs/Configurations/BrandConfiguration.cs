@@ -36,6 +36,8 @@ namespace TGS.GameProviders.Repositories.Entities.Configurations
 
             entity.Property(e => e.AutoSentPlayerBonus).HasColumnName("auto_sent_player_bonus");
 
+            entity.Property(e => e.CheckDividendActiveCount).HasColumnName("check_dividend_active_count");
+
             entity.Property(e => e.ClientId)
                 .IsRequired()
                 .HasMaxLength(128)
@@ -95,6 +97,10 @@ namespace TGS.GameProviders.Repositories.Entities.Configurations
             entity.Property(e => e.OperationalEmail)
                 .HasMaxLength(128)
                 .HasColumnName("operational_email");
+
+            entity.Property(e => e.PlatformCharge)
+                .HasPrecision(9, 6)
+                .HasColumnName("platform_charge");
 
             entity.Property(e => e.PreviousSettlementFrom)
                 .HasColumnType("timestamp with time zone")

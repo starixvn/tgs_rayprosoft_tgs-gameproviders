@@ -124,7 +124,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.WGHorse
                         GameProviderId = gameProviderId,
                         GameProviderCode = _service.GetGameProviderCode(),
                         PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
-                        GameId = (game == null) ? -1 : game.Id,
+                        GameId = (game == null) ? -1 : game.GameId,
                         ExternalId = gameRecord.BatchNo.ToString(),
                         CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
                         Status = RoundStatus.Closed,

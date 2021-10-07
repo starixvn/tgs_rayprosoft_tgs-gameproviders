@@ -11,12 +11,14 @@ namespace TGS.GameProviders.Repositories.ModelMappings
         {
             CreateMap<FailedGameRecordOperation, GetFailedGameRecordOperation>()
                 .ForMember(trigger => trigger.AutoStatus, source => source.MapFrom(o => (FailedGameRecordOperationAutoStatus)o.AutoStatus))
-                .ForMember(trigger => trigger.ProcesStatus, source => source.MapFrom(o => (FailedGameRecordOperationProcesStatus)o.ProcesStatus));
+                .ForMember(trigger => trigger.ProcesStatus, source => source.MapFrom(o => (FailedGameRecordOperationProcesStatus)o.ProcesStatus))
+                .ReverseMap();
             CreateMap<AddFailedGameRecordOperation, FailedGameRecordOperation>()
                 .ForMember(trigger => trigger.AutoStatus, source => source.MapFrom(o => (short)o.AutoStatus))
                 .ForMember(trigger => trigger.ProcesStatus, source => source.MapFrom(o => (short)o.ProcesStatus))
                 .ForMember(trigger => trigger.CreatedOn, source => source.MapFrom(o => o.CreatedOn.UtcDateTime))
-                .ForMember(trigger => trigger.UpdatedOn, source => source.MapFrom(o => o.UpdatedOn.UtcDateTime));
+                .ForMember(trigger => trigger.UpdatedOn, source => source.MapFrom(o => o.UpdatedOn.UtcDateTime))
+                .ReverseMap();
         }
     }
 }

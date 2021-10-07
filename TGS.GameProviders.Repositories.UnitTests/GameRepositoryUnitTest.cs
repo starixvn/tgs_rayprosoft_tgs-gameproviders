@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories.UnitTests
@@ -13,7 +14,7 @@ namespace TGS.GameProviders.Repositories.UnitTests
         public async Task GetGameAsync()
         {
             var fakeRoundRepository = Substitute.For<IGameRepository>();
-            _ = fakeRoundRepository.GetGameAsync(Arg.Any<int>()).Returns(Task.FromResult<Game>(null));
+            _ = fakeRoundRepository.GetGameAsync(Arg.Any<int>()).Returns(Task.FromResult<GetGame>(null));
             var result = await fakeRoundRepository.GetGameAsync(Arg.Any<int>()).ConfigureAwait(false);
             Assert.AreEqual(null, result);
         }
@@ -22,7 +23,7 @@ namespace TGS.GameProviders.Repositories.UnitTests
         public async Task GetGameByExternalGameIdAsync()
         {
             var fakeRoundRepository = Substitute.For<IGameRepository>();
-            _ = fakeRoundRepository.GetGameAsync(Arg.Any<Guid>(), Arg.Any<string>()).Returns(Task.FromResult<Game>(null));
+            _ = fakeRoundRepository.GetGameAsync(Arg.Any<Guid>(), Arg.Any<string>()).Returns(Task.FromResult<GetGame>(null));
             var result = await fakeRoundRepository.GetGameAsync(Arg.Any<Guid>(), Arg.Any<string>()).ConfigureAwait(false);
             Assert.AreEqual(null, result);
         }

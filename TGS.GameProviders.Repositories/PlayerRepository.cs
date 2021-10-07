@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
@@ -17,18 +18,22 @@ namespace TGS.GameProviders.Repositories
         private readonly IMapper _mapper;
 
         public PlayerRepository(
+            TgsContext context,
             ILogger<PlayerRepository> logger,
-            TgsContext context
+            IMapper mapper
             )
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _mapper = new MapperConfiguration(configure => configure.AddProfile<PlayerMapping>()).CreateMapper();
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<GetPlayer?> GetPlayerAsync(string playerCode)
         {
-            var player = await _context.Players.Where(x => x.PlayerCode == playerCode).Select(x => _mapper.Map<GetPlayer>(x)).FirstOrDefaultAsync().ConfigureAwait(false);
+            var player = await _context.Players
+                .ProjectTo<GetPlayer>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(x => x.PlayerCode == playerCode)
+                .ConfigureAwait(false);
             if (player == null)
             {
                 return null;

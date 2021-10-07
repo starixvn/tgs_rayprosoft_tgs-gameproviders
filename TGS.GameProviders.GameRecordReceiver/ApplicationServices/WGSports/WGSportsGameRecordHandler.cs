@@ -12,6 +12,7 @@ using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.GameRecordProcessors;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
+using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 using TGS.GameProviders.Repositories.Entities;
 using TGS.ServiceUtility;
@@ -27,7 +28,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.WGSports
         private readonly IPlayerRepository _playerRepository;
         private readonly IWGSportsService _service;
         private WGSportsConfiguration _configuration;
-        private Game _game;
+        private GetGame _game;
         private Guid _gameProviderId;
         private Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)> _players;
 
@@ -144,7 +145,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.WGSports
                     GameProviderId = _gameProviderId,
                     GameProviderCode = _service.GetGameProviderCode(),
                     PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
-                    GameId = (_game == null) ? -1 : _game.Id,
+                    GameId = (_game == null) ? -1 : _game.GameId,
                     ExternalId = gameRecord.Reference.ToString(),
                     CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
                     Status = gameRecord.InitData.Win.IgnoreCaseEquals("0") ? RoundStatus.Open : RoundStatus.Closed,

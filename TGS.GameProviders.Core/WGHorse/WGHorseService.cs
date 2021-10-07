@@ -8,6 +8,7 @@ using TGS.GameProviders.MongoRepositories;
 using TGS.GameProviders.MongoRepositories.Models;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
+using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Core.WGHorse
@@ -100,7 +101,7 @@ namespace TGS.GameProviders.Core.WGHorse
                 > 0 => ClientRoundStatus.Win,
                 <= 0 => ClientRoundStatus.Loss,
             };
-        public async ValueTask<Game> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
+        public async ValueTask<GetGame> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
             => await _gameRepository.GetGameAsync(gameProviderId, externalGameId).ConfigureAwait(false);
 
         public Task<GameProvider> GetGameProviderAsync()

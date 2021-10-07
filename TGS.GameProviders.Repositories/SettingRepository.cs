@@ -14,12 +14,12 @@ namespace TGS.GameProviders.Repositories
         private readonly ILogger<SettingRepository> _logger;
 
         public SettingRepository(
-           ILogger<SettingRepository> logger,
-           TgsContext context
-           )
+            TgsContext context,
+            ILogger<SettingRepository> logger
+            )
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<TConfiguration?> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase

@@ -12,8 +12,8 @@ using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.GameRecordProcessors;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
+using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
-using TGS.GameProviders.Repositories.Entities;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.Ky
@@ -68,7 +68,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.Ky
             var response = await _client.GetGameRecordAsync(brandMerchant, agentId, dateTimeOffset, data);
 
             var players = new Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)>();
-            var games = new Dictionary<int, Game>();
+            var games = new Dictionary<int, GetGame>();
             var count = 0;
             var successCount = 0;
             var failCount = 0;
@@ -116,7 +116,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.Ky
                         players.Add(playerCode, playerInfo);
                     }
 
-                    if (!games.TryGetValue(gameRecord.KindID, out Game game))
+                    if (!games.TryGetValue(gameRecord.KindID, out GetGame game))
                     {
                         game = await _gameRepository.GetGameAsync(gameProviderId, gameRecord.KindID.ToString()).ConfigureAwait(false);
                         games.Add(response.Data.List.KindID[i], game);
@@ -138,7 +138,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.Ky
                         GameProviderId = gameProviderId,
                         GameProviderCode = _service.GetGameProviderCode(),
                         PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
-                        GameId = (game == null) ? -1 : game.Id,
+                        GameId = (game == null) ? -1 : game.GameId,
                         ExternalId = gameRecord.KindID.ToString(),
                         CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
                         Status = RoundStatus.Closed,

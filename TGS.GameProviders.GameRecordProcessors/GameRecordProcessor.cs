@@ -51,7 +51,7 @@ namespace TGS.GameProviders.GameRecordProcessors
         public async Task<GetRound> GetExternalRoundIdByExternalGameIdAsync(Guid gameProviderId, string externalRoundId, string externalGameId, string playerCode)
         {
             var game = await _gameRepository.GetGameAsync(gameProviderId, externalGameId).ConfigureAwait(false);
-            return await _roundRepository.GetRoundAsync(gameProviderId, externalRoundId, game.Id, playerCode).ConfigureAwait(false);
+            return await _roundRepository.GetRoundAsync(gameProviderId, externalRoundId, game.GameId, playerCode).ConfigureAwait(false);
         }
 
         public Task UpdateRoundDetailAsync(Guid roundId, string additionalData)

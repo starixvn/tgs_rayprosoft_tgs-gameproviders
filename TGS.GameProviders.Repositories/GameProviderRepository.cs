@@ -11,13 +11,14 @@ namespace TGS.GameProviders.Repositories
         private readonly TgsContext _context;
         private readonly ILogger<GameProviderRepository> _logger;
 
+
         public GameProviderRepository(
-           ILogger<GameProviderRepository> logger,
-           TgsContext context
+            TgsContext context,
+            ILogger<GameProviderRepository> logger
            )
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public Task<GameProvider> GetGameProviderAsync(string gameProviderCode)

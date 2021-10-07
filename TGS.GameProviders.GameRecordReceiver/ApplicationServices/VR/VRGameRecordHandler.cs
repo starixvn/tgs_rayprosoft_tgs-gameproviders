@@ -10,6 +10,7 @@ using TGS.GameProviders.Domains.SettingConfiguration.VR;
 using TGS.GameProviders.GameRecordProcessors;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
+using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 using TGS.GameProviders.Repositories.Entities;
 using TGS.ServiceUtility;
@@ -27,7 +28,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.VR
 
         private int _count;
         private int _failCount;
-        private Dictionary<int, Game> _games;
+        private Dictionary<int, GetGame> _games;
         private DateTimeOffset? _lastGameRecordTime;
         private Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)> _players;
         private int _successCount;
@@ -62,7 +63,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.VR
             }
 
             _players = new Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)>();
-            _games = new Dictionary<int, Game>();
+            _games = new Dictionary<int, GetGame>();
             _count = 0;
             _successCount = 0;
             _failCount = 0;
@@ -160,7 +161,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.VR
                             _players.Add(playerCode, playerInfo);
                         }
 
-                        if (!_games.TryGetValue(recordBet.ChannelId, out Game game))
+                        if (!_games.TryGetValue(recordBet.ChannelId, out GetGame game))
                         {
                             game = await _gameRepository.GetGameAsync(gameProviderId, recordBet.ChannelId.ToString()).ConfigureAwait(false);
                             _games.Add(recordBet.ChannelId, game);
@@ -182,7 +183,7 @@ namespace TGS.GameProviders.GameRecordReceiver.ApplicationServices.VR
                             GameProviderId = gameProviderId,
                             GameProviderCode = _service.GetGameProviderCode(),
                             PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
-                            GameId = (game == null) ? -1 : game.Id,
+                            GameId = (game == null) ? -1 : game.GameId,
                             ExternalId = recordBet.ChannelId.ToString(),
                             CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
                             Status = _service.GetRoundStatus(recordBet.State),

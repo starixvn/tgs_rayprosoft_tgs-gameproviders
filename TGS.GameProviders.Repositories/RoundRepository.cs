@@ -17,13 +17,14 @@ namespace TGS.GameProviders.Repositories
         private readonly IMapper _mapper;
 
         public RoundRepository(
+            BetContext context,
             ILogger<RoundRepository> logger,
-            BetContext context
+            IMapper mapper
             )
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _mapper = new MapperConfiguration(configure => configure.AddProfile<RoundMapping>()).CreateMapper();
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task AddRoundAsync(AddRound source)

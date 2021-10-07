@@ -1,26 +1,37 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using TGS.GameProviders.Domains;
+using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.TCG;
+using TGS.GameProviders.MongoRepositories;
+using TGS.GameProviders.MongoRepositories.Models;
 using TGS.GameProviders.Repositories;
+using TGS.GameProviders.Repositories.Domains;
+using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Core.TCG
 {
     internal class TCGService : ITCGService
     {
-        private readonly IGameProviderRepository _gameProviderRepository;
         private readonly ISettingRepository _settingRepository;
-
+        private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly IGameRepository _gameRepository;
+        private readonly IGameProviderScheduleRepository _gameProviderScheduleRepository;
         public TCGService(
             ISettingRepository settingRepository,
-            IGameProviderRepository gameProviderRepository
+            IGameProviderRepository gameProviderRepository,
+            IGameRepository gameRepository,
+            IGameProviderScheduleRepository gameProviderScheduleRepository
             )
         {
             _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _gameProviderScheduleRepository = gameProviderScheduleRepository ?? throw new ArgumentNullException(nameof(gameProviderScheduleRepository));
         }
 
         public Task<GameProvider> GetGameProviderAsync()
@@ -49,5 +60,61 @@ namespace TGS.GameProviders.Core.TCG
 
         public Task<TCGConfiguration> GetSettingConfigurationAsync()
             => _settingRepository.GetConfigurationAsync<TCGConfiguration>(GameProviderConfigurations.TCG);
+
+
+        public Task<GetGame[]> GetGameLotteryLobbyAsync(Guid gameProviderId)
+            => _gameRepository.GetGameList(gameProviderId, GameType.LotteryLobby);
+        public async ValueTask<GameProviderSchedule> GameProviderScheduleInitAsync(Guid gameProviderId, string subGP, string currencyCode, string merchantCode)
+        {
+            var sysTime = DateTimeOffset.UtcNow;
+            var config = new TCGGameProviderScheduleConfig()
+            {
+                LastGameRecorDirectory = string.Empty,
+                LastGameRecorFile = string.Empty,
+            };
+
+            var gameProviderSchedule = new GameProviderSchedule()
+            {
+                Id = GuidExtensions.NewSequentialGuid(),
+                GameProviderId = gameProviderId,
+                GameProviderCode = GetGameProviderCode(),
+                BrandCode = string.Empty,
+                AgentId = GetAgentId(subGP, merchantCode),
+                CurrencyCode = currencyCode,
+                Config = JsonSerializer.Serialize(config),
+                CreatedOn = sysTime,
+                UpdatedOn = sysTime
+            };
+            await _gameProviderScheduleRepository.MergeAsync(gameProviderSchedule).ConfigureAwait(false);
+
+            return gameProviderSchedule;
+        }
+        public async ValueTask GameProviderScheduleUpdateAsync(GameProviderSchedule gameProviderSchedule, string lastGameRecorDirectory, string lastGameRecorFile)
+        {
+            var config = GetGameProviderScheduleConfig(gameProviderSchedule);
+            if (!string.IsNullOrEmpty(lastGameRecorDirectory) && !string.IsNullOrEmpty(lastGameRecorFile))
+            {
+                config.LastGameRecorDirectory = lastGameRecorDirectory;
+                config.LastGameRecorFile = lastGameRecorFile;
+            }
+            gameProviderSchedule.Config = JsonSerializer.Serialize(config);
+            gameProviderSchedule.UpdatedOn = DateTimeOffset.UtcNow;
+
+            await _gameProviderScheduleRepository.MergeAsync(gameProviderSchedule).ConfigureAwait(false);
+        }
+        public ValueTask<GameProviderSchedule> GetGameProviderScheduleAsync(Guid gameProviderId, string subGP, string currencyCode, string merchantCode)
+         => _gameProviderScheduleRepository.GetAsync(gameProviderId, string.Empty, GetAgentId(subGP, merchantCode), currencyCode);
+        public ValueTask<GameProviderSchedule> GetGameProviderScheduleAsync(Guid gameProviderId, string currencyCode, string agentId)
+            => _gameProviderScheduleRepository.GetAsync(gameProviderId, string.Empty, agentId, currencyCode);
+        public TCGGameProviderScheduleConfig GetGameProviderScheduleConfig(GameProviderSchedule gameProviderSchedule)
+            => JsonSerializer.Deserialize<TCGGameProviderScheduleConfig>(gameProviderSchedule.Config);
+        private string GetAgentId(string subGP, string merchantCode)
+                => string.Format("{0}-{1}", subGP, merchantCode);
+        public ValueTask GameProviderScheduleUpdateAsync(GameProviderSchedule gameProviderSchedule, string lastGameRecorFile, DateTimeOffset sysTime) => throw new NotImplementedException();
+        public (string SubGP, string MerchantCode) GetSubGPAndMerchantCode(string agentId)
+        {
+            var splits = agentId.Split("-");
+            return (splits[0], splits[1]);
+        }
     }
 }

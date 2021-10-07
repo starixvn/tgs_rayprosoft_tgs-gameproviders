@@ -8,7 +8,8 @@ namespace TGS.GameProviders.Repositories.ModelMappings
     {
         public PlayerMapping()
         {
-            CreateMap<Player, GetPlayer>();
+            CreateMap<Player, GetPlayer>()
+                .ReverseMap();
         }
     }
 }

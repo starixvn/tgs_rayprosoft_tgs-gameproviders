@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Domains.Extensions;
@@ -17,13 +19,14 @@ namespace TGS.GameProviders.Repositories
         private readonly IMapper _mapper;
 
         public FailedGameRecordOperationRepository(
+            BetContext context,
             ILogger<FailedGameRecordOperationRepository> logger,
-            BetContext context
+            IMapper mapper
             )
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _mapper = new MapperConfiguration(configure => configure.AddProfile<FailedGameRecordOperationMapping>()).CreateMapper();
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task AddFailedGameRecordOperationAsync(AddFailedGameRecordOperation source)
@@ -34,15 +37,14 @@ namespace TGS.GameProviders.Repositories
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task<GetFailedGameRecordOperation> GetFailedGameRecordOperationAsync(Guid gameProviderId, string externalRoundId, int gameId, string playerCode)
-        {
-            var data = await _context.FailedGameRecordOperations.FirstOrDefaultAsync(x =>
+        public Task<GetFailedGameRecordOperation> GetFailedGameRecordOperationAsync(Guid gameProviderId, string externalRoundId, int gameId, string playerCode)
+       => _context.FailedGameRecordOperations
+            .ProjectTo<GetFailedGameRecordOperation>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(x =>
                   x.GameProviderId == gameProviderId &&
                   x.ExternalRoundId == externalRoundId &&
                   x.GameId == gameId &&
-                  x.PlayerCode == playerCode).ConfigureAwait(false);
-            return _mapper.Map<GetFailedGameRecordOperation>(data);
-        }
+                  x.PlayerCode == playerCode);
 
         public async Task UpdataFailedGameRecordOperationAsync(Guid failedGameRecordOperationId, string detail)
         {
