@@ -97,6 +97,10 @@ pipeline {
 						helm template deployment/k8s/game-kickplayer-receiverserver \
 							--set image.tag=${TAG} \
 							--set namespace=${kube_ns} \
+                            --set connectionStrings.tgs="$tgs_tgs" \
+                            --set connectionStrings.redis="$tgs_redis" \
+                            --set connectionStrings.mongo="$tgs_mongo" \
+                            --set nats.urls="$tgs_nats" \
 							--set rabbit.url="$tgs_rabbit_url" \
                             --set rabbit.user="$tgs_rabbit_user" \
                             --set rabbit.password="$tgs_rabbit_pass" \
@@ -106,6 +110,10 @@ pipeline {
 						helm template deployment/k8s/game-kickplayer-receiverserver \
 							--set image.tag=${TAG} \
 							--set namespace=${kube_ns} \
+                            --set connectionStrings.tgs="$tgs_tgs" \
+                            --set connectionStrings.redis="$tgs_redis" \
+                            --set connectionStrings.mongo="$tgs_mongo" \
+                            --set nats.urls="$tgs_nats" \
 							--set rabbit.url="$tgs_rabbit_url" \
                             --set rabbit.user="$tgs_rabbit_user" \
                             --set rabbit.password="$tgs_rabbit_pass" \
