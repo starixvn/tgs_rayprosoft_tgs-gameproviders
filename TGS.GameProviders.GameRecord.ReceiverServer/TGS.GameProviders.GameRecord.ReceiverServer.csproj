@@ -7,7 +7,7 @@
 		<GlobalNugetConfig>$(UserProfile)\AppData\Roaming\NuGet\NuGet.Config</GlobalNugetConfig>
 		<GlobalNugetConfig Condition="'$(UserProfile)'==''">$(HOME)/.nuget/NuGet/NuGet.Config</GlobalNugetConfig>
 		<DockerfileBuildArguments>--build-arg "BuildConfiguration=$(Configuration)" --secret id=nuget,src="$(GlobalNugetConfig)"</DockerfileBuildArguments>
-		<DockerfileTag Condition="$(DockerfileTag) == ''">game/kickplayerserver</DockerfileTag>
+		<DockerfileTag Condition="$(DockerfileTag) == ''">game/gameRecordreceiverserver</DockerfileTag>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -16,6 +16,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="5.0.1" />
+		<PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="5.0.2" />
+		<PackageReference Include="AspNetCore.HealthChecks.Redis" Version="5.0.2" />
 		<PackageReference Include="EFCore.NamingConventions" Version="5.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
 			<PrivateAssets>all</PrivateAssets>
