@@ -2,8 +2,12 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
-		<AssemblyName>TGS.GameProviders.KickPlayer.ReceiverServer</AssemblyName>
-		<RootNamespace>TGS.GameProviders.KickPlayer.ReceiverServer</RootNamespace>
+		<UserSecretsId>c20048f3-378f-4056-b1a7-13b052f54a27</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<GlobalNugetConfig>$(UserProfile)\AppData\Roaming\NuGet\NuGet.Config</GlobalNugetConfig>
+		<GlobalNugetConfig Condition="'$(UserProfile)'==''">$(HOME)/.nuget/NuGet/NuGet.Config</GlobalNugetConfig>
+		<DockerfileBuildArguments>--build-arg "BuildConfiguration=$(Configuration)" --secret id=nuget,src="$(GlobalNugetConfig)"</DockerfileBuildArguments>
+		<DockerfileTag Condition="$(DockerfileTag) == ''">game/kickplayerserver</DockerfileTag>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -14,6 +18,7 @@
 	<ItemGroup>
 		<PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="5.0.1" />
 		<PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="5.0.2" />
+		<PackageReference Include="AspNetCore.HealthChecks.Rabbitmq" Version="5.0.1" />
 		<PackageReference Include="AspNetCore.HealthChecks.Redis" Version="5.0.2" />
 		<PackageReference Include="EFCore.NamingConventions" Version="5.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
@@ -21,6 +26,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="5.0.10" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Trigrams" Version="5.0.10" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.2" />
 		<PackageReference Include="Tgs.Logging" Version="0.0.11" />
