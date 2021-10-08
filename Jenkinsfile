@@ -9,7 +9,7 @@ pipeline {
 		ImageTagUrlKickplayerReceiverServer = "https://gitlab.com/api/v4/projects/20478010/registry/repositories/2355332/tags"
         ImageKickplayerReceiverServer = "game-kickplayer-receiverserver"
 		ImageNameGamerecordReceiverServer ="registry.gitlab.com/rayprosoft/turnkey-gaming-system/game-gamerecord-receiverserver"
-		ImageTagUrlNameGamerecordReceiverServer = "https://gitlab.com/api/v4/projects/20478010/registry/repositories/2355332/tags"
+		ImageTagUrlNameGamerecordReceiverServer = "https://gitlab.com/api/v4/projects/20478010/registry/repositories/2355451/tags"
         ImageGamerecordReceiverServer = "game-gamerecord-receiverserver"
 	}
 
