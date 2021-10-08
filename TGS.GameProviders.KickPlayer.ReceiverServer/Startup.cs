@@ -278,8 +278,8 @@ namespace TGS.GameProviders.KickPlayer.ReceiverServer
                 .AddHealthChecks()
                 .AddMongoDb(Configuration.GetSection("MongoDBConnectionString:GameProvider").Get<string>(), name: "MongoDB GameProvider")
                 .AddRedis(Configuration.GetSection("RedisConnectionString:Default").Get<string>(), name: "Redis Default")
-                .AddNpgSql(Configuration.GetConnectionString("Tgs"), name: "PostgreSQL Tgs")
-                .AddRabbitMQ(Configuration.GetSection("RabbitMQ:RabbitMQUrl").Get<string>(), name: "RabbitMQ Tgs");
+                .AddNpgSql(Configuration.GetConnectionString("Tgs"), name: "PostgreSQL Tgs");
+                //.AddRabbitMQ(Configuration.GetSection("RabbitMQ:RabbitMQUrl").Get<string>(), name: "RabbitMQ Tgs");
         }
     }
 }
