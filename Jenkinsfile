@@ -6,7 +6,7 @@ pipeline {
 	environment {
 		BuildConfiguration="Debug"
 		ImageNameKickplayerReceiverServer="registry.gitlab.com/rayprosoft/turnkey-gaming-system/game-kickplayer-receiverserver"
-		ImageTagUrlKickplayerReceiverServer = "https://gitlab.com/api/v4/projects/20478010/registry/repositories/2352035/tags"
+		ImageTagUrlKickplayerReceiverServer = "https://gitlab.com/api/v4/projects/20478010/registry/repositories/2355332/tags"
         ImageKickplayerReceiverServer = "game-kickplayer-receiverserver"
 	}
 
