@@ -65,16 +65,26 @@ pipeline {
 			}
 		}
 
-		stage('Build Docker Image') {
+		stage('Build Game Kickplayer Receiver Server Docker Image') {
 			steps {
 				sh 'dotnet build "TGS.GameProviders.KickPlayer.ReceiverServer/TGS.GameProviders.KickPlayer.ReceiverServer.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageNameKickplayerReceiverServer:${TAG}" --no-restore '
+			}
+		}
+
+        stage('Build Game GameRecord Receiver Server Docker Image') {
+			steps {
                 sh 'dotnet build "TGS.GameProviders.GameRecord.ReceiverServer/TGS.GameProviders.GameRecord.ReceiverServer.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageNameGamerecordReceiverServer:${TAG}" --no-restore '
 			}
 		}
 
-		stage('Push Docker Image') {
+		stage('Push Game Kickplayer Receiver Server Docker Image') {
 			steps {
 				sh 'sudo docker push $ImageNameKickplayerReceiverServer:${TAG}'
+			}
+		}
+
+        stage('Push Game GameRecord Receiver Server Docker Image') {
+			steps {
                 sh 'sudo docker push $ImageNameGamerecordReceiverServer:${TAG}'
 			}
 		}
@@ -95,7 +105,7 @@ pipeline {
             }
         }
 
-		stage('Deploy to k8s') {
+		stage('Deploy Game Kickplayer Receiver Server to k8s') {
 			steps {
 				withKubeConfig([credentialsId: env.k8s_config]) {
 					sh '''
@@ -125,6 +135,13 @@ pipeline {
                             --set rabbit.vhost="$tgs_rabbit_vhost" \
                             | kubectl -n ${kube_ns} apply -f -
 					'''
+				}
+			}
+		}
+        
+        stage('Deploy Game GameRecord Receiver Server to k8s') {
+			steps {
+				withKubeConfig([credentialsId: env.k8s_config]) {
 					sh '''
 						helm template deployment/k8s/game-gamerecord-receiverserver \
 							--set image.tag=${TAG} \
@@ -170,10 +187,17 @@ pipeline {
             }
         }
 
-        stage('Remove Image Tags') {					
+        stage('Remove Game Kickplayer Receiver Server Image Tags') {					
             steps {	
                 withCredentials([string(credentialsId: "GitLabToken", variable: "GitLabToken")]) {					
                     sh "curl --request DELETE --data \'name_regex_delete=.*\' --data \'keep_n=10\' --header \'PRIVATE-TOKEN: ${GitLabToken}\' ${ImageTagUrlKickplayerReceiverServer}"
+                }
+            }
+        }
+
+        stage('Remove Game GameRecord Receiver Server Image Tags') {					
+            steps {	
+                withCredentials([string(credentialsId: "GitLabToken", variable: "GitLabToken")]) {					
                     sh "curl --request DELETE --data \'name_regex_delete=.*\' --data \'keep_n=10\' --header \'PRIVATE-TOKEN: ${GitLabToken}\' ${ImageTagUrlGamerecordReceiverServer}"
                 }
             }

@@ -14,8 +14,8 @@ namespace: dev
 
 imagePullSecrets: 
   - name: registry-credentials
-nameOverride: "game-kickplayer-receiverserver"
-fullnameOverride: "game-kickplayer-receiverserver"
+nameOverride: "game-gamerecord-receiverserver"
+fullnameOverride: "game-gamerecord-receiverserver"
 
 connectionStrings:
   tgs: Server=pgpool;Port=9999;Database=tgs;User Id=rpdev;Password=abcd1234
