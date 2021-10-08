@@ -12,9 +12,9 @@ namespace TGS.GameProviders.KickPlayer.ReceiverServer.ReceiveHandlers
 {
     internal class WGHorseKickPlayerReceiveHandler : IMessageHandler
     {
-        private readonly ICommandService<WGHorsePlayerKickCommand> _commandService;
         private readonly ILogger<WGHorseKickPlayerReceiveHandler> _logger;
-
+        private readonly ICommandService<WGHorsePlayerKickCommand> _commandService;
+       
         public WGHorseKickPlayerReceiveHandler(
             ILogger<WGHorseKickPlayerReceiveHandler> logger,
             ICommandService<WGHorsePlayerKickCommand> commandService)
