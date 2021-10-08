@@ -1,13 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using TGS.GameProviders.GameRecord.ReceiverServer.ReceiveHandler;
@@ -43,6 +49,53 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health", new()
+                {
+                    ResultStatusCodes = new Dictionary<HealthStatus, int>
+                    {
+                        {HealthStatus.Healthy, StatusCodes.Status200OK},
+                        {HealthStatus.Unhealthy, StatusCodes.Status503ServiceUnavailable},
+                        {HealthStatus.Degraded, StatusCodes.Status500InternalServerError}
+                    },
+                    ResponseWriter = async (context, report) =>
+                    {
+                        var hostName = Dns.GetHostName();
+                        var hostEntry = await Dns.GetHostEntryAsync(hostName);
+                        var hostIp = Array.Find(hostEntry.AddressList, x => x.AddressFamily == AddressFamily.InterNetwork);
+                        var response = new
+                        {
+                            Data = new
+                            {
+                                MachineName = Environment.MachineName,
+                                HostName = hostName,
+                                HostIp = hostIp?.ToString() ?? string.Empty,
+                                Environment = env.EnvironmentName,
+                                OsVersion = $"{Environment.OSVersion}",
+                                Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                                ProcessCount = Environment.ProcessorCount,
+                                AdditionalValues = new Dictionary<string, object>()
+                            },
+                            Result = new
+                            {
+                                Status = report.Status.ToString(),
+                                TotalDuration = report.TotalDuration.TotalSeconds,
+                                DependencyServices = report.Entries.Select(srv => new
+                                {
+                                    Key = srv.Key,
+                                    Duration = srv.Value.Duration.TotalSeconds,
+                                    Description = srv.Value.Description,
+                                    Data = srv.Value.Data,
+                                    Exception = srv.Value.Exception?.Message,
+                                    Status = srv.Value.Status.ToString(),
+                                    Tags = srv.Value.Tags.Any() ? string.Join(',', srv.Value.Tags) : string.Empty
+                                }).ToArray()
+                            }
+                        };
+                        var json = JsonSerializer.Serialize(response, new() { WriteIndented = true });
+                        context.Response.ContentType = "application/json";
+                        await context.Response.WriteAsync(json);
+                    }
+                });
             });
         }
 
@@ -245,6 +298,12 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer
                          }
                     };
                 });
+            services
+                .AddHealthChecks()
+                .AddMongoDb(Configuration.GetSection("MongoDBConnectionString:GameProvider").Get<string>(), name: "MongoDB GameProvider")
+                .AddRedis(Configuration.GetSection("RedisConnectionString:Default").Get<string>(), name: "Redis Default")
+                .AddNpgSql(Configuration.GetConnectionString("Tgs"), name: "PostgreSQL Tgs");
+            //.AddRabbitMQ(Configuration.GetSection("RabbitMQ:RabbitMQUrl").Get<string>(), name: "RabbitMQ Tgs");
         }
     }
 }

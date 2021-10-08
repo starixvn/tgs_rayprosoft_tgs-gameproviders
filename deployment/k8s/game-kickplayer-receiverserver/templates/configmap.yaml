@@ -21,6 +21,7 @@ data:
           }
         }
       },
+      "AllowedHosts": "*",
       "ConnectionStrings": {
         "Tgs": "{{ .Values.connectionStrings.tgs }}"
       },
