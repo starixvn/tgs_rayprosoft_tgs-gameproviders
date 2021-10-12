@@ -108,33 +108,35 @@ pipeline {
 		stage('Deploy Game Kickplayer Receiver Server to k8s') {
 			steps {
 				withKubeConfig([credentialsId: env.k8s_config]) {
-					sh '''
-						helm template deployment/k8s/game-kickplayer-receiverserver \
-							--set image.tag=${TAG} \
-							--set namespace=${kube_ns} \
-                            --set connectionStrings.tgs="$tgs_tgs" \
-                            --set connectionStrings.redis="$tgs_redis" \
-                            --set connectionStrings.mongo="$tgs_mongo" \
-                            --set nats.urls="$tgs_nats" \
-							--set rabbit.url="$tgs_rabbit_url" \
-                            --set rabbit.user="$tgs_rabbit_user" \
-                            --set rabbit.password="$tgs_rabbit_pass" \
-                            --set rabbit.vhost="$tgs_rabbit_vhost"
-					'''
-					sh '''
-						helm template deployment/k8s/game-kickplayer-receiverserver \
-							--set image.tag=${TAG} \
-							--set namespace=${kube_ns} \
-                            --set connectionStrings.tgs="$tgs_tgs" \
-                            --set connectionStrings.redis="$tgs_redis" \
-                            --set connectionStrings.mongo="$tgs_mongo" \
-                            --set nats.urls="$tgs_nats" \
-							--set rabbit.url="$tgs_rabbit_url" \
-                            --set rabbit.user="$tgs_rabbit_user" \
-                            --set rabbit.password="$tgs_rabbit_pass" \
-                            --set rabbit.vhost="$tgs_rabbit_vhost" \
-                            | kubectl -n ${kube_ns} apply -f -
-					'''
+                    withCredentials([string(credentialsId: "tgs-${kube_ns}-connectionstring", variable: "tgs_tgs")]) {
+                        sh '''
+                            helm template deployment/k8s/game-kickplayer-receiverserver \
+                                --set image.tag=${TAG} \
+                                --set namespace=${kube_ns} \
+                                --set connectionStrings.tgs="$tgs_tgs" \
+                                --set connectionStrings.redis="$tgs_redis" \
+                                --set connectionStrings.mongo="$tgs_mongo" \
+                                --set nats.urls="$tgs_nats" \
+                                --set rabbit.url="$tgs_rabbit_url" \
+                                --set rabbit.user="$tgs_rabbit_user" \
+                                --set rabbit.password="$tgs_rabbit_pass" \
+                                --set rabbit.vhost="$tgs_rabbit_vhost"
+                        '''
+                        sh '''
+                            helm template deployment/k8s/game-kickplayer-receiverserver \
+                                --set image.tag=${TAG} \
+                                --set namespace=${kube_ns} \
+                                --set connectionStrings.tgs="$tgs_tgs" \
+                                --set connectionStrings.redis="$tgs_redis" \
+                                --set connectionStrings.mongo="$tgs_mongo" \
+                                --set nats.urls="$tgs_nats" \
+                                --set rabbit.url="$tgs_rabbit_url" \
+                                --set rabbit.user="$tgs_rabbit_user" \
+                                --set rabbit.password="$tgs_rabbit_pass" \
+                                --set rabbit.vhost="$tgs_rabbit_vhost" \
+                                | kubectl -n ${kube_ns} apply -f -
+                        '''
+                    }
 				}
 			}
 		}
