@@ -7,14 +7,12 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.KickPlayer.ReceiverServer.Controllers
 {
-    public class WGSportsKickPlayerReceiveHandler : BaseController<WGSportsPlayerKickCommand>
+    public class WGSportsKickPlayerController : BaseController<WGSportsPlayerKickCommand>
     {
-        private readonly ILogger<WGSportsKickPlayerReceiveHandler> _logger;
+        private readonly ILogger<WGSportsKickPlayerController> _logger;
 
-        public WGSportsKickPlayerReceiveHandler(ILogger<WGSportsKickPlayerReceiveHandler> logger)
-        {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
+        public WGSportsKickPlayerController(ILogger<WGSportsKickPlayerController> logger)
+            => _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
         /// <summary>
         /// Kicks the player asynchronous.
@@ -25,11 +23,12 @@ namespace TGS.GameProviders.KickPlayer.ReceiverServer.Controllers
         /// <remarks>
         /// Example
         /// Post
-        ///     {
-        ///      "playerCode": "4ucmqplxb029"
-        ///     }
+        /// {
+        /// "playerCode": "4ucmqplxb029"
+        /// }
         /// </remarks>
-        public override ValueTask KickPlayerAsync([FromServices] ICommandService<WGSportsPlayerKickCommand> commandService, WGSportsPlayerKickCommand command)
+        public override ValueTask KickPlayerAsync(
+            [FromServices] ICommandService<WGSportsPlayerKickCommand> commandService, WGSportsPlayerKickCommand command)
             => commandService.ExecuteAsync(command);
     }
 }
