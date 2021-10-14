@@ -116,7 +116,7 @@ pipeline {
                             helm template deployment/k8s/game-kickplayer-receiverserver \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
-                                --set autoscaling=$autoscaling \
+                                --set autoscaling=${autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set connectionStrings.mongo="$tgs_mongo" \
@@ -130,7 +130,7 @@ pipeline {
                             helm template deployment/k8s/game-kickplayer-receiverserver \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
-                                --set autoscaling=$autoscaling \
+                                --set autoscaling=${autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set connectionStrings.mongo="$tgs_mongo" \
@@ -154,7 +154,7 @@ pipeline {
                             helm template deployment/k8s/game-gamerecord-receiverserver \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
-                                --set autoscaling=$autoscaling \
+                                --set autoscaling=${autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set connectionStrings.mongo="$tgs_mongo" \
@@ -168,7 +168,7 @@ pipeline {
                             helm template deployment/k8s/game-gamerecord-receiverserver \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
-                                --set autoscaling=$autoscaling \
+                                --set autoscaling=${autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set connectionStrings.mongo="$tgs_mongo" \
