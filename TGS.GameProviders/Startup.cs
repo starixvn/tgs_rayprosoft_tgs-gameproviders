@@ -74,7 +74,6 @@ namespace TGS.GameProviders
                         // dbBuilder.UseSnakeCaseNamingConvention();
                     });
             services
-                .AddHttpClient()
                 .AddApiClients();
         }
     }

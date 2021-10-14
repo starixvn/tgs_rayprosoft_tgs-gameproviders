@@ -280,24 +280,24 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer
                   configuration.GetSection("RedisConnectionString").Bind(options);
               });
             services
-                .AddHttpClient()
                 .AddApiClients();
             services
-                .AddCore()
-                .AddGameRecordCoreConfiguration((options, sp) =>
-                {
-                    var configuration = sp.GetRequiredService<IConfiguration>();
-                    configuration.GetSection("TCGFtpApi").Bind(options);
+                .AddCore();
+            services
+               .AddGameRecordCoreConfiguration((options, sp) =>
+               {
+                   var configuration = sp.GetRequiredService<IConfiguration>();
+                   configuration.GetSection("TCGFtpApi").Bind(options);
 
-                    options.JsonSerializerOptions = new JsonSerializerOptions
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        Converters =
-                         {
+                   options.JsonSerializerOptions = new JsonSerializerOptions
+                   {
+                       PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                       Converters =
+                        {
                             new JsonStringEnumConverter()
-                         }
-                    };
-                });
+                        }
+                   };
+               });
             services
                 .AddHealthChecks()
                 .AddMongoDb(Configuration.GetSection("MongoDBConnectionString:GameProvider").Get<string>(), name: "MongoDB GameProvider")
