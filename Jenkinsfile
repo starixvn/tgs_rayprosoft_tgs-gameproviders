@@ -23,14 +23,17 @@ pipeline {
                         case ['origin/main','main']:
                             env.kube_ns = "prod";
                             env.k8s_config = 'stag-k8s-config';
+                            env.autoscaling = true;
                             break;
                         case ['origin/release','release']:
                             env.kube_ns = "staging";
                             env.k8s_config = 'stag-k8s-config';
+                            env.autoscaling = false;
                             break;
                         default:
                             env.kube_ns = "dev";
-                            env.k8s_config = 'k8s-kube-config' 
+                            env.k8s_config = 'k8s-kube-config';
+                            env.autoscaling = false;
                             break;
                     }
                 }
@@ -113,6 +116,7 @@ pipeline {
                             helm template deployment/k8s/game-kickplayer-receiverserver \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
+                                --set  autoscaling=${env.autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set connectionStrings.mongo="$tgs_mongo" \
@@ -126,6 +130,7 @@ pipeline {
                             helm template deployment/k8s/game-kickplayer-receiverserver \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
+                                --set  autoscaling=${env.autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set connectionStrings.mongo="$tgs_mongo" \
@@ -149,6 +154,7 @@ pipeline {
                             helm template deployment/k8s/game-gamerecord-receiverserver \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
+                                --set autoscaling=${env.autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set connectionStrings.mongo="$tgs_mongo" \
@@ -162,6 +168,7 @@ pipeline {
                             helm template deployment/k8s/game-gamerecord-receiverserver \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
+                                --set autoscaling=${env.autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set connectionStrings.mongo="$tgs_mongo" \
