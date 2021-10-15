@@ -8,6 +8,7 @@ using Tgs.Logging;
 using TGS.GameProviders.ApiClients.WGSports;
 using TGS.GameProviders.ApiClients.WGSports.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {

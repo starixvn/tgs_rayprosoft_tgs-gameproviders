@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 using TGS.GameProviders.ApiClients.Skywind.Models;
 using TGS.GameProviders.Domains.SettingConfiguration.TCG;
-using TGS.Shared.Game.Models.TCG.Outgoing;
+using TGS.GameProviders.ApiClients.TCG.Models;
+using TGS.GameProviders.ApiClients.TCG;
 
-namespace TGS.GameProviders.ApiClients.TCG
+namespace TGS.GameProviders.ApiClients
 {
     public interface ITCGApiClient
     {

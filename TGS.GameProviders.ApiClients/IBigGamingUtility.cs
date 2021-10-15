@@ -1,4 +1,5 @@
-﻿namespace TGS.GameProviders.ApiClients.BigGaming
+﻿using TGS.GameProviders.ApiClients.BigGaming;
+namespace TGS.GameProviders.ApiClients
 {
     public interface IBigGamingUtility
     {

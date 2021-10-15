@@ -9,6 +9,7 @@ using TGS.ServiceUtility;
 using TGS.GameProviders.KickPlayer.Core.ApplicationServices.BigGaming;
 using TGS.GameProviders.Repositories.Domains;
 using System.Collections.Generic;
+using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.BigGaming
 {

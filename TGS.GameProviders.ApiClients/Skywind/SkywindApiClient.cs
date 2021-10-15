@@ -12,6 +12,7 @@ using TGS.GameProviders.ApiClients.Skywind.Models;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.Skywind
 {

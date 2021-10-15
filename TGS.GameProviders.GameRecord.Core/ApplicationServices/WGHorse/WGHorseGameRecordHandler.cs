@@ -12,6 +12,7 @@ using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 using TGS.ServiceUtility;
+using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
 {

@@ -7,6 +7,7 @@ using TGS.GameProviders.ApiClients.TCG;
 using TGS.GameProviders.ApiClients.VR;
 using TGS.GameProviders.ApiClients.WGHorse;
 using TGS.GameProviders.ApiClients.WGSports;
+using TGS.GameProviders.ApiClients;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

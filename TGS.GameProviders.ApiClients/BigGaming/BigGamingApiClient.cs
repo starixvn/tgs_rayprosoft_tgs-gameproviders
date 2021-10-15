@@ -13,6 +13,7 @@ using TGS.GameProviders.ApiClients.BigGaming.Models.Commons;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
+using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.BigGaming
 {

@@ -2,8 +2,9 @@
 using TGS.GameProviders.ApiClients.WGSports.Models;
 using TGS.GameProviders.ApiClients.WGSports.Models.Commons;
 using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.ApiClients.WGSports;
 
-namespace TGS.GameProviders.ApiClients.WGSports
+namespace TGS.GameProviders.ApiClients
 {
     public interface IWGSportsApiClient
     {

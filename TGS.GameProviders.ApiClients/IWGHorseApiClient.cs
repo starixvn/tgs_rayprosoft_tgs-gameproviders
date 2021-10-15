@@ -2,8 +2,9 @@
 using TGS.GameProviders.ApiClients.WGHorse.Models;
 using TGS.GameProviders.ApiClients.WGHorse.Models.Commons;
 using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.ApiClients.WGHorse;
 
-namespace TGS.GameProviders.ApiClients.WGHorse
+namespace TGS.GameProviders.ApiClients
 {
     public interface IWGHorseApiClient
     {

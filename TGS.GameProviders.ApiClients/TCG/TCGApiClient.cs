@@ -13,7 +13,8 @@ using TGS.GameProviders.ApiClients.TCG.Models.Commons;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration.TCG;
-using TGS.Shared.Game.Models.TCG.Outgoing;
+using TGS.GameProviders.ApiClients.TCG.Models;
+using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.TCG
 {

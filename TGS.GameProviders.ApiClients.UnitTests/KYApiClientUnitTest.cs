@@ -8,6 +8,7 @@ using Tgs.Logging;
 using TGS.GameProviders.ApiClients.KY;
 using TGS.GameProviders.ApiClients.KY.Models;
 using TGS.GameProviders.Domains.SettingConfiguration.KY;
+using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {

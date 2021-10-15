@@ -13,6 +13,7 @@ using TGS.GameProviders.ApiClients.SexyGaming.Models;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.SexyGaming;
+using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {

@@ -7,6 +7,7 @@ using TGS.GameProviders.Core;
 using TGS.GameProviders.Repositories;
 using TGS.ServiceUtility;
 using TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGHorse;
+using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGHorse
 {

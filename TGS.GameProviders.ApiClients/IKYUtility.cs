@@ -1,33 +1,34 @@
 ﻿using System.Text.Json;
+using TGS.GameProviders.ApiClients.KY;
 
-namespace TGS.GameProviders.ApiClients.VR
+namespace TGS.GameProviders.ApiClients
 {
-    public interface IVRUtility
+    public interface IKYUtility
     {
         /// <summary>
         /// Aeses the decrypt.
         /// </summary>
-        /// <param name="str">The string.</param>
+        /// <param name="data">The data.</param>
         /// <param name="key">The key.</param>
         /// <param name="isDecodeUrl">if set to <c>true</c> [is decode URL].</param>
         /// <returns></returns>
-        public string AesDecrypt(string str, string key, bool isDecodeUrl = true);
+        string AesDecrypt(string data, string key, bool isDecodeUrl = true);
 
         /// <summary>
         /// Aeses the encrypt.
         /// </summary>
-        /// <param name="str">The string.</param>
+        /// <param name="data">The data.</param>
         /// <param name="key">The key.</param>
         /// <param name="isEncodeUrl">if set to <c>true</c> [is encode URL].</param>
         /// <returns></returns>
-        public string AesEncrypt(string str, string key, bool isEncodeUrl = true);
+        string AesEncrypt(string data, string key, bool isEncodeUrl = true);
 
         /// <summary>
         /// Gets the action.
         /// </summary>
         /// <param name="action">The action.</param>
         /// <returns></returns>
-        public string GetAction(VRAction action);
+        int? GetAction(KYAction action);
 
         /// <summary>
         /// Gets the path.
@@ -36,6 +37,13 @@ namespace TGS.GameProviders.ApiClients.VR
         /// <param name="request">The request.</param>
         /// <param name="options">The options.</param>
         /// <returns></returns>
-        public string GetPath<TRequest>(TRequest request, JsonSerializerOptions options = null);
+        string GetPath<TRequest>(TRequest request, JsonSerializerOptions options = null);
+
+        /// <summary>
+        /// Hashes the m d5.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <returns></returns>
+        public string HashMD5(string data);
     }
 }

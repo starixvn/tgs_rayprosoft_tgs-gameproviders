@@ -1,4 +1,5 @@
-﻿namespace TGS.GameProviders.ApiClients.TCG
+﻿using TGS.GameProviders.ApiClients.TCG;
+namespace TGS.GameProviders.ApiClients
 {
     public interface ITCGUtility
     {

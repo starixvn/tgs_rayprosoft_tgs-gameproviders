@@ -10,6 +10,7 @@ using TGS.GameProviders.ApiClients.Evolution.Models;
 using TGS.GameProviders.ApiClients.Evolution.Models.Commons.EvolutionGameUrl;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {

@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
 using TGS.GameProviders.ApiClients.SexyGaming.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.ApiClients.SexyGaming;
 
-namespace TGS.GameProviders.ApiClients.SexyGaming
+namespace TGS.GameProviders.ApiClients
 {
     public interface ISexyGamingApiClient
     {

@@ -2,8 +2,9 @@
 using TGS.GameProviders.ApiClients.BigGaming.Models;
 using TGS.GameProviders.ApiClients.BigGaming.Models.Commons;
 using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
+using TGS.GameProviders.ApiClients.BigGaming;
 
-namespace TGS.GameProviders.ApiClients.BigGaming
+namespace TGS.GameProviders.ApiClients
 {
     public interface IBigGamingApiClient
     {

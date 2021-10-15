@@ -1,6 +1,7 @@
-﻿namespace TGS.GameProviders.ApiClients.WGSports
+﻿using TGS.GameProviders.ApiClients.WGHorse;
+namespace TGS.GameProviders.ApiClients
 {
-    public interface IWGSportsUtility
+    public interface IWGHorseUtility
     {
         /// <summary>
         /// Aeses the decrypt.

@@ -8,7 +8,8 @@ using TGS.GameProviders.ApiClients.Skywind.Models;
 using TGS.GameProviders.ApiClients.TCG;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.TCG;
-using TGS.Shared.Game.Models.TCG.Outgoing;
+using TGS.GameProviders.ApiClients.TCG.Models;
+using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {

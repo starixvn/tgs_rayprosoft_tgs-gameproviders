@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using TGS.GameProviders.ApiClients.KY.Models;
 using TGS.GameProviders.ApiClients.KY.Models.Commons;
 using TGS.GameProviders.Domains.SettingConfiguration.KY;
+using TGS.GameProviders.ApiClients.KY;
 
-namespace TGS.GameProviders.ApiClients.KY
+namespace TGS.GameProviders.ApiClients
 {
     public interface IKYApiClient
     {

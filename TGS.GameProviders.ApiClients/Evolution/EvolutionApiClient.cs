@@ -12,6 +12,7 @@ using TGS.GameProviders.ApiClients.Evolution.Models;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.Evolution
 {
