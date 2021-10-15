@@ -8,7 +8,6 @@ using Tgs.Logging;
 using TGS.GameProviders.ApiClients.Skywind;
 using TGS.GameProviders.ApiClients.Skywind.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
-using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {

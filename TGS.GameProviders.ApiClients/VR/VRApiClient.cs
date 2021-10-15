@@ -13,7 +13,6 @@ using TGS.GameProviders.ApiClients.VR.Models.Commons;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration.VR;
-using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.VR
 {

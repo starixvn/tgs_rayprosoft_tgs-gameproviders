@@ -8,7 +8,6 @@ using Tgs.Logging;
 using TGS.GameProviders.ApiClients.BigGaming;
 using TGS.GameProviders.ApiClients.BigGaming.Models;
 using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
-using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {

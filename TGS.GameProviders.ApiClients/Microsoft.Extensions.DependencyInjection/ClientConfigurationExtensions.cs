@@ -1,4 +1,5 @@
-﻿using TGS.GameProviders.ApiClients.BigGaming;
+﻿using TGS.GameProviders.ApiClients;
+using TGS.GameProviders.ApiClients.BigGaming;
 using TGS.GameProviders.ApiClients.Evolution;
 using TGS.GameProviders.ApiClients.KY;
 using TGS.GameProviders.ApiClients.SexyGaming;
@@ -7,7 +8,6 @@ using TGS.GameProviders.ApiClients.TCG;
 using TGS.GameProviders.ApiClients.VR;
 using TGS.GameProviders.ApiClients.WGHorse;
 using TGS.GameProviders.ApiClients.WGSports;
-using TGS.GameProviders.ApiClients;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

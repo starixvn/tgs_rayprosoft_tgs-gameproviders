@@ -8,13 +8,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
-using TGS.GameProviders.ApiClients.Skywind.Models;
+using TGS.GameProviders.ApiClients.TCG.Models;
 using TGS.GameProviders.ApiClients.TCG.Models.Commons;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration.TCG;
-using TGS.GameProviders.ApiClients.TCG.Models;
-using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.TCG
 {

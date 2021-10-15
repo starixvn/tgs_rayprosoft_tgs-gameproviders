@@ -2,13 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients.TCG;
+using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Repositories;
 using TGS.ServiceUtility;
-using TGS.GameProviders.KickPlayer.Core.ApplicationServices.TCG;
-using TGS.GameProviders.ApiClients.TCG.Models;
-using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.TCG
 {

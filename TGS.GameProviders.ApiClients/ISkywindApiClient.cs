@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using TGS.GameProviders.ApiClients.Skywind.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
-using TGS.GameProviders.ApiClients.Skywind;
 
 namespace TGS.GameProviders.ApiClients
 {

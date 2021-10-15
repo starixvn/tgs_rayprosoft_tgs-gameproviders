@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -14,8 +12,8 @@ namespace TGS.GameProviders.KickPlayer.ReceiverServer.ReceiveHandlers
 {
     internal class SexyGamingKickPlayerReceiveHandler : IMessageHandler
     {
-        private readonly ILogger<SexyGamingKickPlayerReceiveHandler> _logger;
         private readonly ICommandService<SexyGamingPlayerKickCommand> _commandService;
+        private readonly ILogger<SexyGamingKickPlayerReceiveHandler> _logger;
 
         public SexyGamingKickPlayerReceiveHandler(
             ILogger<SexyGamingKickPlayerReceiveHandler> logger,

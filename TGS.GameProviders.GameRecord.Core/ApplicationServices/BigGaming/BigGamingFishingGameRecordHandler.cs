@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using TGS.GameProviders.ApiClients.BigGaming;
+using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.BigGaming.Models;
 using TGS.GameProviders.ApiClients.BigGaming.Models.Commons;
 using TGS.GameProviders.Core;
@@ -14,7 +14,6 @@ using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 using TGS.ServiceUtility;
-using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.BigGaming
 {

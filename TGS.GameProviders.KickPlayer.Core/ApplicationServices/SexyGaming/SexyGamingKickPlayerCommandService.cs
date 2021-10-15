@@ -2,11 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients.SexyGaming;
+using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.Core;
 using TGS.ServiceUtility;
-using TGS.GameProviders.KickPlayer.Core.ApplicationServices.SexyGaming;
-using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.SexyGaming
 {

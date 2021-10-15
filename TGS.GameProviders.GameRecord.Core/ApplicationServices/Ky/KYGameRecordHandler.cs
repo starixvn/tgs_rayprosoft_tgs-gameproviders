@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using TGS.GameProviders.ApiClients.KY;
+using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.KY.Models;
 using TGS.GameProviders.ApiClients.KY.Models.Commons;
 using TGS.GameProviders.Core;
@@ -15,7 +15,6 @@ using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 using TGS.ServiceUtility;
-using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
 {

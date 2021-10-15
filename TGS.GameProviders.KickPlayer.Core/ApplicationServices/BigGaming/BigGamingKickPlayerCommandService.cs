@@ -1,25 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients.BigGaming;
+using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Repositories;
-using TGS.ServiceUtility;
-using TGS.GameProviders.KickPlayer.Core.ApplicationServices.BigGaming;
 using TGS.GameProviders.Repositories.Domains;
-using System.Collections.Generic;
-using TGS.GameProviders.ApiClients;
+using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.BigGaming
 {
     public class BigGamingKickPlayerCommandService : ICommandService<BigGamingPlayerKickCommand>
     {
         private readonly IBigGamingApiClient _client;
+        private readonly IGameRepository _gameRepository;
         private readonly ILogger<BigGamingKickPlayerCommandService> _logger;
         private readonly IPlayerRepository _playerRepository;
         private readonly IBigGamingService _service;
-        private readonly IGameRepository _gameRepository;
+
         public BigGamingKickPlayerCommandService(
             ILogger<BigGamingKickPlayerCommandService> logger,
             IBigGamingApiClient client,
@@ -73,7 +72,6 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.BigGaming
             }));
 
             await Task.WhenAll(tasks);
-
         }
     }
 }

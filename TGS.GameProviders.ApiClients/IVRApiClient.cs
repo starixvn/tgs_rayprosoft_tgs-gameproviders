@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using TGS.GameProviders.ApiClients.VR;
 using TGS.GameProviders.ApiClients.VR.Models;
 using TGS.GameProviders.ApiClients.VR.Models.Commons;
 using TGS.GameProviders.Domains.SettingConfiguration.VR;
-using TGS.GameProviders.ApiClients.VR;
 
 namespace TGS.GameProviders.ApiClients
 {

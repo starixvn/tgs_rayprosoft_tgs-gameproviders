@@ -2,12 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients.WGSports;
+using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Repositories;
 using TGS.ServiceUtility;
-using TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGSports;
-using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGSports
 {
@@ -32,7 +30,6 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGSports
 
         public async ValueTask ExecuteAsync(WGSportsPlayerKickCommand command, CancellationToken cancellationToken = default)
         {
-
             var player = await _playerRepository.GetPlayerAsync(command.PlayerCode).ConfigureAwait(false);
             if (player == null)
             {

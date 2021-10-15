@@ -12,8 +12,8 @@ namespace TGS.GameProviders.KickPlayer.ReceiverServer.ReceiveHandlers
 {
     internal class BigGamingKickPlayerReceiveHandler : IMessageHandler
     {
-        private readonly ILogger<BigGamingKickPlayerReceiveHandler> _logger;
         private readonly ICommandService<BigGamingPlayerKickCommand> _commandService;
+        private readonly ILogger<BigGamingKickPlayerReceiveHandler> _logger;
 
         public BigGamingKickPlayerReceiveHandler(
             ILogger<BigGamingKickPlayerReceiveHandler> logger,

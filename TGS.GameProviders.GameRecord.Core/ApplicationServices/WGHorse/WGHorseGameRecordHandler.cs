@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using TGS.GameProviders.ApiClients.WGHorse;
+using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.WGHorse.Models;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Domains.Extensions;
@@ -12,7 +12,6 @@ using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 using TGS.ServiceUtility;
-using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
 {

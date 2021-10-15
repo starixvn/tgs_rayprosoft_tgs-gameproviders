@@ -2,21 +2,19 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients.WGHorse;
+using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Repositories;
 using TGS.ServiceUtility;
-using TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGHorse;
-using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGHorse
 {
     public class WGHorseKickPlayerCommandService : ICommandService<WGHorsePlayerKickCommand>
     {
-        private readonly ILogger<WGHorseKickPlayerCommandService> _logger;
         private readonly IWGHorseApiClient _client;
-        private readonly IWGHorseService _service;
+        private readonly ILogger<WGHorseKickPlayerCommandService> _logger;
         private readonly IPlayerRepository _playerRepository;
+        private readonly IWGHorseService _service;
 
         public WGHorseKickPlayerCommandService(
             ILogger<WGHorseKickPlayerCommandService> logger,
@@ -32,7 +30,6 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGHorse
 
         public async ValueTask ExecuteAsync(WGHorsePlayerKickCommand command, CancellationToken cancellationToken = default)
         {
-
             var player = await _playerRepository.GetPlayerAsync(command.PlayerCode).ConfigureAwait(false);
             if (player == null)
             {

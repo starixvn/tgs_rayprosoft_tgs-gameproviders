@@ -12,9 +12,9 @@ namespace TGS.GameProviders.KickPlayer.ReceiverServer.ReceiveHandlers
 {
     internal class TCGKickPlayerReceiveHandler : IMessageHandler
     {
-        private readonly ILogger<TCGKickPlayerReceiveHandler> _logger;
         private readonly ICommandService<TCGPlayerKickCommand> _commandService;
-        
+        private readonly ILogger<TCGKickPlayerReceiveHandler> _logger;
+
         public TCGKickPlayerReceiveHandler(
             ILogger<TCGKickPlayerReceiveHandler> logger,
             ICommandService<TCGPlayerKickCommand> commandService)

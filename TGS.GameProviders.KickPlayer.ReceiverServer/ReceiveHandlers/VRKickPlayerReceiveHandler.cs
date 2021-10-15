@@ -12,8 +12,8 @@ namespace TGS.GameProviders.KickPlayer.ReceiverServer.ReceiveHandlers
 {
     internal class VRKickPlayerReceiveHandler : IMessageHandler
     {
-        private readonly ILogger<VRKickPlayerReceiveHandler> _logger;
         private readonly ICommandService<VRPlayerKickCommand> _commandService;
+        private readonly ILogger<VRKickPlayerReceiveHandler> _logger;
 
         public VRKickPlayerReceiveHandler(
             ILogger<VRKickPlayerReceiveHandler> logger,

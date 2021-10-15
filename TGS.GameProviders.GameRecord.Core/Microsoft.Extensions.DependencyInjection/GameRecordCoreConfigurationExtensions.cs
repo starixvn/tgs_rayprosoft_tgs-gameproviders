@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.Extensions.Configuration;
 using TGS.GameProviders.GameRecord.Core;
 using TGS.GameProviders.GameRecord.Core.Processors;
 using TGS.GameProviders.TCG.FTPApi.Client;

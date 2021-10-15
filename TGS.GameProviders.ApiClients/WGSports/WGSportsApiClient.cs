@@ -12,7 +12,6 @@ using TGS.GameProviders.ApiClients.WGSports.Models.Commons;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration;
-using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.ApiClients.WGSports
 {

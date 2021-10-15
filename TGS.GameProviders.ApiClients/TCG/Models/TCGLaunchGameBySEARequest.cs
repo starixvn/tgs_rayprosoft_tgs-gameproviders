@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using TGS.GameProviders.ApiClients.TCG.Models.Commons;
-using TGS.GameProviders.ApiClients.TCG.Models;
 
 namespace TGS.GameProviders.ApiClients.TCG.Models
 {
