@@ -28,7 +28,7 @@
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Trigrams" Version="5.0.10" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.2" />
-		<PackageReference Include="TGS.GameProviders.TCG.FTPApi.Client" Version="1.0.3" />
+		<PackageReference Include="TGS.GameProviders.TCG.FTPApi.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.Logging" Version="0.0.11" />
 		<PackageReference Include="Tgs.MessageQueue.Nats" Version="1.1.1" />
 		<PackageReference Include="Tgs.MessageQueue.RabbitMQ" Version="0.0.5" />
