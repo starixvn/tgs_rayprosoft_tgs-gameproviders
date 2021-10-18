@@ -65,7 +65,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
                 EndTime = query.EndTime.ToUnixTimeMilliseconds()
             };
 
-            var response = await _client.GetGameRecordAsync(brandMerchant, agentId, dateTimeOffset, data);
+            var response = await _client.GetGameRecordAsync(brandMerchant.ApiRecordUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, dateTimeOffset, data);
 
             var players = new Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)>();
             var games = new Dictionary<int, GetGame>();

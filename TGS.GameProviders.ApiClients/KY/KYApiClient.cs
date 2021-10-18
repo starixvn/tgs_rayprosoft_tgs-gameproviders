@@ -9,9 +9,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.KY.Models;
 using TGS.GameProviders.ApiClients.KY.Models.Commons;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Domains.SettingConfiguration.KY;
 
 namespace TGS.GameProviders.ApiClients.KY
 {
@@ -34,14 +32,14 @@ namespace TGS.GameProviders.ApiClients.KY
             _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         }
 
-        public ValueTask<KYApiResponse<KYFnudResponse>> FundAsync(KYBrandMerchant brandMerchant, string agentId, DateTimeOffset dateTimeOffset, KYAction action, KYFnudRequest request)
+        public ValueTask<KYApiResponse<KYFnudResponse>> FundAsync(Uri apiUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, KYAction action, KYFnudRequest request)
         {
             request.Action = _utility.GetAction(action) ?? -1;
 
             var timestamp = dateTimeOffset.ToUnixTimeMilliseconds();
             var dataPath = _utility.GetPath(request);
-            var param = _utility.AesEncrypt(dataPath, brandMerchant.Deskey, true);
-            var plainText = $"{agentId}{timestamp}{brandMerchant.Md5key}";
+            var param = _utility.AesEncrypt(dataPath, deskey, true);
+            var plainText = $"{agentId}{timestamp}{md5key}";
             var key = _utility.HashMD5(plainText);
 
             var apiKYRequest = new KYApiRequest()
@@ -52,18 +50,18 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYFnudResponse>(brandMerchant.ApiUrl, action, apiKYRequest, "Fund");
+            return GetAPIAsync<KYFnudResponse>(apiUrl, action, apiKYRequest, "Fund");
         }
 
-        public ValueTask<KYApiResponse<KYFundCheckingResponse>> FundCheckingAsync(KYBrandMerchant brandMerchant, string agentId, KYFundCheckingRequest request)
+        public ValueTask<KYApiResponse<KYFundCheckingResponse>> FundCheckingAsync(Uri apiUrl, string deskey, string md5key, string agentId, KYFundCheckingRequest request)
         {
             var action = KYAction.FundChecking;
             request.Action = _utility.GetAction(action) ?? -1;
 
             var timestamp = DateTimeOffset.UtcNow.AddHours(+8).ToUnixTimeMilliseconds();
             var dataPath = _utility.GetPath(request);
-            var param = _utility.AesEncrypt(dataPath, brandMerchant.Deskey, true);
-            var plainText = $"{agentId}{timestamp}{brandMerchant.Md5key}";
+            var param = _utility.AesEncrypt(dataPath, deskey, true);
+            var plainText = $"{agentId}{timestamp}{md5key}";
             var key = _utility.HashMD5(plainText);
 
             var apiKYRequest = new KYApiRequest()
@@ -74,18 +72,18 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYFundCheckingResponse>(brandMerchant.ApiUrl, action, apiKYRequest, "FundChecking");
+            return GetAPIAsync<KYFundCheckingResponse>(apiUrl, action, apiKYRequest, "FundChecking");
         }
 
-        public ValueTask<KYApiResponse<KYGetBalanceResponse>> GetBalanceAsync(KYBrandMerchant brandMerchant, string agentId, KYGetBalanceRequest request)
+        public ValueTask<KYApiResponse<KYGetBalanceResponse>> GetBalanceAsync(Uri apiUrl, string deskey, string md5key, string agentId, KYGetBalanceRequest request)
         {
             var action = KYAction.GetBalance;
             request.Action = _utility.GetAction(action) ?? -1;
 
             var timestamp = DateTimeOffset.UtcNow.AddHours(+8).ToUnixTimeMilliseconds();
             var dataPath = _utility.GetPath(request);
-            var param = _utility.AesEncrypt(dataPath, brandMerchant.Deskey, true);
-            var plainText = $"{agentId}{timestamp}{brandMerchant.Md5key}";
+            var param = _utility.AesEncrypt(dataPath, deskey, true);
+            var plainText = $"{agentId}{timestamp}{md5key}";
             var key = _utility.HashMD5(plainText);
 
             var apiKYRequest = new KYApiRequest()
@@ -96,18 +94,18 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYGetBalanceResponse>(brandMerchant.ApiUrl, action, apiKYRequest, "Balance");
+            return GetAPIAsync<KYGetBalanceResponse>(apiUrl, action, apiKYRequest, "Balance");
         }
 
-        public ValueTask<KYApiResponse<KYGameRecordResponse>> GetGameRecordAsync(KYBrandMerchant brandMerchant, string agentId, DateTimeOffset dateTimeOffset, KYGameRecordRequest request)
+        public ValueTask<KYApiResponse<KYGameRecordResponse>> GetGameRecordAsync(Uri apiUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, KYGameRecordRequest request)
         {
             var action = KYAction.GameRecord;
             request.Action = _utility.GetAction(action) ?? -1;
 
             var timestamp = dateTimeOffset.ToUnixTimeMilliseconds();
             var dataPath = _utility.GetPath(request);
-            var param = _utility.AesEncrypt(dataPath, brandMerchant.Deskey, true);
-            var plainText = $"{agentId}{timestamp}{brandMerchant.Md5key}";
+            var param = _utility.AesEncrypt(dataPath, deskey, true);
+            var plainText = $"{agentId}{timestamp}{md5key}";
             var key = _utility.HashMD5(plainText);
 
             var apiKYRequest = new KYApiRequest()
@@ -118,18 +116,18 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYGameRecordResponse>(brandMerchant.ApiRecordUrl, action, apiKYRequest, "GameRecord");
+            return GetAPIAsync<KYGameRecordResponse>(apiUrl, action, apiKYRequest, "GameRecord");
         }
 
-        public ValueTask<KYApiResponse<KYGameUrlResponse>> GetGameUrlAsync(KYBrandMerchant brandMerchant, string agentId, DateTimeOffset dateTimeOffset, KYGameUrlRequest request)
+        public ValueTask<KYApiResponse<KYGameUrlResponse>> GetGameUrlAsync(Uri apiUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, KYGameUrlRequest request)
         {
             var action = KYAction.GetGameUrl;
             request.Action = _utility.GetAction(KYAction.GetGameUrl) ?? -1;
 
             var timestamp = dateTimeOffset.ToUnixTimeMilliseconds();
             var dataPath = _utility.GetPath(request);
-            var param = _utility.AesEncrypt(dataPath, brandMerchant.Deskey, true);
-            var plainText = $"{agentId}{timestamp}{brandMerchant.Md5key}";
+            var param = _utility.AesEncrypt(dataPath, deskey, true);
+            var plainText = $"{agentId}{timestamp}{md5key}";
             var key = _utility.HashMD5(plainText);
 
             var apiKYRequest = new KYApiRequest()
@@ -140,18 +138,18 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYGameUrlResponse>(brandMerchant.ApiUrl, action, apiKYRequest, "GameUrl");
+            return GetAPIAsync<KYGameUrlResponse>(apiUrl, action, apiKYRequest, "GameUrl");
         }
 
-        public ValueTask<KYApiResponse<KYKickResponse>> KickAsync(KYBrandMerchant brandMerchant, string agentId, KYKickRequest request)
+        public ValueTask<KYApiResponse<KYKickResponse>> KickAsync(Uri apiUrl, string deskey, string md5key, string agentId, KYKickRequest request)
         {
             var action = KYAction.Kick;
             request.Action = _utility.GetAction(action) ?? -1;
 
             var timestamp = DateTimeOffset.UtcNow.AddHours(+8).ToUnixTimeMilliseconds();
             var dataPath = _utility.GetPath(request);
-            var param = _utility.AesEncrypt(dataPath, brandMerchant.Deskey, true);
-            var plainText = $"{agentId}{timestamp}{brandMerchant.Md5key}";
+            var param = _utility.AesEncrypt(dataPath, deskey, true);
+            var plainText = $"{agentId}{timestamp}{md5key}";
             var key = _utility.HashMD5(plainText);
 
             var apiKYRequest = new KYApiRequest()
@@ -162,12 +160,12 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYKickResponse>(brandMerchant.ApiUrl, action, apiKYRequest, "Kick");
+            return GetAPIAsync<KYKickResponse>(apiUrl, action, apiKYRequest, "Kick");
         }
 
         private async ValueTask<KYApiResponse<TData>> GetAPIAsync<TData>(Uri apiUrl, KYAction action, KYApiRequest request, string logPrefix)
         {
-            logPrefix = $"{GameProviderType.TCG }.{logPrefix}";
+            logPrefix = $"{nameof(KYApiClient).ToLower() }.{logPrefix}";
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(KYApiResponse<TData>);

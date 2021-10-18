@@ -14,10 +14,10 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.WGSports
     {
         private readonly IGameProviderScheduleLockRepository _gameProviderScheduleLockRepository;
         private readonly IGetService<WGSportsGameRecordHandlerQuery, WGSportsGameRecordHandlerResult> _getService;
-        private readonly IWGHorseService _service;
+        private readonly IWGSportsService _service;
 
         public WGSportsJobWorkerCommandService(
-            IWGHorseService service,
+            IWGSportsService service,
             IGetService<WGSportsGameRecordHandlerQuery, WGSportsGameRecordHandlerResult> getService,
             IGameProviderScheduleLockRepository gameProviderScheduleLockRepository)
         {
