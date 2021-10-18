@@ -68,7 +68,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.BigGaming
 
             while (true)
             {
-                var response = await _client.GetGameRecordAsync(brandMerchant, request).ConfigureAwait(false);
+                var response = await _client.GetGameRecordAsync(brandMerchant.ApiUrl, brandMerchant.SecretCode, brandMerchant.SecretKey, request).ConfigureAwait(false);
                 if (response.Error != null)
                 {
                     return new()
