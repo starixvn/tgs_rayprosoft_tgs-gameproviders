@@ -12,12 +12,14 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services,
             Action<TcgFtpServiceClientOptions, IServiceProvider> ftpServiceClientConfigure)
         {
+            services
+                .RegisterAllServiceUtilityTypes(
+                Assembly.GetExecutingAssembly(),
+                ServiceLifetime.Transient);
+
             services.AddTcgFtpServiceClient(ftpServiceClientConfigure);
 
             return services
-                .RegisterAllServiceUtilityTypes(
-                    Assembly.GetExecutingAssembly(),
-                    ServiceLifetime.Transient)
                 .AddTransient<IGameRecordProcessor, GameRecordProcessor>()
                 .AddTransient<IGameRecordProcessorSuccess, GameRecordProcessorSuccess>()
                 .AddTransient<IGameRecordProcessorFailed, GameRecordProcessorFailed>();
