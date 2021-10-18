@@ -9,15 +9,21 @@ using TGS.GameProviders.ApiClients.Evolution;
 using TGS.GameProviders.ApiClients.Evolution.Models;
 using TGS.GameProviders.ApiClients.Evolution.Models.Commons.EvolutionGameUrl;
 using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
     [TestFixture]
     public class EvolutionGameRecordUnitTest
     {
+        private readonly Uri _apiUrl = new Uri("https://babylonqm.uat1.evo-test.com/");
+        private readonly string _casinoID = "babylonqm0000001";
         private readonly IEvolutionApiClient _client;
-        private readonly EvolutionConfiguration _configuration;
+        private readonly string _externalLobbyApiToken = "test123";
+        private readonly string _gameHistoryApiToken = "test123";
+        private readonly string _owAuthToken = "I2gcyH6kRTiHYAzLxy1RfH";
+        private readonly Uri _serviceEndpointUrl = new Uri("http://game-evo");
+        private readonly Uri _ua2AuthenticationUrl = new Uri("https://babylonqm.uat1.evo-test.com/ua/v1/babylonqm0000001/test123");
+        private readonly string _ua2Token = "test123";
 
         public EvolutionGameRecordUnitTest()
         {
@@ -26,17 +32,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<IEvolutionApiClient>();
             //_client = new EvolutionApiClient(client, faceLog, faceTgsLog);
-            _configuration = new EvolutionConfiguration
-            {
-                ApiUrl = new Uri("https://babylonqm.uat1.evo-test.com/"),
-                CasinoID = "babylonqm0000001",
-                Ua2Token = "test123",
-                GameHistoryApiToken = "test123",
-                ExternalLobbyApiToken = "test123",
-                Ua2AuthenticationUrl = new Uri("https://babylonqm.uat1.evo-test.com/ua/v1/babylonqm0000001/test123"),
-                OwAuthToken = "I2gcyH6kRTiHYAzLxy1RfH",
-                ServiceEndpointUrl = new Uri("http://game-evo")
-            };
         }
 
         [Test]
@@ -77,7 +72,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 }
             };
 
-            _ = await _client.GetGameUrlAsync(_configuration, request);
+            _ = await _client.GetGameUrlAsync(_ua2AuthenticationUrl, request);
         }
 
         [Test]
@@ -85,11 +80,11 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         {
             var request = new EvolutionGamHistoryRoundRequest()
             {
-                PlayerCode = "4uevujuqj4n6",
-                RoundId = "6930499-297"
+                PlayerCode = "4uerjhy1ls17",
+                RoundId = "3563277-56"
             };
 
-            _ = await _client.GetGamHistoryRoundAsync(_configuration, request);
+            _ = await _client.GetGamHistoryRoundAsync(_apiUrl, _casinoID, _gameHistoryApiToken, request);
         }
     }
 }

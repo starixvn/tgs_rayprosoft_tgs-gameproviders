@@ -11,7 +11,6 @@ using Tgs.Logging;
 using TGS.GameProviders.ApiClients.Evolution.Models;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.ApiClients.Evolution
 {
@@ -32,23 +31,23 @@ namespace TGS.GameProviders.ApiClients.Evolution
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         }
 
-        public ValueTask<EvolutionGameUrlResponse> GetGameUrlAsync(EvolutionConfiguration configuration, EvolutionGameUrlRequest request)
-            => PostAsync<EvolutionGameUrlRequest, EvolutionGameUrlResponse>(configuration.Ua2AuthenticationUrl, request, "GetGameUrl");
+        public ValueTask<EvolutionGameUrlResponse> GetGameUrlAsync(Uri ua2AuthenticationUrl, EvolutionGameUrlRequest request)
+            => PostAsync<EvolutionGameUrlRequest, EvolutionGameUrlResponse>(ua2AuthenticationUrl, request, "GetGameUrl");
 
-        public async ValueTask<EvolutionGamHistoryRoundResponse> GetGamHistoryRoundAsync(EvolutionConfiguration configuration, EvolutionGamHistoryRoundRequest request)
+        public async ValueTask<EvolutionGamHistoryRoundResponse> GetGamHistoryRoundAsync(Uri apiUrl, string casinoID, string gameHistoryApiToken, EvolutionGamHistoryRoundRequest request)
         {
-            var url = new Uri($"{configuration.ApiUrl}api/gamehistory/v1/players/{request.PlayerCode}/games/{request.RoundId}");
-            return await GetAsync<EvolutionGamHistoryRoundResponse>(url, configuration, "GetGamHistoryRound").ConfigureAwait(false);
+            var url = new Uri($"{apiUrl}api/gamehistory/v1/players/{request.PlayerCode}/games/{request.RoundId}");
+            return await GetAsync<EvolutionGamHistoryRoundResponse>(url, casinoID, gameHistoryApiToken, "GetGamHistoryRound").ConfigureAwait(false);
         }
 
-        private async ValueTask<TResult> GetAsync<TResult>(Uri apiUrl, EvolutionConfiguration configuration, string logPrefix)
+        private async ValueTask<TResult> GetAsync<TResult>(Uri apiUrl, string casinoID, string gameHistoryApiToken, string logPrefix)
         {
-            logPrefix = $"{GameProviderType.Evolution }.{logPrefix}";
+            logPrefix = $"{nameof(EvolutionApiClient) }.{logPrefix}";
 
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(TResult);
-            _client.DefaultRequestHeaders.Add("Authorization", $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{configuration.CasinoID}:{configuration.GameHistoryApiToken}"))}");
+            _client.DefaultRequestHeaders.Add("Authorization", $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{casinoID}:{gameHistoryApiToken}"))}");
             var httpResponseMessage = await _client.GetAsync(apiUrl);
             sw.Stop();
             using (var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result))
@@ -100,7 +99,7 @@ namespace TGS.GameProviders.ApiClients.Evolution
 
         private async ValueTask<TResult> PostAsync<TSource, TResult>(Uri apiUrl, TSource source, string logPrefix)
         {
-            logPrefix = $"{GameProviderType.Evolution }.{logPrefix}";
+            logPrefix = $"{nameof(EvolutionApiClient) }.{logPrefix}";
 
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
