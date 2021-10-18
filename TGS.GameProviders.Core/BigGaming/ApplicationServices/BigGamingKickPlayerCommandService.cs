@@ -44,7 +44,7 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
             {
                 tasks.Add(Task.Run(async () =>
                 {
-                    await _client.KickPlayerGameAsync(brandMerchant, new()
+                    await _client.KickPlayerGameAsync(brandMerchant.ApiUrl, brandMerchant.AgentLoginIdPassword, new()
                     {
                         Random = Guid.NewGuid().ToString(),
                         Sn = brandMerchant.SecretCode,
@@ -57,7 +57,7 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 
             tasks.Add(Task.Run(async () =>
             {
-                await _client.KickPlayerAsync(brandMerchant, new()
+                await _client.KickPlayerAsync(brandMerchant.ApiUrl, brandMerchant.AgentLoginIdPassword, new()
                 {
                     Random = Guid.NewGuid().ToString(),
                     Sn = brandMerchant.SecretCode,
