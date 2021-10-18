@@ -34,7 +34,12 @@ namespace TGS.GameProviders.Core.WGHorse
                 PlayerNickname = playerCode,
                 CurrencyCode = gameProviderCurrencyCode,
             };
-            var prepareLoginResponse = await _client.GetPrepareLoginAsync(configuration, prepareLoginRequest).ConfigureAwait(false);
+            var prepareLoginResponse = await _client.GetPrepareLoginAsync(
+                configuration.ApiUrl,
+                configuration.PartnerCode,
+                configuration.PartnerKey,
+                configuration.IV,
+                prepareLoginRequest).ConfigureAwait(false);
             return (prepareLoginResponse.ReturnCode == 1);
         }
     }

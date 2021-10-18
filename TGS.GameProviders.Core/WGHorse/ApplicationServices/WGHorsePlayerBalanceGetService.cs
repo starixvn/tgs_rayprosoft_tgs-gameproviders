@@ -35,13 +35,23 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
             {
                 PlayerCode = command.PlayerCode
             };
-            var response = await _client.GetBalanceAsync(configuration, source).ConfigureAwait(false);
+            var response = await _client.GetBalanceAsync(
+                configuration.ApiUrl,
+                configuration.PartnerCode,
+                configuration.PartnerKey,
+                configuration.IV,
+                source).ConfigureAwait(false);
 
             if (response.ReturnCode == 602)
             {
                 if (await _playerCreate.CreatePlayerAsync(configuration, command.PlayerCode, command.CurrencyCode).ConfigureAwait(false))
                 {
-                    response = await _client.GetBalanceAsync(configuration, source).ConfigureAwait(false);
+                    response = await _client.GetBalanceAsync(
+                        configuration.ApiUrl,
+                        configuration.PartnerCode,
+                        configuration.PartnerKey,
+                        configuration.IV,
+                        source).ConfigureAwait(false);
                 }
             }
 
