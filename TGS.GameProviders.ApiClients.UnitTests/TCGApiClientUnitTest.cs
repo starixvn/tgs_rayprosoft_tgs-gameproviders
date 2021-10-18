@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
@@ -6,8 +7,6 @@ using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.TCG;
 using TGS.GameProviders.ApiClients.TCG.Models;
-using TGS.GameProviders.Domains.SettingConfiguration;
-using TGS.GameProviders.Domains.SettingConfiguration.TCG;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
@@ -15,10 +14,22 @@ namespace TGS.GameProviders.ApiClients.UnitTests
     public class TCGApiClientUnitTest
     {
         private readonly ITCGApiClient _client;
-        private readonly TCGConfiguration _configuration;
-        private readonly TCGMerchant _merchant;
-        private readonly TCGMerchant _merchantVND;
         private readonly ITCGUtility _utility;
+
+
+        private readonly Uri _apiUrl = new("http://www.connect6play.com/doBusiness.do");
+        private readonly Uri _gameUrl = new("https://tcg-cny.srvttt.com");
+        private const string _currencyCode = "CNY";
+        private const string _merchantCode = "pegacnys";
+        private const string _desKey = "EuWEfLac";
+        private const string _sha256Key = "h2f69FzdSmMZzrdE";
+        private const string _playerPassword = "TgsPassw0rd";
+
+        private const string _vnd_currencyCode = "CNY";
+        private const string _vnd_merchantCode = "pegacnys";
+        private const string _vnd_desKey = "EuWEfLac";
+        private const string _vnd_sha256Key = "h2f69FzdSmMZzrdE";
+        private const string _vnd_playerPassword = "TgsPassw0rd";
 
         public TCGApiClientUnitTest()
         {
@@ -28,32 +39,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<ITCGApiClient>();
             //_client = new TCGApiClient(client, faceLog, faceTgsLog, _utility);
-
-            _merchant = new TCGMerchant
-            {
-                GameUrl = new("https://tcg-cny.srvttt.com"),
-                CurrencyCode = "CNY",
-                MerchantCode = "pegacnys",
-                DESKey = "EuWEfLac",
-                SHA256Key = "h2f69FzdSmMZzrdE",
-                PlayerPassword = "TgsPassw0rd"
-            };
-
-            _merchantVND = new TCGMerchant()
-            {
-                GameUrl = new("https://tcg-vnd.srvttt.com"),
-                CurrencyCode = "VND",
-                MerchantCode = "pegavnds",
-                DESKey = "AiynBxjI",
-                SHA256Key = "NH5v1N9XlCnbQjj1",
-                PlayerPassword = "TgsPassw0rd"
-            };
-            _configuration = new TCGConfiguration()
-            {
-                ServiceEndpointUrl = new("http://game-tcg"),
-                ApiUrl = new("http://www.connect6play.com/doBusiness.do"),
-                Merchants = new TCGMerchant[] { _merchant, _merchantVND }
-            };
         }
 
         [Test]
@@ -69,7 +54,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 LotteryBetMode = "Elott_Traditional",
                 View = "Lobby"
             };
-            _ = await _client.LaunchGameAsync(_configuration.ApiUrl, _merchant, data).ConfigureAwait(false);
+            _ = await _client.LaunchGameAsync(_apiUrl, _merchantCode, _desKey, _sha256Key, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -85,7 +70,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 LotteryBetMode = "Elott",
                 View = "lobby"
             };
-            _ = await _client.LaunchGameAsync(_configuration.ApiUrl, _merchantVND, data).ConfigureAwait(false);
+            _ = await _client.LaunchGameAsync(_apiUrl, _vnd_merchantCode, _vnd_desKey, _vnd_sha256Key, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -101,7 +86,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 LotteryBetMode = "SEA_Tradition",
                 View = "Lobby"
             };
-            _ = await _client.LaunchGameAsync(_configuration.ApiUrl, _merchant, data).ConfigureAwait(false);
+            _ = await _client.LaunchGameAsync(_apiUrl, _merchantCode, _desKey, _sha256Key, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -111,7 +96,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             {
                 UserName = "4ucmqplxb029"
             };
-            _ = await _client.KickOutLottoPlayerAsync(_configuration.ApiUrl, _merchant, data).ConfigureAwait(false);
+            _ = await _client.KickOutLottoPlayerAsync(_apiUrl, _merchantCode, _desKey, _sha256Key, data).ConfigureAwait(false);
         }
     }
 }

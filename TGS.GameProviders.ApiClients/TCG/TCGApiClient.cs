@@ -10,9 +10,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.TCG.Models;
 using TGS.GameProviders.ApiClients.TCG.Models.Commons;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Domains.SettingConfiguration.TCG;
 
 namespace TGS.GameProviders.ApiClients.TCG
 {
@@ -35,35 +33,35 @@ namespace TGS.GameProviders.ApiClients.TCG
             _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         }
 
-        public ValueTask<TCGKickOutLottoPlayerResponse> KickOutLottoPlayerAsync(Uri ApiUrl, TCGMerchant merchant, TCGKickOutLottoPlayerRequest request)
-            => GetAPIAsync<TCGKickOutLottoPlayerRequest, TCGKickOutLottoPlayerResponse>(ApiUrl, merchant, request, "KickOutLottoPlayer");
+        public ValueTask<TCGKickOutLottoPlayerResponse> KickOutLottoPlayerAsync(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TCGKickOutLottoPlayerRequest request)
+            => PostAsync<TCGKickOutLottoPlayerRequest, TCGKickOutLottoPlayerResponse>(apiUrl, merchantCode, desKey, sha256Key, request, "KickOutLottoPlayer");
 
-        public ValueTask<TCGLaunchGameResponse> LaunchGameAsync(Uri ApiUrl, TCGMerchant merchant, TCGLaunchGameByELOTTORequest request)
-            => GetAPIAsync<TCGLaunchGameByELOTTORequest, TCGLaunchGameResponse>(ApiUrl, merchant, request, "LaunchGameByELOTTO");
+        public ValueTask<TCGLaunchGameResponse> LaunchGameAsync(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TCGLaunchGameByELOTTORequest request)
+            => PostAsync<TCGLaunchGameByELOTTORequest, TCGLaunchGameResponse>(apiUrl, merchantCode, desKey, sha256Key, request, "LaunchGameByELOTTO");
 
-        public ValueTask<TCGLaunchGameResponse> LaunchGameAsync(Uri ApiUrl, TCGMerchant merchant, TCGLaunchGameBySEARequest request)
-            => GetAPIAsync<TCGLaunchGameBySEARequest, TCGLaunchGameResponse>(ApiUrl, merchant, request, "LaunchGameBySEA");
+        public ValueTask<TCGLaunchGameResponse> LaunchGameAsync(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TCGLaunchGameBySEARequest request)
+            => PostAsync<TCGLaunchGameBySEARequest, TCGLaunchGameResponse>(apiUrl, merchantCode, desKey, sha256Key, request, "LaunchGameBySEA");
 
-        public ValueTask<TCGLaunchGameResponse> LaunchGameAsync(Uri ApiUrl, TCGMerchant merchant, TCGLaunchGameByLOTTOVNRequest request)
-            => GetAPIAsync<TCGLaunchGameByLOTTOVNRequest, TCGLaunchGameResponse>(ApiUrl, merchant, request, "LaunchGameByLOTTOVN");
+        public ValueTask<TCGLaunchGameResponse> LaunchGameAsync(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TCGLaunchGameByLOTTOVNRequest request)
+            => PostAsync<TCGLaunchGameByLOTTOVNRequest, TCGLaunchGameResponse>(apiUrl, merchantCode, desKey, sha256Key, request, "LaunchGameByLOTTOVN");
 
-        public ValueTask<TCGRegisterPlayerResponse> RegisterPlayerAsync(Uri ApiUrl, TCGMerchant merchant, TCGRegisterPlayerRequest request)
-            => GetAPIAsync<TCGRegisterPlayerRequest, TCGRegisterPlayerResponse>(ApiUrl, merchant, request, "RegisterPlayer");
+        public ValueTask<TCGRegisterPlayerResponse> RegisterPlayerAsync(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TCGRegisterPlayerRequest request)
+            => PostAsync<TCGRegisterPlayerRequest, TCGRegisterPlayerResponse>(apiUrl, merchantCode, desKey, sha256Key, request, "RegisterPlayer");
 
-        public ValueTask<TCGUpdatePasswordPlayerResponse> RegisterPlayerAsync(Uri ApiUrl, TCGMerchant merchant, TCGUpdatePasswordPlayerRequest request)
-            => GetAPIAsync<TCGUpdatePasswordPlayerRequest, TCGUpdatePasswordPlayerResponse>(ApiUrl, merchant, request, "RegisterPlayer");
+        public ValueTask<TCGUpdatePasswordPlayerResponse> RegisterPlayerAsync(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TCGUpdatePasswordPlayerRequest request)
+            => PostAsync<TCGUpdatePasswordPlayerRequest, TCGUpdatePasswordPlayerResponse>(apiUrl, merchantCode, desKey, sha256Key, request, "RegisterPlayer");
 
-        private async ValueTask<TResponse> GetAPIAsync<TRequest, TResponse>(Uri apiUrl, TCGMerchant merchant, TRequest request, string logPrefix) where TResponse : TCGBaseResponse
+        private async ValueTask<TResponse> PostAsync<TRequest, TResponse>(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TRequest request, string logPrefix) where TResponse : TCGBaseResponse
         {
-            logPrefix = $"{GameProviderType.TCG }.{logPrefix}";
+            logPrefix = $"{nameof(TCGApiClient).ToLower() }.{logPrefix}";
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(TResponse);
             var jsonString = JsonSerializer.Serialize(request);
-            var encryptedParams = _utility.DESCEncrypt(jsonString, merchant.DESKey);
-            var sign = _utility.GetHash256(encryptedParams, merchant.SHA256Key);
+            var encryptedParams = _utility.DESCEncrypt(jsonString, desKey);
+            var sign = _utility.GetHash256(encryptedParams, sha256Key);
             var data =
-                "merchant_code=" + WebUtility.UrlEncode(merchant.MerchantCode)
+                "merchant_code=" + WebUtility.UrlEncode(merchantCode)
                 + "&params=" + WebUtility.UrlEncode(encryptedParams)
                 + "&sign=" + WebUtility.UrlEncode(sign);
 

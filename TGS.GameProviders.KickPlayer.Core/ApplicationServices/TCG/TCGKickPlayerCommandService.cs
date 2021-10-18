@@ -40,7 +40,9 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.TCG
 
             await _client.KickOutLottoPlayerAsync(
                 configuration.ApiUrl,
-                brandMerchant, new()
+                brandMerchant.MerchantCode,
+                brandMerchant.DESKey,
+                brandMerchant.SHA256Key, new()
                 {
                     UserName = command.PlayerCode
                 }).ConfigureAwait(false);
