@@ -114,7 +114,7 @@ namespace TGS.GameProviders.Core.WGHorse
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
         {
             var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.WGHorse).ConfigureAwait(false);
-            var (IsCurrencyCode, GameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCode(gameProvider.Id, currencyCode).ConfigureAwait(false);
+            var (IsCurrencyCode, GameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProvider.Id, currencyCode).ConfigureAwait(false);
             return (IsCurrencyCode) ? GameProviderCurrencyCode : null;
         }
 

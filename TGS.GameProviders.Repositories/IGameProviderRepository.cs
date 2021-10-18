@@ -10,6 +10,6 @@ namespace TGS.GameProviders.Repositories
 
         Task<GameProvider> GetGameProviderAsync(Guid gameProviderId);
 
-        Task<(bool IsCurrencyCode, string GameProviderCurrencyCode)> GetGameProviderCurrencyCode(Guid gameProviderId, string currencyCode);
+        Task<(bool IsCurrencyCode, string GameProviderCurrencyCode)> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
     }
 }

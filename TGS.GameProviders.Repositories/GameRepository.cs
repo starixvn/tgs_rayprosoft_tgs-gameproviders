@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Entities;
@@ -26,7 +25,7 @@ namespace TGS.GameProviders.Repositories
         }
 
         public Task<GetGame> GetGameAsync(int gameId)
-            => _context.Games.Where(x => x.Id == gameId).ProjectTo<GetGame>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                    => _context.Games.Where(x => x.Id == gameId).ProjectTo<GetGame>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
 
         public Task<GetGame> GetGameAsync(Guid gameProviderId, string externalGameId)
             => _context.Games.Where(x => x.GameProviderId == gameProviderId && x.ExternalId == externalGameId).ProjectTo<GetGame>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
