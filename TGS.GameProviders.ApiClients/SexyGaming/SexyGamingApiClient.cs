@@ -45,7 +45,7 @@ namespace TGS.GameProviders.ApiClients.SexyGaming
 
         private async ValueTask<TResult> PostAsync<TSource, TResult>(Uri apiUrl, string path, TSource source, string logPrefix)
         {
-            logPrefix = $"{nameof(SexyGamingApiClient)}.{logPrefix}";
+            logPrefix = $"{nameof(SexyGamingApiClient).ToLower()}.{logPrefix}";
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(TResult);

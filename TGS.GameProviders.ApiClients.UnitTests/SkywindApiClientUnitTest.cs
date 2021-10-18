@@ -15,8 +15,14 @@ namespace TGS.GameProviders.ApiClients.UnitTests
     public class SkywindApiClientUnitTest
     {
         private readonly ISkywindApiClient _client;
-        private readonly SkywindConfiguration _configuration;
-
+        private readonly Uri _apiUrl = new Uri("https://api.gcpstg.m27613.com/v1");
+        private readonly Uri _liveLobbyUrl = new Uri("https://2rkp4pb7-lobby.ss211208.com");
+        private const string _merchId = "sw_PG_merchant_stg";
+        private const string _merchPwd = "tm8jhMq2Sc5DdxJ5";
+        private const string _secretKey = "f841de30-a9eb-49d8-87c7-de878b571afe";
+        private const string _username = "PG_merchant_api_stg";
+        private const string _password = "3VSNMGFvbzBJacJT";
+        private readonly Uri _serviceEndpointUrl = new Uri("http://game-sw");
         public SkywindApiClientUnitTest()
         {
             var client = new HttpClient();
@@ -24,37 +30,54 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<ISkywindApiClient>();
             //_client = new SkywindApiClient(client, faceLog, faceTgsLog);
-            _configuration = new SkywindConfiguration
-            {
-                ApiUrl = new Uri("https://api.gcpstg.m27613.com/v1"),
-                LiveLobbyUrl = new Uri("https://2rkp4pb7-lobby.ss211208.com"),
-                MerchId = "sw_PG_merchant_stg",
-                MerchPwd = "tm8jhMq2Sc5DdxJ5",
-                SecretKey = "f841de30-a9eb-49d8-87c7-de878b571afe",
-                Username = "PG_merchant_api_stg",
-                Password = "3VSNMGFvbzBJacJT",
-                ServiceEndpointUrl = new Uri("http://game-sw")
-            };
+
         }
 
         [Test]
         public async Task GetAccessTokenAsync()
         {
-            _ = await _client.GetAccessTokenAsync(_configuration);
+            _ = await _client.GetAccessTokenAsync(_apiUrl, new()
+            {
+                SecretKey = _secretKey,
+                Username = _username,
+                Password = _password
+            });
         }
 
         [Test]
         public async Task GetGameUrlAsync()
         {
-            var loginResponse = await _client.GetAccessTokenAsync(_configuration);
+            var loginResponse = await _client.GetAccessTokenAsync(_apiUrl, new()
+            {
+                SecretKey = _secretKey,
+                Username = _username,
+                Password = _password
+            });
             var request = new SkywindGameUrlRequest()
             {
                 PlayerCode = "4ucmqplxb029",
                 GameCode = "sw_fg",
-                Ticket = "2Em5iT5tzqjAWu2rDa6COFzWfA7wruEngVWckhIPZ5L7vl6V1QybL922KWNzLPsVo",
+                Ticket = "OZmqtPV4Wz4Q3mQ6haBZ3RBbB60kGMSHAsU3v5wfeYRS9IBQ43fQ17Du2A72vM8T0",
                 Language = "zh-cn"
             };
-            _ = await _client.GetGameUrlAsync(_configuration, loginResponse?.AccessToken, request);
+            _ = await _client.GetGameUrlAsync(_apiUrl, loginResponse?.AccessToken, request);
+        }
+
+        [Test]
+        public async Task GetGamHistoryRoundDetailsAsync()
+        {
+            var loginResponse = await _client.GetAccessTokenAsync(_apiUrl, new()
+            {
+                SecretKey = _secretKey,
+                Username = _username,
+                Password = _password
+            });
+            var request = new SkywindGamHistoryRoundDetailsRequest()
+            {
+                RoundId = "OWLAp2LPK",
+                Language = "zh-cn"
+            };
+            _ = await _client.GetGamHistoryRoundDetailsAsync(_apiUrl, loginResponse?.AccessToken, request);
         }
     }
 }

@@ -9,9 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.Skywind.Models;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.ApiClients.Skywind
 {
@@ -37,36 +35,27 @@ namespace TGS.GameProviders.ApiClients.Skywind
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <returns></returns>
-        public async ValueTask<SkywindUserLoginResponse> GetAccessTokenAsync(SkywindConfiguration configuration)
+        public async ValueTask<SkywindUserLoginResponse> GetAccessTokenAsync(Uri apiUrl, SkywindUserLoginRequest request)
         {
-            var apiUrl = new Uri($"{configuration.ApiUrl}/login");
-
-            var source = new SkywindUserLoginRequest()
-            {
-                SecretKey = configuration.SecretKey,
-                Username = configuration.Username,
-                Password = configuration.Password
-            };
-            return await PostAsync<SkywindUserLoginRequest, SkywindUserLoginResponse>(apiUrl, source, "UserLogin").ConfigureAwait(false);
+            apiUrl = new Uri($"{apiUrl}/login");
+            return await PostAsync<SkywindUserLoginRequest, SkywindUserLoginResponse>(apiUrl, request, "UserLogin").ConfigureAwait(false);
         }
 
-        public async ValueTask<SkywindGameUrlResponse> GetGameUrlAsync(SkywindConfiguration configuration, string getaccessToken, SkywindGameUrlRequest request)
+        public async ValueTask<SkywindGameUrlResponse> GetGameUrlAsync(Uri apiUrl, string getaccessToken, SkywindGameUrlRequest request)
         {
-            var apiUrl = new Uri($"{configuration.ApiUrl}/players/{request.PlayerCode}/games/{request.GameCode}?ticket={request.Ticket}&language={request.Language}");
-
+            apiUrl = new Uri($"{apiUrl}/players/{request.PlayerCode}/games/{request.GameCode}?ticket={request.Ticket}&language={request.Language}");
             return await GetAsync<SkywindGameUrlResponse>(apiUrl, getaccessToken, "UserLogin").ConfigureAwait(false);
         }
 
-        public async ValueTask<SkywindGamHistoryRoundDetailsResponse> GetGamHistoryRoundDetailsAsync(SkywindConfiguration configuration, string getaccessToken, SkywindGamHistoryRoundDetailsRequest request)
+        public async ValueTask<SkywindGamHistoryRoundDetailsResponse> GetGamHistoryRoundDetailsAsync(Uri apiUrl, string getaccessToken, SkywindGamHistoryRoundDetailsRequest request)
         {
-            var apiUrl = new Uri($"{configuration.ApiUrl}/history/game/{request.RoundId}/image?language={request.Language}");
-
+            apiUrl = new Uri($"{apiUrl}/history/game/{request.RoundId}/image?language={request.Language}");
             return await GetAsync<SkywindGamHistoryRoundDetailsResponse>(apiUrl, getaccessToken, "GamHistoryRoundDetails").ConfigureAwait(false);
         }
 
         private async ValueTask<TResult> GetAsync<TResult>(Uri apiUrl, string getaccessToken, string logPrefix)
         {
-            logPrefix = $"{GameProviderType.Skywind }.{logPrefix}";
+            logPrefix = $"{nameof(SkywindApiClient).ToLower() }.{logPrefix}";
 
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
@@ -123,7 +112,7 @@ namespace TGS.GameProviders.ApiClients.Skywind
 
         private async ValueTask<TResult> PostAsync<TSource, TResult>(Uri apiUrl, TSource source, string logPrefix)
         {
-            logPrefix = $"{GameProviderType.Skywind }.{logPrefix}";
+            logPrefix = $"{nameof(SkywindApiClient).ToLower() }.{logPrefix}";
 
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
