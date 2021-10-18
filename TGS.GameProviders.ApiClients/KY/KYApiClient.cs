@@ -119,7 +119,7 @@ namespace TGS.GameProviders.ApiClients.KY
             return GetAPIAsync<KYGameRecordResponse>(apiUrl, action, apiKYRequest, "GameRecord");
         }
 
-        public ValueTask<KYApiResponse<KYGameUrlResponse>> GetGameUrlAsync(Uri apiUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, KYGameUrlRequest request)
+        public ValueTask<KYApiResponse<KYGameUrlResponse>> GetGameUrlAsync(Uri apiRecordUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, KYGameUrlRequest request)
         {
             var action = KYAction.GetGameUrl;
             request.Action = _utility.GetAction(KYAction.GetGameUrl) ?? -1;
@@ -138,7 +138,7 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYGameUrlResponse>(apiUrl, action, apiKYRequest, "GameUrl");
+            return GetAPIAsync<KYGameUrlResponse>(apiRecordUrl, action, apiKYRequest, "GameUrl");
         }
 
         public ValueTask<KYApiResponse<KYKickResponse>> KickAsync(Uri apiUrl, string deskey, string md5key, string agentId, KYKickRequest request)

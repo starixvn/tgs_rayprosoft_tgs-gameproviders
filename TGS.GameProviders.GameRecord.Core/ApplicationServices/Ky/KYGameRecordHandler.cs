@@ -119,7 +119,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
                     if (!games.TryGetValue(gameRecord.KindID, out GetGame game))
                     {
                         game = await _gameRepository.GetGameAsync(gameProviderId, gameRecord.KindID.ToString()).ConfigureAwait(false);
-                        games.Add(response.Data.List.KindID[i], game);
+                        games.Add(gameRecord.KindID, game);
                     }
 
                     if (playerInfo.Player == null || game == null)

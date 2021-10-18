@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using TGS.GameProviders.ApiClients.BigGaming.Models;
 using TGS.GameProviders.ApiClients.BigGaming.Models.Commons;
 using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
@@ -7,30 +8,30 @@ namespace TGS.GameProviders.ApiClients
 {
     public interface IBigGamingApiClient
     {
-        ValueTask<BigGamingResponse> CreateAgentAsync(BigGamingBrandMerchant brandMerchant, BigGamingCreateAgentRequest request);
+        ValueTask<BigGamingResponse> CreateAgentAsync(Uri apiurl, string secretCode, string secretKey, BigGamingCreateAgentRequest request);
 
-        ValueTask<BigGamingResponse> CreatePlayerAsync(BigGamingBrandMerchant brandMerchant, BigGamingCreatePlayerRequest request);
+        ValueTask<BigGamingResponse> CreatePlayerAsync(Uri apiurl, string secretCode, string agentLoginIdPassword, BigGamingCreatePlayerRequest request);
 
-        ValueTask<BigGamingResponse> GetGameRecordAsync(BigGamingBrandMerchant brandMerchant, BigGamingGameRecordFishingRequest request);
+        ValueTask<BigGamingResponse> GetGameRecordAsync(Uri apiurl, string secretCode, string secretKey, BigGamingGameRecordFishingRequest request);
 
-        ValueTask<BigGamingResponse> GetGameRecordFishingUrlAsync(BigGamingBrandMerchant brandMerchant, BigGamingGameRecordFishingUrlRequest request);
+        ValueTask<BigGamingResponse> GetGameRecordFishingUrlAsync(Uri apiurl, string secretCode, string secretKey, BigGamingGameRecordFishingUrlRequest request);
 
-        ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, BigGamingGetGameUrlLiveDealerRequest request);
+        ValueTask<BigGamingResponse> GetGameUrlAsync(Uri apiurl, string secretCode, string agentLoginIdPassword, BigGamingGetGameUrlLiveDealerRequest request);
 
-        ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, BigGamingGetGameUrlFishingRequest request);
+        ValueTask<BigGamingResponse> GetGameUrlAsync(Uri apiurl, string secretCode, string secretKey, BigGamingGetGameUrlFishingRequest request);
 
-        ValueTask<BigGamingResponse> GetTrialGameUrlAsync(BigGamingBrandMerchant brandMerchant, BigGamingGetTrialGameUrlRequest request);
+        ValueTask<BigGamingResponse> GetTrialGameUrlAsync(Uri apiurl, string secretCode, string secretKey, BigGamingGetTrialGameUrlRequest request);
 
-        ValueTask<BigGamingResponse> GetVideoOrderDetailAsync(BigGamingBrandMerchant brandMerchant, BigGamingVideoOrderDetailRequest request);
+        ValueTask<BigGamingResponse> GetVideoOrderDetailAsync(Uri apiurl, string secretKey, BigGamingVideoOrderDetailRequest request);
 
-        ValueTask<BigGamingResponse> GetVideoOrderQueryAsync(BigGamingBrandMerchant brandMerchant, BigGamingVideoOrderQueryRequest request);
+        ValueTask<BigGamingResponse> GetVideoOrderQueryAsync(Uri apiurl, string secretKey, BigGamingVideoOrderQueryRequest request);
 
-        ValueTask<BigGamingResponse> GetVideoRoundQueryAsync(BigGamingBrandMerchant brandMerchant, BigGamingVideoRoundQueryRequest request);
+        ValueTask<BigGamingResponse> GetVideoRoundQueryAsync(Uri apiurl, string secretKey, BigGamingVideoRoundQueryRequest request);
 
-        ValueTask<BigGamingResponse> InfoPlayerAsync(BigGamingBrandMerchant brandMerchant, BigGamingInfoPlayerRequest request);
+        ValueTask<BigGamingResponse> InfoPlayerAsync(Uri apiurl, string agentLoginIdPassword, BigGamingInfoPlayerRequest request);
 
-        ValueTask<BigGamingResponse> KickPlayerAsync(BigGamingBrandMerchant brandMerchant, BigGamingKickPlayerRequest request);
+        ValueTask<BigGamingResponse> KickPlayerAsync(Uri apiurl, string agentLoginIdPassword, BigGamingKickPlayerRequest request);
 
-        ValueTask<BigGamingResponse> KickPlayerGameAsync(BigGamingBrandMerchant brandMerchant, BigGamingKickPlayerGameRequest request);
+        ValueTask<BigGamingResponse> KickPlayerGameAsync(Uri apiurl, string agentLoginIdPassword, BigGamingKickPlayerGameRequest request);
     }
 }
