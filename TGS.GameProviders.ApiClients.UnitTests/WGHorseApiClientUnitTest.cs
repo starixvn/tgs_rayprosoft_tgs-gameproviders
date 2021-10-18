@@ -26,8 +26,8 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var client = new HttpClient();
             var faceLog = NullLogger<WGHorseApiClient>.Instance;
             var faceTgsLog = Substitute.For<ITgsLog>();
-            //_client = Substitute.For<IWGHorseApiClient>();
-            _client = new WGHorseApiClient(client, faceLog, faceTgsLog, _utility);
+            _client = Substitute.For<IWGHorseApiClient>();
+            //_client = new WGHorseApiClient(client, faceLog, faceTgsLog, _utility);
         }
 
         [Test]
