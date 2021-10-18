@@ -20,18 +20,18 @@
 		<PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="5.0.2" />
 		<PackageReference Include="AspNetCore.HealthChecks.Redis" Version="5.0.2" />
 		<PackageReference Include="EFCore.NamingConventions" Version="5.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.11">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="5.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="5.0.11" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Trigrams" Version="5.0.10" />
-		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.2" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
 		<PackageReference Include="TGS.GameProviders.TCG.FTPApi.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.Logging" Version="0.0.11" />
 		<PackageReference Include="Tgs.MessageQueue.Nats" Version="1.1.1" />
-		<PackageReference Include="Tgs.MessageQueue.RabbitMQ" Version="0.0.5" />
+		<PackageReference Include="Tgs.MessageQueue.RabbitMQ" Version="0.0.6" />
 		<PackageReference Include="TGS.ServiceUtility" Version="0.0.3" />
 	</ItemGroup>
 
