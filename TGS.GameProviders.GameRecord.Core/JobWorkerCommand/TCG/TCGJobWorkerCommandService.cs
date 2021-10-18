@@ -44,7 +44,7 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.TCG
                 foreach (var game in gameLotteryLobby)
                 {
                     var merchants = configuration.Merchants;
-                    if (game.AvailableCurrencies.Length > 0)
+                    if (game.AvailableCurrencies != null && game.AvailableCurrencies.Length > 0)
                     {
                         merchants = (from merchant in merchants
                                      join currency in game.AvailableCurrencies
