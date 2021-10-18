@@ -42,13 +42,23 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
                 PlayerCode = command.PlayerCode
             };
 
-            var response = await _client.GetBalanceAsync(brandMerchant, data).ConfigureAwait(false);
+            var response = await _client.GetBalanceAsync(
+                brandMerchant.ApiUrl,
+                brandMerchant.Merchantid,
+                brandMerchant.Version,
+                brandMerchant.Deskey,
+                data).ConfigureAwait(false);
 
             if (string.IsNullOrEmpty(response.PlayerName) || response.Balance == -1)
             {
                 if (await _playerCreate.CreatePlayerAsync(brandMerchant, command.PlayerCode).ConfigureAwait(false))
                 {
-                    response = await _client.GetBalanceAsync(brandMerchant, data).ConfigureAwait(false);
+                    response = await _client.GetBalanceAsync(
+                        brandMerchant.ApiUrl,
+                        brandMerchant.Merchantid,
+                        brandMerchant.Version,
+                        brandMerchant.Deskey,
+                        data).ConfigureAwait(false);
                 }
             }
 

@@ -30,7 +30,14 @@ namespace TGS.GameProviders.Core.VR
             {
                 PlayerCode = playerCode
             };
-            var response = await _client.CreatePlayerAsync(brandMerchant, data).ConfigureAwait(false);
+            var response = await _client
+                .CreatePlayerAsync(
+                brandMerchant.ApiUrl,
+                brandMerchant.Merchantid,
+                brandMerchant.Version,
+                brandMerchant.Deskey,
+                data)
+                .ConfigureAwait(false);
 
             return (response.ErrorCode == 0);
         }

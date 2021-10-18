@@ -30,10 +30,15 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
         public async ValueTask ExecuteAsync(VRKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
             var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
-            await _client.KickAsync(brandMerchant, new()
-            {
-                PlayerCode = command.PlayerCode
-            }).ConfigureAwait(false);
+            await _client.KickAsync(
+                brandMerchant.ApiUrl,
+                brandMerchant.Merchantid,
+                brandMerchant.Version,
+                brandMerchant.Deskey,
+                new()
+                {
+                    PlayerCode = command.PlayerCode
+                }).ConfigureAwait(false);
         }
     }
 }
