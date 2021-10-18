@@ -9,18 +9,18 @@ namespace TGS.GameProviders.ApiClients
 {
     public interface IVRApiClient
     {
-        ValueTask<VRErrorCodeResponse> CreatePlayerAsync(VRBrandMerchant brandMerchant, VRCreatePlayerRequest request);
+        ValueTask<VRErrorCodeResponse> CreatePlayerAsync(Uri apiUrl, string merchantid, string version, string deskey, VRCreatePlayerRequest source);
 
-        ValueTask<VRFnudResponse> FundAsync(VRBrandMerchant brandMerchant, VRAction action, VRFnudRequest request);
+        ValueTask<VRFnudResponse> FundAsync(Uri apiUrl, string merchantid, string version, string deskey, VRAction action, VRFnudRequest source);
 
-        ValueTask<VRFundCheckingResponse> FundCheckingAsync(VRBrandMerchant brandMerchant, VRFundCheckingRequest request);
+        ValueTask<VRFundCheckingResponse> FundCheckingAsync(Uri apiUrl, string merchantid, string version, string deskey, VRFundCheckingRequest source);
 
-        ValueTask<VRGetBalanceResponse> GetBalanceAsync(VRBrandMerchant brandMerchant, VRGetBalanceRequest request);
+        ValueTask<VRGetBalanceResponse> GetBalanceAsync(Uri apiUrl, string merchantid, string version, string deskey, VRGetBalanceRequest source);
 
-        ValueTask<VRGameRecordResponse> GetGameRecordAsync(VRBrandMerchant brandMerchant, VRGameRecordRequest request);
+        ValueTask<VRGameRecordResponse> GetGameRecordAsync(Uri apiUrl, string merchantid, string version, string deskey, VRGameRecordRequest source);
 
-        Uri GetGameURLAsync(VRBrandMerchant brandMerchant, VRGameUrlRequest request);
+        Uri GetGameURL(Uri apiUrl, string merchantid, string version, string deskey, VRGameUrlRequest source);
 
-        ValueTask<VRErrorCodeResponse> KickAsync(VRBrandMerchant brandMerchant, VRKickRequest request);
+        ValueTask<VRErrorCodeResponse> KickAsync(Uri apiUrl, string merchantid, string version, string deskey, VRKickRequest source);
     }
 }
