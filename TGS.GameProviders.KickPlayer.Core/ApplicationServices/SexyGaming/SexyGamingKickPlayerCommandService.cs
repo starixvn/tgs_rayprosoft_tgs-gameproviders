@@ -29,7 +29,7 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.SexyGaming
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            await _client.LogoutAsync(configuration, new()
+            await _client.LogoutAsync(configuration.ApiUrl, new()
             {
                 PlayerCode = command.PlayerCode
             }).ConfigureAwait(false);

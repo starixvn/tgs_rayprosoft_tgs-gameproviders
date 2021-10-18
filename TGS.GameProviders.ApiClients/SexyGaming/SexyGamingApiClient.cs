@@ -10,9 +10,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.SexyGaming.Models;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.ApiClients.SexyGaming
 {
@@ -33,44 +31,28 @@ namespace TGS.GameProviders.ApiClients.SexyGaming
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         }
 
-        public async Task<SexyGamingCreateMemberResponse> CreatePlayerAsync(SexyGamingConfiguration configuration, SexyGamingCreateMemberRequest request)
-        {
-            request.AgentId = configuration.AgentId;
-            request.Cert = configuration.Cert;
-            return await GetAPIAsync<SexyGamingCreateMemberRequest, SexyGamingCreateMemberResponse>(configuration, "/wallet/createMember", request, $"CreatePlayerAsync").ConfigureAwait(false);
-        }
+        public ValueTask<SexyGamingCreateMemberResponse> CreatePlayerAsync(Uri apiUrl, SexyGamingCreateMemberRequest request)
+            => PostAsync<SexyGamingCreateMemberRequest, SexyGamingCreateMemberResponse>(apiUrl, "/wallet/createMember", request, $"CreatePlayerAsync");
 
-        public async Task<SexyGamingGameUrlResponse> GetGameUrlAsync(SexyGamingConfiguration configuration, SexyGamingGameUrlRequest request)
-        {
-            request.AgentId = configuration.AgentId;
-            request.Cert = configuration.Cert;
-            return await GetAPIAsync<SexyGamingGameUrlRequest, SexyGamingGameUrlResponse>(configuration, "/wallet/login", request, "GetGameUrl").ConfigureAwait(false);
-        }
+        public ValueTask<SexyGamingGameUrlResponse> GetGamingGameUrlAsync(Uri apiUrl, SexyGamingGameUrlRequest request)
+            => PostAsync<SexyGamingGameUrlRequest, SexyGamingGameUrlResponse>(apiUrl, "/wallet/login", request, "GetGamingGameUrlAsync");
 
-        public async Task<SexyGamingGameUrlResponse> GetGameUrlAsync(SexyGamingConfiguration configuration, SexyGamingLoginGameRequest request)
-        {
-            request.AgentId = configuration.AgentId;
-            request.Cert = configuration.Cert;
-            return await GetAPIAsync<SexyGamingLoginGameRequest, SexyGamingGameUrlResponse>(configuration, "/wallet/doLoginAndLaunchGame", request, "GetGameUrl").ConfigureAwait(false);
-        }
+        public ValueTask<SexyGamingGameUrlResponse> GetGamingLoginGameAsync(Uri apiUrl, SexyGamingLoginGameRequest request)
+            => PostAsync<SexyGamingLoginGameRequest, SexyGamingGameUrlResponse>(apiUrl, "/wallet/doLoginAndLaunchGame", request, "GetGamingLoginGameAsync");
 
-        public async Task<SexyGamingLogoutResponse> LogoutAsync(SexyGamingConfiguration configuration, SexyGamingLogoutRequest request)
-        {
-            request.AgentId = configuration.AgentId;
-            request.Cert = configuration.Cert;
-            return await GetAPIAsync<SexyGamingLogoutRequest, SexyGamingLogoutResponse>(configuration, "/wallet/logout", request, "LogOut").ConfigureAwait(false);
-        }
+        public ValueTask<SexyGamingLogoutResponse> LogoutAsync(Uri apiUrl, SexyGamingLogoutRequest request)
+            => PostAsync<SexyGamingLogoutRequest, SexyGamingLogoutResponse>(apiUrl, "/wallet/logout", request, "LogOut");
 
-        private async ValueTask<TResult> GetAPIAsync<TSource, TResult>(SexyGamingConfiguration configuration, string path, TSource source, string logPrefix)
+        private async ValueTask<TResult> PostAsync<TSource, TResult>(Uri apiUrl, string path, TSource source, string logPrefix)
         {
-            logPrefix = $"{GameProviderType.SexyGaming}.{logPrefix}";
+            logPrefix = $"{nameof(SexyGamingApiClient)}.{logPrefix}";
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(TResult);
 
             var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(System.Text.Json.JsonSerializer.Serialize(source));
 
-            var url = new Uri($"{configuration.ApiUrl.Scheme}://{configuration.ApiUrl.Host}{path}");
+            var url = new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{path}");
 
             HttpContent content = new FormUrlEncodedContent(data);
             content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
