@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +47,12 @@ namespace TGS.GameProviders
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
+                string[] xmlFileNames = null;
+                xmlFileNames = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml");
+                foreach (var xmlFileName in xmlFileNames)
+                {
+                    c.IncludeXmlComments(xmlFileName);
+                }
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TGS.GameProviders", Version = "v1" });
             });
             services.AddDbTgsRepository(
@@ -57,8 +65,6 @@ namespace TGS.GameProviders
 
                         dbBuilder.UseNpgsql(
                             config.GetConnectionString("Tgs"));
-
-                        // dbBuilder.UseSnakeCaseNamingConvention();
                     });
             services.AddDbBetRepository(
                     (sp, dbBuilder) =>
@@ -70,11 +76,27 @@ namespace TGS.GameProviders
 
                         dbBuilder.UseNpgsql(
                             config.GetConnectionString("Tgs"));
-
-                        // dbBuilder.UseSnakeCaseNamingConvention();
                     });
             services
-                .AddApiClients();
+                .AddMongoRepository((options, sp) =>
+                {
+                    var config = sp.GetRequiredService<IConfiguration>();
+                    config.GetSection("MongoDBConnectionString").Bind(options);
+                });
+            services
+                .AddNatsMessageQueue(natsConfig =>
+                {
+                    natsConfig
+                    .ConfigQueueOptions((options, sp) =>
+                    {
+                        var configuration = sp.GetRequiredService<IConfiguration>();
+                        options.Url = configuration.GetSection("NatsMQ:Url").Get<string>();
+                    });
+                })
+               .AddTgsLog();
+            services
+                .AddApiClients()
+                .AddGameProvidersCore();
         }
     }
 }

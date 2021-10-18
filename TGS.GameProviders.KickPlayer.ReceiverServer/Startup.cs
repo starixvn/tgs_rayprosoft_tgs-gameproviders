@@ -162,7 +162,7 @@ namespace TGS.GameProviders.KickPlayer.ReceiverServer
             services
                 .AddApiClients();
             services
-                .AddCore();
+                .AddGameProvidersCore();
 
             services
                 .AddRabbitMessageQueue(config =>

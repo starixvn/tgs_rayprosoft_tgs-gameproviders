@@ -282,7 +282,7 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer
             services
                 .AddApiClients();
             services
-                .AddCore();
+                .AddGameProvidersCore();
             services
                .AddGameRecordCoreConfiguration((options, sp) =>
                {

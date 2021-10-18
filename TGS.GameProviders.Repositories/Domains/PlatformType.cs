@@ -1,17 +1,20 @@
-﻿namespace TGS.GameProviders.Repositories.Domains
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TGS.GameProviders.Repositories.Domains
 {
-    /// <summary>
-    /// Platform Type
-    /// </summary>
     public enum PlatformType
     {
         /// <summary>
-        /// The desktop
+        ///     Desktop
         /// </summary>
         Desktop = 0,
 
         /// <summary>
-        /// The mobile
+        ///     Mobile
         /// </summary>
         Mobile = 1
     }
