@@ -31,6 +31,8 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.SexyGaming
 
             await _client.LogoutAsync(configuration.ApiUrl, new()
             {
+                AgentId = configuration.AgentId,
+                Cert = configuration.Cert,
                 PlayerCode = command.PlayerCode
             }).ConfigureAwait(false);
         }
