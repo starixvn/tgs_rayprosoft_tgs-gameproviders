@@ -61,7 +61,12 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
                     PageSize = rows
                 };
 
-                var response = await _client.GetGameRecordAsync(configuration, data).ConfigureAwait(false);
+                var response = await _client.GetGameRecordAsync(
+                    configuration.ApiUrl,
+                    configuration.PartnerCode,
+                    configuration.PartnerKey,
+                    configuration.IV,
+                    data).ConfigureAwait(false);
 
                 if (response.ReturnCode != 1)
                 {
