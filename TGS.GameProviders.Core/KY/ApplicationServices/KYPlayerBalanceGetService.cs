@@ -32,7 +32,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
             var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
             var agentId = await _service.GetAgentIdAsync(command.BrandCode, command.CurrencyCode).ConfigureAwait(false);
 
-            var response = await _client.GetBalanceAsync(brandMerchant, agentId, new()
+            var response = await _client.GetBalanceAsync(brandMerchant.ApiUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, new()
             {
                 PlayerCode = command.PlayerCode
             }).ConfigureAwait(false);

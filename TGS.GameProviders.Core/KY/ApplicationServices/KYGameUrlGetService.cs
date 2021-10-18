@@ -71,7 +71,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
                 ExternalID = externalID
             };
 
-            var response = await _client.GetGameUrlAsync(brandMerchant, agentId, dateTimeOffset, data)
+            var response = await _client.GetGameUrlAsync(brandMerchant.ApiUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, dateTimeOffset, data)
                 .ConfigureAwait(false);
 
             return (response.Data.Code == 0) ? new() { Url = new(response.Data.Url) } : null;
