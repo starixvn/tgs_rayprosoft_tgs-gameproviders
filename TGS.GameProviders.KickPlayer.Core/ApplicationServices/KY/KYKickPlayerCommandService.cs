@@ -37,7 +37,7 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.KY
             }
             var brandMerchant = await _service.GetBrandMerchantAsync(player.BrandCode).ConfigureAwait(false);
             var agentId = await _service.GetAgentIdAsync(player.BrandCode, player.DefaultWalletCurrencyCode).ConfigureAwait(false);
-            await _client.KickAsync(brandMerchant, agentId, new()
+            await _client.KickAsync(brandMerchant.ApiUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, new()
             {
                 PlayerCode = command.PlayerCode
             }).ConfigureAwait(false);

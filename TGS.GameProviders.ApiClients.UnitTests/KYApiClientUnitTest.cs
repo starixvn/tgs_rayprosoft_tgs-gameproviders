@@ -55,7 +55,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 OrderId = $"{ _agentMapper.AgentId}{dateTimeOffset.ToString("yyyyMMddhhmmssfff")}{playerCode}",
                 Amount = 10
             };
-            var response = await _client.FundAsync(_merchant, _agentMapper.AgentId, dateTimeOffset, KYAction.FundIn, data).ConfigureAwait(false);
+            var response = await _client.FundAsync(_merchant.ApiUrl, _merchant.Deskey, _merchant.Md5key, _agentMapper.AgentId, dateTimeOffset, KYAction.FundIn, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 OrderId = $"{ _agentMapper.AgentId}{dateTimeOffset.ToString("yyyyMMddhhmmssfff")}{playerCode}",
                 Amount = 10
             };
-            var response = await _client.FundAsync(_merchant, _agentMapper.AgentId, dateTimeOffset, KYAction.FundOut, data).ConfigureAwait(false);
+            var response = await _client.FundAsync(_merchant.ApiUrl, _merchant.Deskey, _merchant.Md5key, _agentMapper.AgentId, dateTimeOffset, KYAction.FundOut, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             {
                 PlayerCode = playerCode
             };
-            var response = await _client.GetBalanceAsync(_merchant, _agentMapper.AgentId, data).ConfigureAwait(false);
+            var response = await _client.GetBalanceAsync(_merchant.ApiUrl, _merchant.Deskey, _merchant.Md5key, _agentMapper.AgentId, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -92,7 +92,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 StartTime = DateTimeOffset.UtcNow.AddDays(-30).ToUnixTimeMilliseconds(),
                 EndTime = dateTimeOffset.ToUnixTimeMilliseconds()
             };
-            var response = await _client.GetGameRecordAsync(_merchant, _agentMapper.AgentId, dateTimeOffset, data).ConfigureAwait(false);
+            var response = await _client.GetGameRecordAsync(_merchant.ApiRecordUrl, _merchant.Deskey, _merchant.Md5key, _agentMapper.AgentId, dateTimeOffset, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 BrandsCode = "GPI",
                 ExternalID = 510
             };
-            var response = await _client.GetGameUrlAsync(_merchant, _agentMapper.AgentId, dateTimeOffset, data).ConfigureAwait(false);
+            var response = await _client.GetGameUrlAsync(_merchant.ApiUrl, _merchant.Deskey, _merchant.Md5key, _agentMapper.AgentId, dateTimeOffset, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             {
                 PlayerCode = playerCode
             };
-            var response = await _client.KickAsync(_merchant, _agentMapper.AgentId, data).ConfigureAwait(false);
+            var response = await _client.KickAsync(_merchant.ApiUrl, _merchant.Deskey, _merchant.Md5key, _agentMapper.AgentId, data).ConfigureAwait(false);
         }
     }
 }
