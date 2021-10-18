@@ -23,7 +23,7 @@ namespace TGS.GameProviders.Repositories.UnitTests
         public async Task GetPlayerByUsernameAsync()
         {
             var fakeRoundRepository = Substitute.For<IPlayerRepository>();
-            _ = fakeRoundRepository.GetPlayerAsync(Arg.Any<Guid>(), Arg.Any<string>()).Returns(Task.FromResult<Player>(null));
+            _ = fakeRoundRepository.GetPlayerAsync(Arg.Any<Guid>(), Arg.Any<string>()).Returns(Task.FromResult<GetPlayer>(null));
             var result = await fakeRoundRepository.GetPlayerAsync(Arg.Any<Guid>(), Arg.Any<string>()).ConfigureAwait(false);
             Assert.AreEqual(null, result);
         }

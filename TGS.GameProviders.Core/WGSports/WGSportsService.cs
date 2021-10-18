@@ -113,7 +113,7 @@ namespace TGS.GameProviders.Core.WGSports
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
         {
             var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.WGSports).ConfigureAwait(false);
-            var (IsCurrencyCode, GameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCode(gameProvider.Id, currencyCode).ConfigureAwait(false);
+            var (IsCurrencyCode, GameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProvider.Id, currencyCode).ConfigureAwait(false);
             return (IsCurrencyCode) ? GameProviderCurrencyCode : null;
         }
 

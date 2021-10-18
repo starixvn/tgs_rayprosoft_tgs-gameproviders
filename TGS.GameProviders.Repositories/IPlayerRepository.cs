@@ -9,6 +9,6 @@ namespace TGS.GameProviders.Repositories
     {
         Task<GetPlayer?> GetPlayerAsync(string playerCode);
 
-        Task<Player?> GetPlayerAsync(Guid brandId, string username);
+        Task<GetPlayer?> GetPlayerAsync(Guid brandId, string username);
     }
 }
