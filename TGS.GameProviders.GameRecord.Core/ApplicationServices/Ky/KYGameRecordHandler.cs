@@ -57,7 +57,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
                 };
             }
 
-            var dateTimeOffset = DateTimeOffset.UtcNow.AddHours(+8);
+            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)); ;
 
             var data = new KYGameRecordRequest()
             {

@@ -10,9 +10,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.VR.Models;
 using TGS.GameProviders.ApiClients.VR.Models.Commons;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Domains.SettingConfiguration.VR;
 
 namespace TGS.GameProviders.ApiClients.VR
 {
@@ -35,58 +33,54 @@ namespace TGS.GameProviders.ApiClients.VR
             _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         }
 
-        public ValueTask<VRErrorCodeResponse> CreatePlayerAsync(VRBrandMerchant brandMerchant, VRCreatePlayerRequest request)
-            => GetAPIAsync<VRCreatePlayerRequest, VRErrorCodeResponse>(brandMerchant, VRAction.CreatePlayer, request);
+        public ValueTask<VRErrorCodeResponse> CreatePlayerAsync(Uri apiUrl, string merchantid, string version, string deskey, VRCreatePlayerRequest source)
+            => PostAsync<VRCreatePlayerRequest, VRErrorCodeResponse>(apiUrl, merchantid, version, deskey, VRAction.CreatePlayer, source);
 
-        public ValueTask<VRFnudResponse> FundAsync(VRBrandMerchant brandMerchant, VRAction action, VRFnudRequest request)
-            => GetAPIAsync<VRFnudRequest, VRFnudResponse>(brandMerchant, action, request);
+        public ValueTask<VRFnudResponse> FundAsync(Uri apiUrl, string merchantid, string version, string deskey, VRAction action, VRFnudRequest source)
+            => PostAsync<VRFnudRequest, VRFnudResponse>(apiUrl, merchantid, version, deskey, action, source);
 
-        public ValueTask<VRFundCheckingResponse> FundCheckingAsync(VRBrandMerchant brandMerchant, VRFundCheckingRequest request)
-            => GetAPIAsync<VRFundCheckingRequest, VRFundCheckingResponse>(brandMerchant, VRAction.FundChecking, request);
+        public ValueTask<VRFundCheckingResponse> FundCheckingAsync(Uri apiUrl, string merchantid, string version, string deskey, VRFundCheckingRequest source)
+            => PostAsync<VRFundCheckingRequest, VRFundCheckingResponse>(apiUrl, merchantid, version, deskey, VRAction.FundChecking, source);
 
-        public ValueTask<VRGetBalanceResponse> GetBalanceAsync(VRBrandMerchant brandMerchant, VRGetBalanceRequest request)
-             => GetAPIAsync<VRGetBalanceRequest, VRGetBalanceResponse>(brandMerchant, VRAction.GetBalance, request);
+        public ValueTask<VRGetBalanceResponse> GetBalanceAsync(Uri apiUrl, string merchantid, string version, string deskey, VRGetBalanceRequest source)
+             => PostAsync<VRGetBalanceRequest, VRGetBalanceResponse>(apiUrl, merchantid, version, deskey, VRAction.GetBalance, source);
 
-        public ValueTask<VRGameRecordResponse> GetGameRecordAsync(VRBrandMerchant brandMerchant, VRGameRecordRequest request)
-            => GetAPIAsync<VRGameRecordRequest, VRGameRecordResponse>(brandMerchant, VRAction.GameRecord, request);
+        public ValueTask<VRGameRecordResponse> GetGameRecordAsync(Uri apiUrl, string merchantid, string version, string deskey, VRGameRecordRequest source)
+            => PostAsync<VRGameRecordRequest, VRGameRecordResponse>(apiUrl, merchantid, version, deskey, VRAction.GameRecord, source);
 
-        public Uri GetGameURLAsync(VRBrandMerchant brandMerchant, VRGameUrlRequest request)
+        public Uri GetGameURL(Uri apiUrl, string merchantid, string version, string deskey, VRGameUrlRequest source)
 
         {
-            var path = _utility.GetPath(request);
+            var path = _utility.GetPath(source);
 
-            var dataEncrypt = _utility.AesEncrypt(path, brandMerchant.Deskey, true);
-
-            var apiUrl = brandMerchant.ApiUrl;
+            var dataEncrypt = _utility.AesEncrypt(path, deskey, true);
 
             var data = new VRApiRequest()
             {
-                version = brandMerchant.Version,
-                id = brandMerchant.Merchantid,
+                version = version,
+                id = merchantid,
                 data = dataEncrypt,
             };
 
             return new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{_utility.GetAction(VRAction.GetGameUrl)}?{_utility.GetPath(data)}");
         }
 
-        public ValueTask<VRErrorCodeResponse> KickAsync(VRBrandMerchant brandMerchant, VRKickRequest request)
-             => GetAPIAsync<VRKickRequest, VRErrorCodeResponse>(brandMerchant, VRAction.Kick, request);
+        public ValueTask<VRErrorCodeResponse> KickAsync(Uri apiUrl, string merchantid, string version, string deskey, VRKickRequest source)
+             => PostAsync<VRKickRequest, VRErrorCodeResponse>(apiUrl, merchantid, version, deskey, VRAction.Kick, source);
 
-        private async ValueTask<ResultData> GetAPIAsync<SourceData, ResultData>(VRBrandMerchant brandMerchant, VRAction action, SourceData request)
+        private async ValueTask<ResultData> PostAsync<SourceData, ResultData>(Uri apiUrl, string merchantid, string version, string deskey, VRAction action, SourceData source)
         {
-            var logPrefix = $"{GameProviderType.VR}.{action}";
+            var logPrefix = $"{nameof(VRApiClient).ToLower()}.{action}";
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(ResultData);
 
-            var dataEncrypt = _utility.AesEncrypt(JsonSerializer.Serialize(request), brandMerchant.Deskey, false);
-
-            var apiUrl = brandMerchant.ApiUrl;
+            var dataEncrypt = _utility.AesEncrypt(JsonSerializer.Serialize(source), deskey, false);
 
             var data = new VRApiRequest()
             {
-                version = brandMerchant.Version,
-                id = brandMerchant.Merchantid,
+                version = version,
+                id = merchantid,
                 data = dataEncrypt,
             };
 
@@ -119,7 +113,7 @@ namespace TGS.GameProviders.ApiClients.VR
 
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
-                var contentDecrypt = _utility.AesDecrypt(responseMessage, brandMerchant.Deskey, false);
+                var contentDecrypt = _utility.AesDecrypt(responseMessage, deskey, false);
                 if (!string.IsNullOrEmpty(contentDecrypt))
                 {
                     responseMessage = contentDecrypt;

@@ -125,7 +125,12 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR
                     Rows = rows
                 };
 
-                var response = await _client.GetGameRecordAsync(brandMerchant, data);
+                var response = await _client.GetGameRecordAsync(
+                    brandMerchant.ApiUrl,
+                    brandMerchant.Merchantid,
+                    brandMerchant.Version,
+                    brandMerchant.Deskey,
+                    data);
 
                 if (response.Records.Length == 0)
                 {

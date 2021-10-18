@@ -36,10 +36,15 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.VR
                 return;
             }
             var brandMerchant = await _service.GetBrandMerchantAsync(player.BrandCode).ConfigureAwait(false);
-            await _client.KickAsync(brandMerchant, new()
-            {
-                PlayerCode = command.PlayerCode
-            }).ConfigureAwait(false);
+            await _client.KickAsync(
+                brandMerchant.ApiUrl,
+                brandMerchant.Merchantid,
+                brandMerchant.Version,
+                brandMerchant.Deskey
+                , new()
+                {
+                    PlayerCode = command.PlayerCode
+                }).ConfigureAwait(false);
         }
     }
 }
