@@ -28,8 +28,10 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            await _client.LogoutAsync(configuration, new()
+            await _client.LogoutAsync(configuration.ApiUrl, new()
             {
+                AgentId = configuration.AgentId,
+                Cert = configuration.Cert,
                 PlayerCode = command.PlayerCode
             }).ConfigureAwait(false);
         }
