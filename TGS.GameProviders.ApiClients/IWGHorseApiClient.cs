@@ -1,22 +1,23 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using TGS.GameProviders.ApiClients.WGHorse.Models;
 using TGS.GameProviders.ApiClients.WGHorse.Models.Commons;
-using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.ApiClients
 {
     public interface IWGHorseApiClient
     {
-        ValueTask<WGHorseResponse> AccessMoneyAsync(WGHorseConfiguration configuration, WGHorseAccessMoneyRequest source);
+        ValueTask<WGHorseResponse> AccessMoneyAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseAccessMoneyRequest source);
 
-        ValueTask<WGHorseResponse> AccessMoneyQueryAsync(WGHorseConfiguration configuration, WGHorseAccessMoneyQueryRequest source);
+        ValueTask<WGHorseResponse> AccessMoneyQueryAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseAccessMoneyQueryRequest source);
 
-        ValueTask<WGHorseGetBalanceResponse> GetBalanceAsync(WGHorseConfiguration configuration, WGHorseGetBalanceRequest source);
+        ValueTask<WGHorseGetBalanceResponse> GetBalanceAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseGetBalanceRequest source);
 
-        ValueTask<WGHorseGameRecordResponse> GetGameRecordAsync(WGHorseConfiguration configuration, WGHorseGameRecordRequest source);
+        ValueTask<WGHorseGameRecordResponse> GetGameRecordAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseGameRecordRequest source);
 
-        ValueTask<WGHorseLoginResponse> GetLoginAsync(WGHorseConfiguration configuration, WGHorseLoginRequest source);
+        ValueTask<WGHorseLoginResponse> GetLoginAsync(Uri apiUrl, string partnerCode, WGHorseLoginRequest source);
 
-        ValueTask<WGHorsePrepareLoginResponse> GetPrepareLoginAsync(WGHorseConfiguration configuration, WGHorsePrepareLoginRequest source);
+        ValueTask<WGHorsePrepareLoginResponse> GetPrepareLoginAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorsePrepareLoginRequest source);
+
     }
 }
