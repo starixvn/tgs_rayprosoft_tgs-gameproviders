@@ -25,7 +25,7 @@ namespace TGS.GameProviders.Repositories
         }
 
         public Task<GetGame> GetGameAsync(int gameId)
-                    => _context.Games.Where(x => x.Id == gameId).ProjectTo<GetGame>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+            => _context.Games.Where(x => x.Id == gameId).ProjectTo<GetGame>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
 
         public Task<GetGame> GetGameAsync(Guid gameProviderId, string externalGameId)
             => _context.Games.Where(x => x.GameProviderId == gameProviderId && x.ExternalId == externalGameId).ProjectTo<GetGame>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
