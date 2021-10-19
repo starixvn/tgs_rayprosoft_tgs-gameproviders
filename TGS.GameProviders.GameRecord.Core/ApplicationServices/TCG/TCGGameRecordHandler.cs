@@ -35,7 +35,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG
             };
             _settledFileContentMappers = new Dictionary<string, Func<string, string, string, ValueTask<GetSettledFileContentResponse>>>() {
             {"TCG_LOTTO",_ftpServiceClient.GetTcgELottoSettledFileContentAsync},
-            {"TCG_LOTTO_VN",_ftpServiceClient.GetTcgELottoSettledFileContentAsync},
+            {"TCG_LOTTO_VN",_ftpServiceClient.GetTcgLottoVNSettledFileContentAsync},
             {"TCG_SEA",_ftpServiceClient.GetTcgSEASettledFileContentAsync}
             };
             _productTypeMappers = new Dictionary<string, string>() {
