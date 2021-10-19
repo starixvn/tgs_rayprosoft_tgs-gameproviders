@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -9,7 +10,6 @@ using TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG;
 using TGS.GameProviders.RedisRepositories;
 using TGS.GameProviders.RedisRepositories.Models;
 using TGS.ServiceUtility;
-using System.Text.Json;
 
 namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.TCG
 {
@@ -17,17 +17,19 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.TCG
     {
         private readonly IGameProviderScheduleLockRepository _gameProviderScheduleLockRepository;
         private readonly IGetService<TCGGameRecordHandlerQuery, TCGGameRecordHandlerResult> _getService;
-        private readonly ITCGService _service;
         private readonly ILogger<TCGJobWorkerCommandService> _logger;
+        private readonly ITCGService _service;
 
         public TCGJobWorkerCommandService(
             ITCGService service,
             IGetService<TCGGameRecordHandlerQuery, TCGGameRecordHandlerResult> getService,
-            IGameProviderScheduleLockRepository gameProviderScheduleLockRepository)
+            IGameProviderScheduleLockRepository gameProviderScheduleLockRepository,
+            ILogger<TCGJobWorkerCommandService> logger)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _getService = getService ?? throw new ArgumentNullException(nameof(getService));
             _gameProviderScheduleLockRepository = gameProviderScheduleLockRepository ?? throw new ArgumentNullException(nameof(gameProviderScheduleLockRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         async ValueTask ICommandService<TCGJobWorkerCommand>.ExecuteAsync(TCGJobWorkerCommand command, CancellationToken cancellationToken)
@@ -43,7 +45,7 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.TCG
                 {
                     return;
                 }
-                var tasks = new List<Task>();
+
                 foreach (var game in gameLotteryLobby)
                 {
                     var merchants = configuration.Merchants;
@@ -107,16 +109,10 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.TCG
                             {
                                 await _gameProviderScheduleLockRepository.RemoveAsync(gameProviderCode, gameProviderScheduleId).ConfigureAwait(false);
                             }
-                            _logger.LogError(
-                                new EventId(1000, nameof(TCGJobWorkerCommandService)),
-                                ex,
-                                $"發生例外{JsonSerializer.Serialize(merchant)}"
-                               );
-
+                            _logger.LogError(ex, $"發生例外{JsonSerializer.Serialize(merchant)}");
                         }
                     };
                 }
-                // await Task.WhenAll(tasks).ConfigureAwait(false);
             }
             catch (Exception e)
             {
