@@ -61,68 +61,62 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.TCG
 
                     foreach (var merchant in merchants)
                     {
-
-                        Task task = Task.Run(async () =>
+                        var gameProviderScheduleId = string.Empty;
+                        try
                         {
-                            var gameProviderScheduleId = string.Empty;
-                            try
+                            var gameProviderSchedule = await _service.GetGameProviderScheduleAsync(gameProviderId, game.Code, merchant.CurrencyCode, merchant.MerchantCode).ConfigureAwait(false);
+                            if (gameProviderSchedule == null)
                             {
-                                var gameProviderSchedule = await _service.GetGameProviderScheduleAsync(gameProviderId, game.Code, merchant.CurrencyCode, merchant.MerchantCode).ConfigureAwait(false);
-                                if (gameProviderSchedule == null)
-                                {
-                                    gameProviderSchedule = await _service.GameProviderScheduleInitAsync(gameProviderId, game.Code, merchant.CurrencyCode, merchant.MerchantCode).ConfigureAwait(false);
-                                }
-                                gameProviderScheduleId = gameProviderSchedule.Id.ToString("N");
-                                if (!await _gameProviderScheduleLockRepository.IsLockAsync(gameProviderCode, gameProviderScheduleId).ConfigureAwait(false))
-                                {
-                                    await _gameProviderScheduleLockRepository.SetAsync(
-                                        gameProviderCode,
-                                        gameProviderScheduleId,
-                                        new GameProviderScheduleLockData()
-                                        {
-                                            GameProviderCode = gameProviderCode,
-                                            GameProviderId = gameProviderId,
-                                            GameProviderScheduleId = gameProviderSchedule.Id,
-                                            LockDate = DateTimeOffset.UtcNow
-                                        }).ConfigureAwait(false);
-
-                                    var config = _service.GetGameProviderScheduleConfig(gameProviderSchedule);
-                                    (string subGP, string merchantCode) = _service.GetSubGPAndMerchantCode(gameProviderSchedule.AgentId);
-                                    var result = await _getService.GetAsync(new()
+                                gameProviderSchedule = await _service.GameProviderScheduleInitAsync(gameProviderId, game.Code, merchant.CurrencyCode, merchant.MerchantCode).ConfigureAwait(false);
+                            }
+                            gameProviderScheduleId = gameProviderSchedule.Id.ToString("N");
+                            if (!await _gameProviderScheduleLockRepository.IsLockAsync(gameProviderCode, gameProviderScheduleId).ConfigureAwait(false))
+                            {
+                                await _gameProviderScheduleLockRepository.SetAsync(
+                                    gameProviderCode,
+                                    gameProviderScheduleId,
+                                    new GameProviderScheduleLockData()
                                     {
-                                        SubGP = subGP,
-                                        MerchantCode = merchantCode,
-                                        IsDesignation = false,
-                                        LastGameRecorDirectory = config.LastGameRecorDirectory,
-                                        LastGameRecorFile = config.LastGameRecorFile
+                                        GameProviderCode = gameProviderCode,
+                                        GameProviderId = gameProviderId,
+                                        GameProviderScheduleId = gameProviderSchedule.Id,
+                                        LockDate = DateTimeOffset.UtcNow
                                     }).ConfigureAwait(false);
 
-                                    if (result.Success)
-                                    {
-                                        await _service.GameProviderScheduleUpdateAsync(gameProviderSchedule, result.LastGameRecorDirectory, result.LastGameRecorFile).ConfigureAwait(false);
-                                    }
-                                    await _gameProviderScheduleLockRepository.RemoveAsync(gameProviderCode, gameProviderScheduleId).ConfigureAwait(false);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                if (!string.IsNullOrEmpty(gameProviderScheduleId))
+                                var config = _service.GetGameProviderScheduleConfig(gameProviderSchedule);
+                                (string subGP, string merchantCode) = _service.GetSubGPAndMerchantCode(gameProviderSchedule.AgentId);
+                                var result = await _getService.GetAsync(new()
                                 {
-                                    await _gameProviderScheduleLockRepository.RemoveAsync(gameProviderCode, gameProviderScheduleId).ConfigureAwait(false);
+                                    SubGP = subGP,
+                                    MerchantCode = merchantCode,
+                                    IsDesignation = false,
+                                    LastGameRecorDirectory = config.LastGameRecorDirectory,
+                                    LastGameRecorFile = config.LastGameRecorFile
+                                }).ConfigureAwait(false);
+
+                                if (result.Success)
+                                {
+                                    await _service.GameProviderScheduleUpdateAsync(gameProviderSchedule, result.LastGameRecorDirectory, result.LastGameRecorFile).ConfigureAwait(false);
                                 }
-                                _logger.LogError(
-                                    new EventId(1000, nameof(TCGJobWorkerCommandService)),
-                                    ex,
-                                    $"發生例外{JsonSerializer.Serialize(merchant)}"
-                                   );
-
+                                await _gameProviderScheduleLockRepository.RemoveAsync(gameProviderCode, gameProviderScheduleId).ConfigureAwait(false);
                             }
-                        });
-                        tasks.Add(task);
-                    }
-                }
+                        }
+                        catch (Exception ex)
+                        {
+                            if (!string.IsNullOrEmpty(gameProviderScheduleId))
+                            {
+                                await _gameProviderScheduleLockRepository.RemoveAsync(gameProviderCode, gameProviderScheduleId).ConfigureAwait(false);
+                            }
+                            _logger.LogError(
+                                new EventId(1000, nameof(TCGJobWorkerCommandService)),
+                                ex,
+                                $"發生例外{JsonSerializer.Serialize(merchant)}"
+                               );
 
-                await Task.WhenAll(tasks).ConfigureAwait(false);
+                        }
+                    };
+                }
+                // await Task.WhenAll(tasks).ConfigureAwait(false);
             }
             catch (Exception e)
             {
