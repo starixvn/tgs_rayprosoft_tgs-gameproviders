@@ -141,7 +141,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG
                 {
                     return lastGameRecorFile;
                 }
-                var tasks = new List<Task>();
+
                 foreach (var data in response.Datas)
                 {
                     var getRound = await _gameRoundsProcessor.GetExternalRoundIdByExternalGameIdAsync(gameProviderId, data.OrderNum, externalGameId, data.Username).ConfigureAwait(false);
@@ -151,7 +151,6 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG
                     }
                     await _gameRoundsProcessor.UpdateRoundDetailAsync(getRound.Id, JsonSerializer.Serialize(data)).ConfigureAwait(false);
                 }
-                await Task.WhenAll(tasks);
                 lastGameRecorFile = file;
             }
             return lastGameRecorFile;
