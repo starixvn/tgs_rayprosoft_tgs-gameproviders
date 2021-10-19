@@ -94,6 +94,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG
                             Success = false,
                         };
                     }
+                    getFileList = getFileList.OrderBy(x => x).ToArray();
                     if (!string.IsNullOrEmpty(lastGameRecorFile))
                     {
                         var index = Array.IndexOf(getFileList, lastGameRecorFile);
