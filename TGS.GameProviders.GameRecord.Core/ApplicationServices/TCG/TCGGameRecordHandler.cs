@@ -86,7 +86,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG
             {
                 while (true)
                 {
-                    var getFileList = await fileListExecute(query.MerchantCode, lastGameRecorDirectory);
+                    var getFileList = await fileListExecute(query.MerchantCode, lastGameRecorDirectory).ConfigureAwait(false);
                     if (getFileList == null)
                     {
                         return new()
