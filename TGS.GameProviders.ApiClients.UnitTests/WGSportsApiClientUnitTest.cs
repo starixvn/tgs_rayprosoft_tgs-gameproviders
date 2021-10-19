@@ -7,15 +7,18 @@ using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.WGSports;
 using TGS.GameProviders.ApiClients.WGSports.Models;
-using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.ApiClients.WGSports.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
     [TestFixture]
     public class WGSportsApiClientUnitTest
     {
+        private readonly Uri _apiUrl = new Uri("https://api.jsc080.net/");
         private readonly IWGSportsApiClient _client;
-        private readonly WGSportsConfiguration _configuration;
+        private readonly string _partnerCode = "TA";
+        private readonly string _partnerIV = "cba1238888888888";
+        private readonly string _partnerKey = "abc1238888888888";
         private readonly IWGSportsUtility _utility;
 
         public WGSportsApiClientUnitTest()
@@ -26,13 +29,73 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<IWGSportsApiClient>();
             //_client = new WGSportsApiClient(client, faceLog, faceTgsLog, _utility);
-            _configuration = new WGSportsConfiguration
+        }
+
+        [Test]
+        public async Task AccessMoneyQueryAsync()
+        {
+            var data = new WGSportsAccessMoneyQueryRequest()
             {
-                ApiUrl = new Uri("https://api.jsc080.net/"),
-                PartnerCode = "TA",
-                PartnerKey = "abc1238888888888",
-                IV = "cba1238888888888"
+                OrderId = "5671e95562f34674a4491bfc3e6aefb1",
             };
+            _ = _client.AccessMoneyQueryAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).Returns(ValueTask.FromResult<WGSportsResponse>(
+                new()
+                {
+                    ReturnCode = 1
+                }));
+            var result = await _client.AccessMoneyQueryAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
+            Assert.AreEqual(1, result.ReturnCode);
+        }
+
+        [Test]
+        public async Task FundInAsync()
+        {
+            var playerCode = "4ucmqplxb029";
+            var data = new WGSportsAccessMoneyRequest()
+            {
+                PlayerCode = playerCode,
+                AmountType = AmountTypes.FundIn,
+                OrderId = Guid.NewGuid().ToString("N"),
+                Amount = "1"
+            };
+            _ = _client.AccessMoneyAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).Returns(ValueTask.FromResult<WGSportsResponse>(
+                new()
+                {
+                    ReturnCode = 1
+                }));
+            var result = await _client.AccessMoneyAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
+            Assert.AreEqual(1, result.ReturnCode);
+        }
+
+        [Test]
+        public async Task FundOutAsync()
+        {
+            var playerCode = "4ucmqplxb029";
+            var data = new WGSportsAccessMoneyRequest()
+            {
+                PlayerCode = playerCode,
+                AmountType = AmountTypes.FundOut,
+                OrderId = Guid.NewGuid().ToString("N"),
+                Amount = "1"
+            };
+            _ = _client.AccessMoneyAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).Returns(ValueTask.FromResult<WGSportsResponse>(
+                new()
+                {
+                    ReturnCode = 1
+                }));
+            var result = await _client.AccessMoneyAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
+            Assert.AreEqual(1, result.ReturnCode);
+        }
+
+        [Test]
+        public async Task GetBalanceAsync()
+        {
+            var data = new WGSportsGetBalanceRequest()
+            {
+                PlayerCode = "4ucmqplxb029"
+            };
+
+            _ = await _client.GetBalanceAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -50,14 +113,13 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             {
                 Token = Guid.NewGuid().ToString("N")
             };
-            _ = _client.GetPrepareLoginAsync(_configuration, data).Returns(ValueTask.FromResult(token));
-            var prepareLoginResponse = await _client.GetPrepareLoginAsync(_configuration, data).ConfigureAwait(false);
+            var prepareLoginResponse = await _client.GetPrepareLoginAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
             var loginRequest = new WGSportsLoginRequest
             {
-                Token = prepareLoginResponse.Token,
+                Token = prepareLoginResponse?.Token,
                 Lang = ""
             };
-            var response = await _client.GetLoginAsync(_configuration, loginRequest).ConfigureAwait(false);
+            var response = await _client.GetLoginAsync(_apiUrl, _partnerCode, loginRequest).ConfigureAwait(false);
         }
 
         [Test]
@@ -71,7 +133,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 PlayerNickname = playerCode,
                 CurrencyCode = "RMB"
             };
-            var response = await _client.GetPrepareLoginAsync(_configuration, data).ConfigureAwait(false);
+            _ = await _client.GetPrepareLoginAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
         }
     }
 }

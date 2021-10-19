@@ -1,4 +1,4 @@
-﻿namespace TGS.GameProviders.Domains.SettingConfiguration.KY
+﻿namespace TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.KY
 {
     public record KYAgentMapper
     {

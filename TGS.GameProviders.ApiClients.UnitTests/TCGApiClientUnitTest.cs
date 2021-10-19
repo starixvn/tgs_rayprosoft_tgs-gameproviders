@@ -13,23 +13,20 @@ namespace TGS.GameProviders.ApiClients.UnitTests
     [TestFixture]
     public class TCGApiClientUnitTest
     {
-        private readonly ITCGApiClient _client;
-        private readonly ITCGUtility _utility;
-
-
-        private readonly Uri _apiUrl = new("http://www.connect6play.com/doBusiness.do");
-        private readonly Uri _gameUrl = new("https://tcg-cny.srvttt.com");
         private const string _currencyCode = "CNY";
-        private const string _merchantCode = "pegacnys";
         private const string _desKey = "EuWEfLac";
-        private const string _sha256Key = "h2f69FzdSmMZzrdE";
+        private const string _merchantCode = "pegacnys";
         private const string _playerPassword = "TgsPassw0rd";
-
+        private const string _sha256Key = "h2f69FzdSmMZzrdE";
         private const string _vnd_currencyCode = "CNY";
-        private const string _vnd_merchantCode = "pegacnys";
         private const string _vnd_desKey = "EuWEfLac";
-        private const string _vnd_sha256Key = "h2f69FzdSmMZzrdE";
+        private const string _vnd_merchantCode = "pegacnys";
         private const string _vnd_playerPassword = "TgsPassw0rd";
+        private const string _vnd_sha256Key = "h2f69FzdSmMZzrdE";
+        private readonly Uri _apiUrl = new("http://www.connect6play.com/doBusiness.do");
+        private readonly ITCGApiClient _client;
+        private readonly Uri _gameUrl = new("https://tcg-cny.srvttt.com");
+        private readonly ITCGUtility _utility;
 
         public TCGApiClientUnitTest()
         {

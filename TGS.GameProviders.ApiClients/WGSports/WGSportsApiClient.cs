@@ -9,9 +9,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.WGSports.Models;
 using TGS.GameProviders.ApiClients.WGSports.Models.Commons;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.ApiClients.WGSports
 {
@@ -34,61 +32,61 @@ namespace TGS.GameProviders.ApiClients.WGSports
             _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         }
 
-        public ValueTask<WGSportsResponse> AccessMoneyAsync(WGSportsConfiguration configuration, WGSportsAccessMoneyRequest source)
+        public ValueTask<WGSportsResponse> AccessMoneyAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGSportsAccessMoneyRequest source)
         {
             var data = $"{source.PlayerCode}|{(int)source.AmountType}|{source.OrderId}|{source.Amount}";
-            var dataEncrypt = _utility.AesEncrypt(data, configuration.PartnerKey, configuration.IV);
-            var url = new Uri($"{configuration.ApiUrl}?m=api&c=index&a=AccessMoney&Hash={dataEncrypt}&PartnerCode={configuration.PartnerCode}");
+            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var url = new Uri($"{apiUrl}?m=api&c=index&a=AccessMoney&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            return GetAPIAsync<WGSportsAccessMoneyRequest, WGSportsResponse>(url, source, "AccessMoney");
+            return GetAsync<WGSportsAccessMoneyRequest, WGSportsResponse>(url, source, "AccessMoney");
         }
 
-        public ValueTask<WGSportsResponse> AccessMoneyQueryAsync(WGSportsConfiguration configuration, WGSportsAccessMoneyQueryRequest source)
+        public ValueTask<WGSportsResponse> AccessMoneyQueryAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGSportsAccessMoneyQueryRequest source)
         {
             var data = source.OrderId;
-            var dataEncrypt = _utility.AesEncrypt(data, configuration.PartnerKey, configuration.IV);
-            var url = new Uri($"{configuration.ApiUrl}?m=api&c=index&a=AccessMoneyQuery&Hash={dataEncrypt}&PartnerCode={configuration.PartnerCode}");
+            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var url = new Uri($"{apiUrl}?m=api&c=index&a=AccessMoneyQuery&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            return GetAPIAsync<WGSportsAccessMoneyQueryRequest, WGSportsResponse>(url, source, "AccessMoneyQuery");
+            return GetAsync<WGSportsAccessMoneyQueryRequest, WGSportsResponse>(url, source, "AccessMoneyQuery");
         }
 
-        public ValueTask<WGSportsGetBalanceResponse> GetBalanceAsync(WGSportsConfiguration configuration, WGSportsGetBalanceRequest source)
+        public ValueTask<WGSportsGetBalanceResponse> GetBalanceAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGSportsGetBalanceRequest source)
         {
             var data = source.PlayerCode;
-            var dataEncrypt = _utility.AesEncrypt(data, configuration.PartnerKey, configuration.IV);
-            var url = new Uri($"{configuration.ApiUrl}?m=api&c=index&a=GetBalance&Hash={dataEncrypt}&PartnerCode={configuration.PartnerCode}");
+            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var url = new Uri($"{apiUrl}?m=api&c=index&a=GetBalance&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            return GetAPIAsync<WGSportsGetBalanceRequest, WGSportsGetBalanceResponse>(url, source, "Balance");
+            return GetAsync<WGSportsGetBalanceRequest, WGSportsGetBalanceResponse>(url, source, "Balance");
         }
 
-        public ValueTask<WGSportsGameRecordResponse> GetGameRecordAsync(WGSportsConfiguration configuration, WGSportsGameRecordRequest source)
+        public ValueTask<WGSportsGameRecordResponse> GetGameRecordAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGSportsGameRecordRequest source)
         {
             var data = $"|{source.GameRecordTime.Description()}|{source.StartTime:yyyy-MM-dd HH:mm:ss}|{source.EndTime:yyyy-MM-dd HH:mm:ss}";
-            var dataEncrypt = _utility.AesEncrypt(data, configuration.PartnerKey, configuration.IV);
-            var url = new Uri($"{configuration.ApiUrl}?m=api&c=index&a=ShowBetList&Hash={dataEncrypt}&PartnerCode={configuration.PartnerCode}");
+            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var url = new Uri($"{apiUrl}?m=api&c=index&a=ShowBetList&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            return GetAPIAsync<WGSportsGameRecordRequest, WGSportsGameRecordResponse>(url, source, "GameRecord");
+            return GetAsync<WGSportsGameRecordRequest, WGSportsGameRecordResponse>(url, source, "GameRecord");
         }
 
-        public ValueTask<WGSportsLoginResponse> GetLoginAsync(WGSportsConfiguration configuration, WGSportsLoginRequest source)
+        public ValueTask<WGSportsLoginResponse> GetLoginAsync(Uri apiUrl, string partnerCode, WGSportsLoginRequest source)
         {
-            var url = new Uri($"{configuration.ApiUrl}?m=api&c=index&a=Login&Token={System.Web.HttpUtility.UrlEncode(source.Token)}&PartnerCode={configuration.PartnerCode}&Lang={source.Lang}");
+            var url = new Uri($"{apiUrl}?m=api&c=index&a=Login&Token={System.Web.HttpUtility.UrlEncode(source.Token)}&PartnerCode={partnerCode}&Lang={source.Lang}");
 
-            return GetAPIAsync<WGSportsLoginRequest, WGSportsLoginResponse>(url, source, "Login");
+            return GetAsync<WGSportsLoginRequest, WGSportsLoginResponse>(url, source, "Login");
         }
 
-        public ValueTask<WGSportsPrepareLoginResponse> GetPrepareLoginAsync(WGSportsConfiguration configuration, WGSportsPrepareLoginRequest source)
+        public ValueTask<WGSportsPrepareLoginResponse> GetPrepareLoginAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGSportsPrepareLoginRequest source)
         {
             var data = $"{source.Timestamp}|{source.PlayerCode}|{source.PlayerNickname}|{source.CurrencyCode}|{source.Handicap}";
-            var dataEncrypt = _utility.AesEncrypt(data, configuration.PartnerKey, configuration.IV);
-            var url = new Uri($"{configuration.ApiUrl}?m=api&c=index&a=PrepareLogin&Hash={dataEncrypt}&PartnerCode={configuration.PartnerCode}");
+            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var url = new Uri($"{apiUrl}?m=api&c=index&a=PrepareLogin&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            return GetAPIAsync<WGSportsPrepareLoginRequest, WGSportsPrepareLoginResponse>(url, source, "PrepareLogin");
+            return GetAsync<WGSportsPrepareLoginRequest, WGSportsPrepareLoginResponse>(url, source, "PrepareLogin");
         }
 
-        private async ValueTask<TResult> GetAPIAsync<TSource, TResult>(Uri url, TSource request, string logPrefix)
+        private async ValueTask<TResult> GetAsync<TSource, TResult>(Uri url, TSource request, string logPrefix)
         {
-            logPrefix = $"{GameProviderType.WGSports}.{logPrefix}";
+            logPrefix = $"{nameof(WGSportsApiClient).ToLower()}.{logPrefix}";
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(TResult);

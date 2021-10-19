@@ -1,6 +1,6 @@
-﻿using TGS.GameProviders.Domains.SettingConfiguration.VR;
+﻿using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.VR;
 
-namespace TGS.GameProviders.Domains.SettingConfiguration
+namespace TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration
 {
     public record VRConfiguration : PluggableConfigurationBase
     {

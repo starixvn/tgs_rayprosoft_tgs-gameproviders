@@ -1,7 +1,7 @@
 ﻿using System;
-using TGS.GameProviders.Domains.SettingConfiguration.TCG;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.TCG;
 
-namespace TGS.GameProviders.Domains.SettingConfiguration
+namespace TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration
 {
     /// <summary>
     /// TCG 設定檔案

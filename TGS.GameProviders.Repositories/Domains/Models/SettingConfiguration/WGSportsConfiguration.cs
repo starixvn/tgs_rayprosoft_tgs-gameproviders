@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TGS.GameProviders.Domains.SettingConfiguration
+namespace TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration
 {
     public record WGSportsConfiguration : PluggableConfigurationBase
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.KY;
-using TGS.GameProviders.Domains.SettingConfiguration;
-using TGS.GameProviders.Domains.SettingConfiguration.KY;
 using TGS.GameProviders.MongoRepositories.Models;
 using TGS.GameProviders.Repositories.Domains;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.KY;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Core

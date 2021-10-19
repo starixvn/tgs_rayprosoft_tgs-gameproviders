@@ -1,6 +1,6 @@
-﻿using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
+﻿using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.BigGaming;
 
-namespace TGS.GameProviders.Domains.SettingConfiguration
+namespace TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration
 {
     /// <summary>
     /// BG 設定檔案

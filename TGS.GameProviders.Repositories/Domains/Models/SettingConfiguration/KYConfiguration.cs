@@ -1,6 +1,6 @@
-﻿using TGS.GameProviders.Domains.SettingConfiguration.KY;
+﻿using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.KY;
 
-namespace TGS.GameProviders.Domains.SettingConfiguration
+namespace TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration
 {
     public record KYConfiguration : PluggableConfigurationBase
     {
