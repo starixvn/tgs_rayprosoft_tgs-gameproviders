@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TGS.GameProviders.Domains.SettingConfiguration.BigGaming
+namespace TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.BigGaming
 {
     public record BigGamingBrandMerchant
     {

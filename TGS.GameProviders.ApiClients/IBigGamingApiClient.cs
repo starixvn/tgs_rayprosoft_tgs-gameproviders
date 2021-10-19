@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using TGS.GameProviders.ApiClients.BigGaming.Models;
 using TGS.GameProviders.ApiClients.BigGaming.Models.Commons;
-using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
 
 namespace TGS.GameProviders.ApiClients
 {

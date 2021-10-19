@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using TGS.GameProviders.ApiClients.VR;
 using TGS.GameProviders.ApiClients.VR.Models;
 using TGS.GameProviders.ApiClients.VR.Models.Commons;
-using TGS.GameProviders.Domains.SettingConfiguration.VR;
 
 namespace TGS.GameProviders.ApiClients
 {

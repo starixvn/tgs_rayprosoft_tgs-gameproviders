@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.Evolution.Models;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
 
 namespace TGS.GameProviders.ApiClients.Evolution

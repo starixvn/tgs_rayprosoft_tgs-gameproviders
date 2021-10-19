@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TGS.GameProviders.Domains.SettingConfiguration.SexyGaming
+namespace TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.SexyGaming
 {
     public record SexyGamingBetLimit
     {

@@ -60,8 +60,8 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.BigGaming
             {
                 Random = GuidExtensions.NewSequentialGuid().ToString(),
                 Sn = brandMerchant.SecretCode,
-                StartTime = query.StartTime.UtcDateTime.AddHours(-4).ToString("yyyy-MM-dd HH:mm:ss"),
-                EndTime = query.EndTime.UtcDateTime.AddHours(-4).ToString("yyyy-MM-dd HH:mm:ss"),
+                StartTime = query.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
+                EndTime = query.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
                 PageIndex = pageIndex.ToString(),
                 PageSize = pageSize
             };

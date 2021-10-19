@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.VR.Models;
 using TGS.GameProviders.Core;
-using TGS.GameProviders.Domains.SettingConfiguration.VR;
 using TGS.GameProviders.GameRecord.Core.Processors;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.VR;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR

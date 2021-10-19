@@ -1,7 +1,7 @@
 ﻿using System;
-using TGS.GameProviders.Domains.SettingConfiguration.SexyGaming;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.SexyGaming;
 
-namespace TGS.GameProviders.Domains.SettingConfiguration
+namespace TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration
 {
     public record SexyGamingConfiguration : PluggableConfigurationBase
     {

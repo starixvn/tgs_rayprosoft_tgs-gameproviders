@@ -42,24 +42,32 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGSports
             {
                 return;
             }
-            var prepareLoginResponse = await _client.GetPrepareLoginAsync(configuration, new()
-            {
-                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                PlayerCode = player.PlayerCode,
-                PlayerNickname = player.PlayerCode,
-                CurrencyCode = gameProviderCurrencyCode
-            }).ConfigureAwait(false);
+            var prepareLoginResponse = await _client.GetPrepareLoginAsync(
+                configuration.ApiUrl,
+                configuration.PartnerCode,
+                configuration.PartnerKey,
+                configuration.IV,
+                new()
+                {
+                    Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                    PlayerCode = player.PlayerCode,
+                    PlayerNickname = player.PlayerCode,
+                    CurrencyCode = gameProviderCurrencyCode
+                }).ConfigureAwait(false);
 
             if (prepareLoginResponse.ReturnCode is not 1)
             {
                 return;
             }
 
-            _ = await _client.GetLoginAsync(configuration, new()
-            {
-                Token = prepareLoginResponse.Token,
-                Lang = "0"
-            }).ConfigureAwait(false);
+            _ = await _client.GetLoginAsync(
+                configuration.ApiUrl,
+                configuration.PartnerCode,
+                new()
+                {
+                    Token = prepareLoginResponse.Token,
+                    Lang = "0"
+                }).ConfigureAwait(false);
         }
     }
 }

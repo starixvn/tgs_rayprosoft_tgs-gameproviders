@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TGS.GameProviders.Domains.SettingConfiguration.VR
+namespace TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.VR
 {
     public record VRBrandMerchant
     {
