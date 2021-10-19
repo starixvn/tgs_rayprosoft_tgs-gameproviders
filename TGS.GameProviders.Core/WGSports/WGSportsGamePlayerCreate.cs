@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.WGSports.Models;
-using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.WGSports
 {
@@ -37,7 +34,12 @@ namespace TGS.GameProviders.Core.WGSports
                 PlayerNickname = playerCode,
                 CurrencyCode = gameProviderCurrencyCode,
             };
-            var prepareLoginResponse = await _client.GetPrepareLoginAsync(configuration, prepareLoginRequest).ConfigureAwait(false);
+            var prepareLoginResponse = await _client.GetPrepareLoginAsync(
+                configuration.ApiUrl,
+                configuration.PartnerCode,
+                configuration.PartnerKey,
+                configuration.IV,
+                prepareLoginRequest).ConfigureAwait(false);
             return (prepareLoginResponse.ReturnCode == 1);
         }
     }

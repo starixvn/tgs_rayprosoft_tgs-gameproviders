@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.WGHorse.Models;
-using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.WGHorse
 {

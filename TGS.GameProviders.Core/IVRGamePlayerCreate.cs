@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using TGS.GameProviders.Domains.SettingConfiguration.VR;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.VR;
 
 namespace TGS.GameProviders.Core
 {

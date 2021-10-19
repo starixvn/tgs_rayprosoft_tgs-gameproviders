@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.VR.Models;
-using TGS.GameProviders.Domains.SettingConfiguration.VR;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.VR;
 
 namespace TGS.GameProviders.Core.VR
 {
