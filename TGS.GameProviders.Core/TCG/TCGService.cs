@@ -40,7 +40,7 @@ namespace TGS.GameProviders.Core.TCG
             var sysTime = DateTimeOffset.UtcNow;
             var config = new TCGGameProviderScheduleConfig()
             {
-                LastGameRecorDirectory = string.Empty,
+                LastGameRecorDirectory = DateTimeOffset.UtcNow.ToString("yyyyMMdd"),
                 LastGameRecorFile = string.Empty,
             };
 
@@ -74,8 +74,6 @@ namespace TGS.GameProviders.Core.TCG
 
             await _gameProviderScheduleRepository.MergeAsync(gameProviderSchedule).ConfigureAwait(false);
         }
-
-        public ValueTask GameProviderScheduleUpdateAsync(GameProviderSchedule gameProviderSchedule, string lastGameRecorFile, DateTimeOffset sysTime) => throw new NotImplementedException();
 
         public Task<GetGame[]> GetGameLotteryLobbyAsync(Guid gameProviderId)
             => _gameRepository.GetGameList(gameProviderId, GameType.LotteryLobby);
