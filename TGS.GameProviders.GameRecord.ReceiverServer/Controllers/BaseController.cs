@@ -9,7 +9,7 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
     public abstract class BaseController<TQuery, TResult> : ControllerBase
     {
         [HttpPost]
-        public abstract ValueTask<TResult> KickPlayerAsync(
+        public abstract ValueTask<TResult> GameRecordAsync(
             [FromServices] IGetService<TQuery, TResult> service,
             TQuery query);
     }

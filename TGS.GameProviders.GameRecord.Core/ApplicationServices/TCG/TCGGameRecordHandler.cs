@@ -35,7 +35,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG
             };
             _settledFileContentMappers = new Dictionary<string, Func<string, string, string, ValueTask<GetSettledFileContentResponse>>>() {
             {"TCG_LOTTO",_ftpServiceClient.GetTcgELottoSettledFileContentAsync},
-            {"TCG_LOTTO_VN",_ftpServiceClient.GetTcgELottoSettledFileContentAsync},
+            {"TCG_LOTTO_VN",_ftpServiceClient.GetTcgLottoVNSettledFileContentAsync},
             {"TCG_SEA",_ftpServiceClient.GetTcgSEASettledFileContentAsync}
             };
             _productTypeMappers = new Dictionary<string, string>() {
@@ -86,7 +86,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG
             {
                 while (true)
                 {
-                    var getFileList = await fileListExecute(query.MerchantCode, lastGameRecorDirectory);
+                    var getFileList = await fileListExecute(query.MerchantCode, lastGameRecorDirectory).ConfigureAwait(false);
                     if (getFileList == null)
                     {
                         return new()
@@ -94,6 +94,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG
                             Success = false,
                         };
                     }
+                    getFileList = getFileList.OrderBy(x => x).ToArray();
                     if (!string.IsNullOrEmpty(lastGameRecorFile))
                     {
                         var index = Array.IndexOf(getFileList, lastGameRecorFile);
@@ -140,7 +141,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG
                 {
                     return lastGameRecorFile;
                 }
-                var tasks = new List<Task>();
+
                 foreach (var data in response.Datas)
                 {
                     var getRound = await _gameRoundsProcessor.GetExternalRoundIdByExternalGameIdAsync(gameProviderId, data.OrderNum, externalGameId, data.Username).ConfigureAwait(false);
@@ -150,7 +151,6 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG
                     }
                     await _gameRoundsProcessor.UpdateRoundDetailAsync(getRound.Id, JsonSerializer.Serialize(data)).ConfigureAwait(false);
                 }
-                await Task.WhenAll(tasks);
                 lastGameRecorFile = file;
             }
             return lastGameRecorFile;

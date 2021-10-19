@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports;
 using TGS.GameProviders.RedisRepositories;
@@ -14,16 +14,19 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.WGSports
     {
         private readonly IGameProviderScheduleLockRepository _gameProviderScheduleLockRepository;
         private readonly IGetService<WGSportsGameRecordHandlerQuery, WGSportsGameRecordHandlerResult> _getService;
+        private readonly ILogger<WGSportsJobWorkerCommandService> _logger;
         private readonly IWGSportsService _service;
 
         public WGSportsJobWorkerCommandService(
             IWGSportsService service,
             IGetService<WGSportsGameRecordHandlerQuery, WGSportsGameRecordHandlerResult> getService,
-            IGameProviderScheduleLockRepository gameProviderScheduleLockRepository)
+            IGameProviderScheduleLockRepository gameProviderScheduleLockRepository,
+            ILogger<WGSportsJobWorkerCommandService> logger)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _getService = getService ?? throw new ArgumentNullException(nameof(getService));
             _gameProviderScheduleLockRepository = gameProviderScheduleLockRepository ?? throw new ArgumentNullException(nameof(gameProviderScheduleLockRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         async ValueTask ICommandService<WGSportsJobWorkerCommand>.ExecuteAsync(WGSportsJobWorkerCommand command, CancellationToken cancellationToken)
@@ -34,9 +37,8 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.WGSports
 
                 var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
-                var tasks = new List<Task>();
-
-                Task t = Task.Run(async () =>
+                var gameProviderScheduleId = string.Empty;
+                try
                 {
                     var gameProviderSchedule = await _service.GetGameProviderScheduleAsync(gameProviderId).ConfigureAwait(false);
                     if (gameProviderSchedule == null)
@@ -82,9 +84,15 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.WGSports
                         }
                         await _gameProviderScheduleLockRepository.RemoveAsync(_service.GetGameProviderCode(), gameProviderSchedule.Id.ToString()).ConfigureAwait(false);
                     }
-                });
-                tasks.Add(t);
-                await Task.WhenAll(tasks);
+                }
+                catch (Exception ex)
+                {
+                    if (!string.IsNullOrEmpty(gameProviderScheduleId))
+                    {
+                        await _gameProviderScheduleLockRepository.RemoveAsync(_service.GetGameProviderCode(), gameProviderScheduleId).ConfigureAwait(false);
+                    }
+                    _logger.LogError(ex, $"發生例外");
+                }
             }
             catch (Exception e)
             {

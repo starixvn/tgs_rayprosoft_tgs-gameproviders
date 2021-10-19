@@ -8,7 +8,7 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
     public class VRGameRecordController : BaseController<VRGameRecordHandlerQuery, VRGameRecordHandlerResult>
     {
         /// <summary>
-        /// Kicks the player asynchronous.
+        /// Games the record asynchronous.
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="query">The query.</param>
@@ -22,7 +22,7 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
         ///         "endTime":"2021-06-30T07:33:53"
         ///     }
         /// </remarks>
-        public override ValueTask<VRGameRecordHandlerResult> KickPlayerAsync(
+        public override ValueTask<VRGameRecordHandlerResult> GameRecordAsync(
             [FromServices] IGetService<VRGameRecordHandlerQuery, VRGameRecordHandlerResult> service,
             VRGameRecordHandlerQuery query)
             => service.GetAsync(query);

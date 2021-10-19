@@ -41,6 +41,6 @@ data:
         "Url": "{{ .Values.nats.urls }}"
       },
       "TCGFtpApi": {
-        "Url": "http://game-tcg-ftp"
+        "TcgFtpServiceBaseUrl": "http://game-tcg-ftp"
       }
     }

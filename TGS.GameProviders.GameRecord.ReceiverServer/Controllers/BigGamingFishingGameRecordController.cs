@@ -8,7 +8,7 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
     public class BigGamingFishingGameRecordController : BaseController<BigGamingFishingGameRecordHandlerQuery, BigGamingFishingGameRecordHandlerResult>
     {
         /// <summary>
-        /// Kicks the player asynchronous.
+        /// Games the record asynchronous.
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="query">The query.</param>
@@ -22,7 +22,7 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
         ///         "endTime":"2021-08-12T01:35:08.1413497+00:00"
         ///     }
         /// </remarks>
-        public override ValueTask<BigGamingFishingGameRecordHandlerResult> KickPlayerAsync(
+        public override ValueTask<BigGamingFishingGameRecordHandlerResult> GameRecordAsync(
             [FromServices] IGetService<BigGamingFishingGameRecordHandlerQuery, BigGamingFishingGameRecordHandlerResult> service,
             BigGamingFishingGameRecordHandlerQuery query)
             => service.GetAsync(query);
