@@ -41,7 +41,7 @@ namespace TGS.GameProviders.Core.TCG
             var config = new TCGGameProviderScheduleConfig()
             {
                 LastGameRecorDirectory = DateTimeOffset.UtcNow.ToString("yyyyMMdd"),
-                LastGameRecorFile = DateTimeOffset.UtcNow.ToString("yyyyMMdd0000_0001.json"),
+                LastGameRecorFile = $"{DateTimeOffset.UtcNow.ToString("yyyyMMdd0000")}_0001.json",
             };
 
             var gameProviderSchedule = new GameProviderSchedule()
