@@ -55,16 +55,10 @@ spec:
       volumes:
         - name: appsettings
           configMap:
-            name: configmap-{{ include "game-kickplayer-receiverserver.fullname" . }}
+            name: configmap-{{ include "game-gameproviders.fullname" . }}
       {{ if eq .Values.namespace "staging" }}
       nodeSelector:
-        dedicated: nonprod
-                
-                                  
-               
-                                   
-                
-                                     
+        dedicated: nonprod                    
       tolerations:
       - effect: NoSchedule
         key: dedicated
