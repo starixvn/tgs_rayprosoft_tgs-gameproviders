@@ -20,7 +20,7 @@ namespace TGS.GameProviders.Client
             _serializerOptions = serializerOptions;
         }
 
-        public async ValueTask KickPlayer(KickPlayerRequest source)
+        public async ValueTask KickPlayer(string gameProviderCode, KickPlayerRequest source)
         {
             var request = new
             {
@@ -33,14 +33,14 @@ namespace TGS.GameProviders.Client
 
             var response = await _httpClient
                .PostAsync(
-                   string.Format(_kickPlayerPath, source.GameProviderCode),
+                   string.Format(_kickPlayerPath, gameProviderCode),
                    requestContent)
                .ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
         }
 
-        public async ValueTask<PlayerBalanceResponse> PlayerBalance(PlayerBalanceRequest source)
+        public async ValueTask<PlayerBalanceResponse> PlayerBalance(string gameProviderCode, PlayerBalanceRequest source)
         {
             var request = new
             {
@@ -53,7 +53,7 @@ namespace TGS.GameProviders.Client
 
             var response = await _httpClient
                .PostAsync(
-                   string.Format(_balancePath, source.GameProviderCode),
+                   string.Format(_balancePath, gameProviderCode),
                    requestContent)
                .ConfigureAwait(false);
 

@@ -99,7 +99,10 @@ namespace TGS.GameProviders
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services
+                .AddRouting(options => options.LowercaseUrls = true)
+                .AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 string[] xmlFileNames = null;

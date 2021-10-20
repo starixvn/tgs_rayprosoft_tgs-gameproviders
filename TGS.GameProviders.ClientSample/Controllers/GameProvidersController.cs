@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Client;
+using TGS.GameProviders.ClientSample.Models;
 
 namespace TGS.GameProviders.ClientSample.Controllers
 {
@@ -27,11 +28,18 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <summary>
         /// Kicks the player asynchronous.
         /// </summary>
-        /// <param name="request">The request.</param>
+        /// <param name="model">The model.</param>
         /// <returns></returns>
         [HttpPost("KickPlayer")]
         public ValueTask KickPlayerAsync(
-            KickPlayerRequest request)
-            => _client.KickPlayer(request);
+            KickPlayerViewModel model)
+            => _client.KickPlayer(
+                model.GameProviderCode,
+                new()
+                {
+                    BrandCode = model.BrandCode,
+                    PlayerCode = model.PlayerCode,
+                    CurrencyCode = model.CurrencyCode
+                });
     }
 }

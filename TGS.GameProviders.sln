@@ -35,15 +35,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.GameRecor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.GameRecord.ReceiverServer", "TGS.GameProviders.GameRecord.ReceiverServer\TGS.GameProviders.GameRecord.ReceiverServer.csproj", "{F764C439-A927-430D-8FC9-2CB8C4FDFB80}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.KickPlayer.Core", "TGS.GameProviders.KickPlayer.Core\TGS.GameProviders.KickPlayer.Core.csproj", "{3163CBA5-C755-4DBC-BCBF-819248AB5A30}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.KickPlayer.ReceiverServer", "TGS.GameProviders.KickPlayer.ReceiverServer\TGS.GameProviders.KickPlayer.ReceiverServer.csproj", "{DB9A1EBC-6E8D-4359-8DE0-5C38E5D79982}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGS.GameProviders.Client", "TGS.GameProviders.Client\TGS.GameProviders.Client.csproj", "{B8B6F8F0-9EF9-465F-9805-728BB535DD1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.Client", "TGS.GameProviders.Client\TGS.GameProviders.Client.csproj", "{B8B6F8F0-9EF9-465F-9805-728BB535DD1A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{4CE29817-FCFF-4E95-94EA-4AD9225E3B48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGS.GameProviders.ClientSample", "TGS.GameProviders.ClientSample\TGS.GameProviders.ClientSample.csproj", "{5F1BC202-C8C9-4F4F-B97D-0BBC72F661A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.ClientSample", "TGS.GameProviders.ClientSample\TGS.GameProviders.ClientSample.csproj", "{5F1BC202-C8C9-4F4F-B97D-0BBC72F661A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,14 +99,6 @@ Global
 		{F764C439-A927-430D-8FC9-2CB8C4FDFB80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F764C439-A927-430D-8FC9-2CB8C4FDFB80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F764C439-A927-430D-8FC9-2CB8C4FDFB80}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3163CBA5-C755-4DBC-BCBF-819248AB5A30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3163CBA5-C755-4DBC-BCBF-819248AB5A30}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3163CBA5-C755-4DBC-BCBF-819248AB5A30}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3163CBA5-C755-4DBC-BCBF-819248AB5A30}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DB9A1EBC-6E8D-4359-8DE0-5C38E5D79982}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DB9A1EBC-6E8D-4359-8DE0-5C38E5D79982}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DB9A1EBC-6E8D-4359-8DE0-5C38E5D79982}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DB9A1EBC-6E8D-4359-8DE0-5C38E5D79982}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B8B6F8F0-9EF9-465F-9805-728BB535DD1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B8B6F8F0-9EF9-465F-9805-728BB535DD1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8B6F8F0-9EF9-465F-9805-728BB535DD1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
