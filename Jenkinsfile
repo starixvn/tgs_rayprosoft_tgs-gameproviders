@@ -88,12 +88,6 @@ pipeline {
 			}
 		}
 
-		stage('Push Game Kickplayer Receiver Server Docker Image') {
-			steps {
-				sh 'sudo docker push $ImageNameKickplayerReceiverServer:${TAG}'
-			}
-		}
-
         stage('Push Game GameRecord Receiver Server Docker Image') {
 			steps {
                 sh 'sudo docker push $ImageNameGamerecordReceiverServer:${TAG}'
