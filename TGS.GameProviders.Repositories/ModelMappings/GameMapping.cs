@@ -1,6 +1,5 @@
 ﻿using System;
 using AutoMapper;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Entities;

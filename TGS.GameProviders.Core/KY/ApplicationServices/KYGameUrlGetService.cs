@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -13,13 +10,13 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Core.KY.ApplicationServices
 {
-    public class KYGameUrlGetService : IGetService<KYGameUrlQuery, KYGameUrlResult>
+    public class KYGameUrlGetService : IGetService<KYGameUrlQuery, GameUrlResult>
     {
         private readonly IKYApiClient _client;
+        private readonly IGameRepository _gameRepository;
         private readonly ILogger<KYGameUrlGetService> _logger;
         private readonly IPlayerRepository _playerRepository;
         private readonly IKYService _service;
-        private readonly IGameRepository _gameRepository;
 
         public KYGameUrlGetService(
             ILogger<KYGameUrlGetService> logger,
@@ -35,7 +32,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         }
 
-        public async ValueTask<KYGameUrlResult> GetAsync(KYGameUrlQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<GameUrlResult> GetAsync(KYGameUrlQuery command, CancellationToken cancellationToken = default)
         {
             var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
 
@@ -45,7 +42,6 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
 
             if (command.GameType != GameType.CardGameLobby)
             {
-
                 var cachedGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
 
                 if (cachedGame != null)

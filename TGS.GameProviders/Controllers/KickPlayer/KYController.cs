@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core.KY.ApplicationServices;
+using TGS.GameProviders.ViewModels;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.KickPlayer
@@ -10,17 +12,22 @@ namespace TGS.GameProviders.Controllers.KickPlayer
     public class KYController : KickPlayerController<KYKickPlayerCommand>
     {
         private readonly ILogger<KYController> _logger;
+        private readonly IMapper _mapper;
 
-        public KYController(ILogger<KYController> logger)
+        public KYController(
+            ILogger<KYController> logger,
+            IMapper mapper
+            )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         /// <summary>
         /// Kicks the player asynchronous.
         /// </summary>
         /// <param name="commandService">The command service.</param>
-        /// <param name="command">The command.</param>
+        /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
         /// Example
@@ -33,7 +40,7 @@ namespace TGS.GameProviders.Controllers.KickPlayer
         /// </remarks>
         public override ValueTask KickPlayerAsync(
             [FromServices] ICommandService<KYKickPlayerCommand> commandService,
-            KYKickPlayerCommand command)
-            => commandService.ExecuteAsync(command);
+            KickPlayerRequest request)
+             => commandService.ExecuteAsync(_mapper.Map<KYKickPlayerCommand>(request));
     }
 }

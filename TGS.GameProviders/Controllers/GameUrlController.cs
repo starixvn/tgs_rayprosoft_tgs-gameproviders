@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.ViewModels;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers
@@ -10,8 +11,8 @@ namespace TGS.GameProviders.Controllers
     public abstract class GameUrlController<TQuery, TResult> : ControllerBase where TQuery : GameUrlQuery where TResult : GameUrlResult
     {
         [HttpPost]
-        public abstract ValueTask<TResult> GameUrlAsync(
+        public abstract ValueTask<GameUrlResponse> GameUrlAsync(
             [FromServices] IGetService<TQuery, TResult> getService,
-            TQuery query);
+            GameUrlRequest request);
     }
 }

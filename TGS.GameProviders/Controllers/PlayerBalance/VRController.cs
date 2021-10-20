@@ -1,28 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.VR.ApplicationServices;
+using TGS.GameProviders.ViewModels;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.PlayerBalance
 {
-    public class VRController : PlayerBalanceController<VRPlayerBalanceQuery, VRPlayerBalanceResult>
+    public class VRController : PlayerBalanceController<VRPlayerBalanceQuery, PlayerBalanceResult>
     {
         private readonly ILogger<VRController> _logger;
+        private readonly IMapper _mapper;
 
-        public VRController(ILogger<VRController> logger)
+        public VRController(
+            ILogger<VRController> logger,
+            IMapper mapper
+           )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         /// <summary>
         /// Players the balance asynchronous.
         /// </summary>
         /// <param name="getService">The get service.</param>
-        /// <param name="query">The query.</param>
+        /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
         /// Example
@@ -33,9 +39,12 @@ namespace TGS.GameProviders.Controllers.PlayerBalance
         ///         "currencyCode": "CNY"
         ///     }
         /// </remarks>
-        public override ValueTask<VRPlayerBalanceResult> PlayerBalanceAsync(
-            [FromServices] IGetService<VRPlayerBalanceQuery, VRPlayerBalanceResult> getService,
-            VRPlayerBalanceQuery query)
-            => getService.GetAsync(query);
+        public override async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
+            [FromServices] IGetService<VRPlayerBalanceQuery, PlayerBalanceResult> getService,
+            PlayerBalanceRequest request)
+        {
+            var result = await getService.GetAsync(_mapper.Map<VRPlayerBalanceQuery>(request)).ConfigureAwait(false);
+            return _mapper.Map<PlayerBalanceResponse>(result);
+        }
     }
 }

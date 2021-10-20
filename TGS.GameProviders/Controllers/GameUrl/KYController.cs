@@ -1,28 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.KY.ApplicationServices;
+using TGS.GameProviders.ViewModels;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.GameUrl
 {
-    public class KYController : GameUrlController<KYGameUrlQuery, KYGameUrlResult>
+    public class KYController : GameUrlController<KYGameUrlQuery, GameUrlResult>
     {
         private readonly ILogger<KYController> _logger;
+        private readonly IMapper _mapper;
 
-        public KYController(ILogger<KYController> logger)
+        public KYController(
+            ILogger<KYController> logger,
+            IMapper mapper)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         /// <summary>
         /// Games the URL asynchronous.
         /// </summary>
         /// <param name="getService">The get service.</param>
-        /// <param name="query">The query.</param>
+        /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
         /// Example
@@ -40,9 +45,12 @@ namespace TGS.GameProviders.Controllers.GameUrl
         ///         "backUrl": ""
         ///     }
         /// </remarks>
-        public override ValueTask<KYGameUrlResult> GameUrlAsync(
-            [FromServices] IGetService<KYGameUrlQuery, KYGameUrlResult> getService,
-            KYGameUrlQuery query)
-            => getService.GetAsync(query);
+        public override async ValueTask<GameUrlResponse> GameUrlAsync(
+            [FromServices] IGetService<KYGameUrlQuery, GameUrlResult> getService,
+            GameUrlRequest request)
+        {
+            var result = await getService.GetAsync(_mapper.Map<KYGameUrlQuery>(request)).ConfigureAwait(false);
+            return _mapper.Map<GameUrlResponse>(result);
+        }
     }
 }

@@ -41,6 +41,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.KickPlaye
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGS.GameProviders.Client", "TGS.GameProviders.Client\TGS.GameProviders.Client.csproj", "{B8B6F8F0-9EF9-465F-9805-728BB535DD1A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{4CE29817-FCFF-4E95-94EA-4AD9225E3B48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGS.GameProviders.ClientSample", "TGS.GameProviders.ClientSample\TGS.GameProviders.ClientSample.csproj", "{5F1BC202-C8C9-4F4F-B97D-0BBC72F661A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,9 +115,16 @@ Global
 		{B8B6F8F0-9EF9-465F-9805-728BB535DD1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8B6F8F0-9EF9-465F-9805-728BB535DD1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8B6F8F0-9EF9-465F-9805-728BB535DD1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F1BC202-C8C9-4F4F-B97D-0BBC72F661A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F1BC202-C8C9-4F4F-B97D-0BBC72F661A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F1BC202-C8C9-4F4F-B97D-0BBC72F661A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F1BC202-C8C9-4F4F-B97D-0BBC72F661A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5F1BC202-C8C9-4F4F-B97D-0BBC72F661A7} = {4CE29817-FCFF-4E95-94EA-4AD9225E3B48}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E1BD986-D237-4916-A092-7DA027CBEDC3}

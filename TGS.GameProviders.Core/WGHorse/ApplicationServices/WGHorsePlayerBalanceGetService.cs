@@ -8,7 +8,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
 {
-    public class WGHorsePlayerBalanceGetService : IGetService<WGHorsePlayerBalanceQuery, WGHorsePlayerBalanceResult>
+    public class WGHorsePlayerBalanceGetService : IGetService<WGHorsePlayerBalanceQuery, PlayerBalanceResult>
     {
         private readonly IWGHorseApiClient _client;
         private readonly ILogger<WGHorsePlayerBalanceGetService> _logger;
@@ -28,7 +28,7 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
             _playerCreate = playerCreate ?? throw new ArgumentNullException(nameof(playerCreate));
         }
 
-        public async ValueTask<WGHorsePlayerBalanceResult> GetAsync(WGHorsePlayerBalanceQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<PlayerBalanceResult> GetAsync(WGHorsePlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var source = new WGHorseGetBalanceRequest()

@@ -8,7 +8,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Core.KY.ApplicationServices
 {
-    public class KYPlayerBalanceGetService : IGetService<KYPlayerBalanceQuery, KYPlayerBalanceResult>
+    public class KYPlayerBalanceGetService : IGetService<KYPlayerBalanceQuery, PlayerBalanceResult>
     {
         private readonly IKYApiClient _client;
         private readonly ILogger<KYPlayerBalanceGetService> _logger;
@@ -27,7 +27,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
         }
 
-        public async ValueTask<KYPlayerBalanceResult> GetAsync(KYPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<PlayerBalanceResult> GetAsync(KYPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
             var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
             var agentId = await _service.GetAgentIdAsync(command.BrandCode, command.CurrencyCode).ConfigureAwait(false);

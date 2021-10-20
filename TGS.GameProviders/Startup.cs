@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using TGS.GameProviders.ViewModelMappings;
 
 namespace TGS.GameProviders
 {
@@ -97,6 +98,12 @@ namespace TGS.GameProviders
             services
                 .AddApiClients()
                 .AddGameProvidersCore();
+            services.AddAutoMapper(config =>
+            {
+                config.AddProfile<GameUrlMapping>();
+                config.AddProfile<KickPlayerMapping>();
+                config.AddProfile<PlayerBalanceMapping>();
+            });
         }
     }
 }

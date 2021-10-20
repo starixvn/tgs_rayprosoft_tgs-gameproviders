@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace TGS.GameProviders.Client
 {
-    internal class GameProvidersClient
+    internal class GameProvidersClient : IGameProvidersClient
     {
+        private const string _balancePath = "/api/balance/{0}";
+        private const string _kickPlayerPath = "/api/KickPlayer/{0}";
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions? _serializerOptions;
-        private const string _kickPlayerPath = "/api/KickPlayer/{0}";
-        private const string _balancePath = "/api/balance/{0}";
+
         public GameProvidersClient(HttpClient httpClient, JsonSerializerOptions? serializerOptions)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));

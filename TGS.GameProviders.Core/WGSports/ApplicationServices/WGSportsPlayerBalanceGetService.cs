@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -11,7 +8,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Core.WGSports.ApplicationServices
 {
-    public class WGSportsPlayerBalanceGetService : IGetService<WGSportsPlayerBalanceQuery, WGSportsPlayerBalanceResult>
+    public class WGSportsPlayerBalanceGetService : IGetService<WGSportsPlayerBalanceQuery, PlayerBalanceResult>
     {
         private readonly IWGSportsApiClient _client;
         private readonly ILogger<WGSportsPlayerBalanceGetService> _logger;
@@ -31,7 +28,7 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
             _playerCreate = playerCreate ?? throw new ArgumentNullException(nameof(playerCreate));
         }
 
-        public async ValueTask<WGSportsPlayerBalanceResult> GetAsync(WGSportsPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<PlayerBalanceResult> GetAsync(WGSportsPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var source = new WGSportsGetBalanceRequest()

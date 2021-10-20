@@ -8,7 +8,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Core.VR.ApplicationServices
 {
-    public class VRPlayerBalanceGetService : IGetService<VRPlayerBalanceQuery, VRPlayerBalanceResult>
+    public class VRPlayerBalanceGetService : IGetService<VRPlayerBalanceQuery, PlayerBalanceResult>
     {
         private readonly IVRApiClient _client;
         private readonly ILogger<VRPlayerBalanceGetService> _logger;
@@ -28,7 +28,7 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
             _playerCreate = playerCreate ?? throw new ArgumentNullException(nameof(playerCreate));
         }
 
-        public async ValueTask<VRPlayerBalanceResult> GetAsync(VRPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<PlayerBalanceResult> GetAsync(VRPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
             var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.ViewModels;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers
@@ -10,8 +11,8 @@ namespace TGS.GameProviders.Controllers
     public abstract class PlayerBalanceController<TQuery, TResult> : ControllerBase where TQuery : PlayerBalanceQuery where TResult : PlayerBalanceResult
     {
         [HttpPost]
-        public abstract ValueTask<TResult> PlayerBalanceAsync(
+        public abstract ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
             [FromServices] IGetService<TQuery, TResult> getService,
-            TQuery query);
+            PlayerBalanceRequest request);
     }
 }

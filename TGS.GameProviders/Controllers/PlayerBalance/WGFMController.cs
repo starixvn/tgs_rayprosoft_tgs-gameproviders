@@ -1,28 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.WGSports.ApplicationServices;
+using TGS.GameProviders.ViewModels;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.PlayerBalance
 {
-    public class WGFMController : PlayerBalanceController<WGSportsPlayerBalanceQuery, WGSportsPlayerBalanceResult>
+    public class WGFMController : PlayerBalanceController<WGSportsPlayerBalanceQuery, PlayerBalanceResult>
     {
         private readonly ILogger<WGFMController> _logger;
+        private readonly IMapper _mapper;
 
-        public WGFMController(ILogger<WGFMController> logger)
+        public WGFMController(
+            ILogger<WGFMController> logger,
+            IMapper mapper
+           )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         /// <summary>
         /// Players the balance asynchronous.
         /// </summary>
         /// <param name="getService">The get service.</param>
-        /// <param name="query">The query.</param>
+        /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
         /// Example
@@ -33,9 +39,12 @@ namespace TGS.GameProviders.Controllers.PlayerBalance
         ///         "currencyCode": "CNY"
         ///     }
         /// </remarks>
-        public override ValueTask<WGSportsPlayerBalanceResult> PlayerBalanceAsync(
-            [FromServices] IGetService<WGSportsPlayerBalanceQuery, WGSportsPlayerBalanceResult> getService,
-            WGSportsPlayerBalanceQuery query)
-            => getService.GetAsync(query);
+        public override async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
+            [FromServices] IGetService<WGSportsPlayerBalanceQuery, PlayerBalanceResult> getService,
+            PlayerBalanceRequest request)
+        {
+            var result = await getService.GetAsync(_mapper.Map<WGSportsPlayerBalanceQuery>(request)).ConfigureAwait(false);
+            return _mapper.Map<PlayerBalanceResponse>(result);
+        }
     }
 }

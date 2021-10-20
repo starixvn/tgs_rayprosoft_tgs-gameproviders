@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.ViewModels;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers
@@ -12,6 +13,6 @@ namespace TGS.GameProviders.Controllers
         [HttpPost]
         public abstract ValueTask KickPlayerAsync(
             [FromServices] ICommandService<TCommand> commandService,
-            TCommand command);
+            KickPlayerRequest request);
     }
 }
