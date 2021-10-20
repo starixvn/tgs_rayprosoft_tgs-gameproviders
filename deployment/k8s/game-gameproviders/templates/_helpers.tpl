@@ -34,9 +34,7 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "game-gameproviders.labels" -}}
-
 {{ include "game-gameproviders.selectorLabels" . }}
-
 {{- end }}
 
 {{/*
@@ -44,7 +42,6 @@ Selector labels
 */}}
 {{- define "game-gameproviders.selectorLabels" -}}
 app: {{ include "game-gameproviders.name" . }}
-
 {{- end }}
 
 {{/*
