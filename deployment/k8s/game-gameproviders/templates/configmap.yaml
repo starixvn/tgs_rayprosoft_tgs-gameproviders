@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-{{ include "game-gameproviders.fullname" . }}
+  namespace: {{ .Values.namespace }}
+data:
+  appsettings.json: |
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information"
+        },
+        "TgsLog": {
+          "LogLevel": {
+            "Default": "None",
+            "Microsoft": "Warning",
+            "Microsoft.Hosting.Lifetime": "None",
+            "TGS": "Information"
+          }
+        }
+      },
+      "AllowedHosts": "*",
+      "ConnectionStrings": {
+        "Tgs": "{{ .Values.connectionStrings.tgs }}"
+      },
+      "MongoDBConnectionString": {
+        "GameProvider": "{{ .Values.connectionStrings.mongo }}"
+      },
+      "RedisConnectionString": {
+        "Default": "{{ .Values.connectionStrings.redis }}"
+      },
+      "NatsMQ": {
+        "Url": "{{ .Values.nats.urls }}"
+      }
+    }

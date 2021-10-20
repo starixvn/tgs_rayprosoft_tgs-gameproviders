@@ -5,6 +5,9 @@ pipeline {
 	
 	environment {
 		BuildConfiguration="Debug"
+        ImageNameGameProviders="registry.gitlab.com/rayprosoft/turnkey-gaming-system/game-gameProviders"
+		ImageTagUrlGameProviders = "https://gitlab.com/api/v4/projects/20478010/registry/repositories/2355332/tags"
+        ImageGameProviders = "game-gameproviders"
 		ImageNameKickplayerReceiverServer="registry.gitlab.com/rayprosoft/turnkey-gaming-system/game-kickplayer-receiverserver"
 		ImageTagUrlKickplayerReceiverServer = "https://gitlab.com/api/v4/projects/20478010/registry/repositories/2355332/tags"
         ImageKickplayerReceiverServer = "game-kickplayer-receiverserver"
@@ -65,6 +68,19 @@ pipeline {
 			}
 		}
 
+        stage('Push GameProviders Clinet packages') {
+			steps {
+				sh 'dotnet pack -c $BuildConfiguration "TGS.GameProviders.Client/TGS.GameProviders.Client.csproj" --no-build'
+				sh 'dotnet nuget push "TGS.GameProviders.Client/bin/$BuildConfiguration/*.nupkg" --source "raypro-baget" -k admin --skip-duplicate'
+			}
+		}
+
+        stage('Build Game GameProviders Docker Image') {
+			steps {
+				sh 'dotnet build "TGS.GameProviders/TGS.GameProviders.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageNameGameProviders:${TAG}" --no-restore '
+			}
+		}
+
 		stage('Build Game Kickplayer Receiver Server Docker Image') {
 			steps {
 				sh 'dotnet build "TGS.GameProviders.KickPlayer.ReceiverServer/TGS.GameProviders.KickPlayer.ReceiverServer.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageNameKickplayerReceiverServer:${TAG}" --no-restore '
@@ -74,6 +90,12 @@ pipeline {
         stage('Build Game GameRecord Receiver Server Docker Image') {
 			steps {
                 sh 'dotnet build "TGS.GameProviders.GameRecord.ReceiverServer/TGS.GameProviders.GameRecord.ReceiverServer.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageNameGamerecordReceiverServer:${TAG}" --no-restore '
+			}
+		}
+
+		stage('Push Game GameProviders Docker Image') {
+			steps {
+				sh 'sudo docker push $ImageNameGameProviders:${TAG}'
 			}
 		}
 
@@ -104,6 +126,36 @@ pipeline {
                 sh "echo start deploy"
             }
         }
+
+		stage('Deploy Game GameProviders to k8s') {
+			steps {
+				withKubeConfig([credentialsId: env.k8s_config]) {
+                    withCredentials([string(credentialsId: "tgs-${kube_ns}-connectionstring", variable: "tgs_tgs")]) {
+                        sh '''
+                            helm template deployment/k8s/game-gameproviders \
+                                --set image.tag=${TAG} \
+                                --set namespace=${kube_ns} \
+                                --set autoscaling.enabled=${tgs_autoscaling} \
+                                --set connectionStrings.tgs="$tgs_tgs" \
+                                --set connectionStrings.redis="$tgs_redis" \
+                                --set connectionStrings.mongo="$tgs_mongo" \
+                                --set nats.urls="$tgs_nats" \
+                        '''
+                        sh '''
+                            helm template deployment/k8s/game-gameproviders \
+                                --set image.tag=${TAG} \
+                                --set namespace=${kube_ns} \
+                                --set autoscaling.enabled=${tgs_autoscaling} \
+                                --set connectionStrings.tgs="$tgs_tgs" \
+                                --set connectionStrings.redis="$tgs_redis" \
+                                --set connectionStrings.mongo="$tgs_mongo" \
+                                --set nats.urls="$tgs_nats" \
+                                | kubectl -n ${kube_ns} apply -f -
+                        '''
+                    }
+				}
+			}
+		}
 
 		stage('Deploy Game Kickplayer Receiver Server to k8s') {
 			steps {
@@ -191,6 +243,14 @@ pipeline {
 				sshagent(['ssh-jenkins']) {
                     sh "git tag -a ${TAG} -m ${TAG}"
                     sh "git push ${GIT_URL} ${TAG} HEAD:${GIT_BRANCH}"
+                }
+            }
+        }
+
+        stage('Remove Game GameProviders Image Tags') {					
+            steps {	
+                withCredentials([string(credentialsId: "GitLabToken", variable: "GitLabToken")]) {					
+                    sh "curl --request DELETE --data \'name_regex_delete=.*\' --data \'keep_n=10\' --header \'PRIVATE-TOKEN: ${GitLabToken}\' ${ImageTagUrlGameProviders}"
                 }
             }
         }
