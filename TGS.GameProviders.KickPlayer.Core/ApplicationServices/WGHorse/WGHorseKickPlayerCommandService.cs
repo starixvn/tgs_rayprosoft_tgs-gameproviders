@@ -2,8 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.WGHorse.ApplicationServices;
 using TGS.GameProviders.Repositories;
 using TGS.ServiceUtility;
 
@@ -11,20 +10,18 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGHorse
 {
     public class WGHorseKickPlayerCommandService : ICommandService<WGHorsePlayerKickCommand>
     {
-        private readonly IWGHorseApiClient _client;
+        private readonly ICommandService<WGHorseKickPlayerCommand> _commandService;
         private readonly ILogger<WGHorseKickPlayerCommandService> _logger;
         private readonly IPlayerRepository _playerRepository;
-        private readonly IWGHorseService _service;
 
         public WGHorseKickPlayerCommandService(
+            ICommandService<WGHorseKickPlayerCommand> commandService,
             ILogger<WGHorseKickPlayerCommandService> logger,
-            IWGHorseApiClient client,
-            IWGHorseService service,
-            IPlayerRepository playerRepository)
+            IPlayerRepository playerRepository
+            )
         {
+            _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
         }
 
@@ -35,39 +32,12 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.WGHorse
             {
                 return;
             }
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-            var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(player.DefaultWalletCurrencyCode);
-
-            if (gameProviderCurrencyCode == null)
+            await _commandService.ExecuteAsync(new()
             {
-                return;
-            }
-            var prepareLoginResponse = await _client.GetPrepareLoginAsync(
-                configuration.ApiUrl,
-                configuration.PartnerCode,
-                configuration.PartnerKey,
-                configuration.IV,
-                new()
-                {
-                    Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                    PlayerCode = player.PlayerCode,
-                    PlayerNickname = player.PlayerCode,
-                    CurrencyCode = gameProviderCurrencyCode
-                }).ConfigureAwait(false);
-
-            if (prepareLoginResponse.ReturnCode is not 1)
-            {
-                return;
-            }
-
-            _ = await _client.GetLoginAsync(
-                configuration.ApiUrl,
-                configuration.PartnerCode,
-                new()
-                {
-                    Token = prepareLoginResponse.Token,
-                    Lang = "0"
-                }).ConfigureAwait(false);
+                BrandCode = player.BrandCode,
+                PlayerCode = command.PlayerCode,
+                CurrencyCode = player.DefaultWalletCurrencyCode
+            });
         }
     }
 }

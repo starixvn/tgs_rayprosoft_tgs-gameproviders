@@ -2,8 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.TCG.ApplicationServices;
 using TGS.GameProviders.Repositories;
 using TGS.ServiceUtility;
 
@@ -11,20 +10,18 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.TCG
 {
     public class TCGKickPlayerCommandService : ICommandService<TCGPlayerKickCommand>
     {
-        private readonly ITCGApiClient _client;
+        private readonly ICommandService<TCGKickPlayerCommand> _commandService;
         private readonly ILogger<TCGKickPlayerCommandService> _logger;
         private readonly IPlayerRepository _playerRepository;
-        private readonly ITCGService _service;
 
         public TCGKickPlayerCommandService(
+            ICommandService<TCGKickPlayerCommand> commandService,
             ILogger<TCGKickPlayerCommandService> logger,
-            ITCGApiClient client,
-            ITCGService service,
-            IPlayerRepository playerRepository)
+            IPlayerRepository playerRepository
+            )
         {
+            _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
         }
 
@@ -35,17 +32,12 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.TCG
             {
                 return;
             }
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-            var brandMerchant = await _service.GetMerchantAsync(player.DefaultWalletCurrencyCode).ConfigureAwait(false);
-
-            await _client.KickOutLottoPlayerAsync(
-                configuration.ApiUrl,
-                brandMerchant.MerchantCode,
-                brandMerchant.DESKey,
-                brandMerchant.SHA256Key, new()
-                {
-                    UserName = command.PlayerCode
-                }).ConfigureAwait(false);
+            await _commandService.ExecuteAsync(new()
+            {
+                BrandCode = player.BrandCode,
+                PlayerCode = command.PlayerCode,
+                CurrencyCode = player.DefaultWalletCurrencyCode
+            });
         }
     }
 }

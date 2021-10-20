@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.KY.ApplicationServices;
 using TGS.GameProviders.Repositories;
 using TGS.ServiceUtility;
 
@@ -11,20 +11,19 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.KY
 {
     public class KYKickPlayerCommandService : ICommandService<KYPlayerKickCommand>
     {
-        private readonly IKYApiClient _client;
+        private readonly ICommandService<KYKickPlayerCommand> _commandService;
         private readonly ILogger<KYKickPlayerCommandService> _logger;
         private readonly IPlayerRepository _playerRepository;
         private readonly IKYService _service;
 
         public KYKickPlayerCommandService(
+            ICommandService<KYKickPlayerCommand> commandService,
             ILogger<KYKickPlayerCommandService> logger,
-            IKYApiClient client,
-            IKYService service,
-            IPlayerRepository playerRepository)
+            IPlayerRepository playerRepository
+            )
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
+            _commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger)); ;
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
         }
 
@@ -35,12 +34,12 @@ namespace TGS.GameProviders.KickPlayer.Core.ApplicationServices.KY
             {
                 return;
             }
-            var brandMerchant = await _service.GetBrandMerchantAsync(player.BrandCode).ConfigureAwait(false);
-            var agentId = await _service.GetAgentIdAsync(player.BrandCode, player.DefaultWalletCurrencyCode).ConfigureAwait(false);
-            await _client.KickAsync(brandMerchant.ApiUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, new()
+            await _commandService.ExecuteAsync(new()
             {
-                PlayerCode = command.PlayerCode
-            }).ConfigureAwait(false);
+                BrandCode = player.BrandCode,
+                PlayerCode = command.PlayerCode,
+                CurrencyCode = player.DefaultWalletCurrencyCode
+            });
         }
     }
 }
