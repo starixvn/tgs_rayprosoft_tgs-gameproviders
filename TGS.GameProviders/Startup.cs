@@ -1,10 +1,18 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using TGS.GameProviders.ViewModelMappings;
@@ -63,7 +71,6 @@ namespace TGS.GameProviders
                                 OsVersion = $"{Environment.OSVersion}",
                                 Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                                 ProcessCount = Environment.ProcessorCount,
-                                AdditionalValues = new Dictionary<string, object>()
                             },
                             Result = new
                             {
