@@ -7,11 +7,11 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.KickPlayer
 {
-    public class SexyGamingController : KickPlayerController<SexyGamingKickPlayerCommand>
+    public class SGController : KickPlayerController<SexyGamingKickPlayerCommand>
     {
-        private readonly ILogger<SexyGamingController> _logger;
+        private readonly ILogger<SGController> _logger;
 
-        public SexyGamingController(ILogger<SexyGamingController> logger)
+        public SGController(ILogger<SGController> logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }

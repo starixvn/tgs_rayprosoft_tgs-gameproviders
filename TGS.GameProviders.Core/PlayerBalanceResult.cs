@@ -2,6 +2,6 @@
 {
     public record PlayerBalanceResult
     {
-        public decimal Balance { get; set; }
+        public decimal? Balance { get; set; }
     }
 }
