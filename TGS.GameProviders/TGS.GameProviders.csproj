@@ -16,13 +16,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Remove="Controllers\Base\**" />
-		<Content Remove="Controllers\Base\**" />
-		<EmbeddedResource Remove="Controllers\Base\**" />
-		<None Remove="Controllers\Base\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="EFCore.NamingConventions" Version="5.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.11">
 			<PrivateAssets>all</PrivateAssets>
