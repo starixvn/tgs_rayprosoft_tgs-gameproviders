@@ -43,7 +43,7 @@ Common labels
 Selector labels
 */}}
 {{- define "game-gameproviders.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "game-gameproviders.name" . }}
+app: {{ include "game-gameproviders.name" . }}
 
 {{- end }}
 
