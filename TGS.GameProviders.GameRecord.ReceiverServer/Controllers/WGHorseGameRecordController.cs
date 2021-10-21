@@ -8,7 +8,7 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
     public class WGHorseGameRecordController : BaseController<WGHorseGameRecordHandlerQuery, WGHorseGameRecordHandlerResult>
     {
         /// <summary>
-        /// Kicks the player asynchronous.
+        /// Games the record asynchronous.
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="query">The query.</param>
@@ -21,7 +21,7 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
         ///         "endTime": "2021-08-24T23:59:59.3527908+00:00"
         ///     }
         /// </remarks>
-        public override ValueTask<WGHorseGameRecordHandlerResult> KickPlayerAsync(
+        public override ValueTask<WGHorseGameRecordHandlerResult> GameRecordAsync(
             [FromServices] IGetService<WGHorseGameRecordHandlerQuery, WGHorseGameRecordHandlerResult> service,
             WGHorseGameRecordHandlerQuery query)
             => service.GetAsync(query);

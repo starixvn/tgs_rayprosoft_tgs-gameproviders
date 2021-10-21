@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using TGS.GameProviders.ApiClients.BigGaming;
+using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.BigGaming.Models;
 using TGS.GameProviders.ApiClients.BigGaming.Models.Commons;
 using TGS.GameProviders.Core;
@@ -60,15 +60,15 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.BigGaming
             {
                 Random = GuidExtensions.NewSequentialGuid().ToString(),
                 Sn = brandMerchant.SecretCode,
-                StartTime = query.StartTime.UtcDateTime.AddHours(-4).ToString("yyyy-MM-dd HH:mm:ss"),
-                EndTime = query.EndTime.UtcDateTime.AddHours(-4).ToString("yyyy-MM-dd HH:mm:ss"),
+                StartTime = query.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
+                EndTime = query.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
                 PageIndex = pageIndex.ToString(),
                 PageSize = pageSize
             };
 
             while (true)
             {
-                var response = await _client.GetGameRecordAsync(brandMerchant, request).ConfigureAwait(false);
+                var response = await _client.GetGameRecordAsync(brandMerchant.ApiUrl, brandMerchant.SecretCode, brandMerchant.SecretKey, request).ConfigureAwait(false);
                 if (response.Error != null)
                 {
                     return new()

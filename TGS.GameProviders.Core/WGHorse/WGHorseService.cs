@@ -3,12 +3,12 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.MongoRepositories;
 using TGS.GameProviders.MongoRepositories.Models;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Core.WGHorse
@@ -111,10 +111,17 @@ namespace TGS.GameProviders.Core.WGHorse
         public string GetGameProviderCode()
             => GameProviderType.WGHorse;
 
+        public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
+        {
+            var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.WGHorse).ConfigureAwait(false);
+            var (IsCultureCode, GameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProvider.Id, cultureCode).ConfigureAwait(false);
+            return (IsCultureCode) ? GameProviderCultureCode : "2";
+        }
+
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
         {
             var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.WGHorse).ConfigureAwait(false);
-            var (IsCurrencyCode, GameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCode(gameProvider.Id, currencyCode).ConfigureAwait(false);
+            var (IsCurrencyCode, GameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProvider.Id, currencyCode).ConfigureAwait(false);
             return (IsCurrencyCode) ? GameProviderCurrencyCode : null;
         }
 

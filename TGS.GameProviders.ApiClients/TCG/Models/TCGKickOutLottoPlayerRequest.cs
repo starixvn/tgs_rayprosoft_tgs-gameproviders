@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace TGS.GameProviders.ApiClients.Skywind.Models
+namespace TGS.GameProviders.ApiClients.TCG.Models
 {
     public record TCGKickOutLottoPlayerRequest
     {

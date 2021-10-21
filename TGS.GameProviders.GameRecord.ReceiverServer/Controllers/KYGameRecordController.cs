@@ -8,7 +8,7 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
     public class KYGameRecordController : BaseController<KYGameRecordHandlerQuery, KYGameRecordHandlerResult>
     {
         /// <summary>
-        /// Kicks the player asynchronous.
+        /// Games the record asynchronous.
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="query">The query.</param>
@@ -23,7 +23,7 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
         ///         "endTime":"2021-08-12T06:00:00+00:00"
         ///     }
         /// </remarks>
-        public override ValueTask<KYGameRecordHandlerResult> KickPlayerAsync(
+        public override ValueTask<KYGameRecordHandlerResult> GameRecordAsync(
             [FromServices] IGetService<KYGameRecordHandlerQuery, KYGameRecordHandlerResult> service,
             KYGameRecordHandlerQuery query)
             => service.GetAsync(query);

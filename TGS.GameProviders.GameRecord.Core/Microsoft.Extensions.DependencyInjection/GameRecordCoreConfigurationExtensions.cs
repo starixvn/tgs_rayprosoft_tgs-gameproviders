@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.Extensions.Configuration;
 using TGS.GameProviders.GameRecord.Core;
 using TGS.GameProviders.GameRecord.Core.Processors;
 using TGS.GameProviders.TCG.FTPApi.Client;
@@ -15,12 +12,14 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services,
             Action<TcgFtpServiceClientOptions, IServiceProvider> ftpServiceClientConfigure)
         {
+            services
+                .RegisterAllServiceUtilityTypes(
+                Assembly.GetExecutingAssembly(),
+                ServiceLifetime.Transient);
+
             services.AddTcgFtpServiceClient(ftpServiceClientConfigure);
 
             return services
-                .RegisterAllServiceUtilityTypes(
-                    Assembly.GetExecutingAssembly(),
-                    ServiceLifetime.Transient)
                 .AddTransient<IGameRecordProcessor, GameRecordProcessor>()
                 .AddTransient<IGameRecordProcessorSuccess, GameRecordProcessorSuccess>()
                 .AddTransient<IGameRecordProcessorFailed, GameRecordProcessorFailed>();

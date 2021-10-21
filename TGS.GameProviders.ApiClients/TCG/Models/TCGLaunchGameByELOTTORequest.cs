@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace TGS.Shared.Game.Models.TCG.Outgoing
+namespace TGS.GameProviders.ApiClients.TCG.Models
 {
     public record TCGLaunchGameByELOTTORequest : TCGLaunchGameRequest
     {

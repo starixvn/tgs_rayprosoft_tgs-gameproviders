@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.WGSports;
 using TGS.GameProviders.ApiClients.WGSports.Models;
 using TGS.GameProviders.ApiClients.WGSports.Models.Commons;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.GameRecord.Core.Processors;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
 using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports
@@ -175,11 +176,16 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports
             var request = new WGSportsGameRecordRequest()
             {
                 GameRecordTime = GameRecordTime.SettleDate,
-                StartTime = source.StartTime.UtcDateTime.AddHours(-4).ToString("yyyy-MM-dd HH:mm:ss"),
-                EndTime = source.EndTime.UtcDateTime.AddHours(-4).ToString("yyyy-MM-dd HH:mm:ss")
+                StartTime = source.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
+                EndTime = source.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
             };
 
-            var response = await _client.GetGameRecordAsync(_configuration, request).ConfigureAwait(false);
+            var response = await _client.GetGameRecordAsync(
+                _configuration.ApiUrl,
+                _configuration.PartnerCode,
+                _configuration.PartnerKey,
+                _configuration.IV,
+                request).ConfigureAwait(false);
             if (response.ReturnCode.IgnoreCaseNotEquals("1"))
             {
                 return (false, 0, 0, 0, null);
@@ -194,11 +200,16 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports
             var request = new WGSportsGameRecordRequest()
             {
                 GameRecordTime = GameRecordTime.BetDate,
-                StartTime = source.StartTime.UtcDateTime.AddHours(-4).ToString("yyyy-MM-dd HH:mm:ss"),
-                EndTime = source.EndTime.UtcDateTime.AddHours(-4).ToString("yyyy-MM-dd HH:mm:ss")
+                StartTime = source.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
+                EndTime = source.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
             };
 
-            var response = await _client.GetGameRecordAsync(_configuration, request).ConfigureAwait(false);
+            var response = await _client.GetGameRecordAsync(
+                _configuration.ApiUrl,
+                _configuration.PartnerCode,
+                _configuration.PartnerKey,
+                _configuration.IV,
+                request).ConfigureAwait(false);
             if (response.ReturnCode.IgnoreCaseNotEquals("1"))
             {
                 return (false, 0, 0, 0, null);

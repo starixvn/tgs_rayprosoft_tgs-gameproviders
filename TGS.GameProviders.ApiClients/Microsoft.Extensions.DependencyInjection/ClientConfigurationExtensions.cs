@@ -1,5 +1,6 @@
 ﻿// ReSharper disable CheckNamespace
 
+using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.BigGaming;
 using TGS.GameProviders.ApiClients.Evolution;
 using TGS.GameProviders.ApiClients.KY;
@@ -24,17 +25,17 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<IBigGamingUtility, BigGamingUtility>()
                 .AddScoped<ITCGUtility, TCGUtility>();
 
-            return services
-                .AddTransient<IKYApiClient, KYApiClient>()
-                .AddTransient<IVRApiClient, VRApiClient>()
-                .AddTransient<IWGHorseApiClient, WGHorseApiClient>()
-                .AddTransient<IWGSportsApiClient, WGSportsApiClient>()
-                .AddTransient<IBigGamingApiClient, BigGamingApiClient>()
-                .AddTransient<IEvolutionApiClient, EvolutionApiClient>()
-                .AddTransient<ISexyGamingApiClient, SexyGamingApiClient>()
-                .AddTransient<ISkywindApiClient, SkywindApiClient>()
-                .AddTransient<ITCGApiClient, TCGApiClient>()
-                .AddTransient<ISBOApiClient, SBOApiClient>();
+            services.AddHttpClient<IKYApiClient, KYApiClient>();
+            services.AddHttpClient<IVRApiClient, VRApiClient>();
+            services.AddHttpClient<IWGHorseApiClient, WGHorseApiClient>();
+            services.AddHttpClient<IWGSportsApiClient, WGSportsApiClient>();
+            services.AddHttpClient<IBigGamingApiClient, BigGamingApiClient>();
+            services.AddHttpClient<IEvolutionApiClient, EvolutionApiClient>();
+            services.AddHttpClient<ISexyGamingApiClient, SexyGamingApiClient>();
+            services.AddHttpClient<ISkywindApiClient, SkywindApiClient>();
+            services.AddHttpClient<ITCGApiClient, TCGApiClient>();
+
+            return services;
         }
     }
 }

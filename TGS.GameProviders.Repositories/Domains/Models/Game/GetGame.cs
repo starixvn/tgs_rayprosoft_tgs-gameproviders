@@ -17,7 +17,7 @@ namespace TGS.GameProviders.Repositories.Domains.Models.Game
         public bool AvailableToBrand { get; set; }
         public bool HasTurnoverOnTieBet { get; set; }
         public bool Html5 { get; set; }
-        public string[] AvailableCurrencies { get; set; } = default!;
+        public string[]? AvailableCurrencies { get; set; }
         public string Code { get; set; } = default!;
         public string Name { get; set; } = default!;
         public DateTime CreatedOn { get; set; }

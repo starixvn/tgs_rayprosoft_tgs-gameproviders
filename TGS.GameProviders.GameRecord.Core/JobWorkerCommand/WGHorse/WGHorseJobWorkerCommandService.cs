@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse;
 using TGS.GameProviders.RedisRepositories;
@@ -14,16 +15,19 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.WGHorse
     {
         private readonly IGameProviderScheduleLockRepository _gameProviderScheduleLockRepository;
         private readonly IGetService<WGHorseGameRecordHandlerQuery, WGHorseGameRecordHandlerResult> _getService;
+        private readonly ILogger<WGHorseJobWorkerCommandService> _logger;
         private readonly IWGHorseService _service;
 
         public WGHorseJobWorkerCommandService(
             IWGHorseService service,
             IGetService<WGHorseGameRecordHandlerQuery, WGHorseGameRecordHandlerResult> getService,
-            IGameProviderScheduleLockRepository gameProviderScheduleLockRepository)
+            IGameProviderScheduleLockRepository gameProviderScheduleLockRepository,
+            ILogger<WGHorseJobWorkerCommandService> logger)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _getService = getService ?? throw new ArgumentNullException(nameof(getService));
             _gameProviderScheduleLockRepository = gameProviderScheduleLockRepository ?? throw new ArgumentNullException(nameof(gameProviderScheduleLockRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         async ValueTask ICommandService<WGHorseJobWorkerCommand>.ExecuteAsync(WGHorseJobWorkerCommand command, CancellationToken cancellationToken)
@@ -36,7 +40,8 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.WGHorse
 
                 var tasks = new List<Task>();
 
-                Task t = Task.Run(async () =>
+                var gameProviderScheduleId = string.Empty;
+                try
                 {
                     var gameProviderSchedule = await _service.GetGameProviderScheduleAsync(gameProviderId).ConfigureAwait(false);
                     if (gameProviderSchedule == null)
@@ -82,9 +87,15 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.WGHorse
                         }
                         await _gameProviderScheduleLockRepository.RemoveAsync(_service.GetGameProviderCode(), gameProviderSchedule.Id.ToString()).ConfigureAwait(false);
                     }
-                });
-                tasks.Add(t);
-                await Task.WhenAll(tasks);
+                }
+                catch (Exception ex)
+                {
+                    if (!string.IsNullOrEmpty(gameProviderScheduleId))
+                    {
+                        await _gameProviderScheduleLockRepository.RemoveAsync(_service.GetGameProviderCode(), gameProviderScheduleId).ConfigureAwait(false);
+                    }
+                    _logger.LogError(ex, $"發生例外");
+                }
             }
             catch (Exception e)
             {

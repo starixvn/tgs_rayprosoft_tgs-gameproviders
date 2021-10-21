@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using TGS.GameProviders.ApiClients.WGHorse;
+using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.WGHorse.Models;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Domains.Extensions;
@@ -61,7 +61,12 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
                     PageSize = rows
                 };
 
-                var response = await _client.GetGameRecordAsync(configuration, data).ConfigureAwait(false);
+                var response = await _client.GetGameRecordAsync(
+                    configuration.ApiUrl,
+                    configuration.PartnerCode,
+                    configuration.PartnerKey,
+                    configuration.IV,
+                    data).ConfigureAwait(false);
 
                 if (response.ReturnCode != 1)
                 {

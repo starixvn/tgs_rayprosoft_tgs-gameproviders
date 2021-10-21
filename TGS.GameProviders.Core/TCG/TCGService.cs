@@ -4,13 +4,13 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Domains.SettingConfiguration;
-using TGS.GameProviders.Domains.SettingConfiguration.TCG;
 using TGS.GameProviders.MongoRepositories;
 using TGS.GameProviders.MongoRepositories.Models;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.TCG;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Core.TCG
@@ -40,7 +40,7 @@ namespace TGS.GameProviders.Core.TCG
             var sysTime = DateTimeOffset.UtcNow;
             var config = new TCGGameProviderScheduleConfig()
             {
-                LastGameRecorDirectory = string.Empty,
+                LastGameRecorDirectory = DateTimeOffset.UtcNow.ToString("yyyyMMdd"),
                 LastGameRecorFile = string.Empty,
             };
 
@@ -75,8 +75,6 @@ namespace TGS.GameProviders.Core.TCG
             await _gameProviderScheduleRepository.MergeAsync(gameProviderSchedule).ConfigureAwait(false);
         }
 
-        public ValueTask GameProviderScheduleUpdateAsync(GameProviderSchedule gameProviderSchedule, string lastGameRecorFile, DateTimeOffset sysTime) => throw new NotImplementedException();
-
         public Task<GetGame[]> GetGameLotteryLobbyAsync(Guid gameProviderId)
             => _gameRepository.GetGameList(gameProviderId, GameType.LotteryLobby);
 
@@ -85,6 +83,13 @@ namespace TGS.GameProviders.Core.TCG
 
         public string GetGameProviderCode()
             => GameProviderType.TCG;
+
+        public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
+        {
+            var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.TCG).ConfigureAwait(false);
+            var (IsCultureCode, GameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProvider.Id, cultureCode).ConfigureAwait(false);
+            return (IsCultureCode) ? GameProviderCultureCode : "EN";
+        }
 
         public async Task<Guid> GetGameProviderIdAsync()
         {

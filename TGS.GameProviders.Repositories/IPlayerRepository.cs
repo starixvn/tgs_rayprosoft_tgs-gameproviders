@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
-using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories
 {
@@ -9,6 +8,6 @@ namespace TGS.GameProviders.Repositories
     {
         Task<GetPlayer?> GetPlayerAsync(string playerCode);
 
-        Task<Player?> GetPlayerAsync(Guid brandId, string username);
+        Task<GetPlayer?> GetPlayerAsync(Guid brandId, string username);
     }
 }

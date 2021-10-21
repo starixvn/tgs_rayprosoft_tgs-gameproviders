@@ -5,12 +5,10 @@ pipeline {
 	
 	environment {
 		BuildConfiguration="Debug"
-		ImageNameKickplayerReceiverServer="registry.gitlab.com/rayprosoft/turnkey-gaming-system/game-kickplayer-receiverserver"
-		ImageTagUrlKickplayerReceiverServer = "https://gitlab.com/api/v4/projects/20478010/registry/repositories/2355332/tags"
-        ImageKickplayerReceiverServer = "game-kickplayer-receiverserver"
+        ImageNameGameProviders="registry.gitlab.com/rayprosoft/turnkey-gaming-system/game-gameproviders"
+		ImageTagUrlGameProviders = "https://gitlab.com/api/v4/projects/20478010/registry/repositories/2395683/tags"
 		ImageNameGamerecordReceiverServer ="registry.gitlab.com/rayprosoft/turnkey-gaming-system/game-gamerecord-receiverserver"
 		ImageTagUrlGamerecordReceiverServer = "https://gitlab.com/api/v4/projects/20478010/registry/repositories/2355451/tags"
-        ImageGamerecordReceiverServer = "game-gamerecord-receiverserver"
 	}
 
 	stages {
@@ -30,7 +28,7 @@ pipeline {
                             break;
                         default:
                             env.kube_ns = "dev";
-                            env.k8s_config = 'k8s-kube-config' 
+                            env.k8s_config = 'k8s-kube-config';
                             break;
                     }
                 }
@@ -65,9 +63,16 @@ pipeline {
 			}
 		}
 
-		stage('Build Game Kickplayer Receiver Server Docker Image') {
+        stage('Push GameProviders Clinet packages') {
 			steps {
-				sh 'dotnet build "TGS.GameProviders.KickPlayer.ReceiverServer/TGS.GameProviders.KickPlayer.ReceiverServer.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageNameKickplayerReceiverServer:${TAG}" --no-restore '
+				sh 'dotnet pack -c $BuildConfiguration "TGS.GameProviders.Client/TGS.GameProviders.Client.csproj" --no-build'
+				sh 'dotnet nuget push "TGS.GameProviders.Client/bin/$BuildConfiguration/*.nupkg" --source "raypro-baget" -k admin --skip-duplicate'
+			}
+		}
+
+        stage('Build Game GameProviders Docker Image') {
+			steps {
+				sh 'dotnet build "TGS.GameProviders/TGS.GameProviders.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageNameGameProviders:${TAG}" --no-restore '
 			}
 		}
 
@@ -77,9 +82,9 @@ pipeline {
 			}
 		}
 
-		stage('Push Game Kickplayer Receiver Server Docker Image') {
+		stage('Push Game GameProviders Docker Image') {
 			steps {
-				sh 'sudo docker push $ImageNameKickplayerReceiverServer:${TAG}'
+				sh 'sudo docker push $ImageNameGameProviders:${TAG}'
 			}
 		}
 
@@ -105,42 +110,36 @@ pipeline {
             }
         }
 
-		stage('Deploy Game Kickplayer Receiver Server to k8s') {
+		stage('Deploy Game GameProviders to k8s') {
 			steps {
 				withKubeConfig([credentialsId: env.k8s_config]) {
                     withCredentials([string(credentialsId: "tgs-${kube_ns}-connectionstring", variable: "tgs_tgs")]) {
                         sh '''
-                            helm template deployment/k8s/game-kickplayer-receiverserver \
+                            helm template deployment/k8s/game-gameproviders \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
+                                --set autoscaling.enabled=${tgs_autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set connectionStrings.mongo="$tgs_mongo" \
                                 --set nats.urls="$tgs_nats" \
-                                --set rabbit.url="$tgs_rabbit_url" \
-                                --set rabbit.user="$tgs_rabbit_user" \
-                                --set rabbit.password="$tgs_rabbit_pass" \
-                                --set rabbit.vhost="$tgs_rabbit_vhost"
                         '''
                         sh '''
-                            helm template deployment/k8s/game-kickplayer-receiverserver \
+                            helm template deployment/k8s/game-gameproviders \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
+                                --set autoscaling.enabled=${tgs_autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set connectionStrings.mongo="$tgs_mongo" \
                                 --set nats.urls="$tgs_nats" \
-                                --set rabbit.url="$tgs_rabbit_url" \
-                                --set rabbit.user="$tgs_rabbit_user" \
-                                --set rabbit.password="$tgs_rabbit_pass" \
-                                --set rabbit.vhost="$tgs_rabbit_vhost" \
                                 | kubectl -n ${kube_ns} apply -f -
                         '''
                     }
 				}
 			}
 		}
-        
+
         stage('Deploy Game GameRecord Receiver Server to k8s') {
 			steps {
 				withKubeConfig([credentialsId: env.k8s_config]) {
@@ -149,6 +148,7 @@ pipeline {
                             helm template deployment/k8s/game-gamerecord-receiverserver \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
+                                --set autoscaling.enabled=${tgs_autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set connectionStrings.mongo="$tgs_mongo" \
@@ -162,6 +162,7 @@ pipeline {
                             helm template deployment/k8s/game-gamerecord-receiverserver \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
+                                --set autoscaling.enabled=${tgs_autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set connectionStrings.mongo="$tgs_mongo" \
@@ -191,10 +192,10 @@ pipeline {
             }
         }
 
-        stage('Remove Game Kickplayer Receiver Server Image Tags') {					
+        stage('Remove Game GameProviders Image Tags') {					
             steps {	
                 withCredentials([string(credentialsId: "GitLabToken", variable: "GitLabToken")]) {					
-                    sh "curl --request DELETE --data \'name_regex_delete=.*\' --data \'keep_n=10\' --header \'PRIVATE-TOKEN: ${GitLabToken}\' ${ImageTagUrlKickplayerReceiverServer}"
+                    sh "curl --request DELETE --data \'name_regex_delete=.*\' --data \'keep_n=10\' --header \'PRIVATE-TOKEN: ${GitLabToken}\' ${ImageTagUrlGameProviders}"
                 }
             }
         }

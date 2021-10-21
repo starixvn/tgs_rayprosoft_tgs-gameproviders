@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Repositories.Domains.Models.FailedGameRecordOperation;
 using TGS.GameProviders.Repositories.Entities;
-using TGS.GameProviders.Repositories.ModelMappings;
 
 namespace TGS.GameProviders.Repositories
 {

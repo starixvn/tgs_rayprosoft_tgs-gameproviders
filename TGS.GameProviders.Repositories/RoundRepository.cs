@@ -2,11 +2,9 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Repositories.Domains.Models.Rounds;
 using TGS.GameProviders.Repositories.Entities;
-using TGS.GameProviders.Repositories.ModelMappings;
 
 namespace TGS.GameProviders.Repositories
 {

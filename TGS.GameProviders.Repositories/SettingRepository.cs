@@ -2,8 +2,7 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories

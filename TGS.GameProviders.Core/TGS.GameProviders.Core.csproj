@@ -5,12 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TGS.GameProviders.MongoRepositories\TGS.GameProviders.MongoRepositories.csproj" />
-    <ProjectReference Include="..\TGS.GameProviders.Repositories\TGS.GameProviders.Repositories.csproj" />
+    <PackageReference Include="TGS.ServiceUtility" Version="0.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="KY\ApplicationServices\" />
+    <ProjectReference Include="..\TGS.GameProviders.ApiClients\TGS.GameProviders.ApiClients.csproj" />
+    <ProjectReference Include="..\TGS.GameProviders.MongoRepositories\TGS.GameProviders.MongoRepositories.csproj" />
+    <ProjectReference Include="..\TGS.GameProviders.Repositories\TGS.GameProviders.Repositories.csproj" />
   </ItemGroup>
 
 </Project>

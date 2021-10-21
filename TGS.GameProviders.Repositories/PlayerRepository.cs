@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 using TGS.GameProviders.Repositories.Entities;
-using TGS.GameProviders.Repositories.ModelMappings;
 
 namespace TGS.GameProviders.Repositories
 {
@@ -28,8 +26,9 @@ namespace TGS.GameProviders.Repositories
         public async Task<GetPlayer?> GetPlayerAsync(string playerCode)
         {
             var player = await _context.Players
+                .Where(x => x.PlayerCode == playerCode)
                 .ProjectTo<GetPlayer>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync(x => x.PlayerCode == playerCode)
+                .FirstOrDefaultAsync()
                 .ConfigureAwait(false);
             if (player == null)
             {
@@ -41,7 +40,21 @@ namespace TGS.GameProviders.Repositories
             return player;
         }
 
-        public Task<Player?> GetPlayerAsync(Guid brandId, string username)
-            => _context.Players.FirstOrDefaultAsync(x => x.BrandId == brandId && x.Username == username);
+        public async Task<GetPlayer?> GetPlayerAsync(Guid brandId, string username)
+        {
+            var player = await _context.Players
+                .Where(x => x.BrandId == brandId && x.Username == username)
+                .ProjectTo<GetPlayer>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
+            if (player == null)
+            {
+                return null;
+            }
+            var brands = await _context.Brands.FirstOrDefaultAsync(x => x.Id == player.BrandId).ConfigureAwait(false);
+            player.LicenseeId = brands.LicenseeId;
+            player.BrandCode = brands.Code;
+            return player;
+        }
     }
 }

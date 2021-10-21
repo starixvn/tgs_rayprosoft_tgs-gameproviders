@@ -38,6 +38,5 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IBrandRepository, BrandRepository>()
                 .AddTransient<IPlayerRepository, PlayerRepository>();
         }
-
     }
 }

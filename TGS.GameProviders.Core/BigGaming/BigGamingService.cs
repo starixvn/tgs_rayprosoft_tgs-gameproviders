@@ -4,12 +4,12 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Domains.SettingConfiguration;
-using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
 using TGS.GameProviders.MongoRepositories;
 using TGS.GameProviders.MongoRepositories.Models;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.BigGaming;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Core.BigGaming

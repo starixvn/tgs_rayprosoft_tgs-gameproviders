@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using TGS.GameProviders.ApiClients.TCG.Models.Commons;
 
-namespace TGS.Shared.Game.Models.TCG.Outgoing
+namespace TGS.GameProviders.ApiClients.TCG.Models
 {
     public record TCGLaunchGameBySEARequest : TCGLaunchGameRequest
     {

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky;
 using TGS.GameProviders.RedisRepositories;
@@ -15,16 +15,19 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.KY
     {
         private readonly IGameProviderScheduleLockRepository _gameProviderScheduleLockRepository;
         private readonly IGetService<KYGameRecordHandlerQuery, KYGameRecordHandlerResult> _getService;
+        private readonly ILogger<KYJobWorkerCommandService> _logger;
         private readonly IKYService _service;
 
         public KYJobWorkerCommandService(
             IKYService service,
             IGetService<KYGameRecordHandlerQuery, KYGameRecordHandlerResult> getService,
-            IGameProviderScheduleLockRepository gameProviderScheduleLockRepository)
+            IGameProviderScheduleLockRepository gameProviderScheduleLockRepository,
+            ILogger<KYJobWorkerCommandService> logger)
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _getService = getService ?? throw new ArgumentNullException(nameof(getService));
             _gameProviderScheduleLockRepository = gameProviderScheduleLockRepository ?? throw new ArgumentNullException(nameof(gameProviderScheduleLockRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         async ValueTask ICommandService<KYJobWorkerCommand>.ExecuteAsync(KYJobWorkerCommand command, CancellationToken cancellationToken)
@@ -35,15 +38,14 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.KY
 
                 var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
-                var tasks = new List<Task>();
-
                 var brandMerchants = configuration.BrandMerchants.Where(x => x.Status);
 
                 foreach (var brand in brandMerchants)
                 {
                     foreach (var agent in brand.AgentMappers.Where(x => x.Status))
                     {
-                        Task t = Task.Run(async () =>
+                        var gameProviderScheduleId = string.Empty;
+                        try
                         {
                             var gameProviderSchedule = await _service.GetGameProviderScheduleAsync(gameProviderId, brand.BrandCode, agent.AgentId, agent.CurrencyCode).ConfigureAwait(false);
                             if (gameProviderSchedule == null)
@@ -90,12 +92,17 @@ namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.KY
                                 }
                                 await _gameProviderScheduleLockRepository.RemoveAsync(_service.GetGameProviderCode(), gameProviderSchedule.Id.ToString()).ConfigureAwait(false);
                             }
-                        });
-                        tasks.Add(t);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (!string.IsNullOrEmpty(gameProviderScheduleId))
+                            {
+                                await _gameProviderScheduleLockRepository.RemoveAsync(_service.GetGameProviderCode(), gameProviderScheduleId).ConfigureAwait(false);
+                            }
+                            _logger.LogError(ex, $"發生例外");
+                        }
                     }
                 }
-
-                await Task.WhenAll(tasks);
             }
             catch (Exception e)
             {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using TGS.GameProviders.ApiClients.KY;
+using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.KY.Models;
 using TGS.GameProviders.ApiClients.KY.Models.Commons;
 using TGS.GameProviders.Core;
@@ -57,7 +57,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
                 };
             }
 
-            var dateTimeOffset = DateTimeOffset.UtcNow.AddHours(+8);
+            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
 
             var data = new KYGameRecordRequest()
             {
@@ -65,7 +65,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
                 EndTime = query.EndTime.ToUnixTimeMilliseconds()
             };
 
-            var response = await _client.GetGameRecordAsync(brandMerchant, agentId, dateTimeOffset, data);
+            var response = await _client.GetGameRecordAsync(brandMerchant.ApiRecordUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, dateTimeOffset, data);
 
             var players = new Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)>();
             var games = new Dictionary<int, GetGame>();
@@ -119,7 +119,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
                     if (!games.TryGetValue(gameRecord.KindID, out GetGame game))
                     {
                         game = await _gameRepository.GetGameAsync(gameProviderId, gameRecord.KindID.ToString()).ConfigureAwait(false);
-                        games.Add(response.Data.List.KindID[i], game);
+                        games.Add(gameRecord.KindID, game);
                     }
 
                     if (playerInfo.Player == null || game == null)

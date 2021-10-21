@@ -1,17 +1,14 @@
 ﻿namespace TGS.GameProviders.Repositories.Domains
 {
-    /// <summary>
-    /// Platform Type
-    /// </summary>
     public enum PlatformType
     {
         /// <summary>
-        /// The desktop
+        ///     Desktop
         /// </summary>
         Desktop = 0,
 
         /// <summary>
-        /// The mobile
+        ///     Mobile
         /// </summary>
         Mobile = 1
     }
