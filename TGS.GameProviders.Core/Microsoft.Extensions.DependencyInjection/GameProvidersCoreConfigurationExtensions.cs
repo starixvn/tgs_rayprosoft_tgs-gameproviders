@@ -15,20 +15,21 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddGameProvidersCore(this IServiceCollection services)
         {
             services
-            .RegisterAllServiceUtilityTypes(
+                .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
                 ServiceLifetime.Transient);
             return services
-               .AddTransient<IKYService, KYService>()
-               .AddTransient<IVRService, VRService>()
-               .AddTransient<IVRGamePlayerCreate, VRGamePlayerCreate>()
-               .AddTransient<IWGHorseService, WGHorseService>()
-               .AddTransient<IWGHorseGamePlayerCreate, WGHorseGamePlayerCreate>()
-               .AddTransient<IWGSportsService, WGSportsService>()
-               .AddTransient<IWGSportsGamePlayerCreate, WGSportsGamePlayerCreate>()
-               .AddTransient<IBigGamingService, BigGamingService>()
-               .AddTransient<ISexyGamingService, SexyGamingService>()
-               .AddTransient<ITCGService, TCGService>();
+                .AddTransient<IKYService, KYService>()
+                .AddTransient<IVRService, VRService>()
+                .AddTransient<IVRGamePlayerCreate, VRGamePlayerCreate>()
+                .AddTransient<IWGHorseService, WGHorseService>()
+                .AddTransient<IWGHorseGamePlayerCreate, WGHorseGamePlayerCreate>()
+                .AddTransient<IWGSportsService, WGSportsService>()
+                .AddTransient<IWGSportsGamePlayerCreate, WGSportsGamePlayerCreate>()
+                .AddTransient<IBigGamingService, BigGamingService>()
+                .AddTransient<ISexyGamingService, SexyGamingService>()
+                .AddTransient<ITCGService, TCGService>()
+                .AddTransient<ITCGGamePlayerCreate, TCGGamePlayerCreate>();
         }
     }
 }

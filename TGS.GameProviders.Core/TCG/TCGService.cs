@@ -84,6 +84,13 @@ namespace TGS.GameProviders.Core.TCG
         public string GetGameProviderCode()
             => GameProviderType.TCG;
 
+        public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
+        {
+            var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.TCG).ConfigureAwait(false);
+            var (IsCultureCode, GameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProvider.Id, cultureCode).ConfigureAwait(false);
+            return (IsCultureCode) ? GameProviderCultureCode : "EN";
+        }
+
         public async Task<Guid> GetGameProviderIdAsync()
         {
             var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.TCG).ConfigureAwait(false);

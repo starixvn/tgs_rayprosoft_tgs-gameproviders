@@ -15,21 +15,19 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
         private readonly IKYApiClient _client;
         private readonly IGameRepository _gameRepository;
         private readonly ILogger<KYGameUrlGetService> _logger;
-        private readonly IPlayerRepository _playerRepository;
         private readonly IKYService _service;
 
         public KYGameUrlGetService(
-            ILogger<KYGameUrlGetService> logger,
             IKYApiClient client,
-            IKYService service,
-            IPlayerRepository playerRepository,
-            IGameRepository gameRepository)
+            IGameRepository gameRepository,
+            ILogger<KYGameUrlGetService> logger,
+            IKYService service
+            )
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
-            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         public async ValueTask<GameUrlResult> GetAsync(KYGameUrlQuery command, CancellationToken cancellationToken = default)
@@ -42,13 +40,13 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
 
             if (command.GameType != GameType.CardGameLobby)
             {
-                var cachedGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
+                var getGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
 
-                if (cachedGame != null)
+                if (getGame != null)
                 {
-                    if (cachedGame.Type != GameType.CardGameLobby)
+                    if (getGame.Type != GameType.CardGameLobby)
                     {
-                        externalID = Convert.ToInt32(cachedGame.ExternalId);
+                        externalID = Convert.ToInt32(getGame.ExternalId);
                     }
                 }
             }

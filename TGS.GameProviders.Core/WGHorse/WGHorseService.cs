@@ -111,6 +111,13 @@ namespace TGS.GameProviders.Core.WGHorse
         public string GetGameProviderCode()
             => GameProviderType.WGHorse;
 
+        public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
+        {
+            var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.WGHorse).ConfigureAwait(false);
+            var (IsCultureCode, GameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProvider.Id, cultureCode).ConfigureAwait(false);
+            return (IsCultureCode) ? GameProviderCultureCode : "2";
+        }
+
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
         {
             var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.WGHorse).ConfigureAwait(false);
