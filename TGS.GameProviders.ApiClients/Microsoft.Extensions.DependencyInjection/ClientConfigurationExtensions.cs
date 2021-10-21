@@ -1,6 +1,9 @@
-﻿using TGS.GameProviders.ApiClients.BigGaming;
+﻿// ReSharper disable CheckNamespace
+
+using TGS.GameProviders.ApiClients.BigGaming;
 using TGS.GameProviders.ApiClients.Evolution;
 using TGS.GameProviders.ApiClients.KY;
+using TGS.GameProviders.ApiClients.SBO;
 using TGS.GameProviders.ApiClients.SexyGaming;
 using TGS.GameProviders.ApiClients.Skywind;
 using TGS.GameProviders.ApiClients.TCG;
@@ -30,7 +33,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IEvolutionApiClient, EvolutionApiClient>()
                 .AddTransient<ISexyGamingApiClient, SexyGamingApiClient>()
                 .AddTransient<ISkywindApiClient, SkywindApiClient>()
-                .AddTransient<ITCGApiClient, TCGApiClient>();
+                .AddTransient<ITCGApiClient, TCGApiClient>()
+                .AddTransient<ISBOApiClient, SBOApiClient>();
         }
     }
 }
