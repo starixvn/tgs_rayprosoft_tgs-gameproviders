@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.KY.ApplicationServices;
+using TGS.GameProviders.Core.WGHorse.ApplicationServices;
+using TGS.GameProviders.Core.WGSports.ApplicationServices;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.ViewModelMappings
@@ -12,6 +14,10 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<GameUrlResult, GameUrlResponse>()
              .ReverseMap();
             CreateMap<GameUrlRequest, KYGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, WGSportsGameUrlQuery>()
+               .ReverseMap();
+            CreateMap<GameUrlRequest, WGHorseGameUrlQuery>()
                 .ReverseMap();
         }
     }

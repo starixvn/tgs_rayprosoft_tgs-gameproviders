@@ -15,20 +15,17 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
         private readonly IKYApiClient _client;
         private readonly IGameRepository _gameRepository;
         private readonly ILogger<KYGameUrlGetService> _logger;
-        private readonly IPlayerRepository _playerRepository;
         private readonly IKYService _service;
 
         public KYGameUrlGetService(
             ILogger<KYGameUrlGetService> logger,
             IKYApiClient client,
             IKYService service,
-            IPlayerRepository playerRepository,
             IGameRepository gameRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
-            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         }
 

@@ -27,5 +27,11 @@ namespace TGS.GameProviders.Repositories
             var gameProviderCurrency = await _context.GameProviderCurrencies.FirstOrDefaultAsync(x => x.GameProviderId == gameProviderId && x.CurrencyCode == currencyCode).ConfigureAwait(false);
             return gameProviderCurrency == null ? (new(false, null)) : (new(true, gameProviderCurrency.GameProviderCurrencyCode));
         }
+
+        public async Task<(bool IsCultureCode, string? GameProviderCultureCode)> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode)
+        {
+            var GameProviderLanguage = await _context.GameProviderLanguages.FirstOrDefaultAsync(x => x.GameProviderId == gameProviderId && x.CultureCode == cultureCode).ConfigureAwait(false);
+            return GameProviderLanguage == null ? (new(false, null)) : (new(true, GameProviderLanguage.GameProviderCultureCode));
+        }
     }
 }
