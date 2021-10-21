@@ -27,6 +27,8 @@ namespace TGS.GameProviders.Core
 
         ValueTask<GameProviderSchedule> GetGameProviderScheduleAsync(Guid gameProviderId, string currencyCode, string agentId);
 
+        ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
+
         TCGGameProviderScheduleConfig GetGameProviderScheduleConfig(GameProviderSchedule gameProviderSchedule);
 
         ValueTask<TCGMerchant> GetMerchantAsync(string currencyCode);
