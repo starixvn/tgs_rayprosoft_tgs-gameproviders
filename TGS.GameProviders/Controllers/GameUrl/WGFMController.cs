@@ -42,7 +42,7 @@ namespace TGS.GameProviders.Controllers.GameUrl
         ///         "platformType": 0,
         ///         "language": "zh-CN",
         ///         "ipAddress": "127.0.0.1",
-        ///         "backUrl": ""
+        ///         "backUrl": "https://dev-t1.rpgp.cc/"
         ///     }
         /// </remarks>
         public override async ValueTask<GameUrlResponse> GameUrlAsync(
