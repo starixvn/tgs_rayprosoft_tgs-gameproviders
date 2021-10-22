@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Core.Infrastructures.Security;
 using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.KY.Models;
 using TGS.GameProviders.ApiClients.Skywind.Models;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
@@ -18,6 +17,7 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
         private readonly IGameRepository _gameRepository;
         private readonly ILogger<SkywindGameUrlGetService> _logger;
         private readonly ISkywindService _service;
+        private readonly ISkywindAccessToken _skywindAccessToken;
         private readonly ITokenProvider _tokenProvider;
 
         public SkywindGameUrlGetService(
@@ -25,7 +25,8 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
             IGameRepository gameRepository,
             ILogger<SkywindGameUrlGetService> logger,
             ISkywindService service,
-            ITokenProvider tokenProvider
+            ITokenProvider tokenProvider,
+            ISkywindAccessToken skywindAccessToken
             )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -33,6 +34,7 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _tokenProvider = tokenProvider ?? throw new ArgumentNullException(nameof(tokenProvider));
+            _skywindAccessToken = skywindAccessToken ?? throw new ArgumentNullException(nameof(skywindAccessToken));
         }
 
         public async ValueTask<GameUrlResult> GetAsync(SkywindGameUrlQuery command, CancellationToken cancellationToken = default)
@@ -40,15 +42,14 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
             var encryptedToken = await _tokenProvider.EncryptAsync(command.LoginRecordId).ConfigureAwait(false);
             var cultureCode = await _service.GetGameProviderCultureCodeAsync(command.Language).ConfigureAwait(false);
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-
-            var url = default(string);
-
             var getGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
 
             if (getGame == null)
             {
                 return null;
             }
+
+            string url;
 
             if (getGame.Type == GameType.LiveDealerLobby)
             {
@@ -64,14 +65,16 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
                     Language = cultureCode
                 };
 
-                var responseGameUrl = await _client.GetGameUrlAsync(
-                    configuration.apiUrl,
-                    configuration.getaccessToken, data).ConfigureAwait(false);
+                var getaccessToken = await _skywindAccessToken.GetAccessTokenAsync().ConfigureAwait(false);
 
-                if (responseGameUrl.Code.ToString().IgnoreCaseNotEquals(((int)GameApiError.Success).ToString()))
+                var responseGameUrl = await _client.GetGameUrlAsync(
+                    configuration.ApiUrl,
+                    getaccessToken,
+                    data).ConfigureAwait(false);
+
+                if (responseGameUrl?.Code != 0)
                 {
-                    throw new GameProviderApiErrorException(
-                        _jsonSerializationProvider.SerializeToString(responseGameUrl));
+                    return null;
                 }
 
                 url = responseGameUrl.Url;
@@ -79,10 +82,8 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
 
             return new()
             {
-                Url = url
+                Url = new(url)
             };
-
-            return (response.Data.Code == 0) ? new() { Url = new(response.Data.Url) } : null;
         }
     }
 }

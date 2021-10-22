@@ -44,7 +44,7 @@ namespace TGS.GameProviders.Controllers.PlayerBalance
             PlayerBalanceRequest request)
         {
             var result = await getService.GetAsync(_mapper.Map<VRPlayerBalanceQuery>(request)).ConfigureAwait(false);
-            return _mapper.Map<PlayerBalanceResponse>(result);
+            return result == null ? null : _mapper.Map<PlayerBalanceResponse>(result);
         }
     }
 }

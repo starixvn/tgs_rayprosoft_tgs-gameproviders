@@ -77,7 +77,7 @@ namespace TGS.GameProviders.Controllers.GameUrl
             GameUrlRequest request)
         {
             var result = await getService.GetAsync(_mapper.Map<TCGGameUrlQuery>(request)).ConfigureAwait(false);
-            return _mapper.Map<GameUrlResponse>(result);
+            return result == null ? null : _mapper.Map<GameUrlResponse>(result);
         }
     }
 }

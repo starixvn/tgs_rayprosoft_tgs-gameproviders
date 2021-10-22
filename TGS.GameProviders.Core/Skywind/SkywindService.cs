@@ -27,12 +27,6 @@ namespace TGS.GameProviders.Core.Skywind
         public string GetGameProviderCode()
             => GameProviderType.SexyGaming;
 
-        public async Task<Guid> GetGameProviderIdAsync()
-        {
-            var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.Skywind).ConfigureAwait(false);
-            return gameProvider.Id;
-        }
-
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
             var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.Skywind).ConfigureAwait(false);
@@ -40,6 +34,11 @@ namespace TGS.GameProviders.Core.Skywind
             return (IsCultureCode) ? GameProviderCultureCode : "en";
         }
 
+        public async Task<Guid> GetGameProviderIdAsync()
+        {
+            var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.Skywind).ConfigureAwait(false);
+            return gameProvider.Id;
+        }
 
         public Task<SkywindConfiguration> GetSettingConfigurationAsync()
             => _settingRepository.GetConfigurationAsync<SkywindConfiguration>(GameProviderConfigurations.Skywind);

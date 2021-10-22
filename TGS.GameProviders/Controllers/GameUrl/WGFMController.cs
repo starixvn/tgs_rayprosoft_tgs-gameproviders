@@ -50,7 +50,7 @@ namespace TGS.GameProviders.Controllers.GameUrl
             GameUrlRequest request)
         {
             var result = await getService.GetAsync(_mapper.Map<WGSportsGameUrlQuery>(request)).ConfigureAwait(false);
-            return _mapper.Map<GameUrlResponse>(result);
+            return result == null ? null : _mapper.Map<GameUrlResponse>(result);
         }
     }
 }

@@ -135,6 +135,14 @@ namespace TGS.GameProviders
                         dbBuilder.UseNpgsql(
                             config.GetConnectionString("Tgs"));
                     });
+
+            services
+                .AddRedisRepository((options, sp) =>
+                {
+                    var configuration = sp.GetRequiredService<IConfiguration>();
+                    configuration.GetSection("RedisConnectionString").Bind(options);
+                });
+
             services
                 .AddMongoRepository((options, sp) =>
                 {
