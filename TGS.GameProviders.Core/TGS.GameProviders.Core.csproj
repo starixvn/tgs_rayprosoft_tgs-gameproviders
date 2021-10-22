@@ -5,12 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Tgs.Core.Infrastructures.Security" Version="0.0.1" />
     <PackageReference Include="TGS.ServiceUtility" Version="0.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TGS.GameProviders.ApiClients\TGS.GameProviders.ApiClients.csproj" />
     <ProjectReference Include="..\TGS.GameProviders.MongoRepositories\TGS.GameProviders.MongoRepositories.csproj" />
+    <ProjectReference Include="..\TGS.GameProviders.RedisRepositories\TGS.GameProviders.RedisRepositories.csproj" />
     <ProjectReference Include="..\TGS.GameProviders.Repositories\TGS.GameProviders.Repositories.csproj" />
   </ItemGroup>
 
