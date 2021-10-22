@@ -2,7 +2,7 @@
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public enum ServiceApiError
+    public enum ApiErrorCode
     {
         None = 0,
         InvalidCompanyKey = 1,

@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.ApiClients.SBO.Models;
+using TGS.GameProviders.Domains;
 using Tgs.Logging;
 
 namespace TGS.GameProviders.ApiClients.SBO
@@ -33,7 +34,11 @@ namespace TGS.GameProviders.ApiClients.SBO
             => throw new NotImplementedException();
 
         public ValueTask<LogoutResponse> LogoutAsync(Uri apiUrl, LogoutRequest request)
-            => throw new NotImplementedException();
+        {
+            var prefix = $"{GameProviderType.SBOBET}.Logout";
+            return PostAsync<LogoutRequest, LogoutResponse>(apiUrl,
+                "/web-root/restricted/player/logout.aspx", request, prefix);
+        }
 
         public ValueTask<RegisterPlayerResponse> RegisterPlayerAsync(Uri apiUrl, RegisterPlayerRequest request)
             => throw new NotImplementedException();
@@ -107,5 +112,12 @@ namespace TGS.GameProviders.ApiClients.SBO
         //        "/web-root/restricted/player/update-player-bet-setting-by-sportid-and-markettype.aspx",
         //        request, logPrefix: prefix);
         //}
+
+        private async ValueTask<TResponse> PostAsync<TRequest, TResponse>(
+            Uri apiUrl,
+            string path,
+            TRequest request,
+            string logPrefix)
+            => throw new NotImplementedException();
     }
 }
