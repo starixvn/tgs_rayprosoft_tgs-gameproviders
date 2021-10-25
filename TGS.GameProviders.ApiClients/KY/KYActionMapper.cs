@@ -4,7 +4,7 @@ namespace TGS.GameProviders.ApiClients.KY
 {
     public class KYActionMapper
     {
-        public static readonly Dictionary<KYAction, int> Mapper = new Dictionary<KYAction, int>() {
+        public static readonly IReadOnlyDictionary<KYAction, int> Mapper = new Dictionary<KYAction, int>() {
             { KYAction.GetGameUrl, 0 },
             { KYAction.GetBalance, 7 },
             { KYAction.FundOut, 2 },
