@@ -42,7 +42,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IBigGamingService, BigGamingService>();
 
             services
-                 .AddTransient<ISexyGamingService, SexyGamingService>();
+                 .AddTransient<ISexyGamingService, SexyGamingService>()
+                 .AddTransient<ISexyGamingGamePlayerCreate, SexyGamingGamePlayerCreate>();
 
             services
                 .AddTransient<ISkywindService, SkywindService>()
