@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.Evolution.ApplicationServices;
 using TGS.GameProviders.Core.KY.ApplicationServices;
 using TGS.GameProviders.Core.SexyGaming.ApplicationServices;
 using TGS.GameProviders.Core.Skywind.ApplicationServices;
@@ -30,6 +31,8 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<GameUrlRequest, SkywindGameUrlQuery>()
                 .ReverseMap();
             CreateMap<GameUrlRequest, SexyGamingGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, EvolutionGameUrlQuery>()
                 .ReverseMap();
         }
     }

@@ -45,7 +45,7 @@ namespace TGS.GameProviders.Core.SexyGaming
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
-            var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.WGHorse).ConfigureAwait(false);
+            var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.SexyGaming).ConfigureAwait(false);
             var (IsCultureCode, GameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProvider.Id, cultureCode).ConfigureAwait(false);
             return (IsCultureCode) ? GameProviderCultureCode : "en";
         }
