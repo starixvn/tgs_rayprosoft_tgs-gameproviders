@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Client;
@@ -14,8 +11,9 @@ namespace TGS.GameProviders.ClientSample.Controllers
     [ApiController]
     public class GameProvidersController : ControllerBase
     {
-        private readonly ILogger<GameProvidersController> _logger;
         private readonly IGameProvidersClient _client;
+        private readonly ILogger<GameProvidersController> _logger;
+
         public GameProvidersController(
             ILogger<GameProvidersController> logger,
             IGameProvidersClient client

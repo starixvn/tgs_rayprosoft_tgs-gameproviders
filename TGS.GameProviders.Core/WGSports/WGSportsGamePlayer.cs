@@ -7,14 +7,14 @@ using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.WGSports
 {
-    public class WGSportsGamePlayerCreate : IWGSportsGamePlayerCreate
+    public class WGSportsGamePlayer : IWGSportsGamePlayer
     {
         private readonly IWGSportsApiClient _client;
-        private readonly ILogger<WGSportsGamePlayerCreate> _logger;
+        private readonly ILogger<WGSportsGamePlayer> _logger;
         private readonly IWGSportsService _service;
 
-        public WGSportsGamePlayerCreate(
-            ILogger<WGSportsGamePlayerCreate> logger,
+        public WGSportsGamePlayer(
+            ILogger<WGSportsGamePlayer> logger,
             IWGSportsApiClient client,
             IWGSportsService service
             )

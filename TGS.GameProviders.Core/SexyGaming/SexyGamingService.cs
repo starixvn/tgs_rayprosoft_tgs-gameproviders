@@ -27,14 +27,12 @@ namespace TGS.GameProviders.Core.SexyGaming
         public string GetGameProviderCode()
             => GameProviderType.SexyGaming;
 
-        public async Task<Guid> GetGameProviderIdAsync()
+        public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
             var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.SexyGaming).ConfigureAwait(false);
-            return gameProvider.Id;
+            var (IsCultureCode, GameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProvider.Id, cultureCode).ConfigureAwait(false);
+            return (IsCultureCode) ? GameProviderCultureCode : "en";
         }
-
-        public Task<SexyGamingConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<SexyGamingConfiguration>(GameProviderConfigurations.SexyGaming);
 
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
         {
@@ -43,11 +41,13 @@ namespace TGS.GameProviders.Core.SexyGaming
             return (IsCurrencyCode) ? GameProviderCurrencyCode : null;
         }
 
-        public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
+        public async Task<Guid> GetGameProviderIdAsync()
         {
             var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.SexyGaming).ConfigureAwait(false);
-            var (IsCultureCode, GameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProvider.Id, cultureCode).ConfigureAwait(false);
-            return (IsCultureCode) ? GameProviderCultureCode : "en";
+            return gameProvider.Id;
         }
+
+        public Task<SexyGamingConfiguration> GetSettingConfigurationAsync()
+            => _settingRepository.GetConfigurationAsync<SexyGamingConfiguration>(GameProviderConfigurations.SexyGaming);
     }
 }

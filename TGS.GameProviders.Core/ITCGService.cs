@@ -21,13 +21,13 @@ namespace TGS.GameProviders.Core
 
         string GetGameProviderCode();
 
+        ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
+
         Task<Guid> GetGameProviderIdAsync();
 
         ValueTask<GameProviderSchedule> GetGameProviderScheduleAsync(Guid gameProviderId, string subGP, string currencyCode, string merchantCode);
 
         ValueTask<GameProviderSchedule> GetGameProviderScheduleAsync(Guid gameProviderId, string currencyCode, string agentId);
-
-        ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 
         TCGGameProviderScheduleConfig GetGameProviderScheduleConfig(GameProviderSchedule gameProviderSchedule);
 

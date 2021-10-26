@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.BigGaming.ApplicationServices;
 using TGS.GameProviders.Core.Evolution.ApplicationServices;
 using TGS.GameProviders.Core.KY.ApplicationServices;
 using TGS.GameProviders.Core.SexyGaming.ApplicationServices;
@@ -33,6 +34,8 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<GameUrlRequest, SexyGamingGameUrlQuery>()
                 .ReverseMap();
             CreateMap<GameUrlRequest, EvolutionGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, BigGamingGameUrlQuery>()
                 .ReverseMap();
         }
     }

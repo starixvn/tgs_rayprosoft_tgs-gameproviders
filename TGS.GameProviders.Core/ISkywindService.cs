@@ -11,10 +11,10 @@ namespace TGS.GameProviders.Core
 
         string GetGameProviderCode();
 
+        ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
+
         Task<Guid> GetGameProviderIdAsync();
 
         Task<SkywindConfiguration> GetSettingConfigurationAsync();
-
-        ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
     }
 }

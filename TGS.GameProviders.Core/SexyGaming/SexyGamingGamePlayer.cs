@@ -1,26 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.SexyGaming.Models;
-using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
-using System.Text.Json;
 using TGS.GameProviders.ApiClients.SexyGaming;
+using TGS.GameProviders.ApiClients.SexyGaming.Models;
 using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.SexyGaming
 {
-    internal class SexyGamingGamePlayerCreate : ISexyGamingGamePlayerCreate
+    internal class SexyGamingGamePlayer : ISexyGamingGamePlayer
     {
         private readonly ISexyGamingApiClient _client;
-        private readonly ILogger<SexyGamingGamePlayerCreate> _logger;
+        private readonly ILogger<SexyGamingGamePlayer> _logger;
         private readonly ISexyGamingService _service;
 
-        public SexyGamingGamePlayerCreate(
-            ILogger<SexyGamingGamePlayerCreate> logger,
+        public SexyGamingGamePlayer(
+            ILogger<SexyGamingGamePlayer> logger,
             ISexyGamingApiClient client,
             ISexyGamingService service
             )
@@ -32,7 +30,6 @@ namespace TGS.GameProviders.Core.SexyGaming
 
         public async ValueTask<bool> CreatePlayerAsync(SexyGamingConfiguration configuration, string playerCode, string currencyCode, string gameProviderCurrency, string gameProviderCulture)
         {
-
             var BetLime = configuration.BetLimit.SexybcrtMapper
                        .Where(x => x.Value == currencyCode).Select(x => x.Key).ToArray();
 

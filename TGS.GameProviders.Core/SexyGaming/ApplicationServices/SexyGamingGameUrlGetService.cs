@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Core.Infrastructures.Security;
 using TGS.GameProviders.ApiClients;
+using TGS.GameProviders.ApiClients.SexyGaming;
 using TGS.GameProviders.ApiClients.SexyGaming.Models;
+using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.ServiceUtility;
-using System.Text.Json;
-using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.ApiClients.SexyGaming;
 
 namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
 {
@@ -21,10 +18,10 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
     {
         private readonly ISexyGamingApiClient _client;
         private readonly IGameRepository _gameRepository;
+        private readonly ISexyGamingGamePlayer _gamingGamePlayerCreate;
         private readonly ILogger<SexyGamingGameUrlGetService> _logger;
         private readonly ISexyGamingService _service;
         private readonly ITokenProvider _tokenProvider;
-        private readonly ISexyGamingGamePlayerCreate _gamingGamePlayerCreate;
 
         public SexyGamingGameUrlGetService(
             ISexyGamingApiClient client,
@@ -32,7 +29,7 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
             ILogger<SexyGamingGameUrlGetService> logger,
             ISexyGamingService service,
             ITokenProvider tokenProvider,
-            ISexyGamingGamePlayerCreate gamingGamePlayerCreate
+            ISexyGamingGamePlayer gamingGamePlayerCreate
             )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

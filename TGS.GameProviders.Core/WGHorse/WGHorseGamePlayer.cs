@@ -7,14 +7,14 @@ using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.WGHorse
 {
-    internal class WGHorseGamePlayerCreate : IWGHorseGamePlayerCreate
+    internal class WGHorseGamePlayer : IWGHorseGamePlayer
     {
         private readonly IWGHorseApiClient _client;
-        private readonly ILogger<WGHorseGamePlayerCreate> _logger;
+        private readonly ILogger<WGHorseGamePlayer> _logger;
         private readonly IWGHorseService _service;
 
-        public WGHorseGamePlayerCreate(
-            ILogger<WGHorseGamePlayerCreate> logger,
+        public WGHorseGamePlayer(
+            ILogger<WGHorseGamePlayer> logger,
             IWGHorseApiClient client,
             IWGHorseService service
             )
