@@ -168,6 +168,7 @@ namespace TGS.GameProviders
                 config.AddProfile<GameUrlMapping>();
                 config.AddProfile<KickPlayerMapping>();
                 config.AddProfile<PlayerBalanceMapping>();
+                config.AddProfile<PlayerFundMapping>();
             });
             services
                 .AddHealthChecks()

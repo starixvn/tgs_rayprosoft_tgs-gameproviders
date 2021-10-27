@@ -1,24 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TGS.GameProviders.Domains;
-
-namespace TGS.GameProviders.Core
+﻿namespace TGS.GameProviders.Core
 {
     public record PlayerFundQuery
     {
-        [Required(ErrorMessage = "Please enter BrandCode")]
         public string BrandCode { get; init; }
-        [Required(ErrorMessage = "Please enter PlayerCode")]
         public string PlayerCode { get; init; }
-        [Required(ErrorMessage = "Please enter CurrencyCode")]
         public string CurrencyCode { get; init; }
-        [Required(ErrorMessage = "Please enter Amount")]
-        [Column(TypeName = "decimal(12, 2)")]
         public decimal Amount { get; init; }
     }
 }

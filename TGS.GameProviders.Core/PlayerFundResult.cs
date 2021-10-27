@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TGS.GameProviders.Core
+﻿namespace TGS.GameProviders.Core
 {
     public record PlayerFundResult
     {
         /// <summary>
-        /// The success
+        /// The order identifier
         /// </summary>
-        public bool Success { get; set; }
+        public string OrderId { get; set; }
         /// <summary>
         /// The balance
         /// </summary>
