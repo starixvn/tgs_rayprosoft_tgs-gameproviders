@@ -39,7 +39,7 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
             {
                 SerialNumber = orderId,
                 PlayerCode = command.PlayerCode,
-                Type = 1,
+                Type = (int)VRAmountTypes.FundIn,
                 Amount = command.Amount,
                 CreateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ")
             };
