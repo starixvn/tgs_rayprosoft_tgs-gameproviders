@@ -1,13 +1,16 @@
-﻿namespace TGS.GameProviders.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TGS.GameProviders.ViewModels
 {
-    public class PlayerFundCheckingRequest
+    public record PlayerFundCheckingRequest
     {
+        [Required(ErrorMessage = "Please enter BrandCode")]
         public string BrandCode { get; init; }
-
-        public string CurrencyCode { get; init; }
-
-        public string OrderId { get; set; }
-
+        [Required(ErrorMessage = "Please enter PlayerCode")]
         public string PlayerCode { get; init; }
+        [Required(ErrorMessage = "Please enter CurrencyCode")]
+        public string CurrencyCode { get; init; }
+        [Required(ErrorMessage = "Please enter OrderId")]
+        public string OrderId { get; set; }
     }
 }

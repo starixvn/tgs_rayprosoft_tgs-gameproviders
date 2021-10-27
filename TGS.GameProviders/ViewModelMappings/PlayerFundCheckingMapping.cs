@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using TGS.GameProviders.Core.KY.ApplicationServices;
+using TGS.GameProviders.Core.VR.ApplicationServices;
 using TGS.GameProviders.Core.WGHorse.ApplicationServices;
 using TGS.GameProviders.Core.WGSports.ApplicationServices;
 using TGS.GameProviders.ViewModels;
@@ -15,6 +16,8 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<PlayerFundCheckingRequest, WGHorsePlayerFundCheckingQuery>()
                 .ReverseMap();
             CreateMap<PlayerFundCheckingRequest, WGSportsPlayerFundCheckingQuery>()
+                .ReverseMap();
+            CreateMap<VRPlayerFundCheckingRequest, VRPlayerFundCheckingQuery>()
                 .ReverseMap();
         }
     }
