@@ -7,7 +7,7 @@ namespace TGS.GameProviders.ApiClients.VR.Models
         [JsonPropertyName("startTime")]
         public string StartTime { get; init; }
         [JsonPropertyName("endTime")]
-        public string endTime { get; init; }
+        public string EndTime { get; init; }
         [JsonPropertyName("serialNumber")]
         public string SerialNumber { get; init; }
         [JsonPropertyName("playerName")]

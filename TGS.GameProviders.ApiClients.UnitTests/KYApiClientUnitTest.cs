@@ -7,6 +7,7 @@ using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.KY;
 using TGS.GameProviders.ApiClients.KY.Models;
+using TGS.GameProviders.ApiClients.KY.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
@@ -109,6 +110,20 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 PlayerCode = playerCode
             };
             var response = await _client.KickAsync(_apiUrl, _deskey, _md5key, _agentId, data).ConfigureAwait(false);
+        }
+
+        [Test()]
+        [TestCase("72412202110271546265054ucmqplxb029", 0)]
+        [TestCase("72412202110271546265055ucmqplxb029", -1)]
+        public async Task FundCheckingAsync(string orderId, int status)
+        {
+            var data = new KYFundCheckingRequest()
+            {
+                OrderId = orderId
+            };
+            _ = _client.FundCheckingAsync(_apiUrl, _deskey, _md5key, _agentId, data).Returns(ValueTask.FromResult<KYApiResponse<KYFundCheckingResponse>>(new() { Data = new() { Status = status } }));
+            var response = await _client.FundCheckingAsync(_apiUrl, _deskey, _md5key, _agentId, data).ConfigureAwait(false);
+            Assert.AreEqual(status, response.Data.Status);
         }
     }
 }
