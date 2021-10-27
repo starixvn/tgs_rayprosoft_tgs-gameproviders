@@ -36,6 +36,7 @@ namespace TGS.GameProviders.Controllers.PlayerFund
         ///         {
         ///             "brandCode": "GPI",
         ///             "playerCode": "4ucmqplxb029",
+        ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
         ///             "currencyCode": "CNY",
         ///             "amount": 1
         ///         }
@@ -60,6 +61,7 @@ namespace TGS.GameProviders.Controllers.PlayerFund
         ///         {
         ///             "brandCode": "GPI",
         ///             "playerCode": "4ucmqplxb029",
+        ///             "orderId":"D07B3FAD0BE5F0B4EE0C2A401FC5C41075ED",
         ///             "currencyCode": "CNY",
         ///             "amount": 1
         ///         }

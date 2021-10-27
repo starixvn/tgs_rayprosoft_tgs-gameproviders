@@ -11,6 +11,8 @@ namespace TGS.GameProviders.ViewModels
         public string PlayerCode { get; init; }
         [Required(ErrorMessage = "Please enter CurrencyCode")]
         public string CurrencyCode { get; init; }
+        [Required(ErrorMessage = "Please enter OrderId")]
+        public string OrderId { get; set; }
         [Required(ErrorMessage = "Please enter Amount")]
         [Column(TypeName = "decimal(12, 2)")]
         public decimal Amount { get; init; }

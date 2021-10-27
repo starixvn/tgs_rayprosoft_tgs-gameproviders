@@ -54,18 +54,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
                 data)
                 .ConfigureAwait(false);
 
-            if (response == null || response?.Data.Code != 0)
-            {
-                return null;
-            }
-
-            decimal.TryParse(response.Data.Balance, out var balance);
-
-            return new()
-            {
-                OrderId = orderId,
-                Balance = balance
-            };
+            return (response != null && response?.Data.Code == 0) ? new() { OrderId = orderId } : null;
         }
     }
 }
