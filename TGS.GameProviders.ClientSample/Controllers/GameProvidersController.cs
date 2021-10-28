@@ -28,10 +28,46 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// </summary>
         /// <param name="model">The model.</param>
         /// <returns></returns>
+        /// <remarks>
+        /// Example
+        ///     Post
+        ///         {
+        ///             "gameProviderCode": "ky",
+        ///             "brandCode": "GPI",
+        ///             "playerCode": "4ucmqplxb029",
+        ///             "currencyCode": "CNY"
+        ///         }
+        /// </remarks>
         [HttpPost("KickPlayer")]
         public ValueTask KickPlayerAsync(
             KickPlayerViewModel model)
-            => _client.KickPlayer(
+            => _client.KickPlayerAsync(
+                model.GameProviderCode,
+                new()
+                {
+                    BrandCode = model.BrandCode,
+                    PlayerCode = model.PlayerCode,
+                    CurrencyCode = model.CurrencyCode
+                });
+        /// <summary>
+        /// Players the balance asynchronous.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Example
+        ///     Post
+        ///         {
+        ///             "gameProviderCode": "ky",
+        ///             "brandCode": "GPI",
+        ///             "playerCode": "4ucmqplxb029",
+        ///             "currencyCode": "CNY"
+        ///         }
+        /// </remarks>
+        [HttpPost("PlayerBalance")]
+        public ValueTask<PlayerBalanceResponse?> PlayerBalanceAsync(
+            PlayerBalanceViewModel model)
+            => _client.PlayerBalanceAsync(
                 model.GameProviderCode,
                 new()
                 {
