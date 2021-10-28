@@ -68,7 +68,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
             var response = await _client.GetGameUrlAsync(brandMerchant.ApiUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, dateTimeOffset, data)
                 .ConfigureAwait(false);
 
-            return (response.Data.Code == 0) ? new() { Url = new(response.Data.Url) } : null;
+            return (response != null && response?.Data.Code == 0) ? new() { Url = new(response.Data.Url) } : null;
         }
     }
 }

@@ -10,7 +10,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.GameUrl
 {
-    public class TCGController : GameUrlController<TCGGameUrlQuery, GameUrlResult>
+    public class TCGController : GameUrlController<TCGGameUrlQuery>
     {
         private readonly ILogger<TCGController> _logger;
         private readonly IMapper _mapper;
@@ -72,12 +72,12 @@ namespace TGS.GameProviders.Controllers.GameUrl
         ///         "backUrl": "https://dev-t1.rpgp.cc/"
         ///     }
         /// </remarks>
-        public override async ValueTask<GameUrlResponse> GameUrlAsync(
+        public override async ValueTask<GameUrlResponse?> GameUrlAsync(
             [FromServices] IGetService<TCGGameUrlQuery, GameUrlResult> getService,
             GameUrlRequest request)
         {
             var result = await getService.GetAsync(_mapper.Map<TCGGameUrlQuery>(request)).ConfigureAwait(false);
-            return _mapper.Map<GameUrlResponse>(result);
+            return result == null ? null : _mapper.Map<GameUrlResponse>(result);
         }
     }
 }

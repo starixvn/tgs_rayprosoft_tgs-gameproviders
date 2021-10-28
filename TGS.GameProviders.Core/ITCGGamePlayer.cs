@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.TCG;
 
 namespace TGS.GameProviders.Core
 {
-    public interface ITCGGamePlayerCreate
+    public interface ITCGGamePlayer
     {
         /// <summary>
         /// Creates the player asynchronous.

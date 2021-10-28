@@ -7,14 +7,14 @@ using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.VR;
 
 namespace TGS.GameProviders.Core.VR
 {
-    internal class VRGamePlayerCreate : IVRGamePlayerCreate
+    internal class VRGamePlayer : IVRGamePlayer
     {
         private readonly IVRApiClient _client;
-        private readonly ILogger<VRGamePlayerCreate> _logger;
+        private readonly ILogger<VRGamePlayer> _logger;
         private readonly IVRService _service;
 
-        public VRGamePlayerCreate(
-            ILogger<VRGamePlayerCreate> logger,
+        public VRGamePlayer(
+            ILogger<VRGamePlayer> logger,
             IVRApiClient client,
             IVRService service
             )

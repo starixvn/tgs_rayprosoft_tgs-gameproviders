@@ -118,6 +118,9 @@ namespace TGS.GameProviders.Core.KY
                 0 => ClientRoundStatus.Draw
             };
 
+        public DateTimeOffset GetDateTimeOffsetTimeZone8() =>
+            DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
+
         public Task<GameProvider> GetGameProviderAsync()
             => _gameProviderRepository.GetGameProviderAsync(GameProviderType.KY);
 

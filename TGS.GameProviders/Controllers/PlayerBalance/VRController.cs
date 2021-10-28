@@ -10,7 +10,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.PlayerBalance
 {
-    public class VRController : PlayerBalanceController<VRPlayerBalanceQuery, PlayerBalanceResult>
+    public class VRController : PlayerBalanceController<VRPlayerBalanceQuery>
     {
         private readonly ILogger<VRController> _logger;
         private readonly IMapper _mapper;
@@ -39,12 +39,12 @@ namespace TGS.GameProviders.Controllers.PlayerBalance
         ///         "currencyCode": "CNY"
         ///     }
         /// </remarks>
-        public override async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
+        public override async ValueTask<PlayerBalanceResponse?> PlayerBalanceAsync(
             [FromServices] IGetService<VRPlayerBalanceQuery, PlayerBalanceResult> getService,
             PlayerBalanceRequest request)
         {
             var result = await getService.GetAsync(_mapper.Map<VRPlayerBalanceQuery>(request)).ConfigureAwait(false);
-            return _mapper.Map<PlayerBalanceResponse>(result);
+            return result == null ? null : _mapper.Map<PlayerBalanceResponse>(result);
         }
     }
 }

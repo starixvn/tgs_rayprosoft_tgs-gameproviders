@@ -1,8 +1,10 @@
 ﻿using System.Reflection;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.BigGaming;
+using TGS.GameProviders.Core.Evolution;
 using TGS.GameProviders.Core.KY;
 using TGS.GameProviders.Core.SexyGaming;
+using TGS.GameProviders.Core.Skywind;
 using TGS.GameProviders.Core.TCG;
 using TGS.GameProviders.Core.VR;
 using TGS.GameProviders.Core.WGHorse;
@@ -18,18 +20,45 @@ namespace Microsoft.Extensions.DependencyInjection
                 .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
                 ServiceLifetime.Transient);
-            return services
-                .AddTransient<IKYService, KYService>()
-                .AddTransient<IVRService, VRService>()
-                .AddTransient<IVRGamePlayerCreate, VRGamePlayerCreate>()
+
+            //Tgs.Core.Infrastructures.Security
+            services.AddSecurity();
+
+            services
+               .AddTransient<IKYService, KYService>();
+
+            services
+             .AddTransient<IVRService, VRService>()
+             .AddTransient<IVRGamePlayer, VRGamePlayer>();
+
+            services
                 .AddTransient<IWGHorseService, WGHorseService>()
-                .AddTransient<IWGHorseGamePlayerCreate, WGHorseGamePlayerCreate>()
+                .AddTransient<IWGHorseGamePlayer, WGHorseGamePlayer>();
+
+            services
                 .AddTransient<IWGSportsService, WGSportsService>()
-                .AddTransient<IWGSportsGamePlayerCreate, WGSportsGamePlayerCreate>()
+                .AddTransient<IWGSportsGamePlayer, WGSportsGamePlayer>();
+
+            services
                 .AddTransient<IBigGamingService, BigGamingService>()
-                .AddTransient<ISexyGamingService, SexyGamingService>()
+                .AddTransient<IBigGamingGamePlayer, BigGamingGamePlayer>()
+                .AddTransient<IBigGamingGameUrl, BigGamingGameUrl>();
+
+            services
+                 .AddTransient<ISexyGamingService, SexyGamingService>()
+                 .AddTransient<ISexyGamingGamePlayer, SexyGamingGamePlayer>();
+
+            services
+                .AddTransient<ISkywindService, SkywindService>()
+                .AddTransient<ISkywindAccessToken, SkywindAccessToken>();
+
+            services
                 .AddTransient<ITCGService, TCGService>()
-                .AddTransient<ITCGGamePlayerCreate, TCGGamePlayerCreate>();
+                .AddTransient<ITCGGamePlayer, TCGGamePlayer>();
+
+            services
+                .AddTransient<IEvolutionService, EvolutionService>();
+            return services;
         }
     }
 }

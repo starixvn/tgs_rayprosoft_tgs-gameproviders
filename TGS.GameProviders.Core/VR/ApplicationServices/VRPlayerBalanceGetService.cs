@@ -12,14 +12,14 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
     {
         private readonly IVRApiClient _client;
         private readonly ILogger<VRPlayerBalanceGetService> _logger;
-        private readonly IVRGamePlayerCreate _playerCreate;
+        private readonly IVRGamePlayer _playerCreate;
         private readonly IVRService _service;
 
         public VRPlayerBalanceGetService(
             ILogger<VRPlayerBalanceGetService> logger,
             IVRApiClient client,
             IVRService service,
-            IVRGamePlayerCreate playerCreate
+            IVRGamePlayer playerCreate
             )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

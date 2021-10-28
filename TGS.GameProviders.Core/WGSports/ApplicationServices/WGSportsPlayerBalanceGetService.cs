@@ -12,14 +12,14 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
     {
         private readonly IWGSportsApiClient _client;
         private readonly ILogger<WGSportsPlayerBalanceGetService> _logger;
-        private readonly IWGSportsGamePlayerCreate _playerCreate;
+        private readonly IWGSportsGamePlayer _playerCreate;
         private readonly IWGSportsService _service;
 
         public WGSportsPlayerBalanceGetService(
             ILogger<WGSportsPlayerBalanceGetService> logger,
             IWGSportsApiClient client,
             IWGSportsService service,
-            IWGSportsGamePlayerCreate playerCreate
+            IWGSportsGamePlayer playerCreate
             )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

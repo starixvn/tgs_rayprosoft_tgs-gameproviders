@@ -15,7 +15,7 @@ namespace TGS.GameProviders.Core.TCG.ApplicationServices
     public class TCGGameUrlGetService : IGetService<TCGGameUrlQuery, GameUrlResult>
     {
         private readonly ITCGApiClient _client;
-        private readonly ITCGGamePlayerCreate _gamePlayerCreate;
+        private readonly ITCGGamePlayer _gamePlayerCreate;
         private readonly IGameRepository _gameRepository;
         private readonly ILogger<TCGGameUrlGetService> _logger;
         private readonly IReadOnlyDictionary<string, Func<Uri, string, string, string, bool, TCGLaunchGameRequest, ValueTask<TCGLaunchGameResponse>>> _methodMapper;
@@ -26,7 +26,7 @@ namespace TGS.GameProviders.Core.TCG.ApplicationServices
             IGameRepository gameRepository,
             ILogger<TCGGameUrlGetService> logger,
             ITCGService service,
-            ITCGGamePlayerCreate gamePlayerCreate
+            ITCGGamePlayer gamePlayerCreate
             )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

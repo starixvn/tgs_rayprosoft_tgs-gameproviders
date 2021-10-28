@@ -10,7 +10,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.GameUrl
 {
-    public class WGFMController : GameUrlController<WGSportsGameUrlQuery, GameUrlResult>
+    public class WGFMController : GameUrlController<WGSportsGameUrlQuery>
     {
         private readonly ILogger<WGFMController> _logger;
         private readonly IMapper _mapper;
@@ -45,12 +45,12 @@ namespace TGS.GameProviders.Controllers.GameUrl
         ///         "backUrl": "https://dev-t1.rpgp.cc/"
         ///     }
         /// </remarks>
-        public override async ValueTask<GameUrlResponse> GameUrlAsync(
+        public override async ValueTask<GameUrlResponse?> GameUrlAsync(
             [FromServices] IGetService<WGSportsGameUrlQuery, GameUrlResult> getService,
             GameUrlRequest request)
         {
             var result = await getService.GetAsync(_mapper.Map<WGSportsGameUrlQuery>(request)).ConfigureAwait(false);
-            return _mapper.Map<GameUrlResponse>(result);
+            return result == null ? null : _mapper.Map<GameUrlResponse>(result);
         }
     }
 }

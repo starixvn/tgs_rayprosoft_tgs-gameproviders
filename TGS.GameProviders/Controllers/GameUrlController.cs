@@ -8,11 +8,11 @@ namespace TGS.GameProviders.Controllers
 {
     [ApiController]
     [Route("api/gameurl/[controller]")]
-    public abstract class GameUrlController<TQuery, TResult> : ControllerBase where TQuery : GameUrlQuery where TResult : GameUrlResult
+    public abstract class GameUrlController<TQuery> : ControllerBase where TQuery : GameUrlQuery
     {
         [HttpPost]
-        public abstract ValueTask<GameUrlResponse> GameUrlAsync(
-            [FromServices] IGetService<TQuery, TResult> getService,
+        public abstract ValueTask<GameUrlResponse?> GameUrlAsync(
+            [FromServices] IGetService<TQuery, GameUrlResult> getService,
             GameUrlRequest request);
     }
 }

@@ -23,6 +23,8 @@ namespace TGS.GameProviders.Core
 
         string GetGameProviderCode();
 
+        ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
+
         Task<Guid> GetGameProviderIdAsync();
 
         ValueTask<GameProviderSchedule> GetGameProviderScheduleAsync(Guid gameProviderId, string currencyCode);

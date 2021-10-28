@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.BigGaming.ApplicationServices;
+using TGS.GameProviders.Core.Evolution.ApplicationServices;
 using TGS.GameProviders.Core.KY.ApplicationServices;
+using TGS.GameProviders.Core.SexyGaming.ApplicationServices;
+using TGS.GameProviders.Core.Skywind.ApplicationServices;
 using TGS.GameProviders.Core.TCG.ApplicationServices;
 using TGS.GameProviders.Core.VR.ApplicationServices;
 using TGS.GameProviders.Core.WGHorse.ApplicationServices;
@@ -14,7 +18,7 @@ namespace TGS.GameProviders.ViewModelMappings
         public GameUrlMapping()
         {
             CreateMap<GameUrlResult, GameUrlResponse>()
-             .ReverseMap();
+                .ReverseMap();
             CreateMap<GameUrlRequest, KYGameUrlQuery>()
                 .ReverseMap();
             CreateMap<GameUrlRequest, WGSportsGameUrlQuery>()
@@ -24,6 +28,14 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<GameUrlRequest, VRGameUrlQuery>()
                .ReverseMap();
             CreateMap<GameUrlRequest, TCGGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, SkywindGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, SexyGamingGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, EvolutionGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, BigGamingGameUrlQuery>()
                 .ReverseMap();
         }
     }

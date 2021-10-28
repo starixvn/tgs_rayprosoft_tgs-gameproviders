@@ -10,7 +10,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.PlayerBalance
 {
-    public class WGVIAController : PlayerBalanceController<WGHorsePlayerBalanceQuery, PlayerBalanceResult>
+    public class WGVIAController : PlayerBalanceController<WGHorsePlayerBalanceQuery>
     {
         private readonly ILogger<WGVIAController> _logger;
         private readonly IMapper _mapper;
@@ -39,12 +39,12 @@ namespace TGS.GameProviders.Controllers.PlayerBalance
         ///         "currencyCode": "CNY"
         ///     }
         /// </remarks>
-        public override async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
+        public override async ValueTask<PlayerBalanceResponse?> PlayerBalanceAsync(
             [FromServices] IGetService<WGHorsePlayerBalanceQuery, PlayerBalanceResult> getService,
             PlayerBalanceRequest request)
         {
             var result = await getService.GetAsync(_mapper.Map<WGHorsePlayerBalanceQuery>(request)).ConfigureAwait(false);
-            return _mapper.Map<PlayerBalanceResponse>(result);
+            return result == null ? null : _mapper.Map<PlayerBalanceResponse>(result);
         }
     }
 }

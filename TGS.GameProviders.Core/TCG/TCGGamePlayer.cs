@@ -7,13 +7,13 @@ using TGS.GameProviders.ApiClients.TCG.Models;
 
 namespace TGS.GameProviders.Core.TCG
 {
-    public class TCGGamePlayerCreate : ITCGGamePlayerCreate
+    public class TCGGamePlayer : ITCGGamePlayer
     {
         private readonly ITCGApiClient _client;
-        private readonly ILogger<TCGGamePlayerCreate> _logger;
+        private readonly ILogger<TCGGamePlayer> _logger;
 
-        public TCGGamePlayerCreate(
-            ILogger<TCGGamePlayerCreate> logger,
+        public TCGGamePlayer(
+            ILogger<TCGGamePlayer> logger,
             ITCGApiClient client
             )
         {
@@ -42,7 +42,7 @@ namespace TGS.GameProviders.Core.TCG
 
             _logger.Log(
                 LogLevel.Warning,
-             new EventId(1000, nameof(TCGGamePlayerCreate)),
+             new EventId(1000, nameof(TCGGamePlayer)),
              data,
              null,
              (state, ex) =>
