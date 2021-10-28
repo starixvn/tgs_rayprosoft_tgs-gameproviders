@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace TGS.GameProviders.ViewModels
+﻿namespace TGS.GameProviders.ViewModels
 {
     public record PlayerFundCheckingResponse
     {

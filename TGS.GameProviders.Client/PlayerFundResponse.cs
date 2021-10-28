@@ -1,0 +1,10 @@
+﻿namespace TGS.GameProviders.Client
+{
+    public record PlayerFundResponse
+    {
+        /// <summary>
+        /// The order identifier
+        /// </summary>
+        public string? OrderId { get; set; } = null;
+    }
+}

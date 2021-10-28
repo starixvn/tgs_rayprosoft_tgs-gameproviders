@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
@@ -24,9 +26,10 @@ namespace TGS.GameProviders.ClientSample
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TGS.GameProviders.ClientSample v1"));
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TGS.GameProviders.ClientSample v1"));
 
             app.UseHttpsRedirection();
 
@@ -43,9 +46,17 @@ namespace TGS.GameProviders.ClientSample
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services
+                .AddRouting(options => options.LowercaseUrls = true)
+                .AddControllers();
+
             services.AddSwaggerGen(c =>
             {
+                var xmlFileNames = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml");
+                foreach (var xmlFileName in xmlFileNames)
+                {
+                    c.IncludeXmlComments(xmlFileName);
+                }
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TGS.GameProviders.ClientSample", Version = "v1" });
             });
             services.AddGameProvidersClient((options, sp) =>
