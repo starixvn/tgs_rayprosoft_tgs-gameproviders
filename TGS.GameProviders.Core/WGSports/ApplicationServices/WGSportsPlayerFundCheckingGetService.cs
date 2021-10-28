@@ -8,7 +8,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Core.WGSports.ApplicationServices
 {
-    public class WGSportsPlayerFundCheckingGetService : IGetService<WGSportsPlayerFundCheckingQuery, bool>
+    public class WGSportsPlayerFundCheckingGetService : IGetService<WGSportsPlayerFundCheckingQuery, PlayerFundCheckingResult>
     {
         private readonly IWGSportsApiClient _client;
         private readonly ILogger<WGSportsPlayerFundCheckingGetService> _logger;
@@ -24,7 +24,7 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        public async ValueTask<bool> GetAsync(WGSportsPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<PlayerFundCheckingResult> GetAsync(WGSportsPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
@@ -41,7 +41,7 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
                 data)
                 .ConfigureAwait(false);
 
-            return (response != null && response?.ReturnCode == 1);
+            return new() { OrderStatus = (response != null && response?.ReturnCode == 1) };
         }
     }
 }

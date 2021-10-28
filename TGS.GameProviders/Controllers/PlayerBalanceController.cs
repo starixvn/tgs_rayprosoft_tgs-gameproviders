@@ -8,11 +8,11 @@ namespace TGS.GameProviders.Controllers
 {
     [ApiController]
     [Route("api/balance/[controller]")]
-    public abstract class PlayerBalanceController<TQuery, TResult> : ControllerBase where TQuery : PlayerBalanceQuery where TResult : PlayerBalanceResult
+    public abstract class PlayerBalanceController<TQuery> : ControllerBase where TQuery : PlayerBalanceQuery
     {
         [HttpPost]
-        public abstract ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
-            [FromServices] IGetService<TQuery, TResult> getService,
+        public abstract ValueTask<PlayerBalanceResponse?> PlayerBalanceAsync(
+            [FromServices] IGetService<TQuery, PlayerBalanceResult> getService,
             PlayerBalanceRequest request);
     }
 }

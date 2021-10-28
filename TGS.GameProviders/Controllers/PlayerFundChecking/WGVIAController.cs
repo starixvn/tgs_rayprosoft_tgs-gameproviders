@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.WGHorse.ApplicationServices;
 using TGS.GameProviders.ViewModels;
 using TGS.ServiceUtility;
@@ -38,9 +39,12 @@ namespace TGS.GameProviders.Controllers.PlayerFundChecking
         ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86"
         ///         }
         /// </remarks>
-        public override async ValueTask<bool> PlayerFundCheckingAsync(
-            [FromServices] IGetService<WGHorsePlayerFundCheckingQuery, bool> getService,
+        public override async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
+            [FromServices] IGetService<WGHorsePlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
             PlayerFundCheckingRequest request)
-            => await getService.GetAsync(_mapper.Map<WGHorsePlayerFundCheckingQuery>(request)).ConfigureAwait(false);
+        {
+            var result = await getService.GetAsync(_mapper.Map<WGHorsePlayerFundCheckingQuery>(request)).ConfigureAwait(false);
+            return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
+        }
     }
 }

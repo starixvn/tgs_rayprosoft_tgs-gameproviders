@@ -10,7 +10,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.GameUrl
 {
-    public class SWController : GameUrlController<SkywindGameUrlQuery, GameUrlResult>
+    public class SWController : GameUrlController<SkywindGameUrlQuery>
     {
         private readonly ILogger<SWController> _logger;
         private readonly IMapper _mapper;
@@ -59,7 +59,7 @@ namespace TGS.GameProviders.Controllers.GameUrl
         ///         "backUrl": "https://dev-t1.rpgp.cc/"
         ///     }
         /// </remarks>
-        public override async ValueTask<GameUrlResponse> GameUrlAsync(
+        public override async ValueTask<GameUrlResponse?> GameUrlAsync(
             [FromServices] IGetService<SkywindGameUrlQuery, GameUrlResult> getService,
             GameUrlRequest request)
         {

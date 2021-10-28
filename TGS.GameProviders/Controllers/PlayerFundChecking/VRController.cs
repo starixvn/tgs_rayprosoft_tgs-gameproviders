@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.VR.ApplicationServices;
 using TGS.GameProviders.ViewModels;
 using TGS.ServiceUtility;
@@ -43,9 +44,12 @@ namespace TGS.GameProviders.Controllers.PlayerFundChecking
         ///         }
         /// </remarks>
         [HttpPost]
-        public async ValueTask<bool> PlayerFundCheckingAsync(
-                [FromServices] IGetService<VRPlayerFundCheckingQuery, bool> getService,
+        public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
+                [FromServices] IGetService<VRPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
                 VRPlayerFundCheckingRequest request)
-                 => await getService.GetAsync(_mapper.Map<VRPlayerFundCheckingQuery>(request)).ConfigureAwait(false);
+        {
+            var result = await getService.GetAsync(_mapper.Map<VRPlayerFundCheckingQuery>(request)).ConfigureAwait(false);
+            return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
+        }
     }
 }

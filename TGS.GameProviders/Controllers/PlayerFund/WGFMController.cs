@@ -10,7 +10,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.PlayerFund
 {
-    public class WGFMController : PlayerFundController<WGSportsPlayerFundInQuery, WGSportsPlayerFundOutQuery, PlayerFundResult>
+    public class WGFMController : PlayerFundController<WGSportsPlayerFundInQuery, WGSportsPlayerFundOutQuery>
     {
         private readonly ILogger<WGFMController> _logger;
         private readonly IMapper _mapper;
@@ -41,7 +41,7 @@ namespace TGS.GameProviders.Controllers.PlayerFund
         ///             "amount": 1
         ///         }
         /// </remarks>
-        public override async ValueTask<PlayerFundResponse> PlayerFundInAsync(
+        public override async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
             [FromServices] IGetService<WGSportsPlayerFundInQuery, PlayerFundResult> getService,
             PlayerFundRequest request)
         {
@@ -66,7 +66,7 @@ namespace TGS.GameProviders.Controllers.PlayerFund
         ///             "amount": 1
         ///         }
         /// </remarks>
-        public override async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
+        public override async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
             [FromServices] IGetService<WGSportsPlayerFundOutQuery, PlayerFundResult> getService,
             PlayerFundRequest request)
         {

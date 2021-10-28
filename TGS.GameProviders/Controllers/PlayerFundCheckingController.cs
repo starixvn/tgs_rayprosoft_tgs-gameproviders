@@ -11,8 +11,8 @@ namespace TGS.GameProviders.Controllers
     public abstract class PlayerFundCheckingController<TQuery> : ControllerBase where TQuery : PlayerFundCheckingQuery
     {
         [HttpPost]
-        public abstract ValueTask<bool> PlayerFundCheckingAsync(
-            [FromServices] IGetService<TQuery, bool> getService,
+        public abstract ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
+            [FromServices] IGetService<TQuery, PlayerFundCheckingResult> getService,
             PlayerFundCheckingRequest request);
     }
 }

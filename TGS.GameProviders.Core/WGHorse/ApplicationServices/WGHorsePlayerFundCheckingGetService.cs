@@ -8,7 +8,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
 {
-    public class WGHorsePlayerFundCheckingGetService : IGetService<WGHorsePlayerFundCheckingQuery, bool>
+    public class WGHorsePlayerFundCheckingGetService : IGetService<WGHorsePlayerFundCheckingQuery, PlayerFundCheckingResult>
     {
         private readonly IWGHorseApiClient _client;
         private readonly ILogger<WGHorsePlayerFundCheckingGetService> _logger;
@@ -24,7 +24,7 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        public async ValueTask<bool> GetAsync(WGHorsePlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<PlayerFundCheckingResult> GetAsync(WGHorsePlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
@@ -41,7 +41,7 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
                 data)
                 .ConfigureAwait(false);
 
-            return (response != null && response?.ReturnCode == 1);
+            return new() { OrderStatus = (response != null && response?.ReturnCode == 1) };
         }
     }
 }

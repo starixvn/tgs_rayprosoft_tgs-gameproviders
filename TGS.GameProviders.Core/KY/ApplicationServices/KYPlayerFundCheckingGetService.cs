@@ -8,7 +8,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Core.KY.ApplicationServices
 {
-    public class KYPlayerFundCheckingGetService : IGetService<KYPlayerFundCheckingQuery, bool>
+    public class KYPlayerFundCheckingGetService : IGetService<KYPlayerFundCheckingQuery, PlayerFundCheckingResult>
     {
         private readonly IKYApiClient _client;
         private readonly ILogger<KYPlayerFundCheckingGetService> _logger;
@@ -24,13 +24,13 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        public async ValueTask<bool> GetAsync(KYPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<PlayerFundCheckingResult> GetAsync(KYPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
         {
             var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
 
             if (brandMerchant == null)
             {
-                return false;
+                return null;
             }
             var agentId = await _service.GetAgentIdAsync(command.BrandCode, command.CurrencyCode).ConfigureAwait(false);
 
@@ -49,7 +49,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
                 data)
                 .ConfigureAwait(false);
 
-            return (response != null && response?.Data.Code == 0 && response?.Data.Status == 0);
+            return new() { OrderStatus = (response != null && response?.Data.Code == 0 && response?.Data.Status == 0) };
         }
     }
 }

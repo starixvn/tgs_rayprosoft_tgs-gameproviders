@@ -10,7 +10,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.PlayerBalance
 {
-    public class KYController : PlayerBalanceController<KYPlayerBalanceQuery, PlayerBalanceResult>
+    public class KYController : PlayerBalanceController<KYPlayerBalanceQuery>
     {
         private readonly ILogger<KYController> _logger;
         private readonly IMapper _mapper;
@@ -39,7 +39,7 @@ namespace TGS.GameProviders.Controllers.PlayerBalance
         ///         "currencyCode": "CNY"
         ///     }
         /// </remarks>
-        public override async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
+        public override async ValueTask<PlayerBalanceResponse?> PlayerBalanceAsync(
             [FromServices] IGetService<KYPlayerBalanceQuery, PlayerBalanceResult> getService,
             PlayerBalanceRequest request)
         {

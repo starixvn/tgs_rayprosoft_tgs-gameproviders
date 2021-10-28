@@ -69,7 +69,7 @@ namespace TGS.GameProviders
                                 HostIp = hostIp?.ToString() ?? string.Empty,
                                 Environment = env.EnvironmentName,
                                 OsVersion = $"{Environment.OSVersion}",
-                                Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                                Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
                                 ProcessCount = Environment.ProcessorCount,
                             },
                             Result = new
@@ -105,8 +105,7 @@ namespace TGS.GameProviders
 
             services.AddSwaggerGen(c =>
             {
-                string[] xmlFileNames = null;
-                xmlFileNames = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml");
+                var xmlFileNames = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml");
                 foreach (var xmlFileName in xmlFileNames)
                 {
                     c.IncludeXmlComments(xmlFileName);

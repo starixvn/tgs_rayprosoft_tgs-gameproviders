@@ -10,7 +10,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.GameUrl
 {
-    public class EVOController : GameUrlController<EvolutionGameUrlQuery, GameUrlResult>
+    public class EVOController : GameUrlController<EvolutionGameUrlQuery>
     {
         private readonly ILogger<EVOController> _logger;
         private readonly IMapper _mapper;
@@ -72,7 +72,7 @@ namespace TGS.GameProviders.Controllers.GameUrl
         ///         "backUrl": "https://dev-t1.rpgp.cc/"
         ///     }
         /// </remarks>
-        public override async ValueTask<GameUrlResponse> GameUrlAsync(
+        public override async ValueTask<GameUrlResponse?> GameUrlAsync(
             [FromServices] IGetService<EvolutionGameUrlQuery, GameUrlResult> getService,
             GameUrlRequest request)
         {

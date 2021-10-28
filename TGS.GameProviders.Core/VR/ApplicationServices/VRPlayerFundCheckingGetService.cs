@@ -8,7 +8,7 @@ using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Core.VR.ApplicationServices
 {
-    public class VRPlayerFundCheckingGetService : IGetService<VRPlayerFundCheckingQuery, bool>
+    public class VRPlayerFundCheckingGetService : IGetService<VRPlayerFundCheckingQuery, PlayerFundCheckingResult>
     {
         private readonly IVRApiClient _client;
         private readonly ILogger<VRPlayerFundCheckingGetService> _logger;
@@ -24,13 +24,13 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        public async ValueTask<bool> GetAsync(VRPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<PlayerFundCheckingResult> GetAsync(VRPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
         {
             var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
 
             if (brandMerchant == null)
             {
-                return false;
+                return null;
             }
 
             var data = new VRFundCheckingRequest
@@ -51,7 +51,7 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
                 data)
                 .ConfigureAwait(false);
 
-            return (response != null && response?.TotalRecords == 1);
+            return new() { OrderStatus = (response != null && response?.TotalRecords == 1) };
         }
     }
 }
