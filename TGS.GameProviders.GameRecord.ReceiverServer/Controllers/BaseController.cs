@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using TGS.ServiceUtility;
+using Tgs.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
 {

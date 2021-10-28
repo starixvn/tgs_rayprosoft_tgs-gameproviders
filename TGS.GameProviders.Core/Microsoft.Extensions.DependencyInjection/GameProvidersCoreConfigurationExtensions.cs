@@ -3,6 +3,7 @@ using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Evolution;
 using TGS.GameProviders.Core.KY;
+using TGS.GameProviders.Core.LY;
 using TGS.GameProviders.Core.SexyGaming;
 using TGS.GameProviders.Core.Skywind;
 using TGS.GameProviders.Core.TCG;
@@ -58,6 +59,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services
                 .AddTransient<IEvolutionService, EvolutionService>();
+
+            services
+                .AddTransient<ILYService, LYService>();
             return services;
         }
     }

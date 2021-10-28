@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse;
-using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecord.Core.JobWorkerCommand.WGHorse
 {

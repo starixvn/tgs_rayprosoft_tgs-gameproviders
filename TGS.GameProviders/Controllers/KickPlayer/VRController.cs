@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.VR.ApplicationServices;
 using TGS.GameProviders.ViewModels;
-using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.KickPlayer
 {
