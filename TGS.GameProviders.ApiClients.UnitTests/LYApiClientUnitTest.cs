@@ -16,12 +16,12 @@ namespace TGS.GameProviders.ApiClients.UnitTests
     [TestFixture]
     public class LYApiClientUnitTest
     {
-        private const string _agentId = "72412";
+        private const string _agentId = "200995";
         private const string _currencyCode = "CNY";
-        private const string _deskey = "E2F3A416006F84F8";
-        private const string _md5key = "B563DF2A3DE58DFB";
-        private readonly Uri _apiRecordUrl = new Uri("https://wc1-record.hddv1.com/getRecordHandle");
-        private readonly Uri _apiUrl = new Uri("https://wc1-api.hddv1.com/channelHandle");
+        private const string _deskey = "706EB65DD6E6DF4C";
+        private const string _md5key = "3E00054B89B31B7A";
+        private readonly Uri _apiRecordUrl = new Uri("https://wc1-record.wwdlw78.com/getRecordHandle");
+        private readonly Uri _apiUrl = new Uri("https://wc1-api.wwdlw78.com/channelHandle");
         private readonly ILYApiClient _client;
         private readonly ILYUtility _utility;
 
@@ -31,8 +31,8 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var client = new HttpClient();
             var faceLog = NullLogger<LYApiClient>.Instance;
             var faceTgsLog = Substitute.For<ITgsLog>();
-            _client = Substitute.For<ILYApiClient>();
-            //_client = new LYApiClient(client, faceLog, faceTgsLog, _utility);
+            //_client = Substitute.For<ILYApiClient>();
+            _client = new LYApiClient(client, faceLog, faceTgsLog, _utility);
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             {
                 PlayerCode = playerCode,
                 OrderId = $"{ _agentId}{dateTimeOffset.ToString("yyyyMMddhhmmssfff")}{playerCode}",
-                Amount = 10
+                Amount = 8
             };
             var response = await _client.FundAsync(_apiUrl, _deskey, _md5key, _agentId, dateTimeOffset, LYAction.FundIn, data).ConfigureAwait(false);
         }
@@ -80,8 +80,8 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
             var data = new LYGameRecordRequest()
             {
-                StartTime = dateTimeOffset.AddHours(-1).ToUnixTimeMilliseconds(),//1634537632446
-                EndTime = dateTimeOffset.ToUnixTimeMilliseconds()//1634541232446
+                StartTime = DateTimeOffset.Parse("2021-10-28 13:00").ToOffset(TimeSpan.FromHours(+8)).ToUnixTimeMilliseconds(),//dateTimeOffset.AddHours(-1).ToUnixTimeMilliseconds(),//1634537632446
+                EndTime = DateTimeOffset.Parse("2021-10-28 13:40").ToOffset(TimeSpan.FromHours(+8)).ToUnixTimeMilliseconds()//dateTimeOffset.ToUnixTimeMilliseconds()//1634541232446
             };
             var response = await _client.GetGameRecordAsync(_apiRecordUrl, _deskey, _md5key, _agentId, dateTimeOffset, data).ConfigureAwait(false);
         }
