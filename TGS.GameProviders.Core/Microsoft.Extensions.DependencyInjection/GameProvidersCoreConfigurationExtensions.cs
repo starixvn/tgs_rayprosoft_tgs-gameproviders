@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.BigGaming;
+using TGS.GameProviders.Core.Evolution;
 using TGS.GameProviders.Core.KY;
 using TGS.GameProviders.Core.SexyGaming;
 using TGS.GameProviders.Core.Skywind;
@@ -28,21 +29,24 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services
              .AddTransient<IVRService, VRService>()
-             .AddTransient<IVRGamePlayerCreate, VRGamePlayerCreate>();
+             .AddTransient<IVRGamePlayer, VRGamePlayer>();
 
             services
                 .AddTransient<IWGHorseService, WGHorseService>()
-                .AddTransient<IWGHorseGamePlayerCreate, WGHorseGamePlayerCreate>();
+                .AddTransient<IWGHorseGamePlayer, WGHorseGamePlayer>();
 
             services
                 .AddTransient<IWGSportsService, WGSportsService>()
-                .AddTransient<IWGSportsGamePlayerCreate, WGSportsGamePlayerCreate>();
+                .AddTransient<IWGSportsGamePlayer, WGSportsGamePlayer>();
 
             services
-                .AddTransient<IBigGamingService, BigGamingService>();
+                .AddTransient<IBigGamingService, BigGamingService>()
+                .AddTransient<IBigGamingGamePlayer, BigGamingGamePlayer>()
+                .AddTransient<IBigGamingGameUrl, BigGamingGameUrl>();
 
             services
-                 .AddTransient<ISexyGamingService, SexyGamingService>();
+                 .AddTransient<ISexyGamingService, SexyGamingService>()
+                 .AddTransient<ISexyGamingGamePlayer, SexyGamingGamePlayer>();
 
             services
                 .AddTransient<ISkywindService, SkywindService>()
@@ -50,8 +54,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services
                 .AddTransient<ITCGService, TCGService>()
-                .AddTransient<ITCGGamePlayerCreate, TCGGamePlayerCreate>();
+                .AddTransient<ITCGGamePlayer, TCGGamePlayer>();
 
+            services
+                .AddTransient<IEvolutionService, EvolutionService>();
             return services;
         }
     }

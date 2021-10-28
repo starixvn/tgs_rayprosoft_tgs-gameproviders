@@ -12,14 +12,14 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
     {
         private readonly IWGHorseApiClient _client;
         private readonly ILogger<WGHorsePlayerBalanceGetService> _logger;
-        private readonly IWGHorseGamePlayerCreate _playerCreate;
+        private readonly IWGHorseGamePlayer _playerCreate;
         private readonly IWGHorseService _service;
 
         public WGHorsePlayerBalanceGetService(
             ILogger<WGHorsePlayerBalanceGetService> logger,
             IWGHorseApiClient client,
             IWGHorseService service,
-            IWGHorseGamePlayerCreate playerCreate
+            IWGHorseGamePlayer playerCreate
             )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

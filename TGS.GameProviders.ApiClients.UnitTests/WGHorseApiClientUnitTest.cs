@@ -54,7 +54,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var data = new WGHorseAccessMoneyRequest()
             {
                 PlayerCode = playerCode,
-                AmountType = AmountTypes.FundIn,
+                AmountType = WGHorseAmountTypes.FundIn,
                 OrderId = Guid.NewGuid().ToString("N"),
                 Amount = "1"
             };
@@ -74,7 +74,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var data = new WGHorseAccessMoneyRequest()
             {
                 PlayerCode = playerCode,
-                AmountType = AmountTypes.FundOut,
+                AmountType = WGHorseAmountTypes.FundOut,
                 OrderId = Guid.NewGuid().ToString("N"),
                 Amount = "1"
             };

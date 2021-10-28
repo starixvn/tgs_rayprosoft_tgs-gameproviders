@@ -27,6 +27,20 @@ namespace TGS.GameProviders.Core.SexyGaming
         public string GetGameProviderCode()
             => GameProviderType.SexyGaming;
 
+        public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
+        {
+            var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.SexyGaming).ConfigureAwait(false);
+            var (IsCultureCode, GameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProvider.Id, cultureCode).ConfigureAwait(false);
+            return (IsCultureCode) ? GameProviderCultureCode : "en";
+        }
+
+        public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
+        {
+            var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.SexyGaming).ConfigureAwait(false);
+            var (IsCurrencyCode, GameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProvider.Id, currencyCode).ConfigureAwait(false);
+            return (IsCurrencyCode) ? GameProviderCurrencyCode : null;
+        }
+
         public async Task<Guid> GetGameProviderIdAsync()
         {
             var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.SexyGaming).ConfigureAwait(false);

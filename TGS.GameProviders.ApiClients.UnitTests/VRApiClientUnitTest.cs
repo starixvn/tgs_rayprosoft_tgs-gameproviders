@@ -115,5 +115,24 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             };
             _ = await _client.KickAsync(_apiUrl, _merchantid, _version, _deskey, data).ConfigureAwait(false);
         }
+
+        [Test()]
+        [TestCase("4ucmqplxb029", "397FE4DF0A2FF0E2820367F0E29CFCAC8F86", 1)]
+        [TestCase("4ucmqplxb029", "397FE4DF0A2FF0E2820367F0E29CFCAC8F87", 0)]
+        public async Task FundCheckingAsync(string playerCode, string orderId, int totalRecords)
+        {
+            var data = new VRFundCheckingRequest()
+            {
+                StartTime = DateTimeOffset.UtcNow.AddDays(-1).ToOffset(TimeSpan.FromHours(+8)).ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                EndTime = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(+8)).ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                SerialNumber = orderId,
+                PlayerCode = playerCode,
+                RecordPage = 0,
+                RecordCountPerPage = 1
+            };
+            _ = _client.FundCheckingAsync(_apiUrl, _merchantid, _version, _deskey, data).Returns(ValueTask.FromResult<VRFundCheckingResponse>(new() { TotalRecords = totalRecords }));
+            var response = await _client.FundCheckingAsync(_apiUrl, _merchantid, _version, _deskey, data).ConfigureAwait(false);
+            Assert.AreEqual(totalRecords, response.TotalRecords);
+        }
     }
 }

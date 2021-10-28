@@ -11,6 +11,10 @@ namespace TGS.GameProviders.Core
 
         string GetGameProviderCode();
 
+        ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
+
+        ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
+
         Task<Guid> GetGameProviderIdAsync();
 
         Task<SexyGamingConfiguration> GetSettingConfigurationAsync();

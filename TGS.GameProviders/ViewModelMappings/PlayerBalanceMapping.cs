@@ -16,13 +16,12 @@ namespace TGS.GameProviders.ViewModelMappings
               .ReverseMap();
             CreateMap<PlayerBalanceRequest, KYPlayerBalanceQuery>()
                 .ReverseMap();
-
             CreateMap<PlayerBalanceRequest, VRPlayerBalanceQuery>()
-              .ReverseMap();
+                .ReverseMap();
             CreateMap<PlayerBalanceRequest, WGSportsPlayerBalanceQuery>()
-             .ReverseMap();
+                .ReverseMap();
             CreateMap<PlayerBalanceRequest, WGHorsePlayerBalanceQuery>()
-            .ReverseMap();
+                .ReverseMap();
         }
     }
 }

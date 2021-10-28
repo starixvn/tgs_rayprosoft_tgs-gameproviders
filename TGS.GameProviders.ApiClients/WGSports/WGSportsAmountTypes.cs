@@ -1,6 +1,6 @@
 ﻿namespace TGS.GameProviders.ApiClients.WGSports
 {
-    public enum AmountTypes
+    public enum WGSportsAmountTypes
     {
         /// <summary>
         /// The fund out

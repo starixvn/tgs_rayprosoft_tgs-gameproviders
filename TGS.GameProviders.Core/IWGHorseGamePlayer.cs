@@ -3,7 +3,7 @@ using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
 
 namespace TGS.GameProviders.Core
 {
-    public interface IWGHorseGamePlayerCreate
+    public interface IWGHorseGamePlayer
     {
         /// <summary>
         /// Creates the player asynchronous.
