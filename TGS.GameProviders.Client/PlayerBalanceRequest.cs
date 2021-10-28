@@ -2,10 +2,8 @@
 {
     public record PlayerBalanceRequest
     {
-        public string BrandCode { get; init; } = default!;
-
-        public string PlayerCode { get; init; } = default!;
-
-        public string CurrencyCode { get; init; } = default!;
+        public string BrandCode { get; init; }
+        public string PlayerCode { get; init; }
+        public string CurrencyCode { get; init; }
     }
 }

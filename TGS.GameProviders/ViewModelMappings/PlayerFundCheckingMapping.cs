@@ -22,6 +22,8 @@ namespace TGS.GameProviders.ViewModelMappings
                 .ReverseMap();
             CreateMap<VRPlayerFundCheckingRequest, VRPlayerFundCheckingQuery>()
                 .ReverseMap();
+
+
         }
     }
 }

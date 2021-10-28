@@ -46,5 +46,6 @@ namespace TGS.GameProviders.Controllers.PlayerFundChecking
             var result = await getService.GetAsync(_mapper.Map<KYPlayerFundCheckingQuery>(request)).ConfigureAwait(false);
             return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
         }
+
     }
 }

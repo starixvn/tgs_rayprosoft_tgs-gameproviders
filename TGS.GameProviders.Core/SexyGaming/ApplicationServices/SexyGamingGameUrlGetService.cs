@@ -63,6 +63,7 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
                 })
             };
 
+            var url = default(string);
             var responseGameUrl = await _client.GetGamingGameUrlAsync(configuration.ApiUrl, data).ConfigureAwait(false);
 
             if (responseGameUrl.Status.IgnoreCaseNotEquals(((int)SexyGamingGameApiError.Success).ToString("d4")))
