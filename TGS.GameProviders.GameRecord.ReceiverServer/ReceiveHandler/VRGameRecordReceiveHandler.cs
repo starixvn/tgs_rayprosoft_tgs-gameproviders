@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.MessageQueue;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.GameRecord.Core.JobWorkerCommand.VR;
-using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecord.ReceiverServer.ReceiveHandler
 {

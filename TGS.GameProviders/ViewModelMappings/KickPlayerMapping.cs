@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TGS.GameProviders.Core.BigGaming.ApplicationServices;
 using TGS.GameProviders.Core.KY.ApplicationServices;
+using TGS.GameProviders.Core.LY.ApplicationServices;
 using TGS.GameProviders.Core.SexyGaming.ApplicationServices;
 using TGS.GameProviders.Core.TCG.ApplicationServices;
 using TGS.GameProviders.Core.VR.ApplicationServices;
@@ -25,9 +26,11 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<KickPlayerRequest, VRKickPlayerCommand>()
                .ReverseMap();
             CreateMap<KickPlayerRequest, WGSportsKickPlayerCommand>()
-              .ReverseMap();
+                .ReverseMap();
             CreateMap<KickPlayerRequest, WGHorseKickPlayerCommand>()
-             .ReverseMap();
+                .ReverseMap();
+            CreateMap<KickPlayerRequest, LYKickPlayerCommand>()
+                .ReverseMap();
         }
     }
 }

@@ -58,7 +58,7 @@ namespace TGS.GameProviders.ApiClients.KY
             var action = KYAction.FundChecking;
             request.Action = _utility.GetAction(action) ?? -1;
 
-            var timestamp = DateTimeOffset.UtcNow.AddHours(+8).ToUnixTimeMilliseconds();
+            var timestamp = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).ToUnixTimeMilliseconds();
             var dataPath = _utility.GetPath(request);
             var param = _utility.AesEncrypt(dataPath, deskey, true);
             var plainText = $"{agentId}{timestamp}{md5key}";
@@ -80,7 +80,7 @@ namespace TGS.GameProviders.ApiClients.KY
             var action = KYAction.GetBalance;
             request.Action = _utility.GetAction(action) ?? -1;
 
-            var timestamp = DateTimeOffset.UtcNow.AddHours(+8).ToUnixTimeMilliseconds();
+            var timestamp = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).ToUnixTimeMilliseconds();
             var dataPath = _utility.GetPath(request);
             var param = _utility.AesEncrypt(dataPath, deskey, true);
             var plainText = $"{agentId}{timestamp}{md5key}";
@@ -146,7 +146,7 @@ namespace TGS.GameProviders.ApiClients.KY
             var action = KYAction.Kick;
             request.Action = _utility.GetAction(action) ?? -1;
 
-            var timestamp = DateTimeOffset.UtcNow.AddHours(+8).ToUnixTimeMilliseconds();
+            var timestamp = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).ToUnixTimeMilliseconds();
             var dataPath = _utility.GetPath(request);
             var param = _utility.AesEncrypt(dataPath, deskey, true);
             var plainText = $"{agentId}{timestamp}{md5key}";

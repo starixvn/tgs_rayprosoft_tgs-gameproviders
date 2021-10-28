@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.ViewModels;
-using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers
 {

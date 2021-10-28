@@ -36,7 +36,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         [Test]
         public async Task FundInAsync()
         {
-            var dateTimeOffset = DateTimeOffset.UtcNow.AddHours(+8);
+            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
             var playerCode = "4ucmqplxb029";
             var data = new KYFnudRequest()
             {
@@ -50,7 +50,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         [Test]
         public async Task FundOutAsync()
         {
-            var dateTimeOffset = DateTimeOffset.UtcNow.AddHours(+8);
+            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
             var playerCode = "4ucmqplxb029";
             var data = new KYFnudRequest()
             {
@@ -87,7 +87,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         [Test]
         public async Task GetGameUrlAsync()
         {
-            var dateTimeOffset = DateTimeOffset.UtcNow.AddHours(+8);
+            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
             var playerCode = "4ucmqplxb029";
             var data = new KYGameUrlRequest()
             {
