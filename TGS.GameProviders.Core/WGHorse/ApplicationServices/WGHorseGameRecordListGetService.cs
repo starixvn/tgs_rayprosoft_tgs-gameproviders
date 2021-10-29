@@ -1,0 +1,95 @@
+﻿using System;
+using System.Linq;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Tgs.ServiceUtility;
+using TGS.GameProviders.ApiClients;
+using TGS.GameProviders.ApiClients.WGHorse.Models;
+using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Repositories.Domains;
+
+namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
+{
+    public class WGHorseGameRecordListGetService : IGetService<WGHorseGameRecordListQuery, WGHorseGameRecordListResult>
+    {
+        private readonly IWGHorseApiClient _client;
+        private readonly ILogger<WGHorseGameRecordListGetService> _logger;
+        private readonly IWGHorseService _service;
+
+        public WGHorseGameRecordListGetService(
+            IWGHorseApiClient client,
+            ILogger<WGHorseGameRecordListGetService> logger,
+            IWGHorseService service
+            )
+        {
+            _client = client ?? throw new ArgumentNullException(nameof(client));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
+        }
+
+        public async ValueTask<WGHorseGameRecordListResult> GetAsync(WGHorseGameRecordListQuery command, CancellationToken cancellationToken = default)
+        {
+            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+
+            var data = new WGHorseGameRecordRequest
+            {
+                StartTime = command.StartTime,
+                EndTime = command.EndTime,
+                PageIndex = command.Page,
+                PageSize = command.Rows
+            };
+
+            var response = await _client.GetGameRecordAsync(
+                configuration.ApiUrl,
+                configuration.PartnerCode,
+                configuration.PartnerKey,
+                configuration.IV,
+                data);
+
+            if (response == null)
+            {
+                return new() { Success = false };
+            }
+
+            if (response?.ReturnCode != 1)
+            {
+                if (response?.ReturnCode != 503)
+                {
+                    return new() { Success = false };
+                }
+            }
+
+            if (command.Page.ToString().IgnoreCaseNotEquals(response.Page)
+                || response.ArrayInvoice == null || response.ArrayInvoice.Length == 0)
+            {
+                return new() { Success = true };
+            }
+
+            var datas = response.ArrayInvoice.Select(data =>
+                new GameRecordListModle()
+                {
+                    ExternalRoundId = data.BatchNo,
+                    PlayerCode = data.MemberCode,
+                    ExternalGameId = "1",
+                    CurrencyCode = string.Empty,
+                    Status = RoundStatus.Closed,
+                    ExternalId = data.BatchNo,
+                    ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(+8)),
+                    ExternalClosedOn = new DateTimeOffset(DateTime.Parse(data.ShowDivideDate), TimeSpan.FromHours(+8)),
+                    BetAmount = decimal.Parse(data.ShowAmount),
+                    ValidBetAmount = decimal.Parse(data.ShowAmount),
+                    PlayerWinLoss = decimal.Parse(data.ShowWin),
+                    Commission = 0,
+                    Turnover = decimal.Parse(data.ShowAmount),
+                    SettleAmount = decimal.Parse(data.ShowAmount) + decimal.Parse(data.ShowWin),
+                    TieBetAdjustment = null,
+                    ClientStatus = _service.GetClientRound(decimal.Parse(data.ShowWin)),
+                    AdditionalData = JsonSerializer.Serialize(data),
+                })
+                .ToArray();
+            return new() { Success = true, Datas = datas };
+        }
+    }
+}

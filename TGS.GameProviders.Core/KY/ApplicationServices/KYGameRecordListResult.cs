@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace TGS.GameProviders.Core.KY.ApplicationServices
+﻿namespace TGS.GameProviders.Core.KY.ApplicationServices
 {
     public record KYGameRecordListResult
     {

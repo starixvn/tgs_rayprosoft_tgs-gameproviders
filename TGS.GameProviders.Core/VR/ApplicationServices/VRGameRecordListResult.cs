@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using TGS.GameProviders.ApiClients.VR.Models.Commons.GameRecord;
+﻿using TGS.GameProviders.ApiClients.VR.Models.Commons.GameRecord;
 
 namespace TGS.GameProviders.Core.VR.ApplicationServices
 {
