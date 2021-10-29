@@ -1,9 +1,12 @@
-﻿using System.Reflection;
+﻿// ReSharper disable CheckNamespace
+
+using System.Reflection;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Evolution;
 using TGS.GameProviders.Core.KY;
 using TGS.GameProviders.Core.LY;
+using TGS.GameProviders.Core.SBO;
 using TGS.GameProviders.Core.SexyGaming;
 using TGS.GameProviders.Core.Skywind;
 using TGS.GameProviders.Core.TCG;
@@ -19,18 +22,18 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services
                 .RegisterAllServiceUtilityTypes(
-                Assembly.GetExecutingAssembly(),
-                ServiceLifetime.Transient);
+                    Assembly.GetExecutingAssembly(),
+                    ServiceLifetime.Transient);
 
             //Tgs.Core.Infrastructures.Security
             services.AddSecurity();
 
             services
-               .AddTransient<IKYService, KYService>();
+                .AddTransient<IKYService, KYService>();
 
             services
-             .AddTransient<IVRService, VRService>()
-             .AddTransient<IVRGamePlayer, VRGamePlayer>();
+                .AddTransient<IVRService, VRService>()
+                .AddTransient<IVRGamePlayer, VRGamePlayer>();
 
             services
                 .AddTransient<IWGHorseService, WGHorseService>()
@@ -46,8 +49,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IBigGamingGameUrl, BigGamingGameUrl>();
 
             services
-                 .AddTransient<ISexyGamingService, SexyGamingService>()
-                 .AddTransient<ISexyGamingGamePlayer, SexyGamingGamePlayer>();
+                .AddTransient<ISexyGamingService, SexyGamingService>()
+                .AddTransient<ISexyGamingGamePlayer, SexyGamingGamePlayer>();
 
             services
                 .AddTransient<ISkywindService, SkywindService>()
@@ -62,6 +65,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services
                 .AddTransient<ILYService, LYService>();
+
+            services
+                .AddTransient<ISBOService, ISBOService>()
+                .AddTransient<ISBOGamePlayer, SBOGamePlayer>();
+
             return services;
         }
     }
