@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using TGS.GameProviders.ApiClients.SBO.Models;
 
-namespace TGS.GameProviders.ApiClients.SBO
+namespace TGS.GameProviders.ApiClients
 {
     public interface ISBOApiClient
     {

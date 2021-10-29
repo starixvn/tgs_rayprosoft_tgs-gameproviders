@@ -33,7 +33,7 @@ namespace TGS.GameProviders.ApiClients.SBO.Models
         public DateTime ModifyDate { get; init; }
 
         [JsonPropertyName("odds")]
-        public string Odds { get; init; }
+        public decimal Odds { get; init; }
 
         [JsonPropertyName("oddsStyle")]
         public string OddsStyle { get; init; }

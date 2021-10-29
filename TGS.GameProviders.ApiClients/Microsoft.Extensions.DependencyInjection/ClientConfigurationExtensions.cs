@@ -34,6 +34,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddHttpClient<ISexyGamingApiClient, SexyGamingApiClient>();
             services.AddHttpClient<ISkywindApiClient, SkywindApiClient>();
             services.AddHttpClient<ITCGApiClient, TCGApiClient>();
+            services.AddHttpClient<ISBOApiClient, SBOApiClient>();
 
             return services;
         }
