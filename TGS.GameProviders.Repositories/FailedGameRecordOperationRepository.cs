@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.FailedGameRecordOperation;
 using TGS.GameProviders.Repositories.Entities;
 
@@ -33,12 +35,26 @@ namespace TGS.GameProviders.Repositories
 
         public Task<GetFailedGameRecordOperation> GetFailedGameRecordOperationAsync(Guid gameProviderId, string externalRoundId, int gameId, string playerCode)
        => _context.FailedGameRecordOperations
-            .ProjectTo<GetFailedGameRecordOperation>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(x =>
-                  x.GameProviderId == gameProviderId &&
-                  x.ExternalRoundId == externalRoundId &&
-                  x.GameId == gameId &&
-                  x.PlayerCode == playerCode);
+            .Where(x => x.GameProviderId == gameProviderId &&
+            x.ExternalRoundId == externalRoundId &&
+            x.GameId == gameId &&
+            x.PlayerCode == playerCode)
+            .Select(x => new GetFailedGameRecordOperation()
+            {
+                Id = x.Id,
+                GameProviderId = x.GameProviderId,
+                GameProviderCode = x.GameProviderCode,
+                ExternalRoundId = x.ExternalRoundId,
+                PlayerCode = x.PlayerCode,
+                GameId = x.GameId,
+                ExternalId = x.ExternalId,
+                Detail = x.Detail,
+                AutoStatus = (FailedGameRecordOperationAutoStatus)x.AutoStatus,
+                ProcesStatus = (FailedGameRecordOperationProcesStatus)x.ProcesStatus,
+                CreatedOn = x.CreatedOn,
+                UpdatedOn = x.UpdatedOn,
+            })
+            .FirstOrDefaultAsync();
 
         public async Task UpdataFailedGameRecordOperationAsync(Guid failedGameRecordOperationId, string detail)
         {
