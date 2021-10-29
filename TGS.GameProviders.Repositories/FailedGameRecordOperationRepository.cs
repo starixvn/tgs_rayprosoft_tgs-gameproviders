@@ -34,7 +34,7 @@ namespace TGS.GameProviders.Repositories
         }
 
         public Task<GetFailedGameRecordOperation> GetFailedGameRecordOperationAsync(Guid gameProviderId, string externalRoundId, int gameId, string playerCode)
-       => _context.FailedGameRecordOperations
+            => _context.FailedGameRecordOperations
             .Where(x => x.GameProviderId == gameProviderId &&
             x.ExternalRoundId == externalRoundId &&
             x.GameId == gameId &&
