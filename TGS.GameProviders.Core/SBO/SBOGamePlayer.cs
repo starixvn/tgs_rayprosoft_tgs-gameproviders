@@ -34,7 +34,7 @@ namespace TGS.GameProviders.Core.SBO
 
             var response = await _client.RegisterPlayerAsync(configuration.ApiUrl, request).ConfigureAwait(false);
 
-            return response.Error.Code == ApiErrorCode.None;
+            return response.Error.Code == SBOApiErrorCode.None;
         }
     }
 }

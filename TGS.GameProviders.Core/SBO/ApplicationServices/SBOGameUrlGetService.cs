@@ -7,9 +7,8 @@ using TGS.GameProviders.ApiClients.SBO.Models;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
-using TGS.GameProviders.Repositories.Entities;
 using Tgs.ServiceUtility;
-using static TGS.GameProviders.ApiClients.SBO.Models.ApiErrorCode;
+using static TGS.GameProviders.ApiClients.SBO.Models.SBOApiErrorCode;
 
 namespace TGS.GameProviders.Core.SBO.ApplicationServices
 {
@@ -49,15 +48,10 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
             var gameProviderCulture =
                 await _service.GetGameProviderCultureCodeAsync(query.Language).ConfigureAwait(false);
 
-            var player = await _service.GetPlayerAsync(query.PlayerCode);
-            var brandGameProvider = await _service.GetBrandGameProviderAsync(player.BrandId, game.GameProviderId)
-                .ConfigureAwait(false);
-
             var url = game.Type switch
             {
                 GameType.VirtualSports or GameType.VirtualSportsLobby => $"{response.Url}&lang={gameProviderCulture}",
-                GameType.Sportsbook => GetSportsbookUrl(brandGameProvider, query.PlatformType, response.Url,
-                    gameProviderCulture),
+                GameType.Sportsbook => GetSportsbookUrl(query.PlatformType, response.Url, gameProviderCulture),
                 _ => default
             };
 
@@ -94,23 +88,10 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
             return !created ? null : await _client.LoginAsync(configuration.ApiUrl, loginRequest);
         }
 
-
-        private string GetSportsbookUrl(BrandGameProvider brandGameProvider,
-            PlatformType platformType, string url, string cultureCode)
+        private string GetSportsbookUrl(PlatformType platformType, string url, string cultureCode)
         {
-            var queryString = brandGameProvider.DesktopQueryString;
-            var device = "d";
-
-            if (platformType == PlatformType.Mobile)
-            {
-                queryString = brandGameProvider.MobileQueryString;
-                device = "m";
-            }
-
-            if (string.IsNullOrEmpty(queryString))
-            {
-                queryString = "oddstyle=MY&theme=sbo&oddsmode=double";
-            }
+            var queryString = "oddstyle=MY&theme=sbo&oddsmode=double";
+            var device = platformType == PlatformType.Mobile ? "m" : "d";
 
             return $"{url}&device={device}&lang={cultureCode}&{queryString}";
         }

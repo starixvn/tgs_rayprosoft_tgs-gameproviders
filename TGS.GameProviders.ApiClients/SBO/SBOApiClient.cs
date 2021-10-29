@@ -9,7 +9,6 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.ApiClients.SBO.Models;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.Extensions;
 using Tgs.Logging;
 
@@ -96,7 +95,7 @@ namespace TGS.GameProviders.ApiClients.SBO
             string action,
             JsonSerializerOptions jsonSerializerOptions = null)
         {
-            var logPrefix = $"{GameProviderType.SBOBET}.{action}";
+            var logPrefix = $"{nameof(SBOApiClient).ToLower()}.{action}";
             var uriString = GetUriString(apiUrl, path);
 
             var sw = Stopwatch.StartNew();
