@@ -21,6 +21,22 @@ namespace TGS.GameProviders.Controllers.KickPlayer
             _mapper = mapper;
         }
 
+
+        /// <summary>
+        /// Kicks the player asynchronous.
+        /// </summary>
+        /// <param name="commandService">The command service.</param>
+        /// <param name="request">The request.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Example
+        /// Post
+        ///     {
+        ///         "brandCode": "GPI",
+        ///         "playerCode": "4ucmqplxb029",
+        ///         "currencyCode": "CNY"
+        ///     }
+        /// </remarks>
         public override ValueTask KickPlayerAsync(
             [FromServices] ICommandService<SBOKickPlayerCommand> commandService,
             KickPlayerRequest request)

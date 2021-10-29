@@ -67,7 +67,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<ILYService, LYService>();
 
             services
-                .AddTransient<ISBOService, ISBOService>()
+                .AddTransient<ISBOService, SBOService>()
                 .AddTransient<ISBOGamePlayer, SBOGamePlayer>();
 
             return services;

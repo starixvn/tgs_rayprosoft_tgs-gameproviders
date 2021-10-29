@@ -10,7 +10,6 @@ using Tgs.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.GameUrl
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class SBOController : GameUrlController<SBOGameUrlQuery>
     {
@@ -35,16 +34,16 @@ namespace TGS.GameProviders.Controllers.GameUrl
         /// Example
         /// Post
         /// {
-        /// "gameType": 1,
-        /// "gameId": 1600001,
-        /// "brandCode": "GPI",
-        /// "playerCode": "4ucmqplxb029",
-        /// "currencyCode": "CNY",
-        /// "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        /// "platformType": 0,
-        /// "language": "zh-CN",
-        /// "ipAddress": "127.0.0.1",
-        /// "backUrl": "https://dev-t1.rpgp.cc/"
+        ///    "gameType": 1,
+        ///    "gameId": 100001,
+        ///    "brandCode": "GPI",
+        ///    "playerCode": "4ucmqplxb029",
+        ///    "currencyCode": "CNY",
+        ///    "loginRecordId": "ec5f3c9b-8c38-ec11-8e06-70b5e82b6b8d",
+        ///    "platformType": 0,
+        ///    "language": "zh-CN",
+        ///    "ipAddress": "127.0.0.1",
+        ///    "backUrl": "https://dev-t1.rpgp.cc"
         /// }
         /// </remarks>
         public override async ValueTask<GameUrlResponse?> GameUrlAsync(
