@@ -22,7 +22,6 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
     public class KYGameRecordHandler : IGetService<KYGameRecordHandlerQuery, KYGameRecordHandlerResult>
     {
         private readonly IBrandRepository _brandRepository;
-        private readonly IKYApiClient _client;
         private readonly IGameRepository _gameRepository;
         private readonly IGameRecordProcessor _gameRoundsProcessor;
         private readonly IPlayerRepository _playerRepository;
@@ -30,7 +29,6 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
         private readonly IGetService<KYGameRecordListQuery, KYGameRecordListResult> _getService;
 
         public KYGameRecordHandler(
-            IKYApiClient client,
             IKYService service,
             IGameRepository gameRepository,
             IBrandRepository brandRepository,
@@ -39,7 +37,6 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
             IGetService<KYGameRecordListQuery, KYGameRecordListResult> getService
             )
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
