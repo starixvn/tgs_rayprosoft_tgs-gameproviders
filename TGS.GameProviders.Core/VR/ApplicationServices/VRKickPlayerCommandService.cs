@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.Repositories;
-using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Core.VR.ApplicationServices
 {

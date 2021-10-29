@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.TCG.ApplicationServices;
 using TGS.GameProviders.ViewModels;
-using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.GameUrl
 {

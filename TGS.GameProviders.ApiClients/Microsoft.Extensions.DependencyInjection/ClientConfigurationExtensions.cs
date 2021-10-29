@@ -4,6 +4,7 @@ using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.BigGaming;
 using TGS.GameProviders.ApiClients.Evolution;
 using TGS.GameProviders.ApiClients.KY;
+using TGS.GameProviders.ApiClients.LY;
 using TGS.GameProviders.ApiClients.SBO;
 using TGS.GameProviders.ApiClients.SexyGaming;
 using TGS.GameProviders.ApiClients.Skywind;
@@ -23,7 +24,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<IWGHorseUtility, WGHorseUtility>()
                 .AddScoped<IWGSportsUtility, WGSportsUtility>()
                 .AddScoped<IBigGamingUtility, BigGamingUtility>()
-                .AddScoped<ITCGUtility, TCGUtility>();
+                .AddScoped<ITCGUtility, TCGUtility>()
+                .AddScoped<ILYUtility, LYUtility>();
 
             services.AddHttpClient<IKYApiClient, KYApiClient>();
             services.AddHttpClient<IVRApiClient, VRApiClient>();
@@ -34,6 +36,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddHttpClient<ISexyGamingApiClient, SexyGamingApiClient>();
             services.AddHttpClient<ISkywindApiClient, SkywindApiClient>();
             services.AddHttpClient<ITCGApiClient, TCGApiClient>();
+            services.AddHttpClient<ILYApiClient, LYApiClient>();
             services.AddHttpClient<ISBOApiClient, SBOApiClient>();
 
             return services;

@@ -2,11 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.KY.Models;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
-using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Core.KY.ApplicationServices
 {
@@ -51,7 +51,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
                 }
             }
 
-            var dateTimeOffset = DateTimeOffset.UtcNow.AddHours(+8);
+            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
 
             var orderId = $"{agentId}{dateTimeOffset.ToString("yyyyMMddHHmmssfff")}{command.PlayerCode}";
 

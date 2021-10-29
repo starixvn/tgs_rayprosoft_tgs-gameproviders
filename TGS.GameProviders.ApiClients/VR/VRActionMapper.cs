@@ -4,7 +4,7 @@ namespace TGS.GameProviders.ApiClients.VR
 {
     public class VRActionMapper
     {
-        public static readonly Dictionary<VRAction, string> Mapper = new Dictionary<VRAction, string>() {
+        public static readonly IReadOnlyDictionary<VRAction, string> Mapper = new Dictionary<VRAction, string>() {
             {VRAction.GetGameUrl, "/Account/LoginValidate"},
             {VRAction.CreatePlayer, "/Account/CreateUser"},
             {VRAction.GetBalance, "/UserWallet/Balance"},

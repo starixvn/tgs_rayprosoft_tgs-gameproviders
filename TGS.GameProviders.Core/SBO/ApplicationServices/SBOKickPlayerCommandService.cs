@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.ApiClients;
-using TGS.ServiceUtility;
+using Tgs.ServiceUtility;
 
 namespace TGS.GameProviders.Core.SBO.ApplicationServices
 {

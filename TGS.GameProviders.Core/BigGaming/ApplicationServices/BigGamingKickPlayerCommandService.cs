@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
-using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 {

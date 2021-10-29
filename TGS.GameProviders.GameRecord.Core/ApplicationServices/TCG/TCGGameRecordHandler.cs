@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.TCG.FTPApi.Client;
-using TGS.ServiceUtility;
 
 namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.TCG
 {

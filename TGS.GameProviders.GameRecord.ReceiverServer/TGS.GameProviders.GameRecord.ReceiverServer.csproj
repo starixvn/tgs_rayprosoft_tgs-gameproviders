@@ -32,7 +32,7 @@
 		<PackageReference Include="Tgs.Logging" Version="0.0.11" />
 		<PackageReference Include="Tgs.MessageQueue.Nats" Version="1.1.1" />
 		<PackageReference Include="Tgs.MessageQueue.RabbitMQ" Version="0.0.6" />
-		<PackageReference Include="TGS.ServiceUtility" Version="0.0.3" />
+		<PackageReference Include="TGS.ServiceUtility" Version="0.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>

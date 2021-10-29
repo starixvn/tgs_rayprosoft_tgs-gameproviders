@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core.SBO.ApplicationServices;
 using TGS.GameProviders.ViewModels;
-using TGS.ServiceUtility;
+using Tgs.ServiceUtility;
 
 namespace TGS.GameProviders.Controllers.KickPlayer
 {
