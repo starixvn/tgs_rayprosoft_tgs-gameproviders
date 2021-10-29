@@ -100,7 +100,7 @@ namespace TGS.GameProviders.ApiClients.LY
             return GetAPIAsync<LYGetBalanceResponse>(apiUrl, action, apiLYRequest, "Balance");
         }
 
-        public ValueTask<LYApiResponse<LYGameRecordResponse>> GetGameRecordAsync(Uri apiUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, LYGameRecordRequest request)
+        public ValueTask<LYApiResponse<LYGameRecordResponse>> GetGameRecordAsync(Uri apiRecordUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, LYGameRecordRequest request)
         {
             var action = LYAction.GameRecord;
             request.Action = _utility.GetAction(action) ?? -1;
@@ -119,10 +119,10 @@ namespace TGS.GameProviders.ApiClients.LY
                 Key = key
             };
 
-            return GetAPIAsync<LYGameRecordResponse>(apiUrl, action, apiLYRequest, "GameRecord");
+            return GetAPIAsync<LYGameRecordResponse>(apiRecordUrl, action, apiLYRequest, "GameRecord");
         }
 
-        public ValueTask<LYApiResponse<LYGameUrlResponse>> GetGameUrlAsync(Uri apiRecordUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, LYGameUrlRequest request)
+        public ValueTask<LYApiResponse<LYGameUrlResponse>> GetGameUrlAsync(Uri apiUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, LYGameUrlRequest request)
         {
             var action = LYAction.GetGameUrl;
             request.Action = _utility.GetAction(LYAction.GetGameUrl) ?? -1;
@@ -141,7 +141,7 @@ namespace TGS.GameProviders.ApiClients.LY
                 Key = key
             };
 
-            return GetAPIAsync<LYGameUrlResponse>(apiRecordUrl, action, apiLYRequest, "GameUrl");
+            return GetAPIAsync<LYGameUrlResponse>(apiUrl, action, apiLYRequest, "GameUrl");
         }
 
         public ValueTask<LYApiResponse<LYKickResponse>> KickAsync(Uri apiUrl, string deskey, string md5key, string agentId, LYKickRequest request)
