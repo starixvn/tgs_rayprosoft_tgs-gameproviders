@@ -36,7 +36,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         {
             var playerCode = "4udwxysersic";
 
-            var request = new RegisterPlayerRequest(_agentPrefix, _brandCode, _currencyCode)
+            var request = new SBORegisterPlayerRequest(_agentPrefix, _brandCode, _currencyCode)
             {
                 CompanyKey = _companyKey,
                 PlayerCode = playerCode
@@ -50,7 +50,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         {
             var playerCode = "4ucmqplxb029";
 
-            var request = new LoginRequest
+            var request = new SBOLoginRequest
             {
                 CompanyKey = _companyKey,
                 PlayerCode = playerCode,
@@ -65,7 +65,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         {
             var playerCode = "4ucmqplxb029";
 
-            var request = new LogoutRequest
+            var request = new SBOLogoutRequest
             {
                 CompanyKey = _companyKey,
                 PlayerCode = playerCode

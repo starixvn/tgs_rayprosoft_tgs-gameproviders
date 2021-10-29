@@ -2,5 +2,5 @@
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record RegisterPlayerResponse : BaseResponse;
+    public record SBOUpdatePlayerBetLimitsResponse : SBOBaseResponse;
 }

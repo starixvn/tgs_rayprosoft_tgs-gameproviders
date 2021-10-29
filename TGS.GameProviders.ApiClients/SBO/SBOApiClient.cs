@@ -30,14 +30,14 @@ namespace TGS.GameProviders.ApiClients.SBO
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         }
 
-        public ValueTask<GetBetHistoryResponse> GetBetHistoryAsync(Uri apiUrl, GetBetHistoryRequest request)
+        public ValueTask<SBOGetBetHistoryResponse> GetBetHistoryAsync(Uri apiUrl, SBOGetBetHistoryRequest request)
         {
             var jsonSerializerOptions = new JsonSerializerOptions
             {
                 NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString
             };
 
-            return PostAsync<GetBetHistoryRequest, GetBetHistoryResponse>(
+            return PostAsync<SBOGetBetHistoryRequest, SBOGetBetHistoryResponse>(
                 apiUrl,
                 "/web-root/restricted/report/v2/get-bet-list-by-modify-date.aspx",
                 request,
@@ -45,14 +45,14 @@ namespace TGS.GameProviders.ApiClients.SBO
                 jsonSerializerOptions);
         }
 
-        public ValueTask<GetRoundHistoryResponse> GetRoundHistoryAsync(Uri apiUrl, GetRoundHistoryRequest request)
+        public ValueTask<SBOGetRoundHistoryResponse> GetRoundHistoryAsync(Uri apiUrl, SBOGetRoundHistoryRequest request)
         {
             var jsonSerializerOptions = new JsonSerializerOptions
             {
                 NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString
             };
 
-            return PostAsync<GetRoundHistoryRequest, GetRoundHistoryResponse>(
+            return PostAsync<SBOGetRoundHistoryRequest, SBOGetRoundHistoryResponse>(
                 apiUrl,
                 "/web-root/restricted/report/get-bet-list-by-refnos.aspx",
                 request,
@@ -60,30 +60,30 @@ namespace TGS.GameProviders.ApiClients.SBO
                 jsonSerializerOptions);
         }
 
-        public ValueTask<LoginResponse> LoginAsync(Uri apiUrl, LoginRequest request)
-            => PostAsync<LoginRequest, LoginResponse>(
+        public ValueTask<SBOLoginResponse> LoginAsync(Uri apiUrl, SBOLoginRequest request)
+            => PostAsync<SBOLoginRequest, SBOLoginResponse>(
                 apiUrl,
                 "/web-root/restricted/player/login.aspx",
                 request,
                 "Login");
 
-        public ValueTask<LogoutResponse> LogoutAsync(Uri apiUrl, LogoutRequest request)
-            => PostAsync<LogoutRequest, LogoutResponse>(
+        public ValueTask<SBOLogoutResponse> LogoutAsync(Uri apiUrl, SBOLogoutRequest request)
+            => PostAsync<SBOLogoutRequest, SBOLogoutResponse>(
                 apiUrl,
                 "/web-root/restricted/player/logout.aspx",
                 request,
                 "Logout");
 
-        public ValueTask<RegisterPlayerResponse> RegisterPlayerAsync(Uri apiUrl, RegisterPlayerRequest request)
-            => PostAsync<RegisterPlayerRequest, RegisterPlayerResponse>(
+        public ValueTask<SBORegisterPlayerResponse> RegisterPlayerAsync(Uri apiUrl, SBORegisterPlayerRequest request)
+            => PostAsync<SBORegisterPlayerRequest, SBORegisterPlayerResponse>(
                 apiUrl,
                 "/web-root/restricted/player/register-player.aspx",
                 request,
                 "RegisterPlayer");
 
-        public ValueTask<UpdatePlayerBetLimitsResponse> UpdatePlayerBetLimitsAsync(Uri apiUrl,
-            UpdatePlayerBetLimitsRequest request)
-            => PostAsync<UpdatePlayerBetLimitsRequest, UpdatePlayerBetLimitsResponse>(
+        public ValueTask<SBOUpdatePlayerBetLimitsResponse> UpdatePlayerBetLimitsAsync(Uri apiUrl,
+            SBOUpdatePlayerBetLimitsRequest request)
+            => PostAsync<SBOUpdatePlayerBetLimitsRequest, SBOUpdatePlayerBetLimitsResponse>(
                 apiUrl,
                 "/web-root/restricted/player/update-player-bet-setting-by-sportid-and-markettype.aspx",
                 request, "UpdatePlayerBetLimit");

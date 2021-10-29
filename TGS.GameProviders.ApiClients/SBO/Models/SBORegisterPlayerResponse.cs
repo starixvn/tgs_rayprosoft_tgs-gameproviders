@@ -2,5 +2,5 @@
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record LogoutRequest : BasePlayerRequest;
+    public record SBORegisterPlayerResponse : SBOBaseResponse;
 }

@@ -26,7 +26,7 @@ namespace TGS.GameProviders.Core.SBO
             string playerCode,
             string currencyCode)
         {
-            var request = new RegisterPlayerRequest(configuration.AgentPrefix, brandCode, currencyCode)
+            var request = new SBORegisterPlayerRequest(configuration.AgentPrefix, brandCode, currencyCode)
             {
                 CompanyKey = configuration.CompanyKey,
                 PlayerCode = playerCode

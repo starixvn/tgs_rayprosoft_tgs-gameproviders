@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record BaseRequest
+    public record SBOBaseRequest
     {
         [JsonPropertyName("CompanyKey")]
         public string CompanyKey { get; init; }

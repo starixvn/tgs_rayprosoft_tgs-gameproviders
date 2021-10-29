@@ -2,7 +2,7 @@
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record ErrorData
+    public record SBOErrorData
     {
         [JsonPropertyName("id")]
         public SBOApiErrorCode Code { get; init; }

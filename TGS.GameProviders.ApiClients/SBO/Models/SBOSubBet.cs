@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record SubBet
+    public record SBOSubBet
     {
         [JsonPropertyName("betOption")]
         public string BetOption { get; init; }

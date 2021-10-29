@@ -4,13 +4,13 @@ using System.Text.Json.Serialization;
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record RegisterPlayerRequest : BasePlayerRequest
+    public record SBORegisterPlayerRequest : SBOBasePlayerRequest
     {
         private readonly string _agentPrefix;
         private readonly string _brandCode;
         private readonly string _currencyCode;
 
-        public RegisterPlayerRequest(string agentPrefix, string brandCode, string currencyCode)
+        public SBORegisterPlayerRequest(string agentPrefix, string brandCode, string currencyCode)
         {
             _agentPrefix = agentPrefix;
             _brandCode = brandCode;

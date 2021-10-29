@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record LoginResponse : BaseResponse
+    public record SBOLoginResponse : SBOBaseResponse
     {
         [JsonPropertyName("url")]
         public string Url { get; init; }

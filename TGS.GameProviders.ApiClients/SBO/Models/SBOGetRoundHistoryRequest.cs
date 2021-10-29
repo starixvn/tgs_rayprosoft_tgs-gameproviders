@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record GetRoundHistoryRequest : BaseRequest
+    public record SBOGetRoundHistoryRequest : SBOBaseRequest
     {
         [JsonPropertyName("RefNos")]
         public string ExternalRoundId { get; init; }

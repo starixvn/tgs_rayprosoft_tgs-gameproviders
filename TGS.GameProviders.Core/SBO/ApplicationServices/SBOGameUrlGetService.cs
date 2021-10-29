@@ -61,7 +61,7 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
             };
         }
 
-        private async ValueTask<LoginResponse> PlayerLoginAsync(
+        private async ValueTask<SBOLoginResponse> PlayerLoginAsync(
             SBOConfiguration configuration,
             SBOGameUrlQuery query,
             GetGame game)
@@ -69,7 +69,7 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
             var portfolio = _service.GetPortfolio(game.Type);
             var playerCode = query.PlayerCode;
 
-            var loginRequest = new LoginRequest
+            var loginRequest = new SBOLoginRequest
             {
                 CompanyKey = configuration.CompanyKey,
                 PlayerCode = playerCode,

@@ -6,17 +6,17 @@ namespace TGS.GameProviders.ApiClients
 {
     public interface ISBOApiClient
     {
-        ValueTask<LoginResponse> LoginAsync(Uri apiUrl, LoginRequest request);
+        ValueTask<SBOLoginResponse> LoginAsync(Uri apiUrl, SBOLoginRequest request);
 
-        ValueTask<LogoutResponse> LogoutAsync(Uri apiUrl, LogoutRequest request);
+        ValueTask<SBOLogoutResponse> LogoutAsync(Uri apiUrl, SBOLogoutRequest request);
 
-        ValueTask<RegisterPlayerResponse> RegisterPlayerAsync(Uri apiUrl, RegisterPlayerRequest request);
+        ValueTask<SBORegisterPlayerResponse> RegisterPlayerAsync(Uri apiUrl, SBORegisterPlayerRequest request);
 
-        ValueTask<GetRoundHistoryResponse> GetRoundHistoryAsync(Uri apiUrl, GetRoundHistoryRequest request);
+        ValueTask<SBOGetRoundHistoryResponse> GetRoundHistoryAsync(Uri apiUrl, SBOGetRoundHistoryRequest request);
 
-        ValueTask<GetBetHistoryResponse> GetBetHistoryAsync(Uri apiUrl, GetBetHistoryRequest request);
+        ValueTask<SBOGetBetHistoryResponse> GetBetHistoryAsync(Uri apiUrl, SBOGetBetHistoryRequest request);
 
-        ValueTask<UpdatePlayerBetLimitsResponse>
-            UpdatePlayerBetLimitsAsync(Uri apiUrl, UpdatePlayerBetLimitsRequest request);
+        ValueTask<SBOUpdatePlayerBetLimitsResponse>
+            UpdatePlayerBetLimitsAsync(Uri apiUrl, SBOUpdatePlayerBetLimitsRequest request);
     }
 }

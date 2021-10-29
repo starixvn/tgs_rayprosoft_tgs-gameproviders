@@ -4,9 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record GetBetHistoryResponse : BaseResponse
+    public record SBOGetBetHistoryResponse : SBOBaseResponse
     {
         [JsonPropertyName("result")]
-        public GameResult[] Results { get; init; }
+        public SBOGameResult[] Results { get; init; }
     }
 }

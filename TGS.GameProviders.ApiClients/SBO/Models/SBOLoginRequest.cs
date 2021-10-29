@@ -4,9 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record BasePlayerRequest : BaseRequest
+    public record SBOLoginRequest : SBOBasePlayerRequest
     {
-        [JsonPropertyName("Username")]
-        public string PlayerCode { get; init; }
+        [JsonPropertyName("Portfolio")]
+        public string Portfolio { get; init; }
     }
 }

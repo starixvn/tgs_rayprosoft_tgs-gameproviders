@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record GameResult
+    public record SBOGameResult
     {
         [JsonPropertyName("actualStake")]
         public decimal ActualStake { get; init; }
@@ -57,7 +57,7 @@ namespace TGS.GameProviders.ApiClients.SBO.Models
         public string Status { get; init; }
 
         [JsonPropertyName("subBet")]
-        public SubBet[] SubBets { get; init; }
+        public SBOSubBet[] SubBets { get; init; }
 
         [JsonPropertyName("turnover")]
         public decimal Turnover { get; init; }

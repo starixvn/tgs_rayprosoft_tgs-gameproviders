@@ -2,5 +2,5 @@
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record LogoutResponse : BaseResponse;
+    public record SBOGetRoundHistoryResponse : SBOGetBetHistoryResponse;
 }

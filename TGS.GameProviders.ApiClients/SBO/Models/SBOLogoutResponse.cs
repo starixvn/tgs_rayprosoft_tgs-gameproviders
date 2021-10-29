@@ -2,5 +2,5 @@
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record GetRoundHistoryResponse : GetBetHistoryResponse;
+    public record SBOLogoutResponse : SBOBaseResponse;
 }

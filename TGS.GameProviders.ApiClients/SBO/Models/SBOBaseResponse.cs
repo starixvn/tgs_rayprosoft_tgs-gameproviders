@@ -4,10 +4,10 @@ using System.Text.Json.Serialization;
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record BaseResponse
+    public record SBOBaseResponse
     {
         [JsonPropertyName("error")]
-        public ErrorData Error { get; init; }
+        public SBOErrorData Error { get; init; }
 
         [JsonPropertyName("serverId")]
         public string ServerId { get; init; }

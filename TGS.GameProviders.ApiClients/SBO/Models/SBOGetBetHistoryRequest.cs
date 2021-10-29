@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace TGS.GameProviders.ApiClients.SBO.Models
 {
-    public record GetBetHistoryRequest : BaseRequest
+    public record SBOGetBetHistoryRequest : SBOBaseRequest
     {
         [JsonPropertyName("EndDate")]
         public string EndDate { get; init; }
