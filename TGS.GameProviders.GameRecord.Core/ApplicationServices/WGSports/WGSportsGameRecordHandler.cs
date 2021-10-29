@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.WGSports;
-using TGS.GameProviders.ApiClients.WGSports.Models;
-using TGS.GameProviders.ApiClients.WGSports.Models.Commons;
 using TGS.GameProviders.Core;
-using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Core.WGSports.ApplicationServices;
 using TGS.GameProviders.GameRecord.Core.Processors;
 using TGS.GameProviders.Repositories;
-using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
@@ -22,8 +16,8 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports
     public class WGSportsGameRecordHandler : IGetService<WGSportsGameRecordHandlerQuery, WGSportsGameRecordHandlerResult>
     {
         private readonly IBrandRepository _brandRepository;
-        private readonly IWGSportsApiClient _client;
         private readonly IGameRecordProcessor _gameRoundsProcessor;
+        private readonly IGetService<WGSportsGameRecordListQuery, WGSportsGameRecordListResult> _getService;
         private readonly IPlayerRepository _playerRepository;
         private readonly IWGSportsService _service;
         private WGSportsConfiguration _configuration;
@@ -32,18 +26,18 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports
         private Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)> _players;
 
         public WGSportsGameRecordHandler(
-            IWGSportsApiClient client,
             IWGSportsService service,
             IBrandRepository brandRepository,
             IPlayerRepository playerRepository,
-            IGameRecordProcessor gameRoundsProcessor
+            IGameRecordProcessor gameRoundsProcessor,
+            IGetService<WGSportsGameRecordListQuery, WGSportsGameRecordListResult> getService
             )
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
             _gameRoundsProcessor = gameRoundsProcessor ?? throw new ArgumentNullException(nameof(gameRoundsProcessor));
+            _getService = getService ?? throw new ArgumentNullException(nameof(getService));
         }
 
         public async ValueTask<WGSportsGameRecordHandlerResult> GetAsync(WGSportsGameRecordHandlerQuery query, CancellationToken cancellationToken = default)
@@ -94,29 +88,28 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports
             };
         }
 
-        private async ValueTask<(bool Success, int Count, int SuccessCount, int FailCount, DateTimeOffset? LastGameRecordTime)> ExecuteRecordAsync(WGSportsBetInfo[] betInfos)
+        private async ValueTask<(bool Success, int Count, int SuccessCount, int FailCount, DateTimeOffset? LastGameRecordTime)> ExecuteRecordAsync(GameRecordListModle[] datas)
         {
             var count = 0;
             var successCount = 0;
             var failCount = 0;
             var lastGameRecordTime = default(DateTimeOffset?);
             var sysDateTimeOffset = DateTime.UtcNow;
-            for (int i = 0; i < betInfos.Length; i++)
+            foreach (var data in datas)
             {
                 count++;
                 var success = true;
-                var gameRecord = betInfos[i];
 
-                if (!_players.TryGetValue(gameRecord.Username, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
+                if (!_players.TryGetValue(data.PlayerCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
                 {
-                    var player = await _playerRepository.GetPlayerAsync(gameRecord.Username).ConfigureAwait(false);
+                    var player = await _playerRepository.GetPlayerAsync(data.PlayerCode).ConfigureAwait(false);
                     var brandGameProviderConfigurationId = default(Guid?);
                     if (player != null)
                     {
                         brandGameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(_gameProviderId, player.BrandId).ConfigureAwait(false);
                     }
                     playerInfo = new(player, brandGameProviderConfigurationId);
-                    _players.Add(gameRecord.Username, playerInfo);
+                    _players.Add(data.PlayerCode, playerInfo);
                 }
 
                 if (playerInfo.Player == null || _game == null)
@@ -129,43 +122,36 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports
                     successCount++;
                 }
 
-                if (gameRecord.Reference.IgnoreCaseContains("不接受"))
-                {
-                    continue;
-                }
-
-                var createdOn = new DateTimeOffset(DateTime.Parse(gameRecord.RecordDate), TimeSpan.FromHours(-4));
-                DateTimeOffset? externalClosedOn = gameRecord.InitData.Win.IgnoreCaseEquals("0") ? null : new DateTimeOffset(DateTime.Parse(gameRecord.SettleDate), TimeSpan.FromHours(-4));
                 await _gameRoundsProcessor.ExecuteAsync(new GameRoundsData()
                 {
-                    ExternalRoundId = gameRecord.Reference,
+                    ExternalRoundId = data.ExternalRoundId,
                     GameProviderId = _gameProviderId,
                     GameProviderCode = _service.GetGameProviderCode(),
                     PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
                     GameId = (_game == null) ? -1 : _game.GameId,
-                    ExternalId = gameRecord.Reference.ToString(),
+                    ExternalId = data.ExternalId.ToString(),
                     CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
-                    Status = gameRecord.InitData.Win.IgnoreCaseEquals("0") ? RoundStatus.Open : RoundStatus.Closed,
+                    Status = data.Status,
                     GameProviderConfigurationId = playerInfo.GameProviderConfigurationId.GetValueOrDefault(),
                     WalletId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.DefaultWalletId,
                     CreatedOn = sysDateTimeOffset,
-                    ClosedOn = gameRecord.InitData.Win.IgnoreCaseEquals("0") ? null : sysDateTimeOffset,
+                    ClosedOn = data.ExternalClosedOn.HasValue ? sysDateTimeOffset : null,
                     UpdatedOn = sysDateTimeOffset,
                     BrandId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.BrandId,
-                    ExternalCreatedOn = createdOn,
-                    ExternalClosedOn = externalClosedOn,
-                    BetAmount = decimal.Parse(gameRecord.InitData.BetAmount),
-                    ValidBetAmount = decimal.Parse(gameRecord.InitData.BetAmount),
-                    PlayerWinLoss = gameRecord.InitData.Win.IgnoreCaseEquals("0") ? null : decimal.Parse(gameRecord.Result),
-                    Commission = 0,
-                    Turnover = gameRecord.InitData.Win.IgnoreCaseEquals("0") ? null : decimal.Parse(gameRecord.InitData.BetAmount),
-                    SettleAmount = decimal.Parse(gameRecord.InitData.BetAmount) + decimal.Parse(gameRecord.Result),
-                    TieBetAdjustment = null,
-                    ClientStatus = gameRecord.InitData.Win.IgnoreCaseEquals("0") ? ClientRoundStatus.Open : _service.GetClientRound(decimal.Parse(gameRecord.Result)),
-                    AdditionalData = JsonSerializer.Serialize(gameRecord),
+                    ExternalCreatedOn = data.ExternalCreatedOn,
+                    ExternalClosedOn = data.ExternalClosedOn,
+                    BetAmount = data.BetAmount,
+                    ValidBetAmount = data.ValidBetAmount,
+                    PlayerWinLoss = data.PlayerWinLoss,
+                    Commission = data.Commission,
+                    Turnover = data.Turnover,
+                    SettleAmount = data.SettleAmount,
+                    TieBetAdjustment = data.TieBetAdjustment,
+                    ClientStatus = data.ClientStatus,
+                    AdditionalData = data.AdditionalData,
                     Success = success
                 });
-                lastGameRecordTime = (externalClosedOn.HasValue) ? externalClosedOn : createdOn;
+                lastGameRecordTime = data.ExternalClosedOn.HasValue ? data.ExternalClosedOn : data.ExternalCreatedOn;
             }
 
             return (true, count, successCount, failCount, lastGameRecordTime);
@@ -173,50 +159,36 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports
 
         private async ValueTask<(bool Success, int Count, int SuccessCount, int FailCount, DateTimeOffset? LastGameRecordTime)> SettleAsync(WGSportsGameRecordHandlerQuery source)
         {
-            var request = new WGSportsGameRecordRequest()
-            {
-                GameRecordTime = GameRecordTime.SettleDate,
-                StartTime = source.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
-                EndTime = source.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
-            };
+            var response = await _getService.GetAsync(
+                new()
+                {
+                    IsSettlement = true,
+                    StartTime = source.StartTime,
+                    EndTime = source.EndTime
+                }).ConfigureAwait(false);
 
-            var response = await _client.GetGameRecordAsync(
-                _configuration.ApiUrl,
-                _configuration.PartnerCode,
-                _configuration.PartnerKey,
-                _configuration.IV,
-                request).ConfigureAwait(false);
-            if (response.ReturnCode.IgnoreCaseNotEquals("1"))
-            {
-                return (false, 0, 0, 0, null);
-            }
-            return response.BetInfo == null || response.BetInfo.Length == 0
+            return !response.Success
+                ? (false, 0, 0, 0, null)
+                : response.Success && response?.Datas == null
                 ? (true, 0, 0, 0, null)
-                : await ExecuteRecordAsync(response.BetInfo).ConfigureAwait(false);
+                : await ExecuteRecordAsync(response?.Datas).ConfigureAwait(false);
         }
 
         private async ValueTask<(bool Success, int Count, int SuccessCount, int FailCount, DateTimeOffset? LastGameRecordTime)> UnSettleAsync(WGSportsGameRecordHandlerQuery source)
         {
-            var request = new WGSportsGameRecordRequest()
-            {
-                GameRecordTime = GameRecordTime.BetDate,
-                StartTime = source.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
-                EndTime = source.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
-            };
+            var response = await _getService.GetAsync(
+                new()
+                {
+                    IsSettlement = false,
+                    StartTime = source.StartTime,
+                    EndTime = source.EndTime
+                }).ConfigureAwait(false);
 
-            var response = await _client.GetGameRecordAsync(
-                _configuration.ApiUrl,
-                _configuration.PartnerCode,
-                _configuration.PartnerKey,
-                _configuration.IV,
-                request).ConfigureAwait(false);
-            if (response.ReturnCode.IgnoreCaseNotEquals("1"))
-            {
-                return (false, 0, 0, 0, null);
-            }
-            return response.BetInfo == null || response.BetInfo.Length == 0
+            return !response.Success
+                ? (false, 0, 0, 0, null)
+                : response.Success && response?.Datas == null
                 ? (true, 0, 0, 0, null)
-                : await ExecuteRecordAsync(response.BetInfo).ConfigureAwait(false);
+                : await ExecuteRecordAsync(response?.Datas).ConfigureAwait(false);
         }
     }
 }

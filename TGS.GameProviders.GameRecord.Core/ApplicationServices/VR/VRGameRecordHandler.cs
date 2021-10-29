@@ -11,7 +11,6 @@ using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
-using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration.VR;
 
 namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR
 {
@@ -20,10 +19,9 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR
         private readonly IBrandRepository _brandRepository;
         private readonly IGameRepository _gameRepository;
         private readonly IGameRecordProcessor _gameRoundsProcessor;
+        private readonly IGetService<VRGameRecordListQuery, VRGameRecordListResult> _getService;
         private readonly IPlayerRepository _playerRepository;
         private readonly IVRService _service;
-        private readonly IGetService<VRGameRecordListQuery, VRGameRecordListResult> _getService;
-
         private int _count;
         private int _failCount;
         private Dictionary<int, GetGame> _games;

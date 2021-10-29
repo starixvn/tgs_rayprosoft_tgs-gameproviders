@@ -5,9 +5,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.KY.Models;
-using TGS.GameProviders.ApiClients.KY.Models.Commons;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.KY.ApplicationServices;
 using TGS.GameProviders.Domains.Extensions;
@@ -24,9 +22,9 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
         private readonly IBrandRepository _brandRepository;
         private readonly IGameRepository _gameRepository;
         private readonly IGameRecordProcessor _gameRoundsProcessor;
+        private readonly IGetService<KYGameRecordListQuery, KYGameRecordListResult> _getService;
         private readonly IPlayerRepository _playerRepository;
         private readonly IKYService _service;
-        private readonly IGetService<KYGameRecordListQuery, KYGameRecordListResult> _getService;
 
         public KYGameRecordHandler(
             IKYService service,
@@ -85,7 +83,6 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
             var lastGameRecordTime = default(DateTimeOffset?);
 
             var sysDateTimeOffset = DateTimeOffset.UtcNow;
-
 
             foreach (var gameRecord in response.Datas)
             {
@@ -161,7 +158,6 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
                 SuccessCount = successCount,
                 FailCount = failCount
             };
-
         }
     }
 }
