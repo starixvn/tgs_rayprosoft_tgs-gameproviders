@@ -36,7 +36,7 @@ namespace TGS.GameProviders.ApiClients.SBO.Models
         public string Match { get; init; }
 
         [JsonPropertyName("odds")]
-        public string Odds { get; init; }
+        public decimal Odds { get; init; }
 
         [JsonPropertyName("sportType")]
         public string SportType { get; init; }
