@@ -135,5 +135,11 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             };
             _ = await _client.GetPrepareLoginAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
         }
+
+        [Test]
+        public async Task LogoutAsync()
+        {
+            _ = await _client.LogoutAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, "4ucmqplxb029").ConfigureAwait(false);
+        }
     }
 }
