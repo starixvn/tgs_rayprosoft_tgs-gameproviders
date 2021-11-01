@@ -66,7 +66,6 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
                    ExternalRoundId = data.SerialNumber,
                    PlayerCode = data.PlayerName,
                    ExternalGameId = data.ChannelId.ToString(),
-                   CurrencyCode = string.Empty,
                    Status = _service.GetRoundStatus(data.State),
                    ExternalCreatedOn = data.CreateTime.ToOffset(TimeSpan.FromHours(+8)),
                    ExternalClosedOn = data.UpdateTime.HasValue ? data.UpdateTime.Value.ToOffset(TimeSpan.FromHours(+8)) : null,

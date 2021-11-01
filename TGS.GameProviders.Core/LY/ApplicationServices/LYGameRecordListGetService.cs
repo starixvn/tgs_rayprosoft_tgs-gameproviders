@@ -69,7 +69,6 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
                 ExternalRoundId = response.Data.List.GameID[i],
                 PlayerCode = response.Data.List.Accounts[i].Split('_')[1],
                 ExternalGameId = response.Data.List.KindID[i].ToString(),
-                CurrencyCode = string.Empty,
                 Status = RoundStatus.Closed,
                 ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(response.Data.List.GameStartTime[i]), TimeSpan.FromHours(+8)),
                 ExternalClosedOn = new DateTimeOffset(DateTime.Parse(response.Data.List.GameEndTime[i]), TimeSpan.FromHours(+8)),

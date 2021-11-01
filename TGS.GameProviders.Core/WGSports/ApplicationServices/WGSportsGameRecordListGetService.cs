@@ -71,7 +71,6 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
                     ExternalRoundId = data.Reference,
                     PlayerCode = data.Username,
                     ExternalGameId = "1",
-                    CurrencyCode = string.Empty,
                     Status = data.InitData.Win.IgnoreCaseEquals("0") ? RoundStatus.Open : RoundStatus.Closed,
                     ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(-4)),
                     ExternalClosedOn = data.InitData.Win.IgnoreCaseEquals("0") ? null : new DateTimeOffset(DateTime.Parse(data.SettleDate), TimeSpan.FromHours(-4)),

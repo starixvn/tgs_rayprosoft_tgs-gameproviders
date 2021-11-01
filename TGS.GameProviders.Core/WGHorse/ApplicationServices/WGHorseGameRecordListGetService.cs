@@ -73,7 +73,6 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
                     ExternalRoundId = data.BatchNo,
                     PlayerCode = data.MemberCode,
                     ExternalGameId = "1",
-                    CurrencyCode = string.Empty,
                     Status = RoundStatus.Closed,
                     ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(+8)),
                     ExternalClosedOn = new DateTimeOffset(DateTime.Parse(data.ShowDivideDate), TimeSpan.FromHours(+8)),
