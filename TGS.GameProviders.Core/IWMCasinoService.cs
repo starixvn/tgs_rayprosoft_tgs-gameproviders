@@ -9,5 +9,7 @@ namespace TGS.GameProviders.Core
         ValueTask<WMCasinoConfiguration> GetSettingConfigurationAsync();
 
         ValueTask<GetPlayer> GetPlayerAsync(string playerCode);
+
+        ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
     }
 }

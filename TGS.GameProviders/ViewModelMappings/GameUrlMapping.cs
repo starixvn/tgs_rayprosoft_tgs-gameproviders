@@ -11,6 +11,7 @@ using TGS.GameProviders.Core.TCG.ApplicationServices;
 using TGS.GameProviders.Core.VR.ApplicationServices;
 using TGS.GameProviders.Core.WGHorse.ApplicationServices;
 using TGS.GameProviders.Core.WGSports.ApplicationServices;
+using TGS.GameProviders.Core.WMCasino.ApplicationServices;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.ViewModelMappings
@@ -42,6 +43,8 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<GameUrlRequest, LYGameUrlQuery>()
                 .ReverseMap();
             CreateMap<GameUrlRequest, SBOGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, WMCasinoGameUrlQuery>()
                 .ReverseMap();
         }
     }

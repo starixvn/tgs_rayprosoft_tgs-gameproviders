@@ -83,9 +83,9 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
             }
 
             var created = await _playerService.CreatePlayerAsync(configuration, query.BrandCode, query.PlayerCode,
-                query.CurrencyCode);
+                query.CurrencyCode).ConfigureAwait(false);
 
-            return !created ? null : await _client.LoginAsync(configuration.ApiUrl, loginRequest);
+            return !created ? null : await _client.LoginAsync(configuration.ApiUrl, loginRequest).ConfigureAwait(false);
         }
 
         private string GetSportsbookUrl(PlatformType platformType, string url, string cultureCode)

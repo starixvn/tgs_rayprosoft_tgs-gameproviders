@@ -36,6 +36,24 @@ namespace TGS.GameProviders.ApiClients.UnitTests
 
 
         [Test]
+        public async Task CreatePlayerAsync()
+        {
+            var playerCode = "4ucmqplxb029";
+            var playerId = ToWMCasinoPlayerId(playerCode);
+
+            var request = new WMCasinoMemberRegisterRequest
+            {
+                Signature = _signature,
+                VendorId = _agentId,
+                User = playerId,
+                Username = playerCode
+            };
+
+            var response = await _client.MemberRegisterAsync(_apiUrl, request).ConfigureAwait(false);
+        }
+
+
+        [Test]
         public async Task GetGameUrlAsync()
         {
             var playerCode = "4ucmqplxb029";

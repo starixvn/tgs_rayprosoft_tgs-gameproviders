@@ -74,7 +74,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services
                 .AddTransient<IWMCasinoService, WMCasinoService>()
                 .AddTransient<IWMCasinoAgentMapper, WMCasinoAgentMapper>()
-                .AddTransient<IWMCasinoUtility, WMCasinoUtility>();
+                .AddTransient<IWMCasinoUtility, WMCasinoUtility>()
+                .AddTransient<IWMCasinoGamePlayer, WMCasinoGamePlayer>();
 
             return services;
         }
