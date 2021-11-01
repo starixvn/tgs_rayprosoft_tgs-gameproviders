@@ -8,6 +8,7 @@ using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.BigGaming.Models;
 using TGS.GameProviders.ApiClients.BigGaming.Models.Commons;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.BigGaming.ApplicationServices;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.GameRecord.Core.Processors;
 using TGS.GameProviders.Repositories;
@@ -20,95 +21,86 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.BigGaming
     public class BigGamingFishingGameRecordHandler : IGetService<BigGamingFishingGameRecordHandlerQuery, BigGamingFishingGameRecordHandlerResult>
     {
         private readonly IBrandRepository _brandRepository;
-        private readonly IBigGamingApiClient _client;
+        private readonly IGetService<BigGamingFishingGameRecordListQuery, GameRecordListResult> _getService;
         private readonly IGameRepository _gameRepository;
         private readonly IGameRecordProcessor _gameRoundsProcessor;
         private readonly IPlayerRepository _playerRepository;
         private readonly IBigGamingService _service;
 
         public BigGamingFishingGameRecordHandler(
-            IBigGamingApiClient client,
             IBigGamingService service,
             IGameRepository gameRepository,
             IBrandRepository brandRepository,
             IPlayerRepository playerRepository,
-            IGameRecordProcessor gameRoundsProcessor
+            IGameRecordProcessor gameRoundsProcessor,
+            IGetService<BigGamingFishingGameRecordListQuery, GameRecordListResult> getService
             )
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
             _gameRoundsProcessor = gameRoundsProcessor ?? throw new ArgumentNullException(nameof(gameRoundsProcessor));
+            _getService = getService ?? throw new ArgumentNullException(nameof(getService));
         }
 
         public async ValueTask<BigGamingFishingGameRecordHandlerResult> GetAsync(BigGamingFishingGameRecordHandlerQuery query, CancellationToken cancellationToken = default)
         {
-            var brandMerchant = await _service.GetBrandMerchantAsync(query.CurrencyCode).ConfigureAwait(false); ;
             int pageIndex = 1;
             int pageSize = 500;
             var gameProviderId = await _service.GetGameProviderIdAsync();
             var players = new Dictionary<string, (GetPlayer Player, Guid? BrandGameProviderConfigurationIds)>();
-            var games = new Dictionary<int, GetGame>();
+            var games = new Dictionary<string, GetGame>();
             var count = 0;
             var successCount = 0;
             var failCount = 0;
             var lastGameRecordTime = default(DateTimeOffset?);
             var sysDateTimeOffset = DateTime.UtcNow;
-            var request = new BigGamingGameRecordFishingRequest()
-            {
-                Random = GuidExtensions.NewSequentialGuid().ToString(),
-                Sn = brandMerchant.SecretCode,
-                StartTime = query.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
-                EndTime = query.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
-                PageIndex = pageIndex.ToString(),
-                PageSize = pageSize
-            };
+
 
             while (true)
             {
-                var response = await _client.GetGameRecordAsync(brandMerchant.ApiUrl, brandMerchant.SecretCode, brandMerchant.SecretKey, request).ConfigureAwait(false);
-                if (response.Error != null)
+                var response = await _getService.GetAsync(new()
                 {
-                    return new()
-                    {
-                        Success = false
-                    };
+                    CurrencyCode = query.CurrencyCode,
+                    StartTime = query.StartTime,
+                    EndTime = query.EndTime,
+                    Page = pageIndex,
+                    Rows = pageSize
+                }).ConfigureAwait(false);
+                if (!response.Success)
+                {
+                    return new() { Success = false };
                 }
 
-                var gameRecords = JsonSerializer.Deserialize<BigGamingResultGameRecordResponse<BigGamingGameRecordFishingResponse>>(JsonSerializer.Serialize(response.Result));
-
-                if (gameRecords.Items == null || gameRecords.Items.Length == 0)
+                if (response.Success && response.Datas == null)
                 {
                     break;
                 }
+
                 pageIndex++;
-                request.PageIndex = pageIndex.ToString();
-                var gameRecordItems = gameRecords.Items;
-                for (int i = 0; i < gameRecordItems.Length; i++)
+
+                foreach (var data in response.Datas)
                 {
-                    count++;
 
                     var success = true;
-                    var gameRecord = gameRecordItems[i];
 
-                    if (!players.TryGetValue(gameRecord.LoginId, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
+                    if (!players.TryGetValue(data.PlayerCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
                     {
-                        var player = await _playerRepository.GetPlayerAsync(gameRecord.LoginId).ConfigureAwait(false);
+                        var player = await _playerRepository.GetPlayerAsync(data.PlayerCode).ConfigureAwait(false);
                         var brandGameProviderConfigurationId = default(Guid?);
                         if (player != null)
                         {
                             brandGameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
                         }
                         playerInfo = new(player, brandGameProviderConfigurationId);
-                        players.Add(gameRecord.LoginId, playerInfo);
+                        players.Add(data.PlayerCode, playerInfo);
                     }
 
-                    if (!games.TryGetValue(gameRecord.GameType, out GetGame game))
+                    if (!games.TryGetValue(data.ExternalGameId, out GetGame game))
                     {
-                        game = await _gameRepository.GetGameAsync(gameProviderId, gameRecord.GameType.ToString()).ConfigureAwait(false);
-                        games.Add(gameRecord.GameType, game);
+                        game = await _gameRepository.GetGameAsync(gameProviderId, data.ExternalGameId).ConfigureAwait(false);
+                        games.Add(data.ExternalGameId, game);
                     }
 
                     if (playerInfo.Player == null || game == null)
@@ -121,15 +113,15 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.BigGaming
                         successCount++;
                     }
 
-                    var orderTime = new DateTimeOffset(DateTime.Parse(gameRecord.OrderTime), TimeSpan.FromHours(-4));
+
                     await _gameRoundsProcessor.ExecuteAsync(new GameRoundsData()
                     {
-                        ExternalRoundId = gameRecord.ExternalBetId.ToString(),
+                        ExternalRoundId = data.ExternalRoundId,
                         GameProviderId = gameProviderId,
                         GameProviderCode = _service.GetGameProviderCode(),
                         PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
                         GameId = game != null ? game.GameId : -1,
-                        ExternalGameId = gameRecord.GameType.ToString(),
+                        ExternalGameId = data.ExternalGameId,
                         CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
                         Status = RoundStatus.Closed,
                         GameProviderConfigurationId = playerInfo.GameProviderConfigurationId.GetValueOrDefault(),
@@ -138,20 +130,20 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.BigGaming
                         ClosedOn = sysDateTimeOffset,
                         UpdatedOn = sysDateTimeOffset,
                         BrandId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.BrandId,
-                        ExternalCreatedOn = orderTime,
-                        ExternalClosedOn = orderTime,
-                        BetAmount = gameRecord.BetAmount,
-                        ValidBetAmount = gameRecord.ValidAmount,
-                        PlayerWinLoss = gameRecord.Payout,
-                        Commission = gameRecord.Extend,
-                        Turnover = gameRecord.ValidAmount,
-                        SettleAmount = gameRecord.ValidAmount + gameRecord.Payout,
-                        TieBetAdjustment = null,
-                        ClientStatus = _service.GetClientRound(gameRecord.Payout),
-                        AdditionalData = JsonSerializer.Serialize(gameRecord),
+                        ExternalCreatedOn = data.ExternalCreatedOn,
+                        ExternalClosedOn = data.ExternalClosedOn,
+                        BetAmount = data.BetAmount,
+                        ValidBetAmount = data.ValidBetAmount,
+                        PlayerWinLoss = data.PlayerWinLoss,
+                        Commission = data.Commission,
+                        Turnover = data.Turnover,
+                        SettleAmount = data.SettleAmount,
+                        TieBetAdjustment = data.TieBetAdjustment,
+                        ClientStatus = data.ClientStatus,
+                        AdditionalData = data.AdditionalData,
                         Success = success
                     });
-                    lastGameRecordTime = orderTime;
+                    lastGameRecordTime = data.ExternalClosedOn;
                 }
             }
 

@@ -54,15 +54,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
                 };
             }
 
-            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
-
-            var data = new KYGameRecordRequest()
-            {
-                StartTime = query.StartTime.ToUnixTimeMilliseconds(),
-                EndTime = query.EndTime.ToUnixTimeMilliseconds()
-            };
-
-            var response = await _getService.GetAsync(new KYGameRecordListQuery()
+            var response = await _getService.GetAsync(new()
             {
                 BrandCode = query.BrandCode,
                 CurrencyCode = query.CurrencyCode,
@@ -87,26 +79,26 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
 
             var sysDateTimeOffset = DateTimeOffset.UtcNow;
 
-            foreach (var gameRecord in response.Datas)
+            foreach (var data in response.Datas)
             {
                 var success = true;
 
-                if (!players.TryGetValue(gameRecord.PlayerCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
+                if (!players.TryGetValue(data.PlayerCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
                 {
-                    var player = await _playerRepository.GetPlayerAsync(gameRecord.PlayerCode).ConfigureAwait(false);
+                    var player = await _playerRepository.GetPlayerAsync(data.PlayerCode).ConfigureAwait(false);
                     var brandGameProviderConfigurationId = default(Guid?);
                     if (player != null)
                     {
                         brandGameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
                     }
                     playerInfo = new(player, brandGameProviderConfigurationId);
-                    players.Add(gameRecord.PlayerCode, playerInfo);
+                    players.Add(data.PlayerCode, playerInfo);
                 }
 
-                if (!games.TryGetValue(gameRecord.ExternalGameId, out GetGame game))
+                if (!games.TryGetValue(data.ExternalGameId, out GetGame game))
                 {
-                    game = await _gameRepository.GetGameAsync(gameProviderId, gameRecord.ExternalGameId).ConfigureAwait(false);
-                    games.Add(gameRecord.ExternalGameId, game);
+                    game = await _gameRepository.GetGameAsync(gameProviderId, data.ExternalGameId).ConfigureAwait(false);
+                    games.Add(data.ExternalGameId, game);
                 }
 
                 if (playerInfo.Player == null || game == null)
@@ -121,35 +113,35 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
 
                 var result = await _gameRoundsProcessor.ExecuteAsync(new GameRoundsData()
                 {
-                    ExternalRoundId = gameRecord.ExternalRoundId,
+                    ExternalRoundId = data.ExternalRoundId,
                     GameProviderId = gameProviderId,
                     GameProviderCode = _service.GetGameProviderCode(),
                     PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
                     GameId = (game == null) ? -1 : game.GameId,
-                    ExternalGameId = gameRecord.ExternalGameId,
+                    ExternalGameId = data.ExternalGameId,
                     CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
-                    Status = gameRecord.Status,
+                    Status = data.Status,
                     GameProviderConfigurationId = playerInfo.GameProviderConfigurationId.GetValueOrDefault(),
                     WalletId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.DefaultWalletId,
                     CreatedOn = sysDateTimeOffset,
                     ClosedOn = sysDateTimeOffset,
                     UpdatedOn = sysDateTimeOffset,
                     BrandId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.BrandId,
-                    ExternalCreatedOn = gameRecord.ExternalCreatedOn,
-                    ExternalClosedOn = gameRecord.ExternalClosedOn,
-                    BetAmount = gameRecord.BetAmount,
-                    ValidBetAmount = gameRecord.ValidBetAmount,
-                    PlayerWinLoss = gameRecord.PlayerWinLoss,
-                    Commission = gameRecord.Commission,
-                    Turnover = gameRecord.Turnover,
-                    SettleAmount = gameRecord.ValidBetAmount + gameRecord.PlayerWinLoss,
+                    ExternalCreatedOn = data.ExternalCreatedOn,
+                    ExternalClosedOn = data.ExternalClosedOn,
+                    BetAmount = data.BetAmount,
+                    ValidBetAmount = data.ValidBetAmount,
+                    PlayerWinLoss = data.PlayerWinLoss,
+                    Commission = data.Commission,
+                    Turnover = data.Turnover,
+                    SettleAmount = data.ValidBetAmount + data.PlayerWinLoss,
                     TieBetAdjustment = null,
-                    ClientStatus = gameRecord.ClientStatus,
-                    AdditionalData = gameRecord.AdditionalData,
+                    ClientStatus = data.ClientStatus,
+                    AdditionalData = data.AdditionalData,
                     Success = success
                 }).ConfigureAwait(false);
 
-                lastGameRecordTime = gameRecord.ExternalClosedOn;
+                lastGameRecordTime = data.ExternalClosedOn;
             };
 
             return new()
