@@ -3,6 +3,7 @@
     public static class GameProviderConfigurations
     {
         public static readonly string _template = "{0}Configuration";
+
         public static readonly string AllBet = string.Format(_template, GameProviderType.AllBet);
         public static readonly string AsiaGaming = string.Format(_template, GameProviderType.AsiaGaming);
         public static readonly string BigGaming = string.Format(_template, GameProviderType.BigGaming);

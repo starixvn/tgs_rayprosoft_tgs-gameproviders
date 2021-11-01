@@ -12,6 +12,7 @@ using TGS.GameProviders.ApiClients.TCG;
 using TGS.GameProviders.ApiClients.VR;
 using TGS.GameProviders.ApiClients.WGHorse;
 using TGS.GameProviders.ApiClients.WGSports;
+using TGS.GameProviders.ApiClients.WMCasino;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -38,6 +39,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddHttpClient<ITCGApiClient, TCGApiClient>();
             services.AddHttpClient<ILYApiClient, LYApiClient>();
             services.AddHttpClient<ISBOApiClient, SBOApiClient>();
+            services.AddHttpClient<IWMCasinoApiClient, WMCasinoApiClient>();
 
             return services;
         }
