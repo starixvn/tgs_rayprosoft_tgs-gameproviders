@@ -84,6 +84,16 @@ namespace TGS.GameProviders.ApiClients.WGSports
             return GetAsync<WGSportsPrepareLoginRequest, WGSportsPrepareLoginResponse>(url, source, "PrepareLogin");
         }
 
+        public ValueTask<WGSportsResponse> LogoutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode)
+        {
+            var data = $"{playerCode}";
+            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var url = new Uri($"{apiUrl}?m=api&c=index&a=Logout&Hash={dataEncrypt}&PartnerCode={partnerCode}");
+
+            return GetAsync<string, WGSportsResponse>(url, playerCode, "Logout");
+        }
+
+
         private async ValueTask<TResult> GetAsync<TSource, TResult>(Uri url, TSource request, string logPrefix)
         {
             logPrefix = $"{nameof(WGSportsApiClient).ToLower()}.{logPrefix}";

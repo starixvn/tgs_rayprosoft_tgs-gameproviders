@@ -18,5 +18,7 @@ namespace TGS.GameProviders.ApiClients
         ValueTask<WGSportsLoginResponse> GetLoginAsync(Uri apiUrl, string partnerCode, WGSportsLoginRequest source);
 
         ValueTask<WGSportsPrepareLoginResponse> GetPrepareLoginAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGSportsPrepareLoginRequest source);
+
+        ValueTask<WGSportsResponse> LogoutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode);
     }
 }

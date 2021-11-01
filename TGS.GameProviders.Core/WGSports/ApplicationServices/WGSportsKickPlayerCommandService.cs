@@ -30,38 +30,13 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
         public async ValueTask ExecuteAsync(WGSportsKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-            var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(command.CurrencyCode);
 
-            if (gameProviderCurrencyCode == null)
-            {
-                return;
-            }
-            var prepareLoginResponse = await _client.GetPrepareLoginAsync(
+            _ = await _client.LogoutAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                new()
-                {
-                    Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                    PlayerCode = command.PlayerCode,
-                    PlayerNickname = command.PlayerCode,
-                    CurrencyCode = gameProviderCurrencyCode
-                }).ConfigureAwait(false);
-
-            if (prepareLoginResponse.ReturnCode is not 1)
-            {
-                return;
-            }
-
-            _ = await _client.GetLoginAsync(
-                configuration.ApiUrl,
-                configuration.PartnerCode,
-                new()
-                {
-                    Token = prepareLoginResponse.Token,
-                    Lang = "0"
-                }).ConfigureAwait(false);
+                command.PlayerCode).ConfigureAwait(false);
         }
     }
 }
