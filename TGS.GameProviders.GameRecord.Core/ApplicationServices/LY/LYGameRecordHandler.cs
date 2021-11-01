@@ -21,10 +21,10 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.LY
         private readonly IGameRecordProcessor _gameRoundsProcessor;
         private readonly IGetService<LYGameRecordListQuery, GameRecordListResult> _getService;
         private readonly IPlayerRepository _playerRepository;
-        private readonly IKYService _service;
+        private readonly ILYService _service;
 
         public LYGameRecordHandler(
-            IKYService service,
+            ILYService service,
             IGameRepository gameRepository,
             IBrandRepository brandRepository,
             IPlayerRepository playerRepository,
