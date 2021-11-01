@@ -1,0 +1,12 @@
+﻿// ReSharper disable IdentifierTypo
+
+using System.Text.Json.Serialization;
+
+namespace TGS.GameProviders.ApiClients.SBO.Models
+{
+    public record SBOGetBetHistoryResponse : SBOBaseResponse
+    {
+        [JsonPropertyName("result")]
+        public SBOGameResult[] Results { get; init; }
+    }
+}

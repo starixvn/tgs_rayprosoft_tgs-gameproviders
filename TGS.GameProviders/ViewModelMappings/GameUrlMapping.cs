@@ -4,6 +4,7 @@ using TGS.GameProviders.Core.BigGaming.ApplicationServices;
 using TGS.GameProviders.Core.Evolution.ApplicationServices;
 using TGS.GameProviders.Core.KY.ApplicationServices;
 using TGS.GameProviders.Core.LY.ApplicationServices;
+using TGS.GameProviders.Core.SBO.ApplicationServices;
 using TGS.GameProviders.Core.SexyGaming.ApplicationServices;
 using TGS.GameProviders.Core.Skywind.ApplicationServices;
 using TGS.GameProviders.Core.TCG.ApplicationServices;
@@ -23,11 +24,11 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<GameUrlRequest, KYGameUrlQuery>()
                 .ReverseMap();
             CreateMap<GameUrlRequest, WGSportsGameUrlQuery>()
-               .ReverseMap();
+                .ReverseMap();
             CreateMap<GameUrlRequest, WGHorseGameUrlQuery>()
                 .ReverseMap();
             CreateMap<GameUrlRequest, VRGameUrlQuery>()
-               .ReverseMap();
+                .ReverseMap();
             CreateMap<GameUrlRequest, TCGGameUrlQuery>()
                 .ReverseMap();
             CreateMap<GameUrlRequest, SkywindGameUrlQuery>()
@@ -39,6 +40,8 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<GameUrlRequest, BigGamingGameUrlQuery>()
                 .ReverseMap();
             CreateMap<GameUrlRequest, LYGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, SBOGameUrlQuery>()
                 .ReverseMap();
         }
     }
