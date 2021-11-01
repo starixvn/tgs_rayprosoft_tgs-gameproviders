@@ -33,9 +33,9 @@ namespace TGS.GameProviders.Controllers.GameRecordList
         ///     Post
         ///         {
         ///             "brandCode": "Default",
-        ///             "currencyCode": "CNY",
-        ///             "startTime": "2021-10-28T13:38:33+08:00",
-        ///             "endTime": "2021-10-28T13:39:05+08:00"
+        ///             "currencyCode": "HKD",
+        ///             "startTime": "2021-11-01T07:00:00+08:00",
+        ///             "endTime": "2021-11-01T07:40:00+08:00"
         ///         }
         /// </remarks>
         public override async ValueTask<GameRecordListResult?> GameRecordListAsync(
