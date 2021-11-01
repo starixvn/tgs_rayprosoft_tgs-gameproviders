@@ -36,7 +36,6 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
 
         public async ValueTask<WGHorseGameRecordHandlerResult> GetAsync(WGHorseGameRecordHandlerQuery query, CancellationToken cancellationToken = default)
         {
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
             var players = new Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)>();
             var game = await _service.GetGameByExternalGameId(gameProviderId, "1").ConfigureAwait(false);
@@ -46,7 +45,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
             var lastGameRecordTime = default(DateTimeOffset?);
             var page = 1;
             var rows = 1000;
-            var success = true;
+
             while (true)
             {
                 var gameRecordListQuery = new WGHorseGameRecordListQuery
@@ -76,7 +75,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
                 foreach (var data in response.Datas)
                 {
                     count++;
-
+                    var success = true;
                     if (!players.TryGetValue(data.PlayerCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
                     {
                         var player = await _playerRepository.GetPlayerAsync(data.PlayerCode).ConfigureAwait(false);

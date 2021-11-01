@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.VR.Models;
+using TGS.GameProviders.Repositories.Domains;
 
 namespace TGS.GameProviders.Core.VR.ApplicationServices
 {
-    public class VRGameRecordListGetService : IGetService<VRGameRecordListQuery, VRGameRecordListResult>
+    public class VRGameRecordListGetService : IGetService<VRGameRecordListQuery, GameRecordListResult>
     {
         private readonly IVRApiClient _client;
         private readonly ILogger<VRGameRecordListGetService> _logger;
@@ -25,7 +28,7 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        public async ValueTask<VRGameRecordListResult> GetAsync(VRGameRecordListQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<GameRecordListResult> GetAsync(VRGameRecordListQuery command, CancellationToken cancellationToken = default)
         {
             var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
             if (brandMerchant == null)
@@ -57,7 +60,35 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
                 return new() { Success = false };
             }
 
-            return new() { Success = true, Datas = (response.Records.Length > 0) ? response.Records : null };
+            var datas = response.Records.Select(data =>
+               new GameRecordListModle()
+               {
+                   ExternalRoundId = data.SerialNumber,
+                   PlayerCode = data.PlayerName,
+                   ExternalGameId = data.ChannelId.ToString(),
+                   CurrencyCode = string.Empty,
+                   Status = _service.GetRoundStatus(data.State),
+                   ExternalCreatedOn = data.CreateTime.ToOffset(TimeSpan.FromHours(+8)),
+                   ExternalClosedOn = data.UpdateTime.HasValue ? data.UpdateTime.Value.ToOffset(TimeSpan.FromHours(+8)) : null,
+                   BetAmount = data.Cost,
+                   ValidBetAmount = data.State == 1 ? 0 : data.Cost,
+                   PlayerWinLoss = data.State == 1
+                               ? 0
+                               :
+                               _service.GetRoundStatus(data.State) == RoundStatus.Closed
+                                   ?
+                                   data.PlayerPrize - data.Cost
+                                   : null,
+                   Commission = 0,
+                   Turnover = data.State == 1 ? 0 : data.Cost,
+                   SettleAmount = data.PlayerPrize,
+                   TieBetAdjustment = null,
+                   ClientStatus = _service.GetClientRound(data.State),
+                   AdditionalData = JsonSerializer.Serialize(data),
+               })
+               .ToArray();
+
+            return new() { Success = true, Datas = datas };
         }
     }
 }

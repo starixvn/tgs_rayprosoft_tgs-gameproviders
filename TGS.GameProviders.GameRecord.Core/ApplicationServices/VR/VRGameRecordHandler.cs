@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
@@ -8,7 +7,6 @@ using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.VR.ApplicationServices;
 using TGS.GameProviders.GameRecord.Core.Processors;
 using TGS.GameProviders.Repositories;
-using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 
@@ -19,12 +17,12 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR
         private readonly IBrandRepository _brandRepository;
         private readonly IGameRepository _gameRepository;
         private readonly IGameRecordProcessor _gameRoundsProcessor;
-        private readonly IGetService<VRGameRecordListQuery, VRGameRecordListResult> _getService;
+        private readonly IGetService<VRGameRecordListQuery, GameRecordListResult> _getService;
         private readonly IPlayerRepository _playerRepository;
         private readonly IVRService _service;
         private int _count;
         private int _failCount;
-        private Dictionary<int, GetGame> _games;
+        private Dictionary<string, GetGame> _games;
         private DateTimeOffset? _lastGameRecordTime;
         private Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)> _players;
         private int _successCount;
@@ -35,7 +33,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR
             IBrandRepository brandRepository,
             IPlayerRepository playerRepository,
             IGameRecordProcessor gameRoundsProcessor,
-            IGetService<VRGameRecordListQuery, VRGameRecordListResult> getService
+            IGetService<VRGameRecordListQuery, GameRecordListResult> getService
             )
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -51,7 +49,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
             _players = new Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)>();
-            _games = new Dictionary<int, GetGame>();
+            _games = new Dictionary<string, GetGame>();
             _count = 0;
             _successCount = 0;
             _failCount = 0;
@@ -105,7 +103,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR
             var rows = 500;
             while (true)
             {
-                var data = new VRGameRecordListQuery()
+                var response = await _getService.GetAsync(new()
                 {
                     BrandCode = brandCode,
                     StartTime = query.StartTime,
@@ -113,9 +111,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR
                     IsUpdateTime = isUpdateTime,
                     Page = page,
                     Rows = rows
-                };
-
-                var response = await _getService.GetAsync(data);
+                });
 
                 if (!response.Success)
                 {
@@ -130,15 +126,15 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR
 
                 var sysDateTimeOffset = DateTimeOffset.UtcNow;
 
-                foreach (var recordBet in response.Datas)
+                foreach (var data in response.Datas)
                 {
                     _count++;
                     var success = true;
-                    var playerCode = recordBet.PlayerName;
+                    var playerCode = data.PlayerCode;
 
                     if (isUpdateTime)
                     {
-                        _lastGameRecordTime = recordBet.UpdateTime;
+                        _lastGameRecordTime = data.ExternalClosedOn;
                     }
 
                     if (!_players.TryGetValue(playerCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
@@ -153,10 +149,10 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR
                         _players.Add(playerCode, playerInfo);
                     }
 
-                    if (!_games.TryGetValue(recordBet.ChannelId, out GetGame game))
+                    if (!_games.TryGetValue(data.ExternalGameId, out GetGame game))
                     {
-                        game = await _gameRepository.GetGameAsync(gameProviderId, recordBet.ChannelId.ToString()).ConfigureAwait(false);
-                        _games.Add(recordBet.ChannelId, game);
+                        game = await _gameRepository.GetGameAsync(gameProviderId, data.ExternalGameId.ToString()).ConfigureAwait(false);
+                        _games.Add(data.ExternalGameId, game);
                     }
 
                     if (playerInfo.Player == null || game == null)
@@ -171,38 +167,31 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR
 
                     await _gameRoundsProcessor.ExecuteAsync(new GameRoundsData
                     {
-                        ExternalRoundId = recordBet.SerialNumber,
+                        ExternalRoundId = data.ExternalRoundId,
                         GameProviderId = gameProviderId,
                         GameProviderCode = _service.GetGameProviderCode(),
                         PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
                         GameId = (game == null) ? -1 : game.GameId,
-                        ExternalGameId = recordBet.ChannelId.ToString(),
+                        ExternalGameId = data.ExternalGameId.ToString(),
                         CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
-                        Status = _service.GetRoundStatus(recordBet.State),
+                        Status = data.Status,
                         GameProviderConfigurationId = playerInfo.GameProviderConfigurationId.GetValueOrDefault(),
                         WalletId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.DefaultWalletId,
                         CreatedOn = sysDateTimeOffset,
                         ClosedOn = sysDateTimeOffset,
                         UpdatedOn = sysDateTimeOffset,
                         BrandId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.BrandId,
-                        ExternalCreatedOn = recordBet.CreateTime,
-                        ExternalClosedOn = recordBet.UpdateTime,
-                        BetAmount = recordBet.Cost,
-                        ValidBetAmount = recordBet.State == 1 ? 0 : recordBet.Cost,
-                        PlayerWinLoss =
-                           recordBet.State == 1
-                               ? 0
-                               :
-                               _service.GetRoundStatus(recordBet.State) == RoundStatus.Closed
-                                   ?
-                                   recordBet.PlayerPrize - recordBet.Cost
-                                   : null,
-                        Commission = 0,
-                        Turnover = recordBet.State == 1 ? 0 : recordBet.Cost,
-                        SettleAmount = recordBet.PlayerPrize,
-                        TieBetAdjustment = null,
-                        ClientStatus = _service.GetClientRound(recordBet.State),
-                        AdditionalData = JsonSerializer.Serialize(recordBet),
+                        ExternalCreatedOn = data.ExternalCreatedOn,
+                        ExternalClosedOn = data.ExternalClosedOn,
+                        BetAmount = data.BetAmount,
+                        ValidBetAmount = data.ValidBetAmount,
+                        PlayerWinLoss = data.PlayerWinLoss,
+                        Commission = data.Commission,
+                        Turnover = data.Turnover,
+                        SettleAmount = data.SettleAmount,
+                        TieBetAdjustment = data.TieBetAdjustment,
+                        ClientStatus = data.ClientStatus,
+                        AdditionalData = data.AdditionalData,
                         Success = success
                     });
                     ;

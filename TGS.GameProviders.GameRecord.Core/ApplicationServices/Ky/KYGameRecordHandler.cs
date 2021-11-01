@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
@@ -11,7 +10,6 @@ using TGS.GameProviders.Core.KY.ApplicationServices;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.GameRecord.Core.Processors;
 using TGS.GameProviders.Repositories;
-using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 
@@ -87,7 +85,6 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
             foreach (var gameRecord in response.Datas)
             {
                 var success = true;
-
 
                 if (!players.TryGetValue(gameRecord.PlayerCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
                 {
