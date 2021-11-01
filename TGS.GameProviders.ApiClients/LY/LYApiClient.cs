@@ -106,7 +106,7 @@ namespace TGS.GameProviders.ApiClients.LY
             request.Action = _utility.GetAction(action) ?? -1;
 
             var timestamp = dateTimeOffset.ToUnixTimeMilliseconds();
-            var dataPath = "s=6&startTime=1635397200000&endTime=1635399600000";//$"s={ request.Action}&startTime={ request.StartTime}&endTime={ request.EndTime}";
+            var dataPath = _utility.GetPath(request);
             var param = _utility.AesEncrypt(dataPath, deskey, true);
             var plainText = $"{agentId}{timestamp}{md5key}";
             var key = _utility.HashMD5(plainText);
