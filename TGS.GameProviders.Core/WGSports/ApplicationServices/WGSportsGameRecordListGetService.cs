@@ -13,7 +13,7 @@ using TGS.GameProviders.Repositories.Domains;
 
 namespace TGS.GameProviders.Core.WGSports.ApplicationServices
 {
-    public class WGSportsGameRecordListGetService : IGetService<WGSportsGameRecordListQuery, WGSportsGameRecordListResult>
+    public class WGSportsGameRecordListGetService : IGetService<WGSportsGameRecordListQuery, GameRecordListResult>
     {
         private readonly IWGSportsApiClient _client;
         private readonly ILogger<WGSportsGameRecordListGetService> _logger;
@@ -30,7 +30,7 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        public async ValueTask<WGSportsGameRecordListResult> GetAsync(WGSportsGameRecordListQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<GameRecordListResult> GetAsync(WGSportsGameRecordListQuery command, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
@@ -73,7 +73,6 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
                     ExternalGameId = "1",
                     CurrencyCode = string.Empty,
                     Status = data.InitData.Win.IgnoreCaseEquals("0") ? RoundStatus.Open : RoundStatus.Closed,
-                    ExternalId = data.Reference,
                     ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(-4)),
                     ExternalClosedOn = data.InitData.Win.IgnoreCaseEquals("0") ? null : new DateTimeOffset(DateTime.Parse(data.SettleDate), TimeSpan.FromHours(-4)),
                     BetAmount = decimal.Parse(data.InitData.BetAmount),

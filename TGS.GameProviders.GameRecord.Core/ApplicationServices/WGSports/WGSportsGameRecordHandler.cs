@@ -17,7 +17,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports
     {
         private readonly IBrandRepository _brandRepository;
         private readonly IGameRecordProcessor _gameRoundsProcessor;
-        private readonly IGetService<WGSportsGameRecordListQuery, WGSportsGameRecordListResult> _getService;
+        private readonly IGetService<WGSportsGameRecordListQuery, GameRecordListResult> _getService;
         private readonly IPlayerRepository _playerRepository;
         private readonly IWGSportsService _service;
         private WGSportsConfiguration _configuration;
@@ -30,7 +30,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports
             IBrandRepository brandRepository,
             IPlayerRepository playerRepository,
             IGameRecordProcessor gameRoundsProcessor,
-            IGetService<WGSportsGameRecordListQuery, WGSportsGameRecordListResult> getService
+            IGetService<WGSportsGameRecordListQuery, GameRecordListResult> getService
             )
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -129,7 +129,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGSports
                     GameProviderCode = _service.GetGameProviderCode(),
                     PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
                     GameId = (_game == null) ? -1 : _game.GameId,
-                    ExternalId = data.ExternalId.ToString(),
+                    ExternalGameId = data.ExternalGameId,
                     CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
                     Status = data.Status,
                     GameProviderConfigurationId = playerInfo.GameProviderConfigurationId.GetValueOrDefault(),

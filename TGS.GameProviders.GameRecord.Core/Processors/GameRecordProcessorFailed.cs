@@ -43,7 +43,7 @@ namespace TGS.GameProviders.GameRecord.Core.Processors
                ExternalRoundId: data.ExternalRoundId,
                PlayerCode: data.PlayerCode,
                GameId: data.GameId,
-               ExternalId: data.ExternalId,
+               ExternalGameId: data.ExternalGameId,
                Detail: data.AdditionalData,
                AutoStatus: FailedGameRecordOperationAutoStatus.Manual,
                ProcesStatus: FailedGameRecordOperationProcesStatus.Process,

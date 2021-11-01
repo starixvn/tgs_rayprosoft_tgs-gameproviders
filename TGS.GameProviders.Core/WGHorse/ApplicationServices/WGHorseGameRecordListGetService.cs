@@ -12,7 +12,7 @@ using TGS.GameProviders.Repositories.Domains;
 
 namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
 {
-    public class WGHorseGameRecordListGetService : IGetService<WGHorseGameRecordListQuery, WGHorseGameRecordListResult>
+    public class WGHorseGameRecordListGetService : IGetService<WGHorseGameRecordListQuery, GameRecordListResult>
     {
         private readonly IWGHorseApiClient _client;
         private readonly ILogger<WGHorseGameRecordListGetService> _logger;
@@ -29,7 +29,7 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        public async ValueTask<WGHorseGameRecordListResult> GetAsync(WGHorseGameRecordListQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<GameRecordListResult> GetAsync(WGHorseGameRecordListQuery command, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
@@ -75,7 +75,6 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
                     ExternalGameId = "1",
                     CurrencyCode = string.Empty,
                     Status = RoundStatus.Closed,
-                    ExternalId = data.BatchNo,
                     ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(+8)),
                     ExternalClosedOn = new DateTimeOffset(DateTime.Parse(data.ShowDivideDate), TimeSpan.FromHours(+8)),
                     BetAmount = decimal.Parse(data.ShowAmount),

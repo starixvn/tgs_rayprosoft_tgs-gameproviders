@@ -10,7 +10,6 @@ namespace TGS.GameProviders.Core
         public string ExternalGameId { get; init; }
         public string CurrencyCode { get; init; }
         public RoundStatus Status { get; init; }
-        public string ExternalId { get; init; }
         public DateTimeOffset? ExternalCreatedOn { get; init; }
         public DateTimeOffset? ExternalClosedOn { get; init; }
         public decimal? BetAmount { get; init; }

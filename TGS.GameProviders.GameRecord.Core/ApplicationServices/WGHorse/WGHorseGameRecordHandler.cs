@@ -15,7 +15,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
     {
         private readonly IBrandRepository _brandRepository;
         private readonly IGameRecordProcessor _gameRoundsProcessor;
-        private readonly IGetService<WGHorseGameRecordListQuery, WGHorseGameRecordListResult> _getService;
+        private readonly IGetService<WGHorseGameRecordListQuery, GameRecordListResult> _getService;
         private readonly IPlayerRepository _playerRepository;
         private readonly IWGHorseService _service;
 
@@ -24,7 +24,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
             IBrandRepository brandRepository,
             IPlayerRepository playerRepository,
             IGameRecordProcessor gameRoundsProcessor,
-            IGetService<WGHorseGameRecordListQuery, WGHorseGameRecordListResult> getService
+            IGetService<WGHorseGameRecordListQuery, GameRecordListResult> getService
             )
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -107,7 +107,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
                         GameProviderCode = _service.GetGameProviderCode(),
                         PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
                         GameId = (game == null) ? -1 : game.GameId,
-                        ExternalId = data.ExternalId,
+                        ExternalGameId = data.ExternalGameId,
                         CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
                         Status = data.Status,
                         GameProviderConfigurationId = playerInfo.GameProviderConfigurationId.GetValueOrDefault(),

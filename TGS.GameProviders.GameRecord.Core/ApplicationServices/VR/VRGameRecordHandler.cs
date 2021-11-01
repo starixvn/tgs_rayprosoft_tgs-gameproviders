@@ -176,7 +176,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR
                         GameProviderCode = _service.GetGameProviderCode(),
                         PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
                         GameId = (game == null) ? -1 : game.GameId,
-                        ExternalId = recordBet.ChannelId.ToString(),
+                        ExternalGameId = recordBet.ChannelId.ToString(),
                         CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
                         Status = _service.GetRoundStatus(recordBet.State),
                         GameProviderConfigurationId = playerInfo.GameProviderConfigurationId.GetValueOrDefault(),

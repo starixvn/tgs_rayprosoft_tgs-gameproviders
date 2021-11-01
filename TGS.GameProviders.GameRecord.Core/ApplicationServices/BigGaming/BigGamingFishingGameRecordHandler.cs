@@ -129,7 +129,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.BigGaming
                         GameProviderCode = _service.GetGameProviderCode(),
                         PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
                         GameId = game != null ? game.GameId : -1,
-                        ExternalId = gameRecord.ExternalBetId.ToString(),
+                        ExternalGameId = gameRecord.GameType.ToString(),
                         CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
                         Status = RoundStatus.Closed,
                         GameProviderConfigurationId = playerInfo.GameProviderConfigurationId.GetValueOrDefault(),

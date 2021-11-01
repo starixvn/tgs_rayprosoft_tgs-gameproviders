@@ -22,7 +22,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
         private readonly IBrandRepository _brandRepository;
         private readonly IGameRepository _gameRepository;
         private readonly IGameRecordProcessor _gameRoundsProcessor;
-        private readonly IGetService<KYGameRecordListQuery, KYGameRecordListResult> _getService;
+        private readonly IGetService<KYGameRecordListQuery, GameRecordListResult> _getService;
         private readonly IPlayerRepository _playerRepository;
         private readonly IKYService _service;
 
@@ -32,7 +32,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
             IBrandRepository brandRepository,
             IPlayerRepository playerRepository,
             IGameRecordProcessor gameRoundsProcessor,
-            IGetService<KYGameRecordListQuery, KYGameRecordListResult> getService
+            IGetService<KYGameRecordListQuery, GameRecordListResult> getService
             )
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -77,7 +77,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
                 return new() { Success = false };
             }
             var players = new Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)>();
-            var games = new Dictionary<int, GetGame>();
+            var games = new Dictionary<string, GetGame>();
             var successCount = 0;
             var failCount = 0;
             var lastGameRecordTime = default(DateTimeOffset?);
@@ -87,24 +87,24 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
             foreach (var gameRecord in response.Datas)
             {
                 var success = true;
-                var playerCode = gameRecord.Account.Split('_')[1];
 
-                if (!players.TryGetValue(playerCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
+
+                if (!players.TryGetValue(gameRecord.PlayerCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
                 {
-                    var player = await _playerRepository.GetPlayerAsync(playerCode).ConfigureAwait(false);
+                    var player = await _playerRepository.GetPlayerAsync(gameRecord.PlayerCode).ConfigureAwait(false);
                     var brandGameProviderConfigurationId = default(Guid?);
                     if (player != null)
                     {
                         brandGameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
                     }
                     playerInfo = new(player, brandGameProviderConfigurationId);
-                    players.Add(playerCode, playerInfo);
+                    players.Add(gameRecord.PlayerCode, playerInfo);
                 }
 
-                if (!games.TryGetValue(gameRecord.KindID, out GetGame game))
+                if (!games.TryGetValue(gameRecord.ExternalGameId, out GetGame game))
                 {
-                    game = await _gameRepository.GetGameAsync(gameProviderId, gameRecord.KindID.ToString()).ConfigureAwait(false);
-                    games.Add(gameRecord.KindID, game);
+                    game = await _gameRepository.GetGameAsync(gameProviderId, gameRecord.ExternalGameId).ConfigureAwait(false);
+                    games.Add(gameRecord.ExternalGameId, game);
                 }
 
                 if (playerInfo.Player == null || game == null)
@@ -119,35 +119,35 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
 
                 var result = await _gameRoundsProcessor.ExecuteAsync(new GameRoundsData()
                 {
-                    ExternalRoundId = gameRecord.GameID,
+                    ExternalRoundId = gameRecord.ExternalRoundId,
                     GameProviderId = gameProviderId,
                     GameProviderCode = _service.GetGameProviderCode(),
                     PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
                     GameId = (game == null) ? -1 : game.GameId,
-                    ExternalId = gameRecord.KindID.ToString(),
+                    ExternalGameId = gameRecord.ExternalGameId,
                     CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
-                    Status = RoundStatus.Closed,
+                    Status = gameRecord.Status,
                     GameProviderConfigurationId = playerInfo.GameProviderConfigurationId.GetValueOrDefault(),
                     WalletId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.DefaultWalletId,
                     CreatedOn = sysDateTimeOffset,
                     ClosedOn = sysDateTimeOffset,
                     UpdatedOn = sysDateTimeOffset,
                     BrandId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.BrandId,
-                    ExternalCreatedOn = gameRecord.GameStartTime,
-                    ExternalClosedOn = gameRecord.GameEndTime,
-                    BetAmount = gameRecord.AllBet,
-                    ValidBetAmount = gameRecord.AllBet,
-                    PlayerWinLoss = gameRecord.Profit,
-                    Commission = gameRecord.Revenue,
-                    Turnover = gameRecord.CellScore,
-                    SettleAmount = gameRecord.AllBet + gameRecord.Profit,
+                    ExternalCreatedOn = gameRecord.ExternalCreatedOn,
+                    ExternalClosedOn = gameRecord.ExternalClosedOn,
+                    BetAmount = gameRecord.BetAmount,
+                    ValidBetAmount = gameRecord.ValidBetAmount,
+                    PlayerWinLoss = gameRecord.PlayerWinLoss,
+                    Commission = gameRecord.Commission,
+                    Turnover = gameRecord.Turnover,
+                    SettleAmount = gameRecord.ValidBetAmount + gameRecord.PlayerWinLoss,
                     TieBetAdjustment = null,
-                    ClientStatus = _service.GetClientRound(gameRecord.Profit),
-                    AdditionalData = JsonSerializer.Serialize(gameRecord),
+                    ClientStatus = gameRecord.ClientStatus,
+                    AdditionalData = gameRecord.AdditionalData,
                     Success = success
                 }).ConfigureAwait(false);
 
-                lastGameRecordTime = gameRecord.GameEndTime;
+                lastGameRecordTime = gameRecord.ExternalClosedOn;
             };
 
             return new()

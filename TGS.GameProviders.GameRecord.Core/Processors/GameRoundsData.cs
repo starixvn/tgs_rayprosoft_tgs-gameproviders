@@ -10,7 +10,7 @@ namespace TGS.GameProviders.GameRecord.Core.Processors
         public string GameProviderCode { get; set; }
         public string PlayerCode { get; init; }
         public int GameId { get; init; }
-        public string ExternalId { get; init; }
+        public string ExternalGameId { get; init; }
         public string CurrencyCode { get; init; }
         public RoundStatus Status { get; init; }
         public Guid GameProviderConfigurationId { get; init; }
