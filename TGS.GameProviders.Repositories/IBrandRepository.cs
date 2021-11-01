@@ -9,5 +9,7 @@ namespace TGS.GameProviders.Repositories
         Task<Brand> GetBrandAsync(Guid brandId);
 
         Task<Guid?> GetBrandGameProviderConfigurationIdAsync(Guid gameProviderId, Guid brandId);
+
+        Task<BrandGameProvider> GetBrandGameProviderAsync(Guid gameProviderId, Guid brandId);
     }
 }

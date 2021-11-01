@@ -16,8 +16,7 @@ namespace TGS.GameProviders.Repositories
 
         public PlayerRepository(
             TgsContext context,
-            IMapper mapper
-            )
+            IMapper mapper)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -30,10 +29,12 @@ namespace TGS.GameProviders.Repositories
                 .ProjectTo<GetPlayer>(_mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync()
                 .ConfigureAwait(false);
+
             if (player == null)
             {
                 return null;
             }
+
             var brands = await _context.Brands.FirstOrDefaultAsync(x => x.Id == player.BrandId).ConfigureAwait(false);
             player.LicenseeId = brands.LicenseeId;
             player.BrandCode = brands.Code;
@@ -51,6 +52,7 @@ namespace TGS.GameProviders.Repositories
             {
                 return null;
             }
+
             var brands = await _context.Brands.FirstOrDefaultAsync(x => x.Id == player.BrandId).ConfigureAwait(false);
             player.LicenseeId = brands.LicenseeId;
             player.BrandCode = brands.Code;
