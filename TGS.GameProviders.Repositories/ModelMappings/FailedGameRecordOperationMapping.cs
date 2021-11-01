@@ -15,6 +15,7 @@ namespace TGS.GameProviders.Repositories.ModelMappings
                 .ForMember(trigger => trigger.ProcesStatus, source => source.MapFrom(o => (short)o.ProcesStatus))
                 .ForMember(trigger => trigger.CreatedOn, source => source.MapFrom(o => o.CreatedOn.UtcDateTime))
                 .ForMember(trigger => trigger.UpdatedOn, source => source.MapFrom(o => o.UpdatedOn.UtcDateTime))
+                .ForMember(trigger => trigger.ExternalId, source => source.MapFrom(o => o.ExternalGameId))
                 .ReverseMap();
         }
     }

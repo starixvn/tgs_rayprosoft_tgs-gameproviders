@@ -74,6 +74,11 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
             {
                 return new() { Success = false };
             }
+
+            if (response.Success && response.Datas == null)
+            {
+                return new() { Success = true };
+            }
             var players = new Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)>();
             var games = new Dictionary<string, GetGame>();
             var successCount = 0;

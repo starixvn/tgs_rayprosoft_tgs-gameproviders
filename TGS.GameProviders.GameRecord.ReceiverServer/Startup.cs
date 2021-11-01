@@ -245,6 +245,19 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer
                                     "amq.direct",
                                     $"tgs.gp.gamerecord.biggaming.fishing",
                                     new Dictionary<string, object>());
+
+                                channel.QueueDeclare(
+                                    queue: "gp.gamerecord.ly",
+                                    durable: true,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
+
+                                channel.QueueBind(
+                                    "gp.gamerecord.ly",
+                                    "amq.direct",
+                                    $"tgs.gp.gamerecord.ly",
+                                    new Dictionary<string, object>());
                             };
                         })
                         .AddHandler<KYGameRecordReceiveHandler>("gp.gamerecord.ky", false)
@@ -252,7 +265,8 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer
                         .AddHandler<WGHorseGameRecordReceiveHandler>("gp.gamerecord.wgvia", false)
                         .AddHandler<WGSportsGameRecordReceiveHandler>("gp.gamerecord.wgfm", false)
                         .AddHandler<TCGGameRecordReceiveHandler>("gp.gamerecord.tcg", false)
-                        .AddHandler<BigGamingFishingGameRecordReceiveHandler>("gp.gamerecord.biggaming.fishing", false);
+                        .AddHandler<BigGamingFishingGameRecordReceiveHandler>("gp.gamerecord.biggaming.fishing", false)
+                        .AddHandler<LYGameRecordReceiveHandler>("gp.gamerecord.ly", false);
                 })
                 .AddNatsMessageQueue(natsConfig =>
                 {

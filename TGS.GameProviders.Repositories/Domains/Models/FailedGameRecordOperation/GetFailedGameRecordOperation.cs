@@ -16,7 +16,7 @@ namespace TGS.GameProviders.Repositories.Domains.Models.FailedGameRecordOperatio
 
         public int GameId { get; set; }
 
-        public string ExternalId { get; set; } = default!;
+        public string ExternalGameId { get; set; } = default!;
 
         public string Detail { get; set; } = default!;
 
