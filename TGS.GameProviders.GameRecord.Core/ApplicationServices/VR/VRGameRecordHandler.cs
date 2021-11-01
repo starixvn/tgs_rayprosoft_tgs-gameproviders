@@ -99,7 +99,7 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.VR
         /// <returns></returns>
         private async Task<bool> GetGameRoundAsync(VRGameRecordHandlerQuery query, string brandCode, Guid gameProviderId, bool isUpdateTime)
         {
-            var page = 0;
+            var page = 1;
             var rows = 500;
             while (true)
             {

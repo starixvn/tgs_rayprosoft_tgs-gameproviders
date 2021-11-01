@@ -39,12 +39,13 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
                 };
             }
 
+            // VR預設Page從0開始
             var data = new VRGameRecordRequest
             {
                 StartTime = command.StartTime.ToString("yyyy-MM-ddTHH:mm:ssZ"),
                 EndTime = command.EndTime.ToString("yyyy-MM-ddTHH:mm:ssZ"),
                 IsUpdateTime = command.IsUpdateTime,
-                Page = command.Page,
+                Page = command.Page - 1,
                 Rows = command.Rows
             };
 

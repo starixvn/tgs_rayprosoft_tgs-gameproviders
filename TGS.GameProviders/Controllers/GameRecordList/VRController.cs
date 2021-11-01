@@ -38,7 +38,7 @@ namespace TGS.GameProviders.Controllers.GameRecordList
         ///             "startTime": "2021-10-28T03:50:00+08:00",
         ///             "endTime": "2021-10-28T04:00:00+08:00",
         ///             "isUpdateTime": true,
-        ///             "page": 0,
+        ///             "page": 1,
         ///             "rows": 500
         ///         }
         /// </remarks>
