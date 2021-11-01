@@ -62,7 +62,10 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
                 }
             }
 
-            var sysDateTimeOffset = DateTimeOffset.UtcNow;
+            if (response?.Data == null || response?.Data.List.GameID.Length == 0)
+            {
+                return new() { Success = true };
+            }
 
             var datas = response.Data.List.GameID.Select((x, i) => new GameRecordListModle()
             {

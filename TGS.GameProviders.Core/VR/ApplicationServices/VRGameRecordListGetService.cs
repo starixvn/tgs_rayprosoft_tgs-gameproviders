@@ -60,6 +60,11 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
                 return new() { Success = false };
             }
 
+            if (response?.Records == null || response?.Records.Length == 0)
+            {
+                return new() { Success = true };
+            }
+
             var datas = response.Records.Select(data =>
                new GameRecordListModle()
                {
