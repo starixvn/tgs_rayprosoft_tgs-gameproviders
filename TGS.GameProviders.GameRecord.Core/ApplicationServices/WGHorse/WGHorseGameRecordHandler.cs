@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.WGHorse.Models;
 using TGS.GameProviders.Core;
-using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Core.WGHorse.ApplicationServices;
 using TGS.GameProviders.GameRecord.Core.Processors;
 using TGS.GameProviders.Repositories;
-using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 
 namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
@@ -18,29 +14,28 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
     public class WGHorseGameRecordHandler : IGetService<WGHorseGameRecordHandlerQuery, WGHorseGameRecordHandlerResult>
     {
         private readonly IBrandRepository _brandRepository;
-        private readonly IWGHorseApiClient _client;
         private readonly IGameRecordProcessor _gameRoundsProcessor;
+        private readonly IGetService<WGHorseGameRecordListQuery, GameRecordListResult> _getService;
         private readonly IPlayerRepository _playerRepository;
         private readonly IWGHorseService _service;
 
         public WGHorseGameRecordHandler(
-            IWGHorseApiClient client,
             IWGHorseService service,
             IBrandRepository brandRepository,
             IPlayerRepository playerRepository,
-            IGameRecordProcessor gameRoundsProcessor
+            IGameRecordProcessor gameRoundsProcessor,
+            IGetService<WGHorseGameRecordListQuery, GameRecordListResult> getService
             )
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
             _gameRoundsProcessor = gameRoundsProcessor ?? throw new ArgumentNullException(nameof(gameRoundsProcessor));
+            _getService = getService ?? throw new ArgumentNullException(nameof(getService));
         }
 
         public async ValueTask<WGHorseGameRecordHandlerResult> GetAsync(WGHorseGameRecordHandlerQuery query, CancellationToken cancellationToken = default)
         {
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
             var players = new Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)>();
             var game = await _service.GetGameByExternalGameId(gameProviderId, "1").ConfigureAwait(false);
@@ -50,38 +45,25 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
             var lastGameRecordTime = default(DateTimeOffset?);
             var page = 1;
             var rows = 1000;
-            var success = true;
+
             while (true)
             {
-                var data = new WGHorseGameRecordRequest
+                var gameRecordListQuery = new WGHorseGameRecordListQuery
                 {
                     StartTime = query.StartTime,
                     EndTime = query.EndTime,
-                    PageIndex = page,
-                    PageSize = rows
+                    Page = page,
+                    Rows = rows
                 };
 
-                var response = await _client.GetGameRecordAsync(
-                    configuration.ApiUrl,
-                    configuration.PartnerCode,
-                    configuration.PartnerKey,
-                    configuration.IV,
-                    data).ConfigureAwait(false);
+                var response = await _getService.GetAsync(gameRecordListQuery).ConfigureAwait(false);
 
-                if (response.ReturnCode != 1)
+                if (!response.Success)
                 {
-                    if (response.ReturnCode != 503)
-                    {
-                        break;
-                    }
+                    return new() { Success = response.Success };
                 }
 
-                if (page.ToString().IgnoreCaseNotEquals(response.Page))
-                {
-                    break;
-                }
-
-                if (response.ArrayInvoice == null || response.ArrayInvoice.Length == 0)
+                if (response.Success && response.Datas == null)
                 {
                     break;
                 }
@@ -89,25 +71,24 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
                 page++;
 
                 var sysDateTimeOffset = DateTimeOffset.UtcNow;
-                var records = response.ArrayInvoice;
 
-                foreach (var record in records)
+                foreach (var data in response.Datas)
                 {
                     count++;
-                    var gameRecord = record;
-
-                    if (!players.TryGetValue(gameRecord.MemberCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
+                    var success = true;
+                    if (!players.TryGetValue(data.PlayerCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
                     {
-                        var player = await _playerRepository.GetPlayerAsync(gameRecord.MemberCode).ConfigureAwait(false);
+                        var player = await _playerRepository.GetPlayerAsync(data.PlayerCode).ConfigureAwait(false);
                         var brandGameProviderConfigurationId = default(Guid?);
                         if (player != null)
                         {
                             brandGameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
                         }
                         playerInfo = new(player, brandGameProviderConfigurationId);
-                        players.Add(gameRecord.MemberCode, playerInfo);
+                        players.Add(data.PlayerCode, playerInfo);
                     }
 
+                    success = true;
                     if (playerInfo.Player == null)
                     {
                         success = false;
@@ -118,38 +99,36 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.WGHorse
                         successCount++;
                     }
 
-                    var createdOn = new DateTimeOffset(DateTime.Parse(gameRecord.RecordDate), TimeSpan.FromHours(+8));
-                    var externalClosedOn = new DateTimeOffset(DateTime.Parse(gameRecord.ShowDivideDate), TimeSpan.FromHours(+8));
                     await _gameRoundsProcessor.ExecuteAsync(new GameRoundsData()
                     {
-                        ExternalRoundId = gameRecord.BatchNo,
+                        ExternalRoundId = data.ExternalRoundId,
                         GameProviderId = gameProviderId,
                         GameProviderCode = _service.GetGameProviderCode(),
                         PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
                         GameId = (game == null) ? -1 : game.GameId,
-                        ExternalId = gameRecord.BatchNo.ToString(),
+                        ExternalGameId = data.ExternalGameId,
                         CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
-                        Status = RoundStatus.Closed,
+                        Status = data.Status,
                         GameProviderConfigurationId = playerInfo.GameProviderConfigurationId.GetValueOrDefault(),
                         WalletId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.DefaultWalletId,
                         CreatedOn = sysDateTimeOffset,
                         ClosedOn = sysDateTimeOffset,
                         UpdatedOn = sysDateTimeOffset,
                         BrandId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.BrandId,
-                        ExternalCreatedOn = createdOn,
-                        ExternalClosedOn = externalClosedOn,
-                        BetAmount = decimal.Parse(gameRecord.ShowAmount),
-                        ValidBetAmount = decimal.Parse(gameRecord.ShowAmount),
-                        PlayerWinLoss = decimal.Parse(gameRecord.ShowWin),
-                        Commission = 0,
-                        Turnover = decimal.Parse(gameRecord.ShowAmount),
-                        SettleAmount = decimal.Parse(gameRecord.ShowAmount) + decimal.Parse(gameRecord.ShowWin),
-                        TieBetAdjustment = null,
-                        ClientStatus = _service.GetClientRound(decimal.Parse(gameRecord.ShowWin)),
-                        AdditionalData = JsonSerializer.Serialize(gameRecord),
+                        ExternalCreatedOn = data.ExternalCreatedOn,
+                        ExternalClosedOn = data.ExternalClosedOn,
+                        BetAmount = data.BetAmount,
+                        ValidBetAmount = data.ValidBetAmount,
+                        PlayerWinLoss = data.PlayerWinLoss,
+                        Commission = data.Commission,
+                        Turnover = data.Turnover,
+                        SettleAmount = data.SettleAmount,
+                        TieBetAdjustment = data.TieBetAdjustment,
+                        ClientStatus = data.ClientStatus,
+                        AdditionalData = data.AdditionalData,
                         Success = success
                     });
-                    lastGameRecordTime = externalClosedOn;
+                    lastGameRecordTime = data.ExternalClosedOn;
                 }
             }
             return new WGHorseGameRecordHandlerResult()

@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.KY.Models;
-using TGS.GameProviders.ApiClients.KY.Models.Commons;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.KY.ApplicationServices;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.GameRecord.Core.Processors;
 using TGS.GameProviders.Repositories;
-using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 
@@ -21,27 +18,27 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
     public class KYGameRecordHandler : IGetService<KYGameRecordHandlerQuery, KYGameRecordHandlerResult>
     {
         private readonly IBrandRepository _brandRepository;
-        private readonly IKYApiClient _client;
         private readonly IGameRepository _gameRepository;
         private readonly IGameRecordProcessor _gameRoundsProcessor;
+        private readonly IGetService<KYGameRecordListQuery, GameRecordListResult> _getService;
         private readonly IPlayerRepository _playerRepository;
         private readonly IKYService _service;
 
         public KYGameRecordHandler(
-            IKYApiClient client,
             IKYService service,
             IGameRepository gameRepository,
             IBrandRepository brandRepository,
             IPlayerRepository playerRepository,
-            IGameRecordProcessor gameRoundsProcessor
+            IGameRecordProcessor gameRoundsProcessor,
+            IGetService<KYGameRecordListQuery, GameRecordListResult> getService
             )
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
             _gameRoundsProcessor = gameRoundsProcessor ?? throw new ArgumentNullException(nameof(gameRoundsProcessor));
+            _getService = getService ?? throw new ArgumentNullException(nameof(getService));
         }
 
         public async ValueTask<KYGameRecordHandlerResult> GetAsync(KYGameRecordHandlerQuery query, CancellationToken cancellationToken = default)
@@ -51,130 +48,110 @@ namespace TGS.GameProviders.GameRecord.Core.ApplicationServices.Ky
             var agentId = brandMerchant.AgentMappers.Where(x => x.CurrencyCode.IgnoreCaseEquals(query.CurrencyCode) && x.Status).FirstOrDefault()?.AgentId;
             if (string.IsNullOrEmpty(agentId))
             {
-                return new KYGameRecordHandlerResult()
+                return new()
                 {
                     Success = false
                 };
             }
 
-            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
-
-            var data = new KYGameRecordRequest()
+            var response = await _getService.GetAsync(new()
             {
-                StartTime = query.StartTime.ToUnixTimeMilliseconds(),
-                EndTime = query.EndTime.ToUnixTimeMilliseconds()
-            };
+                BrandCode = query.BrandCode,
+                CurrencyCode = query.CurrencyCode,
+                StartTime = query.StartTime,
+                EndTime = query.EndTime
+            });
 
-            var response = await _client.GetGameRecordAsync(brandMerchant.ApiRecordUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, dateTimeOffset, data);
+            if (!response.Success)
+            {
+                return new() { Success = false };
+            }
 
+            if (response.Success && response.Datas == null)
+            {
+                return new() { Success = true };
+            }
             var players = new Dictionary<string, (GetPlayer Player, Guid? GameProviderConfigurationId)>();
-            var games = new Dictionary<int, GetGame>();
-            var count = 0;
+            var games = new Dictionary<string, GetGame>();
             var successCount = 0;
             var failCount = 0;
             var lastGameRecordTime = default(DateTimeOffset?);
-            if (response.Data.Code == 0)
-            {
-                var sysDateTimeOffset = DateTimeOffset.UtcNow;
 
-                for (int i = 0; i < response.Data.Count; i++)
+            var sysDateTimeOffset = DateTimeOffset.UtcNow;
+
+            foreach (var data in response.Datas)
+            {
+                var success = true;
+
+                if (!players.TryGetValue(data.PlayerCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
                 {
-                    count++;
-
-                    var gameRecord = new KYGameRecord()
+                    var player = await _playerRepository.GetPlayerAsync(data.PlayerCode).ConfigureAwait(false);
+                    var brandGameProviderConfigurationId = default(Guid?);
+                    if (player != null)
                     {
-                        GameID = response.Data.List.GameID[i],
-                        Account = response.Data.List.Accounts[i],
-                        ServerID = response.Data.List.ServerID[i],
-                        KindID = response.Data.List.KindID[i],
-                        TableID = response.Data.List.TableID[i],
-                        ChairID = response.Data.List.ChairID[i],
-                        UserCount = response.Data.List.UserCount[i],
-                        CellScore = Convert.ToDecimal(response.Data.List.CellScore[i]),
-                        AllBet = Convert.ToDecimal(response.Data.List.AllBet[i]),
-                        Profit = Convert.ToDecimal(response.Data.List.Profit[i]),
-                        Revenue = Convert.ToDecimal(response.Data.List.Revenue[i]),
-                        GameStartTime = new DateTimeOffset(DateTime.Parse(response.Data.List.GameStartTime[i]), TimeSpan.FromHours(+8)),
-                        GameEndTime = new DateTimeOffset(DateTime.Parse(response.Data.List.GameEndTime[i]), TimeSpan.FromHours(+8)),
-                        CardValue = response.Data.List.CardValue[i],
-                        ChannelID = Convert.ToInt32(response.Data.List.ChannelID[i]),
-                        LineCode = response.Data.List.LineCode[i]
-                    };
-
-                    var success = true;
-                    var playerCode = gameRecord.Account.Split('_')[1];
-
-                    if (!players.TryGetValue(playerCode, out (GetPlayer Player, Guid? GameProviderConfigurationId) playerInfo))
-                    {
-                        var player = await _playerRepository.GetPlayerAsync(playerCode).ConfigureAwait(false);
-                        var brandGameProviderConfigurationId = default(Guid?);
-                        if (player != null)
-                        {
-                            brandGameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-                        }
-                        playerInfo = new(player, brandGameProviderConfigurationId);
-                        players.Add(playerCode, playerInfo);
+                        brandGameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
                     }
-
-                    if (!games.TryGetValue(gameRecord.KindID, out GetGame game))
-                    {
-                        game = await _gameRepository.GetGameAsync(gameProviderId, gameRecord.KindID.ToString()).ConfigureAwait(false);
-                        games.Add(gameRecord.KindID, game);
-                    }
-
-                    if (playerInfo.Player == null || game == null)
-                    {
-                        success = false;
-                        failCount++;
-                    }
-                    else
-                    {
-                        successCount++;
-                    }
-
-                    var result = await _gameRoundsProcessor.ExecuteAsync(new GameRoundsData()
-                    {
-                        ExternalRoundId = gameRecord.GameID,
-                        GameProviderId = gameProviderId,
-                        GameProviderCode = _service.GetGameProviderCode(),
-                        PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
-                        GameId = (game == null) ? -1 : game.GameId,
-                        ExternalId = gameRecord.KindID.ToString(),
-                        CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
-                        Status = RoundStatus.Closed,
-                        GameProviderConfigurationId = playerInfo.GameProviderConfigurationId.GetValueOrDefault(),
-                        WalletId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.DefaultWalletId,
-                        CreatedOn = sysDateTimeOffset,
-                        ClosedOn = sysDateTimeOffset,
-                        UpdatedOn = sysDateTimeOffset,
-                        BrandId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.BrandId,
-                        ExternalCreatedOn = gameRecord.GameStartTime,
-                        ExternalClosedOn = gameRecord.GameEndTime,
-                        BetAmount = gameRecord.AllBet,
-                        ValidBetAmount = gameRecord.AllBet,
-                        PlayerWinLoss = gameRecord.Profit,
-                        Commission = gameRecord.Revenue,
-                        Turnover = gameRecord.CellScore,
-                        SettleAmount = gameRecord.AllBet + gameRecord.Profit,
-                        TieBetAdjustment = null,
-                        ClientStatus = _service.GetClientRound(gameRecord.Profit),
-                        AdditionalData = JsonSerializer.Serialize(gameRecord),
-                        Success = success
-                    });
-
-                    lastGameRecordTime = new DateTimeOffset(DateTime.Parse(response.Data.List.GameEndTime[i]), TimeSpan.FromHours(+8));
+                    playerInfo = new(player, brandGameProviderConfigurationId);
+                    players.Add(data.PlayerCode, playerInfo);
                 }
-            }
 
-            var responses = new KYGameRecordHandlerResult()
+                if (!games.TryGetValue(data.ExternalGameId, out GetGame game))
+                {
+                    game = await _gameRepository.GetGameAsync(gameProviderId, data.ExternalGameId).ConfigureAwait(false);
+                    games.Add(data.ExternalGameId, game);
+                }
+
+                if (playerInfo.Player == null || game == null)
+                {
+                    success = false;
+                    failCount++;
+                }
+                else
+                {
+                    successCount++;
+                }
+
+                var result = await _gameRoundsProcessor.ExecuteAsync(new GameRoundsData()
+                {
+                    ExternalRoundId = data.ExternalRoundId,
+                    GameProviderId = gameProviderId,
+                    GameProviderCode = _service.GetGameProviderCode(),
+                    PlayerCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.PlayerCode,
+                    GameId = (game == null) ? -1 : game.GameId,
+                    ExternalGameId = data.ExternalGameId,
+                    CurrencyCode = (playerInfo.Player == null) ? string.Empty : playerInfo.Player.DefaultWalletCurrencyCode,
+                    Status = data.Status,
+                    GameProviderConfigurationId = playerInfo.GameProviderConfigurationId.GetValueOrDefault(),
+                    WalletId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.DefaultWalletId,
+                    CreatedOn = sysDateTimeOffset,
+                    ClosedOn = sysDateTimeOffset,
+                    UpdatedOn = sysDateTimeOffset,
+                    BrandId = (playerInfo.Player == null) ? Guid.Empty : playerInfo.Player.BrandId,
+                    ExternalCreatedOn = data.ExternalCreatedOn,
+                    ExternalClosedOn = data.ExternalClosedOn,
+                    BetAmount = data.BetAmount,
+                    ValidBetAmount = data.ValidBetAmount,
+                    PlayerWinLoss = data.PlayerWinLoss,
+                    Commission = data.Commission,
+                    Turnover = data.Turnover,
+                    SettleAmount = data.ValidBetAmount + data.PlayerWinLoss,
+                    TieBetAdjustment = null,
+                    ClientStatus = data.ClientStatus,
+                    AdditionalData = data.AdditionalData,
+                    Success = success
+                }).ConfigureAwait(false);
+
+                lastGameRecordTime = data.ExternalClosedOn;
+            };
+
+            return new()
             {
-                Success = (response.Data.Code is 0 or 16),
+                Success = response.Success,
                 LastGameRecorTime = lastGameRecordTime,
-                Count = (response.Data.Code is 0 or 16) ? count : 0,
+                Count = response.Datas.Count(),
                 SuccessCount = successCount,
                 FailCount = failCount
             };
-            return responses;
         }
     }
 }

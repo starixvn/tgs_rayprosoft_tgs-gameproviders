@@ -18,8 +18,8 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
         ///     Parameter
         ///     {
         ///         "brandCode":"Default",
-        ///         "startTime":"2021-06-28T07:32:53",
-        ///         "endTime":"2021-06-30T07:33:53"
+        ///         "startTime":"2021-10-28T03:50:00",
+        ///         "endTime":"2021-10-28T04:00:00"
         ///     }
         /// </remarks>
         public override ValueTask<VRGameRecordHandlerResult> GameRecordAsync(

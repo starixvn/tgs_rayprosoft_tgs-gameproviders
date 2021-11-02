@@ -46,6 +46,12 @@ namespace TGS.GameProviders.Core.SBO
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
         }
 
+        public async ValueTask<BrandGameProvider> GetBrandGameProviderAsync(Guid brandId, Guid gameProviderId)
+            => await _brandRepository.GetBrandGameProviderAsync(gameProviderId, brandId).ConfigureAwait(false);
+
+        public async ValueTask<GetGame> GetGameAsync(int gameId)
+            => await _gameRepository.GetGameAsync(gameId).ConfigureAwait(false);
+
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
             var gameProvider = await _gameProviderRepository.GetGameProviderAsync(GameProviderType.SBOBET)
@@ -67,22 +73,16 @@ namespace TGS.GameProviders.Core.SBO
             return isCurrencyCode ? gameProviderCurrencyCode : null;
         }
 
+        public async ValueTask<GetPlayer> GetPlayerAsync(string playerCode)
+            => await _playerRepository.GetPlayerAsync(playerCode).ConfigureAwait(false);
+
         public string GetPortfolio(GameType gameType)
-            => !_Portfolios.TryGetValue(gameType, out var portfolio)
+                    => !_Portfolios.TryGetValue(gameType, out var portfolio)
                 ? null
                 : portfolio;
-
-        public async ValueTask<GetGame> GetGameAsync(int gameId)
-            => await _gameRepository.GetGameAsync(gameId).ConfigureAwait(false);
-
-        public async ValueTask<BrandGameProvider> GetBrandGameProviderAsync(Guid brandId, Guid gameProviderId)
-            => await _brandRepository.GetBrandGameProviderAsync(gameProviderId, brandId).ConfigureAwait(false);
 
         public async ValueTask<SBOConfiguration> GetSettingConfigurationAsync()
             => await _settingRepository.GetConfigurationAsync<SBOConfiguration>(GameProviderConfigurations.SBOBET)
                 .ConfigureAwait(false);
-
-        public async ValueTask<GetPlayer> GetPlayerAsync(string playerCode)
-            => await _playerRepository.GetPlayerAsync(playerCode).ConfigureAwait(false);
     }
 }

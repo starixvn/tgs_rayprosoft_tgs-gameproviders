@@ -17,8 +17,8 @@ namespace TGS.GameProviders.GameRecord.ReceiverServer.Controllers
         ///     Post
         ///     Parameter
         ///     {
-        ///         "startTime": "2021-08-24T00:00:00.3527908+00:00",
-        ///         "endTime": "2021-08-24T23:59:59.3527908+00:00"
+        ///         "startTime": "2021-10-26T05:13:00+00:00",
+        ///         "endTime": "2021-10-26T07:45:13+00:00"
         ///     }
         /// </remarks>
         public override ValueTask<WGSportsGameRecordHandlerResult> GameRecordAsync(

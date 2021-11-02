@@ -10,18 +10,18 @@ namespace TGS.GameProviders.Core
 {
     public interface ISBOService
     {
-        ValueTask<SBOConfiguration> GetSettingConfigurationAsync();
+        ValueTask<BrandGameProvider> GetBrandGameProviderAsync(Guid brandId, Guid gameProviderId);
+
+        ValueTask<GetGame> GetGameAsync(int value);
 
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 
         ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
 
+        ValueTask<GetPlayer> GetPlayerAsync(string playerCode);
+
         string GetPortfolio(GameType gameType);
 
-        ValueTask<GetGame> GetGameAsync(int value);
-
-        ValueTask<BrandGameProvider> GetBrandGameProviderAsync(Guid brandId, Guid gameProviderId);
-
-        ValueTask<GetPlayer> GetPlayerAsync(string playerCode);
+        ValueTask<SBOConfiguration> GetSettingConfigurationAsync();
     }
 }

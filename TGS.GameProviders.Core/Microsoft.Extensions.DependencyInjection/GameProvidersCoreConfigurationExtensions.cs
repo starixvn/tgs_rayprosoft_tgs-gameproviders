@@ -65,7 +65,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IEvolutionService, EvolutionService>();
 
             services
-                .AddTransient<ILYService, LYService>();
+                .AddTransient<ILYService, LYService>()
+                .AddTransient<ILYGameProviderScheduleService, LYGameProviderScheduleService>();
 
             services
                 .AddTransient<ISBOService, SBOService>()

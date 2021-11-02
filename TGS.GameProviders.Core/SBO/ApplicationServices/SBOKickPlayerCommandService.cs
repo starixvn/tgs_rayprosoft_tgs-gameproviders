@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients;
 using Tgs.ServiceUtility;
+using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.Core.SBO.ApplicationServices
 {

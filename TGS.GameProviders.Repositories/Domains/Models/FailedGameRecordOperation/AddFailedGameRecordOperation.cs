@@ -8,7 +8,7 @@ namespace TGS.GameProviders.Repositories.Domains.Models.FailedGameRecordOperatio
        string ExternalRoundId,
        string PlayerCode,
        int GameId,
-       string ExternalId,
+       string ExternalGameId,
        string Detail,
        FailedGameRecordOperationAutoStatus AutoStatus,
        FailedGameRecordOperationProcesStatus ProcesStatus,

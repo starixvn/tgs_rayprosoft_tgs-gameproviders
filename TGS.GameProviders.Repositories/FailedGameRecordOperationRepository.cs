@@ -46,7 +46,7 @@ namespace TGS.GameProviders.Repositories
                 ExternalRoundId = x.ExternalRoundId,
                 PlayerCode = x.PlayerCode,
                 GameId = x.GameId,
-                ExternalId = x.ExternalId,
+                ExternalGameId = x.ExternalId,
                 Detail = x.Detail,
                 AutoStatus = (FailedGameRecordOperationAutoStatus)x.AutoStatus,
                 ProcesStatus = (FailedGameRecordOperationProcesStatus)x.ProcesStatus,

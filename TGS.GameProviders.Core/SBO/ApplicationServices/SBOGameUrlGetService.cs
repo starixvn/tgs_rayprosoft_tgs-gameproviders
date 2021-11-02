@@ -2,12 +2,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.SBO.Models;
 using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
-using Tgs.ServiceUtility;
 using static TGS.GameProviders.ApiClients.SBO.Models.SBOApiErrorCode;
 
 namespace TGS.GameProviders.Core.SBO.ApplicationServices
@@ -61,8 +61,16 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
             };
         }
 
+        private string GetSportsbookUrl(PlatformType platformType, string url, string cultureCode)
+        {
+            var queryString = "oddstyle=MY&theme=sbo&oddsmode=double";
+            var device = platformType == PlatformType.Mobile ? "m" : "d";
+
+            return $"{url}&device={device}&lang={cultureCode}&{queryString}";
+        }
+
         private async ValueTask<SBOLoginResponse> PlayerLoginAsync(
-            SBOConfiguration configuration,
+                    SBOConfiguration configuration,
             SBOGameUrlQuery query,
             GetGame game)
         {
@@ -86,14 +94,6 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
                 query.CurrencyCode).ConfigureAwait(false);
 
             return !created ? null : await _client.LoginAsync(configuration.ApiUrl, loginRequest).ConfigureAwait(false);
-        }
-
-        private string GetSportsbookUrl(PlatformType platformType, string url, string cultureCode)
-        {
-            var queryString = "oddstyle=MY&theme=sbo&oddsmode=double";
-            var device = platformType == PlatformType.Mobile ? "m" : "d";
-
-            return $"{url}&device={device}&lang={cultureCode}&{queryString}";
         }
     }
 }
