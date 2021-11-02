@@ -42,7 +42,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///             "rows": 500
         ///         }
         /// </remarks>
-        [HttpPost("BigGamingFishing")]
+        [HttpGet("BigGamingFishing")]
         public ValueTask<GameRecordListResponse?> BigGamingFishingGameRecordListAsync(
             [FromQuery] string currencyCode,
             [FromQuery] DateTimeOffset startTime,
@@ -69,7 +69,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///             "endTime": "2021-08-12T06:00:00+00:00"
         ///         }
         /// </remarks>
-        [HttpPost("KY")]
+        [HttpGet("KY")]
         public ValueTask<GameRecordListResponse?> KYGameRecordListAsync(
            [FromQuery] string brandCode,
            [FromQuery] string currencyCode,
@@ -95,7 +95,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///             "endTime": "2021-11-01T07:40:00+08:00"
         ///         }
         /// </remarks>
-        [HttpPost("LY")]
+        [HttpGet("LY")]
         public ValueTask<GameRecordListResponse?> LYGameRecordListAsync(
            [FromQuery] string brandCode,
            [FromQuery] string currencyCode,
@@ -117,21 +117,22 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///     Get
         ///         {
         ///             "brandCode": "Default",
+        ///             "isUpdateTime": true,
         ///             "startTime": "2021-10-28T03:50:00+08:00",
         ///             "endTime": "2021-10-28T04:00:00+08:00",
-        ///             "isUpdateTime": true,
         ///             "page": 1,
         ///             "rows": 500
         ///         }
         /// </remarks>
-        [HttpPost("VR")]
+        [HttpGet("VR")]
         public ValueTask<GameRecordListResponse?> VRGameRecordListAsync(
            [FromQuery] string brandCode,
+           [FromQuery] bool isUpdateTime,
            [FromQuery] DateTimeOffset startTime,
            [FromQuery] DateTimeOffset endTime,
            [FromQuery] int page,
            [FromQuery] int rows)
-            => _client.VRGameRecordListAsync(brandCode, startTime, endTime, page, rows);
+            => _client.VRGameRecordListAsync(brandCode, isUpdateTime, startTime, endTime, page, rows);
 
         /// <summary>
         /// WGFMs the game record list asynchronous.
@@ -174,7 +175,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///             "rows": 500
         ///         }
         /// </remarks>
-        [HttpPost("WGVIA")]
+        [HttpGet("WGVIA")]
         public ValueTask<GameRecordListResponse?> WGVIAGameRecordListAsync(
             [FromQuery] DateTimeOffset startTime,
             [FromQuery] DateTimeOffset endTime,

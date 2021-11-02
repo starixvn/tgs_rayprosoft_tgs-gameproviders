@@ -95,11 +95,12 @@ namespace TGS.GameProviders.Client
             return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _serializerOptions);
         }
 
-        public async ValueTask<GameRecordListResponse?> VRGameRecordListAsync(string brandCode, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
+        public async ValueTask<GameRecordListResponse?> VRGameRecordListAsync(string brandCode, bool isUpdateTime, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
         {
             var source = new
             {
                 BrandCode = brandCode,
+                IsUpdateTime = isUpdateTime,
                 StartTime = startTime,
                 EndTime = endTime,
                 Page = page,
