@@ -8,9 +8,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.Logging;
 using TGS.GameProviders.ApiClients.SBO.Models;
 using TGS.GameProviders.Domains.Extensions;
-using Tgs.Logging;
 
 namespace TGS.GameProviders.ApiClients.SBO
 {
@@ -88,8 +88,28 @@ namespace TGS.GameProviders.ApiClients.SBO
                 "/web-root/restricted/player/update-player-bet-setting-by-sportid-and-markettype.aspx",
                 request, "UpdatePlayerBetLimit");
 
+        private static string GetUriString(Uri apiUrl, string path)
+        {
+            const char slash = '/';
+
+            char[] urlTrimChars =
+            {
+                slash,
+                ' '
+            };
+
+            var uriString = apiUrl.AbsoluteUri.Trim(urlTrimChars);
+
+            if (!string.IsNullOrWhiteSpace(path))
+            {
+                uriString += $"{slash}{path.TrimStart(urlTrimChars)}";
+            }
+
+            return uriString;
+        }
+
         private async ValueTask<TResponse> PostAsync<TRequest, TResponse>(
-            Uri apiUrl,
+                    Uri apiUrl,
             string path,
             TRequest request,
             string action,
@@ -143,26 +163,6 @@ namespace TGS.GameProviders.ApiClients.SBO
             _logger.LogError(JsonSerializer.Serialize(apiLogEvent));
 
             return default;
-        }
-
-        private static string GetUriString(Uri apiUrl, string path)
-        {
-            const char slash = '/';
-
-            char[] urlTrimChars =
-            {
-                slash,
-                ' '
-            };
-
-            var uriString = apiUrl.AbsoluteUri.Trim(urlTrimChars);
-
-            if (!string.IsNullOrWhiteSpace(path))
-            {
-                uriString += $"{slash}{path.TrimStart(urlTrimChars)}";
-            }
-
-            return uriString;
         }
     }
 }

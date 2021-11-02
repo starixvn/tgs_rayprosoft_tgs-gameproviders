@@ -82,6 +82,6 @@ namespace TGS.GameProviders.ApiClients.SBO.Models
         [JsonPropertyName("productType")]
         public string ProductType { get; init; }
 
-        #endregion
+        #endregion VirtualSports only
     }
 }

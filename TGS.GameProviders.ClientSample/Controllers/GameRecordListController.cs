@@ -10,12 +10,12 @@ namespace TGS.GameProviders.ClientSample.Controllers
     [ApiController]
     public class GameRecordListController : ControllerBase
     {
-        private readonly IGameProvidersClient _client;
+        private readonly IGameRecordListClient _client;
         private readonly ILogger<GameRecordListController> _logger;
 
         public GameRecordListController(
             ILogger<GameRecordListController> logger,
-            IGameProvidersClient client
+            IGameRecordListClient client
             )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

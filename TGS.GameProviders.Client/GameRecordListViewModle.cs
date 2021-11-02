@@ -1,5 +1,4 @@
 ﻿using System;
-using TGS.GameProviders.Repositories.Domains;
 
 namespace TGS.GameProviders.Client
 {
