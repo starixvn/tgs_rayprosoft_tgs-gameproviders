@@ -24,7 +24,7 @@ namespace TGS.GameProviders.Client
             _serializerOptions = serializerOptions;
         }
 
-        public async ValueTask<Uri?> GameURLAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl)
+        public async ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl)
         {
             var request = new
             {

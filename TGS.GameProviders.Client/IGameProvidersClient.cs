@@ -5,7 +5,7 @@ namespace TGS.GameProviders.Client
 {
     public interface IGameProvidersClient
     {
-        ValueTask<Uri?> GameURLAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl);
+        ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl);
 
         ValueTask KickPlayerAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode);
 
@@ -18,6 +18,5 @@ namespace TGS.GameProviders.Client
         ValueTask<string?> PlayerFundInAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount);
 
         ValueTask<string?> PlayerFundOutAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount);
-
     }
 }
