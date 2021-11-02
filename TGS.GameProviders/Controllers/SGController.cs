@@ -8,9 +8,13 @@ using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.SexyGaming.ApplicationServices;
 using TGS.GameProviders.ViewModels;
 
-namespace TGS.GameProviders.Controllers.GameUrl
+namespace TGS.GameProviders.Controllers
 {
-    public class SGController : GameUrlController<SexyGamingGameUrlQuery>
+    [ApiController]
+    [Route("api/[controller]")]
+    public class SGController : ControllerBase,
+        IGameUrlHandler<SexyGamingGameUrlQuery>,
+        IKickPlayerHandler<SexyGamingKickPlayerCommand>
     {
         private readonly ILogger<SGController> _logger;
         private readonly IMapper _mapper;
@@ -45,12 +49,34 @@ namespace TGS.GameProviders.Controllers.GameUrl
         ///         "backUrl": "https://dev-t1.rpgp.cc/"
         ///     }
         /// </remarks>
-        public override async ValueTask<GameUrlResponse?> GameUrlAsync(
+        [HttpPost("GameUrl")]
+        public async ValueTask<GameUrlResponse?> GameUrlAsync(
             [FromServices] IGetService<SexyGamingGameUrlQuery, GameUrlResult> getService,
             GameUrlRequest request)
         {
             var result = await getService.GetAsync(_mapper.Map<SexyGamingGameUrlQuery>(request)).ConfigureAwait(false);
             return result == null ? null : _mapper.Map<GameUrlResponse>(result);
         }
+
+        /// <summary>
+        /// Kicks the player asynchronous.
+        /// </summary>
+        /// <param name="commandService">The command service.</param>
+        /// <param name="request">The request.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Example
+        /// Post
+        ///     {
+        ///         "brandCode": "GPI",
+        ///         "playerCode": "4ucmqplxb029",
+        ///         "currencyCode": "CNY"
+        ///     }
+        /// </remarks>
+        [HttpPost("KickPlayer")]
+        public ValueTask KickPlayerAsync(
+            [FromServices] ICommandService<SexyGamingKickPlayerCommand> commandService,
+            KickPlayerRequest request)
+            => commandService.ExecuteAsync(_mapper.Map<SexyGamingKickPlayerCommand>(request));
     }
 }
