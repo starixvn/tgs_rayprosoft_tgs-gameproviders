@@ -13,7 +13,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
     [TestFixture]
     public class WMCasinoApiClientUnitTests
     {
-        private readonly WMCasinoApiClient _client;
+        private readonly IWMCasinoApiClient _client;
 
         private readonly string _agentId = "hpgtwapi";
         private readonly string _agentPrefix = "pg";
@@ -30,7 +30,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var logger = NullLogger<WMCasinoApiClient>.Instance;
             var tgsLog = Substitute.For<ITgsLog>();
 
-            _client = Substitute.For<WMCasinoApiClient>();
+            _client = Substitute.For<IWMCasinoApiClient>();
             //_client = new WMCasinoApiClient(httpClient, logger, tgsLog);
         }
 
