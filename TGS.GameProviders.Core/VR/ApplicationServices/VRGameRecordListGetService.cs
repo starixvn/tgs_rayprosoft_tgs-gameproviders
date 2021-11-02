@@ -66,31 +66,35 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
                 return new() { Success = true };
             }
 
-            var datas = response.Records.Select(data =>
-               new GameRecordListModle()
-               {
-                   ExternalRoundId = data.SerialNumber,
-                   PlayerCode = data.PlayerName,
-                   ExternalGameId = data.ChannelId.ToString(),
-                   Status = _service.GetRoundStatus(data.State),
-                   ExternalCreatedOn = data.CreateTime.ToOffset(TimeSpan.FromHours(+8)),
-                   ExternalClosedOn = data.UpdateTime.HasValue ? data.UpdateTime.Value.ToOffset(TimeSpan.FromHours(+8)) : null,
-                   BetAmount = data.Cost,
-                   ValidBetAmount = data.State == 1 ? 0 : data.Cost,
-                   PlayerWinLoss = data.State == 1
+            var gameProviderCode = _service.GetGameProviderCode();
+            var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
+
+            var datas = response.Records.Select(data => new GameRecordListModle()
+            {
+                GameProviderCode = gameProviderCode,
+                GameProviderId = gameProviderId,
+                PlayerCode = data.PlayerName,
+                Status = _service.GetRoundStatus(data.State),
+                ClientStatus = _service.GetClientRound(data.State),
+                ExternalRoundId = data.SerialNumber,
+                ExternalGameId = data.ChannelId.ToString(),
+                ExternalCreatedOn = data.CreateTime.ToOffset(TimeSpan.FromHours(+8)),
+                ExternalClosedOn = data.UpdateTime.HasValue ? data.UpdateTime.Value.ToOffset(TimeSpan.FromHours(+8)) : null,
+                BetAmount = data.Cost,
+                ValidBetAmount = data.State == 1 ? 0 : data.Cost,
+                PlayerWinLoss = data.State == 1
                                ? 0
                                :
                                _service.GetRoundStatus(data.State) == RoundStatus.Closed
                                    ?
                                    data.PlayerPrize - data.Cost
                                    : null,
-                   Commission = 0,
-                   Turnover = data.State == 1 ? 0 : data.Cost,
-                   SettleAmount = data.PlayerPrize,
-                   TieBetAdjustment = null,
-                   ClientStatus = _service.GetClientRound(data.State),
-                   AdditionalData = JsonSerializer.Serialize(data),
-               })
+                Commission = 0,
+                Turnover = data.State == 1 ? 0 : data.Cost,
+                SettleAmount = data.PlayerPrize,
+                TieBetAdjustment = null,
+                AdditionalData = JsonSerializer.Serialize(data),
+            })
                .ToArray();
 
             return new() { Success = true, Datas = datas };

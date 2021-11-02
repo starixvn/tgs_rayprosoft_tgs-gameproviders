@@ -66,12 +66,18 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
                 };
             }
 
+            var gameProviderCode = _service.GetGameProviderCode();
+            var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
+
             var datas = gameRecords.Items.Select(data => new GameRecordListModle()
             {
-                ExternalRoundId = data.ExternalBetId.ToString(),
+                GameProviderCode = gameProviderCode,
+                GameProviderId = gameProviderId,
                 PlayerCode = data.LoginId,
-                ExternalGameId = data.GameType.ToString(),
                 Status = RoundStatus.Closed,
+                ClientStatus = _service.GetClientRound(data.Payout),
+                ExternalRoundId = data.ExternalBetId.ToString(),
+                ExternalGameId = data.GameType.ToString(),
                 ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.OrderTime), TimeSpan.FromHours(-4)),
                 ExternalClosedOn = new DateTimeOffset(DateTime.Parse(data.OrderTime), TimeSpan.FromHours(-4)),
                 BetAmount = data.BetAmount,
@@ -81,7 +87,6 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
                 Turnover = data.ValidAmount,
                 SettleAmount = data.ValidAmount + data.Payout,
                 TieBetAdjustment = null,
-                ClientStatus = _service.GetClientRound(data.Payout),
                 AdditionalData = JsonSerializer.Serialize(data)
             }).ToArray();
 

@@ -52,8 +52,5 @@ namespace TGS.GameProviders.ApiClients.TCG
             byte[] outputBytes = sha256.ComputeHash(inputBytes);
             return BitConverter.ToString(outputBytes).Replace("-", "").ToLower();
         }
-
-        public string GetPrefix(string prefix)
-            => $"{GameProviderType.TCG.ToLower()}.{prefix}";
     }
 }

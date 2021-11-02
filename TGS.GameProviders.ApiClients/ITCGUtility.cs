@@ -25,12 +25,5 @@
         /// <param name="hash_key">The hash key.</param>
         /// <returns></returns>
         string GetHash256(string datas, string hash_key);
-
-        /// <summary>
-        /// Gets the prefix.
-        /// </summary>
-        /// <param name="prefix">The prefix.</param>
-        /// <returns></returns>
-        string GetPrefix(string prefix);
     }
 }

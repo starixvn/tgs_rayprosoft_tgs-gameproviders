@@ -67,25 +67,30 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
                 return new() { Success = true };
             }
 
-            var datas = response.ArrayInvoice.Select(data =>
-                new GameRecordListModle()
-                {
-                    ExternalRoundId = data.BatchNo,
-                    PlayerCode = data.MemberCode,
-                    ExternalGameId = "1",
-                    Status = RoundStatus.Closed,
-                    ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(+8)),
-                    ExternalClosedOn = new DateTimeOffset(DateTime.Parse(data.ShowDivideDate), TimeSpan.FromHours(+8)),
-                    BetAmount = decimal.Parse(data.ShowAmount),
-                    ValidBetAmount = decimal.Parse(data.ShowAmount),
-                    PlayerWinLoss = decimal.Parse(data.ShowWin),
-                    Commission = 0,
-                    Turnover = decimal.Parse(data.ShowAmount),
-                    SettleAmount = decimal.Parse(data.ShowAmount) + decimal.Parse(data.ShowWin),
-                    TieBetAdjustment = null,
-                    ClientStatus = _service.GetClientRound(decimal.Parse(data.ShowWin)),
-                    AdditionalData = JsonSerializer.Serialize(data),
-                })
+            var gameProviderCode = _service.GetGameProviderCode();
+            var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
+
+            var datas = response.ArrayInvoice.Select(data => new GameRecordListModle()
+            {
+                GameProviderCode = gameProviderCode,
+                GameProviderId = gameProviderId,
+                PlayerCode = data.MemberCode,
+                Status = RoundStatus.Closed,
+                ClientStatus = _service.GetClientRound(decimal.Parse(data.ShowWin)),
+                ExternalRoundId = data.BatchNo,
+                ExternalGameId = "1",
+                ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(+8)),
+                ExternalClosedOn = new DateTimeOffset(DateTime.Parse(data.ShowDivideDate), TimeSpan.FromHours(+8)),
+                BetAmount = decimal.Parse(data.ShowAmount),
+                ValidBetAmount = decimal.Parse(data.ShowAmount),
+                PlayerWinLoss = decimal.Parse(data.ShowWin),
+                Commission = 0,
+                Turnover = decimal.Parse(data.ShowAmount),
+                SettleAmount = decimal.Parse(data.ShowAmount) + decimal.Parse(data.ShowWin),
+                TieBetAdjustment = null,
+
+                AdditionalData = JsonSerializer.Serialize(data),
+            })
                 .ToArray();
             return new() { Success = true, Datas = datas };
         }

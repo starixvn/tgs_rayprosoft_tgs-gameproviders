@@ -108,7 +108,7 @@ namespace TGS.GameProviders.Core.WGSports
             => _gameProviderRepository.GetGameProviderAsync(GameProviderType.WGSports);
 
         public string GetGameProviderCode()
-            => GameProviderType.WGHorse;
+            => GameProviderType.WGSports;
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {

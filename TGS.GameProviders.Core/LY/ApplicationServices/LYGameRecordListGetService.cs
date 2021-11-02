@@ -32,7 +32,6 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
 
         public async ValueTask<GameRecordListResult> GetAsync(LYGameRecordListQuery command, CancellationToken cancellationToken = default)
         {
-            var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
             var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode);
             var agentId = brandMerchant.AgentMappers.Where(x => x.CurrencyCode.IgnoreCaseEquals(command.CurrencyCode) && x.Status).FirstOrDefault()?.AgentId;
 
@@ -68,12 +67,18 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
                 return new() { Success = true };
             }
 
-            var datas = response.Data.List.GameID.Select((x, index) => new GameRecordListModle()
+            var gameProviderCode = _service.GetGameProviderCode();
+            var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
+
+            var datas = response.Data.List.GameID.Select((gameId, index) => new GameRecordListModle()
             {
-                ExternalRoundId = response.Data.List.GameID[index],
+                GameProviderCode = gameProviderCode,
+                GameProviderId = gameProviderId,
                 PlayerCode = response.Data.List.Accounts[index].Split('_')[1],
-                ExternalGameId = response.Data.List.KindID[index].ToString(),
                 Status = RoundStatus.Closed,
+                ClientStatus = _service.GetClientRound(Convert.ToDecimal(response.Data.List.Profit[index])),
+                ExternalGameId = response.Data.List.KindID[index].ToString(),
+                ExternalRoundId = response.Data.List.GameID[index],
                 ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(response.Data.List.GameStartTime[index]), TimeSpan.FromHours(+8)),
                 ExternalClosedOn = new DateTimeOffset(DateTime.Parse(response.Data.List.GameEndTime[index]), TimeSpan.FromHours(+8)),
                 BetAmount = Convert.ToDecimal(response.Data.List.AllBet[index]),
@@ -83,7 +88,6 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
                 Turnover = Convert.ToDecimal(response.Data.List.CellScore[index]),
                 SettleAmount = Convert.ToDecimal(response.Data.List.AllBet[index]) + Convert.ToDecimal(response.Data.List.Profit[index]),
                 TieBetAdjustment = null,
-                ClientStatus = _service.GetClientRound(Convert.ToDecimal(response.Data.List.Profit[index])),
                 AdditionalData = JsonSerializer.Serialize(new LYGameRecord()
                 {
                     GameID = response.Data.List.GameID[index],

@@ -63,15 +63,20 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
                 return new() { Success = true };
             }
 
+            var gameProviderCode = _service.GetGameProviderCode();
+            var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
+
             var datas = response.BetInfo
                 .Where(data => data.Reference.IgnoreCaseNotContains("不接受"))
-                .Select(data =>
-                new GameRecordListModle()
+                .Select(data => new GameRecordListModle()
                 {
-                    ExternalRoundId = data.Reference,
+                    GameProviderCode = gameProviderCode,
+                    GameProviderId = gameProviderId,
                     PlayerCode = data.Username,
-                    ExternalGameId = "1",
                     Status = data.InitData.Win.IgnoreCaseEquals("0") ? RoundStatus.Open : RoundStatus.Closed,
+                    ClientStatus = data.InitData.Win.IgnoreCaseEquals("0") ? ClientRoundStatus.Open : _service.GetClientRound(decimal.Parse(data.Result)),
+                    ExternalRoundId = data.Reference,
+                    ExternalGameId = "1",
                     ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(-4)),
                     ExternalClosedOn = data.InitData.Win.IgnoreCaseEquals("0") ? null : new DateTimeOffset(DateTime.Parse(data.SettleDate), TimeSpan.FromHours(-4)),
                     BetAmount = decimal.Parse(data.InitData.BetAmount),
@@ -81,7 +86,7 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
                     Turnover = data.InitData.Win.IgnoreCaseEquals("0") ? null : decimal.Parse(data.InitData.BetAmount),
                     SettleAmount = decimal.Parse(data.InitData.BetAmount) + decimal.Parse(data.Result),
                     TieBetAdjustment = null,
-                    ClientStatus = data.InitData.Win.IgnoreCaseEquals("0") ? ClientRoundStatus.Open : _service.GetClientRound(decimal.Parse(data.Result)),
+
                     AdditionalData = JsonSerializer.Serialize(data),
                 })
                 .ToArray();
