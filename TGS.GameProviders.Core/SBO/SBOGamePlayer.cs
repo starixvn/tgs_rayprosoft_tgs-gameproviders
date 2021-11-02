@@ -26,13 +26,13 @@ namespace TGS.GameProviders.Core.SBO
             string playerCode,
             string currencyCode)
         {
-            var request = new SBORegisterPlayerRequest(configuration.AgentPrefix, brandCode, currencyCode)
+            var request = new SBOCreatePlayerRequest(configuration.AgentPrefix, brandCode, currencyCode)
             {
                 CompanyKey = configuration.CompanyKey,
                 PlayerCode = playerCode
             };
 
-            var response = await _client.RegisterPlayerAsync(configuration.ApiUrl, request).ConfigureAwait(false);
+            var response = await _client.CreatePlayerAsync(configuration.ApiUrl, request).ConfigureAwait(false);
 
             return response.Error.Code == SBOApiErrorCode.None;
         }

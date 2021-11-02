@@ -8,9 +8,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Tgs.Logging;
 using TGS.GameProviders.ApiClients.SBO.Models;
 using TGS.GameProviders.Domains.Extensions;
+using Tgs.Logging;
 
 namespace TGS.GameProviders.ApiClients.SBO
 {
@@ -29,6 +29,13 @@ namespace TGS.GameProviders.ApiClients.SBO
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         }
+
+        public ValueTask<SBOCreateAgentResponse> CreateAgentAsync(Uri apiUrl, SBOCreateAgentRequest request)
+            => PostAsync<SBOCreateAgentRequest, SBOCreateAgentResponse>(
+                apiUrl,
+                "/web-root/restricted/agent/register-agent.aspx",
+                request,
+                "CreateAgent");
 
         public ValueTask<SBOGetBetHistoryResponse> GetBetHistoryAsync(Uri apiUrl, SBOGetBetHistoryRequest request)
         {
@@ -74,12 +81,12 @@ namespace TGS.GameProviders.ApiClients.SBO
                 request,
                 "Logout");
 
-        public ValueTask<SBORegisterPlayerResponse> RegisterPlayerAsync(Uri apiUrl, SBORegisterPlayerRequest request)
-            => PostAsync<SBORegisterPlayerRequest, SBORegisterPlayerResponse>(
+        public ValueTask<SBOCreatePlayerResponse> CreatePlayerAsync(Uri apiUrl, SBOCreatePlayerRequest request)
+            => PostAsync<SBOCreatePlayerRequest, SBOCreatePlayerResponse>(
                 apiUrl,
                 "/web-root/restricted/player/register-player.aspx",
                 request,
-                "RegisterPlayer");
+                "CreatePlayer");
 
         public ValueTask<SBOUpdatePlayerBetLimitsResponse> UpdatePlayerBetLimitsAsync(Uri apiUrl,
             SBOUpdatePlayerBetLimitsRequest request)
@@ -109,7 +116,7 @@ namespace TGS.GameProviders.ApiClients.SBO
         }
 
         private async ValueTask<TResponse> PostAsync<TRequest, TResponse>(
-                    Uri apiUrl,
+            Uri apiUrl,
             string path,
             TRequest request,
             string action,

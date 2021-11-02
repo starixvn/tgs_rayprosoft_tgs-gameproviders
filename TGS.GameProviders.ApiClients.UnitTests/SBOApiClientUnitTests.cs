@@ -17,7 +17,8 @@ namespace TGS.GameProviders.ApiClients.UnitTests
 
         private readonly string _companyKey = "34B2C4ED616F4E7B965EAE0861A3F92E";
         private readonly string _brandCode = "GPI";
-        private readonly string _currencyCode = "CNY";
+        private readonly string _playerCurrencyCode = "CNY";
+        private readonly string _gameProviderCurrencyCode = "CNY";
         private readonly string _agentPrefix = "STGTGS";
         private readonly Uri _apiUrl = new("https://ex-api-demo-yy.568win.com");
 
@@ -32,17 +33,34 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         }
 
         [Test]
+        public async Task CreateAgentAsync()
+        {
+            var agentId =
+                $"{_agentPrefix}{_brandCode.ToUpper()}{_playerCurrencyCode.Replace("_", string.Empty).ToUpper()}";
+
+            var request = new SBOCreateAgentRequest
+            {
+                CompanyKey = _companyKey,
+                AgentId = agentId,
+                CurrencyCode = _gameProviderCurrencyCode
+            };
+
+            var response = await _client.CreateAgentAsync(_apiUrl, request).ConfigureAwait(false);
+        }
+
+
+        [Test]
         public async Task CreatePlayerAsync()
         {
             var playerCode = "4udwxysersic";
 
-            var request = new SBORegisterPlayerRequest(_agentPrefix, _brandCode, _currencyCode)
+            var request = new SBOCreatePlayerRequest(_agentPrefix, _brandCode, _playerCurrencyCode)
             {
                 CompanyKey = _companyKey,
                 PlayerCode = playerCode
             };
 
-            var response = await _client.RegisterPlayerAsync(_apiUrl, request).ConfigureAwait(false);
+            var response = await _client.CreatePlayerAsync(_apiUrl, request).ConfigureAwait(false);
         }
 
         [Test]
