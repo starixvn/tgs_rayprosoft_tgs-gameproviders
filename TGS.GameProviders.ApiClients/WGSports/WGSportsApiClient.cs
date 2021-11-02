@@ -93,7 +93,6 @@ namespace TGS.GameProviders.ApiClients.WGSports
             return GetAsync<string, WGSportsResponse>(url, playerCode, "Logout");
         }
 
-
         private async ValueTask<TResult> GetAsync<TSource, TResult>(Uri url, TSource request, string logPrefix)
         {
             logPrefix = $"{nameof(WGSportsApiClient).ToLower()}.{logPrefix}";

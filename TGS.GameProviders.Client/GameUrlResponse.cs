@@ -2,7 +2,7 @@
 
 namespace TGS.GameProviders.Client
 {
-    public class GameUrlResponse
+    internal record GameUrlResponse
     {
         public Uri? Url { get; set; }
     }

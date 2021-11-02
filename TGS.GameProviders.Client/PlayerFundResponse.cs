@@ -1,6 +1,6 @@
 ﻿namespace TGS.GameProviders.Client
 {
-    public record PlayerFundResponse
+    internal record PlayerFundResponse
     {
         /// <summary>
         /// The order identifier

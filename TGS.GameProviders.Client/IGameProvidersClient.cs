@@ -5,31 +5,19 @@ namespace TGS.GameProviders.Client
 {
     public interface IGameProvidersClient
     {
-        ValueTask<GameUrlResponse?> GameURLAsync(string gameProviderCode, GameUrlRequest source);
+        ValueTask<Uri?> GameURLAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl);
 
-        ValueTask KickPlayerAsync(string gameProviderCode, KickPlayerRequest source);
+        ValueTask KickPlayerAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode);
 
-        ValueTask<PlayerBalanceResponse?> PlayerBalanceAsync(string gameProviderCode, PlayerBalanceRequest source);
+        ValueTask<decimal?> PlayerBalanceAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode);
 
-        ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(string gameProviderCode, PlayerFundCheckingRequest source);
+        ValueTask<bool?> PlayerFundCheckingAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId);
 
-        ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(string gameProviderCode, VRPlayerFundCheckingRequest source);
+        ValueTask<bool?> PlayerFundCheckingByVRAsync(string brandCode, string playerCode, string currencyCode, string orderId, DateTimeOffset startTime, DateTimeOffset endTime);
 
-        ValueTask<PlayerFundResponse?> PlayerFundInAsync(string gameProviderCode, PlayerFundRequest source);
+        ValueTask<string?> PlayerFundInAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount);
 
-        ValueTask<PlayerFundResponse?> PlayerFundOutAsync(string gameProviderCode, PlayerFundRequest source);
-
-        ValueTask<GameRecordListResponse?> BigGamingFishingGameRecordListAsync(string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows);
-
-        ValueTask<GameRecordListResponse?> KYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime);
-
-        ValueTask<GameRecordListResponse?> LYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime);
-
-        ValueTask<GameRecordListResponse?> VRGameRecordListAsync(string brandCode, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows);
-
-        ValueTask<GameRecordListResponse?> WGFMGameRecordListAsync(bool isSettlement, DateTimeOffset startTime, DateTimeOffset endTime);
-
-        ValueTask<GameRecordListResponse?> WGVIAGameRecordListAsync(DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows);
+        ValueTask<string?> PlayerFundOutAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount);
 
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace TGS.GameProviders.Client
 {
-    public record PlayerFundCheckingResponse
+    internal record PlayerFundCheckingResponse
     {
         public bool OrderStatus { get; init; }
     }

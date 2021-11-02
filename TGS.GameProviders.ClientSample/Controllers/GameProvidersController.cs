@@ -43,12 +43,50 @@ namespace TGS.GameProviders.ClientSample.Controllers
             KickPlayerViewModel model)
             => _client.KickPlayerAsync(
                 model.GameProviderCode,
-                new()
-                {
-                    BrandCode = model.BrandCode,
-                    PlayerCode = model.PlayerCode,
-                    CurrencyCode = model.CurrencyCode
-                });
+                model.BrandCode,
+                model.PlayerCode,
+                model.CurrencyCode
+                );
+
+        /// <summary>
+        /// Kicks the player asynchronous.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Example
+        ///     Get
+        ///         {
+        ///             "gameProviderCode": "ky",
+        ///             "gameType": 8,
+        ///             "gameId": 2000001,
+        ///             "brandCode": "GPI",
+        ///             "playerCode": "4ucmqplxb029",
+        ///             "currencyCode": "HKD",
+        ///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        ///             "platformType": 0,
+        ///             "language": "zh-CN",
+        ///             "ipAddress": "127.0.0.1",
+        ///             "backUrl": "https://dev-t1.rpgp.cc/"
+        ///         }
+        /// </remarks>
+        [HttpGet("GameURL")]
+        public ValueTask<Uri?> GameURLAsync(
+           [FromQuery] GameUrlViewModel model)
+        => _client.GameURLAsync(
+                    model.GameProviderCode,
+                    model.GameType,
+                    model.GameId,
+                    model.BrandCode,
+                    model.PlayerCode,
+                    model.CurrencyCode,
+                    model.LoginRecordId,
+                    model.PlatformType,
+                    model.Language,
+                    model.IPAddress,
+                    model.BackUrl
+                    );
+
 
         /// <summary>
         /// Players the balance asynchronous.
@@ -57,7 +95,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <returns></returns>
         /// <remarks>
         /// Example
-        ///     Post
+        ///     Get
         ///         {
         ///             "gameProviderCode": "ky",
         ///             "brandCode": "GPI",
@@ -65,16 +103,14 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///             "currencyCode": "CNY"
         ///         }
         /// </remarks>
-        [HttpPost("PlayerBalance")]
-        public ValueTask<PlayerBalanceResponse?> PlayerBalanceAsync(
-            PlayerBalanceViewModel model)
+        [HttpGet("PlayerBalance")]
+        public ValueTask<decimal?> PlayerBalanceAsync(
+            [FromQuery] PlayerBalanceViewModel model)
             => _client.PlayerBalanceAsync(
                 model.GameProviderCode,
-                new()
-                {
-                    BrandCode = model.BrandCode,
-                    PlayerCode = model.PlayerCode,
-                    CurrencyCode = model.CurrencyCode
-                });
+                model.BrandCode,
+                model.PlayerCode,
+                model.CurrencyCode
+                );
     }
 }
