@@ -5,18 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
-using TGS.GameProviders.Core.BigGaming.ApplicationServices;
+using TGS.GameProviders.Core.Evolution.ApplicationServices;
 using TGS.GameProviders.ViewModels;
 
-namespace TGS.GameProviders.Controllers.GameUrl
+namespace TGS.GameProviders.Controllers
 {
-    public class BGController : GameUrlController<BigGamingGameUrlQuery>
+    [ApiController]
+    [Route("api/[controller]")]
+    public class EVOController : ControllerBase,
+        IGameUrlHandler<EvolutionGameUrlQuery>
     {
-        private readonly ILogger<BGController> _logger;
+        private readonly ILogger<EVOController> _logger;
         private readonly IMapper _mapper;
 
-        public BGController(
-            ILogger<BGController> logger,
+        public EVOController(
+            ILogger<EVOController> logger,
             IMapper mapper)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -35,35 +38,49 @@ namespace TGS.GameProviders.Controllers.GameUrl
         ///     LiveDealerLobby
         ///     {
         ///         "gameType": 6,
-        ///         "gameId": 800001,
+        ///         "gameId": 1400001,
         ///         "brandCode": "GPI",
         ///         "playerCode": "4ucmqplxb029",
         ///         "currencyCode": "CNY",
-        ///         "loginRecordId": "1c4ef822-e85a-4eda-581e-08d99762447f",
+        ///         "loginRecordId": "5bf848a4-ad3a-4cfb-53f6-08d99762447f",
         ///         "platformType": 0,
         ///         "language": "zh-CN",
         ///         "ipAddress": "127.0.0.1",
         ///         "backUrl": "https://dev-t1.rpgp.cc/"
         ///     }
-        ///     Fishing
+        ///     RT Slot
         ///     {
-        ///         "gameType": 9,
-        ///         "gameId": 800017,
+        ///         "gameType": 15,
+        ///         "gameId": 1400225,
         ///         "brandCode": "GPI",
         ///         "playerCode": "4ucmqplxb029",
         ///         "currencyCode": "CNY",
-        ///         "loginRecordId": "1c4ef822-e85a-4eda-581e-08d99762447f",
+        ///         "loginRecordId": "5bf848a4-ad3a-4cfb-53f6-08d99762447f",
+        ///         "platformType": 0,
+        ///         "language": "zh-CN",
+        ///         "ipAddress": "127.0.0.1",
+        ///         "backUrl": "https://dev-t1.rpgp.cc/"
+        ///     }
+        ///     NT Slot
+        ///     {
+        ///         "gameType": 15,
+        ///         "gameId": 1400074,
+        ///         "brandCode": "GPI",
+        ///         "playerCode": "4ucmqplxb029",
+        ///         "currencyCode": "CNY",
+        ///         "loginRecordId": "5bf848a4-ad3a-4cfb-53f6-08d99762447f",
         ///         "platformType": 0,
         ///         "language": "zh-CN",
         ///         "ipAddress": "127.0.0.1",
         ///         "backUrl": "https://dev-t1.rpgp.cc/"
         ///     }
         /// </remarks>
-        public override async ValueTask<GameUrlResponse?> GameUrlAsync(
-            [FromServices] IGetService<BigGamingGameUrlQuery, GameUrlResult> getService,
+        [HttpPost("GameUrl")]
+        public async ValueTask<GameUrlResponse?> GameUrlAsync(
+            [FromServices] IGetService<EvolutionGameUrlQuery, GameUrlResult> getService,
             GameUrlRequest request)
         {
-            var result = await getService.GetAsync(_mapper.Map<BigGamingGameUrlQuery>(request)).ConfigureAwait(false);
+            var result = await getService.GetAsync(_mapper.Map<EvolutionGameUrlQuery>(request)).ConfigureAwait(false);
             return result == null ? null : _mapper.Map<GameUrlResponse>(result);
         }
     }

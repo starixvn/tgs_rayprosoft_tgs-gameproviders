@@ -8,9 +8,13 @@ using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.TCG.ApplicationServices;
 using TGS.GameProviders.ViewModels;
 
-namespace TGS.GameProviders.Controllers.GameUrl
+namespace TGS.GameProviders.Controllers
 {
-    public class TCGController : GameUrlController<TCGGameUrlQuery>
+    [ApiController]
+    [Route("api/[controller]")]
+    public class TCGController : ControllerBase,
+        IGameUrlHandler<TCGGameUrlQuery>,
+        IKickPlayerHandler<TCGKickPlayerCommand>
     {
         private readonly ILogger<TCGController> _logger;
         private readonly IMapper _mapper;
@@ -72,12 +76,34 @@ namespace TGS.GameProviders.Controllers.GameUrl
         ///         "backUrl": "https://dev-t1.rpgp.cc/"
         ///     }
         /// </remarks>
-        public override async ValueTask<GameUrlResponse?> GameUrlAsync(
+        [HttpPost("GameUrl")]
+        public async ValueTask<GameUrlResponse?> GameUrlAsync(
             [FromServices] IGetService<TCGGameUrlQuery, GameUrlResult> getService,
             GameUrlRequest request)
         {
             var result = await getService.GetAsync(_mapper.Map<TCGGameUrlQuery>(request)).ConfigureAwait(false);
             return result == null ? null : _mapper.Map<GameUrlResponse>(result);
         }
+
+        /// <summary>
+        /// Kicks the player asynchronous.
+        /// </summary>
+        /// <param name="commandService">The command service.</param>
+        /// <param name="request">The request.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Example
+        /// Post
+        ///     {
+        ///         "brandCode": "GPI",
+        ///         "playerCode": "4ucmqplxb029",
+        ///         "currencyCode": "CNY"
+        ///     }
+        /// </remarks>
+        [HttpPost("KickPlayer")]
+        public ValueTask KickPlayerAsync(
+            [FromServices] ICommandService<TCGKickPlayerCommand> commandService,
+            KickPlayerRequest request)
+            => commandService.ExecuteAsync(_mapper.Map<TCGKickPlayerCommand>(request));
     }
 }

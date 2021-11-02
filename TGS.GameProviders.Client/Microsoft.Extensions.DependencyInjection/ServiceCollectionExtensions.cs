@@ -10,7 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddGameProvidersClient(
             this IServiceCollection services,
             Action<GameProvidersClientOptions, IServiceProvider> configure)
-        {
+       =>
             services
               .AddOptions<GameProvidersClientOptions>()
               .Configure(configure)
@@ -27,25 +27,5 @@ namespace Microsoft.Extensions.DependencyInjection
               })
               .Services
               .AddTransient<IGameProvidersClient>(sp => sp.GetRequiredService<GameProvidersClient>());
-
-            services
-              .AddOptions<GameProvidersClientOptions>()
-              .Configure(configure)
-              .Services
-              .AddHttpClient<GameRecordListClient, GameRecordListClient>(
-                  (httpClient, sp) => ActivatorUtilities.CreateInstance<GameRecordListClient>(
-                      sp,
-                      httpClient,
-                      sp.GetRequiredService<IOptions<GameProvidersClientOptions>>().Value.JsonSerializerOptions!))
-              .ConfigureHttpClient((sp, httpClient) =>
-              {
-                  var options = sp.GetRequiredService<IOptions<GameProvidersClientOptions>>().Value;
-                  httpClient.BaseAddress = options.BaseUrl;
-              })
-              .Services
-              .AddTransient<IGameRecordListClient>(sp => sp.GetRequiredService<GameRecordListClient>());
-
-            return services;
-        }
     }
 }

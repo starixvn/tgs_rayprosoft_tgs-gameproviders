@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace TGS.GameProviders.ClientSample.Models
+﻿namespace TGS.GameProviders.ClientSample.Models
 {
     public record PlayerBalanceViewModel
     {

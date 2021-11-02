@@ -3,15 +3,18 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.SBO.ApplicationServices;
 using TGS.GameProviders.ViewModels;
-using Tgs.ServiceUtility;
 
-namespace TGS.GameProviders.Controllers.GameUrl
+namespace TGS.GameProviders.Controllers
 {
     [ApiController]
-    public class SBOController : GameUrlController<SBOGameUrlQuery>
+    [Route("api/[controller]")]
+    public class SBOController : ControllerBase,
+        IGameUrlHandler<SBOGameUrlQuery>,
+        IKickPlayerHandler<SBOKickPlayerCommand>
     {
         private readonly ILogger<SBOController> _logger;
         private readonly IMapper _mapper;
@@ -46,14 +49,34 @@ namespace TGS.GameProviders.Controllers.GameUrl
         ///    "backUrl": "https://dev-t1.rpgp.cc"
         /// }
         /// </remarks>
-        public override async ValueTask<GameUrlResponse?> GameUrlAsync(
+        [HttpPost("GameUrl")]
+        public async ValueTask<GameUrlResponse?> GameUrlAsync(
             [FromServices] IGetService<SBOGameUrlQuery, GameUrlResult> getService,
             GameUrlRequest request)
         {
-            var query = _mapper.Map<SBOGameUrlQuery>(request);
-            var result = await getService.GetAsync(query).ConfigureAwait(false);
-
+            var result = await getService.GetAsync(_mapper.Map<SBOGameUrlQuery>(request)).ConfigureAwait(false);
             return result == null ? null : _mapper.Map<GameUrlResponse>(result);
         }
+
+        /// <summary>
+        /// Kicks the player asynchronous.
+        /// </summary>
+        /// <param name="commandService">The command service.</param>
+        /// <param name="request">The request.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Example
+        /// Post
+        ///     {
+        ///         "brandCode": "GPI",
+        ///         "playerCode": "4ucmqplxb029",
+        ///         "currencyCode": "CNY"
+        ///     }
+        /// </remarks>
+        [HttpPost("KickPlayer")]
+        public ValueTask KickPlayerAsync(
+            [FromServices] ICommandService<SBOKickPlayerCommand> commandService,
+            KickPlayerRequest request)
+            => commandService.ExecuteAsync(_mapper.Map<SBOKickPlayerCommand>(request));
     }
 }

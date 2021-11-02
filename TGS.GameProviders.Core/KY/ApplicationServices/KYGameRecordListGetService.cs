@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.ApiClients;
 using TGS.GameProviders.ApiClients.KY.Models;
+using TGS.GameProviders.ApiClients.KY.Models.Commons;
 using TGS.GameProviders.Domains.Extensions;
 using TGS.GameProviders.Repositories.Domains;
 
@@ -83,7 +84,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
                 SettleAmount = Convert.ToDecimal(response.Data.List.AllBet[i]) + Convert.ToDecimal(response.Data.List.Profit[i]),
                 TieBetAdjustment = null,
                 ClientStatus = _service.GetClientRound(Convert.ToDecimal(response.Data.List.Profit[i])),
-                AdditionalData = JsonSerializer.Serialize(new
+                AdditionalData = JsonSerializer.Serialize(new KYGameRecord()
                 {
                     GameID = response.Data.List.GameID[i],
                     Account = response.Data.List.Accounts[i],

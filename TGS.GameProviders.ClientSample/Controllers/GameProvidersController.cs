@@ -49,6 +49,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
                     PlayerCode = model.PlayerCode,
                     CurrencyCode = model.CurrencyCode
                 });
+
         /// <summary>
         /// Players the balance asynchronous.
         /// </summary>
