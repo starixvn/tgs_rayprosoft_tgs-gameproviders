@@ -68,40 +68,40 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
                 return new() { Success = true };
             }
 
-            var datas = response.Data.List.GameID.Select((x, i) => new GameRecordListModle()
+            var datas = response.Data.List.GameID.Select((x, index) => new GameRecordListModle()
             {
-                ExternalRoundId = response.Data.List.GameID[i],
-                PlayerCode = response.Data.List.Accounts[i].Split('_')[1],
-                ExternalGameId = response.Data.List.KindID[i].ToString(),
+                ExternalRoundId = response.Data.List.GameID[index],
+                PlayerCode = response.Data.List.Accounts[index].Split('_')[1],
+                ExternalGameId = response.Data.List.KindID[index].ToString(),
                 Status = RoundStatus.Closed,
-                ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(response.Data.List.GameStartTime[i]), TimeSpan.FromHours(+8)),
-                ExternalClosedOn = new DateTimeOffset(DateTime.Parse(response.Data.List.GameEndTime[i]), TimeSpan.FromHours(+8)),
-                BetAmount = Convert.ToDecimal(response.Data.List.AllBet[i]),
-                ValidBetAmount = Convert.ToDecimal(response.Data.List.AllBet[i]),
-                PlayerWinLoss = Convert.ToDecimal(response.Data.List.Profit[i]),
-                Commission = Convert.ToDecimal(response.Data.List.Revenue[i]),
-                Turnover = Convert.ToDecimal(response.Data.List.CellScore[i]),
-                SettleAmount = Convert.ToDecimal(response.Data.List.AllBet[i]) + Convert.ToDecimal(response.Data.List.Profit[i]),
+                ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(response.Data.List.GameStartTime[index]), TimeSpan.FromHours(+8)),
+                ExternalClosedOn = new DateTimeOffset(DateTime.Parse(response.Data.List.GameEndTime[index]), TimeSpan.FromHours(+8)),
+                BetAmount = Convert.ToDecimal(response.Data.List.AllBet[index]),
+                ValidBetAmount = Convert.ToDecimal(response.Data.List.AllBet[index]),
+                PlayerWinLoss = Convert.ToDecimal(response.Data.List.Profit[index]),
+                Commission = Convert.ToDecimal(response.Data.List.Revenue[index]),
+                Turnover = Convert.ToDecimal(response.Data.List.CellScore[index]),
+                SettleAmount = Convert.ToDecimal(response.Data.List.AllBet[index]) + Convert.ToDecimal(response.Data.List.Profit[index]),
                 TieBetAdjustment = null,
-                ClientStatus = _service.GetClientRound(Convert.ToDecimal(response.Data.List.Profit[i])),
+                ClientStatus = _service.GetClientRound(Convert.ToDecimal(response.Data.List.Profit[index])),
                 AdditionalData = JsonSerializer.Serialize(new LYGameRecord()
                 {
-                    GameID = response.Data.List.GameID[i],
-                    Account = response.Data.List.Accounts[i],
-                    ServerID = response.Data.List.ServerID[i],
-                    KindID = response.Data.List.KindID[i],
-                    TableID = response.Data.List.TableID[i],
-                    ChairID = response.Data.List.ChairID[i],
-                    UserCount = response.Data.List.UserCount[i],
-                    CellScore = Convert.ToDecimal(response.Data.List.CellScore[i]),
-                    AllBet = Convert.ToDecimal(response.Data.List.AllBet[i]),
-                    Profit = Convert.ToDecimal(response.Data.List.Profit[i]),
-                    Revenue = Convert.ToDecimal(response.Data.List.Revenue[i]),
-                    GameStartTime = new DateTimeOffset(DateTime.Parse(response.Data.List.GameStartTime[i]), TimeSpan.FromHours(+8)),
-                    GameEndTime = new DateTimeOffset(DateTime.Parse(response.Data.List.GameEndTime[i]), TimeSpan.FromHours(+8)),
-                    CardValue = response.Data.List.CardValue[i],
-                    ChannelID = Convert.ToInt32(response.Data.List.ChannelID[i]),
-                    LineCode = response.Data.List.LineCode[i]
+                    GameID = response.Data.List.GameID[index],
+                    Account = response.Data.List.Accounts[index],
+                    ServerID = response.Data.List.ServerID[index],
+                    KindID = response.Data.List.KindID[index],
+                    TableID = response.Data.List.TableID[index],
+                    ChairID = response.Data.List.ChairID[index],
+                    UserCount = response.Data.List.UserCount[index],
+                    CellScore = Convert.ToDecimal(response.Data.List.CellScore[index]),
+                    AllBet = Convert.ToDecimal(response.Data.List.AllBet[index]),
+                    Profit = Convert.ToDecimal(response.Data.List.Profit[index]),
+                    Revenue = Convert.ToDecimal(response.Data.List.Revenue[index]),
+                    GameStartTime = new DateTimeOffset(DateTime.Parse(response.Data.List.GameStartTime[index]), TimeSpan.FromHours(+8)),
+                    GameEndTime = new DateTimeOffset(DateTime.Parse(response.Data.List.GameEndTime[index]), TimeSpan.FromHours(+8)),
+                    CardValue = response.Data.List.CardValue[index],
+                    ChannelID = Convert.ToInt32(response.Data.List.ChannelID[index]),
+                    LineCode = response.Data.List.LineCode[index]
                 })
             }).ToArray();
 

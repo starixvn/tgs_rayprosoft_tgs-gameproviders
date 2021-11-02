@@ -43,8 +43,8 @@ namespace TGS.GameProviders.Controllers
         ///         {
         ///             "brandCode": "Default",
         ///             "currencyCode": "HKD",
-        ///             "startTime": "2021-11-01T07:00:00+08:00",
-        ///             "endTime": "2021-11-01T07:40:00+08:00"
+        ///             "startTime": "2021-11-02T03:36:03.1588192+00:00",
+        ///             "endTime": "2021-11-02T03:46:03.1588192+00:00"
         ///         }
         /// </remarks>
         [HttpPost("GameRecordList")]

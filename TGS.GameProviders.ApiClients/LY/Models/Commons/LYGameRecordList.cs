@@ -15,7 +15,8 @@ namespace TGS.GameProviders.ApiClients.LY.Models.Commons
         [JsonPropertyName("TableID")]
         public int[] TableID { get; init; }
         [JsonPropertyName("ChairID")]
-        public int[] ChairID { get; init; }
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+        public int?[] ChairID { get; init; }
         [JsonPropertyName("UserCount")]
         public int[] UserCount { get; init; }
         [JsonPropertyName("CellScore")]
