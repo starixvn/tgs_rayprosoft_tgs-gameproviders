@@ -13,6 +13,7 @@ using TGS.GameProviders.Core.TCG;
 using TGS.GameProviders.Core.VR;
 using TGS.GameProviders.Core.WGHorse;
 using TGS.GameProviders.Core.WGSports;
+using TGS.GameProviders.Core.WMCasino;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -70,6 +71,12 @@ namespace Microsoft.Extensions.DependencyInjection
             services
                 .AddTransient<ISBOService, SBOService>()
                 .AddTransient<ISBOGamePlayer, SBOGamePlayer>();
+
+            services
+                .AddTransient<IWMCasinoService, WMCasinoService>()
+                .AddTransient<IWMCasinoAgentMapper, WMCasinoAgentMapper>()
+                .AddTransient<IWMCasinoUtility, WMCasinoUtility>()
+                .AddTransient<IWMCasinoGamePlayer, WMCasinoGamePlayer>();
 
             return services;
         }
