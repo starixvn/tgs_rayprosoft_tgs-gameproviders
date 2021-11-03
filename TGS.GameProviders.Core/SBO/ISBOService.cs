@@ -13,11 +13,7 @@ namespace TGS.GameProviders.Core.SBO
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 
         ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
-
-        ValueTask<GetPlayer> GetPlayerAsync(string playerCode);
-
-        string GetPortfolio(GameType gameType);
-
+        
         ValueTask<SBOConfiguration> GetSettingConfigurationAsync();
     }
 }

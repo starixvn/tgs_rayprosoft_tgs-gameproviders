@@ -1,4 +1,6 @@
-﻿using TGS.GameProviders.Core.BigGaming;
+﻿// ReSharper disable CheckNamespace
+
+using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Evolution;
 using TGS.GameProviders.Core.KY;
 using TGS.GameProviders.Core.LY;
@@ -27,31 +29,60 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class GameProvidersServicesConfigurationExtensions
     {
-        public static IServiceCollection AddGameProvidersServices(this IServiceCollection services)
-            => services
-            .AddTransient<IKYService, KYService>()
-            .AddTransient<IVRService, VRService>()
-            .AddTransient<IVRGamePlayer, VRGamePlayer>()
-            .AddTransient<IWGHorseService, WGHorseService>()
-            .AddTransient<IWGHorseGamePlayer, WGHorseGamePlayer>()
-            .AddTransient<IWGSportsService, WGSportsService>()
-            .AddTransient<IWGSportsGamePlayer, WGSportsGamePlayer>()
-            .AddTransient<IBigGamingService, BigGamingService>()
-            .AddTransient<IBigGamingGamePlayer, BigGamingGamePlayer>()
-            .AddTransient<IBigGamingGameUrl, BigGamingGameUrl>()
-            .AddTransient<ISexyGamingService, SexyGamingService>()
-            .AddTransient<ISexyGamingGamePlayer, SexyGamingGamePlayer>()
-            .AddTransient<ISkywindService, SkywindService>()
-            .AddTransient<ISkywindAccessToken, SkywindAccessToken>()
-            .AddTransient<ITCGService, TCGService>()
-            .AddTransient<ITCGGamePlayer, TCGGamePlayer>()
-            .AddTransient<IEvolutionService, EvolutionService>()
-            .AddTransient<ILYService, LYService>()
-            .AddTransient<ISBOService, SBOService>()
-            .AddTransient<ISBOGamePlayer, SBOGamePlayer>()
-            .AddTransient<IWMCasinoService, WMCasinoService>()
-            .AddTransient<IWMCasinoAgentMapper, WMCasinoAgentMapper>()
-            .AddTransient<IWMCasinoUtility, WMCasinoUtility>()
-            .AddTransient<IWMCasinoGamePlayer, WMCasinoGamePlayer>();
+        public static IServiceCollection AddGameProvidersServices(
+            this IServiceCollection services)
+        {
+            services
+                .AddTransient<IKYService, KYService>();
+
+            services
+                .AddTransient<IVRService, VRService>();
+
+            services
+                .AddTransient<IVRGamePlayer, VRGamePlayer>();
+
+            services
+                .AddTransient<IWGHorseService, WGHorseService>()
+                .AddTransient<IWGHorseGamePlayer, WGHorseGamePlayer>()
+                .AddTransient<IWGSportsService, WGSportsService>()
+                .AddTransient<IWGSportsGamePlayer, WGSportsGamePlayer>();
+
+            services
+                .AddTransient<IBigGamingService, BigGamingService>()
+                .AddTransient<IBigGamingGamePlayer, BigGamingGamePlayer>()
+                .AddTransient<IBigGamingGameUrl, BigGamingGameUrl>();
+
+            services
+                .AddTransient<ISexyGamingService, SexyGamingService>()
+                .AddTransient<ISexyGamingGamePlayer, SexyGamingGamePlayer>();
+
+            services
+                .AddTransient<ISkywindService, SkywindService>()
+                .AddTransient<ISkywindAccessToken, SkywindAccessToken>();
+
+            services
+                .AddTransient<ITCGService, TCGService>()
+                .AddTransient<ITCGGamePlayer, TCGGamePlayer>();
+
+            services
+                .AddTransient<IEvolutionService, EvolutionService>();
+
+            services
+                .AddTransient<ILYService, LYService>();
+
+            services
+                .AddTransient<ISBOService, SBOService>()
+                .AddTransient<ISBOGamePlayer, SBOGamePlayer>()
+                .AddTransient<ISBOUtility, SBOUtility>()
+                .AddTransient<ISBOGameAgent, SBOGameAgent>();
+
+            services
+                .AddTransient<IWMCasinoService, WMCasinoService>()
+                .AddTransient<IWMCasinoAgentMapper, WMCasinoAgentMapper>()
+                .AddTransient<IWMCasinoUtility, WMCasinoUtility>()
+                .AddTransient<IWMCasinoGamePlayer, WMCasinoGamePlayer>();
+
+            return services;
+        }
     }
 }

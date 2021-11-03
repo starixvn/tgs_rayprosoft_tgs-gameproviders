@@ -17,17 +17,19 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
         private readonly ILogger<SBOGameUrlGetService> _logger;
         private readonly ISBOGamePlayer _playerService;
         private readonly ISBOService _service;
+        private readonly ISBOUtility _utility;
 
-        public SBOGameUrlGetService(
-            ILogger<SBOGameUrlGetService> logger,
+        public SBOGameUrlGetService(ILogger<SBOGameUrlGetService> logger,
             ISBOService service,
-            ISBOApiClient client,
-            ISBOGamePlayer playerService)
+            ISBOGamePlayer playerService,
+            ISBOUtility utility,
+            ISBOApiClient client)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
+            _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         }
 
         public async ValueTask<GameUrlResult> GetAsync(SBOGameUrlQuery query,
@@ -54,9 +56,14 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
                 _ => default
             };
 
-            return new()
+            if (url == null)
             {
-                Url = new(url)
+                return null;
+            }
+
+            return new GameUrlResult
+            {
+                Url = new Uri(url)
             };
         }
 
@@ -69,11 +76,11 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
         }
 
         private async ValueTask<SBOLoginResponse> PlayerLoginAsync(
-                    SBOConfiguration configuration,
+            SBOConfiguration configuration,
             SBOGameUrlQuery query,
             GetGame game)
         {
-            var portfolio = _service.GetPortfolio(game.Type);
+            var portfolio = _utility.GetPortfolio(game.Type);
             var playerCode = query.PlayerCode;
 
             var loginRequest = new SBOLoginRequest

@@ -8,14 +8,14 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Tgs.Logging;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.SBO;
 using TGS.GameProviders.Core.SBO.Models;
+using Tgs.Logging;
 
 namespace TGS.GameProviders.ApiClients.SBO
 {
-    public class SBOApiClient : ISBOApiClient
+    internal class SBOApiClient : ISBOApiClient
     {
         private readonly HttpClient _client;
         private readonly ILogger<SBOApiClient> _logger;
@@ -31,7 +31,18 @@ namespace TGS.GameProviders.ApiClients.SBO
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         }
 
-        public ValueTask<SBOGetBetHistoryResponse> GetBetHistoryAsync(Uri apiUrl, SBOGetBetHistoryRequest request)
+        public ValueTask<SBOCreateAgentResponse> CreateAgentAsync(
+            Uri apiUrl,
+            SBOCreateAgentRequest request)
+            => PostAsync<SBOCreateAgentRequest, SBOCreateAgentResponse>(
+                apiUrl,
+                "/web-root/restricted/agent/register-agent.aspx",
+                request,
+                "CreateAgent");
+
+        public ValueTask<SBOGetBetHistoryResponse> GetBetHistoryAsync(
+            Uri apiUrl,
+            SBOGetBetHistoryRequest request)
         {
             var jsonSerializerOptions = new JsonSerializerOptions
             {
@@ -46,7 +57,9 @@ namespace TGS.GameProviders.ApiClients.SBO
                 jsonSerializerOptions);
         }
 
-        public ValueTask<SBOGetRoundHistoryResponse> GetRoundHistoryAsync(Uri apiUrl, SBOGetRoundHistoryRequest request)
+        public ValueTask<SBOGetRoundHistoryResponse> GetRoundHistoryAsync(
+            Uri apiUrl,
+            SBOGetRoundHistoryRequest request)
         {
             var jsonSerializerOptions = new JsonSerializerOptions
             {
@@ -61,35 +74,45 @@ namespace TGS.GameProviders.ApiClients.SBO
                 jsonSerializerOptions);
         }
 
-        public ValueTask<SBOLoginResponse> LoginAsync(Uri apiUrl, SBOLoginRequest request)
+        public ValueTask<SBOLoginResponse> LoginAsync(
+            Uri apiUrl,
+            SBOLoginRequest request)
             => PostAsync<SBOLoginRequest, SBOLoginResponse>(
                 apiUrl,
                 "/web-root/restricted/player/login.aspx",
                 request,
                 "Login");
 
-        public ValueTask<SBOLogoutResponse> LogoutAsync(Uri apiUrl, SBOLogoutRequest request)
+        public ValueTask<SBOLogoutResponse> LogoutAsync(
+            Uri apiUrl,
+            SBOLogoutRequest request)
             => PostAsync<SBOLogoutRequest, SBOLogoutResponse>(
                 apiUrl,
                 "/web-root/restricted/player/logout.aspx",
                 request,
                 "Logout");
 
-        public ValueTask<SBORegisterPlayerResponse> RegisterPlayerAsync(Uri apiUrl, SBORegisterPlayerRequest request)
-            => PostAsync<SBORegisterPlayerRequest, SBORegisterPlayerResponse>(
+        public ValueTask<SBOCreatePlayerResponse> CreatePlayerAsync(
+            Uri apiUrl,
+            SBOCreatePlayerRequest request)
+            => PostAsync<SBOCreatePlayerRequest, SBOCreatePlayerResponse>(
                 apiUrl,
                 "/web-root/restricted/player/register-player.aspx",
                 request,
-                "RegisterPlayer");
+                "CreatePlayer");
 
-        public ValueTask<SBOUpdatePlayerBetLimitsResponse> UpdatePlayerBetLimitsAsync(Uri apiUrl,
+        public ValueTask<SBOUpdatePlayerBetLimitsResponse> UpdatePlayerBetLimitsAsync(
+            Uri apiUrl,
             SBOUpdatePlayerBetLimitsRequest request)
             => PostAsync<SBOUpdatePlayerBetLimitsRequest, SBOUpdatePlayerBetLimitsResponse>(
                 apiUrl,
                 "/web-root/restricted/player/update-player-bet-setting-by-sportid-and-markettype.aspx",
-                request, "UpdatePlayerBetLimit");
+                request,
+                "UpdatePlayerBetLimit");
 
-        private static string GetUriString(Uri apiUrl, string path)
+        private static string GetUriString(
+            Uri apiUrl,
+            string path)
         {
             const char slash = '/';
 
@@ -110,7 +133,7 @@ namespace TGS.GameProviders.ApiClients.SBO
         }
 
         private async ValueTask<TResponse> PostAsync<TRequest, TResponse>(
-                    Uri apiUrl,
+            Uri apiUrl,
             string path,
             TRequest request,
             string action,

@@ -2,5 +2,5 @@
 
 namespace TGS.GameProviders.Core.SBO.Models
 {
-    public record SBORegisterPlayerResponse : SBOBaseResponse;
+    public record SBOCreatePlayerResponse : SBOBaseResponse;
 }

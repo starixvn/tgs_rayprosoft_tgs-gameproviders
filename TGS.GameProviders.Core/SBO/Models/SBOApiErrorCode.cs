@@ -26,7 +26,7 @@ namespace TGS.GameProviders.Core.SBO.Models
         InvalidDomain = 3301,
         CreateSupportedDomainFailed = 3302,
         UserNotExist = 3303,
-        InvalidAgent = 4101,
+        AgentNotFound = 4101,
         CreatePlayerFail = 4102,
         UserExists = 4103,
         AuthenticationFail = 4201,
