@@ -9,7 +9,8 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.SexyGaming;
-using TGS.GameProviders.ApiClients.SexyGaming.Models;
+using TGS.GameProviders.Core.SexyGaming;
+using TGS.GameProviders.Core.SexyGaming.Models;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {

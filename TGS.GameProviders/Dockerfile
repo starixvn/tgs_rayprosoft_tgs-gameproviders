@@ -13,8 +13,9 @@ WORKDIR /src
 COPY ["NuGet.config", "."]
 COPY ["TGS.GameProviders/TGS.GameProviders.csproj", "TGS.GameProviders/"]
 COPY ["TGS.GameProviders.Domains/TGS.GameProviders.Domains.csproj", "TGS.GameProviders.Domains/"]
+COPY ["TGS.GameProviders.RedisRepositories/TGS.GameProviders.RedisRepositories.csproj", "TGS.GameProviders.RedisRepositories/"]
 COPY ["TGS.GameProviders.Core/TGS.GameProviders.Core.csproj", "TGS.GameProviders.Core/"]
-COPY ["TGS.GameProviders.MongoRepositories/TGS.GameProviders.MongoRepositories.csproj", "TGS.GameProviders.MongoRepositories/"]
+COPY ["TGS.GameProviders.Services/TGS.GameProviders.Services.csproj", "TGS.GameProviders.Services/"]
 COPY ["TGS.GameProviders.Repositories/TGS.GameProviders.Repositories.csproj", "TGS.GameProviders.Repositories/"]
 COPY ["TGS.GameProviders.ApiClients/TGS.GameProviders.ApiClients.csproj", "TGS.GameProviders.ApiClients/"]
 RUN dotnet restore "TGS.GameProviders/TGS.GameProviders.csproj"

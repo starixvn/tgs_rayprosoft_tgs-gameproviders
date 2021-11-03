@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.ApiClients;
 
 namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using TGS.GameProviders.Client;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.ClientSample.Models
 {

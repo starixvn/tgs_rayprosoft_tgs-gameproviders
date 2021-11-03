@@ -8,9 +8,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
-using TGS.GameProviders.ApiClients.BigGaming.Models;
-using TGS.GameProviders.ApiClients.BigGaming.Models.Commons;
-using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Core.BigGaming;
+using TGS.GameProviders.Core.BigGaming.Models;
+using TGS.GameProviders.Core.BigGaming.Models.Commons;
+using TGS.GameProviders.Core.Extensions;
 
 namespace TGS.GameProviders.ApiClients.BigGaming
 {

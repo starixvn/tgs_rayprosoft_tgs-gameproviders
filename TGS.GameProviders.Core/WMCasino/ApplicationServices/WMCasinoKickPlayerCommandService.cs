@@ -2,9 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.WMCasino.Models;
 using Tgs.ServiceUtility;
+using TGS.GameProviders.Core.WMCasino.Models;
 
 namespace TGS.GameProviders.Core.WMCasino.ApplicationServices
 {

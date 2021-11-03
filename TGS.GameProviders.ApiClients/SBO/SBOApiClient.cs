@@ -8,13 +8,14 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients.SBO.Models;
-using TGS.GameProviders.Domains.Extensions;
 using Tgs.Logging;
+using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Core.SBO;
+using TGS.GameProviders.Core.SBO.Models;
 
 namespace TGS.GameProviders.ApiClients.SBO
 {
-    public class SBOApiClient : ISBOApiClient
+    internal class SBOApiClient : ISBOApiClient
     {
         private readonly HttpClient _client;
         private readonly ILogger<SBOApiClient> _logger;

@@ -1,0 +1,46 @@
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core.WGHorse;
+using TGS.GameProviders.Core.WGHorse.Models;
+using TGS.GameProviders.Domains.SettingConfiguration;
+
+namespace TGS.GameProviders.Services.WGHorse
+{
+    internal class WGHorseGamePlayer : IWGHorseGamePlayer
+    {
+        private readonly IWGHorseApiClient _client;
+        private readonly ILogger<WGHorseGamePlayer> _logger;
+        private readonly IWGHorseService _service;
+
+        public WGHorseGamePlayer(
+            ILogger<WGHorseGamePlayer> logger,
+            IWGHorseApiClient client,
+            IWGHorseService service
+            )
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
+        }
+
+        public async ValueTask<bool> CreatePlayerAsync(WGHorseConfiguration configuration, string playerCode, string currencyCode)
+        {
+            var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(currencyCode);
+            var prepareLoginRequest = new WGHorsePrepareLoginRequest()
+            {
+                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                PlayerCode = playerCode,
+                PlayerNickname = playerCode,
+                CurrencyCode = gameProviderCurrencyCode,
+            };
+            var prepareLoginResponse = await _client.GetPrepareLoginAsync(
+                configuration.ApiUrl,
+                configuration.PartnerCode,
+                configuration.PartnerKey,
+                configuration.IV,
+                prepareLoginRequest).ConfigureAwait(false);
+            return (prepareLoginResponse.ReturnCode == 1);
+        }
+    }
+}

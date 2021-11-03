@@ -4,12 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.Evolution.Models;
-using TGS.GameProviders.ApiClients.Evolution.Models.Commons.EvolutionGameUrl;
-using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Repositories;
-using TGS.GameProviders.Repositories.Domains;
+using TGS.GameProviders.Core.Evolution.Models;
+using TGS.GameProviders.Core.Evolution.Models.Commons.EvolutionGameUrl;
+using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Core.Repositories;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.Evolution.ApplicationServices
 {

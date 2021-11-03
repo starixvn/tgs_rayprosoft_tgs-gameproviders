@@ -148,12 +148,6 @@ namespace TGS.GameProviders
                 });
 
             services
-                .AddMongoRepository((options, sp) =>
-                {
-                    var config = sp.GetRequiredService<IConfiguration>();
-                    config.GetSection("MongoDBConnectionString").Bind(options);
-                });
-            services
                 .AddNatsMessageQueue(natsConfig =>
                 {
                     natsConfig
@@ -164,8 +158,10 @@ namespace TGS.GameProviders
                     });
                 })
                .AddTgsLog();
+
             services
                 .AddApiClients()
+                .AddGameProvidersServices()
                 .AddGameProvidersCore();
             services.AddAutoMapper(config =>
             {

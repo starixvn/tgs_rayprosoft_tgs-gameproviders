@@ -11,6 +11,7 @@
         public const string IMESports = "IMES";
         public const string JDB = "JDB";
         public const string KY = "KY";
+        public const string LY = "LY";
         public const string PragmaticPlay = "PP";
         public const string RedTiger = "RT";
         public const string Saba = "SABA";
@@ -22,6 +23,5 @@
         public const string WGHorse = "WGVIA";
         public const string WGSports = "WGFM";
         public const string WMCasino = "WM";
-        public const string LY = "LY";
     }
 }

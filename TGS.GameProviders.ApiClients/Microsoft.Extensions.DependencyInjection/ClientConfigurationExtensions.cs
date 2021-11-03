@@ -1,7 +1,4 @@
-﻿// ReSharper disable CheckNamespace
-
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.BigGaming;
+﻿using TGS.GameProviders.ApiClients.BigGaming;
 using TGS.GameProviders.ApiClients.Evolution;
 using TGS.GameProviders.ApiClients.KY;
 using TGS.GameProviders.ApiClients.LY;
@@ -13,6 +10,18 @@ using TGS.GameProviders.ApiClients.VR;
 using TGS.GameProviders.ApiClients.WGHorse;
 using TGS.GameProviders.ApiClients.WGSports;
 using TGS.GameProviders.ApiClients.WMCasino;
+using TGS.GameProviders.Core.BigGaming;
+using TGS.GameProviders.Core.Evolution;
+using TGS.GameProviders.Core.KY;
+using TGS.GameProviders.Core.LY;
+using TGS.GameProviders.Core.SBO;
+using TGS.GameProviders.Core.SexyGaming;
+using TGS.GameProviders.Core.Skywind;
+using TGS.GameProviders.Core.TCG;
+using TGS.GameProviders.Core.VR;
+using TGS.GameProviders.Core.WGHorse;
+using TGS.GameProviders.Core.WGSports;
+using TGS.GameProviders.Core.WMCasino;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

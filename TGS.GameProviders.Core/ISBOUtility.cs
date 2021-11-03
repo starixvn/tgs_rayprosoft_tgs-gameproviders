@@ -1,4 +1,4 @@
-﻿using TGS.GameProviders.Repositories.Domains;
+﻿using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core
 {

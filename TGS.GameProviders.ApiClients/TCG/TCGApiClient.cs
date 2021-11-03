@@ -8,9 +8,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
-using TGS.GameProviders.ApiClients.TCG.Models;
-using TGS.GameProviders.ApiClients.TCG.Models.Commons;
-using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Core.TCG;
+using TGS.GameProviders.Core.TCG.Models;
+using TGS.GameProviders.Core.TCG.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.TCG
 {

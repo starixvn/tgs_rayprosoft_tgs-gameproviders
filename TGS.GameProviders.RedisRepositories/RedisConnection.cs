@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
+using TGS.GameProviders.Core.RedisRepositories;
 using TGS.GameProviders.RedisRepositories.Options;
 
 namespace TGS.GameProviders.RedisRepositories

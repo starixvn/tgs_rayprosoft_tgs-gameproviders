@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories
@@ -13,13 +14,7 @@ namespace TGS.GameProviders.Repositories
             TgsContext context)
             => _context = context ?? throw new ArgumentNullException(nameof(context));
 
-        public Task<GameProvider> GetGameProviderAsync(string gameProviderCode)
-            => _context.GameProviders.FirstOrDefaultAsync(x => x.Code == gameProviderCode);
-
-        public Task<GameProvider> GetGameProviderAsync(Guid gameProviderId)
-            => _context.GameProviders.FirstOrDefaultAsync(x => x.Id == gameProviderId);
-
-        public async Task<(bool IsCultureCode, string? GameProviderCultureCode)> GetGameProviderCultureCodeAsync(
+        public async ValueTask<(bool IsCultureCode, string? GameProviderCultureCode)> GetGameProviderCultureCodeAsync(
             Guid gameProviderId, string cultureCode)
         {
             var gameProviderLanguage = await _context.GameProviderLanguages
@@ -31,7 +26,7 @@ namespace TGS.GameProviders.Repositories
                 : new(true, gameProviderLanguage.GameProviderCultureCode);
         }
 
-        public async Task<(bool IsCurrencyCode, string? GameProviderCurrencyCode)> GetGameProviderCurrencyCodeAsync(
+        public async ValueTask<(bool IsCurrencyCode, string? GameProviderCurrencyCode)> GetGameProviderCurrencyCodeAsync(
             Guid gameProviderId, string currencyCode)
         {
             var gameProviderCurrency = await _context.GameProviderCurrencies
@@ -41,6 +36,12 @@ namespace TGS.GameProviders.Repositories
             return gameProviderCurrency == null
                 ? new(false, null)
                 : new(true, gameProviderCurrency.GameProviderCurrencyCode);
+        }
+
+        public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
+        {
+            var data = await _context.GameProviders.FirstOrDefaultAsync(x => x.Code == gameProviderCode).ConfigureAwait(false);
+            return data.Id;
         }
     }
 }

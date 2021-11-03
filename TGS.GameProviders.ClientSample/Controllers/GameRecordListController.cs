@@ -107,6 +107,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// Vrs the game record list asynchronous.
         /// </summary>
         /// <param name="brandCode">The brand code.</param>
+        /// <param name="isUpdateTime">if set to <c>true</c> [is update time].</param>
         /// <param name="startTime">The start time.</param>
         /// <param name="endTime">The end time.</param>
         /// <param name="page">The page.</param>

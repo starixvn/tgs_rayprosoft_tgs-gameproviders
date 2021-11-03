@@ -2,10 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.WMCasino.Models;
 using Tgs.ServiceUtility;
-using static TGS.GameProviders.ApiClients.WMCasino.Models.WMCasinoApiErrorCode;
+using TGS.GameProviders.Core.WMCasino.Models;
+using static TGS.GameProviders.Core.WMCasino.Models.WMCasinoApiErrorCode;
 
 namespace TGS.GameProviders.Core.WMCasino.ApplicationServices
 {

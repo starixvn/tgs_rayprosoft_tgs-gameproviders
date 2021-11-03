@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Client
 {

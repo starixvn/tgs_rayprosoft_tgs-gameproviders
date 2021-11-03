@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.SBO.Models;
-using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
+using TGS.GameProviders.Core.SBO.Models;
+using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.SBO
 {

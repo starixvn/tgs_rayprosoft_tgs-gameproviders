@@ -5,11 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.BigGaming.Models;
-using TGS.GameProviders.ApiClients.BigGaming.Models.Commons;
-using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Repositories.Domains;
+using TGS.GameProviders.Core.BigGaming.Models;
+using TGS.GameProviders.Core.BigGaming.Models.Commons;
+using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 {
@@ -66,12 +65,18 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
                 };
             }
 
+            var gameProviderCode = _service.GetGameProviderCode();
+            var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
+
             var datas = gameRecords.Items.Select(data => new GameRecordListModle()
             {
-                ExternalRoundId = data.ExternalBetId.ToString(),
+                GameProviderCode = gameProviderCode,
+                GameProviderId = gameProviderId,
                 PlayerCode = data.LoginId,
-                ExternalGameId = data.GameType.ToString(),
                 Status = RoundStatus.Closed,
+                ClientStatus = _service.GetClientRound(data.Payout),
+                ExternalRoundId = data.ExternalBetId.ToString(),
+                ExternalGameId = data.GameType.ToString(),
                 ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.OrderTime), TimeSpan.FromHours(-4)),
                 ExternalClosedOn = new DateTimeOffset(DateTime.Parse(data.OrderTime), TimeSpan.FromHours(-4)),
                 BetAmount = data.BetAmount,
@@ -81,7 +86,6 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
                 Turnover = data.ValidAmount,
                 SettleAmount = data.ValidAmount + data.Payout,
                 TieBetAdjustment = null,
-                ClientStatus = _service.GetClientRound(data.Payout),
                 AdditionalData = JsonSerializer.Serialize(data)
             }).ToArray();
 

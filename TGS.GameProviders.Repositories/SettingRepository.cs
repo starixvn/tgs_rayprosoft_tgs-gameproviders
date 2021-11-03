@@ -2,7 +2,8 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
+using TGS.GameProviders.Core.Repositories;
+using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories
@@ -21,8 +22,5 @@ namespace TGS.GameProviders.Repositories
             var data = await _context.Settings.FirstOrDefaultAsync(x => x.Key == key).ConfigureAwait(false);
             return data == null ? default : JsonSerializer.Deserialize<TConfiguration>(data.Value);
         }
-
-        public Task<Setting> GetSettingAsync<TConfiguration>(string key)
-            => _context.Settings.FirstOrDefaultAsync(x => x.Key == key);
     }
 }
