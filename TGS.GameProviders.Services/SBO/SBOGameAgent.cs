@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core.SBO;
 using TGS.GameProviders.Core.SBO.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
-namespace TGS.GameProviders.Core.SBO
+namespace TGS.GameProviders.Services.SBO
 {
-    public class SBOGameAgent : ISBOGameAgent
+    internal class SBOGameAgent : ISBOGameAgent
     {
         private readonly ISBOApiClient _client;
         private readonly ILogger<SBOGameAgent> _logger;
@@ -22,7 +23,9 @@ namespace TGS.GameProviders.Core.SBO
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async ValueTask<bool> CreateAgentAsync(SBOConfiguration configuration, string agentId,
+        public async ValueTask<bool> CreateAgentAsync(
+            SBOConfiguration configuration,
+            string agentId,
             string currencyCode)
         {
             var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(currencyCode)

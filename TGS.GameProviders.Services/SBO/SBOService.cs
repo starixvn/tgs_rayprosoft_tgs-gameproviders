@@ -9,7 +9,7 @@ using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Services.SBO
 {
-    public class SBOService : ISBOService
+    internal class SBOService : ISBOService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameRepository _gameRepository;
@@ -29,10 +29,12 @@ namespace TGS.GameProviders.Services.SBO
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         }
 
-        public async ValueTask<GetGame> GetGameAsync(int gameId)
+        public async ValueTask<GetGame> GetGameAsync(
+            int gameId)
             => await _gameRepository.GetGameAsync(gameId).ConfigureAwait(false);
 
-        public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
+        public async ValueTask<string> GetGameProviderCultureCodeAsync(
+            string cultureCode)
         {
             var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SBOBET)
                 .ConfigureAwait(false);
@@ -43,7 +45,8 @@ namespace TGS.GameProviders.Services.SBO
             return isCultureCode ? gameProviderCultureCode : "en_US";
         }
 
-        public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
+        public async ValueTask<string> GetGameProviderCurrencyCodeAsync(
+            string currencyCode)
         {
             var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SBOBET)
                 .ConfigureAwait(false);
@@ -51,7 +54,7 @@ namespace TGS.GameProviders.Services.SBO
             var (isCurrencyCode, gameProviderCurrencyCode) = await _gameProviderRepository
                 .GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)
                 .ConfigureAwait(false);
-          
+
             return isCurrencyCode ? gameProviderCurrencyCode : null;
         }
 

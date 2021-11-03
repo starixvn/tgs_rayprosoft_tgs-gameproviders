@@ -1,6 +1,6 @@
 ﻿using TGS.GameProviders.Domains;
 
-namespace TGS.GameProviders.Core
+namespace TGS.GameProviders.Core.SBO
 {
     public interface ISBOUtility
     {
@@ -9,7 +9,8 @@ namespace TGS.GameProviders.Core
         /// </summary>
         /// <param name="gameType">The game type.</param>
         /// <returns></returns>
-        string GetPortfolio(GameType gameType);
+        string GetPortfolio(
+            GameType gameType);
 
         /// <summary>
         /// Get agent id
@@ -18,6 +19,9 @@ namespace TGS.GameProviders.Core
         /// <param name="brandCode">The brand code</param>
         /// <param name="currencyCode">The player currency code. (tgs internal currency code)</param>
         /// <returns></returns>
-        string GetAgentId(string agentPrefix, string brandCode, string currencyCode);
+        string GetAgentId(
+            string agentPrefix,
+            string brandCode,
+            string currencyCode);
     }
 }

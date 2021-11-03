@@ -4,12 +4,11 @@ using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core.SBO;
 using TGS.GameProviders.Core.SBO.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
-using TGS.GameProviders.Core;
 using static TGS.GameProviders.Core.SBO.Models.SBOApiErrorCode;
 
 namespace TGS.GameProviders.Services.SBO
 {
-    public class SBOGamePlayer : ISBOGamePlayer
+    internal class SBOGamePlayer : ISBOGamePlayer
     {
         private readonly ISBOGameAgent _agentService;
         private readonly ISBOApiClient _client;

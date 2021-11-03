@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
-namespace TGS.GameProviders.Core
+namespace TGS.GameProviders.Core.SBO
 {
     public interface ISBOGameAgent
     {
