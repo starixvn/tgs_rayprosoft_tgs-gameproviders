@@ -5,12 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.SexyGaming;
-using TGS.GameProviders.ApiClients.SexyGaming.Models;
-using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Repositories;
-using TGS.GameProviders.Repositories.Domains;
+using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Core.Repositories;
+using TGS.GameProviders.Core.SexyGaming.Models;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
 {

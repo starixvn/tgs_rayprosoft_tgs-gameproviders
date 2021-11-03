@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.LY;
-using TGS.GameProviders.ApiClients.LY.Models;
+using TGS.GameProviders.Core.LY;
+using TGS.GameProviders.Core.LY.Models;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {

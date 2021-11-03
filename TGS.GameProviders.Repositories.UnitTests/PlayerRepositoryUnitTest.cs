@@ -2,7 +2,8 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
-using TGS.GameProviders.Repositories.Domains.Models.Player;
+using TGS.GameProviders.Core.Repositories;
+using TGS.GameProviders.Core.Repositories.Models.Player;
 
 namespace TGS.GameProviders.Repositories.UnitTests
 {

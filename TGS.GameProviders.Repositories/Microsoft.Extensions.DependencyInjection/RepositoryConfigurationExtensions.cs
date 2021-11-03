@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Repositories;
 using TGS.GameProviders.Repositories.Entities;
 using TGS.GameProviders.Repositories.ModelMappings;
@@ -14,12 +15,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddDbContext<BetContext>(efConfigure);
             services.AddAutoMapper(config =>
             {
-                config.AddProfile<FailedGameRecordOperationMapping>();
                 config.AddProfile<RoundMapping>();
             });
             return services
-                .AddTransient<IRoundRepository, RoundRepository>()
-                .AddTransient<IFailedGameRecordOperationRepository, FailedGameRecordOperationRepository>();
+                .AddTransient<IRoundRepository, RoundRepository>();
         }
 
         public static IServiceCollection AddDbTgsRepository(this IServiceCollection services,

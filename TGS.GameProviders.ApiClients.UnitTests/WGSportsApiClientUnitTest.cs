@@ -6,8 +6,9 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.WGSports;
-using TGS.GameProviders.ApiClients.WGSports.Models;
-using TGS.GameProviders.ApiClients.WGSports.Models.Commons;
+using TGS.GameProviders.Core.WGSports;
+using TGS.GameProviders.Core.WGSports.Models;
+using TGS.GameProviders.Core.WGSports.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {

@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Core.BigGaming;
+using TGS.GameProviders.Core.Extensions;
 
 namespace TGS.GameProviders.ApiClients.BigGaming
 {

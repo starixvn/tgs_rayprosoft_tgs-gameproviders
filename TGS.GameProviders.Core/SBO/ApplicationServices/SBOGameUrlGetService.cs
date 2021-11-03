@@ -3,12 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.SBO.Models;
-using TGS.GameProviders.Repositories.Domains;
-using TGS.GameProviders.Repositories.Domains.Models.Game;
-using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
-using static TGS.GameProviders.ApiClients.SBO.Models.SBOApiErrorCode;
+using TGS.GameProviders.Core.Repositories.Models.Game;
+using TGS.GameProviders.Core.SBO.Models;
+using TGS.GameProviders.Domains;
+using TGS.GameProviders.Domains.SettingConfiguration;
+using static TGS.GameProviders.Core.SBO.Models.SBOApiErrorCode;
 
 namespace TGS.GameProviders.Core.SBO.ApplicationServices
 {

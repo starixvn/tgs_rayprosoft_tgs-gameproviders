@@ -7,9 +7,10 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients.WMCasino.Models;
-using TGS.GameProviders.Domains.Extensions;
 using Tgs.Logging;
+using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Core.WMCasino;
+using TGS.GameProviders.Core.WMCasino.Models;
 
 namespace TGS.GameProviders.ApiClients.WMCasino
 {
@@ -29,8 +30,16 @@ namespace TGS.GameProviders.ApiClients.WMCasino
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         }
 
-        public ValueTask<WMCasinoLoginGameResponse> LoginGameAsync(
+        public ValueTask<WMCasinoGetDateTimeReportResponse> GetDateTimeReportAsync(
             Uri apiUrl,
+            WMCasinoGetDateTimeReportRequest request)
+            => PostAsync<WMCasinoGetDateTimeReportRequest, WMCasinoGetDateTimeReportResponse>(
+                apiUrl,
+                request,
+                "GetDateTimeReport");
+
+        public ValueTask<WMCasinoLoginGameResponse> LoginGameAsync(
+                    Uri apiUrl,
             WMCasinoLoginGameRequest request)
             => PostAsync<WMCasinoLoginGameRequest, WMCasinoLoginGameResponse>(
                 apiUrl,
@@ -50,14 +59,6 @@ namespace TGS.GameProviders.ApiClients.WMCasino
                 apiUrl,
                 request,
                 "MemberRegister");
-
-        public ValueTask<WMCasinoGetDateTimeReportResponse> GetDateTimeReportAsync(
-            Uri apiUrl,
-            WMCasinoGetDateTimeReportRequest request)
-            => PostAsync<WMCasinoGetDateTimeReportRequest, WMCasinoGetDateTimeReportResponse>(
-                apiUrl,
-                request,
-                "GetDateTimeReport");
 
         private async ValueTask<TResponse> PostAsync<TRequest, TResponse>(Uri apiUrl, TRequest request, string action)
         {

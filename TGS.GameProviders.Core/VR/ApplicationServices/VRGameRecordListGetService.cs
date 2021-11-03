@@ -5,9 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.VR.Models;
-using TGS.GameProviders.Repositories.Domains;
+using TGS.GameProviders.Core.VR.Models;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.VR.ApplicationServices
 {

@@ -5,11 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.BigGaming.Models;
-using TGS.GameProviders.ApiClients.BigGaming.Models.Commons;
-using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Repositories.Domains;
+using TGS.GameProviders.Core.BigGaming.Models;
+using TGS.GameProviders.Core.BigGaming.Models.Commons;
+using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 {

@@ -3,8 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.Repositories;
+using TGS.GameProviders.Core.Repositories;
 
 namespace TGS.GameProviders.Core.LY.ApplicationServices
 {

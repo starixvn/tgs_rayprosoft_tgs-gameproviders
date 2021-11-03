@@ -9,8 +9,9 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
-using TGS.GameProviders.ApiClients.SBO.Models;
-using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Core.SBO;
+using TGS.GameProviders.Core.SBO.Models;
 
 namespace TGS.GameProviders.ApiClients.SBO
 {

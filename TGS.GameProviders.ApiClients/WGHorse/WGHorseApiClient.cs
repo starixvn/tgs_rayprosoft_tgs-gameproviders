@@ -7,9 +7,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
-using TGS.GameProviders.ApiClients.WGHorse.Models;
-using TGS.GameProviders.ApiClients.WGHorse.Models.Commons;
-using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Core.WGHorse;
+using TGS.GameProviders.Core.WGHorse.Models;
+using TGS.GameProviders.Core.WGHorse.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.WGHorse
 {

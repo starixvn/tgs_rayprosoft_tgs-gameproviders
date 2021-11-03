@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories
@@ -20,9 +21,6 @@ namespace TGS.GameProviders.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public Task<Brand> GetBrandAsync(Guid brandId)
-            => _context.Brands.FirstOrDefaultAsync(x => x.Id == brandId);
-
         public async Task<Guid?> GetBrandGameProviderConfigurationIdAsync(Guid gameProviderId, Guid brandId)
         {
             var data = await _context.BrandGameProviders
@@ -30,9 +28,5 @@ namespace TGS.GameProviders.Repositories
                 .ConfigureAwait(false);
             return data?.GameProviderConfigurationId;
         }
-
-        public Task<BrandGameProvider> GetBrandGameProviderAsync(Guid gameProviderId, Guid brandId)
-            => _context.BrandGameProviders.FirstOrDefaultAsync(x
-                => x.GameProviderId == gameProviderId && x.BrandId == brandId);
     }
 }

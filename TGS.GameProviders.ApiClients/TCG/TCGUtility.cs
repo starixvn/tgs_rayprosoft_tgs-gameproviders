@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using TGS.GameProviders.Domains;
+using TGS.GameProviders.Core.TCG;
 
 namespace TGS.GameProviders.ApiClients.TCG
 {

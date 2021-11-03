@@ -6,7 +6,8 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.BigGaming;
-using TGS.GameProviders.ApiClients.BigGaming.Models;
+using TGS.GameProviders.Core.BigGaming;
+using TGS.GameProviders.Core.BigGaming.Models;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
