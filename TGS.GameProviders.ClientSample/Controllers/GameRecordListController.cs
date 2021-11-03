@@ -152,11 +152,11 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///         }
         /// </remarks>
         [HttpPost("WGFM")]
-        public ValueTask<GameRecordListResponse?> WGFMGameRecordListAsync(
+        public ValueTask<GameRecordListResponse?> WGSportsGameRecordListAsync(
             [FromQuery] bool isSettlement,
             [FromQuery] DateTimeOffset startTime,
             [FromQuery] DateTimeOffset endTime)
-            => _client.WGFMGameRecordListAsync(isSettlement, startTime, endTime);
+            => _client.WGSportsGameRecordListAsync(isSettlement, startTime, endTime);
 
         /// <summary>
         /// Wgvias the game record list asynchronous.
@@ -177,11 +177,11 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///         }
         /// </remarks>
         [HttpGet("WGVIA")]
-        public ValueTask<GameRecordListResponse?> WGVIAGameRecordListAsync(
+        public ValueTask<GameRecordListResponse?> WGHorseGameRecordListAsync(
             [FromQuery] DateTimeOffset startTime,
             [FromQuery] DateTimeOffset endTime,
             [FromQuery] int page,
             [FromQuery] int rows)
-            => _client.WGVIAGameRecordListAsync(startTime, endTime, page, rows);
+            => _client.WGHorseGameRecordListAsync(startTime, endTime, page, rows);
     }
 }
