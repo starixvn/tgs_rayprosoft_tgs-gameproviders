@@ -2,6 +2,6 @@
 {
     public class RedisOption
     {
-        public string Default { get; init; }
+        public string ConnectionString { get; set; } = "localhost";
     }
 }

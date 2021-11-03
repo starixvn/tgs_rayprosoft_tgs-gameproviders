@@ -61,7 +61,7 @@ pipeline {
 			}
 		}
 
-        stage('Push GameProviders Clinet packages') {
+        stage('Push packages') {
 			steps {
 				sh 'dotnet pack -c $BuildConfiguration "TGS.GameProviders.Client/TGS.GameProviders.Client.csproj" --no-restore'
 				sh 'dotnet nuget push "TGS.GameProviders.Client/bin/$BuildConfiguration/*.nupkg" --source "raypro-baget" -k admin --skip-duplicate'
@@ -107,7 +107,6 @@ pipeline {
                                 --set autoscaling.enabled=${tgs_autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
-                                --set connectionStrings.mongo="$tgs_mongo" \
                                 --set nats.urls="$tgs_nats" \
                         '''
                         sh '''
@@ -117,7 +116,6 @@ pipeline {
                                 --set autoscaling.enabled=${tgs_autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
-                                --set connectionStrings.mongo="$tgs_mongo" \
                                 --set nats.urls="$tgs_nats" \
                                 | kubectl -n ${kube_ns} apply -f -
                         '''

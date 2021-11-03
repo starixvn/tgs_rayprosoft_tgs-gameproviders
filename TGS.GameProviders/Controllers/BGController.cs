@@ -45,7 +45,7 @@ namespace TGS.GameProviders.Controllers
         ///             "rows": 500
         ///         }
         /// </remarks>
-        [HttpPost("GameRecordList")]
+        [HttpPost("FishingGameRecordList")]
         public async ValueTask<GameRecordListResult?> GameRecordListAsync(
             [FromServices] IGetService<BigGamingFishingGameRecordListQuery, GameRecordListResult> getService,
             BigGamingFishingGameRecordListQuery request)
