@@ -63,7 +63,7 @@ pipeline {
 
         stage('Push GameProviders Clinet packages') {
 			steps {
-				sh 'dotnet pack -c $BuildConfiguration "TGS.GameProviders.Client/TGS.GameProviders.Client.csproj" --no-build'
+				sh 'dotnet pack -c $BuildConfiguration "TGS.GameProviders.Client/TGS.GameProviders.Client.csproj" --no-restore'
 				sh 'dotnet nuget push "TGS.GameProviders.Client/bin/$BuildConfiguration/*.nupkg" --source "raypro-baget" -k admin --skip-duplicate'
 			}
 		}
