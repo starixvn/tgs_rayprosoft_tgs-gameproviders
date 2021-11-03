@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
@@ -19,8 +18,6 @@ namespace TGS.GameProviders.Core
         ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
 
         ValueTask<GetPlayer> GetPlayerAsync(string playerCode);
-
-        string GetPortfolio(GameType gameType);
 
         ValueTask<SBOConfiguration> GetSettingConfigurationAsync();
     }

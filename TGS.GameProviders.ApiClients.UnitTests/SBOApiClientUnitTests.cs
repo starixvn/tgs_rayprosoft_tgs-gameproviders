@@ -54,10 +54,14 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         {
             var playerCode = "4udwxysersic";
 
-            var request = new SBOCreatePlayerRequest(_agentPrefix, _brandCode, _playerCurrencyCode)
+            var agentId =
+                $"{_agentPrefix}{_brandCode.ToUpper()}{_playerCurrencyCode.Replace("_", string.Empty).ToUpper()}";
+
+            var request = new SBOCreatePlayerRequest
             {
                 CompanyKey = _companyKey,
-                PlayerCode = playerCode
+                PlayerCode = playerCode,
+                AgentId = agentId
             };
 
             var response = await _client.CreatePlayerAsync(_apiUrl, request).ConfigureAwait(false);

@@ -70,7 +70,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services
                 .AddTransient<ISBOService, SBOService>()
-                .AddTransient<ISBOGamePlayer, SBOGamePlayer>();
+                .AddTransient<ISBOUtility, SBOUtility>()
+                .AddTransient<ISBOGamePlayer, SBOGamePlayer>()
+                .AddTransient<ISBOGameAgent, SBOGameAgent>();
 
             services
                 .AddTransient<IWMCasinoService, WMCasinoService>()

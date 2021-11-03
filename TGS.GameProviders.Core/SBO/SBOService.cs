@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Repositories;
-using TGS.GameProviders.Repositories.Domains;
 using TGS.GameProviders.Repositories.Domains.Models.Game;
 using TGS.GameProviders.Repositories.Domains.Models.Player;
 using TGS.GameProviders.Repositories.Domains.Models.SettingConfiguration;
@@ -14,13 +12,6 @@ namespace TGS.GameProviders.Core.SBO
 {
     public class SBOService : ISBOService
     {
-        private static readonly IReadOnlyDictionary<GameType, string> _Portfolios = new Dictionary<GameType, string>
-        {
-            [GameType.Sportsbook] = "SportsBook",
-            [GameType.VirtualSports] = "VirtualSports",
-            [GameType.VirtualSportsLobby] = "VirtualSports"
-        };
-
         private readonly IBrandRepository _brandRepository;
 
         private readonly IGameProviderRepository _gameProviderRepository;
@@ -70,16 +61,12 @@ namespace TGS.GameProviders.Core.SBO
 
             var (isCurrencyCode, gameProviderCurrencyCode) = await _gameProviderRepository
                 .GetGameProviderCurrencyCodeAsync(gameProvider.Id, currencyCode).ConfigureAwait(false);
+
             return isCurrencyCode ? gameProviderCurrencyCode : null;
         }
 
         public async ValueTask<GetPlayer> GetPlayerAsync(string playerCode)
             => await _playerRepository.GetPlayerAsync(playerCode).ConfigureAwait(false);
-
-        public string GetPortfolio(GameType gameType)
-                    => !_Portfolios.TryGetValue(gameType, out var portfolio)
-                ? null
-                : portfolio;
 
         public async ValueTask<SBOConfiguration> GetSettingConfigurationAsync()
             => await _settingRepository.GetConfigurationAsync<SBOConfiguration>(GameProviderConfigurations.SBOBET)
