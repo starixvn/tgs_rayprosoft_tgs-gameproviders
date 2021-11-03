@@ -4,16 +4,16 @@ namespace TGS.GameProviders.Domains.SettingConfiguration.BigGaming
 {
     public record BigGamingBrandMerchant
     {
-        public Uri ApiUrl { get; init; }
+        public Uri ApiUrl { get; init; } = default!;
 
-        public bool Status { get; set; }
+        public bool Status { get; init; }
 
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode { get; init; } = default!;
 
-        public string AgentLoginIdPassword { get; init; }
+        public string AgentLoginIdPassword { get; init; } = default!;
 
-        public string SecretKey { get; init; }
+        public string SecretKey { get; init; } = default!;
 
-        public string SecretCode { get; init; }
+        public string SecretCode { get; init; } = default!;
     }
 }

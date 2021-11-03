@@ -7,7 +7,7 @@ namespace TGS.GameProviders.Domains.SettingConfiguration
     /// </summary>
     public record BigGamingConfiguration : PluggableConfigurationBase
     {
-        public BigGamingBrandMerchant[] BrandMerchants { get; set; }
-        public OppositeBetSetting[] OppositeBets { get; init; }
+        public BigGamingBrandMerchant[] BrandMerchants { get; init; } = default!;
+        public OppositeBetSetting[] OppositeBets { get; init; } = default!;
     }
 }

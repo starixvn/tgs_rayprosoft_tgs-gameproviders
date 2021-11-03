@@ -7,26 +7,26 @@ namespace TGS.GameProviders.Domains.SettingConfiguration.TCG
         /// <summary>
         /// The game URL
         /// </summary>
-        public Uri GameUrl { get; init; }
+        public Uri GameUrl { get; init; } = default!;
         /// <summary>
         /// The currency code
         /// </summary>
-        public string CurrencyCode { get; init; }
+        public string CurrencyCode { get; init; } = default!;
         /// <summary>
         /// The merchant code
         /// </summary>
-        public string MerchantCode { get; init; }
+        public string MerchantCode { get; init; } = default!;
         /// <summary>
         /// The DES key
         /// </summary>
-        public string DESKey { get; init; }
+        public string DESKey { get; init; } = default!;
         /// <summary>
         /// The sh a256 key
         /// </summary>
-        public string SHA256Key { get; init; }
+        public string SHA256Key { get; init; } = default!;
         /// <summary>
         /// The player password
         /// </summary>
-        public string PlayerPassword { get; init; }
+        public string PlayerPassword { get; init; } = default!;
     }
 }

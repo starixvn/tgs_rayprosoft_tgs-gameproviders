@@ -12,14 +12,26 @@ namespace TGS.GameProviders.Domains.SettingConfiguration
         /// <summary>
         /// The amount format
         /// </summary>
-        public string AmountFormat { get; init; }
+        public string AmountFormat { get; init; } = default!;
 
-        public Uri ApiUrl { get; init; }
+        /// <summary>
+        /// The API URL
+        /// </summary>
+        public Uri ApiUrl { get; init; } = default!;
 
-        public string PartnerCode { get; init; }
+        /// <summary>
+        /// The partner code
+        /// </summary>
+        public string PartnerCode { get; init; } = default!;
 
-        public string PartnerKey { get; init; }
+        /// <summary>
+        /// The partner key
+        /// </summary>
+        public string PartnerKey { get; init; } = default!;
 
-        public string IV { get; init; }
+        /// <summary>
+        /// The iv
+        /// </summary>
+        public string IV { get; init; } = default!;
     }
 }

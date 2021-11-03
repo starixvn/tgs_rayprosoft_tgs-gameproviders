@@ -5,16 +5,16 @@
         /// <summary>
         /// The currency code
         /// </summary>
-        public string CurrencyCode { get; set; }
+        public string CurrencyCode { get; init; } = default!;
 
         /// <summary>
         /// The agent identifier
         /// </summary>
-        public string AgentId { get; set; }
+        public string AgentId { get; init; } = default!;
 
         /// <summary>
         /// The status
         /// </summary>
-        public bool Status { get; set; }
+        public bool Status { get; init; }
     }
 }

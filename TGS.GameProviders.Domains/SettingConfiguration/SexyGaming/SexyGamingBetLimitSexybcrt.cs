@@ -5,6 +5,6 @@ namespace TGS.GameProviders.Domains.SettingConfiguration.SexyGaming
     public record SexyGamingBetLimitSexybcrt
     {
         [JsonPropertyName("LIVE")]
-        public SexyGamingBetLimitSexybcrtLive Live { get; set; }
+        public SexyGamingBetLimitSexybcrtLive Live { get; init; } = default!;
     }
 }

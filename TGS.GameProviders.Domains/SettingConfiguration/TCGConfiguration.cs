@@ -11,10 +11,10 @@ namespace TGS.GameProviders.Domains.SettingConfiguration
         /// <summary>
         /// The API URL
         /// </summary>
-        public Uri ApiUrl { get; init; }
+        public Uri ApiUrl { get; init; } = default!;
         /// <summary>
         /// The merchants
         /// </summary>
-        public TCGMerchant[] Merchants { get; init; }
+        public TCGMerchant[] Merchants { get; init; } = default!;
     }
 }

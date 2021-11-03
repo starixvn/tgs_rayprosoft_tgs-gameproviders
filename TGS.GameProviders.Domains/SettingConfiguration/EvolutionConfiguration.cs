@@ -4,12 +4,12 @@ namespace TGS.GameProviders.Domains.SettingConfiguration
 {
     public record EvolutionConfiguration : PluggableConfigurationBase
     {
-        public Uri ApiUrl { get; init; }
-        public string CasinoID { get; init; }
-        public string Ua2Token { get; set; }
-        public string GameHistoryApiToken { get; set; }
-        public string ExternalLobbyApiToken { get; set; }
-        public Uri Ua2AuthenticationUrl { get; set; }
-        public string OwAuthToken { get; set; }
+        public Uri ApiUrl { get; init; } = default!;
+        public string CasinoID { get; init; } = default!;
+        public string Ua2Token { get; init; } = default!;
+        public string GameHistoryApiToken { get; init; } = default!;
+        public string ExternalLobbyApiToken { get; init; } = default!;
+        public Uri Ua2AuthenticationUrl { get; init; } = default!;
+        public string OwAuthToken { get; init; } = default!;
     }
 }

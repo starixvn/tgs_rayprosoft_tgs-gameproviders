@@ -5,21 +5,18 @@ namespace TGS.GameProviders.Domains.SettingConfiguration
     public record KYConfiguration : PluggableConfigurationBase
     {
         /// <summary>
-        /// Gets or sets the amount maximum.
+        /// The amount maximum
         /// </summary>
-        /// <value>
-        /// The amount maximum.
-        /// </value>
-        public decimal AmountMaximum { get; set; }
+        public decimal AmountMaximum { get; init; } = default!;
 
         /// <summary>
         /// The amount format
         /// </summary>
-        public string AmountFormat { get; set; }
+        public string AmountFormat { get; init; } = default!;
 
         /// <summary>
         /// The brand merchants
         /// </summary>
-        public KYBrandMerchant[] BrandMerchants { get; set; }
+        public KYBrandMerchant[] BrandMerchants { get; init; } = default!;
     }
 }

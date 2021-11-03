@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Threading.Tasks;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Client
 {

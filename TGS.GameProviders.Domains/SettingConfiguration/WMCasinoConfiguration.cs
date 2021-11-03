@@ -7,8 +7,8 @@ namespace TGS.GameProviders.Domains.SettingConfiguration
 {
     public record WMCasinoConfiguration : PluggableConfigurationBase
     {
-        public Uri ApiUrl { get; init; }
+        public Uri ApiUrl { get; init; } = default!;
 
-        public WMCasinoBrandMerchant[] BrandMerchants { get; init; }
+        public WMCasinoBrandMerchant[] BrandMerchants { get; init; } = default!;
     }
 }

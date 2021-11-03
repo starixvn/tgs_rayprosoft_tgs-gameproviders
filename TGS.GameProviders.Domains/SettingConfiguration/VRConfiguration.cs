@@ -5,27 +5,18 @@ namespace TGS.GameProviders.Domains.SettingConfiguration
     public record VRConfiguration : PluggableConfigurationBase
     {
         /// <summary>
-        /// Gets or sets the amount maximum.
+        /// The amount maximum
         /// </summary>
-        /// <value>
-        /// The amount maximum.
-        /// </value>
-        public decimal AmountMaximum { get; set; }
+        public decimal AmountMaximum { get; init; }
 
         /// <summary>
-        /// Gets or sets the amount format.
+        /// The amount format
         /// </summary>
-        /// <value>
-        /// The amount format.
-        /// </value>
-        public string AmountFormat { get; set; }
+        public string AmountFormat { get; init; } = default!;
 
         /// <summary>
-        /// Gets or sets the brand merchants.
+        /// The brand merchants
         /// </summary>
-        /// <value>
-        /// The brand merchants.
-        /// </value>
-        public VRBrandMerchant[] BrandMerchants { get; set; }
+        public VRBrandMerchant[] BrandMerchants { get; init; } = default!;
     }
 }

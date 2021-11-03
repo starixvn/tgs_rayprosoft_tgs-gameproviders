@@ -7,36 +7,36 @@ namespace TGS.GameProviders.Domains.SettingConfiguration.KY
         /// <summary>
         /// The brand code
         /// </summary>
-        public string BrandCode { get; init; }
+        public string BrandCode { get; init; } = default!;
 
         /// <summary>
         /// The API URL
         /// </summary>
-        public Uri ApiUrl { get; init; }
+        public Uri ApiUrl { get; init; } = default!;
 
         /// <summary>
         /// The API record URL
         /// </summary>
-        public Uri ApiRecordUrl { get; set; }
+        public Uri ApiRecordUrl { get; init; } = default!;
 
         /// <summary>
         /// The deskey
         /// </summary>
-        public string Deskey { get; set; }
+        public string Deskey { get; init; } = default!;
 
         /// <summary>
         /// The md5key
         /// </summary>
-        public string Md5key { get; set; }
+        public string Md5key { get; init; } = default!;
 
         /// <summary>
         /// The agent mappers
         /// </summary>
-        public KYAgentMapper[] AgentMappers { get; set; }
+        public KYAgentMapper[] AgentMappers { get; init; } = default!;
 
         /// <summary>
         /// The status
         /// </summary>
-        public bool Status { get; set; }
+        public bool Status { get; init; }
     }
 }
