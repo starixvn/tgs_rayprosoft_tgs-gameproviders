@@ -144,7 +144,7 @@ namespace TGS.GameProviders
                 .AddRedisRepository((options, sp) =>
                 {
                     var configuration = sp.GetRequiredService<IConfiguration>();
-                    configuration.GetSection("RedisConnectionString").Bind(options);
+                    options.ConnectionString = configuration.GetConnectionString("RedisConfigurationString");
                 });
 
             services
@@ -154,7 +154,7 @@ namespace TGS.GameProviders
                     .ConfigQueueOptions((options, sp) =>
                     {
                         var configuration = sp.GetRequiredService<IConfiguration>();
-                        options.Url = configuration.GetSection("NatsMQ:Url").Get<string>();
+                        options.Url = configuration.GetConnectionString("NatsMQ");
                     });
                 })
                .AddTgsLog();
@@ -173,8 +173,7 @@ namespace TGS.GameProviders
             });
             services
                 .AddHealthChecks()
-                .AddMongoDb(Configuration.GetSection("MongoDBConnectionString:GameProvider").Get<string>(), name: "MongoDB GameProvider")
-                .AddRedis(Configuration.GetSection("RedisConnectionString:Default").Get<string>(), name: "Redis Default")
+                .AddRedis(Configuration.GetConnectionString("RedisConfigurationString"), name: "Redis Default")
                 .AddNpgSql(Configuration.GetConnectionString("Tgs"), name: "PostgreSQL Tgs");
         }
     }

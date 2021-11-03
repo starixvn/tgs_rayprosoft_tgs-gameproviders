@@ -16,7 +16,7 @@ namespace TGS.GameProviders.RedisRepositories
             _redisOption = redisOption.Value;
             _lazyConnection = new Lazy<ConnectionMultiplexer>(() =>
           {
-              var connection = ConnectionMultiplexer.Connect(_redisOption.Default);
+              var connection = ConnectionMultiplexer.Connect(_redisOption.ConnectionString);
               Console.WriteLine($"{nameof(ConnectionMultiplexer)} connection opened.");
               connection.ConnectionFailed += OnConnectionFailed;
               connection.ConnectionRestored += ConnectionRestored;
