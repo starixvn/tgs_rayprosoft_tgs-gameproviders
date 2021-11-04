@@ -28,8 +28,8 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var client = new HttpClient();
             var faceLog = NullLogger<WGHorseApiClient>.Instance;
             var faceTgsLog = Substitute.For<ITgsLog>();
-            _client = Substitute.For<IWGHorseApiClient>();
-            //_client = new WGHorseApiClient(client, faceLog, faceTgsLog, _utility);
+            //_client = Substitute.For<IWGHorseApiClient>();
+            _client = new WGHorseApiClient(client, faceLog, faceTgsLog, _utility);
         }
 
         [Test]
@@ -135,6 +135,12 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 CurrencyCode = "RMB"
             };
             _ = await _client.GetPrepareLoginAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task LogoutAsync()
+        {
+            _ = await _client.LogoutAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, "4ucmqplxb029").ConfigureAwait(false);
         }
 
         [Test]
