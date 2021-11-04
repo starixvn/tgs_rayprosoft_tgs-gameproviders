@@ -138,6 +138,12 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         }
 
         [Test]
+        public async Task LogoutAsync()
+        {
+            _ = await _client.LogoutAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, "4ucmqplxb029").ConfigureAwait(false);
+        }
+
+        [Test]
         public void GP_to_TGS_FundIn_0()
         {
             var actual = _utility.AesDecrypt("ll%2fZKU%2bhK5pBYSPzebhYZqWVp4Ag6xx25mbVfi3toMuRGlXpXUgu6JhycvLLPovG9gOEj4bJCPgvkoBL5TrM%2fg%3d%3d", _partnerKey, _partnerIV);
