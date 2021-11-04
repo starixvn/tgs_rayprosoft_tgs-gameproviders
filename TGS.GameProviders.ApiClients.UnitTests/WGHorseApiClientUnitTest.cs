@@ -6,8 +6,9 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.WGHorse;
-using TGS.GameProviders.ApiClients.WGHorse.Models;
-using TGS.GameProviders.ApiClients.WGHorse.Models.Commons;
+using TGS.GameProviders.Core.WGHorse;
+using TGS.GameProviders.Core.WGHorse.Models;
+using TGS.GameProviders.Core.WGHorse.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
@@ -54,7 +55,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var data = new WGHorseAccessMoneyRequest()
             {
                 PlayerCode = playerCode,
-                AmountType = AmountTypes.FundIn,
+                AmountType = WGHorseAmountTypes.FundIn,
                 OrderId = Guid.NewGuid().ToString("N"),
                 Amount = "1"
             };
@@ -74,7 +75,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var data = new WGHorseAccessMoneyRequest()
             {
                 PlayerCode = playerCode,
-                AmountType = AmountTypes.FundOut,
+                AmountType = WGHorseAmountTypes.FundOut,
                 OrderId = Guid.NewGuid().ToString("N"),
                 Amount = "1"
             };

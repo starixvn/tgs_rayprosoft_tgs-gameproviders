@@ -4,8 +4,9 @@ using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using TGS.GameProviders.Repositories.Domains;
-using TGS.GameProviders.Repositories.Domains.Models.Game;
+using TGS.GameProviders.Core.Repositories;
+using TGS.GameProviders.Core.Repositories.Models.Game;
+using TGS.GameProviders.Domains;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories

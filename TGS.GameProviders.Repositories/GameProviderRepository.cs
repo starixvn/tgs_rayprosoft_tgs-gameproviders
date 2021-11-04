@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories
@@ -10,28 +11,37 @@ namespace TGS.GameProviders.Repositories
         private readonly TgsContext _context;
 
         public GameProviderRepository(
-            TgsContext context
-           )
+            TgsContext context)
+            => _context = context ?? throw new ArgumentNullException(nameof(context));
+
+        public async ValueTask<(bool IsCultureCode, string? GameProviderCultureCode)> GetGameProviderCultureCodeAsync(
+            Guid gameProviderId, string cultureCode)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            var gameProviderLanguage = await _context.GameProviderLanguages
+                .FirstOrDefaultAsync(x => x.GameProviderId == gameProviderId && x.CultureCode == cultureCode)
+                .ConfigureAwait(false);
+
+            return gameProviderLanguage == null
+                ? new(false, null)
+                : new(true, gameProviderLanguage.GameProviderCultureCode);
         }
 
-        public Task<GameProvider> GetGameProviderAsync(string gameProviderCode)
-            => _context.GameProviders.FirstOrDefaultAsync(x => x.Code == gameProviderCode);
-
-        public Task<GameProvider> GetGameProviderAsync(Guid gameProviderId)
-            => _context.GameProviders.FirstOrDefaultAsync(x => x.Id == gameProviderId);
-
-        public async Task<(bool IsCurrencyCode, string? GameProviderCurrencyCode)> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
+        public async ValueTask<(bool IsCurrencyCode, string? GameProviderCurrencyCode)> GetGameProviderCurrencyCodeAsync(
+            Guid gameProviderId, string currencyCode)
         {
-            var gameProviderCurrency = await _context.GameProviderCurrencies.FirstOrDefaultAsync(x => x.GameProviderId == gameProviderId && x.CurrencyCode == currencyCode).ConfigureAwait(false);
-            return gameProviderCurrency == null ? (new(false, null)) : (new(true, gameProviderCurrency.GameProviderCurrencyCode));
+            var gameProviderCurrency = await _context.GameProviderCurrencies
+                .FirstOrDefaultAsync(x => x.GameProviderId == gameProviderId && x.CurrencyCode == currencyCode)
+                .ConfigureAwait(false);
+
+            return gameProviderCurrency == null
+                ? new(false, null)
+                : new(true, gameProviderCurrency.GameProviderCurrencyCode);
         }
 
-        public async Task<(bool IsCultureCode, string? GameProviderCultureCode)> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode)
+        public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
         {
-            var GameProviderLanguage = await _context.GameProviderLanguages.FirstOrDefaultAsync(x => x.GameProviderId == gameProviderId && x.CultureCode == cultureCode).ConfigureAwait(false);
-            return GameProviderLanguage == null ? (new(false, null)) : (new(true, GameProviderLanguage.GameProviderCultureCode));
+            var data = await _context.GameProviders.FirstOrDefaultAsync(x => x.Code == gameProviderCode).ConfigureAwait(false);
+            return data.Id;
         }
     }
 }

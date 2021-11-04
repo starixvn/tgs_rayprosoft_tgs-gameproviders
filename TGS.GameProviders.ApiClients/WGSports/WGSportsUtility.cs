@@ -2,6 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using TGS.GameProviders.Core.WGSports;
 
 namespace TGS.GameProviders.ApiClients.WGSports
 {

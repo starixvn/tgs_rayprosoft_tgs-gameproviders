@@ -19,7 +19,7 @@ namespace TGS.GameProviders.Repositories.Entities
         public Guid DefaultWalletId { get; set; }
         public string DefaultWalletCurrencyCode { get; set; } = default!;
         public Guid BrandId { get; set; }
-        public DateTime RegisteredOn { get; set; }
+        public DateTime? RegisteredOn { get; set; }
         public DateTime LastActiveOn { get; set; }
         public short Status { get; set; }
         public int BetLimitId { get; set; }

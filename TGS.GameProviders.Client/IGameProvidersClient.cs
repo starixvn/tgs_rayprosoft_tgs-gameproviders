@@ -1,11 +1,23 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Client
 {
     public interface IGameProvidersClient
     {
-        ValueTask KickPlayer(string gameProviderCode, KickPlayerRequest source);
+        ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl);
 
-        ValueTask<PlayerBalanceResponse> PlayerBalance(string gameProviderCode, PlayerBalanceRequest source);
+        ValueTask KickPlayerAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode);
+
+        ValueTask<decimal?> PlayerBalanceAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode);
+
+        ValueTask<bool?> PlayerFundCheckingAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId);
+
+        ValueTask<bool?> PlayerFundCheckingByVRAsync(string brandCode, string playerCode, string currencyCode, string orderId, DateTimeOffset startTime, DateTimeOffset endTime);
+
+        ValueTask<string?> PlayerFundInAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount);
+
+        ValueTask<string?> PlayerFundOutAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount);
     }
 }

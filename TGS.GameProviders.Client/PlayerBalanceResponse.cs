@@ -1,6 +1,6 @@
 ﻿namespace TGS.GameProviders.Client
 {
-    public record PlayerBalanceResponse
+    internal record PlayerBalanceResponse
     {
         public decimal? Balance { get; set; }
     }

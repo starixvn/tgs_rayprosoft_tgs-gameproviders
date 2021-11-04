@@ -6,8 +6,9 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.WGSports;
-using TGS.GameProviders.ApiClients.WGSports.Models;
-using TGS.GameProviders.ApiClients.WGSports.Models.Commons;
+using TGS.GameProviders.Core.WGSports;
+using TGS.GameProviders.Core.WGSports.Models;
+using TGS.GameProviders.Core.WGSports.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
@@ -54,7 +55,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var data = new WGSportsAccessMoneyRequest()
             {
                 PlayerCode = playerCode,
-                AmountType = AmountTypes.FundIn,
+                AmountType = WGSportsAmountTypes.FundIn,
                 OrderId = Guid.NewGuid().ToString("N"),
                 Amount = "1"
             };
@@ -74,7 +75,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var data = new WGSportsAccessMoneyRequest()
             {
                 PlayerCode = playerCode,
-                AmountType = AmountTypes.FundOut,
+                AmountType = WGSportsAmountTypes.FundOut,
                 OrderId = Guid.NewGuid().ToString("N"),
                 Amount = "1"
             };
@@ -134,6 +135,12 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 CurrencyCode = "RMB"
             };
             _ = await _client.GetPrepareLoginAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task LogoutAsync()
+        {
+            _ = await _client.LogoutAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, "4ucmqplxb029").ConfigureAwait(false);
         }
     }
 }

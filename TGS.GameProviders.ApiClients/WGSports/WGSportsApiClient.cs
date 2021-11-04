@@ -7,9 +7,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
-using TGS.GameProviders.ApiClients.WGSports.Models;
-using TGS.GameProviders.ApiClients.WGSports.Models.Commons;
-using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Core.WGSports;
+using TGS.GameProviders.Core.WGSports.Models;
+using TGS.GameProviders.Core.WGSports.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.WGSports
 {
@@ -82,6 +83,15 @@ namespace TGS.GameProviders.ApiClients.WGSports
             var url = new Uri($"{apiUrl}?m=api&c=index&a=PrepareLogin&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
             return GetAsync<WGSportsPrepareLoginRequest, WGSportsPrepareLoginResponse>(url, source, "PrepareLogin");
+        }
+
+        public ValueTask<WGSportsResponse> LogoutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode)
+        {
+            var data = $"{playerCode}";
+            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var url = new Uri($"{apiUrl}?m=api&c=index&a=Logout&Hash={dataEncrypt}&PartnerCode={partnerCode}");
+
+            return GetAsync<string, WGSportsResponse>(url, playerCode, "Logout");
         }
 
         private async ValueTask<TResult> GetAsync<TSource, TResult>(Uri url, TSource request, string logPrefix)

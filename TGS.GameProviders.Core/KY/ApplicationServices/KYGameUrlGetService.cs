@@ -2,11 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.KY.Models;
-using TGS.GameProviders.Repositories;
-using TGS.GameProviders.Repositories.Domains;
-using TGS.ServiceUtility;
+using Tgs.ServiceUtility;
+using TGS.GameProviders.Core.KY.Models;
+using TGS.GameProviders.Core.Repositories;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.KY.ApplicationServices
 {
@@ -51,7 +50,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
                 }
             }
 
-            var dateTimeOffset = DateTimeOffset.UtcNow.AddHours(+8);
+            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
 
             var orderId = $"{agentId}{dateTimeOffset.ToString("yyyyMMddHHmmssfff")}{command.PlayerCode}";
 
@@ -68,7 +67,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
             var response = await _client.GetGameUrlAsync(brandMerchant.ApiUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, dateTimeOffset, data)
                 .ConfigureAwait(false);
 
-            return (response.Data.Code == 0) ? new() { Url = new(response.Data.Url) } : null;
+            return (response != null && response?.Data.Code == 0) ? new() { Url = new(response.Data.Url) } : null;
         }
     }
 }

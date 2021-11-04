@@ -6,7 +6,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -21,20 +23,22 @@ namespace TGS.GameProviders
 {
     public class Startup
     {
+        public Startup(
+            IConfiguration configuration)
+            => Configuration = configuration;
+
         public IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TGS.GameProviders v1"));
 
@@ -47,108 +51,124 @@ namespace TGS.GameProviders
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks("/health", new()
-                {
-                    ResultStatusCodes = new Dictionary<HealthStatus, int>
+                endpoints.MapHealthChecks("/health",
+                    new HealthCheckOptions
                     {
-                        {HealthStatus.Healthy, StatusCodes.Status200OK},
-                        {HealthStatus.Unhealthy, StatusCodes.Status503ServiceUnavailable},
-                        {HealthStatus.Degraded, StatusCodes.Status500InternalServerError}
-                    },
-                    ResponseWriter = async (context, report) =>
-                    {
-                        var hostName = Dns.GetHostName();
-                        var hostEntry = await Dns.GetHostEntryAsync(hostName);
-                        var hostIp = Array.Find(hostEntry.AddressList, x => x.AddressFamily == AddressFamily.InterNetwork);
-                        var response = new
+                        ResultStatusCodes = new Dictionary<HealthStatus, int>
                         {
-                            Data = new
+                            { HealthStatus.Healthy, StatusCodes.Status200OK },
+                            { HealthStatus.Unhealthy, StatusCodes.Status503ServiceUnavailable },
+                            { HealthStatus.Degraded, StatusCodes.Status500InternalServerError }
+                        },
+                        ResponseWriter = async (
+                            context,
+                            report) =>
+                        {
+                            var hostName = Dns.GetHostName();
+                            var hostEntry = await Dns.GetHostEntryAsync(hostName);
+                            var hostIp = Array.Find(hostEntry.AddressList,
+                                x => x.AddressFamily == AddressFamily.InterNetwork);
+                            var response = new
                             {
-                                MachineName = Environment.MachineName,
-                                HostName = hostName,
-                                HostIp = hostIp?.ToString() ?? string.Empty,
-                                Environment = env.EnvironmentName,
-                                OsVersion = $"{Environment.OSVersion}",
-                                Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                                ProcessCount = Environment.ProcessorCount,
-                            },
-                            Result = new
-                            {
-                                Status = report.Status.ToString(),
-                                TotalDuration = report.TotalDuration.TotalSeconds,
-                                DependencyServices = report.Entries.Select(srv => new
+                                Data = new
                                 {
-                                    Key = srv.Key,
-                                    Duration = srv.Value.Duration.TotalSeconds,
-                                    Description = srv.Value.Description,
-                                    Data = srv.Value.Data,
-                                    Exception = srv.Value.Exception?.Message,
-                                    Status = srv.Value.Status.ToString(),
-                                    Tags = srv.Value.Tags.Any() ? string.Join(',', srv.Value.Tags) : string.Empty
-                                }).ToArray()
-                            }
-                        };
-                        var json = JsonSerializer.Serialize(response, new() { WriteIndented = true });
-                        context.Response.ContentType = "application/json";
-                        await context.Response.WriteAsync(json);
-                    }
-                });
+                                    Environment.MachineName,
+                                    HostName = hostName,
+                                    HostIp = hostIp?.ToString() ?? string.Empty,
+                                    Environment = env.EnvironmentName,
+                                    OsVersion = $"{Environment.OSVersion}",
+                                    Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
+                                    ProcessCount = Environment.ProcessorCount
+                                },
+                                Result = new
+                                {
+                                    Status = report.Status.ToString(),
+                                    TotalDuration = report.TotalDuration.TotalSeconds,
+                                    DependencyServices = report.Entries.Select(srv => new
+                                    {
+                                        srv.Key,
+                                        Duration = srv.Value.Duration.TotalSeconds,
+                                        srv.Value.Description,
+                                        srv.Value.Data,
+                                        Exception = srv.Value.Exception?.Message,
+                                        Status = srv.Value.Status.ToString(),
+                                        Tags = srv.Value.Tags.Any() ? string.Join(',', srv.Value.Tags) : string.Empty
+                                    }).ToArray()
+                                }
+                            };
+                            var json = JsonSerializer.Serialize(response,
+                                new JsonSerializerOptions
+                                {
+                                    WriteIndented = true
+                                });
+                            context.Response.ContentType = "application/json";
+                            await context.Response.WriteAsync(json);
+                        }
+                    });
             });
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(
+            IServiceCollection services)
         {
             services
                 .AddRouting(options => options.LowercaseUrls = true)
-                .AddControllers();
+                .AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
             services.AddSwaggerGen(c =>
             {
-                string[] xmlFileNames = null;
-                xmlFileNames = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml");
-                foreach (var xmlFileName in xmlFileNames)
-                {
-                    c.IncludeXmlComments(xmlFileName);
-                }
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TGS.GameProviders", Version = "v1" });
+                var xmlFileNames = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml");
+                foreach (var xmlFileName in xmlFileNames) c.IncludeXmlComments(xmlFileName);
+
+                c.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "TGS.GameProviders",
+                        Version = "v1"
+                    });
             });
-            services.AddDbTgsRepository(
-                    (sp, dbBuilder) =>
-                    {
-                        var config = sp.GetRequiredService<IConfiguration>();
 
-                        dbBuilder
-                            .UseLazyLoadingProxies();
+            services.AddDbTgsRepository((
+                sp,
+                dbBuilder) =>
+            {
+                var config = sp.GetRequiredService<IConfiguration>();
 
-                        dbBuilder.UseNpgsql(
-                            config.GetConnectionString("Tgs"));
-                    });
-            services.AddDbBetRepository(
-                    (sp, dbBuilder) =>
-                    {
-                        var config = sp.GetRequiredService<IConfiguration>();
+                dbBuilder
+                    .UseLazyLoadingProxies();
 
-                        dbBuilder
-                            .UseLazyLoadingProxies();
-
-                        dbBuilder.UseNpgsql(
-                            config.GetConnectionString("Tgs"));
-                    });
+                dbBuilder.UseNpgsql(
+                    config.GetConnectionString("Tgs"));
+            });
 
             services
-                .AddRedisRepository((options, sp) =>
-                {
-                    var configuration = sp.GetRequiredService<IConfiguration>();
-                    configuration.GetSection("RedisConnectionString").Bind(options);
-                });
-
-            services
-                .AddMongoRepository((options, sp) =>
+                .AddDbBetRepository((
+                    sp,
+                    dbBuilder) =>
                 {
                     var config = sp.GetRequiredService<IConfiguration>();
-                    config.GetSection("MongoDBConnectionString").Bind(options);
+
+                    dbBuilder
+                        .UseLazyLoadingProxies();
+
+                    dbBuilder.UseNpgsql(
+                        config.GetConnectionString("Tgs"));
                 });
+
+            services
+                .AddRedisRepository((
+                    options,
+                    sp) =>
+                {
+                    var configuration = sp.GetRequiredService<IConfiguration>();
+                    options.ConnectionString = configuration.GetConnectionString("RedisConfigurationString");
+                });
+
             services
                 .AddNatsMessageQueue(natsConfig =>
                 {
@@ -156,23 +176,29 @@ namespace TGS.GameProviders
                     .ConfigQueueOptions((options, sp) =>
                     {
                         var configuration = sp.GetRequiredService<IConfiguration>();
-                        options.Url = configuration.GetSection("NatsMQ:Url").Get<string>();
+                        options.Url = configuration.GetConnectionString("NatsMQ");
                     });
                 })
-               .AddTgsLog();
+                .AddTgsLog();
+
             services
                 .AddApiClients()
+                .AddGameProvidersServices()
                 .AddGameProvidersCore();
-            services.AddAutoMapper(config =>
-            {
-                config.AddProfile<GameUrlMapping>();
-                config.AddProfile<KickPlayerMapping>();
-                config.AddProfile<PlayerBalanceMapping>();
-            });
+
+            services
+                .AddAutoMapper(config =>
+                {
+                    config.AddProfile<GameUrlMapping>();
+                    config.AddProfile<KickPlayerMapping>();
+                    config.AddProfile<PlayerBalanceMapping>();
+                    config.AddProfile<PlayerFundMapping>();
+                    config.AddProfile<PlayerFundCheckingMapping>();
+                });
+
             services
                 .AddHealthChecks()
-                .AddMongoDb(Configuration.GetSection("MongoDBConnectionString:GameProvider").Get<string>(), name: "MongoDB GameProvider")
-                .AddRedis(Configuration.GetSection("RedisConnectionString:Default").Get<string>(), name: "Redis Default")
+                .AddRedis(Configuration.GetConnectionString("RedisConfigurationString"), name: "Redis Default")
                 .AddNpgSql(Configuration.GetConnectionString("Tgs"), name: "PostgreSQL Tgs");
         }
     }

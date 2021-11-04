@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Text;
-using TGS.GameProviders.Domains;
+using TGS.GameProviders.Core.TCG;
 
 namespace TGS.GameProviders.ApiClients.TCG
 {
@@ -52,8 +52,5 @@ namespace TGS.GameProviders.ApiClients.TCG
             byte[] outputBytes = sha256.ComputeHash(inputBytes);
             return BitConverter.ToString(outputBytes).Replace("-", "").ToLower();
         }
-
-        public string GetPrefix(string prefix)
-            => $"{GameProviderType.TCG.ToLower()}.{prefix}";
     }
 }

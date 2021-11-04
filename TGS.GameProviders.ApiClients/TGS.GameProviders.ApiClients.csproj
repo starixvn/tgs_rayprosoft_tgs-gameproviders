@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TGS.GameProviders.Core\TGS.GameProviders.Core.csproj" />
     <ProjectReference Include="..\TGS.GameProviders.Domains\TGS.GameProviders.Domains.csproj" />
   </ItemGroup>
 

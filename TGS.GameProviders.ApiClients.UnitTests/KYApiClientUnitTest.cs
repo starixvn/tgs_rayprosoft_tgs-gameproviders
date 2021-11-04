@@ -6,7 +6,9 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.KY;
-using TGS.GameProviders.ApiClients.KY.Models;
+using TGS.GameProviders.Core.KY;
+using TGS.GameProviders.Core.KY.Models;
+using TGS.GameProviders.Core.KY.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
@@ -32,10 +34,24 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             //_client = new KYApiClient(client, faceLog, faceTgsLog, _utility);
         }
 
+        [Test()]
+        [TestCase("72412202110271546265054ucmqplxb029", 0)]
+        [TestCase("72412202110271546265055ucmqplxb029", -1)]
+        public async Task FundCheckingAsync(string orderId, int status)
+        {
+            var data = new KYFundCheckingRequest()
+            {
+                OrderId = orderId
+            };
+            _ = _client.FundCheckingAsync(_apiUrl, _deskey, _md5key, _agentId, data).Returns(ValueTask.FromResult<KYApiResponse<KYFundCheckingResponse>>(new() { Data = new() { Status = status } }));
+            var response = await _client.FundCheckingAsync(_apiUrl, _deskey, _md5key, _agentId, data).ConfigureAwait(false);
+            Assert.AreEqual(status, response.Data.Status);
+        }
+
         [Test]
         public async Task FundInAsync()
         {
-            var dateTimeOffset = DateTimeOffset.UtcNow.AddHours(+8);
+            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
             var playerCode = "4ucmqplxb029";
             var data = new KYFnudRequest()
             {
@@ -49,7 +65,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         [Test]
         public async Task FundOutAsync()
         {
-            var dateTimeOffset = DateTimeOffset.UtcNow.AddHours(+8);
+            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
             var playerCode = "4ucmqplxb029";
             var data = new KYFnudRequest()
             {
@@ -86,7 +102,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         [Test]
         public async Task GetGameUrlAsync()
         {
-            var dateTimeOffset = DateTimeOffset.UtcNow.AddHours(+8);
+            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
             var playerCode = "4ucmqplxb029";
             var data = new KYGameUrlRequest()
             {

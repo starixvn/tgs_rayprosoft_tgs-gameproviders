@@ -8,8 +8,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
-using TGS.GameProviders.ApiClients.Evolution.Models;
-using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Core.Evolution;
+using TGS.GameProviders.Core.Evolution.Models;
+using TGS.GameProviders.Core.Extensions;
 
 namespace TGS.GameProviders.ApiClients.Evolution
 {

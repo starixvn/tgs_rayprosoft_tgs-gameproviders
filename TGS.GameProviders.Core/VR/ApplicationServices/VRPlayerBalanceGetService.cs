@@ -2,9 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.VR.Models;
-using TGS.ServiceUtility;
+using Tgs.ServiceUtility;
+using TGS.GameProviders.Core.VR.Models;
 
 namespace TGS.GameProviders.Core.VR.ApplicationServices
 {
@@ -12,14 +11,14 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
     {
         private readonly IVRApiClient _client;
         private readonly ILogger<VRPlayerBalanceGetService> _logger;
-        private readonly IVRGamePlayerCreate _playerCreate;
+        private readonly IVRGamePlayer _playerCreate;
         private readonly IVRService _service;
 
         public VRPlayerBalanceGetService(
             ILogger<VRPlayerBalanceGetService> logger,
             IVRApiClient client,
             IVRService service,
-            IVRGamePlayerCreate playerCreate
+            IVRGamePlayer playerCreate
             )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

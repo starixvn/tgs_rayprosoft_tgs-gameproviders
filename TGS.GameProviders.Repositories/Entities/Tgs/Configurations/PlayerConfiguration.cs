@@ -91,7 +91,7 @@ namespace TGS.GameProviders.Repositories.Entities.Configurations
                 .HasColumnName("qq");
 
             entity.Property(e => e.RealName)
-                .HasMaxLength(32)
+                .HasMaxLength(256)
                 .HasColumnName("real_name");
 
             entity.Property(e => e.RegisteredOn)

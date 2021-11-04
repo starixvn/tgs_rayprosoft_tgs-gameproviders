@@ -6,7 +6,8 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.Skywind;
-using TGS.GameProviders.ApiClients.Skywind.Models;
+using TGS.GameProviders.Core.Skywind;
+using TGS.GameProviders.Core.Skywind.Models;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
