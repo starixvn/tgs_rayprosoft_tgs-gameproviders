@@ -37,8 +37,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<IWGSportsUtility, WGSportsUtility>()
                 .AddScoped<IBigGamingUtility, BigGamingUtility>()
                 .AddScoped<ITCGUtility, TCGUtility>()
-                .AddScoped<ILYUtility, LYUtility>()
-                .AddScoped<IAsiaGamingUtility, AsiaGamingUtility>();
+                .AddScoped<ILYUtility, LYUtility>();
 
             services.AddHttpClient<IKYApiClient, KYApiClient>();
             services.AddHttpClient<IVRApiClient, VRApiClient>();

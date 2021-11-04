@@ -9,5 +9,7 @@ namespace TGS.GameProviders.Core.Repositories
         Task<GetPlayer?> GetPlayerAsync(string playerCode);
 
         Task<GetPlayer?> GetPlayerAsync(Guid brandId, string username);
+
+        Task<decimal?> GetPlayerBalanceAsync(string playerCode);
     }
 }

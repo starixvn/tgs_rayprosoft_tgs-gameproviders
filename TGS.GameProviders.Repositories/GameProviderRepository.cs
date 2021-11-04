@@ -43,5 +43,13 @@ namespace TGS.GameProviders.Repositories
             var data = await _context.GameProviders.FirstOrDefaultAsync(x => x.Code == gameProviderCode).ConfigureAwait(false);
             return data.Id;
         }
+
+        public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId)
+        {
+            var data = await _context.GameProviderConfigs.FirstOrDefaultAsync(gpc
+                => gpc.Id == gameProviderConfigurationId).ConfigureAwait(false);
+
+            return (data.DesktopEndpoint, data.MobileEndpoint);
+        }
     }
 }

@@ -22,55 +22,70 @@ namespace TGS.GameProviders.ApiClients.AsiaGaming
         private readonly HttpClient _client;
         private readonly ILogger<AsiaGamingApiClient> _logger;
         private readonly ITgsLog _tgsLog;
-        private readonly IAsiaGamingUtility _utility;
 
         public AsiaGamingApiClient(
             ILogger<AsiaGamingApiClient> logger,
             HttpClient client,
-            ITgsLog tgsLog,
-            IAsiaGamingUtility utility)
+            ITgsLog tgsLog)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
-            _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         }
 
         public ValueTask<AsiaGamingCheckOrCreateAccountResponse> CheckOrCreateAccountAsync(
             Uri apiUrl,
-            string md5Key,
-            string desKey,
+            string parameter,
+            string key,
             AsiaGamingCheckOrCreateAccountRequest request)
-        {
-            var original = GetQueryString(request, "/\\\\/");
-
-            var encodedParas = _utility.DesEncrypt(original, desKey);
-            var key = _utility.Md5Hash($"{encodedParas}{md5Key}");
-
-            return GetAsync<AsiaGamingCheckOrCreateAccountRequest, AsiaGamingCheckOrCreateAccountResponse>(
+            => GetAsync<AsiaGamingCheckOrCreateAccountRequest, AsiaGamingCheckOrCreateAccountResponse>(
                 apiUrl,
                 "doBusiness.do",
-                $"params={encodedParas}&key={key}",
+                $"params={parameter}&key={key}",
                 request,
                 "CreateGameSession");
-        }
 
         public ValueTask<AsiaGamingCreateGameSessionResponse> CreateGameSessionAsync(
             Uri apiUrl,
+            string queryString,
             AsiaGamingCreateGameSessionRequest request)
-        {
-            var queryString = GetQueryString(request, "&");
-
-            return GetAsync<AsiaGamingCreateGameSessionRequest, AsiaGamingCreateGameSessionResponse>(
+            => GetAsync<AsiaGamingCreateGameSessionRequest, AsiaGamingCreateGameSessionResponse>(
                 apiUrl,
                 "resource/player-tickets.ucs",
                 queryString,
                 request,
                 "CreateGameSession");
+
+        private static string GetUriString(
+            Uri apiUrl,
+            string path,
+            string queryString)
+        {
+            const char slash = '/';
+
+            char[] urlTrimChars =
+            {
+                slash,
+                ' '
+            };
+
+            var uriString = apiUrl.AbsoluteUri.Trim(urlTrimChars);
+
+            if (!string.IsNullOrWhiteSpace(path))
+            {
+                uriString += $"{slash}{path.TrimStart(urlTrimChars)}";
+            }
+
+            if (!string.IsNullOrEmpty(queryString))
+            {
+                uriString += $"?{queryString}";
+            }
+
+            return uriString;
         }
 
         private async ValueTask<TResponse> GetAsync<TRequest, TResponse>(Uri apiUrl, string path, string queryString,
-            TRequest request, string action)
+                            TRequest request, string action)
         {
             var logPrefix = $"{nameof(AsiaGamingApiClient).ToLower()}.{action}";
             var uriString = GetUriString(apiUrl, path, queryString);
@@ -115,49 +130,6 @@ namespace TGS.GameProviders.ApiClients.AsiaGaming
             _logger.LogError(JsonSerializer.Serialize(apiLogEvent));
 
             return default;
-        }
-
-        private static string GetUriString(
-            Uri apiUrl,
-            string path,
-            string queryString)
-        {
-            const char slash = '/';
-
-            char[] urlTrimChars =
-            {
-                slash,
-                ' '
-            };
-
-            var uriString = apiUrl.AbsoluteUri.Trim(urlTrimChars);
-
-            if (!string.IsNullOrWhiteSpace(path))
-            {
-                uriString += $"{slash}{path.TrimStart(urlTrimChars)}";
-            }
-
-            if (!string.IsNullOrEmpty(queryString))
-            {
-                uriString += $"?{queryString}";
-            }
-
-            return uriString;
-        }
-
-        private static string GetQueryString<TRequest>(TRequest request, string separator)
-        {
-            var jsonSerializerOptions = new JsonSerializerOptions
-            {
-                WriteIndented = false,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            };
-
-            var json = JsonSerializer.Serialize(request, jsonSerializerOptions);
-            var items = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
-
-            var data = items!.Select((k, v) => $"{k}={v}");
-            return string.Join(separator, data);
         }
     }
 }

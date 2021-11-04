@@ -59,5 +59,19 @@ namespace TGS.GameProviders.Repositories
             player.BrandCode = brands.Code;
             return player;
         }
+
+        public async Task<decimal?> GetPlayerBalanceAsync(string playerCode)
+        {
+            var walletId = await _context.Players.Where(p => p.PlayerCode == playerCode)
+                .Select(p => (Guid?)p.DefaultWalletId).FirstOrDefaultAsync().ConfigureAwait(false);
+
+            if (!walletId.HasValue)
+            {
+                return null;
+            }
+
+            return await _context.Wallets.Where(w => w.Id == walletId.Value).Select(w => w.Balance)
+                .FirstOrDefaultAsync().ConfigureAwait(false);
+        }
     }
 }

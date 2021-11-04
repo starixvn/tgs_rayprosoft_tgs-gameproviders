@@ -1,23 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.Extensions;
 
-namespace TGS.GameProviders.ApiClients.AsiaGaming
+namespace TGS.GameProviders.Services.AsiaGaming
 {
     internal class AsiaGamingUtility : IAsiaGamingUtility
     {
-        public string Md5Hash(string original)
-        {
-            using var provider = new MD5CryptoServiceProvider();
-            var data = Encoding.UTF8.GetBytes(original);
-
-            var hash = provider.ComputeHash(data);
-            return hash.ToHexString();
-        }
-
         public string DesEncrypt(string original, string desKey)
         {
             if (string.IsNullOrEmpty(original))
@@ -42,6 +37,30 @@ namespace TGS.GameProviders.ApiClients.AsiaGaming
             cs.FlushFinalBlock();
 
             return Convert.ToBase64String(ms.ToArray());
+        }
+
+        public string GetQueryString<TRequest>(TRequest request, string separator)
+        {
+            var jsonSerializerOptions = new JsonSerializerOptions
+            {
+                WriteIndented = false,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+
+            var json = JsonSerializer.Serialize(request, jsonSerializerOptions);
+            var items = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+
+            var data = items!.Select((k, v) => $"{k}={v}");
+            return string.Join(separator, data);
+        }
+
+        public string Md5Hash(string original)
+        {
+            using var provider = new MD5CryptoServiceProvider();
+            var data = Encoding.UTF8.GetBytes(original);
+
+            var hash = provider.ComputeHash(data);
+            return hash.ToHexString();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
 using TGS.GameProviders.Core.BigGaming.ApplicationServices;
 using TGS.GameProviders.Core.Evolution.ApplicationServices;
 using TGS.GameProviders.Core.KY.ApplicationServices;
@@ -45,6 +46,8 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<GameUrlRequest, SBOGameUrlQuery>()
                 .ReverseMap();
             CreateMap<GameUrlRequest, WMCasinoGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, AsiaGamingGameUrlQuery>()
                 .ReverseMap();
         }
     }

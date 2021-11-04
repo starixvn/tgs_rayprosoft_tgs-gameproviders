@@ -8,12 +8,13 @@ namespace TGS.GameProviders.Core.AsiaGaming
     {
         ValueTask<AsiaGamingCheckOrCreateAccountResponse> CheckOrCreateAccountAsync(
             Uri apiUrl,
-            string md5Key,
-            string desKey,
+            string parameter,
+            string key,
             AsiaGamingCheckOrCreateAccountRequest request);
 
         ValueTask<AsiaGamingCreateGameSessionResponse> CreateGameSessionAsync(
             Uri apiUrl,
+            string queryString,
             AsiaGamingCreateGameSessionRequest request);
     }
 }
