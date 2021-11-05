@@ -21,9 +21,13 @@ namespace TGS.GameProviders.Repositories.Entities.Configurations
 
             entity.HasIndex(e => e.GameProviderId, "ix_brand_game_providers_game_provider_id");
 
-            entity.HasIndex(e => new { e.BrandId, e.GameProviderId }, "ux_brand_game_providers_brand_id_game_provider_id")
-                .IsUnique()
-                .IncludeProperties(new[] { "game_provider_configuration_id", "status", "default_language_code", "desktop_query_string", "mobile_query_string" });
+            entity.HasIndex(e => new
+                    {
+                        e.BrandId,
+                        e.GameProviderId
+                    },
+                    "ux_brand_game_providers_brand_id_game_provider_id")
+                .IsUnique();
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
