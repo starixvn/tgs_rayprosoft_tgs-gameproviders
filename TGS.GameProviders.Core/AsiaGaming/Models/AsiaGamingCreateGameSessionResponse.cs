@@ -2,7 +2,7 @@
 
 namespace TGS.GameProviders.Core.AsiaGaming.Models
 {
-    [XmlRoot]
+    [XmlRoot(elementName: "PlayerTicketResponse")]
     public record AsiaGamingCreateGameSessionResponse
     {
         [XmlElement(ElementName = "ResponseCode")]

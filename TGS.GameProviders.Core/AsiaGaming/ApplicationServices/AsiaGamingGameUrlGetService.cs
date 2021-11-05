@@ -2,37 +2,32 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.AsiaGaming.Models;
 using TGS.GameProviders.Core.Extensions;
-using Tgs.ServiceUtility;
 
 namespace TGS.GameProviders.Core.AsiaGaming.ApplicationServices
 {
     public class AsiaGamingGameUrlGetService : IGetService<AsiaGamingGameUrlQuery, GameUrlResult>
     {
         private readonly ILogger<AsiaGamingGameUrlGetService> _logger;
-        private readonly IAsiaGamingService _service;
         private readonly IAsiaGamingGamePlayer _playerService;
+        private readonly IAsiaGamingService _service;
         private readonly IAsiaGamingGameSession _sessionService;
         private readonly IAsiaGamingUtility _utility;
-        private readonly IAsiaGamingApiClient _client;
-
-        private static readonly string _Separator = "/\\\\/";
 
         public AsiaGamingGameUrlGetService(
             ILogger<AsiaGamingGameUrlGetService> logger,
             IAsiaGamingService service,
             IAsiaGamingGamePlayer playerService,
             IAsiaGamingGameSession sessionService,
-            IAsiaGamingUtility utility,
-            IAsiaGamingApiClient client)
+            IAsiaGamingUtility utility)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
             _sessionService = sessionService ?? throw new ArgumentNullException(nameof(sessionService));
             _utility = utility ?? throw new ArgumentNullException(nameof(utility));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
         public async ValueTask<GameUrlResult> GetAsync(
@@ -42,7 +37,8 @@ namespace TGS.GameProviders.Core.AsiaGaming.ApplicationServices
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
-            var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(gameProviderId, query.CurrencyCode)
+            var gameProviderCurrencyCode = await _service
+                .GetGameProviderCurrencyCodeAsync(gameProviderId, query.CurrencyCode)
                 .ConfigureAwait(false);
 
             var playerExist = await _playerService
@@ -65,24 +61,24 @@ namespace TGS.GameProviders.Core.AsiaGaming.ApplicationServices
 
             var brandId = await _service.GetBrandIdAsync(query.BrandCode).ConfigureAwait(false);
             var game = await _service.GetGameAsync(query.GameId!.Value).ConfigureAwait(false);
-            var gameProviderLanguage = await _service.GetGameProviderCurrencyLanguageAsync(gameProviderId, query.Language)
-                .ConfigureAwait(false);
+            var gameProviderLanguage = await _service
+                .GetGameProviderCurrencyLanguageAsync(gameProviderId, query.Language).ConfigureAwait(false);
 
             var domain = await _service.GetGameDomainAsync(brandId, gameProviderId, query.PlatformType)
                 .ConfigureAwait(false);
 
-            var data = new AsiaGamingGameUrlRequest()
+            var data = new AsiaGamingGameUrlRequest
             {
                 AgentCode = configuration.AgentCode,
                 PlayerCode = query.PlayerCode,
-                Sid = $"{configuration.AgentCode}{ DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
+                Sid = $"{configuration.AgentCode}{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
                 Lang = gameProviderLanguage,
                 GameId = game.ExternalId,
                 ReturnUrl = query.BackUrl.AbsoluteUri,
                 Currency = gameProviderCurrencyCode
             };
 
-            var queryString = _utility.GetQueryString(data, _Separator);
+            var queryString = _utility.GetQueryString(data, "/\\\\/");
             var encodedParas = _utility.DesEncrypt(queryString, configuration.DesKey);
             var key = _utility.Md5Hash($"{encodedParas}{configuration.Md5Key}");
 

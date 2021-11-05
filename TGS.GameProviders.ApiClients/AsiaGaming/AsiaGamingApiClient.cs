@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Microsoft.Extensions.Logging;
@@ -20,41 +17,54 @@ namespace TGS.GameProviders.ApiClients.AsiaGaming
     internal class AsiaGamingApiClient : IAsiaGamingApiClient
     {
         private readonly HttpClient _client;
+        private readonly IAsiaGamingUtility _utility;
         private readonly ILogger<AsiaGamingApiClient> _logger;
         private readonly ITgsLog _tgsLog;
 
         public AsiaGamingApiClient(
             ILogger<AsiaGamingApiClient> logger,
             HttpClient client,
+            IAsiaGamingUtility utility,
             ITgsLog tgsLog)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
+            _utility = utility ?? throw new ArgumentNullException(nameof(utility));
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         }
 
         public ValueTask<AsiaGamingCheckOrCreateAccountResponse> CheckOrCreateAccountAsync(
             Uri apiUrl,
-            string parameter,
-            string key,
+            string md5Key,
+            string desKey,
             AsiaGamingCheckOrCreateAccountRequest request)
-            => GetAsync<AsiaGamingCheckOrCreateAccountRequest, AsiaGamingCheckOrCreateAccountResponse>(
+        {
+            var parameter = _utility.GetQueryString(request, "/\\\\/");
+
+            var encodedParas = _utility.DesEncrypt(parameter, desKey);
+            var key = _utility.Md5Hash($"{encodedParas}{md5Key}");
+
+            return GetAsync<AsiaGamingCheckOrCreateAccountRequest, AsiaGamingCheckOrCreateAccountResponse>(
                 apiUrl,
                 "doBusiness.do",
-                $"params={parameter}&key={key}",
+                $"params={encodedParas}&key={key}",
                 request,
-                "CreateGameSession");
+                "CheckOrCreateAccount");
+        }
 
         public ValueTask<AsiaGamingCreateGameSessionResponse> CreateGameSessionAsync(
             Uri apiUrl,
-            string queryString,
             AsiaGamingCreateGameSessionRequest request)
-            => GetAsync<AsiaGamingCreateGameSessionRequest, AsiaGamingCreateGameSessionResponse>(
+        {
+            var queryString = _utility.GetQueryString(request, "&");
+
+            return GetAsync<AsiaGamingCreateGameSessionRequest, AsiaGamingCreateGameSessionResponse>(
                 apiUrl,
                 "resource/player-tickets.ucs",
                 queryString,
                 request,
                 "CreateGameSession");
+        }
 
         private static string GetUriString(
             Uri apiUrl,

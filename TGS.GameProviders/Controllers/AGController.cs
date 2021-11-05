@@ -48,8 +48,9 @@ namespace TGS.GameProviders.Controllers
         ///         "backUrl": "https://dev-t1.rpgp.cc/"
         ///     }
         /// </remarks>
+        [HttpPost("GameUrl")]
         public async ValueTask<GameUrlResponse?> GameUrlAsync(
-            IGetService<AsiaGamingGameUrlQuery, GameUrlResult> getService,
+            [FromServices] IGetService<AsiaGamingGameUrlQuery, GameUrlResult> getService,
             GameUrlRequest request)
         {
             var result = await getService.GetAsync(_mapper.Map<AsiaGamingGameUrlQuery>(request)).ConfigureAwait(false);

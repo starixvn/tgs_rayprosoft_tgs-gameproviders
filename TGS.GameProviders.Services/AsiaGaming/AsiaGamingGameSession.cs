@@ -44,9 +44,7 @@ namespace TGS.GameProviders.Services.AsiaGaming
                 Balance = balance.Value
             };
 
-            var queryString = _utility.GetQueryString(request, "&");
-
-            var response = await _client.CreateGameSessionAsync(configuration.ApiUrl, queryString, request).ConfigureAwait(false);
+            var response = await _client.CreateGameSessionAsync(configuration.ApiUrl, request).ConfigureAwait(false);
 
             return response.Error == "OK";
         }

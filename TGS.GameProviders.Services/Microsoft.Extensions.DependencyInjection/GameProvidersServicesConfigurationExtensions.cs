@@ -85,7 +85,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IWMCasinoGamePlayer, WMCasinoGamePlayer>();
 
             services
-                .AddTransient<IAsiaGamingUtility, AsiaGamingUtility>()
                 .AddTransient<IAsiaGamingService, AsiaGamingService>()
                 .AddTransient<IAsiaGamingGameSession, AsiaGamingGameSession>()
                 .AddTransient<IAsiaGamingGamePlayer, AsiaGamingGamePlayer>();

@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.Extensions;
 
-namespace TGS.GameProviders.Services.AsiaGaming
+namespace TGS.GameProviders.ApiClients.AsiaGaming
 {
     internal class AsiaGamingUtility : IAsiaGamingUtility
     {
@@ -50,7 +50,7 @@ namespace TGS.GameProviders.Services.AsiaGaming
             var json = JsonSerializer.Serialize(request, jsonSerializerOptions);
             var items = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
 
-            var data = items!.Select((k, v) => $"{k}={v}");
+            var data = items!.Select(pair => $"{pair.Key}={pair.Value}");
             return string.Join(separator, data);
         }
 
