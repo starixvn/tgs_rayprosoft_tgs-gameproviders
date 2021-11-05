@@ -1,7 +1,5 @@
 ﻿using System.Threading.Tasks;
 using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Core.Repositories.Models.Player;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.SBO
@@ -13,7 +11,7 @@ namespace TGS.GameProviders.Core.SBO
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 
         ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
-        
+
         ValueTask<SBOConfiguration> GetSettingConfigurationAsync();
     }
 }

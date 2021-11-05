@@ -12,7 +12,7 @@ using TGS.GameProviders.Core.WMCasino.Models;
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
     [TestFixture]
-    public class WMCasinoApiClientUnitTests
+    public class WMCasinoApiClientUnitTest
     {
         private readonly string _agentId = "hpgtwapi";
         private readonly string _agentPrefix = "pg";
@@ -23,7 +23,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         private readonly string _currencyCode = "CNY";
         private readonly string _signature = "97ffc7ab86c2f54be533e90da6f6ab9f";
 
-        public WMCasinoApiClientUnitTests()
+        public WMCasinoApiClientUnitTest()
         {
             var httpClient = new HttpClient();
             var logger = NullLogger<WMCasinoApiClient>.Instance;

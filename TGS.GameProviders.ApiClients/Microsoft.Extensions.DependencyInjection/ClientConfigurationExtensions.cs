@@ -1,4 +1,5 @@
-﻿using TGS.GameProviders.ApiClients.BigGaming;
+﻿using TGS.GameProviders.ApiClients.AsiaGaming;
+using TGS.GameProviders.ApiClients.BigGaming;
 using TGS.GameProviders.ApiClients.Evolution;
 using TGS.GameProviders.ApiClients.KY;
 using TGS.GameProviders.ApiClients.LY;
@@ -10,6 +11,7 @@ using TGS.GameProviders.ApiClients.VR;
 using TGS.GameProviders.ApiClients.WGHorse;
 using TGS.GameProviders.ApiClients.WGSports;
 using TGS.GameProviders.ApiClients.WMCasino;
+using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Evolution;
 using TGS.GameProviders.Core.KY;
@@ -35,7 +37,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<IWGSportsUtility, WGSportsUtility>()
                 .AddScoped<IBigGamingUtility, BigGamingUtility>()
                 .AddScoped<ITCGUtility, TCGUtility>()
-                .AddScoped<ILYUtility, LYUtility>();
+                .AddScoped<ILYUtility, LYUtility>()
+                .AddScoped<IAsiaGamingUtility, AsiaGamingUtility>();
 
             services.AddHttpClient<IKYApiClient, KYApiClient>();
             services.AddHttpClient<IVRApiClient, VRApiClient>();
@@ -49,6 +52,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddHttpClient<ILYApiClient, LYApiClient>();
             services.AddHttpClient<ISBOApiClient, SBOApiClient>();
             services.AddHttpClient<IWMCasinoApiClient, WMCasinoApiClient>();
+            services.AddHttpClient<IAsiaGamingApiClient, AsiaGamingApiClient>();
 
             return services;
         }

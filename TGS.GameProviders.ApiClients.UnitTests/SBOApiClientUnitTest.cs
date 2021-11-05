@@ -12,7 +12,7 @@ using TGS.GameProviders.Core.SBO.Models;
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
     [TestFixture]
-    public class SBOApiClientUnitTests
+    public class SBOApiClientUnitTest
     {
         private readonly string _agentPrefix = "STGTGS";
         private readonly Uri _apiUrl = new("https://ex-api-demo-yy.568win.com");
@@ -23,7 +23,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         private readonly string _playerCurrencyCode = "CNY";
         private readonly string _gameProviderCurrencyCode = "CNY";
 
-        public SBOApiClientUnitTests()
+        public SBOApiClientUnitTest()
         {
             var httpClient = new HttpClient();
             var logger = NullLogger<SBOApiClient>.Instance;
@@ -48,7 +48,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
 
             var response = await _client.CreateAgentAsync(_apiUrl, request).ConfigureAwait(false);
         }
-
 
         [Test]
         public async Task CreatePlayerAsync()

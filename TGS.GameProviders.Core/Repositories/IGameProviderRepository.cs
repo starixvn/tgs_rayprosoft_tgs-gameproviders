@@ -10,5 +10,7 @@ namespace TGS.GameProviders.Core.Repositories
         ValueTask<(bool IsCurrencyCode, string? GameProviderCurrencyCode)> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
 
         ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode);
+
+        ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId);
     }
 }
