@@ -5,6 +5,7 @@ using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Evolution;
 using TGS.GameProviders.Core.KY;
 using TGS.GameProviders.Core.LY;
+using TGS.GameProviders.Core.PragmaticPlay;
 using TGS.GameProviders.Core.SBO;
 using TGS.GameProviders.Core.SexyGaming;
 using TGS.GameProviders.Core.Skywind;
@@ -18,6 +19,7 @@ using TGS.GameProviders.Services.BigGaming;
 using TGS.GameProviders.Services.Evolution;
 using TGS.GameProviders.Services.KY;
 using TGS.GameProviders.Services.LY;
+using TGS.GameProviders.Services.PragmaticPlay;
 using TGS.GameProviders.Services.SBO;
 using TGS.GameProviders.Services.SexyGaming;
 using TGS.GameProviders.Services.Skywind;
@@ -88,6 +90,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IAsiaGamingService, AsiaGamingService>()
                 .AddTransient<IAsiaGamingGameSession, AsiaGamingGameSession>()
                 .AddTransient<IAsiaGamingGamePlayer, AsiaGamingGamePlayer>();
+
+            services
+                .AddTransient<IPragmaticPlayService, PragmaticPlayService>();
 
             return services;
         }
