@@ -16,7 +16,8 @@ namespace TGS.GameProviders.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class PPController : ControllerBase,
-        IGameUrlHandler<PragmaticPlayGameUrlQuery>
+        IGameUrlHandler<PragmaticPlayGameUrlQuery>,
+        IKickPlayerHandler<PragmaticPlayKickPlayerCommand>
     {
         private readonly ILogger<PPController> _logger;
         private readonly IMapper _mapper;
@@ -60,5 +61,26 @@ namespace TGS.GameProviders.Controllers
 
             return result == null ? null : _mapper.Map<GameUrlResponse>(result);
         }
+
+        /// <summary>
+        /// Kicks the player asynchronous.
+        /// </summary>
+        /// <param name="commandService">The command service.</param>
+        /// <param name="request">The request.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Example
+        /// Post
+        ///     {
+        ///         "brandCode": "GPI",
+        ///         "playerCode": "4ucmqplxb029",
+        ///         "currencyCode": "CNY"
+        ///     }
+        /// </remarks>
+        [HttpPost("KickPlayer")]
+        public ValueTask KickPlayerAsync(
+            [FromServices] ICommandService<PragmaticPlayKickPlayerCommand> commandService,
+            KickPlayerRequest request)
+            => commandService.ExecuteAsync(_mapper.Map<PragmaticPlayKickPlayerCommand>(request));
     }
 }
