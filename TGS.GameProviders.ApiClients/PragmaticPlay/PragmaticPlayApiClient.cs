@@ -41,7 +41,7 @@ namespace TGS.GameProviders.ApiClients.PragmaticPlay
             var hash = _utility.Md5Hash(parameters, md5Key);
             parameters!["hash"] = hash;
 
-            return PostAsync<PragmaticPlayGameUrlRequest, PragmaticPlayGameUrlResponse>(
+            return PostAsync<PragmaticPlayGameUrlResponse>(
                 apiUrl,
                 "IntegrationService/v3/http/CasinoGameAPI/game/url",
                 parameters,
@@ -56,15 +56,30 @@ namespace TGS.GameProviders.ApiClients.PragmaticPlay
             var hash = _utility.Md5Hash(parameters, md5Key);
             parameters!["hash"] = hash;
 
-            return PostAsync<PragmaticPlayOpenHistoryExtendedRequest, PragmaticPlayOpenHistoryExtendedResponse>(
+            return PostAsync<PragmaticPlayOpenHistoryExtendedResponse>(
                 apiUrl,
                 "IntegrationService/v3/http/HistoryAPI/OpenHistoryExtended/",
                 parameters,
                 "RoundHistory");
         }
 
+        public ValueTask<PragmaticPlayLogoutResponse> LogoutAsync(Uri apiUrl, string md5Key, PragmaticPlayLogoutRequest request)
+        {
+            var value = JsonSerializer.Serialize(request);
+            var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(value);
+
+            var hash = _utility.Md5Hash(parameters, md5Key);
+            parameters!["hash"] = hash;
+
+            return PostAsync<PragmaticPlayLogoutResponse>(
+                apiUrl,
+                "IntegrationService/v3/http/CasinoGameAPI/game/session/terminate/",
+                parameters,
+                "Logout");
+        }
+
         private static string GetUriString(
-            Uri apiUrl,
+                    Uri apiUrl,
             string path)
         {
             const char slash = '/';
@@ -85,7 +100,7 @@ namespace TGS.GameProviders.ApiClients.PragmaticPlay
             return uriString;
         }
 
-        private async ValueTask<TResponse> PostAsync<TRequest, TResponse>(Uri apiUrl, string path,
+        private async ValueTask<TResponse> PostAsync<TResponse>(Uri apiUrl, string path,
                     IEnumerable<KeyValuePair<string, string>> parameters, string action)
         {
             var logPrefix = $"{nameof(PragmaticPlayApiClient).ToLower()}.{action}";

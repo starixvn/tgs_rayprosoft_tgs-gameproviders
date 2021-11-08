@@ -15,5 +15,10 @@ namespace TGS.GameProviders.Core.PragmaticPlay
             Uri apiUrl,
             string md5Key,
             PragmaticPlayOpenHistoryExtendedRequest request);
+
+        ValueTask<PragmaticPlayLogoutResponse> LogoutAsync(
+            Uri apiUrl,
+            string md5Key,
+            PragmaticPlayLogoutRequest request);
     }
 }

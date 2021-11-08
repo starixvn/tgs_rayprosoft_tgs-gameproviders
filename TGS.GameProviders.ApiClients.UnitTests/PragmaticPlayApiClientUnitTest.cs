@@ -48,5 +48,19 @@ namespace TGS.GameProviders.ApiClients.UnitTests
 
             var response = await _client.GetGameUrlAsync(_apiUrl, _secretKey, request).ConfigureAwait(false);
         }
+
+        [Test]
+        public async Task KickPlayerAsync()
+        {
+            var playerCode = "4ucmqplxb029";
+
+            var request = new PragmaticPlayLogoutRequest
+            {
+                PlayerCode = playerCode,
+                SecureLogin = _securityLogin
+            };
+
+            var response = await _client.LogoutAsync(_apiUrl, _secretKey, request).ConfigureAwait(false);
+        }
     }
 }
