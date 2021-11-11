@@ -41,10 +41,10 @@ namespace TGS.GameProviders.Core.UnitTests.WGHorse
             {
                 AmountMaximum = 999999999999,
                 AmountFormat = "12,2",
-                ApiUrl = new("https://swapi.jsc080.net/index.php"),
-                PartnerCode = "GP",
-                PartnerKey = "gp#899la*am&m39!",
-                IV = "gp01&ua!46L*ks0k",
+                ApiUrl = new("http://61.56.84.139/via6/index.php"),
+                PartnerCode = "PT",
+                PartnerKey = "a888888888888888",
+                IV = "b888888888888888",
                 ServiceEndpointUrl = new("http://game-wgvia")
             };
             _ = fakeWGHorseService.GetSettingConfigurationAsync().Returns(Task.FromResult(configuration));
@@ -72,17 +72,17 @@ namespace TGS.GameProviders.Core.UnitTests.WGHorse
                     {
                         new(){
                             MemberCode ="4uf2njegpusz",
-                            RecordDate ="2021-10-31 17:53:13",
-                            BatchNo ="123693122",
+                            RecordDate ="2021-10-31 13:04:19",
+                            BatchNo ="123499081",
                             ShowType= "獨贏+位置",
-                            ShowDiscount ="早@0.8700<br>早@0.8900<br>",
-                            ShowContent="HK 10場&nbsp;@&nbsp;2021-10-31 17:55:00<br>@&nbsp;<font color='FireBrick'><b>WP</b></font>&nbsp;&nbsp;<font color='FireBrick'><B>2</font></B></s>&nbsp;&nbsp;<br>每注金額:300<Br>",
-                            ShowResult="5,7,3,4,10,8,6,12,2,1,11,9",
-                            ShowAmount="600",
-                            ShowWin= "-528.00",
+                            ShowDiscount ="早@0.8300<br>早@0.8700<br>",
+                            ShowContent="HK 2場&nbsp;@&nbsp;2021-10-31 13:15:00<br>@&nbsp;<font color='FireBrick'><b>WP</b></font>&nbsp;&nbsp;<font color='FireBrick'><B>1</font></B></s>&nbsp;&nbsp;<br>每注金額:200<Br>",
+                            ShowResult="7,1,4,5,2,6,3",
+                            ShowAmount="400",
+                            ShowWin="0.00<br>和局",
                             ShowOddsWin ="0",
-                            ShowDivideDate= "2021-10-31 18:09:35",
-                            ShowRaceDate="2021-10-31 17:55:00"
+                            ShowDivideDate= "2021-10-31 13:22:25",
+                            ShowRaceDate="2021-10-31 13:15:00"
                         }
                     }
                 }));
