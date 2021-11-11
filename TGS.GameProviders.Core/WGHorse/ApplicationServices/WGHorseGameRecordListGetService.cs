@@ -45,7 +45,8 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                data);
+                data
+                ).ConfigureAwait(false);
 
             if (response == null)
             {
@@ -69,13 +70,14 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
             var gameProviderCode = _service.GetGameProviderCode();
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
+
             var datas = response.ArrayInvoice.Select(data => new GameRecordListModle()
             {
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,
                 PlayerCode = data.MemberCode,
                 Status = RoundStatus.Closed,
-                ClientStatus = _service.GetClientRound(decimal.Parse(data.ShowWin)),
+                ClientStatus = _service.GetClientRound(((data.ShowWin.IgnoreCaseContains("和局")) ? 0m : decimal.Parse(data.ShowWin))),
                 ExternalRoundId = data.BatchNo,
                 ExternalGameId = "1",
                 ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(+8)),

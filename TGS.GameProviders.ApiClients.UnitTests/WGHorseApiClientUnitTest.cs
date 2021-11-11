@@ -144,6 +144,23 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         }
 
         [Test]
+        public async Task GetGameRecordAsync()
+        {
+            _ = await _client.GetGameRecordAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey
+                , _partnerIV,
+                new()
+                {
+                    StartTime = DateTimeOffset.Parse("2021-10-30"),
+                    EndTime = DateTimeOffset.Parse("2021-11-01").AddMilliseconds(-1),
+                    PageIndex = 1,
+                    PageSize = 1000
+                }).ConfigureAwait(false);
+        }
+
+        [Test]
         public void GP_to_TGS_FundIn_0()
         {
             var actual = _utility.AesDecrypt("ll%2fZKU%2bhK5pBYSPzebhYZqWVp4Ag6xx25mbVfi3toMuRGlXpXUgu6JhycvLLPovG9gOEj4bJCPgvkoBL5TrM%2fg%3d%3d", _partnerKey, _partnerIV);
