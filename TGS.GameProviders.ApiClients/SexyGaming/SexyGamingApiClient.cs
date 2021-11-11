@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Tgs.Logging;
-using TGS.GameProviders.ApiClients.SexyGaming.Models;
-using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Core.SexyGaming;
+using TGS.GameProviders.Core.SexyGaming.Models;
 
 namespace TGS.GameProviders.ApiClients.SexyGaming
 {

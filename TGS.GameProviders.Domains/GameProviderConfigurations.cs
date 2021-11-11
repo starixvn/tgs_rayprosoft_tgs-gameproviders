@@ -3,6 +3,7 @@
     public static class GameProviderConfigurations
     {
         public static readonly string _template = "{0}Configuration";
+
         public static readonly string AllBet = string.Format(_template, GameProviderType.AllBet);
         public static readonly string AsiaGaming = string.Format(_template, GameProviderType.AsiaGaming);
         public static readonly string BigGaming = string.Format(_template, GameProviderType.BigGaming);
@@ -12,6 +13,7 @@
         public static readonly string IMESports = string.Format(_template, GameProviderType.IMESports);
         public static readonly string JDB = string.Format(_template, GameProviderType.JDB);
         public static readonly string KY = string.Format(_template, GameProviderType.KY);
+        public static readonly string LY = string.Format(_template, GameProviderType.LY);
         public static readonly string PragmaticPlay = string.Format(_template, GameProviderType.PragmaticPlay);
         public static readonly string Saba = string.Format(_template, GameProviderType.Saba);
         public static readonly string SBOBET = string.Format(_template, GameProviderType.SBOBET);

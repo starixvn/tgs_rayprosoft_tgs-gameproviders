@@ -1,5 +1,5 @@
-# 如果要從更高的目錄繼承 .editorconfig 設定，請移除以下行
 root = true
+# 如果要從更高的目錄繼承 .editorconfig 設定，請移除以下行
 
 [Jenkinsfile]
 indent_size = 4
@@ -25,7 +25,7 @@ insert_final_newline = false
 # 組合管理 Using
 dotnet_separate_import_directive_groups = false
 dotnet_sort_system_directives_first = true
-file_header_template = unset
+file_header_template = 
 
 # this. 和 Me. 喜好設定
 dotnet_style_qualification_for_event = false
@@ -254,3 +254,7 @@ dotnet_naming_style.begins_with_underscore_camlcase.required_prefix = _
 dotnet_naming_style.begins_with_underscore_camlcase.required_suffix = 
 dotnet_naming_style.begins_with_underscore_camlcase.word_separator = 
 dotnet_naming_style.begins_with_underscore_camlcase.capitalization = camel_case
+
+# ReSharper properties
+resharper_csharp_use_indent_from_vs = true
+resharper_wrap_object_and_collection_initializer_style = chop_always

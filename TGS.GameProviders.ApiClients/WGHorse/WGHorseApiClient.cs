@@ -7,9 +7,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
-using TGS.GameProviders.ApiClients.WGHorse.Models;
-using TGS.GameProviders.ApiClients.WGHorse.Models.Commons;
-using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Core.WGHorse;
+using TGS.GameProviders.Core.WGHorse.Models;
+using TGS.GameProviders.Core.WGHorse.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.WGHorse
 {
@@ -83,6 +84,16 @@ namespace TGS.GameProviders.ApiClients.WGHorse
 
             return GetAsync<WGHorsePrepareLoginRequest, WGHorsePrepareLoginResponse>(url, source, "PrepareLogin");
         }
+
+        public ValueTask<WGHorseResponse> LogoutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode)
+        {
+            var data = $"{playerCode}";
+            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var url = new Uri($"{apiUrl}?m=api&c=index&a=Logout&Hash={dataEncrypt}&PartnerCode={partnerCode}");
+
+            return GetAsync<string, WGHorseResponse>(url, playerCode, "Logout");
+        }
+
 
         private async ValueTask<TResult> GetAsync<TSource, TResult>(Uri url, TSource request, string logPrefix)
         {

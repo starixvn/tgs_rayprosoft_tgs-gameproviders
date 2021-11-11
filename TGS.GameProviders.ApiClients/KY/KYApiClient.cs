@@ -7,9 +7,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
-using TGS.GameProviders.ApiClients.KY.Models;
-using TGS.GameProviders.ApiClients.KY.Models.Commons;
-using TGS.GameProviders.Domains.Extensions;
+using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Core.KY;
+using TGS.GameProviders.Core.KY.Models;
+using TGS.GameProviders.Core.KY.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.KY
 {
@@ -58,7 +59,7 @@ namespace TGS.GameProviders.ApiClients.KY
             var action = KYAction.FundChecking;
             request.Action = _utility.GetAction(action) ?? -1;
 
-            var timestamp = DateTimeOffset.UtcNow.AddHours(+8).ToUnixTimeMilliseconds();
+            var timestamp = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).ToUnixTimeMilliseconds();
             var dataPath = _utility.GetPath(request);
             var param = _utility.AesEncrypt(dataPath, deskey, true);
             var plainText = $"{agentId}{timestamp}{md5key}";
@@ -80,7 +81,7 @@ namespace TGS.GameProviders.ApiClients.KY
             var action = KYAction.GetBalance;
             request.Action = _utility.GetAction(action) ?? -1;
 
-            var timestamp = DateTimeOffset.UtcNow.AddHours(+8).ToUnixTimeMilliseconds();
+            var timestamp = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).ToUnixTimeMilliseconds();
             var dataPath = _utility.GetPath(request);
             var param = _utility.AesEncrypt(dataPath, deskey, true);
             var plainText = $"{agentId}{timestamp}{md5key}";
@@ -97,7 +98,7 @@ namespace TGS.GameProviders.ApiClients.KY
             return GetAPIAsync<KYGetBalanceResponse>(apiUrl, action, apiKYRequest, "Balance");
         }
 
-        public ValueTask<KYApiResponse<KYGameRecordResponse>> GetGameRecordAsync(Uri apiUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, KYGameRecordRequest request)
+        public ValueTask<KYApiResponse<KYGameRecordResponse>> GetGameRecordAsync(Uri apiRecordUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, KYGameRecordRequest request)
         {
             var action = KYAction.GameRecord;
             request.Action = _utility.GetAction(action) ?? -1;
@@ -116,10 +117,10 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYGameRecordResponse>(apiUrl, action, apiKYRequest, "GameRecord");
+            return GetAPIAsync<KYGameRecordResponse>(apiRecordUrl, action, apiKYRequest, "GameRecord");
         }
 
-        public ValueTask<KYApiResponse<KYGameUrlResponse>> GetGameUrlAsync(Uri apiRecordUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, KYGameUrlRequest request)
+        public ValueTask<KYApiResponse<KYGameUrlResponse>> GetGameUrlAsync(Uri apiUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, KYGameUrlRequest request)
         {
             var action = KYAction.GetGameUrl;
             request.Action = _utility.GetAction(KYAction.GetGameUrl) ?? -1;
@@ -138,7 +139,7 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYGameUrlResponse>(apiRecordUrl, action, apiKYRequest, "GameUrl");
+            return GetAPIAsync<KYGameUrlResponse>(apiUrl, action, apiKYRequest, "GameUrl");
         }
 
         public ValueTask<KYApiResponse<KYKickResponse>> KickAsync(Uri apiUrl, string deskey, string md5key, string agentId, KYKickRequest request)
@@ -146,7 +147,7 @@ namespace TGS.GameProviders.ApiClients.KY
             var action = KYAction.Kick;
             request.Action = _utility.GetAction(action) ?? -1;
 
-            var timestamp = DateTimeOffset.UtcNow.AddHours(+8).ToUnixTimeMilliseconds();
+            var timestamp = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).ToUnixTimeMilliseconds();
             var dataPath = _utility.GetPath(request);
             var param = _utility.AesEncrypt(dataPath, deskey, true);
             var plainText = $"{agentId}{timestamp}{md5key}";

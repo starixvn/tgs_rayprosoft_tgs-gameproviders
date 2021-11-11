@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.TCG;
-using TGS.GameProviders.ApiClients.TCG.Models;
-using TGS.GameProviders.Repositories;
-using TGS.GameProviders.Repositories.Domains;
-using TGS.ServiceUtility;
+using Tgs.ServiceUtility;
+using TGS.GameProviders.Core.Repositories;
+using TGS.GameProviders.Core.TCG.Models;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.TCG.ApplicationServices
 {
     public class TCGGameUrlGetService : IGetService<TCGGameUrlQuery, GameUrlResult>
     {
         private readonly ITCGApiClient _client;
-        private readonly ITCGGamePlayerCreate _gamePlayerCreate;
+        private readonly ITCGGamePlayer _gamePlayerCreate;
         private readonly IGameRepository _gameRepository;
         private readonly ILogger<TCGGameUrlGetService> _logger;
         private readonly IReadOnlyDictionary<string, Func<Uri, string, string, string, bool, TCGLaunchGameRequest, ValueTask<TCGLaunchGameResponse>>> _methodMapper;
@@ -26,7 +24,7 @@ namespace TGS.GameProviders.Core.TCG.ApplicationServices
             IGameRepository gameRepository,
             ILogger<TCGGameUrlGetService> logger,
             ITCGService service,
-            ITCGGamePlayerCreate gamePlayerCreate
+            ITCGGamePlayer gamePlayerCreate
             )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

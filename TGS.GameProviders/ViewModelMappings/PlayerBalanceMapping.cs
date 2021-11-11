@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TGS.GameProviders.Core;
-using TGS.GameProviders.Core.KY;
+using TGS.GameProviders.Core.KY.ApplicationServices;
+using TGS.GameProviders.Core.LY.ApplicationServices;
 using TGS.GameProviders.Core.VR.ApplicationServices;
 using TGS.GameProviders.Core.WGHorse.ApplicationServices;
 using TGS.GameProviders.Core.WGSports.ApplicationServices;
@@ -13,16 +14,17 @@ namespace TGS.GameProviders.ViewModelMappings
         public PlayerBalanceMapping()
         {
             CreateMap<PlayerBalanceResult, PlayerBalanceResponse>()
-              .ReverseMap();
+                .ReverseMap();
             CreateMap<PlayerBalanceRequest, KYPlayerBalanceQuery>()
                 .ReverseMap();
-
             CreateMap<PlayerBalanceRequest, VRPlayerBalanceQuery>()
-              .ReverseMap();
+                .ReverseMap();
             CreateMap<PlayerBalanceRequest, WGSportsPlayerBalanceQuery>()
-             .ReverseMap();
+                .ReverseMap();
             CreateMap<PlayerBalanceRequest, WGHorsePlayerBalanceQuery>()
-            .ReverseMap();
+                .ReverseMap();
+            CreateMap<PlayerBalanceRequest, LYPlayerBalanceQuery>()
+                .ReverseMap();
         }
     }
 }

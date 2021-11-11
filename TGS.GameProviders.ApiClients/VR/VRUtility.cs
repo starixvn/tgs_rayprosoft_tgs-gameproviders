@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using TGS.GameProviders.Core.VR;
 
 namespace TGS.GameProviders.ApiClients.VR
 {

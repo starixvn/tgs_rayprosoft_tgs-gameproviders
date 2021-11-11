@@ -2,9 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.WGHorse.Models;
-using TGS.ServiceUtility;
+using Tgs.ServiceUtility;
+using TGS.GameProviders.Core.WGHorse.Models;
 
 namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
 {

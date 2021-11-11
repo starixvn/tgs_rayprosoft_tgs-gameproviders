@@ -8,6 +8,7 @@
 		<GlobalNugetConfig Condition="'$(UserProfile)'==''">$(HOME)/.nuget/NuGet/NuGet.Config</GlobalNugetConfig>
 		<DockerfileBuildArguments>--build-arg "BuildConfiguration=$(Configuration)" --secret id=nuget,src="$(GlobalNugetConfig)"</DockerfileBuildArguments>
 		<DockerfileTag Condition="$(DockerfileTag) == ''">game/gameproviders</DockerfileTag>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -41,7 +42,9 @@
 		<ProjectReference Include="..\TGS.GameProviders.ApiClients\TGS.GameProviders.ApiClients.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Core\TGS.GameProviders.Core.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Domains\TGS.GameProviders.Domains.csproj" />
+		<ProjectReference Include="..\TGS.GameProviders.RedisRepositories\TGS.GameProviders.RedisRepositories.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Repositories\TGS.GameProviders.Repositories.csproj" />
+		<ProjectReference Include="..\TGS.GameProviders.Services\TGS.GameProviders.Services.csproj" />
 	</ItemGroup>
 
 </Project>

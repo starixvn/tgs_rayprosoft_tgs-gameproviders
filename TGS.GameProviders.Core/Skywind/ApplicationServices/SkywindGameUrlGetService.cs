@@ -3,11 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Core.Infrastructures.Security;
-using TGS.GameProviders.ApiClients;
-using TGS.GameProviders.ApiClients.Skywind.Models;
-using TGS.GameProviders.Repositories;
-using TGS.GameProviders.Repositories.Domains;
-using TGS.ServiceUtility;
+using Tgs.ServiceUtility;
+using TGS.GameProviders.Core.Repositories;
+using TGS.GameProviders.Core.Skywind.Models;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.Skywind.ApplicationServices
 {
@@ -40,7 +39,7 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
         public async ValueTask<GameUrlResult> GetAsync(SkywindGameUrlQuery command, CancellationToken cancellationToken = default)
         {
             var encryptedToken = await _tokenProvider.EncryptAsync(command.LoginRecordId).ConfigureAwait(false);
-            var cultureCode = await _service.GetGameProviderCultureCodeAsync(command.Language).ConfigureAwait(false);
+            var gameProviderCultureCode = await _service.GetGameProviderCultureCodeAsync(command.Language).ConfigureAwait(false);
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var getGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
 
@@ -53,7 +52,7 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
 
             if (getGame.Type == GameType.LiveDealerLobby)
             {
-                url = $"{configuration.LiveLobbyUrl}#/ticket/{encryptedToken}?lang={cultureCode}";
+                url = $"{configuration.LiveLobbyUrl}#/ticket/{encryptedToken}?lang={gameProviderCultureCode}";
             }
             else
             {
@@ -62,7 +61,7 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
                     PlayerCode = command.PlayerCode,
                     GameCode = getGame.ExternalId,
                     Ticket = encryptedToken,
-                    Language = cultureCode
+                    Language = gameProviderCultureCode
                 };
 
                 var getaccessToken = await _skywindAccessToken.GetAccessTokenAsync().ConfigureAwait(false);

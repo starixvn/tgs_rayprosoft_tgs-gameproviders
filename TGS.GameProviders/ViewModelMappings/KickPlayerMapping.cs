@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using TGS.GameProviders.Core.BigGaming.ApplicationServices;
 using TGS.GameProviders.Core.KY.ApplicationServices;
+using TGS.GameProviders.Core.LY.ApplicationServices;
+using TGS.GameProviders.Core.SBO.ApplicationServices;
 using TGS.GameProviders.Core.SexyGaming.ApplicationServices;
 using TGS.GameProviders.Core.TCG.ApplicationServices;
 using TGS.GameProviders.Core.VR.ApplicationServices;
 using TGS.GameProviders.Core.WGHorse.ApplicationServices;
 using TGS.GameProviders.Core.WGSports.ApplicationServices;
+using TGS.GameProviders.Core.WMCasino.ApplicationServices;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.ViewModelMappings
@@ -21,13 +24,19 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<KickPlayerRequest, SexyGamingKickPlayerCommand>()
                 .ReverseMap();
             CreateMap<KickPlayerRequest, TCGKickPlayerCommand>()
-               .ReverseMap();
+                .ReverseMap();
             CreateMap<KickPlayerRequest, VRKickPlayerCommand>()
-               .ReverseMap();
+                .ReverseMap();
             CreateMap<KickPlayerRequest, WGSportsKickPlayerCommand>()
-              .ReverseMap();
+                .ReverseMap();
             CreateMap<KickPlayerRequest, WGHorseKickPlayerCommand>()
-             .ReverseMap();
+                .ReverseMap();
+            CreateMap<KickPlayerRequest, LYKickPlayerCommand>()
+                .ReverseMap();
+            CreateMap<KickPlayerRequest, SBOKickPlayerCommand>()
+                .ReverseMap();
+            CreateMap<KickPlayerRequest, WMCasinoKickPlayerCommand>()
+                .ReverseMap();
         }
     }
 }

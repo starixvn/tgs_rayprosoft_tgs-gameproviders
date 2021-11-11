@@ -1,9 +1,14 @@
-﻿namespace TGS.GameProviders.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TGS.GameProviders.ViewModels
 {
     public record PlayerBalanceRequest
     {
-        public string BrandCode { get; init; }
-        public string PlayerCode { get; init; }
-        public string CurrencyCode { get; init; }
+        [Required(ErrorMessage = "Please enter BrandCode")]
+        public string BrandCode { get; init; } = default!;
+        [Required(ErrorMessage = "Please enter PlayerCode")]
+        public string PlayerCode { get; init; } = default!;
+        [Required(ErrorMessage = "Please enter CurrencyCode")]
+        public string CurrencyCode { get; init; } = default!;
     }
 }

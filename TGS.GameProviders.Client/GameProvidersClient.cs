@@ -4,13 +4,18 @@ using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Threading.Tasks;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Client
 {
     internal class GameProvidersClient : IGameProvidersClient
     {
-        private const string _balancePath = "/api/balance/{0}";
-        private const string _kickPlayerPath = "/api/KickPlayer/{0}";
+        private const string _gameURL = "/api/{0}/gameurl";
+        private const string _kickPlayerPath = "/api/{0}/KickPlayer";
+        private const string _playerBalancePath = "/api/{0}/balance";
+        private const string _playerFundChecking = "/api/{0}/PlayerFundChecking";
+        private const string _playerFundInPath = "/api/{0}/PlayerFundIn";
+        private const string _playerFundOutPath = "/api/{0}/PlayerFundOut";
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions? _serializerOptions;
 
@@ -20,13 +25,45 @@ namespace TGS.GameProviders.Client
             _serializerOptions = serializerOptions;
         }
 
-        public async ValueTask KickPlayer(string gameProviderCode, KickPlayerRequest source)
+        public async ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl)
         {
             var request = new
             {
-                BrandCode = source.BrandCode,
-                PlayerCode = source.PlayerCode,
-                CurrencyCode = source.CurrencyCode,
+                GameType = gameType,
+                GameId = gameId,
+                BrandCode = brandCode,
+                PlayerCode = playerCode,
+                CurrencyCode = currencyCode,
+                LoginRecordId = loginRecordId,
+                PlatformType = platformType,
+                Language = language,
+                IPAddress = ipAddress,
+                BackUrl = backUrl
+            };
+
+            var requestContent = new StringContent(JsonSerializer.Serialize(request, _serializerOptions));
+            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var response = await _httpClient
+               .PostAsync(
+                   string.Format(_gameURL, gameProviderCode),
+                   requestContent)
+               .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<GameUrlResponse>(contentJson, _serializerOptions)?.Url;
+        }
+
+        public async ValueTask KickPlayerAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode)
+        {
+            var request = new
+            {
+                BrandCode = brandCode,
+                PlayerCode = playerCode,
+                CurrencyCode = currencyCode,
             };
             var requestContent = new StringContent(JsonSerializer.Serialize(request, _serializerOptions));
             requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
@@ -40,20 +77,20 @@ namespace TGS.GameProviders.Client
             response.EnsureSuccessStatusCode();
         }
 
-        public async ValueTask<PlayerBalanceResponse> PlayerBalance(string gameProviderCode, PlayerBalanceRequest source)
+        public async ValueTask<decimal?> PlayerBalanceAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode)
         {
             var request = new
             {
-                BrandCode = source.BrandCode,
-                PlayerCode = source.PlayerCode,
-                CurrencyCode = source.CurrencyCode,
+                BrandCode = brandCode,
+                PlayerCode = playerCode,
+                CurrencyCode = currencyCode,
             };
             var requestContent = new StringContent(JsonSerializer.Serialize(request, _serializerOptions));
             requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
             var response = await _httpClient
                .PostAsync(
-                   string.Format(_balancePath, gameProviderCode),
+                   string.Format(_playerBalancePath, gameProviderCode),
                    requestContent)
                .ConfigureAwait(false);
 
@@ -61,7 +98,114 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<PlayerBalanceResponse>(contentJson, _serializerOptions);
+            return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<PlayerBalanceResponse>(contentJson, _serializerOptions)?.Balance;
+        }
+
+        public async ValueTask<bool?> PlayerFundCheckingAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId)
+        {
+            var request = new
+            {
+                BrandCode = brandCode,
+                PlayerCode = playerCode,
+                CurrencyCode = currencyCode,
+                OrderId = orderId,
+            };
+
+            var requestContent = new StringContent(JsonSerializer.Serialize(request, _serializerOptions));
+            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var response = await _httpClient
+               .PostAsync(
+                   string.Format(_playerFundChecking, gameProviderCode),
+                   requestContent)
+               .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return string.IsNullOrEmpty(contentJson) ? false : JsonSerializer.Deserialize<PlayerFundCheckingResponse>(contentJson, _serializerOptions)?.OrderStatus;
+        }
+
+        public async ValueTask<bool?> PlayerFundCheckingByVRAsync(string brandCode, string playerCode, string currencyCode, string orderId, DateTimeOffset startTime, DateTimeOffset endTime)
+        {
+            var request = new
+            {
+                BrandCode = brandCode,
+                PlayerCode = playerCode,
+                CurrencyCode = currencyCode,
+                OrderId = orderId,
+                StartTime = startTime,
+                EndTime = endTime
+            };
+
+            var requestContent = new StringContent(JsonSerializer.Serialize(request, _serializerOptions));
+            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var response = await _httpClient
+               .PostAsync(
+                   string.Format(_playerFundChecking, "VR"),
+                   requestContent)
+               .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return string.IsNullOrEmpty(contentJson) ? false : JsonSerializer.Deserialize<PlayerFundCheckingResponse>(contentJson, _serializerOptions)?.OrderStatus;
+        }
+
+        public async ValueTask<string?> PlayerFundInAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount)
+        {
+            var request = new
+            {
+                BrandCode = brandCode,
+                PlayerCode = playerCode,
+                CurrencyCode = currencyCode,
+                OrderId = orderId,
+                Amount = amount
+            };
+
+            var requestContent = new StringContent(JsonSerializer.Serialize(request, _serializerOptions));
+            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var response = await _httpClient
+               .PostAsync(
+                   string.Format(_playerFundInPath, gameProviderCode),
+                   requestContent)
+               .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<PlayerFundResponse>(contentJson, _serializerOptions)?.OrderId;
+        }
+
+        public async ValueTask<string?> PlayerFundOutAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount)
+        {
+            var request = new
+            {
+                BrandCode = brandCode,
+                PlayerCode = playerCode,
+                CurrencyCode = currencyCode,
+                OrderId = orderId,
+                Amount = amount
+            };
+
+            var requestContent = new StringContent(JsonSerializer.Serialize(request, _serializerOptions));
+            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var response = await _httpClient
+               .PostAsync(
+                   string.Format(_playerFundOutPath, gameProviderCode),
+                   requestContent)
+               .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<PlayerFundResponse>(contentJson, _serializerOptions)?.OrderId;
         }
     }
 }

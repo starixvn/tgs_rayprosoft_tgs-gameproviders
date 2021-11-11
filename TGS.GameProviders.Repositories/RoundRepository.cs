@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using TGS.GameProviders.Domains.Extensions;
-using TGS.GameProviders.Repositories.Domains.Models.Rounds;
+using TGS.GameProviders.Core.Repositories;
+using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories
@@ -20,25 +20,6 @@ namespace TGS.GameProviders.Repositories
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        }
-
-        public async Task AddRoundAsync(AddRound source)
-        {
-            Guid roundId = GuidExtensions.NewSequentialGuid();
-            var round = _mapper.Map<Round>(source);
-            round.Id = roundId;
-            _context.Rounds.Add(round);
-
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-
-            var getRound = await _context.Rounds.FirstAsync(x => x.Id == roundId).ConfigureAwait(false);
-
-            _context.RoundDetails.Add(new()
-            {
-                RoundId = getRound.Id,
-                AdditionalData = source.AdditionalData
-            });
-            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public async Task<GetRound?> GetRoundAsync(Guid RoundId)
@@ -94,68 +75,6 @@ namespace TGS.GameProviders.Repositories
             data.AdditionalData = roundDetail!.AdditionalData;
 
             return data;
-        }
-
-        public async Task UpdateRoundAsync(UpdateRound source)
-        {
-            var round = await _context.Rounds.SingleAsync(x => x.Id == source.RoundId).ConfigureAwait(false);
-            round.Status = (short)source.Status;
-            round.ClosedOn = source.ClosedOn.HasValue ? source.ClosedOn.Value.DateTime : null;
-            round.UpdatedOn = source.UpdatedOn.DateTime;
-            round.ExternalClosedOn = source.ExternalClosedOn.HasValue ? source.ExternalClosedOn.Value.DateTime : null;
-            round.BetAmount = source.BetAmount;
-            round.ValidBetAmount = source.ValidBetAmount;
-            round.SettleAmount = source.SettleAmount;
-            round.Commission = source.Commission;
-            round.Turnover = source.Turnover;
-            round.WinLoss = source.WinLoss;
-            round.TieBetAdjustment = source.TieBetAdjustment;
-            round.ClientStatus = (short)source.ClientStatus;
-            round.ReopenTurnoverAdjustment = source.ReopenTurnoverAdjustment;
-            round.ReopenedOn = source.ReopenedOn.HasValue ? source.ReopenedOn.Value.DateTime : null;
-            var roundDetail = await _context.RoundDetails.SingleAsync(x => x.RoundId == source.RoundId).ConfigureAwait(false);
-            roundDetail.AdditionalData = source.AdditionalData;
-            _context.Rounds.Update(round);
-            _context.RoundDetails.Update(roundDetail);
-
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-        }
-
-        public async Task UpdateRoundByExternalRoundIdAsync(UpdateRoundByExternalRoundId source)
-        {
-            var round = await _context.Rounds.AsQueryable().SingleAsync(x =>
-            x.ExternalRoundId == source.ExternalRoundId
-            && x.GameProviderId == source.GameProviderId
-            && x.GameId == source.GameId).ConfigureAwait(false);
-            round.Status = (short)source.Status;
-            round.ClosedOn = source.ClosedOn.HasValue ? source.ClosedOn.Value.DateTime : null;
-            round.UpdatedOn = source.UpdatedOn.DateTime;
-            round.ExternalClosedOn = source.ExternalClosedOn.HasValue ? source.ExternalClosedOn.Value.DateTime : null;
-            round.BetAmount = source.BetAmount;
-            round.ValidBetAmount = source.ValidBetAmount;
-            round.SettleAmount = source.SettleAmount;
-            round.Commission = source.Commission;
-            round.Turnover = source.Turnover;
-            round.WinLoss = source.WinLoss;
-            round.TieBetAdjustment = source.TieBetAdjustment;
-            round.ClientStatus = (short)source.ClientStatus;
-            round.ReopenTurnoverAdjustment = source.ReopenTurnoverAdjustment;
-            round.ReopenedOn = source.ReopenedOn.HasValue ? source.ReopenedOn.Value.DateTime : null;
-            var roundDetail = await _context.RoundDetails.SingleAsync(x => x.RoundId == round.Id).ConfigureAwait(false);
-            roundDetail.AdditionalData = source.AdditionalData;
-            _context.Rounds.Update(round);
-            _context.RoundDetails.Update(roundDetail);
-
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-        }
-
-        public async Task UpdateRoundDetailAsync(Guid roundId, string additionalData)
-        {
-            var roundDetail = await _context.RoundDetails.SingleAsync(x => x.RoundId == roundId).ConfigureAwait(false);
-            roundDetail.AdditionalData = additionalData;
-            _context.RoundDetails.Update(roundDetail);
-
-            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
     }
 }
