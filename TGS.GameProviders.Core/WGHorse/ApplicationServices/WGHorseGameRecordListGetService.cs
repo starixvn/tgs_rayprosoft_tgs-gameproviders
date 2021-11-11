@@ -82,10 +82,10 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
                 ExternalClosedOn = new DateTimeOffset(DateTime.Parse(data.ShowDivideDate), TimeSpan.FromHours(+8)),
                 BetAmount = decimal.Parse(data.ShowAmount),
                 ValidBetAmount = decimal.Parse(data.ShowAmount),
-                PlayerWinLoss = decimal.Parse(data.ShowWin),
+                PlayerWinLoss = (data.ShowWin.IgnoreCaseContains("和局")) ? 0 : decimal.Parse(data.ShowWin),
                 Commission = 0,
                 Turnover = decimal.Parse(data.ShowAmount),
-                SettleAmount = decimal.Parse(data.ShowAmount) + decimal.Parse(data.ShowWin),
+                SettleAmount = decimal.Parse(data.ShowAmount) + ((data.ShowWin.IgnoreCaseContains("和局")) ? 0m : decimal.Parse(data.ShowWin)),
                 TieBetAdjustment = null,
 
                 AdditionalData = JsonSerializer.Serialize(data),
