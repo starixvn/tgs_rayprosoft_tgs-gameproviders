@@ -8,20 +8,20 @@ namespace TGS.GameProviders.Core.AsiaGaming
 {
     public interface IAsiaGamingService
     {
-        ValueTask<Guid> GetGameProviderIdAsync();
+        ValueTask<Guid> GetBrandIdAsync(string brandCode);
+
+        ValueTask<GetGame> GetGameAsync(int gameId);
+
+        ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType);
 
         ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
 
         ValueTask<string> GetGameProviderCurrencyLanguageAsync(Guid gameProviderId, string cultureCode);
 
+        ValueTask<Guid> GetGameProviderIdAsync();
+
         ValueTask<decimal?> GetPlayerBalanceAsync(string playerCode);
 
         ValueTask<AsiaGamingConfiguration> GetSettingConfigurationAsync();
-
-        ValueTask<GetGame> GetGameAsync(int gameId);
-
-        ValueTask<Guid> GetBrandIdAsync(string brandCode);
-
-        ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType);
     }
 }

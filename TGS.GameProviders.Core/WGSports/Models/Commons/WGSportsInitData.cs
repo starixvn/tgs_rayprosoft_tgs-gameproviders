@@ -5,26 +5,26 @@ namespace TGS.GameProviders.Core.WGSports.Models.Commons
     public record WGSportsInitData
     {
         [JsonPropertyName("FB")]
-        public string FB { get; init; }
+        public string FB { get; init; } = default!;
         [JsonPropertyName("type")]
-        public string Type { get; init; }
+        public string Type { get; init; } = default!;
         [JsonPropertyName("content")]
-        public string Content { get; init; }
+        public string Content { get; init; } = default!;
         [JsonPropertyName("valid")]
-        public string Valid { get; init; }
+        public string Valid { get; init; } = default!;
         [JsonPropertyName("live_status")]
-        public string LiveStatus { get; init; }
+        public string LiveStatus { get; init; } = default!;
         [JsonPropertyName("plan_no")]
-        public string PlanNo { get; init; }
+        public string PlanNo { get; init; } = default!;
         [JsonPropertyName("part")]
-        public string Part { get; init; }
+        public string Part { get; init; } = default!;
         [JsonPropertyName("win")]
-        public string Win { get; init; }
+        public string Win { get; init; } = default!;
         [JsonPropertyName("odds_typewin")]
-        public string OddsType { get; init; }
+        public string OddsType { get; init; } = default!;
         [JsonPropertyName("match_date")]
-        public string MatchDate { get; init; }
+        public string MatchDate { get; init; } = default!;
         [JsonPropertyName("amount")]
-        public string BetAmount { get; init; }
+        public string BetAmount { get; init; } = default!;
     }
 }

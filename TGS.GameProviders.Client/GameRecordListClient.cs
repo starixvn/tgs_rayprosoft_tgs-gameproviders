@@ -123,30 +123,6 @@ namespace TGS.GameProviders.Client
             return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _serializerOptions);
         }
 
-        public async ValueTask<GameRecordListResponse?> WGSportsGameRecordListAsync(bool isSettlement, DateTimeOffset startTime, DateTimeOffset endTime)
-        {
-            var source = new
-            {
-                IsSettlement = isSettlement,
-                StartTime = startTime,
-                EndTime = endTime
-            };
-            var requestContent = new StringContent(JsonSerializer.Serialize(source, _serializerOptions));
-            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-            var response = await _httpClient
-               .PostAsync(
-                string.Format(_gameRecordListPath, GameProviderType.WGSports),
-                requestContent)
-               .ConfigureAwait(false);
-
-            response.EnsureSuccessStatusCode();
-
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _serializerOptions);
-        }
-
         public async ValueTask<GameRecordListResponse?> WGHorseGameRecordListAsync(DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
         {
             var source = new
@@ -162,6 +138,30 @@ namespace TGS.GameProviders.Client
             var response = await _httpClient
                .PostAsync(
                 string.Format(_gameRecordListPath, GameProviderType.WGHorse),
+                requestContent)
+               .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _serializerOptions);
+        }
+
+        public async ValueTask<GameRecordListResponse?> WGSportsGameRecordListAsync(bool isSettlement, DateTimeOffset startTime, DateTimeOffset endTime)
+        {
+            var source = new
+            {
+                IsSettlement = isSettlement,
+                StartTime = startTime,
+                EndTime = endTime
+            };
+            var requestContent = new StringContent(JsonSerializer.Serialize(source, _serializerOptions));
+            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var response = await _httpClient
+               .PostAsync(
+                string.Format(_gameRecordListPath, GameProviderType.WGSports),
                 requestContent)
                .ConfigureAwait(false);
 

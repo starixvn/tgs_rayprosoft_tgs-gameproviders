@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.Core.PragmaticPlay.Models;
 using Tgs.ServiceUtility;
+using TGS.GameProviders.Core.PragmaticPlay.Models;
 
 namespace TGS.GameProviders.Core.PragmaticPlay.ApplicationServices
 {
     public class PragmaticPlayKickPlayerCommandService : ICommandService<PragmaticPlayKickPlayerCommand>
     {
+        private readonly IPragmaticPlayApiClient _client;
         private readonly ILogger<PragmaticPlayKickPlayerCommandService> _logger;
         private readonly IPragmaticPlayService _service;
-        private readonly IPragmaticPlayApiClient _client;
 
         public PragmaticPlayKickPlayerCommandService(
             ILogger<PragmaticPlayKickPlayerCommandService> logger,

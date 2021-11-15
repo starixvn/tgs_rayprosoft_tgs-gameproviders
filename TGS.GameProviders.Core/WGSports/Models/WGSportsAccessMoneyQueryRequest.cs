@@ -2,6 +2,6 @@
 {
     public record WGSportsAccessMoneyQueryRequest
     {
-        public string OrderId { get; init; }
+        public string OrderId { get; init; } = default!;
     }
 }

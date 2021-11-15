@@ -6,8 +6,8 @@ namespace TGS.GameProviders.Core.WGSports.Models
     public record WGSportsGetBalanceResponse : WGSportsResponse
     {
         [JsonPropertyName("Balance")]
-        public string Balance { get; init; }
+        public string Balance { get; init; } = default!;
         [JsonPropertyName("Currency")]
-        public string Currency { get; init; }
+        public string Currency { get; init; } = default!;
     }
 }

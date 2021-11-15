@@ -14,8 +14,16 @@ namespace TGS.GameProviders.Repositories
             TgsContext context)
             => _context = context ?? throw new ArgumentNullException(nameof(context));
 
+        public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId)
+        {
+            var data = await _context.GameProviderConfigs.FirstOrDefaultAsync(gpc
+                => gpc.Id == gameProviderConfigurationId).ConfigureAwait(false);
+
+            return (data.DesktopEndpoint, data.MobileEndpoint);
+        }
+
         public async ValueTask<(bool IsCultureCode, string? GameProviderCultureCode)> GetGameProviderCultureCodeAsync(
-            Guid gameProviderId, string cultureCode)
+                    Guid gameProviderId, string cultureCode)
         {
             var gameProviderLanguage = await _context.GameProviderLanguages
                 .FirstOrDefaultAsync(x => x.GameProviderId == gameProviderId && x.CultureCode == cultureCode)
@@ -42,14 +50,6 @@ namespace TGS.GameProviders.Repositories
         {
             var data = await _context.GameProviders.FirstOrDefaultAsync(x => x.Code == gameProviderCode).ConfigureAwait(false);
             return data.Id;
-        }
-
-        public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId)
-        {
-            var data = await _context.GameProviderConfigs.FirstOrDefaultAsync(gpc
-                => gpc.Id == gameProviderConfigurationId).ConfigureAwait(false);
-
-            return (data.DesktopEndpoint, data.MobileEndpoint);
         }
     }
 }

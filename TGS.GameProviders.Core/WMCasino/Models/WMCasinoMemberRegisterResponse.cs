@@ -7,6 +7,6 @@ namespace TGS.GameProviders.Core.WMCasino.Models
     public record WMCasinoMemberRegisterResponse : WMCasinoErrorResponse
     {
         [JsonPropertyName("result")]
-        public string Result { get; init; }
+        public string Result { get; init; } = default!;
     }
 }

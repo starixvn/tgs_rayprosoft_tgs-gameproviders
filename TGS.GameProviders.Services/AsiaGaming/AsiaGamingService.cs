@@ -11,11 +11,11 @@ namespace TGS.GameProviders.Services.AsiaGaming
 {
     internal class AsiaGamingService : IAsiaGamingService
     {
+        private readonly IBrandRepository _brandRepository;
         private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly IGameRepository _gameRepository;
         private readonly ILogger<AsiaGamingService> _logger;
         private readonly IPlayerRepository _playerRepository;
-        private readonly IGameRepository _gameRepository;
-        private readonly IBrandRepository _brandRepository;
         private readonly ISettingRepository _settingRepository;
 
         public AsiaGamingService(
@@ -32,6 +32,23 @@ namespace TGS.GameProviders.Services.AsiaGaming
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
+        }
+
+        public async ValueTask<Guid> GetBrandIdAsync(string brandCode)
+            => await _brandRepository.GetBrandIdAsync(brandCode).ConfigureAwait(false);
+
+        public async ValueTask<GetGame> GetGameAsync(int gameId)
+            => await _gameRepository.GetGameAsync(gameId).ConfigureAwait(false);
+
+        public async ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType)
+        {
+            var gameProviderConfigurationId = await _brandRepository
+                .GetBrandGameProviderConfigurationIdAsync(gameProviderId, brandId).ConfigureAwait(false);
+
+            var (desktopEndpoint, mobileEndpoint) = await _gameProviderRepository
+                .GetGameEndpointsAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+            return platformType == PlatformType.Mobile ? mobileEndpoint : desktopEndpoint;
         }
 
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
@@ -61,22 +78,5 @@ namespace TGS.GameProviders.Services.AsiaGaming
             => await _settingRepository
                 .GetConfigurationAsync<AsiaGamingConfiguration>(GameProviderConfigurations.AsiaGaming)
                 .ConfigureAwait(false);
-
-        public async ValueTask<GetGame> GetGameAsync(int gameId)
-            => await _gameRepository.GetGameAsync(gameId).ConfigureAwait(false);
-
-        public async ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType)
-        {
-            var gameProviderConfigurationId = await _brandRepository
-                .GetBrandGameProviderConfigurationIdAsync(gameProviderId, brandId).ConfigureAwait(false);
-
-            var (desktopEndpoint, mobileEndpoint) = await _gameProviderRepository
-                .GetGameEndpointsAsync(gameProviderConfigurationId).ConfigureAwait(false);
-
-            return platformType == PlatformType.Mobile ? mobileEndpoint : desktopEndpoint;
-        }
-
-        public async ValueTask<Guid> GetBrandIdAsync(string brandCode)
-            => await _brandRepository.GetBrandIdAsync(brandCode).ConfigureAwait(false);
     }
 }

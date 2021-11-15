@@ -5,17 +5,17 @@ namespace TGS.GameProviders.Core.BigGaming.Models
     public record BigGamingGameRecordFishingResponse
     {
         [JsonPropertyName("sn")]
-        public string Sn { get; set; }
+        public string Sn { get; set; } = default!;
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
         [JsonPropertyName("loginId")]
-        public string LoginId { get; set; }
+        public string LoginId { get; set; } = default!;
         [JsonPropertyName("gameType")]
         public int GameType { get; set; }
         [JsonPropertyName("issueId")]
-        public string ExternalRoundId { get; set; }
+        public string ExternalRoundId { get; set; } = default!;
         [JsonPropertyName("betId")]
-        public string ExternalBetId { get; set; }
+        public string ExternalBetId { get; set; } = default!;
         [JsonPropertyName("fireCount")]
         public int FireCount { get; set; }
         [JsonPropertyName("betAmount")]
@@ -27,16 +27,16 @@ namespace TGS.GameProviders.Core.BigGaming.Models
         [JsonPropertyName("payout")]
         public decimal Payout { get; set; }
         [JsonPropertyName("orderTime")]
-        public string OrderTime { get; set; }
+        public string OrderTime { get; set; } = default!;
         [JsonPropertyName("jackpot")]
-        public string Jackpot { get; set; }
+        public string Jackpot { get; set; } = default!;
         [JsonPropertyName("jackpotType")]
         public int JackpotType { get; set; }
         [JsonPropertyName("extend")]
         public decimal Extend { get; set; }
         [JsonPropertyName("orderFrom")]
-        public string OrderFrom { get; set; }
+        public string OrderFrom { get; set; } = default!;
         [JsonPropertyName("gameBalance")]
-        public string GameBalance { get; set; }
+        public string GameBalance { get; set; } = default!;
     }
 }

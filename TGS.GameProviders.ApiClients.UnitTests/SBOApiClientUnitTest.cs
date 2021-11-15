@@ -20,8 +20,8 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         private readonly ISBOApiClient _client;
 
         private readonly string _companyKey = "34B2C4ED616F4E7B965EAE0861A3F92E";
-        private readonly string _playerCurrencyCode = "CNY";
         private readonly string _gameProviderCurrencyCode = "CNY";
+        private readonly string _playerCurrencyCode = "CNY";
 
         public SBOApiClientUnitTest()
         {

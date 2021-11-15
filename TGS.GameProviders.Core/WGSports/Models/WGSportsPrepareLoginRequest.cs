@@ -2,10 +2,10 @@
 {
     public record WGSportsPrepareLoginRequest
     {
-        public long Timestamp { get; init; }
-        public string PlayerCode { get; init; }
-        public string PlayerNickname { get; init; }
-        public string CurrencyCode { get; init; }
-        public string Handicap { get; init; }
+        public long Timestamp { get; init; } = default!;
+        public string PlayerCode { get; init; } = default!;
+        public string PlayerNickname { get; init; } = default!;
+        public string CurrencyCode { get; init; } = default!;
+        public string Handicap { get; init; } = default!;
     }
 }

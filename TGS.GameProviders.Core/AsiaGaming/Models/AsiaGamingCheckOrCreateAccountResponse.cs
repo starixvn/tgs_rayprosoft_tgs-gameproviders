@@ -6,9 +6,9 @@ namespace TGS.GameProviders.Core.AsiaGaming.Models
     public record AsiaGamingCheckOrCreateAccountResponse
     {
         [XmlAttribute(AttributeName = "info")]
-        public string Result { get; init; }
+        public string Result { get; init; } = default!;
 
         [XmlAttribute(AttributeName = "msg")]
-        public string Message { get; init; }
+        public string Message { get; init; } = default!;
     }
 }
