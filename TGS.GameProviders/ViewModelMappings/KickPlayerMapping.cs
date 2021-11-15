@@ -2,6 +2,7 @@
 using TGS.GameProviders.Core.BigGaming.ApplicationServices;
 using TGS.GameProviders.Core.KY.ApplicationServices;
 using TGS.GameProviders.Core.LY.ApplicationServices;
+using TGS.GameProviders.Core.PragmaticPlay.ApplicationServices;
 using TGS.GameProviders.Core.SBO.ApplicationServices;
 using TGS.GameProviders.Core.SexyGaming.ApplicationServices;
 using TGS.GameProviders.Core.TCG.ApplicationServices;
@@ -36,6 +37,8 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<KickPlayerRequest, SBOKickPlayerCommand>()
                 .ReverseMap();
             CreateMap<KickPlayerRequest, WMCasinoKickPlayerCommand>()
+                .ReverseMap();
+            CreateMap<KickPlayerRequest, PragmaticPlayKickPlayerCommand>()
                 .ReverseMap();
         }
     }
