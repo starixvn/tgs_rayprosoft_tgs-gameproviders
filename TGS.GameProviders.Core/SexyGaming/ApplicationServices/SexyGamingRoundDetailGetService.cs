@@ -9,13 +9,13 @@ using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
 {
-    internal class LYRoundDetailGetService : IGetService<SexyGamingRoundDetailQuery, RoundDetailResult>
+    internal class SexyGamingRoundDetailGetService : IGetService<SexyGamingRoundDetailQuery, RoundDetailResult>
     {
         private readonly IGameRepository _gameRepository;
         private readonly IRoundRepository _roundRepository;
         private readonly ISexyGamingRoundDetailAnalyzeService _sexyGamingRoundDetailAnalyzeService;
 
-        public LYRoundDetailGetService(
+        public SexyGamingRoundDetailGetService(
             IGameRepository gameRepository,
             IRoundRepository roundRepository,
             ISexyGamingRoundDetailAnalyzeService sexyGamingRoundDetailAnalyzeService

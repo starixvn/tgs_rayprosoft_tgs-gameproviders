@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Skywind.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers
@@ -13,7 +14,8 @@ namespace TGS.GameProviders.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class SWController : ControllerBase,
-        IGameUrlHandler<SkywindGameUrlQuery>
+        IGameUrlHandler<SkywindGameUrlQuery>,
+        IRoundDetailHandler<SkywindRoundDetailQuery>
     {
         private readonly ILogger<SWController> _logger;
         private readonly IMapper _mapper;
@@ -69,6 +71,32 @@ namespace TGS.GameProviders.Controllers
         {
             var result = await getService.GetAsync(_mapper.Map<SkywindGameUrlQuery>(request)).ConfigureAwait(false);
             return result == null ? null : _mapper.Map<GameUrlResponse>(result);
+        }
+
+        /// <summary>
+        /// Rounds the detail asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="roundId">The round identifier.</param>
+        /// <param name="language">The language.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get sw/rounddetail/3c6282df-d531-4482-088e-08d9a004e811?language=zh-CN
+        /// </remarks>
+        [HttpGet("RoundDetail/{roundId}")]
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromServices] IGetService<SkywindRoundDetailQuery, RoundDetailResult> getService,
+            Guid roundId,
+            [FromQuery] string language)
+        {
+            var result = await getService.GetAsync(new()
+            {
+                RoundId = roundId,
+                Language = language
+            }).ConfigureAwait(false);
+            return result == null ? null : result;
         }
     }
 }
