@@ -35,7 +35,17 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
 
             if (gameRecord == null)
             {
-                return null;
+                return new()
+                {
+                    BetAmount = round.BetAmount ?? 0,
+                    Turnover = round.Turnover ?? 0,
+                    Winloss = round.WinLoss ?? 0,
+                    GameResult = round.ClientStatus.ToString(),
+                    Data = new RoundDetailDataBase[]
+                {
+                    new RoundDetailDataJson {Value = null}
+                }
+                };
             }
 
             return new()

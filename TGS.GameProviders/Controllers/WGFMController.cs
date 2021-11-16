@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.WGSports.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers
@@ -18,7 +19,8 @@ namespace TGS.GameProviders.Controllers
         IKickPlayerHandler<WGSportsKickPlayerCommand>,
         IPlayerBalanceHandler<WGSportsPlayerBalanceQuery>,
         IPlayerFundCheckingHandler<WGSportsPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-        IPlayerFundHandler<WGSportsPlayerFundInQuery, WGSportsPlayerFundOutQuery>
+        IPlayerFundHandler<WGSportsPlayerFundInQuery, WGSportsPlayerFundOutQuery>,
+        IRoundDetailHandler<WGSportsRoundDetailQuery>
     {
         private readonly ILogger<WGFMController> _logger;
         private readonly IMapper _mapper;
@@ -205,6 +207,32 @@ namespace TGS.GameProviders.Controllers
         {
             var result = await getService.GetAsync(_mapper.Map<WGSportsPlayerFundOutQuery>(request)).ConfigureAwait(false);
             return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+        }
+
+        /// <summary>
+        /// Rounds the detail asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="roundId">The round identifier.</param>
+        /// <param name="language">The language.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get wgfm/rounddetail/f6dd64ee-ce12-4bef-9ddb-08d9676f4495?language=zh-CN
+        /// </remarks>
+        [HttpGet("RoundDetail/{roundId}")]
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromServices] IGetService<WGSportsRoundDetailQuery, RoundDetailResult> getService,
+            Guid roundId,
+            [FromQuery] string language)
+        {
+            var result = await getService.GetAsync(new()
+            {
+                RoundId = roundId,
+                Language = language
+            }).ConfigureAwait(false);
+            return result == null ? null : result;
         }
     }
 }
