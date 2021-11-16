@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.LY.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers
@@ -18,7 +19,9 @@ namespace TGS.GameProviders.Controllers
         IKickPlayerHandler<LYKickPlayerCommand>,
         IPlayerBalanceHandler<LYPlayerBalanceQuery>,
         IPlayerFundCheckingHandler<LYPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-        IPlayerFundHandler<LYPlayerFundInQuery, LYPlayerFundOutQuery>
+        IPlayerFundHandler<LYPlayerFundInQuery, LYPlayerFundOutQuery>,
+        IRoundDetailHandler<LYRoundDetailQuery>
+
     {
         private readonly ILogger<LYController> _logger;
         private readonly IMapper _mapper;
@@ -206,6 +209,32 @@ namespace TGS.GameProviders.Controllers
         {
             var result = await getService.GetAsync(_mapper.Map<LYPlayerFundOutQuery>(request)).ConfigureAwait(false);
             return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+        }
+
+        /// <summary>
+        /// Rounds the detail asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="roundId">The round identifier.</param>
+        /// <param name="language">The language.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get ky/rounddetail/b53d5576-8f61-417d-17da-08d9a5803086?language=zh-CN
+        /// </remarks>
+        [HttpGet("RoundDetail/{roundId}")]
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromServices] IGetService<LYRoundDetailQuery, RoundDetailResult> getService,
+            Guid roundId,
+            [FromQuery] string language)
+        {
+            var result = await getService.GetAsync(new()
+            {
+                RoundId = roundId,
+                Language = language
+            }).ConfigureAwait(false);
+            return result == null ? null : result;
         }
     }
 }

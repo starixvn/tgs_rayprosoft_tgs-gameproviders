@@ -9,11 +9,11 @@ using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.KY.ApplicationServices
 {
-    internal class EvolutionRoundDetailGetService : IGetService<KYRoundDetailQuery, RoundDetailResult>
+    internal class KYRoundDetailGetService : IGetService<KYRoundDetailQuery, RoundDetailResult>
     {
         private readonly IRoundRepository _roundRepository;
 
-        public EvolutionRoundDetailGetService(
+        public KYRoundDetailGetService(
             IRoundRepository roundRepository)
         {
             _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
