@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
@@ -9,17 +8,17 @@ using TGS.GameProviders.Core.BigGaming.Models;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
-using System.Text.Json;
 
 namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 {
     internal class BigGamingRoundDetailGetService : IGetService<BigGamingRoundDetailQuery, RoundDetailResult>
     {
-        private readonly IRoundRepository _roundRepository;
-        private readonly IGameRepository _gameRepository;
-        private readonly IBigGamingService _service;
-        private readonly IBigGamingApiClient _client;
         private readonly IBigGamingRoundDetailAnalyzeService _bigGamingRoundDetailAnalyzeService;
+        private readonly IBigGamingApiClient _client;
+        private readonly IGameRepository _gameRepository;
+        private readonly IRoundRepository _roundRepository;
+        private readonly IBigGamingService _service;
+
         public BigGamingRoundDetailGetService(
             IBigGamingApiClient client,
             IRoundRepository roundRepository,
@@ -33,6 +32,7 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _bigGamingRoundDetailAnalyzeService = bigGamingRoundDetailAnalyzeService ?? throw new ArgumentNullException(nameof(bigGamingRoundDetailAnalyzeService));
         }
+
         public async ValueTask<RoundDetailResult> GetAsync(BigGamingRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
             var round = await _roundRepository.GetRoundAsync(query.RoundId).ConfigureAwait(false);
@@ -49,7 +49,6 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
             }
 
             var brandMerchant = await _service.GetBrandMerchantAsync(round.CurrencyCode).ConfigureAwait(false);
-
 
             if (game.Type == GameType.LiveDealer)
             {

@@ -8,10 +8,10 @@ namespace TGS.GameProviders.Core.Repositories
     {
         ValueTask<RoundModel?> GetRoundAsync(Guid RoundId);
 
-        ValueTask<string?> GetRoundDetails(Guid roundId);
-
         ValueTask<RoundModel?> GetRoundAsync(Guid gameProviderId, string externalRoundId, int gameId);
 
         ValueTask<RoundModel?> GetRoundAsync(Guid gameProviderId, string externalRoundId, int gameId, string playerCode);
+
+        ValueTask<string?> GetRoundDetails(Guid roundId);
     }
 }

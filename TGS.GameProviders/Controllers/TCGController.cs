@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.TCG.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers
@@ -14,7 +15,8 @@ namespace TGS.GameProviders.Controllers
     [Route("api/[controller]")]
     public class TCGController : ControllerBase,
         IGameUrlHandler<TCGGameUrlQuery>,
-        IKickPlayerHandler<TCGKickPlayerCommand>
+        IKickPlayerHandler<TCGKickPlayerCommand>,
+        IRoundDetailHandler<TCGRoundDetailQuery>
     {
         private readonly ILogger<TCGController> _logger;
         private readonly IMapper _mapper;
@@ -105,5 +107,31 @@ namespace TGS.GameProviders.Controllers
             [FromServices] ICommandService<TCGKickPlayerCommand> commandService,
             KickPlayerRequest request)
             => commandService.ExecuteAsync(_mapper.Map<TCGKickPlayerCommand>(request));
+
+        /// <summary>
+        /// Rounds the detail asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="roundId">The round identifier.</param>
+        /// <param name="language">The language.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get tcg/rounddetail/d14b1a37-d473-4439-a0a8-08d97f42d936?language=zh-CN
+        /// </remarks>
+        [HttpGet("RoundDetail/{roundId}")]
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromServices] IGetService<TCGRoundDetailQuery, RoundDetailResult> getService,
+            Guid roundId,
+            [FromQuery] string language)
+        {
+            var result = await getService.GetAsync(new()
+            {
+                RoundId = roundId,
+                Language = language
+            }).ConfigureAwait(false);
+            return result == null ? null : result;
+        }
     }
 }

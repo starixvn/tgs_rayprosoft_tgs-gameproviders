@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
@@ -14,11 +11,12 @@ namespace TGS.GameProviders.Core.Evolution.ApplicationServices
 {
     internal class EvolutionRoundDetailGetService : IGetService<EvolutionRoundDetailQuery, RoundDetailResult>
     {
-        private readonly IRoundRepository _roundRepository;
-        private readonly IGameRepository _gameRepository;
-        private readonly IEvolutionService _service;
         private readonly IEvolutionApiClient _client;
         private readonly IEvolutionRoundDetailAnalyzeService _evolutionRoundDetailAnalyzeService;
+        private readonly IGameRepository _gameRepository;
+        private readonly IRoundRepository _roundRepository;
+        private readonly IEvolutionService _service;
+
         public EvolutionRoundDetailGetService(
             IEvolutionApiClient client,
             IRoundRepository roundRepository,
@@ -32,6 +30,7 @@ namespace TGS.GameProviders.Core.Evolution.ApplicationServices
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _evolutionRoundDetailAnalyzeService = evolutionRoundDetailAnalyzeService ?? throw new ArgumentNullException(nameof(evolutionRoundDetailAnalyzeService));
         }
+
         public async ValueTask<RoundDetailResult> GetAsync(EvolutionRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
             var round = await _roundRepository.GetRoundAsync(query.RoundId).ConfigureAwait(false);
@@ -48,7 +47,6 @@ namespace TGS.GameProviders.Core.Evolution.ApplicationServices
             }
 
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-
 
             var response = await _client.GetGamHistoryRoundAsync(
                 configuration.ApiUrl,

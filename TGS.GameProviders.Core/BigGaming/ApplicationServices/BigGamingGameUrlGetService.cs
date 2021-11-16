@@ -61,7 +61,6 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
                 }
             }
 
-
             return (responseGameUrl.Error == null) ?
                 new() { Url = new Uri(JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(responseGameUrl.Result))) } :
                 throw new Exception($"The manufacturer responded incorrectly.({responseGameUrl.Error.Message})"); ;
