@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.SexyGaming.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers
@@ -14,7 +15,8 @@ namespace TGS.GameProviders.Controllers
     [Route("api/[controller]")]
     public class SGController : ControllerBase,
         IGameUrlHandler<SexyGamingGameUrlQuery>,
-        IKickPlayerHandler<SexyGamingKickPlayerCommand>
+        IKickPlayerHandler<SexyGamingKickPlayerCommand>,
+        IRoundDetailHandler<SexyGamingRoundDetailQuery>
     {
         private readonly ILogger<SGController> _logger;
         private readonly IMapper _mapper;
@@ -78,5 +80,31 @@ namespace TGS.GameProviders.Controllers
             [FromServices] ICommandService<SexyGamingKickPlayerCommand> commandService,
             KickPlayerRequest request)
             => commandService.ExecuteAsync(_mapper.Map<SexyGamingKickPlayerCommand>(request));
+
+        /// <summary>
+        /// Rounds the detail asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="roundId">The round identifier.</param>
+        /// <param name="language">The language.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get sg/rounddetail/10b76524-838b-492d-3f4c-08d99fcafe7b?language=zh-CN
+        /// </remarks>
+        [HttpGet("RoundDetail/{roundId}")]
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromServices] IGetService<SexyGamingRoundDetailQuery, RoundDetailResult> getService,
+            Guid roundId,
+            [FromQuery] string language)
+        {
+            var result = await getService.GetAsync(new()
+            {
+                RoundId = roundId,
+                Language = language
+            }).ConfigureAwait(false);
+            return result == null ? null : result;
+        }
     }
 }

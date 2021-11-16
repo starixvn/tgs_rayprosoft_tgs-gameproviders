@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Extensions;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.SexyGaming.Models;
 using TGS.GameProviders.Domains;
 

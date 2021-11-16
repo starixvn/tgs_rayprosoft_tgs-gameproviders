@@ -46,7 +46,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<IBigGamingUtility, BigGamingUtility>()
                 .AddScoped<IBigGamingRoundDetailAnalyzeService, BigGamingRoundDetailAnalyzeService>();
 
-            services.AddScoped<IEvolutionRoundDetailAnalyzeService, EvolutionRoundDetailAnalyzeService>();
+            services
+                .AddScoped<IEvolutionRoundDetailAnalyzeService, EvolutionRoundDetailAnalyzeService>();
+
+            services
+                .AddScoped<ISexyGamingRoundDetailAnalyzeService, SexyGamingRoundDetailAnalyzeService>();
 
             services.AddHttpClient<IKYApiClient, KYApiClient>();
             services.AddHttpClient<IVRApiClient, VRApiClient>();
