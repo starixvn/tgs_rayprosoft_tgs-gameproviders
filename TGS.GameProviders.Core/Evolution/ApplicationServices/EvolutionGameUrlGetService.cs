@@ -48,7 +48,7 @@ namespace TGS.GameProviders.Core.Evolution.ApplicationServices
 
             var table = new EvolutionGameUrlConfigGameTable
             {
-                Id = getGame.ExternalId
+                Id = getGame.GameExternalId
             };
 
             if (getGame.Type == GameType.LiveDealerLobby)

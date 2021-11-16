@@ -9,7 +9,7 @@ namespace TGS.GameProviders.Repositories.ModelMappings
     {
         public RoundMapping()
         {
-            CreateMap<Round, GetRound>()
+            CreateMap<Round, RoundModel>()
                 .ForMember(trigger => trigger.Status, source => source.MapFrom(o => (RoundStatus)o.Status))
                 .ForMember(trigger => trigger.ClientStatus, source => source.MapFrom(o => (ClientRoundStatus)o.ClientStatus))
                 .ReverseMap();

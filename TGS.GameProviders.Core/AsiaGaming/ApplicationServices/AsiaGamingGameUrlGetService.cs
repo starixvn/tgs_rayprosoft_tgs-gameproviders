@@ -73,7 +73,7 @@ namespace TGS.GameProviders.Core.AsiaGaming.ApplicationServices
                 PlayerCode = query.PlayerCode,
                 Sid = $"{configuration.AgentCode}{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
                 Lang = gameProviderLanguage,
-                GameId = game.ExternalId,
+                GameId = game.GameExternalId,
                 ReturnUrl = query.BackUrl.AbsoluteUri,
                 Currency = gameProviderCurrencyCode
             };

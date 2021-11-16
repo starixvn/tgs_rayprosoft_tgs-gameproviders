@@ -42,7 +42,7 @@ namespace TGS.GameProviders.Core.PragmaticPlay.ApplicationServices
             {
                 SecureLogin = configuration.SecureLogin,
                 Token = encryptedToken,
-                ExternalGameId = game.ExternalId,
+                ExternalGameId = game.GameExternalId,
                 Language = culture,
                 Platform = query.PlatformType == PlatformType.Mobile ? "MOBILE" : "WEB",
                 LobbyUrl = query.BackUrl?.AbsoluteUri

@@ -56,7 +56,7 @@ namespace TGS.GameProviders.Core.TCG.ApplicationServices
                 return null;
             }
 
-            if (!_methodMapper.TryGetValue(getGame.ExternalId.ToUpper(), out var execute))
+            if (!_methodMapper.TryGetValue(getGame.GameExternalId.ToUpper(), out var execute))
             {
                 return null;
             }

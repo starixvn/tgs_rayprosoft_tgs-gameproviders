@@ -4,7 +4,7 @@ namespace TGS.GameProviders.Domains.RoundDetail
 {
     public record RoundDetailDataXml : RoundDetailDataBase
     {
-        public RoundDetailDataXml() : base(RoundDetailDataType.Text)
+        public RoundDetailDataXml() : base(RoundDetailDataType.Xml)
         {
         }
 

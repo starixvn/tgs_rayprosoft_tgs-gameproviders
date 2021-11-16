@@ -59,7 +59,7 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
 
                 if (getGame != null)
                 {
-                    externalID = Convert.ToInt32(getGame.ExternalId);
+                    externalID = Convert.ToInt32(getGame.GameExternalId);
                 }
             }
 

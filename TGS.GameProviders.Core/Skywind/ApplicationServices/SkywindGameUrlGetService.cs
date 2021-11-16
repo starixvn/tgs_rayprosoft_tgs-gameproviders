@@ -59,7 +59,7 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
                 var data = new SkywindGameUrlRequest
                 {
                     PlayerCode = command.PlayerCode,
-                    GameCode = getGame.ExternalId,
+                    GameCode = getGame.GameExternalId,
                     Ticket = encryptedToken,
                     Language = gameProviderCultureCode
                 };

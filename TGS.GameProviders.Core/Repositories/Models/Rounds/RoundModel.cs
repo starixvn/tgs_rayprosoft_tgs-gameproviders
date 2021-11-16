@@ -3,7 +3,7 @@ using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.Repositories.Models.Rounds
 {
-    public record GetRound()
+    public record RoundModel()
     {
         public Guid Id { get; set; }
 

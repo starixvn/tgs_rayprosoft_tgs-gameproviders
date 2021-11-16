@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.BigGaming.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers
@@ -15,7 +16,8 @@ namespace TGS.GameProviders.Controllers
     public class BGController : ControllerBase,
         IGameRecordListHandler<BigGamingFishingGameRecordListQuery, BigGamingFishingGameRecordListQuery>,
         IGameUrlHandler<BigGamingGameUrlQuery>,
-        IKickPlayerHandler<BigGamingKickPlayerCommand>
+        IKickPlayerHandler<BigGamingKickPlayerCommand>,
+        IRoundDetailHandler<BigGamingRoundDetailQuery>
     {
         private readonly ILogger<BGController> _logger;
         private readonly IMapper _mapper;
@@ -35,7 +37,8 @@ namespace TGS.GameProviders.Controllers
         /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        ///
         ///     Post
         ///         {
         ///             "currencyCode": "CNY",
@@ -61,34 +64,37 @@ namespace TGS.GameProviders.Controllers
         /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        /// Post
-        ///     LiveDealerLobby
-        ///     {
-        ///         "gameType": 6,
-        ///         "gameId": 800001,
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "CNY",
-        ///         "loginRecordId": "1c4ef822-e85a-4eda-581e-08d99762447f",
-        ///         "platformType": 0,
-        ///         "language": "zh-CN",
-        ///         "ipAddress": "127.0.0.1",
-        ///         "backUrl": "https://dev-t1.rpgp.cc/"
-        ///     }
-        ///     Fishing
-        ///     {
-        ///         "gameType": 9,
-        ///         "gameId": 800017,
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "CNY",
-        ///         "loginRecordId": "1c4ef822-e85a-4eda-581e-08d99762447f",
-        ///         "platformType": 0,
-        ///         "language": "zh-CN",
-        ///         "ipAddress": "127.0.0.1",
-        ///         "backUrl": "https://dev-t1.rpgp.cc/"
-        ///     }
+        /// <b>Example</b><br />
+        ///
+        ///     Post
+        ///         LiveDealerLobby
+        ///         {
+        ///             "gameType": 6,
+        ///             "gameId": 800001,
+        ///             "brandCode": "GPI",
+        ///             "playerCode": "4ucmqplxb029",
+        ///             "currencyCode": "CNY",
+        ///             "loginRecordId": "1c4ef822-e85a-4eda-581e-08d99762447f",
+        ///             "platformType": 0,
+        ///             "language": "zh-CN",
+        ///             "ipAddress": "127.0.0.1",
+        ///             "backUrl": "https://dev-t1.rpgp.cc/"
+        ///         }
+        ///
+        ///     Post
+        ///         Fishing
+        ///         {
+        ///             "gameType": 9,
+        ///             "gameId": 800017,
+        ///             "brandCode": "GPI",
+        ///             "playerCode": "4ucmqplxb029",
+        ///             "currencyCode": "CNY",
+        ///             "loginRecordId": "1c4ef822-e85a-4eda-581e-08d99762447f",
+        ///             "platformType": 0,
+        ///             "language": "zh-CN",
+        ///             "ipAddress": "127.0.0.1",
+        ///             "backUrl": "https://dev-t1.rpgp.cc/"
+        ///         }
         /// </remarks>
         [HttpPost("GameUrl")]
         public async ValueTask<GameUrlResponse?> GameUrlAsync(
@@ -106,18 +112,42 @@ namespace TGS.GameProviders.Controllers
         /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        /// Post
-        ///     {
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "CNY"
-        ///     }
+        /// <b>Example</b><br />
+        ///
+        ///     Post
+        ///         {
+        ///             "brandCode": "GPI",
+        ///             "playerCode": "4ucmqplxb029",
+        ///             "currencyCode": "CNY"
+        ///         }
         /// </remarks>
         [HttpPost("KickPlayer")]
         public ValueTask KickPlayerAsync(
             [FromServices] ICommandService<BigGamingKickPlayerCommand> commandService,
             KickPlayerRequest request)
             => commandService.ExecuteAsync(_mapper.Map<BigGamingKickPlayerCommand>(request));
+
+        /// <summary>
+        /// Rounds the detail asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="request">The request.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get bg/rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
+        /// </remarks>
+        [HttpGet("RoundDetail/{roundId}")]
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync([FromServices] IGetService<BigGamingRoundDetailQuery, RoundDetailResult> getService, Guid roundId, [FromQuery] string language)
+
+        {
+            var result = await getService.GetAsync(new()
+            {
+                RoundId = roundId,
+                Language = language
+            }).ConfigureAwait(false);
+            return result == null ? null : result;
+        }
     }
 }

@@ -48,7 +48,7 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
                         Random = Guid.NewGuid().ToString(),
                         Sn = brandMerchant.SecretCode,
                         LoginId = command.PlayerCode,
-                        GameType = game.ExternalId
+                        GameType = game.GameExternalId
                     })
                    .ConfigureAwait(false);
                 }));

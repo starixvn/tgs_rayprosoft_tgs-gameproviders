@@ -194,6 +194,7 @@ namespace TGS.GameProviders
                     config.AddProfile<PlayerBalanceMapping>();
                     config.AddProfile<PlayerFundMapping>();
                     config.AddProfile<PlayerFundCheckingMapping>();
+                    config.AddProfile<RoundDetailMapping>();
                 });
 
             services

@@ -7,7 +7,7 @@ namespace TGS.GameProviders.Core.Repositories.Models.Game
     {
         public int GameId { get; set; }
         public short Status { get; set; }
-        public string ExternalId { get; set; } = default!;
+        public string GameExternalId { get; set; } = default!;
         public string? Description { get; set; }
         public string? EndpointPath { get; set; }
         public string? RuleUrl { get; set; }

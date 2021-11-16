@@ -31,7 +31,7 @@ namespace TGS.GameProviders.Services.BigGaming
         public async ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, string playerCode, GetGame game, string cultureCode) => game.Type
           switch
         {
-            GameType.Fishing => await GetGameUrlFishingAsync(brandMerchant, playerCode, game.ExternalId, cultureCode).ConfigureAwait(false),
+            GameType.Fishing => await GetGameUrlFishingAsync(brandMerchant, playerCode, game.GameExternalId, cultureCode).ConfigureAwait(false),
             _ => await GetGameUrlLiveDealerAsync(brandMerchant, playerCode, cultureCode).ConfigureAwait(false)
         };
 

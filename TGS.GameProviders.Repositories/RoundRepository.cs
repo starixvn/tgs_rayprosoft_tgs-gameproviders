@@ -22,7 +22,7 @@ namespace TGS.GameProviders.Repositories
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<GetRound?> GetRoundAsync(Guid RoundId)
+        public async ValueTask<RoundModel?> GetRoundAsync(Guid RoundId)
         {
             var round = await _context.Rounds.FirstOrDefaultAsync(x => x.Id == RoundId).ConfigureAwait(false);
             if (round == null)
@@ -31,14 +31,15 @@ namespace TGS.GameProviders.Repositories
             }
             var roundDetail = await _context.RoundDetails.FirstOrDefaultAsync(x => x.RoundId == round.Id).ConfigureAwait(false);
 
-            var data = _mapper.Map<GetRound>(round);
-
-            data.AdditionalData = roundDetail!.AdditionalData;
-
+            var data = _mapper.Map<RoundModel>(round);
+            if (roundDetail != null)
+            {
+                data.AdditionalData = roundDetail!.AdditionalData;
+            }
             return data;
         }
 
-        public async Task<GetRound?> GetRoundAsync(Guid gameProviderId, string externalRoundId, int gameId)
+        public async ValueTask<RoundModel?> GetRoundAsync(Guid gameProviderId, string externalRoundId, int gameId)
         {
             var round = await _context.Rounds.FirstOrDefaultAsync(x =>
             x.GameProviderId == gameProviderId
@@ -50,14 +51,17 @@ namespace TGS.GameProviders.Repositories
             }
             var roundDetail = await _context.RoundDetails.FirstOrDefaultAsync(x => x.RoundId == round.Id).ConfigureAwait(false);
 
-            var data = _mapper.Map<GetRound>(round);
+            var data = _mapper.Map<RoundModel>(round);
 
-            data.AdditionalData = roundDetail!.AdditionalData;
+            if (roundDetail != null)
+            {
+                data.AdditionalData = roundDetail!.AdditionalData;
+            }
 
             return data;
         }
 
-        public async Task<GetRound?> GetRoundAsync(Guid gameProviderId, string externalRoundId, int gameId, string playerCode)
+        public async ValueTask<RoundModel?> GetRoundAsync(Guid gameProviderId, string externalRoundId, int gameId, string playerCode)
         {
             var round = await _context.Rounds.FirstOrDefaultAsync(x =>
             x.GameProviderId == gameProviderId
@@ -70,11 +74,21 @@ namespace TGS.GameProviders.Repositories
             }
             var roundDetail = await _context.RoundDetails.FirstOrDefaultAsync(x => x.RoundId == round.Id).ConfigureAwait(false);
 
-            var data = _mapper.Map<GetRound>(round);
+            var data = _mapper.Map<RoundModel>(round);
 
-            data.AdditionalData = roundDetail!.AdditionalData;
+            if (roundDetail != null)
+            {
+                data.AdditionalData = roundDetail!.AdditionalData;
+            }
 
             return data;
+        }
+
+        public async ValueTask<string?> GetRoundDetails(Guid roundId)
+        {
+            var roundDetail = await _context.RoundDetails.FirstOrDefaultAsync(x => x.RoundId == roundId).ConfigureAwait(false);
+
+            return roundDetail?.AdditionalData;
         }
     }
 }

@@ -37,11 +37,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddScoped<IVRUtility, VRUtility>()
                 .AddScoped<IWGHorseUtility, WGHorseUtility>()
                 .AddScoped<IWGSportsUtility, WGSportsUtility>()
-                .AddScoped<IBigGamingUtility, BigGamingUtility>()
                 .AddScoped<ITCGUtility, TCGUtility>()
                 .AddScoped<ILYUtility, LYUtility>()
                 .AddScoped<IAsiaGamingUtility, AsiaGamingUtility>()
                 .AddScoped<IPragmaticPlayUtility, PragmaticPlayUtility>();
+
+            services
+                .AddScoped<IBigGamingUtility, BigGamingUtility>()
+                .AddScoped<IBigGamingRoundDetailAnalyzeService, BigGamingRoundDetailAnalyzeService>();
 
             services.AddHttpClient<IKYApiClient, KYApiClient>();
             services.AddHttpClient<IVRApiClient, VRApiClient>();

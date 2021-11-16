@@ -16,7 +16,7 @@ namespace TGS.GameProviders.Repositories.UnitTests
         {
             var data = new Guid("cc4d6693-417d-401a-8ccf-68f25382a134");
 
-            var assert = new GetRound()
+            var assert = new RoundModel()
             {
                 Id = data,
                 ExternalRoundId = "cc4d6693-417d-401a-8ccf-68f25382a134",
@@ -43,7 +43,7 @@ namespace TGS.GameProviders.Repositories.UnitTests
                 ClientStatus = ClientRoundStatus.Open
             };
             var fakeRoundRepository = Substitute.For<IRoundRepository>();
-            _ = fakeRoundRepository.GetRoundAsync(data).Returns(Task.FromResult(assert));
+            _ = fakeRoundRepository.GetRoundAsync(data).Returns(ValueTask.FromResult(assert));
             var result = await fakeRoundRepository.GetRoundAsync(data).ConfigureAwait(false);
             Assert.AreEqual(assert, result);
         }
@@ -58,7 +58,7 @@ namespace TGS.GameProviders.Repositories.UnitTests
                 GameId = 500001
             };
 
-            var assert = new GetRound()
+            var assert = new RoundModel()
             {
                 Id = Guid.NewGuid(),
                 ExternalRoundId = "cc4d6693-417d-401a-8ccf-68f25382a134",
@@ -85,7 +85,7 @@ namespace TGS.GameProviders.Repositories.UnitTests
                 ClientStatus = ClientRoundStatus.Open
             };
             var fakeRoundRepository = Substitute.For<IRoundRepository>();
-            _ = fakeRoundRepository.GetRoundAsync(data.GameProviderId, data.ExternalRoundId, data.GameId).Returns(Task.FromResult(assert));
+            _ = fakeRoundRepository.GetRoundAsync(data.GameProviderId, data.ExternalRoundId, data.GameId).Returns(ValueTask.FromResult(assert));
             var result = await fakeRoundRepository.GetRoundAsync(data.GameProviderId, data.ExternalRoundId, data.GameId).ConfigureAwait(false);
             Assert.AreEqual(assert, result);
         }

@@ -45,7 +45,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
                 {
                     if (getGame.Type != GameType.CardGameLobby)
                     {
-                        externalID = Convert.ToInt32(getGame.ExternalId);
+                        externalID = Convert.ToInt32(getGame.GameExternalId);
                     }
                 }
             }
