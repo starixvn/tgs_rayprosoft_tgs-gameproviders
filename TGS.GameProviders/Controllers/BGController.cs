@@ -131,7 +131,8 @@ namespace TGS.GameProviders.Controllers
         /// Rounds the detail asynchronous.
         /// </summary>
         /// <param name="getService">The get service.</param>
-        /// <param name="request">The request.</param>
+        /// <param name="roundId">The round identifier.</param>
+        /// <param name="language">The language.</param>
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
@@ -139,8 +140,10 @@ namespace TGS.GameProviders.Controllers
         ///     Get bg/rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
-        public async ValueTask<RoundDetailResult?> RoundDetailAsync([FromServices] IGetService<BigGamingRoundDetailQuery, RoundDetailResult> getService, Guid roundId, [FromQuery] string language)
-
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromServices] IGetService<BigGamingRoundDetailQuery, RoundDetailResult> getService,
+            Guid roundId,
+            [FromQuery] string language)
         {
             var result = await getService.GetAsync(new()
             {

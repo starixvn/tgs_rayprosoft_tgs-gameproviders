@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.BigGaming.Models;
-using System.Text.Json;
 
 namespace TGS.GameProviders.ApiClients.BigGaming
 {
@@ -33,20 +31,14 @@ namespace TGS.GameProviders.ApiClients.BigGaming
             _ => GetBaccaratGameHistory(Convert.FromBase64String(source.Baccarat64))           //百家樂相關
         };
 
-        private string GetSicboGameHistory(int value) => JsonSerializer.Serialize(
-            new Dictionary<string, int>
-            {
-                {"dice1", value >> 16},
-                {"dice2", (value & 0xFF00) >> 8},
-                {"dice3", value & 0xFF}
-            });
-
-        private string GetDragontigerGameHistory(int value) => JsonSerializer.Serialize(
-            new Dictionary<string, long>
-            {
-                {"dragon", value & 0xFFFF},
-                {"tiger", (value & 0xFFFF0000) >> 16}
-            });
+        private static string GetFullColor(int value)
+        {
+            if (value is > 0 and < 12) return "Green";
+            if (value is > 11 and < 23) return "Orange";
+            if (value is > 22 and < 34) return "Purple";
+            if (value is > 33 and < 45) return "Blue";
+            return "White";
+        }
 
         private string GetBaccaratGameHistory(byte[] values)
         {
@@ -99,28 +91,12 @@ namespace TGS.GameProviders.ApiClients.BigGaming
                 });
         }
 
-        private string GetWinThreeCardsGameHistory(byte[] values)
-        {
-            var dragon = new string[3]
-            {
-                pokerMapper.Where(x => x.Key == values[0]).First().Value,
-                pokerMapper.Where(x => x.Key == values[1]).First().Value,
-                pokerMapper.Where(x => x.Key == values[2]).First().Value
-            };
-            var phoenix = new string[3]
-            {
-                pokerMapper.Where(x => x.Key == values[3]).First().Value,
-                pokerMapper.Where(x => x.Key == values[4]).First().Value,
-                pokerMapper.Where(x => x.Key == values[5]).First().Value
-            };
-
-            return JsonSerializer.Serialize(
-                new Dictionary<string, string>
-                {
-                    {"dragon", string.Join(',', dragon)},
-                    {"phoenix", string.Join(',', phoenix)}
-                });
-        }
+        private string GetDragontigerGameHistory(int value) => JsonSerializer.Serialize(
+new Dictionary<string, long>
+{
+                {"dragon", value & 0xFFFF},
+                {"tiger", (value & 0xFFFF0000) >> 16}
+});
 
         private string GetFullColorBaccaratGameHistory(byte[] values)
         {
@@ -149,6 +125,37 @@ namespace TGS.GameProviders.ApiClients.BigGaming
                 {
                     {"player", string.Join(",", player.Select(kv => kv.Key + ":" + kv.Value).ToArray())},
                     {"banker", string.Join(",", banker.Select(kv => kv.Key + ":" + kv.Value).ToArray())}
+                });
+        }
+
+        private string GetSicboGameHistory(int value) => JsonSerializer.Serialize(
+                                            new Dictionary<string, int>
+    {
+                {"dice1", value >> 16},
+                {"dice2", (value & 0xFF00) >> 8},
+                {"dice3", value & 0xFF}
+    });
+
+        private string GetWinThreeCardsGameHistory(byte[] values)
+        {
+            var dragon = new string[3]
+            {
+                pokerMapper.Where(x => x.Key == values[0]).First().Value,
+                pokerMapper.Where(x => x.Key == values[1]).First().Value,
+                pokerMapper.Where(x => x.Key == values[2]).First().Value
+            };
+            var phoenix = new string[3]
+            {
+                pokerMapper.Where(x => x.Key == values[3]).First().Value,
+                pokerMapper.Where(x => x.Key == values[4]).First().Value,
+                pokerMapper.Where(x => x.Key == values[5]).First().Value
+            };
+
+            return JsonSerializer.Serialize(
+                new Dictionary<string, string>
+                {
+                    {"dragon", string.Join(',', dragon)},
+                    {"phoenix", string.Join(',', phoenix)}
                 });
         }
 
@@ -183,15 +190,6 @@ namespace TGS.GameProviders.ApiClients.BigGaming
                 }
             }
             pokerMapper = tempPokerMapper;
-        }
-
-        private static string GetFullColor(int value)
-        {
-            if (value is > 0 and < 12) return "Green";
-            if (value is > 11 and < 23) return "Orange";
-            if (value is > 22 and < 34) return "Purple";
-            if (value is > 33 and < 45) return "Blue";
-            return "White";
         }
     }
 }
