@@ -11,18 +11,24 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
     internal class SkywindRoundDetailGetService : IGetService<SkywindRoundDetailQuery, RoundDetailResult>
     {
         private readonly ISkywindApiClient _client;
+        private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly IGameRepository _gameRepository;
         private readonly IRoundRepository _roundRepository;
         private readonly ISkywindService _service;
         private readonly ISkywindAccessToken _skywindAccessToken;
 
         public SkywindRoundDetailGetService(
             ISkywindApiClient client,
+            IGameProviderRepository gameProviderRepository,
+            IGameRepository gameRepository,
             IRoundRepository roundRepository,
             ISkywindService service,
             ISkywindAccessToken skywindAccessToken
             )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
+            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _skywindAccessToken = skywindAccessToken ?? throw new ArgumentNullException(nameof(skywindAccessToken));
@@ -30,13 +36,24 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
 
         public async ValueTask<RoundDetailResult> GetAsync(SkywindRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
-            var round = await _roundRepository.GetRoundAsync(query.RoundId).ConfigureAwait(false);
-            if (round == null)
+            var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
+            if (roundModel == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
+            var gameProviderModel = await _gameProviderRepository.GetAsync(roundModel.GameProviderId).ConfigureAwait(false);
+            if (gameProviderModel == null)
+            {
+                throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
+            }
 
-            var roundId = round.ExternalRoundId;
+            var gameModel = await _gameRepository.GetAsync(roundModel.GameId).ConfigureAwait(false);
+            if (gameModel == null)
+            {
+                throw new Exception($"This game Id could not be found..{gameModel.GameId}");
+            }
+
+            var roundId = roundModel.ExternalRoundId;
             if (roundId.IndexOf("_") != -1)
             {
                 roundId = roundId.Split("_")[0];
@@ -56,13 +73,16 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
 
             return new()
             {
-                BetAmount = round.BetAmount ?? 0,
-                Turnover = round.Turnover ?? 0,
-                Winloss = round.WinLoss ?? 0,
-                GameResult = round.ClientStatus.ToString(),
+                GameProviderName = gameProviderModel.Name,
+                GameName = gameModel.Name,
+                ExternalRoundId = roundModel.ExternalRoundId,
+                BetAmount = roundModel.BetAmount,
+                Turnover = roundModel.Turnover,
+                Winloss = roundModel.WinLoss,
+                GameResult = roundModel.ClientStatus.ToString(),
                 Data = new RoundDetailDataBase[]
                 {
-                    new RoundDetailDataUrl {Url = response.ImageUrl}
+                    new RoundDetailDataUrl { Url = response.ImageUrl }
                 }
             };
         }

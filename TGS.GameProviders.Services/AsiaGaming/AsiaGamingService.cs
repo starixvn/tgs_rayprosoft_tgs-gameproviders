@@ -37,8 +37,8 @@ namespace TGS.GameProviders.Services.AsiaGaming
         public async ValueTask<Guid> GetBrandIdAsync(string brandCode)
             => await _brandRepository.GetBrandIdAsync(brandCode).ConfigureAwait(false);
 
-        public async ValueTask<GetGame> GetGameAsync(int gameId)
-            => await _gameRepository.GetGameAsync(gameId).ConfigureAwait(false);
+        public async ValueTask<GameModel> GetGameAsync(int gameId)
+            => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
         public async ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType)
         {

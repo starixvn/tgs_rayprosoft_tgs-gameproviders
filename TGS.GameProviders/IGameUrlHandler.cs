@@ -8,6 +8,7 @@ namespace TGS.GameProviders
 {
     public interface IGameUrlHandler<TQuery> where TQuery : GameUrlQuery
     {
+        [HttpPost("GameUrl")]
         ValueTask<GameUrlResponse?> GameUrlAsync([FromServices] IGetService<TQuery, GameUrlResult> getService, GameUrlRequest request);
     }
 }

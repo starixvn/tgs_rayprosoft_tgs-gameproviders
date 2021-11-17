@@ -6,7 +6,7 @@ namespace TGS.GameProviders.Core.SBO
 {
     public interface ISBOService
     {
-        ValueTask<GetGame> GetGameAsync(int value);
+        ValueTask<GameModel> GetGameAsync(int value);
 
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 

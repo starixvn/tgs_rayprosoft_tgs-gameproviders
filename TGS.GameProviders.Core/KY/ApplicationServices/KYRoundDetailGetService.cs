@@ -11,54 +11,75 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
 {
     internal class KYRoundDetailGetService : IGetService<KYRoundDetailQuery, RoundDetailResult>
     {
+        private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly IGameRepository _gameRepository;
         private readonly IRoundRepository _roundRepository;
 
         public KYRoundDetailGetService(
-            IRoundRepository roundRepository)
+            IGameProviderRepository gameProviderRepository,
+            IGameRepository gameRepository,
+            IRoundRepository roundRepository
+            )
         {
+            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
         }
 
         public async ValueTask<RoundDetailResult> GetAsync(KYRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
-            var round = await _roundRepository.GetRoundAsync(query.RoundId).ConfigureAwait(false);
-            if (round == null)
+            var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
+            if (roundModel == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
+            var gameProviderModel = await _gameProviderRepository.GetAsync(roundModel.GameProviderId).ConfigureAwait(false);
+            if (gameProviderModel == null)
+            {
+                throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
+            }
 
-            var gameRecord = JsonSerializer.Deserialize<KYGameRecord>(round.AdditionalData, new JsonSerializerOptions
+            var gameModel = await _gameRepository.GetAsync(roundModel.GameId).ConfigureAwait(false);
+            if (gameModel == null)
+            {
+                throw new Exception($"This game Id could not be found..{gameModel.GameId}");
+            }
+
+            var gameRecord = JsonSerializer.Deserialize<KYGameRecord>(roundModel.AdditionalData, new JsonSerializerOptions
             {
                 // 設定在做序列化/反序列化時，尊重名稱大小寫
                 PropertyNameCaseInsensitive = true
             });
 
-            if (gameRecord == null)
-            {
-                return new()
+            return gameRecord == null
+                ? (new()
                 {
-                    BetAmount = round.BetAmount ?? 0,
-                    Turnover = round.Turnover ?? 0,
-                    Winloss = round.WinLoss ?? 0,
-                    GameResult = round.ClientStatus.ToString(),
+                    GameProviderName = gameProviderModel.Name,
+                    GameName = gameModel.Name,
+                    ExternalRoundId = roundModel.ExternalRoundId,
+                    BetAmount = roundModel.BetAmount,
+                    Turnover = roundModel.Turnover,
+                    Winloss = roundModel.WinLoss,
+                    GameResult = roundModel.ClientStatus.ToString(),
                     Data = new RoundDetailDataBase[]
+                    {
+                        new RoundDetailDataJson {Value = null}
+                    }
+                })
+                : (new()
                 {
-                    new RoundDetailDataJson {Value = null}
-                }
-                };
-            }
-
-            return new()
-            {
-                BetAmount = round.BetAmount ?? 0,
-                Turnover = round.Turnover ?? 0,
-                Winloss = round.WinLoss ?? 0,
-                GameResult = round.ClientStatus.ToString(),
-                Data = new RoundDetailDataBase[]
+                    GameProviderName = gameProviderModel.Name,
+                    GameName = gameModel.Name,
+                    ExternalRoundId = roundModel.ExternalRoundId,
+                    BetAmount = roundModel.BetAmount,
+                    Turnover = roundModel.Turnover,
+                    Winloss = roundModel.WinLoss,
+                    GameResult = roundModel.ClientStatus.ToString(),
+                    Data = new RoundDetailDataBase[]
                 {
                     new RoundDetailDataJson {Value = gameRecord.CardValue}
                 }
-            };
+                });
         }
     }
 }

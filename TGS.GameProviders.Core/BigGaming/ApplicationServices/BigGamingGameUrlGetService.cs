@@ -41,7 +41,7 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
                 throw new Exception("The merchant does not exist.");
             }
 
-            var getGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
+            var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
             if (getGame == null)
             {

@@ -7,10 +7,10 @@ namespace TGS.GameProviders.Domains.RoundDetail
     {
         protected RoundDetailDataBase(RoundDetailDataType type)
         {
-            Type = type;
+            Type = type.ToString();
         }
 
         [JsonPropertyName("type")]
-        public RoundDetailDataType Type { get; }
+        public string Type { get; }
     }
 }

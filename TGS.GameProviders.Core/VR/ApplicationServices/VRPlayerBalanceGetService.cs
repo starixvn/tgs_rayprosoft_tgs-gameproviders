@@ -7,7 +7,7 @@ using TGS.GameProviders.Core.VR.Models;
 
 namespace TGS.GameProviders.Core.VR.ApplicationServices
 {
-    public class VRPlayerBalanceGetService : IGetService<VRPlayerBalanceQuery, PlayerBalanceResult>
+    public class VRPlayerBalanceGetService : IGetService<VRPlayerBalanceQuery, decimal?>
     {
         private readonly IVRApiClient _client;
         private readonly ILogger<VRPlayerBalanceGetService> _logger;
@@ -27,7 +27,7 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
             _playerCreate = playerCreate ?? throw new ArgumentNullException(nameof(playerCreate));
         }
 
-        public async ValueTask<PlayerBalanceResult> GetAsync(VRPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<decimal?> GetAsync(VRPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
             var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
 
@@ -61,15 +61,7 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
                 }
             }
 
-            if (string.IsNullOrEmpty(response.PlayerName) || response.Balance == -1)
-            {
-                return null;
-            }
-
-            return new()
-            {
-                Balance = response.Balance
-            };
+            return (string.IsNullOrEmpty(response.PlayerName) || response.Balance == -1) ? null : response.Balance;
         }
     }
 }

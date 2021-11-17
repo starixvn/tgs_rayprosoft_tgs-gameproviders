@@ -7,7 +7,7 @@ using TGS.GameProviders.Core.WGSports.Models;
 
 namespace TGS.GameProviders.Core.WGSports.ApplicationServices
 {
-    public class WGSportsPlayerBalanceGetService : IGetService<WGSportsPlayerBalanceQuery, PlayerBalanceResult>
+    public class WGSportsPlayerBalanceGetService : IGetService<WGSportsPlayerBalanceQuery, decimal?>
     {
         private readonly IWGSportsApiClient _client;
         private readonly ILogger<WGSportsPlayerBalanceGetService> _logger;
@@ -27,7 +27,7 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
             _playerCreate = playerCreate ?? throw new ArgumentNullException(nameof(playerCreate));
         }
 
-        public async ValueTask<PlayerBalanceResult> GetAsync(WGSportsPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<decimal?> GetAsync(WGSportsPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var source = new WGSportsGetBalanceRequest()
@@ -54,7 +54,7 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
                 }
             }
 
-            return response.ReturnCode == 1 ? new() { Balance = decimal.Parse(response.Balance) } : null;
+            return response.ReturnCode == 1 ? decimal.Parse(response.Balance) : null;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace TGS.GameProviders.Core.PragmaticPlay
 {
     public interface IPragmaticPlayService
     {
-        ValueTask<GetGame> GetGameAsync(int gameId);
+        ValueTask<GameModel> GetGameAsync(int gameId);
 
         ValueTask<string> GetGameProviderCurrencyLanguageAsync(string cultureCode);
 

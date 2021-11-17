@@ -42,7 +42,11 @@
       "ObjectType": 0
     },
     {
-      "Name": "dbo.brands",
+      "Name": "dbo.resellers",
+      "ObjectType": 0
+    },
+    {
+      "Name": "dbo.licensees",
       "ObjectType": 0
     },
     {
@@ -51,6 +55,10 @@
     },
     {
       "Name": "dbo.brand_currencies",
+      "ObjectType": 0
+    },
+    {
+      "Name": "dbo.brands",
       "ObjectType": 0
     },
     {
@@ -90,7 +98,7 @@
       "ObjectType": 0
     }
   ],
-  "UiHint": "Tgs",
+  "UiHint": ".tgs",
   "UseBoolPropertiesWithoutDefaultSql": true,
   "UseDatabaseNames": false,
   "UseDbContextSplitting": true,

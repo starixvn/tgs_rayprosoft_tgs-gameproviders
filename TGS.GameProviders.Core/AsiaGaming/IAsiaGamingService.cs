@@ -10,7 +10,7 @@ namespace TGS.GameProviders.Core.AsiaGaming
     {
         ValueTask<Guid> GetBrandIdAsync(string brandCode);
 
-        ValueTask<GetGame> GetGameAsync(int gameId);
+        ValueTask<GameModel> GetGameAsync(int gameId);
 
         ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType);
 

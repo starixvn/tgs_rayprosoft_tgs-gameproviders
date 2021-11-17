@@ -8,6 +8,7 @@ namespace TGS.GameProviders
 {
     public interface IKickPlayerHandler<TCommand> where TCommand : KickPlayerCommand
     {
+        [HttpPost("KickPlayer")]
         ValueTask KickPlayerAsync([FromServices] ICommandService<TCommand> commandService, KickPlayerRequest request);
     }
 }

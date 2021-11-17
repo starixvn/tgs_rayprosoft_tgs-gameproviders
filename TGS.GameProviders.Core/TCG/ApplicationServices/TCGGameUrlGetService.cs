@@ -49,7 +49,7 @@ namespace TGS.GameProviders.Core.TCG.ApplicationServices
             {
                 return null;
             }
-            var getGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
+            var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
             if (getGame == null)
             {

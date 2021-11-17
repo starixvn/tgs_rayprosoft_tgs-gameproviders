@@ -9,7 +9,7 @@ namespace TGS.GameProviders.ApiClients.BigGaming
 {
     internal class BigGamingRoundDetailAnalyzeService : IBigGamingRoundDetailAnalyzeService
     {
-        private IReadOnlyDictionary<int, string> pokerMapper;
+        private IReadOnlyDictionary<int, string> _pokerMapper;
 
         public BigGamingRoundDetailAnalyzeService()
         {
@@ -44,15 +44,15 @@ namespace TGS.GameProviders.ApiClients.BigGaming
         {
             var banker = new string[3]
             {
-                pokerMapper.Where(x => x.Key == values[1]).First().Value,
-                pokerMapper.Where(x => x.Key == values[3]).First().Value,
-                pokerMapper.Where(x => x.Key == values[5]).First().Value
+                _pokerMapper.Where(x => x.Key == values[1]).First().Value,
+                _pokerMapper.Where(x => x.Key == values[3]).First().Value,
+                _pokerMapper.Where(x => x.Key == values[5]).First().Value
             };
             var player = new string[3]
             {
-                pokerMapper.Where(x => x.Key == values[0]).First().Value,
-                pokerMapper.Where(x => x.Key == values[2]).First().Value,
-                pokerMapper.Where(x => x.Key == values[4]).First().Value
+                _pokerMapper.Where(x => x.Key == values[0]).First().Value,
+                _pokerMapper.Where(x => x.Key == values[2]).First().Value,
+                _pokerMapper.Where(x => x.Key == values[4]).First().Value
             };
 
             return JsonSerializer.Serialize(
@@ -75,10 +75,10 @@ namespace TGS.GameProviders.ApiClients.BigGaming
                 var player1Index = bankerIndex + 4 + 1;
                 var player2Index = player1Index + 4 + 1;
                 var player3Index = player2Index + 4 + 1;
-                banker[i] = pokerMapper.Where(x => x.Key == values[bankerIndex]).First().Value;
-                player1[i] = pokerMapper.Where(x => x.Key == values[player1Index]).First().Value;
-                player2[i] = pokerMapper.Where(x => x.Key == values[player2Index]).First().Value;
-                player3[i] = pokerMapper.Where(x => x.Key == values[player3Index]).First().Value;
+                banker[i] = _pokerMapper.Where(x => x.Key == values[bankerIndex]).First().Value;
+                player1[i] = _pokerMapper.Where(x => x.Key == values[player1Index]).First().Value;
+                player2[i] = _pokerMapper.Where(x => x.Key == values[player2Index]).First().Value;
+                player3[i] = _pokerMapper.Where(x => x.Key == values[player3Index]).First().Value;
             }
 
             return JsonSerializer.Serialize(
@@ -140,15 +140,15 @@ new Dictionary<string, long>
         {
             var dragon = new string[3]
             {
-                pokerMapper.Where(x => x.Key == values[0]).First().Value,
-                pokerMapper.Where(x => x.Key == values[1]).First().Value,
-                pokerMapper.Where(x => x.Key == values[2]).First().Value
+                _pokerMapper.Where(x => x.Key == values[0]).First().Value,
+                _pokerMapper.Where(x => x.Key == values[1]).First().Value,
+                _pokerMapper.Where(x => x.Key == values[2]).First().Value
             };
             var phoenix = new string[3]
             {
-                pokerMapper.Where(x => x.Key == values[3]).First().Value,
-                pokerMapper.Where(x => x.Key == values[4]).First().Value,
-                pokerMapper.Where(x => x.Key == values[5]).First().Value
+                _pokerMapper.Where(x => x.Key == values[3]).First().Value,
+                _pokerMapper.Where(x => x.Key == values[4]).First().Value,
+                _pokerMapper.Where(x => x.Key == values[5]).First().Value
             };
 
             return JsonSerializer.Serialize(
@@ -189,7 +189,7 @@ new Dictionary<string, long>
                     i++;
                 }
             }
-            pokerMapper = tempPokerMapper;
+            _pokerMapper = tempPokerMapper;
         }
     }
 }

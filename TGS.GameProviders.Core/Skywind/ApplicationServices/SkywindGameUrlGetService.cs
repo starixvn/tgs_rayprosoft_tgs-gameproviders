@@ -41,7 +41,7 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
             var encryptedToken = await _tokenProvider.EncryptAsync(command.LoginRecordId).ConfigureAwait(false);
             var gameProviderCultureCode = await _service.GetGameProviderCultureCodeAsync(command.Language).ConfigureAwait(false);
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-            var getGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
+            var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
             if (getGame == null)
             {
@@ -50,7 +50,7 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
 
             string url;
 
-            if (getGame.Type == GameType.LiveDealerLobby)
+            if (getGame.GameType == GameType.LiveDealerLobby)
             {
                 url = $"{configuration.LiveLobbyUrl}#/ticket/{encryptedToken}?lang={gameProviderCultureCode}";
             }

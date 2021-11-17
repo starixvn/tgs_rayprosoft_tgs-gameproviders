@@ -15,7 +15,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
     [TestFixture]
     public class WGSportsApiClientUnitTest
     {
-        private readonly Uri _apiUrl = new Uri("https://api.jsc080.net/");
+        private readonly Uri _apiUrl = new("https://api.jsc080.net/");
         private readonly IWGSportsApiClient _client;
         private readonly string _partnerCode = "TA";
         private readonly string _partnerIV = "cba1238888888888";

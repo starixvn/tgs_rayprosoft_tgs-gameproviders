@@ -7,7 +7,7 @@ using TGS.GameProviders.Core.WGHorse.Models;
 
 namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
 {
-    public class WGHorsePlayerBalanceGetService : IGetService<WGHorsePlayerBalanceQuery, PlayerBalanceResult>
+    public class WGHorsePlayerBalanceGetService : IGetService<WGHorsePlayerBalanceQuery, decimal?>
     {
         private readonly IWGHorseApiClient _client;
         private readonly ILogger<WGHorsePlayerBalanceGetService> _logger;
@@ -27,7 +27,7 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
             _playerCreate = playerCreate ?? throw new ArgumentNullException(nameof(playerCreate));
         }
 
-        public async ValueTask<PlayerBalanceResult> GetAsync(WGHorsePlayerBalanceQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<decimal?> GetAsync(WGHorsePlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var source = new WGHorseGetBalanceRequest()
@@ -54,7 +54,7 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
                 }
             }
 
-            return response.ReturnCode == 1 ? new() { Balance = decimal.Parse(response.Balance) } : null;
+            return response.ReturnCode == 1 ? decimal.Parse(response.Balance) : null;
         }
     }
 }

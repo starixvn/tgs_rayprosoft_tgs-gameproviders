@@ -28,8 +28,8 @@ namespace TGS.GameProviders.Services.PragmaticPlay
             _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
         }
 
-        public async ValueTask<GetGame> GetGameAsync(int gameId)
-            => await _gameRepository.GetGameAsync(gameId).ConfigureAwait(false);
+        public async ValueTask<GameModel> GetGameAsync(int gameId)
+            => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
         public async ValueTask<string> GetGameProviderCurrencyLanguageAsync(string cultureCode)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -8,7 +9,7 @@ namespace TGS.GameProviders.Core.TCG
 {
     public interface ITCGService
     {
-        Task<GetGame[]> GetGameLotteryLobbyAsync(Guid gameProviderId);
+        IAsyncEnumerable<GameModel> GetGameLotteryLobbyAsync(Guid gameProviderId);
 
         string GetGameProviderCode();
 

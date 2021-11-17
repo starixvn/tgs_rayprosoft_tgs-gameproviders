@@ -113,25 +113,30 @@ namespace TGS.GameProviders.Controllers
         /// Players the balance asynchronous.
         /// </summary>
         /// <param name="getService">The get service.</param>
-        /// <param name="request">The request.</param>
+        /// <param name="brandCode">The brand code.</param>
+        /// <param name="playerCode">The player code.</param>
+        /// <param name="currencyCode">The currency code.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        /// Post
-        ///     {
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "CNY"
-        ///     }
+        ///   <b>Example</b><br />
+        ///   
+        ///   Get wgfm/balance
+        ///   brandCode = GPI
+        ///   playerCode = 4ucmqplxb029
+        ///   currencyCode = CNY
         /// </remarks>
-        [HttpPost("Balance")]
-        public async ValueTask<PlayerBalanceResponse?> PlayerBalanceAsync(
-            [FromServices] IGetService<WGSportsPlayerBalanceQuery, PlayerBalanceResult> getService,
-            PlayerBalanceRequest request)
-        {
-            var result = await getService.GetAsync(_mapper.Map<WGSportsPlayerBalanceQuery>(request)).ConfigureAwait(false);
-            return result == null ? null : _mapper.Map<PlayerBalanceResponse>(result);
-        }
+        [HttpGet("Balance")]
+        public ValueTask<decimal?> PlayerBalanceAsync(
+            [FromServices] IGetService<WGSportsPlayerBalanceQuery, decimal?> getService,
+            [FromQuery] string brandCode,
+            [FromQuery] string playerCode,
+            [FromQuery] string currencyCode)
+            => getService.GetAsync(new()
+            {
+                BrandCode = brandCode,
+                PlayerCode = playerCode,
+                CurrencyCode = currencyCode
+            });
 
         /// <summary>
         /// Players the fund checking asynchronous.

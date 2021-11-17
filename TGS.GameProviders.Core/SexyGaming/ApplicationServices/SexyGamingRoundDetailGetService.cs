@@ -11,16 +11,19 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
 {
     internal class SexyGamingRoundDetailGetService : IGetService<SexyGamingRoundDetailQuery, RoundDetailResult>
     {
+        private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameRepository _gameRepository;
         private readonly IRoundRepository _roundRepository;
         private readonly ISexyGamingRoundDetailAnalyzeService _sexyGamingRoundDetailAnalyzeService;
 
         public SexyGamingRoundDetailGetService(
+            IGameProviderRepository gameProviderRepository,
             IGameRepository gameRepository,
             IRoundRepository roundRepository,
             ISexyGamingRoundDetailAnalyzeService sexyGamingRoundDetailAnalyzeService
             )
         {
+            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
             _sexyGamingRoundDetailAnalyzeService = sexyGamingRoundDetailAnalyzeService ?? throw new ArgumentNullException(nameof(sexyGamingRoundDetailAnalyzeService));
@@ -28,47 +31,54 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
 
         public async ValueTask<RoundDetailResult> GetAsync(SexyGamingRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
-            var round = await _roundRepository.GetRoundAsync(query.RoundId).ConfigureAwait(false);
-            if (round == null)
+            var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
+            if (roundModel == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
-
-            var game = await _gameRepository.GetGameAsync(round.GameId).ConfigureAwait(false);
-
-            if (game == null)
+            var gameProviderModel = await _gameProviderRepository.GetAsync(roundModel.GameProviderId).ConfigureAwait(false);
+            if (gameProviderModel == null)
             {
-                throw new Exception($"This game Id could not be found..{round.GameId}");
+                throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
             }
 
-            var gameRecord = JsonSerializer.Deserialize<SexyGamingGameRecord>(round.AdditionalData);
-
-            if (gameRecord == null)
+            var gameModel = await _gameRepository.GetAsync(roundModel.GameId).ConfigureAwait(false);
+            if (gameModel == null)
             {
-                return new()
+                throw new Exception($"This game Id could not be found..{gameModel.GameId}");
+            }
+
+            var gameRecord = JsonSerializer.Deserialize<SexyGamingGameRecord>(roundModel.AdditionalData);
+
+            return gameRecord == null
+                ? (new()
                 {
-                    BetAmount = round.BetAmount ?? 0,
-                    Turnover = round.Turnover ?? 0,
-                    Winloss = round.WinLoss ?? 0,
-                    GameResult = round.ClientStatus.ToString(),
+                    GameProviderName = gameProviderModel.Name,
+                    GameName = gameModel.Name,
+                    ExternalRoundId = roundModel.ExternalRoundId,
+                    BetAmount = roundModel.BetAmount,
+                    Turnover = roundModel.Turnover,
+                    Winloss = roundModel.WinLoss,
+                    GameResult = roundModel.ClientStatus.ToString(),
                     Data = new RoundDetailDataBase[]
+                    {
+                        new RoundDetailDataJson {Value = null}
+                    }
+                })
+                : (new()
                 {
-                    new RoundDetailDataJson {Value = null}
-                }
-                };
-            }
-
-            return new()
-            {
-                BetAmount = round.BetAmount ?? 0,
-                Turnover = round.Turnover ?? 0,
-                Winloss = round.WinLoss ?? 0,
-                GameResult = round.ClientStatus.ToString(),
-                Data = new RoundDetailDataBase[]
-                {
-                    new RoundDetailDataJson {Value = _sexyGamingRoundDetailAnalyzeService.GetAnalyze(game.GameExternalId, gameRecord)}
-                }
-            };
+                    GameProviderName = gameProviderModel.Name,
+                    GameName = gameModel.Name,
+                    ExternalRoundId = roundModel.ExternalRoundId,
+                    BetAmount = roundModel.BetAmount,
+                    Turnover = roundModel.Turnover,
+                    Winloss = roundModel.WinLoss,
+                    GameResult = roundModel.ClientStatus.ToString(),
+                    Data = new RoundDetailDataBase[]
+                    {
+                        new RoundDetailDataJson {Value = _sexyGamingRoundDetailAnalyzeService.GetAnalyze(gameModel.GameExternalId, gameRecord)}
+                    }
+                });
         }
     }
 }

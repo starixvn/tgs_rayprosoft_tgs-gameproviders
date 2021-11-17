@@ -31,9 +31,11 @@ namespace TGS.GameProviders.Repositories.Entities
         public virtual DbSet<GameProviderConfig> GameProviderConfigs { get; set; }
         public virtual DbSet<GameProviderCurrency> GameProviderCurrencies { get; set; }
         public virtual DbSet<GameProviderLanguage> GameProviderLanguages { get; set; }
+        public virtual DbSet<Licensee> Licensees { get; set; }
         public virtual DbSet<PlatformCredit> PlatformCredits { get; set; }
         public virtual DbSet<Player> Players { get; set; }
         public virtual DbSet<PlayerLoginRecord> PlayerLoginRecords { get; set; }
+        public virtual DbSet<Reseller> Resellers { get; set; }
         public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<SubGameProvider> SubGameProviders { get; set; }
         public virtual DbSet<Wallet> Wallets { get; set; }
@@ -55,9 +57,11 @@ namespace TGS.GameProviders.Repositories.Entities
             modelBuilder.ApplyConfiguration(new Configurations.GameProviderConfigConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.GameProviderCurrencyConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.GameProviderLanguageConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.LicenseeConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlatformCreditConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerLoginRecordConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.ResellerConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.SettingConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.SubGameProviderConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.WalletConfiguration());

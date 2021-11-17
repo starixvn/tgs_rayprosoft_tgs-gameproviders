@@ -55,7 +55,7 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
             var externalID = 0;
             if (command.GameId > 0)
             {
-                var getGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
+                var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
                 if (getGame != null)
                 {

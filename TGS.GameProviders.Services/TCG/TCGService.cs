@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.Repositories;
@@ -27,7 +28,7 @@ namespace TGS.GameProviders.Services.TCG
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         }
 
-        public Task<GetGame[]> GetGameLotteryLobbyAsync(Guid gameProviderId)
+        public IAsyncEnumerable<GameModel> GetGameLotteryLobbyAsync(Guid gameProviderId)
             => _gameRepository.GetGameList(gameProviderId, GameType.LotteryLobby);
 
         public string GetGameProviderCode()

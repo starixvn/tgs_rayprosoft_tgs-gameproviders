@@ -29,9 +29,9 @@ namespace TGS.GameProviders.Services.SBO
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         }
 
-        public async ValueTask<GetGame> GetGameAsync(
+        public async ValueTask<GameModel> GetGameAsync(
             int gameId)
-            => await _gameRepository.GetGameAsync(gameId).ConfigureAwait(false);
+            => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(
             string cultureCode)

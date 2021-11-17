@@ -8,6 +8,7 @@ namespace TGS.GameProviders
 {
     public interface IPlayerBalanceHandler<TQuery> where TQuery : PlayerBalanceQuery
     {
-        ValueTask<PlayerBalanceResponse?> PlayerBalanceAsync([FromServices] IGetService<TQuery, PlayerBalanceResult> getService, PlayerBalanceRequest request);
+        [HttpGet("Balance")]
+        ValueTask<decimal?> PlayerBalanceAsync([FromServices] IGetService<TQuery, decimal?> getService, [FromQuery] string brandCode, [FromQuery] string playerCode, [FromQuery] string currencyCode);
     }
 }
