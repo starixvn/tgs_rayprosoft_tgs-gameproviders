@@ -28,12 +28,17 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
 
         public async ValueTask<decimal?> GetAsync(KYPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
-            var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
-            var agentId = await _service.GetAgentIdAsync(command.BrandCode, command.CurrencyCode).ConfigureAwait(false);
+            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerModel == null)
+            {
+                throw new Exception($"The player does not exist.{command.PlayerCode}");
+            }
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode).ConfigureAwait(false);
+            var agentId = await _service.GetAgentIdAsync(playerModel.BrandCode, playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
             var response = await _client.GetBalanceAsync(brandMerchant.ApiUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, new()
             {
-                PlayerCode = command.PlayerCode
+                PlayerCode = playerModel.PlayerCode
             }).ConfigureAwait(false);
 
             return response.Data.Balance;

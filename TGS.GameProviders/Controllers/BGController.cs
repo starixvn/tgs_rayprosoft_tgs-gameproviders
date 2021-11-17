@@ -109,23 +109,21 @@ namespace TGS.GameProviders.Controllers
         /// Kicks the player asynchronous.
         /// </summary>
         /// <param name="commandService">The command service.</param>
-        /// <param name="request">The request.</param>
+        /// <param name="playerCode">The player code.</param>
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
         ///
-        ///     Post
-        ///         {
-        ///             "brandCode": "GPI",
-        ///             "playerCode": "4ucmqplxb029",
-        ///             "currencyCode": "CNY"
-        ///         }
+        ///     Delete bg/kickplayer/4ucmqplxb029
         /// </remarks>
-        [HttpPost("KickPlayer")]
+        [HttpDelete("kickplayer/{playerCode}")]
         public ValueTask KickPlayerAsync(
             [FromServices] ICommandService<BigGamingKickPlayerCommand> commandService,
-            KickPlayerRequest request)
-            => commandService.ExecuteAsync(_mapper.Map<BigGamingKickPlayerCommand>(request));
+            string playerCode)
+            => commandService.ExecuteAsync(new()
+            {
+                PlayerCode = playerCode
+            });
 
         /// <summary>
         /// Rounds the detail asynchronous.

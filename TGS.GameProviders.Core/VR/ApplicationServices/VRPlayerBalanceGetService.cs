@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
+using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.VR.Models;
 
 namespace TGS.GameProviders.Core.VR.ApplicationServices
@@ -12,24 +13,33 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
         private readonly IVRApiClient _client;
         private readonly ILogger<VRPlayerBalanceGetService> _logger;
         private readonly IVRGamePlayer _playerCreate;
+        private readonly IPlayerRepository _playerRepository;
         private readonly IVRService _service;
 
         public VRPlayerBalanceGetService(
-            ILogger<VRPlayerBalanceGetService> logger,
             IVRApiClient client,
-            IVRService service,
-            IVRGamePlayer playerCreate
+            ILogger<VRPlayerBalanceGetService> logger,
+            IVRGamePlayer playerCreate,
+            IPlayerRepository playerRepository,
+            IVRService service
             )
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _playerCreate = playerCreate ?? throw new ArgumentNullException(nameof(playerCreate));
+            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         public async ValueTask<decimal?> GetAsync(VRPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
-            var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
+            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerModel == null)
+            {
+                throw new Exception($"The player does not exist.{command.PlayerCode}");
+            }
+
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode).ConfigureAwait(false);
 
             if (brandMerchant == null)
             {
@@ -50,7 +60,7 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
 
             if (string.IsNullOrEmpty(response.PlayerName) || response.Balance == -1)
             {
-                if (await _playerCreate.CreatePlayerAsync(brandMerchant, command.PlayerCode).ConfigureAwait(false))
+                if (await _playerCreate.CreatePlayerAsync(brandMerchant, playerModel.PlayerCode).ConfigureAwait(false))
                 {
                     response = await _client.GetBalanceAsync(
                         brandMerchant.ApiUrl,

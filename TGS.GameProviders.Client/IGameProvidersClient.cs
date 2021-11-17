@@ -9,9 +9,9 @@ namespace TGS.GameProviders.Client
     {
         ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl);
 
-        ValueTask KickPlayerAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode);
+        ValueTask KickPlayerAsync(string gameProviderCode, string playerCode);
 
-        ValueTask<decimal> PlayerBalanceAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode);
+        ValueTask<decimal> PlayerBalanceAsync(string gameProviderCode, string playerCode);
 
         ValueTask<bool?> PlayerFundCheckingAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId);
 

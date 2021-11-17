@@ -65,55 +65,37 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <summary>
         /// Kicks the player asynchronous.
         /// </summary>
-        /// <param name="model">The model.</param>
+        /// <param name="gameProviderCode">The game provider code.</param>
+        /// <param name="playerCode">The player code.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        ///     Post
-        ///         {
-        ///             "gameProviderCode": "ky",
-        ///             "brandCode": "GPI",
-        ///             "playerCode": "4ucmqplxb029",
-        ///             "currencyCode": "CNY"
-        ///         }
+        /// <b>Example</b><br />
+        ///
+        ///     Delete ky/KickPlayer/4ucmqplxb029
         /// </remarks>
-        [HttpPost("KickPlayer")]
-        public ValueTask KickPlayerAsync(
-            KickPlayerViewModel model)
-            => _client.KickPlayerAsync(
-                model.GameProviderCode,
-                model.BrandCode,
-                model.PlayerCode,
-                model.CurrencyCode);
+        [HttpDelete("{gameProviderCode}/KickPlayer/{playerCode}")]
+        public ValueTask KickPlayerAsync(string gameProviderCode, string playerCode)
+            => _client.KickPlayerAsync(gameProviderCode, playerCode);
 
         /// <summary>
         /// Players the balance asynchronous.
         /// </summary>
         /// <param name="gameProviderCode">The game provider code.</param>
-        /// <param name="brandCode">The brand code.</param>
         /// <param name="playerCode">The player code.</param>
-        /// <param name="currencyCode">The currency code.</param>
         /// <returns></returns>
         /// <remarks>
         ///   <b>Example</b><br />
-        ///   
-        ///   Get balance
-        ///   gameProviderCode = vr
-        ///   brandCode = GPI
-        ///   playerCode = 4ucmqplxb029
-        ///   currencyCode = CNY
+        ///
+        ///   Get vr/balance/4ucmqplxb029
         /// </remarks>
-        [HttpGet("balance")]
+        [HttpGet("{gameProviderCode}/balance/{playerCode}")]
         public ValueTask<decimal> PlayerBalanceAsync(
-            [FromQuery] string gameProviderCode,
-            [FromQuery] string brandCode,
-            [FromQuery] string playerCode,
-            [FromQuery] string currencyCode)
+             string gameProviderCode,
+             string playerCode)
             => _client.PlayerBalanceAsync(
                 gameProviderCode,
-                brandCode,
-                playerCode,
-                currencyCode);
+                playerCode
+                );
 
         /// <summary>
         ///

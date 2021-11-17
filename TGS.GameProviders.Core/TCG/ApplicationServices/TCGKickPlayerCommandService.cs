@@ -28,8 +28,13 @@ namespace TGS.GameProviders.Core.TCG.ApplicationServices
 
         public async ValueTask ExecuteAsync(TCGKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
+            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerModel == null)
+            {
+                throw new Exception($"The player does not exist.{command.PlayerCode}");
+            }
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-            var brandMerchant = await _service.GetMerchantAsync(command.CurrencyCode).ConfigureAwait(false);
+            var brandMerchant = await _service.GetMerchantAsync(playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
             await _client.KickOutLottoPlayerAsync(
                 configuration.ApiUrl,

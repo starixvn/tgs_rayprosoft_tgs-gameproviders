@@ -190,7 +190,6 @@ namespace TGS.GameProviders
                 .AddAutoMapper(config =>
                 {
                     config.AddProfile<GameUrlMapping>();
-                    config.AddProfile<KickPlayerMapping>();
                     config.AddProfile<PlayerFundMapping>();
                     config.AddProfile<PlayerFundCheckingMapping>();
                     config.AddProfile<RoundDetailMapping>();

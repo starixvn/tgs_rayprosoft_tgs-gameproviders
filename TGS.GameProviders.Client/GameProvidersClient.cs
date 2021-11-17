@@ -13,8 +13,8 @@ namespace TGS.GameProviders.Client
     internal class GameProvidersClient : IGameProvidersClient
     {
         private static readonly string _GameURL = "/api/{0}/gameurl";
-        private static readonly string _KickPlayerPath = "/api/{0}/KickPlayer";
-        private static readonly string _PlayerBalancePath = "/api/{0}/balance?brandCode={1}&playerCode={2}&currencyCode={3}";
+        private static readonly string _KickPlayerPath = "/api/{0}/KickPlayer/{1}";
+        private static readonly string _PlayerBalancePath = "/api/{0}/balance/{1}";
         private static readonly string _PlayerFundChecking = "/api/{0}/PlayerFundChecking";
         private static readonly string _PlayerFundInPath = "/api/{0}/PlayerFundIn";
         private static readonly string _PlayerFundOutPath = "/api/{0}/PlayerFundOut";
@@ -68,31 +68,21 @@ namespace TGS.GameProviders.Client
             return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<GameUrlResponse>(contentJson, _SerializerOptions)?.Url;
         }
 
-        public async ValueTask KickPlayerAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode)
+        public async ValueTask KickPlayerAsync(string gameProviderCode, string playerCode)
         {
-            var request = new
-            {
-                BrandCode = brandCode,
-                PlayerCode = playerCode,
-                CurrencyCode = currencyCode,
-            };
-            var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
-            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
             var response = await _httpClient
-               .PostAsync(
-                   string.Format(_KickPlayerPath, gameProviderCode),
-                   requestContent)
+               .DeleteAsync(
+                   string.Format(_KickPlayerPath, gameProviderCode, playerCode))
                .ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
         }
 
-        public async ValueTask<decimal> PlayerBalanceAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode)
+        public async ValueTask<decimal> PlayerBalanceAsync(string gameProviderCode, string playerCode)
         {
             var response = await _httpClient
                 .GetAsync(
-                string.Format(_PlayerBalancePath, gameProviderCode, brandCode, playerCode, currencyCode))
+                string.Format(_PlayerBalancePath, gameProviderCode, playerCode))
                .ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();

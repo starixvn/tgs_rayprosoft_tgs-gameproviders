@@ -15,20 +15,27 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
         private readonly IVRService _service;
 
         public VRKickPlayerCommandService(
-            ILogger<VRKickPlayerCommandService> logger,
             IVRApiClient client,
-            IVRService service,
-            IPlayerRepository playerRepository)
+            ILogger<VRKickPlayerCommandService> logger,
+            IPlayerRepository playerRepository,
+            IVRService service)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         public async ValueTask ExecuteAsync(VRKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
+            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerModel == null)
+            {
+                throw new Exception($"The player does not exist.{command.PlayerCode}");
+            }
+
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode).ConfigureAwait(false);
+
             await _client.KickAsync(
                 brandMerchant.ApiUrl,
                 brandMerchant.Merchantid,
@@ -36,7 +43,7 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
                 brandMerchant.Deskey,
                 new()
                 {
-                    PlayerCode = command.PlayerCode
+                    PlayerCode = playerModel.PlayerCode
                 }).ConfigureAwait(false);
         }
     }

@@ -94,50 +94,40 @@ namespace TGS.GameProviders.Controllers
         /// Kicks the player asynchronous.
         /// </summary>
         /// <param name="commandService">The command service.</param>
-        /// <param name="request">The request.</param>
+        /// <param name="playerCode">The player code.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        /// Post
-        ///     {
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "HKD"
-        ///     }
+        /// <b>Example</b><br />
+        ///
+        ///     Delete ly/kickplayer/4ucmqplxb029
         /// </remarks>
-        [HttpPost("KickPlayer")]
+        [HttpDelete("kickplayer/{playerCode}")]
         public ValueTask KickPlayerAsync(
             [FromServices] ICommandService<LYKickPlayerCommand> commandService,
-            KickPlayerRequest request)
-            => commandService.ExecuteAsync(_mapper.Map<LYKickPlayerCommand>(request));
+            string playerCode)
+            => commandService.ExecuteAsync(new()
+            {
+                PlayerCode = playerCode
+            });
 
         /// <summary>
         /// Players the balance asynchronous.
         /// </summary>
         /// <param name="getService">The get service.</param>
-        /// <param name="brandCode">The brand code.</param>
         /// <param name="playerCode">The player code.</param>
-        /// <param name="currencyCode">The currency code.</param>
         /// <returns></returns>
         /// <remarks>
         ///   <b>Example</b><br />
-        ///   
-        ///   Get ly/balance
-        ///   brandCode = GPI
-        ///   playerCode = 4ucmqplxb029
-        ///   currencyCode = CNY
+        ///
+        ///   Get ly/balance/4ucmqplxb029
         /// </remarks>
-        [HttpGet("Balance")]
+        [HttpGet("Balance/{playerCode}")]
         public ValueTask<decimal?> PlayerBalanceAsync(
-            [FromServices] IGetService<LYPlayerBalanceQuery, decimal?> getService,
-            [FromQuery] string brandCode,
-            [FromQuery] string playerCode,
-            [FromQuery] string currencyCode)
+             [FromServices] IGetService<LYPlayerBalanceQuery, decimal?> getService,
+             string playerCode)
             => getService.GetAsync(new()
             {
-                BrandCode = brandCode,
-                PlayerCode = playerCode,
-                CurrencyCode = currencyCode
+                PlayerCode = playerCode
             });
 
         /// <summary>
