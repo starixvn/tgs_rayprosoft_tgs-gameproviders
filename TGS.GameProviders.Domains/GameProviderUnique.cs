@@ -1,0 +1,26 @@
+﻿namespace TGS.GameProviders.Domains
+{
+    public enum GameProviderUnique
+    {
+        SBOBET = 1,
+        Habanero = 2,
+        PragmaticPlay = 3,
+        AsiaGaming = 4,
+        SexyGaming = 5,
+        Saba = 6,
+        JDB = 7,
+        BigGaming = 8,
+        IMESports = 9,
+        KY = 10,
+        VR = 11,
+        Skywind = 12,
+        AllBet = 13,
+        Evolution = 14,
+        WGSports = 15,
+        WGHorse = 16,
+        WMCasino = 17,
+        TCG = 18,
+        Card365 = 19,
+        LY = 20
+    }
+}
