@@ -35,7 +35,7 @@ namespace TGS.GameProviders.Services.Skywind
             var redisKey = $"{GameProviderType.SexyGaming}:AccessToken";
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var accessToken = await _redisDatabase.StringGetAsync(redisKey).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(accessToken))
+             if (!string.IsNullOrEmpty(accessToken))
             {
                 return accessToken;
             }
