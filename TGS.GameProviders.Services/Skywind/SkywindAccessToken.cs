@@ -2,10 +2,11 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.Core.RedisRepositories;
 using TGS.GameProviders.Core.Skywind;
 using TGS.GameProviders.Core.Skywind.Models;
 using TGS.GameProviders.Domains;
+using StackExchange.Redis;
+using TGS.GameProviders.Repositories;
 
 namespace TGS.GameProviders.Services.Skywind
 {
@@ -13,28 +14,27 @@ namespace TGS.GameProviders.Services.Skywind
     {
         private readonly ISkywindApiClient _client;
         private readonly ILogger<SkywindAccessToken> _logger;
-        private readonly IRedisConnection _redisConnection;
         private readonly ISkywindService _service;
+        private readonly IDatabase _redisDatabase;
 
         public SkywindAccessToken(
             ILogger<SkywindAccessToken> logger,
             ISkywindApiClient client,
             ISkywindService service,
-            IRedisConnection redisConnection
+            RedisConnectionFactory redisConnectionFactory
             )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
-            _redisConnection = redisConnection ?? throw new ArgumentNullException(nameof(redisConnection));
+            _redisDatabase = redisConnectionFactory.Database;
         }
 
         public async ValueTask<string> GetAccessTokenAsync()
         {
             var redisKey = $"{GameProviderType.SexyGaming}:AccessToken";
-            var db = _redisConnection.GetConnection().GetDatabase();
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-            var accessToken = await db.StringGetAsync(redisKey).ConfigureAwait(false);
+            var accessToken = await _redisDatabase.StringGetAsync(redisKey).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(accessToken))
             {
                 return accessToken;
@@ -62,7 +62,7 @@ namespace TGS.GameProviders.Services.Skywind
 
                 return accessToken;
             }
-            var isSet = await db.StringSetAsync(redisKey, response.AccessToken, TimeSpan.FromMinutes(45)).ConfigureAwait(false);
+            var isSet = await _redisDatabase.StringSetAsync(redisKey, response.AccessToken, TimeSpan.FromMinutes(45)).ConfigureAwait(false);
 
             return isSet ? response.AccessToken : null;
         }

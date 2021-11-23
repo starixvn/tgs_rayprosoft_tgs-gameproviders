@@ -13,7 +13,6 @@ WORKDIR /src
 COPY ["NuGet.config", "."]
 COPY ["TGS.GameProviders/TGS.GameProviders.csproj", "TGS.GameProviders/"]
 COPY ["TGS.GameProviders.Domains/TGS.GameProviders.Domains.csproj", "TGS.GameProviders.Domains/"]
-COPY ["TGS.GameProviders.RedisRepositories/TGS.GameProviders.RedisRepositories.csproj", "TGS.GameProviders.RedisRepositories/"]
 COPY ["TGS.GameProviders.Core/TGS.GameProviders.Core.csproj", "TGS.GameProviders.Core/"]
 COPY ["TGS.GameProviders.Services/TGS.GameProviders.Services.csproj", "TGS.GameProviders.Services/"]
 COPY ["TGS.GameProviders.Repositories/TGS.GameProviders.Repositories.csproj", "TGS.GameProviders.Repositories/"]
