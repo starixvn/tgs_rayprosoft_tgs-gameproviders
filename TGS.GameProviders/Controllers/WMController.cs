@@ -34,20 +34,21 @@ namespace TGS.GameProviders.Controllers
         /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        /// Post
-        ///     {
-        ///         "gameType": 6,
-        ///         "gameId": 1700001,
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "CNY",
-        ///         "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        ///         "platformType": 0,
-        ///         "language": "zh-CN",
-        ///         "ipAddress": "127.0.0.1",
-        ///         "backUrl": "https://dev-t1.rpgp.cc/"
-        ///     }
+        /// <b>Example</b><br />
+        /// 
+        ///     Post
+        ///         {
+        ///             "gameType": 6,
+        ///             "gameId": 1700001,
+        ///             "brandCode": "GPI",
+        ///             "playerCode": "4ucmqplxb029",
+        ///             "currencyCode": "CNY",
+        ///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        ///             "platformType": 0,
+        ///             "language": "zh-CN",
+        ///             "ipAddress": "127.0.0.1",
+        ///             "backUrl": "https://dev-t1.rpgp.cc/"
+        ///         }
         /// </remarks>
         [HttpPost("GameUrl")]
         public async ValueTask<GameUrlResponse?> GameUrlAsync(

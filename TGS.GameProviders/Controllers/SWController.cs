@@ -35,34 +35,37 @@ namespace TGS.GameProviders.Controllers
         /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        /// Post
-        ///     LiveDealerLobby
-        ///     {
-        ///         "gameType": 6,
-        ///         "gameId": 1200199,
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "CNY",
-        ///         "loginRecordId": "9a03c73c-bdcc-4a95-c54b-08d9943d2322",
-        ///         "platformType": 0,
-        ///         "language": "zh-CN",
-        ///         "ipAddress": "127.0.0.1",
-        ///         "backUrl": "https://dev-t1.rpgp.cc/"
-        ///     }
-        ///     Slot
-        ///     {
-        ///         "gameType": 15,
-        ///         "gameId": 1200139,
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "CNY",
-        ///         "loginRecordId": "9a03c73c-bdcc-4a95-c54b-08d9943d2322",
-        ///         "platformType": 0,
-        ///         "language": "zh-CN",
-        ///         "ipAddress": "127.0.0.1",
-        ///         "backUrl": "https://dev-t1.rpgp.cc/"
-        ///     }
+        /// <b>Example</b><br />
+        /// 
+        ///     Post
+        ///         LiveDealerLobby
+        ///         {
+        ///             "gameType": 6,
+        ///             "gameId": 1200199,
+        ///             "brandCode": "GPI",
+        ///             "playerCode": "4ucmqplxb029",
+        ///             "currencyCode": "CNY",
+        ///             "loginRecordId": "9a03c73c-bdcc-4a95-c54b-08d9943d2322",
+        ///             "platformType": 0,
+        ///             "language": "zh-CN",
+        ///             "ipAddress": "127.0.0.1",
+        ///             "backUrl": "https://dev-t1.rpgp.cc/"
+        ///         }
+        ///         
+        ///     Post
+        ///         Slot
+        ///         {
+        ///             "gameType": 15,
+        ///             "gameId": 1200139,
+        ///             "brandCode": "GPI",
+        ///             "playerCode": "4ucmqplxb029",
+        ///             "currencyCode": "CNY",
+        ///             "loginRecordId": "9a03c73c-bdcc-4a95-c54b-08d9943d2322",
+        ///             "platformType": 0,
+        ///             "language": "zh-CN",
+        ///             "ipAddress": "127.0.0.1",
+        ///             "backUrl": "https://dev-t1.rpgp.cc/"
+        ///         }
         /// </remarks>
         [HttpPost("GameUrl")]
         public async ValueTask<GameUrlResponse?> GameUrlAsync(
