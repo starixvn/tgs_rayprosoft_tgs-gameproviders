@@ -43,7 +43,13 @@ namespace TGS.GameProviders.Services.BigGaming
                 Random = GuidExtensions.NewSequentialGuid().ToString(),
                 Sn = brandMerchant.SecretCode,
                 LoginId = playerCode,
-                Locale = cultureCode,
+                Lang = cultureCode.ToLower() switch
+                {
+                    "zh_cn" => "zh-CN",
+                    "vi_vn" => "vi-VN",
+                    "th_th" => "th-TH",
+                    _ => "en-US",
+                },
                 IsMobileUrl = 0,
                 IsHttpsUrl = 0,
                 ReturnUrl = string.Empty,

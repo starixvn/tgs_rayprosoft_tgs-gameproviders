@@ -7,8 +7,8 @@ namespace TGS.GameProviders.Core.BigGaming.Models
     {
         [JsonPropertyName("loginId")]
         public string LoginId { get; init; } = default!;
-        [JsonPropertyName("locale")]
-        public string Locale { get; init; } = default!;
+        [JsonPropertyName("lang")]
+        public string Lang { get; init; } = default!;
         [JsonPropertyName("isMobileUrl")]
         public int IsMobileUrl { get; init; }
         [JsonPropertyName("isHttpsUrl")]
