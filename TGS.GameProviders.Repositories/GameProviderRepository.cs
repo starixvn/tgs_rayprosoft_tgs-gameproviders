@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TGS.GameProviders.Core.Repositories;
+using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Repositories.Entities;
 

@@ -2,10 +2,10 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using StackExchange.Redis;
 using TGS.GameProviders.Core.Skywind;
 using TGS.GameProviders.Core.Skywind.Models;
 using TGS.GameProviders.Domains;
-using StackExchange.Redis;
 using TGS.GameProviders.Repositories;
 
 namespace TGS.GameProviders.Services.Skywind
@@ -14,8 +14,8 @@ namespace TGS.GameProviders.Services.Skywind
     {
         private readonly ISkywindApiClient _client;
         private readonly ILogger<SkywindAccessToken> _logger;
-        private readonly ISkywindService _service;
         private readonly IDatabase _redisDatabase;
+        private readonly ISkywindService _service;
 
         public SkywindAccessToken(
             ILogger<SkywindAccessToken> logger,
@@ -35,7 +35,7 @@ namespace TGS.GameProviders.Services.Skywind
             var redisKey = $"{GameProviderType.SexyGaming}:AccessToken";
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var accessToken = await _redisDatabase.StringGetAsync(redisKey).ConfigureAwait(false);
-             if (!string.IsNullOrEmpty(accessToken))
+            if (!string.IsNullOrEmpty(accessToken))
             {
                 return accessToken;
             }

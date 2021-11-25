@@ -32,7 +32,8 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <param name="rows">The rows.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        /// 
         ///     Get
         ///         {
         ///             "currencyCode": "CNY",
@@ -60,7 +61,8 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <param name="endTime">The end time.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        /// 
         ///     Get
         ///         {
         ///             "brandCode": "Default",
@@ -86,7 +88,8 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <param name="endTime">The end time.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        /// 
         ///     Get
         ///         {
         ///             "brandCode": "Default",
@@ -114,7 +117,8 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <param name="rows">The rows.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        /// 
         ///     Get
         ///         {
         ///             "brandCode": "Default",
@@ -144,7 +148,8 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <param name="rows">The rows.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        /// 
         ///     Get
         ///         {
         ///             "startTime": "2021-08-18T00:00:00+00:00",
@@ -169,7 +174,8 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <param name="endTime">The end time.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        /// 
         ///     Get
         ///         {
         ///             "isSettlement": true,

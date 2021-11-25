@@ -1,6 +1,7 @@
 ﻿using System;
+using TGS.GameProviders.Domains;
 
-namespace TGS.GameProviders.Domains
+namespace TGS.GameProviders.Core.Repositories.Models.GameProvider
 {
     public record GameProviderModel(
         Guid GameProviderId,

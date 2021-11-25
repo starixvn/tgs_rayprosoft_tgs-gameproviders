@@ -30,7 +30,8 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <param name="model">The model.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        /// 
         ///     Get
         ///         {
         ///             "gameProviderCode": "ky",
@@ -84,12 +85,12 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <param name="playerCode">The player code.</param>
         /// <returns></returns>
         /// <remarks>
-        ///   <b>Example</b><br />
+        /// <b>Example</b><br />
         ///
         ///   Get vr/balance/4ucmqplxb029
         /// </remarks>
         [HttpGet("{gameProviderCode}/balance/{playerCode}")]
-        public ValueTask<decimal> PlayerBalanceAsync(
+        public ValueTask<decimal?> PlayerBalanceAsync(
              string gameProviderCode,
              string playerCode)
             => _client.PlayerBalanceAsync(

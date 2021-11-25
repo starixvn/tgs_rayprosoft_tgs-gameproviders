@@ -78,7 +78,7 @@ namespace TGS.GameProviders.Client
             response.EnsureSuccessStatusCode();
         }
 
-        public async ValueTask<decimal> PlayerBalanceAsync(string gameProviderCode, string playerCode)
+        public async ValueTask<decimal?> PlayerBalanceAsync(string gameProviderCode, string playerCode)
         {
             var response = await _httpClient
                 .GetAsync(
@@ -89,7 +89,7 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<decimal>(contentJson);
+            return JsonSerializer.Deserialize<decimal?>(contentJson);
         }
 
         public async ValueTask<bool?> PlayerFundCheckingAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId)

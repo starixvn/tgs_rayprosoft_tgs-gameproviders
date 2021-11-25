@@ -11,7 +11,7 @@ namespace TGS.GameProviders.Client
 
         ValueTask KickPlayerAsync(string gameProviderCode, string playerCode);
 
-        ValueTask<decimal> PlayerBalanceAsync(string gameProviderCode, string playerCode);
+        ValueTask<decimal?> PlayerBalanceAsync(string gameProviderCode, string playerCode);
 
         ValueTask<bool?> PlayerFundCheckingAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId);
 

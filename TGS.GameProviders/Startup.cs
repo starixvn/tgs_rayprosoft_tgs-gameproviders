@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +39,8 @@ namespace TGS.GameProviders
             {
                 app.UseDeveloperExceptionPage();
             }
+            //使用IP解析需要使用
+            app.UseForwardedHeaders();
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TGS.GameProviders v1"));
@@ -180,6 +183,26 @@ namespace TGS.GameProviders
                     });
                 })
                 .AddTgsLog();
+
+            services.AddOptions<ForwardedHeadersOptions>()
+                .Configure<IConfiguration>((options, config) =>
+                {
+                    config.GetSection("ForwardedHeaders").Bind(options);
+                    var knownProxies = config.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
+                    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                    //options.ForwardLimit = 2;
+
+                    // Replace with IP of your proxy/load balancer
+                    foreach (var knownProxie in knownProxies)
+                        options.KnownProxies.Add(IPAddress.Parse(knownProxie));
+
+                    // 10/8 allows any from 10.0.0.0~10.255.255.255;
+                    options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("10.0.0.0"), 8));
+                    // 172.16/12  allows any from 172.16.0.0~172.31.255.255;
+                    options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("172.16.0.0"), 12));
+                    // 192.168/16 allows any from 192.168.0.0~192.168.255.255;
+                    options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("192.168.0.0"), 16));
+                });
 
             services
                 .AddApiClients()
