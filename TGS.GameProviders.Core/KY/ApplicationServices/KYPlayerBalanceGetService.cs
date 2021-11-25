@@ -41,7 +41,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
                 PlayerCode = playerModel.PlayerCode
             }).ConfigureAwait(false);
 
-            return response.Data.Balance;
+            return (response?.Data.Code == 0) ? response.Data.Balance : null;
         }
     }
 }

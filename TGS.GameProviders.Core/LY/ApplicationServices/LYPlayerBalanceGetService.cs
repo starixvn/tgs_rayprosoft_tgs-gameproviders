@@ -7,7 +7,7 @@ using TGS.GameProviders.Core.Repositories;
 
 namespace TGS.GameProviders.Core.LY.ApplicationServices
 {
-    public class LYPlayerBalanceGetService : IGetService<LYPlayerBalanceQuery, decimal>
+    public class LYPlayerBalanceGetService : IGetService<LYPlayerBalanceQuery, decimal?>
     {
         private readonly ILYApiClient _client;
         private readonly ILogger<LYPlayerBalanceGetService> _logger;
@@ -26,7 +26,7 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
         }
 
-        public async ValueTask<decimal> GetAsync(LYPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<decimal?> GetAsync(LYPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
             var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
             if (playerModel == null)
@@ -41,7 +41,7 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
                 PlayerCode = playerModel.PlayerCode
             }).ConfigureAwait(false);
 
-            return response.Data.Balance;
+            return (response?.Data.Code == 0) ? response.Data.Balance : null;
         }
     }
 }
