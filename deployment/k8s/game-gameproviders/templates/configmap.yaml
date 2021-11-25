@@ -8,7 +8,7 @@ data:
     {
       "Logging": {
         "LogLevel": {
-          "Default": "Trace",
+          "Default": "Information",
           "Microsoft": "Warning",
           "Microsoft.Hosting.Lifetime": "Information"
         },
