@@ -2,6 +2,7 @@
 {
     public static class GameProviderType
     {
+        public const string MainWallet = "DEFAULT";
         public const string AllBet = "AB";
         public const string AsiaGaming = "AG";
         public const string BigGaming = "BG";

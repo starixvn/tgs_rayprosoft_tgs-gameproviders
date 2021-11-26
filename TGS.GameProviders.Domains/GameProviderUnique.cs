@@ -2,6 +2,7 @@
 {
     public enum GameProviderUnique
     {
+        MainWallet = 0,
         SBOBET = 1,
         Habanero = 2,
         PragmaticPlay = 3,
