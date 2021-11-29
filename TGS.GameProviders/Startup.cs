@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using TGS.GameProviders.Microsoft.Extensions.DependencyInjection;
 using TGS.GameProviders.ViewModelMappings;
 
 namespace TGS.GameProviders
@@ -164,15 +165,6 @@ namespace TGS.GameProviders
                 });
 
             services
-                .AddRedisRepository((
-                    options,
-                    sp) =>
-                {
-                    var configuration = sp.GetRequiredService<IConfiguration>();
-                    options.ConnectionString = configuration.GetConnectionString("RedisConfigurationString");
-                });
-
-            services
                 .AddNatsMessageQueue(natsConfig =>
                 {
                     natsConfig
@@ -206,7 +198,12 @@ namespace TGS.GameProviders
 
             services
                 .AddApiClients()
-                .AddGameProvidersServices()
+                .UseRedis((options, sp) =>
+                {
+                    var configuration = sp.GetRequiredService<IConfiguration>();
+                    options.ConnectionString = configuration.GetConnectionString("RedisConfigurationString");
+                })
+                .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
                 .AddGameProvidersCore();
 
             services

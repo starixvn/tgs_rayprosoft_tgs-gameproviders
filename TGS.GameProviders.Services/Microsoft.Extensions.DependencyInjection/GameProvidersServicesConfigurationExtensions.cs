@@ -1,5 +1,7 @@
 ﻿// ReSharper disable CheckNamespace
 
+using System;
+using StackExchange.Redis;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Evolution;
@@ -34,7 +36,8 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class GameProvidersServicesConfigurationExtensions
     {
         public static IServiceCollection AddGameProvidersServices(
-            this IServiceCollection services)
+            this IServiceCollection services,
+             Func<IServiceProvider, IDatabase> redisDatabaseResolver)
         {
             services
                 .AddTransient<IKYService, KYService>();
@@ -61,8 +64,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<ISexyGamingGamePlayer, SexyGamingGamePlayer>();
 
             services
-                .AddTransient<ISkywindService, SkywindService>()
-                .AddTransient<ISkywindAccessToken, SkywindAccessToken>();
+                .AddTransient<ISkywindService, SkywindService>();
+            services
+                .AddTransient<ISkywindAccessToken>(sp => ActivatorUtilities.CreateInstance<SkywindAccessToken>(sp, redisDatabaseResolver(sp)));
 
             services
                 .AddTransient<ITCGService, TCGService>()

@@ -1,4 +1,4 @@
-﻿namespace TGS.GameProviders.Repositories.Options
+﻿namespace TGS.GameProviders
 {
     public class RedisOptions
     {

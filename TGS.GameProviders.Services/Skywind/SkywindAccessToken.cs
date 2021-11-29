@@ -21,18 +21,18 @@ namespace TGS.GameProviders.Services.Skywind
             ILogger<SkywindAccessToken> logger,
             ISkywindApiClient client,
             ISkywindService service,
-            RedisConnectionFactory redisConnectionFactory
+            IDatabase redisDatabase
             )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
-            _redisDatabase = redisConnectionFactory.Database;
+            _redisDatabase = redisDatabase ?? throw new ArgumentNullException(nameof(redisDatabase));
         }
 
         public async ValueTask<string> GetAccessTokenAsync()
         {
-            var redisKey = $"{GameProviderType.SexyGaming}:AccessToken";
+            var redisKey = $"{GameProviderType.SexyGaming}:AccessToken".ToLower();
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var accessToken = await _redisDatabase.StringGetAsync(redisKey).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(accessToken))
