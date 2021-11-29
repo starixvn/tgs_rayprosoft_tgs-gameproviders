@@ -1,0 +1,41 @@
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core.IMESports;
+using TGS.GameProviders.Core.IMESports.Models;
+using TGS.GameProviders.Domains.SettingConfiguration.IMESports;
+
+namespace TGS.GameProviders.Services.IMESports
+{
+    internal class IMESportsGamePlayer : IIMESportsGamePlayer
+    {
+        private readonly ILogger<IMESportsGamePlayer> _logger;
+        private readonly IIMESportsApiClient _client;
+
+        public IMESportsGamePlayer(
+            ILogger<IMESportsGamePlayer> logger,
+            IIMESportsApiClient client)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
+        }
+
+        public async ValueTask<bool> CreatePlayerAsync(
+            IMESportsBrandMerchant merchant,
+            string imesPlayerId,
+            string gameProviderCurrencyCode)
+        {
+            var request = new IMESportsRegisterPlayerRequest
+            {
+                MerchantCode = merchant.MerchantCode,
+                IMESPlayerId = imesPlayerId,
+                CurrencyCode = gameProviderCurrencyCode
+            };
+
+            var response = await _client.RegisterPlayerAsync(merchant.ApiUrl, request)
+                .ConfigureAwait(false);
+
+            return response.ErrorCode == IMESportsGameApiError.Success;
+        }
+    }
+}

@@ -1,6 +1,7 @@
 ﻿using TGS.GameProviders.ApiClients.AsiaGaming;
 using TGS.GameProviders.ApiClients.BigGaming;
 using TGS.GameProviders.ApiClients.Evolution;
+using TGS.GameProviders.ApiClients.IMESports;
 using TGS.GameProviders.ApiClients.KY;
 using TGS.GameProviders.ApiClients.LY;
 using TGS.GameProviders.ApiClients.PragmaticPlay;
@@ -15,6 +16,7 @@ using TGS.GameProviders.ApiClients.WMCasino;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Evolution;
+using TGS.GameProviders.Core.IMESports;
 using TGS.GameProviders.Core.KY;
 using TGS.GameProviders.Core.LY;
 using TGS.GameProviders.Core.PragmaticPlay;
@@ -66,6 +68,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddHttpClient<IWMCasinoApiClient, WMCasinoApiClient>();
             services.AddHttpClient<IAsiaGamingApiClient, AsiaGamingApiClient>();
             services.AddHttpClient<IPragmaticPlayApiClient, PragmaticPlayApiClient>();
+            services.AddHttpClient<IIMESportsApiClient, IMESportsApiClient>();
 
             return services;
         }

@@ -3,6 +3,7 @@ using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
 using TGS.GameProviders.Core.BigGaming.ApplicationServices;
 using TGS.GameProviders.Core.Evolution.ApplicationServices;
+using TGS.GameProviders.Core.IMESports.ApplicationServices;
 using TGS.GameProviders.Core.KY.ApplicationServices;
 using TGS.GameProviders.Core.LY.ApplicationServices;
 using TGS.GameProviders.Core.PragmaticPlay.ApplicationServices;
@@ -51,6 +52,8 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<GameUrlRequest, AsiaGamingGameUrlQuery>()
                 .ReverseMap();
             CreateMap<GameUrlRequest, PragmaticPlayGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, IMESportsGameUrlQuery>()
                 .ReverseMap();
         }
     }
