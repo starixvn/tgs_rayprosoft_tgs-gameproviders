@@ -12,14 +12,14 @@ namespace TGS.GameProviders.Core.IMESports
 
         ValueTask<GameModel> GetGameAsync(int gameId);
 
-        ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode);
-
         ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
 
         ValueTask<Guid> GetGameProviderIdAsync();
 
-        ValueTask<IMESportsConfiguration> GetSettingConfigurationAsync();
+        ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode);
 
         ValueTask<PlayerModel> GetPlayerAsync(string playerCode);
+
+        ValueTask<IMESportsConfiguration> GetSettingConfigurationAsync();
     }
 }

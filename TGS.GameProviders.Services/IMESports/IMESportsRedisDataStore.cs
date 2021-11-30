@@ -10,10 +10,9 @@ namespace TGS.GameProviders.Services.IMESports
 {
     internal class IMESportsRedisDataStore : IIMESportsDataStore
     {
+        private static readonly string _KeyPrefix = "IMSessionToken";
         private readonly IDatabase _database;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
-
-        private static readonly string _KeyPrefix = "IMSessionToken";
 
         public IMESportsRedisDataStore(RedisConnectionFactory redisConnectionFactory)
         {

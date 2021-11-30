@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core.IMESports;
@@ -15,12 +12,12 @@ namespace TGS.GameProviders.Services.IMESports
 {
     internal class IMESportsService : IIMESportsService
     {
-        private readonly ILogger<IMESportsService> _logger;
-        private readonly ISettingRepository _settingRepository;
+        private readonly IBrandRepository _brandRepository;
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameRepository _gameRepository;
-        private readonly IBrandRepository _brandRepository;
+        private readonly ILogger<IMESportsService> _logger;
         private readonly IPlayerRepository _playerRepository;
+        private readonly ISettingRepository _settingRepository;
 
         public IMESportsService(
             ILogger<IMESportsService> logger,
@@ -44,24 +41,6 @@ namespace TGS.GameProviders.Services.IMESports
         public async ValueTask<GameModel> GetGameAsync(int gameId)
             => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
-        public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
-        {
-            var (isCultureCode, gameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
-
-            return isCultureCode ? gameProviderCultureCode : "EN";
-        }
-
-        public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.IMESports);
-
-        public async ValueTask<IMESportsConfiguration> GetSettingConfigurationAsync()
-            => await _settingRepository
-                .GetConfigurationAsync<IMESportsConfiguration>(GameProviderConfigurations.IMESports)
-                .ConfigureAwait(false);
-
-        public async ValueTask<PlayerModel> GetPlayerAsync(string playerCode)
-            => await _playerRepository.GetAsync(playerCode).ConfigureAwait(false);
-
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
         {
             var (isCurrencyCode, gameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)
@@ -69,5 +48,23 @@ namespace TGS.GameProviders.Services.IMESports
 
             return isCurrencyCode ? gameProviderCurrencyCode : null;
         }
+
+        public ValueTask<Guid> GetGameProviderIdAsync()
+            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.IMESports);
+
+        public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
+        {
+            var (isCultureCode, gameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
+
+            return isCultureCode ? gameProviderCultureCode : "EN";
+        }
+
+        public async ValueTask<PlayerModel> GetPlayerAsync(string playerCode)
+            => await _playerRepository.GetAsync(playerCode).ConfigureAwait(false);
+
+        public async ValueTask<IMESportsConfiguration> GetSettingConfigurationAsync()
+                    => await _settingRepository
+                .GetConfigurationAsync<IMESportsConfiguration>(GameProviderConfigurations.IMESports)
+                .ConfigureAwait(false);
     }
 }

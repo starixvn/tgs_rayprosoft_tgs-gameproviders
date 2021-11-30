@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -16,13 +13,13 @@ namespace TGS.GameProviders.Core.IMESports.ApplicationServices
 {
     internal class IMESportsGameUrlGetService : IGetService<IMESportsGameUrlQuery, GameUrlResult>
     {
-        private readonly ILogger<IMESportsGameUrlGetService> _logger;
-        private readonly IIMESportsService _service;
-        private readonly IIMESportsGamePlayer _playerService;
-        private readonly IIMESportsMerchantMapper _merchantMapper;
-        private readonly IIMESportsUtility _utility;
-        private readonly IIMESportsDataStore _dataStore;
         private readonly IIMESportsApiClient _client;
+        private readonly IIMESportsDataStore _dataStore;
+        private readonly ILogger<IMESportsGameUrlGetService> _logger;
+        private readonly IIMESportsMerchantMapper _merchantMapper;
+        private readonly IIMESportsGamePlayer _playerService;
+        private readonly IIMESportsService _service;
+        private readonly IIMESportsUtility _utility;
 
         public IMESportsGameUrlGetService(
             ILogger<IMESportsGameUrlGetService> logger,
@@ -71,7 +68,7 @@ namespace TGS.GameProviders.Core.IMESports.ApplicationServices
             };
         }
 
-        private async Task<IMESportsLaunchGameResponse> LaunchGameAsync(
+        private async ValueTask<IMESportsLaunchGameResponse> LaunchGameAsync(
             IMESportsGameUrlQuery query,
             IMESportsConfiguration configuration,
             GameModel game)
