@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using StackExchange.Redis;
 using TGS.GameProviders.Core.IMESports;
 using TGS.GameProviders.Core.IMESports.Models;
-using TGS.GameProviders.Repositories;
 
 namespace TGS.GameProviders.Services.IMESports
 {
@@ -14,14 +13,9 @@ namespace TGS.GameProviders.Services.IMESports
         private readonly IDatabase _database;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-        public IMESportsRedisDataStore(RedisConnectionFactory redisConnectionFactory)
+        public IMESportsRedisDataStore(IDatabase database)
         {
-            if (redisConnectionFactory is null)
-            {
-                throw new ArgumentNullException(nameof(redisConnectionFactory));
-            }
-
-            _database = redisConnectionFactory.Database;
+            _database = database ?? throw new ArgumentNullException(nameof(database));
 
             _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = false };
         }
