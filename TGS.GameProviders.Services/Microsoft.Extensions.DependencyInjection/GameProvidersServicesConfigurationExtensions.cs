@@ -7,6 +7,7 @@ using TGS.GameProviders.Core.IMESports;
 using TGS.GameProviders.Core.KY;
 using TGS.GameProviders.Core.LY;
 using TGS.GameProviders.Core.PragmaticPlay;
+using TGS.GameProviders.Core.Saba;
 using TGS.GameProviders.Core.SBO;
 using TGS.GameProviders.Core.SexyGaming;
 using TGS.GameProviders.Core.Skywind;
@@ -22,6 +23,7 @@ using TGS.GameProviders.Services.IMESports;
 using TGS.GameProviders.Services.KY;
 using TGS.GameProviders.Services.LY;
 using TGS.GameProviders.Services.PragmaticPlay;
+using TGS.GameProviders.Services.Saba;
 using TGS.GameProviders.Services.SBO;
 using TGS.GameProviders.Services.SexyGaming;
 using TGS.GameProviders.Services.Skywind;
@@ -106,6 +108,10 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services
                 .AddTransient<IIMESportsDataStore>(sp => ActivatorUtilities.CreateInstance<IMESportsRedisDataStore>(sp, redisDatabaseResolver(sp)));
+
+            services
+                .AddTransient<ISabaService, SabaService>()
+                .AddTransient<ISabaGamePlayer, SabaGamePlayer>();
 
             return services;
         }
