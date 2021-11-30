@@ -104,8 +104,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IIMESportsMerchantMapper, IMESportsMerchantMapper>()
                 .AddTransient<IIMESportsGamePlayer, IMESportsGamePlayer>()
                 .AddTransient<IIMESportsUtility, IMESportsUtility>()
-                .AddTransient<IIMESportsService, IMESportsService>()
-                .AddTransient<IIMESportsDataStore, IMESportsRedisDataStore>();
+                .AddTransient<IIMESportsService, IMESportsService>();
+
+            services
+                .AddTransient<IIMESportsDataStore>(sp => ActivatorUtilities.CreateInstance<IMESportsRedisDataStore>(sp, redisDatabaseResolver(sp)));
+
 
             return services;
         }

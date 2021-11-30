@@ -14,15 +14,9 @@ namespace TGS.GameProviders.Services.IMESports
         private readonly IDatabase _database;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-        public IMESportsRedisDataStore(RedisConnectionFactory redisConnectionFactory)
+        public IMESportsRedisDataStore(IDatabase redisDatabase)
         {
-            if (redisConnectionFactory is null)
-            {
-                throw new ArgumentNullException(nameof(redisConnectionFactory));
-            }
-
-            _database = redisConnectionFactory.Database;
-
+            _database = redisDatabase ?? throw new ArgumentNullException(nameof(redisDatabase));
             _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = false };
         }
 
