@@ -13,7 +13,6 @@ namespace TGS.GameProviders.Services.IMESports
         private readonly IDatabase _database;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
 
-
         public IMESportsRedisDataStore(IDatabase redisDatabase)
         {
             _database = redisDatabase ?? throw new ArgumentNullException(nameof(redisDatabase));
