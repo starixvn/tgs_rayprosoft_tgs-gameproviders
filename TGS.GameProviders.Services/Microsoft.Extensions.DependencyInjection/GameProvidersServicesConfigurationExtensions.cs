@@ -1,6 +1,4 @@
-﻿// ReSharper disable CheckNamespace
-
-using System;
+﻿using System;
 using StackExchange.Redis;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.BigGaming;
@@ -108,7 +106,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services
                 .AddTransient<IIMESportsDataStore>(sp => ActivatorUtilities.CreateInstance<IMESportsRedisDataStore>(sp, redisDatabaseResolver(sp)));
-
 
             return services;
         }

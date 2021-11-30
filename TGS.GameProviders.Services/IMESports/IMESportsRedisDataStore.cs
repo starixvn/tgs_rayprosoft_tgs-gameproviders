@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using StackExchange.Redis;
 using TGS.GameProviders.Core.IMESports;
 using TGS.GameProviders.Core.IMESports.Models;
-using TGS.GameProviders.Repositories;
 
 namespace TGS.GameProviders.Services.IMESports
 {
@@ -13,6 +12,7 @@ namespace TGS.GameProviders.Services.IMESports
         private static readonly string _KeyPrefix = "IMSessionToken";
         private readonly IDatabase _database;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
+
 
         public IMESportsRedisDataStore(IDatabase redisDatabase)
         {
