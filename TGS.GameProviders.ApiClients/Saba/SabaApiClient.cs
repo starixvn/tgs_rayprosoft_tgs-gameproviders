@@ -48,7 +48,17 @@ namespace TGS.GameProviders.ApiClients.Saba
                 "CreateMember");
         }
 
-        public ValueTask<SabaGetRoundHistoryResponse> GetBetDetailByTransIdAsync(Uri apiUrl, SabaGetRoundHistoryRequest request) => throw new NotImplementedException();
+        public ValueTask<SabaGetRoundHistoryResponse> GetBetDetailByTransIdAsync(Uri apiUrl, SabaGetRoundHistoryRequest request)
+        {
+            var value = JsonSerializer.Serialize(request);
+            var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(value);
+
+            return PostAsync<SabaGetRoundHistoryResponse>(
+                apiUrl,
+                "/api/GetBetDetailByTransID",
+                parameters,
+                "GetRoundDetail");
+        }
 
         public ValueTask<SabaGameUrlResponse> GetGameUrlAsync(Uri apiUrl, SabaGameUrlRequest request)
         {
@@ -124,6 +134,8 @@ namespace TGS.GameProviders.ApiClients.Saba
             if (!string.IsNullOrEmpty(responseMessage) &&
                 httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
+                _logger.LogInformation(responseMessage);
+
                 return JsonSerializer.Deserialize<TResponse>(responseMessage);
             }
 

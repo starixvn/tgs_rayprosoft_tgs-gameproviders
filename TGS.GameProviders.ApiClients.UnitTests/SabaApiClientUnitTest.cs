@@ -80,5 +80,19 @@ namespace TGS.GameProviders.ApiClients.UnitTests
 
             var response = await _client.KickUserAsync(_apiUrl, request).ConfigureAwait(false);
         }
+
+        [Test]
+        public async Task GetBetDetailByTransIdAsync()
+        {
+            var externalTransactionId = "113995497149";
+
+            var request = new SabaGetRoundHistoryRequest
+            {
+                VendorId = _vendorId,
+                ExternalTransactionId = externalTransactionId
+            };
+
+            var response = await _client.GetBetDetailByTransIdAsync(_apiUrl, request).ConfigureAwait(false);
+        }
     }
 }
