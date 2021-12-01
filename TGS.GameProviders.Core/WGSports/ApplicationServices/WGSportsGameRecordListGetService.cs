@@ -66,7 +66,7 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
 
             var datas = response.BetInfo
                 .Where(data => data.Reference.IgnoreCaseNotContains("不接受"))
-                .Select(data => new GameRecordListModle()
+                .Select(data => new GameRecordListModel()
                 {
                     GameProviderCode = gameProviderCode,
                     GameProviderId = gameProviderId,
