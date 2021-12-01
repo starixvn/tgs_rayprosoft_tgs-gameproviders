@@ -28,8 +28,8 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var logger = NullLogger<IMESportsApiClient>.Instance;
             var tgsLog = Substitute.For<ITgsLog>();
 
-            _client = Substitute.For<IIMESportsApiClient>();
-            //_client = new IMESportsApiClient(logger, httpClient, tgsLog);
+            //_client = Substitute.For<IIMESportsApiClient>();
+            _client = new IMESportsApiClient(logger, httpClient, tgsLog);
         }
 
         [Test]
@@ -85,6 +85,22 @@ namespace TGS.GameProviders.ApiClients.UnitTests
 
             var response = await _client.RegisterPlayerAsync(_apiUrl, request)
                 .ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task GetRoundHistoryAsync()
+        {
+            var request = new IMESportsGetRoundHistoryRequest
+            {
+                MerchantCode = _merchantCode,
+                ProductWallet = _productWallet,
+                StartDate = "2021-11-26 18.46.44",
+                EndDate = "2021-11-26 18.49.44",
+                Page = 1,
+                Language = "EN"
+            };
+
+            var response = await _client.GetRoundHistoryAsync(_apiUrl, request);
         }
 
         private string ToIMESportsPlayerId(string playerCode)

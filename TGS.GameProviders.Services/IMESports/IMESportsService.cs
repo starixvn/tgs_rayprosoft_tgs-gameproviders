@@ -3,7 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core.IMESports;
 using TGS.GameProviders.Core.Repositories;
+using TGS.GameProviders.Core.Repositories.Models.Brand;
 using TGS.GameProviders.Core.Repositories.Models.Game;
+using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -35,15 +37,19 @@ namespace TGS.GameProviders.Services.IMESports
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
         }
 
-        public ValueTask<Guid> GetBrandIdAsync(string brandCode)
-            => _brandRepository.GetBrandIdAsync(brandCode);
+        public ValueTask<BrandModel> GetBrandAsync(Guid brandId)
+            => _brandRepository.GetAsync(brandId);
 
         public async ValueTask<GameModel> GetGameAsync(int gameId)
             => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
+        public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
+            => _gameProviderRepository.GetAsync(gameProviderId);
+
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
         {
-            var (isCurrencyCode, gameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)
+            var (isCurrencyCode, gameProviderCurrencyCode) = await _gameProviderRepository
+                .GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)
                 .ConfigureAwait(false);
 
             return isCurrencyCode ? gameProviderCurrencyCode : null;
@@ -54,7 +60,9 @@ namespace TGS.GameProviders.Services.IMESports
 
         public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
         {
-            var (isCultureCode, gameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
+            var (isCultureCode, gameProviderCultureCode) = await _gameProviderRepository
+                .GetGameProviderCultureCodeAsync(gameProviderId, cultureCode)
+                .ConfigureAwait(false);
 
             return isCultureCode ? gameProviderCultureCode : "EN";
         }

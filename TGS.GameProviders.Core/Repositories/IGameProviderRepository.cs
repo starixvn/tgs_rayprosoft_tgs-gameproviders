@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.Repositories
 {
