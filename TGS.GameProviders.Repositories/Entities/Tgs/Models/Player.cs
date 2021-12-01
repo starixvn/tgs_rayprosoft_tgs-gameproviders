@@ -37,5 +37,6 @@ namespace TGS.GameProviders.Repositories.Entities
         public DateTime UpdatedOn { get; set; }
         public DateTime? FirstDepositOn { get; set; }
         public string? AreaCode { get; set; }
+        public DateTime? FirstPromotionOn { get; set; }
     }
 }

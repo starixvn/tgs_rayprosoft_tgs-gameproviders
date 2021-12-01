@@ -6,8 +6,8 @@ namespace TGS.GameProviders.Core.BigGaming.Models
     public record BigGamingVideoOrderDetailRequest : BigGamingParamsSignRequest
     {
         [JsonPropertyName("orderId")]
-        public long OrderId { get; set; }
+        public long OrderId { get; init; }
         [JsonPropertyName("locale")]
-        public string Locale { get; set; }
+        public string Locale { get; init; } = default!;
     }
 }

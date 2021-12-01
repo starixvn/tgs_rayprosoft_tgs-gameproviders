@@ -9,6 +9,6 @@ namespace TGS.GameProviders.Core.WMCasino.Models
         public override string Action => "LogoutGame";
 
         [JsonPropertyName("user")]
-        public string User { get; init; }
+        public string User { get; init; } = default!;
     }
 }

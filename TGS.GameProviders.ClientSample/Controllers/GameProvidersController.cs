@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Client;
 using TGS.GameProviders.ClientSample.Models;
+using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.ClientSample.Controllers
 {
@@ -64,49 +65,53 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <summary>
         /// Kicks the player asynchronous.
         /// </summary>
-        /// <param name="model">The model.</param>
+        /// <param name="gameProviderCode">The game provider code.</param>
+        /// <param name="playerCode">The player code.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        ///     Post
-        ///         {
-        ///             "gameProviderCode": "ky",
-        ///             "brandCode": "GPI",
-        ///             "playerCode": "4ucmqplxb029",
-        ///             "currencyCode": "CNY"
-        ///         }
+        /// <b>Example</b><br />
+        ///
+        ///     Delete ky/KickPlayer/4ucmqplxb029
         /// </remarks>
-        [HttpPost("KickPlayer")]
-        public ValueTask KickPlayerAsync(
-            KickPlayerViewModel model)
-            => _client.KickPlayerAsync(
-                model.GameProviderCode,
-                model.BrandCode,
-                model.PlayerCode,
-                model.CurrencyCode);
+        [HttpDelete("{gameProviderCode}/KickPlayer/{playerCode}")]
+        public ValueTask KickPlayerAsync(string gameProviderCode, string playerCode)
+            => _client.KickPlayerAsync(gameProviderCode, playerCode);
 
         /// <summary>
         /// Players the balance asynchronous.
         /// </summary>
-        /// <param name="model">The model.</param>
+        /// <param name="gameProviderCode">The game provider code.</param>
+        /// <param name="playerCode">The player code.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        ///     Get
-        ///         {
-        ///             "gameProviderCode": "ky",
-        ///             "brandCode": "GPI",
-        ///             "playerCode": "4ucmqplxb029",
-        ///             "currencyCode": "CNY"
-        ///         }
+        ///   <b>Example</b><br />
+        ///
+        ///   Get vr/balance/4ucmqplxb029
         /// </remarks>
-        [HttpGet("PlayerBalance")]
-        public ValueTask<decimal?> PlayerBalanceAsync(
-            [FromQuery] PlayerBalanceViewModel model)
+        [HttpGet("{gameProviderCode}/balance/{playerCode}")]
+        public ValueTask<decimal> PlayerBalanceAsync(
+             string gameProviderCode,
+             string playerCode)
             => _client.PlayerBalanceAsync(
-                model.GameProviderCode,
-                model.BrandCode,
-                model.PlayerCode,
-                model.CurrencyCode);
+                gameProviderCode,
+                playerCode
+                );
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="gameProviderCode"></param>
+        /// <param name="roundId"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
+        [HttpGet("RoundDetail")]
+        public ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromQuery] string gameProviderCode,
+            [FromQuery] Guid roundId,
+            [FromQuery] string language)
+            => _client.RoundDetailAsync(
+                gameProviderCode,
+                roundId,
+                language);
     }
 }

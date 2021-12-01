@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using Tgs.Logging;
-using TGS.GameProviders.ApiClients.WGHorse;
 using TGS.GameProviders.Core.WGHorse;
 using TGS.GameProviders.Core.WGHorse.ApplicationServices;
 using TGS.GameProviders.Core.WGHorse.Models;
@@ -94,7 +88,6 @@ namespace TGS.GameProviders.Core.UnitTests.WGHorse
                 Page = 1,
                 Rows = 1000
             }).ConfigureAwait(false);
-
         }
     }
 }

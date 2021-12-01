@@ -9,6 +9,6 @@ namespace TGS.GameProviders.Core.BigGaming.Models
         /// 登录ID.
         /// </summary>
         [JsonPropertyName("loginId")]
-        public string LoginId { get; set; }
+        public string LoginId { get; init; } = default!;
     }
 }

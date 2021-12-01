@@ -5,14 +5,6 @@ namespace TGS.GameProviders.Core.SBO
     public interface ISBOUtility
     {
         /// <summary>
-        /// Get game provider portfolio
-        /// </summary>
-        /// <param name="gameType">The game type.</param>
-        /// <returns></returns>
-        string GetPortfolio(
-            GameType gameType);
-
-        /// <summary>
         /// Get agent id
         /// </summary>
         /// <param name="agentPrefix">The prefix of agent.</param>
@@ -23,5 +15,13 @@ namespace TGS.GameProviders.Core.SBO
             string agentPrefix,
             string brandCode,
             string currencyCode);
+
+        /// <summary>
+        /// Get game provider portfolio
+        /// </summary>
+        /// <param name="gameType">The game type.</param>
+        /// <returns></returns>
+        string GetPortfolio(
+            GameType gameType);
     }
 }

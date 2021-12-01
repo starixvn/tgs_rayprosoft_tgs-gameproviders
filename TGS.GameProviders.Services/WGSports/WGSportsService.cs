@@ -32,8 +32,8 @@ namespace TGS.GameProviders.Services.WGSports
                <= 0 => ClientRoundStatus.Loss,
            };
 
-        public async ValueTask<GetGame> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
-            => await _gameRepository.GetGameAsync(gameProviderId, externalGameId).ConfigureAwait(false);
+        public async ValueTask<GameModel> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
+            => await _gameRepository.GetAsync(gameProviderId, externalGameId).ConfigureAwait(false);
 
         public string GetGameProviderCode()
             => GameProviderType.WGSports;

@@ -1,5 +1,4 @@
 ﻿using System;
-using TGS.GameProviders.Core.RedisRepositories;
 using TGS.GameProviders.RedisRepositories;
 using TGS.GameProviders.RedisRepositories.Options;
 
@@ -8,12 +7,12 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class RedisRepositoryConfigurationExtensions
     {
         public static IServiceCollection AddRedisRepository(this IServiceCollection services,
-            Action<RedisOption, IServiceProvider> redisOption)
+            Action<RedisOptions, IServiceProvider> redisOptions)
             =>
             services
-            .AddOptions<RedisOption>()
-            .Configure(redisOption)
+            .AddOptions<RedisOptions>()
+            .Configure(redisOptions)
             .Services
-            .AddSingleton<IRedisConnection, RedisConnection>();
+            .AddSingleton<RedisConnectionFactory>();
     }
 }

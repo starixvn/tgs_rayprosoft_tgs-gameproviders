@@ -41,17 +41,17 @@ namespace TGS.GameProviders.Core.Evolution.ApplicationServices
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var gameProviderCulture = await _service.GetGameProviderCultureCodeAsync(command.Language).ConfigureAwait(false);
             var gameProviderCurrency = await _service.GetGameProviderCurrencyCodeAsync(command.CurrencyCode).ConfigureAwait(false);
-            var getGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
+            var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
             var ip = command.IPAddress;
 
             var category = "slots";
 
             var table = new EvolutionGameUrlConfigGameTable
             {
-                Id = getGame.ExternalId
+                Id = getGame.GameExternalId
             };
 
-            if (getGame.Type == GameType.LiveDealerLobby)
+            if (getGame.GameType == GameType.LiveDealerLobby)
             {
                 category = "baccarat_sicbo";
                 table = null;

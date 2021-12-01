@@ -10,6 +10,6 @@ namespace TGS.GameProviders.Core.WMCasino.Models
         public int ErrorCode { get; init; }
 
         [JsonPropertyName("errorMessage")]
-        public string ErrorMessage { get; init; }
+        public string ErrorMessage { get; init; } = default!;
     }
 }

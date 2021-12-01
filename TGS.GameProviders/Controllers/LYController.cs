@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.LY.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers
@@ -18,7 +19,9 @@ namespace TGS.GameProviders.Controllers
         IKickPlayerHandler<LYKickPlayerCommand>,
         IPlayerBalanceHandler<LYPlayerBalanceQuery>,
         IPlayerFundCheckingHandler<LYPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-        IPlayerFundHandler<LYPlayerFundInQuery, LYPlayerFundOutQuery>
+        IPlayerFundHandler<LYPlayerFundInQuery, LYPlayerFundOutQuery>,
+        IRoundDetailHandler<LYRoundDetailQuery>
+
     {
         private readonly ILogger<LYController> _logger;
         private readonly IMapper _mapper;
@@ -38,7 +41,8 @@ namespace TGS.GameProviders.Controllers
         /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        /// 
         ///     Post
         ///         {
         ///             "brandCode": "Default",
@@ -63,20 +67,21 @@ namespace TGS.GameProviders.Controllers
         /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        /// Post
-        ///     {
-        ///         "gameType": 8,
-        ///         "gameId": 2000001,
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "HKD",
-        ///         "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        ///         "platformType": 0,
-        ///         "language": "zh-CN",
-        ///         "ipAddress": "127.0.0.1",
-        ///         "backUrl": "https://dev-t1.rpgp.cc/"
-        ///     }
+        /// <b>Example</b><br />
+        /// 
+        ///     Post
+        ///         {
+        ///             "gameType": 8,
+        ///             "gameId": 2000001,
+        ///             "brandCode": "GPI",
+        ///             "playerCode": "4ucmqplxb029",
+        ///             "currencyCode": "HKD",
+        ///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        ///             "platformType": 0,
+        ///             "language": "zh-CN",
+        ///             "ipAddress": "127.0.0.1",
+        ///             "backUrl": "https://dev-t1.rpgp.cc/"
+        ///         }
         /// </remarks>
         [HttpPost("GameUrl")]
         public async ValueTask<GameUrlResponse?> GameUrlAsync(
@@ -91,54 +96,51 @@ namespace TGS.GameProviders.Controllers
         /// Kicks the player asynchronous.
         /// </summary>
         /// <param name="commandService">The command service.</param>
-        /// <param name="request">The request.</param>
+        /// <param name="playerCode">The player code.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        /// Post
-        ///     {
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "HKD"
-        ///     }
+        /// <b>Example</b><br />
+        ///
+        ///     Delete ly/kickplayer/4ucmqplxb029
         /// </remarks>
-        [HttpPost("KickPlayer")]
+        [HttpDelete("kickplayer/{playerCode}")]
         public ValueTask KickPlayerAsync(
             [FromServices] ICommandService<LYKickPlayerCommand> commandService,
-            KickPlayerRequest request)
-            => commandService.ExecuteAsync(_mapper.Map<LYKickPlayerCommand>(request));
+            string playerCode)
+            => commandService.ExecuteAsync(new()
+            {
+                PlayerCode = playerCode
+            });
 
         /// <summary>
         /// Players the balance asynchronous.
         /// </summary>
         /// <param name="getService">The get service.</param>
-        /// <param name="request">The request.</param>
+        /// <param name="playerCode">The player code.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        /// Post
-        ///     {
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "HKD"
-        ///     }
+        ///   <b>Example</b><br />
+        ///
+        ///   Get ly/balance/4ucmqplxb029
         /// </remarks>
-        [HttpPost("Balance")]
-        public async ValueTask<PlayerBalanceResponse?> PlayerBalanceAsync(
-            [FromServices] IGetService<LYPlayerBalanceQuery, PlayerBalanceResult> getService,
-            PlayerBalanceRequest request)
-        {
-            var result = await getService.GetAsync(_mapper.Map<LYPlayerBalanceQuery>(request)).ConfigureAwait(false);
-            return result == null ? null : _mapper.Map<PlayerBalanceResponse>(result);
-        }
+        [HttpGet("Balance/{playerCode}")]
+        public ValueTask<decimal?> PlayerBalanceAsync(
+             [FromServices] IGetService<LYPlayerBalanceQuery, decimal?> getService,
+             string playerCode)
+            => getService.GetAsync(new()
+            {
+                PlayerCode = playerCode
+            });
 
         /// <summary>
         /// Players the fund checking asynchronous.
         /// </summary>
         /// <param name="getService">The get service.</param>
         /// <param name="request">The request.</param>
+        /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        /// 
         ///     Post
         ///         {
         ///             "brandCode": "GPI",
@@ -163,7 +165,8 @@ namespace TGS.GameProviders.Controllers
         /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        /// 
         ///     Post
         ///         {
         ///             "brandCode": "GPI",
@@ -189,7 +192,8 @@ namespace TGS.GameProviders.Controllers
         /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        /// 
         ///     Post
         ///         {
         ///             "brandCode": "GPI",
@@ -206,6 +210,32 @@ namespace TGS.GameProviders.Controllers
         {
             var result = await getService.GetAsync(_mapper.Map<LYPlayerFundOutQuery>(request)).ConfigureAwait(false);
             return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+        }
+
+        /// <summary>
+        /// Rounds the detail asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="roundId">The round identifier.</param>
+        /// <param name="language">The language.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get ly/rounddetail/b53d5576-8f61-417d-17da-08d9a5803086?language=zh-CN
+        /// </remarks>
+        [HttpGet("RoundDetail/{roundId}")]
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromServices] IGetService<LYRoundDetailQuery, RoundDetailResult> getService,
+            Guid roundId,
+            [FromQuery] string language)
+        {
+            var result = await getService.GetAsync(new()
+            {
+                RoundId = roundId,
+                Language = language
+            }).ConfigureAwait(false);
+            return result == null ? null : result;
         }
     }
 }

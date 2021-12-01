@@ -94,7 +94,6 @@ namespace TGS.GameProviders.ApiClients.WGHorse
             return GetAsync<string, WGHorseResponse>(url, playerCode, "Logout");
         }
 
-
         private async ValueTask<TResult> GetAsync<TSource, TResult>(Uri url, TSource request, string logPrefix)
         {
             logPrefix = $"{nameof(WGHorseApiClient).ToLower()}.{logPrefix}";

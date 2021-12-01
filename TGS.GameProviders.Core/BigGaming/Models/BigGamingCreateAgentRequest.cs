@@ -6,10 +6,10 @@ namespace TGS.GameProviders.Core.BigGaming.Models
     public record BigGamingCreateAgentRequest : BigGamingParamsSignRequest
     {
         [JsonPropertyName("loginId")]
-        public string LoginId { get; init; }
+        public string LoginId { get; init; } = default!;
         [JsonPropertyName("password")]
-        public string Password { get; init; }
+        public string Password { get; init; } = default!;
         [JsonPropertyName("fromIp")]
-        public string FromIp { get; init; }
+        public string FromIp { get; init; } = default!;
     }
 }

@@ -10,7 +10,6 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 {
     public class BigGamingGameUrlGetService : IGetService<BigGamingGameUrlQuery, GameUrlResult>
     {
-        private readonly IBigGamingApiClient _client;
         private readonly IGameRepository _gameRepository;
         private readonly IBigGamingGameUrl _gameUrl;
         private readonly IBigGamingGamePlayer _gamingGamePlayerCreate;
@@ -18,7 +17,6 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
         private readonly IBigGamingService _service;
 
         public BigGamingGameUrlGetService(
-            IBigGamingApiClient client,
             IGameRepository gameRepository,
             ILogger<BigGamingGameUrlGetService> logger,
             IBigGamingService service,
@@ -27,7 +25,6 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
             )
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _gamingGamePlayerCreate = gamingGamePlayerCreate ?? throw new ArgumentNullException(nameof(gamingGamePlayerCreate));
@@ -41,10 +38,10 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 
             if (brandMerchant == null)
             {
-                return null;
+                throw new Exception("The merchant does not exist.");
             }
 
-            var getGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
+            var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
             if (getGame == null)
             {
@@ -64,11 +61,9 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
                 }
             }
 
-            if (responseGameUrl.Error == null)
-            {
-                var url = JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(responseGameUrl.Result));
-            }
-            return (responseGameUrl.Error == null) ? new() { Url = new Uri(JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(responseGameUrl.Result))) } : null;
+            return (responseGameUrl.Error == null) ?
+                new() { Url = new Uri(JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(responseGameUrl.Result))) } :
+                throw new Exception($"The manufacturer responded incorrectly.({responseGameUrl.Error.Message})"); ;
         }
     }
 }

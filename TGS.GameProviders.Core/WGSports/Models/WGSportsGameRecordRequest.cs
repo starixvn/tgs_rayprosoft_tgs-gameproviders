@@ -10,11 +10,11 @@
         /// <summary>
         /// The start time
         /// </summary>
-        public string StartTime { get; init; }
+        public string StartTime { get; init; } = default!;
 
         /// <summary>
         /// The end time
         /// </summary>
-        public string EndTime { get; init; }
+        public string EndTime { get; init; } = default!;
     }
 }

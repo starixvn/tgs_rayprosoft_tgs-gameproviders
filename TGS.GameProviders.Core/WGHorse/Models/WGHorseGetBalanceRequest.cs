@@ -2,6 +2,6 @@
 {
     public record WGHorseGetBalanceRequest
     {
-        public string PlayerCode { get; init; }
+        public string PlayerCode { get; init; } = default!;
     }
 }

@@ -11,12 +11,12 @@ namespace TGS.GameProviders.Core.WMCasino.Models
         public abstract string Action { get; }
 
         [JsonPropertyName("signature")]
-        public string Signature { get; init; }
+        public string Signature { get; init; } = default!;
 
         [JsonPropertyName("timestamp")]
         public string Timestamp => DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
 
         [JsonPropertyName("vendorId")]
-        public string VendorId { get; init; }
+        public string VendorId { get; init; } = default!;
     }
 }

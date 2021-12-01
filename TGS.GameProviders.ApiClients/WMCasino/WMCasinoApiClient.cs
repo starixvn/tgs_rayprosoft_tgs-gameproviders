@@ -39,7 +39,7 @@ namespace TGS.GameProviders.ApiClients.WMCasino
                 "GetDateTimeReport");
 
         public ValueTask<WMCasinoLoginGameResponse> LoginGameAsync(
-                    Uri apiUrl,
+            Uri apiUrl,
             WMCasinoLoginGameRequest request)
             => PostAsync<WMCasinoLoginGameRequest, WMCasinoLoginGameResponse>(
                 apiUrl,

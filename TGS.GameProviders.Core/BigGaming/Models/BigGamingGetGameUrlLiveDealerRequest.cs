@@ -6,16 +6,16 @@ namespace TGS.GameProviders.Core.BigGaming.Models
     public record BigGamingGetGameUrlLiveDealerRequest : BigGamingParamsDigestRequest
     {
         [JsonPropertyName("loginId")]
-        public string LoginId { get; init; }
+        public string LoginId { get; init; } = default!;
         [JsonPropertyName("locale")]
-        public string Locale { get; init; }
+        public string Locale { get; init; } = default!;
         [JsonPropertyName("isMobileUrl")]
         public int IsMobileUrl { get; init; }
         [JsonPropertyName("isHttpsUrl")]
         public int IsHttpsUrl { get; init; }
         [JsonPropertyName("returnUrl")]
-        public string ReturnUrl { get; init; }
+        public string ReturnUrl { get; init; } = default!;
         [JsonPropertyName("fromIp")]
-        public string FromIp { get; init; }
+        public string FromIp { get; init; } = default!;
     }
 }

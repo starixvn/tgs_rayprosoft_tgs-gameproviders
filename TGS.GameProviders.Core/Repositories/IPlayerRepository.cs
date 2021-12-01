@@ -6,8 +6,10 @@ namespace TGS.GameProviders.Core.Repositories
 {
     public interface IPlayerRepository
     {
-        Task<GetPlayer?> GetPlayerAsync(string playerCode);
+        Task<PlayerModel> GetAsync(string playerCode);
 
-        Task<GetPlayer?> GetPlayerAsync(Guid brandId, string username);
+        Task<PlayerModel> GetAsync(Guid brandId, string username);
+
+        Task<decimal?> GetPlayerBalanceAsync(string playerCode);
     }
 }

@@ -9,12 +9,12 @@ namespace TGS.GameProviders.Core.WMCasino.Models
         public override string Action => "LoginGame";
 
         [JsonPropertyName("lang")]
-        public string Language { get; init; }
+        public string Language { get; init; } = default!;
 
         [JsonPropertyName("password")]
         public string Password => "TgsP@ssword";
 
         [JsonPropertyName("user")]
-        public string User { get; set; }
+        public string User { get; set; } = default!;
     }
 }

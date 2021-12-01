@@ -3,12 +3,7 @@
     "SchemaName": "dbo",
     "Tables": [
       {
-        "Columns": [
-          {
-            "Name": "game_provider_configuration_id",
-            "NewName": "GameProviderConfigurationId"
-          }
-        ],
+        "Columns": [],
         "Name": "game_provider_configurations",
         "NewName": "GameProviderConfig"
       }

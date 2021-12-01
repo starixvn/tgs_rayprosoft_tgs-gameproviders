@@ -12,9 +12,9 @@ namespace TGS.GameProviders.Core.WMCasino.Models
         public string Password => "TgsP@ssword";
 
         [JsonPropertyName("user")]
-        public string User { get; set; }
+        public string User { get; set; } = default!;
 
         [JsonPropertyName("username")]
-        public string Username { get; init; }
+        public string Username { get; init; } = default!;
     }
 }

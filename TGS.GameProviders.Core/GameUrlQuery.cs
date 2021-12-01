@@ -9,20 +9,20 @@ namespace TGS.GameProviders.Core
 
         public int? GameId { get; init; }
 
-        public string BrandCode { get; init; }
+        public string BrandCode { get; init; } = default!;
 
-        public string PlayerCode { get; init; }
+        public string PlayerCode { get; init; } = default!;
 
-        public string CurrencyCode { get; init; }
+        public string CurrencyCode { get; init; } = default!;
 
         public Guid LoginRecordId { get; init; }
 
         public PlatformType PlatformType { get; init; }
 
-        public string Language { get; init; }
+        public string Language { get; init; } = default!;
 
-        public string IPAddress { get; init; }
+        public string IPAddress { get; init; } = default!;
 
-        public Uri BackUrl { get; init; }
+        public Uri BackUrl { get; init; } = default!;
     }
 }

@@ -34,20 +34,21 @@ namespace TGS.GameProviders.Controllers
         /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        /// Post
-        /// {
-        ///    "gameType": 1,
-        ///    "gameId": 100001,
-        ///    "brandCode": "GPI",
-        ///    "playerCode": "4ucmqplxb029",
-        ///    "currencyCode": "CNY",
-        ///    "loginRecordId": "ec5f3c9b-8c38-ec11-8e06-70b5e82b6b8d",
-        ///    "platformType": 0,
-        ///    "language": "zh-CN",
-        ///    "ipAddress": "127.0.0.1",
-        ///    "backUrl": "https://dev-t1.rpgp.cc"
-        /// }
+        /// <b>Example</b><br />
+        /// 
+        ///     Post
+        ///         {
+        ///             "gameType": 1,
+        ///             "gameId": 100001,
+        ///             "brandCode": "GPI",
+        ///             "playerCode": "4ucmqplxb029",
+        ///             "currencyCode": "CNY",
+        ///             "loginRecordId": "ec5f3c9b-8c38-ec11-8e06-70b5e82b6b8d",
+        ///             "platformType": 0,
+        ///             "language": "zh-CN",
+        ///             "ipAddress": "127.0.0.1",
+        ///             "backUrl": "https://dev-t1.rpgp.cc"
+        ///         }
         /// </remarks>
         [HttpPost("GameUrl")]
         public async ValueTask<GameUrlResponse?> GameUrlAsync(
@@ -62,21 +63,20 @@ namespace TGS.GameProviders.Controllers
         /// Kicks the player asynchronous.
         /// </summary>
         /// <param name="commandService">The command service.</param>
-        /// <param name="request">The request.</param>
+        /// <param name="playerCode">The player code.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        /// Post
-        ///     {
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "CNY"
-        ///     }
+        /// <b>Example</b><br />
+        ///
+        ///     Delete sbo/kickplayer/4ucmqplxb029
         /// </remarks>
-        [HttpPost("KickPlayer")]
+        [HttpDelete("kickplayer/{playerCode}")]
         public ValueTask KickPlayerAsync(
             [FromServices] ICommandService<SBOKickPlayerCommand> commandService,
-            KickPlayerRequest request)
-            => commandService.ExecuteAsync(_mapper.Map<SBOKickPlayerCommand>(request));
+            string playerCode)
+            => commandService.ExecuteAsync(new()
+            {
+                PlayerCode = playerCode
+            });
     }
 }

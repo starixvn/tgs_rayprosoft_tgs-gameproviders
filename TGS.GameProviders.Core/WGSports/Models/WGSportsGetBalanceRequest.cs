@@ -2,6 +2,6 @@
 {
     public record WGSportsGetBalanceRequest
     {
-        public string PlayerCode { get; init; }
+        public string PlayerCode { get; init; } = default!;
     }
 }

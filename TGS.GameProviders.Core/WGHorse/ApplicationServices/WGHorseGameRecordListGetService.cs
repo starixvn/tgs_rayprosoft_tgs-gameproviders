@@ -70,7 +70,6 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
             var gameProviderCode = _service.GetGameProviderCode();
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
-
             var datas = response.ArrayInvoice.Select(data => new GameRecordListModle()
             {
                 GameProviderCode = gameProviderCode,

@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
 using TGS.GameProviders.Core.BigGaming.ApplicationServices;
 using TGS.GameProviders.Core.Evolution.ApplicationServices;
 using TGS.GameProviders.Core.KY.ApplicationServices;
 using TGS.GameProviders.Core.LY.ApplicationServices;
+using TGS.GameProviders.Core.PragmaticPlay.ApplicationServices;
 using TGS.GameProviders.Core.SBO.ApplicationServices;
 using TGS.GameProviders.Core.SexyGaming.ApplicationServices;
 using TGS.GameProviders.Core.Skywind.ApplicationServices;
@@ -45,6 +47,10 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<GameUrlRequest, SBOGameUrlQuery>()
                 .ReverseMap();
             CreateMap<GameUrlRequest, WMCasinoGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, AsiaGamingGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, PragmaticPlayGameUrlQuery>()
                 .ReverseMap();
         }
     }

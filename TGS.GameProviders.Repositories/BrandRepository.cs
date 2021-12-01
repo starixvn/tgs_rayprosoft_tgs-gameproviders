@@ -21,12 +21,19 @@ namespace TGS.GameProviders.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task<Guid?> GetBrandGameProviderConfigurationIdAsync(Guid gameProviderId, Guid brandId)
+        public async ValueTask<Guid> GetBrandGameProviderConfigurationIdAsync(Guid gameProviderId, Guid brandId)
         {
             var data = await _context.BrandGameProviders
                 .FirstOrDefaultAsync(x => x.GameProviderId == gameProviderId && x.BrandId == brandId)
                 .ConfigureAwait(false);
-            return data?.GameProviderConfigurationId;
+            return data.GameProviderConfigurationId;
+        }
+
+        public async ValueTask<Guid> GetBrandIdAsync(string brandCode)
+        {
+            var brand = await _context.Brands.FirstOrDefaultAsync(b => b.Code == brandCode).ConfigureAwait(false);
+
+            return brand.Id;
         }
     }
 }

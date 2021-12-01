@@ -33,7 +33,7 @@
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Trigrams" Version="5.0.10" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-		<PackageReference Include="Tgs.Logging" Version="0.0.11" />
+		<PackageReference Include="Tgs.Logging" Version="0.0.12" />
 		<PackageReference Include="Tgs.MessageQueue" Version="1.1.1" />
 		<PackageReference Include="Tgs.MessageQueue.Nats" Version="1.1.1" />
 	</ItemGroup>
@@ -42,7 +42,6 @@
 		<ProjectReference Include="..\TGS.GameProviders.ApiClients\TGS.GameProviders.ApiClients.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Core\TGS.GameProviders.Core.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Domains\TGS.GameProviders.Domains.csproj" />
-		<ProjectReference Include="..\TGS.GameProviders.RedisRepositories\TGS.GameProviders.RedisRepositories.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Repositories\TGS.GameProviders.Repositories.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Services\TGS.GameProviders.Services.csproj" />
 	</ItemGroup>

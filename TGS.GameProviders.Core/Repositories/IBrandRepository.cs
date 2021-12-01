@@ -5,6 +5,8 @@ namespace TGS.GameProviders.Core.Repositories
 {
     public interface IBrandRepository
     {
-        Task<Guid?> GetBrandGameProviderConfigurationIdAsync(Guid gameProviderId, Guid brandId);
+        ValueTask<Guid> GetBrandGameProviderConfigurationIdAsync(Guid gameProviderId, Guid brandId);
+
+        ValueTask<Guid> GetBrandIdAsync(string brandCode);
     }
 }

@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using TGS.GameProviders.Domains;
 
@@ -10,14 +11,22 @@ namespace TGS.GameProviders.Client
 {
     internal class GameRecordListClient : IGameRecordListClient
     {
-        private const string _gameRecordListPath = "/api/{0}/gamerecordlist";
-        private readonly HttpClient _httpClient;
-        private readonly JsonSerializerOptions? _serializerOptions;
+        private static readonly string _GameRecordListPath = "/api/{0}/gamerecordlist";
 
-        public GameRecordListClient(HttpClient httpClient, JsonSerializerOptions? serializerOptions)
+        private static readonly JsonSerializerOptions? _SerializerOptions = new()
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters =
+            {
+                new JsonStringEnumConverter()
+            }
+        };
+
+        private readonly HttpClient _httpClient;
+
+        public GameRecordListClient(HttpClient httpClient)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            _serializerOptions = serializerOptions;
         }
 
         public async ValueTask<GameRecordListResponse?> BigGamingFishingGameRecordListAsync(string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
@@ -30,7 +39,7 @@ namespace TGS.GameProviders.Client
                 Page = page,
                 Rows = rows
             };
-            var requestContent = new StringContent(JsonSerializer.Serialize(source, _serializerOptions));
+            var requestContent = new StringContent(JsonSerializer.Serialize(source, _SerializerOptions));
             requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
             var response = await _httpClient
@@ -43,7 +52,7 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _serializerOptions);
+            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
         }
 
         public async ValueTask<GameRecordListResponse?> KYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime)
@@ -55,12 +64,12 @@ namespace TGS.GameProviders.Client
                 StartTime = startTime,
                 EndTime = endTime
             };
-            var requestContent = new StringContent(JsonSerializer.Serialize(source, _serializerOptions));
+            var requestContent = new StringContent(JsonSerializer.Serialize(source, _SerializerOptions));
             requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
             var response = await _httpClient
                .PostAsync(
-                string.Format(_gameRecordListPath, GameProviderType.KY),
+                string.Format(_GameRecordListPath, GameProviderType.KY),
                 requestContent)
                .ConfigureAwait(false);
 
@@ -68,7 +77,7 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _serializerOptions);
+            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
         }
 
         public async ValueTask<GameRecordListResponse?> LYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime)
@@ -80,12 +89,12 @@ namespace TGS.GameProviders.Client
                 StartTime = startTime,
                 EndTime = endTime
             };
-            var requestContent = new StringContent(JsonSerializer.Serialize(source, _serializerOptions));
+            var requestContent = new StringContent(JsonSerializer.Serialize(source, _SerializerOptions));
             requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
             var response = await _httpClient
                .PostAsync(
-                 string.Format(_gameRecordListPath, GameProviderType.LY),
+                 string.Format(_GameRecordListPath, GameProviderType.LY),
                  requestContent)
                .ConfigureAwait(false);
 
@@ -93,7 +102,7 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _serializerOptions);
+            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
         }
 
         public async ValueTask<GameRecordListResponse?> VRGameRecordListAsync(string brandCode, bool isUpdateTime, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
@@ -107,12 +116,12 @@ namespace TGS.GameProviders.Client
                 Page = page,
                 Rows = rows
             };
-            var requestContent = new StringContent(JsonSerializer.Serialize(source, _serializerOptions));
+            var requestContent = new StringContent(JsonSerializer.Serialize(source, _SerializerOptions));
             requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
             var response = await _httpClient
                .PostAsync(
-                string.Format(_gameRecordListPath, GameProviderType.VR),
+                string.Format(_GameRecordListPath, GameProviderType.VR),
                 requestContent)
                .ConfigureAwait(false);
 
@@ -120,31 +129,7 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _serializerOptions);
-        }
-
-        public async ValueTask<GameRecordListResponse?> WGSportsGameRecordListAsync(bool isSettlement, DateTimeOffset startTime, DateTimeOffset endTime)
-        {
-            var source = new
-            {
-                IsSettlement = isSettlement,
-                StartTime = startTime,
-                EndTime = endTime
-            };
-            var requestContent = new StringContent(JsonSerializer.Serialize(source, _serializerOptions));
-            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-            var response = await _httpClient
-               .PostAsync(
-                string.Format(_gameRecordListPath, GameProviderType.WGSports),
-                requestContent)
-               .ConfigureAwait(false);
-
-            response.EnsureSuccessStatusCode();
-
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _serializerOptions);
+            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
         }
 
         public async ValueTask<GameRecordListResponse?> WGHorseGameRecordListAsync(DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
@@ -156,12 +141,12 @@ namespace TGS.GameProviders.Client
                 Page = page,
                 Rows = rows
             };
-            var requestContent = new StringContent(JsonSerializer.Serialize(source, _serializerOptions));
+            var requestContent = new StringContent(JsonSerializer.Serialize(source, _SerializerOptions));
             requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
             var response = await _httpClient
                .PostAsync(
-                string.Format(_gameRecordListPath, GameProviderType.WGHorse),
+                string.Format(_GameRecordListPath, GameProviderType.WGHorse),
                 requestContent)
                .ConfigureAwait(false);
 
@@ -169,7 +154,31 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _serializerOptions);
+            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
+        }
+
+        public async ValueTask<GameRecordListResponse?> WGSportsGameRecordListAsync(bool isSettlement, DateTimeOffset startTime, DateTimeOffset endTime)
+        {
+            var source = new
+            {
+                IsSettlement = isSettlement,
+                StartTime = startTime,
+                EndTime = endTime
+            };
+            var requestContent = new StringContent(JsonSerializer.Serialize(source, _SerializerOptions));
+            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var response = await _httpClient
+               .PostAsync(
+                string.Format(_GameRecordListPath, GameProviderType.WGSports),
+                requestContent)
+               .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
         }
     }
 }

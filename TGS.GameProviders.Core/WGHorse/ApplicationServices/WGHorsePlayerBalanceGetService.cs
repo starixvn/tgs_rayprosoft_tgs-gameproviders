@@ -3,36 +3,46 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
+using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.WGHorse.Models;
 
 namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
 {
-    public class WGHorsePlayerBalanceGetService : IGetService<WGHorsePlayerBalanceQuery, PlayerBalanceResult>
+    public class WGHorsePlayerBalanceGetService : IGetService<WGHorsePlayerBalanceQuery, decimal?>
     {
         private readonly IWGHorseApiClient _client;
         private readonly ILogger<WGHorsePlayerBalanceGetService> _logger;
         private readonly IWGHorseGamePlayer _playerCreate;
+        private readonly IPlayerRepository _playerRepository;
         private readonly IWGHorseService _service;
 
         public WGHorsePlayerBalanceGetService(
-            ILogger<WGHorsePlayerBalanceGetService> logger,
             IWGHorseApiClient client,
-            IWGHorseService service,
-            IWGHorseGamePlayer playerCreate
+            ILogger<WGHorsePlayerBalanceGetService> logger,
+            IWGHorseGamePlayer playerCreate,
+            IPlayerRepository playerRepository,
+            IWGHorseService service
             )
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            if (logger is null) throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
             _playerCreate = playerCreate ?? throw new ArgumentNullException(nameof(playerCreate));
+            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        public async ValueTask<PlayerBalanceResult> GetAsync(WGHorsePlayerBalanceQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<decimal?> GetAsync(WGHorsePlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
+            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerModel == null)
+            {
+                throw new Exception($"The player does not exist.{command.PlayerCode}");
+            }
+
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var source = new WGHorseGetBalanceRequest()
             {
-                PlayerCode = command.PlayerCode
+                PlayerCode = playerModel.PlayerCode
             };
             var response = await _client.GetBalanceAsync(
                 configuration.ApiUrl,
@@ -43,7 +53,7 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
 
             if (response.ReturnCode == 602)
             {
-                if (await _playerCreate.CreatePlayerAsync(configuration, command.PlayerCode, command.CurrencyCode).ConfigureAwait(false))
+                if (await _playerCreate.CreatePlayerAsync(configuration, playerModel.PlayerCode, playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false))
                 {
                     response = await _client.GetBalanceAsync(
                         configuration.ApiUrl,
@@ -54,7 +64,7 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
                 }
             }
 
-            return response.ReturnCode == 1 ? new() { Balance = decimal.Parse(response.Balance) } : null;
+            return response.ReturnCode == 1 ? decimal.Parse(response.Balance) : null;
         }
     }
 }

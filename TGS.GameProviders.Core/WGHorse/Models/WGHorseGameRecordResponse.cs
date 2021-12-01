@@ -8,14 +8,14 @@ namespace TGS.GameProviders.Core.WGHorse.Models
         [JsonPropertyName("Page")]
         public string Page { get; set; }
         [JsonPropertyName("PageTotal")]
-        public string PageTotal { get; set; }
+        public string PageTotal { get; set; } = default!;
         [JsonPropertyName("PageSize")]
-        public string PageSize { get; set; }
+        public string PageSize { get; set; } = default!;
         [JsonPropertyName("RaceDateFrom")]
-        public string RaceDateFrom { get; set; }
+        public string RaceDateFrom { get; set; } = default!;
         [JsonPropertyName("RaceDateTo")]
-        public string RaceDateTo { get; set; }
+        public string RaceDateTo { get; set; } = default!;
         [JsonPropertyName("ArrayInvoice")]
-        public WGHorseGameRecord[] ArrayInvoice { get; set; }
+        public WGHorseGameRecord[]? ArrayInvoice { get; set; }
     }
 }

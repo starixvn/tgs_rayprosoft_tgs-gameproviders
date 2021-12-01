@@ -10,7 +10,7 @@ namespace TGS.GameProviders.Core.WGSports
     {
         ClientRoundStatus GetClientRound(decimal playerWinLoss);
 
-        ValueTask<GetGame> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
+        ValueTask<GameModel> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
 
         string GetGameProviderCode();
 

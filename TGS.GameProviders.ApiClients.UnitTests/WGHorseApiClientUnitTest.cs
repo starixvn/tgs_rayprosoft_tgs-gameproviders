@@ -100,6 +100,23 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         }
 
         [Test]
+        public async Task GetGameRecordAsync()
+        {
+            _ = await _client.GetGameRecordAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey
+                , _partnerIV,
+                new()
+                {
+                    StartTime = DateTimeOffset.Parse("2021-10-30"),
+                    EndTime = DateTimeOffset.Parse("2021-11-01").AddMilliseconds(-1),
+                    PageIndex = 1,
+                    PageSize = 1000
+                }).ConfigureAwait(false);
+        }
+
+        [Test]
         public async Task GetLoginAsync()
         {
             var playerCode = "4ucmqplxb029";
@@ -138,29 +155,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         }
 
         [Test]
-        public async Task LogoutAsync()
-        {
-            _ = await _client.LogoutAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, "4ucmqplxb029").ConfigureAwait(false);
-        }
-
-        [Test]
-        public async Task GetGameRecordAsync()
-        {
-            _ = await _client.GetGameRecordAsync(
-                _apiUrl,
-                _partnerCode,
-                _partnerKey
-                , _partnerIV,
-                new()
-                {
-                    StartTime = DateTimeOffset.Parse("2021-10-30"),
-                    EndTime = DateTimeOffset.Parse("2021-11-01").AddMilliseconds(-1),
-                    PageIndex = 1,
-                    PageSize = 1000
-                }).ConfigureAwait(false);
-        }
-
-        [Test]
         public void GP_to_TGS_FundIn_0()
         {
             var actual = _utility.AesDecrypt("ll%2fZKU%2bhK5pBYSPzebhYZqWVp4Ag6xx25mbVfi3toMuRGlXpXUgu6JhycvLLPovG9gOEj4bJCPgvkoBL5TrM%2fg%3d%3d", _partnerKey, _partnerIV);
@@ -182,6 +176,12 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var actual = _utility.AesDecrypt("S3u0bxkN6q3DLPjywjH4j2Nc8lgPFwZVxBgfgPcq3dls97UaAVZxgXiX3V98XrF5nT5%2bS%2bhfnnYCT9JXIgxT3Q%3d%3d", _partnerKey, _partnerIV);
             var expected = "4uerjhy1ls17|2|3f8d88d48189429fdc2908d97e57650f4uerjhy1ls17|53";
             Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public async Task LogoutAsync()
+        {
+            _ = await _client.LogoutAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, "4ucmqplxb029").ConfigureAwait(false);
         }
     }
 }

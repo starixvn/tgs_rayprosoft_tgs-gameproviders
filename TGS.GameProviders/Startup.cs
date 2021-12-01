@@ -23,11 +23,11 @@ namespace TGS.GameProviders
 {
     public class Startup
     {
-        public Startup(
-            IConfiguration configuration)
-            => Configuration = configuration;
-
         public IConfiguration Configuration { get; }
+
+        public Startup(
+                    IConfiguration configuration)
+            => Configuration = configuration;
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
@@ -190,10 +190,9 @@ namespace TGS.GameProviders
                 .AddAutoMapper(config =>
                 {
                     config.AddProfile<GameUrlMapping>();
-                    config.AddProfile<KickPlayerMapping>();
-                    config.AddProfile<PlayerBalanceMapping>();
                     config.AddProfile<PlayerFundMapping>();
                     config.AddProfile<PlayerFundCheckingMapping>();
+                    config.AddProfile<RoundDetailMapping>();
                 });
 
             services

@@ -40,8 +40,8 @@ namespace TGS.GameProviders.Services.WMCasino
             return isCultureCode ? gameProviderCultureCode : "en_US";
         }
 
-        public async ValueTask<GetPlayer> GetPlayerAsync(string playerCode)
-            => await _playerRepository.GetPlayerAsync(playerCode).ConfigureAwait(false);
+        public async ValueTask<PlayerModel> GetPlayerAsync(string playerCode)
+            => await _playerRepository.GetAsync(playerCode).ConfigureAwait(false);
 
         public async ValueTask<WMCasinoConfiguration> GetSettingConfigurationAsync()
                             => await _settingRepository

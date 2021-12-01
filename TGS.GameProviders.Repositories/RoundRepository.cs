@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.Rounds;
+using TGS.GameProviders.Domains;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories
@@ -11,70 +12,128 @@ namespace TGS.GameProviders.Repositories
     internal class RoundRepository : IRoundRepository
     {
         private readonly BetContext _context;
-        private readonly IMapper _mapper;
 
         public RoundRepository(
-            BetContext context,
-            IMapper mapper
+            BetContext context
             )
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<GetRound?> GetRoundAsync(Guid RoundId)
-        {
-            var round = await _context.Rounds.FirstOrDefaultAsync(x => x.Id == RoundId).ConfigureAwait(false);
-            if (round == null)
-            {
-                return null;
-            }
-            var roundDetail = await _context.RoundDetails.FirstOrDefaultAsync(x => x.RoundId == round.Id).ConfigureAwait(false);
+        public Task<RoundModel> GetAsync(Guid roundId)
+            => (from round in _context.Rounds.AsQueryable()
+                join roundDetail in _context.RoundDetails.AsQueryable()
+                on round.Id equals roundDetail.RoundId
+                into roundDetailData
+                from data in roundDetailData.DefaultIfEmpty()
+                where round.Id == roundId
+                select new RoundModel(
+                    round.Id,
+                    round.ExternalRoundId,
+                    round.GameProviderId,
+                    round.PlayerCode,
+                    round.GameId,
+                    round.CurrencyCode,
+                    (RoundStatus)round.Status,
+                    round.GameProviderConfigurationId,
+                    round.WalletId,
+                    round.CreatedOn,
+                    round.ClosedOn,
+                    round.UpdatedOn,
+                    round.BrandId,
+                    round.ExternalCreatedOn,
+                    round.ExternalClosedOn,
+                    round.BetAmount,
+                    round.ValidBetAmount,
+                    round.SettleAmount,
+                    round.Commission,
+                    round.Turnover,
+                    round.WinLoss,
+                    round.TieBetAdjustment,
+                    (ClientRoundStatus)round.ClientStatus,
+                    round.ReopenTurnoverAdjustment,
+                    round.ReopenedOn,
+                    round.EffectiveBettingPercentage,
+                    data.AdditionalData
+                    )).FirstOrDefaultAsync();
 
-            var data = _mapper.Map<GetRound>(round);
+        public Task<RoundModel> GetAsync(Guid gameProviderId, string externalRoundId, int gameId)
+            => (from round in _context.Rounds.AsQueryable()
+                join roundDetail in _context.RoundDetails.AsQueryable()
+                on round.Id equals roundDetail.RoundId
+                into roundDetailData
+                from data in roundDetailData.DefaultIfEmpty()
+                where round.GameProviderId == gameProviderId
+                && round.ExternalRoundId == externalRoundId
+                && round.GameId == gameId
+                select new RoundModel(
+                    round.Id,
+                    round.ExternalRoundId,
+                    round.GameProviderId,
+                    round.PlayerCode,
+                    round.GameId,
+                    round.CurrencyCode,
+                    (RoundStatus)round.Status,
+                    round.GameProviderConfigurationId,
+                    round.WalletId,
+                    round.CreatedOn,
+                    round.ClosedOn,
+                    round.UpdatedOn,
+                    round.BrandId,
+                    round.ExternalCreatedOn,
+                    round.ExternalClosedOn,
+                    round.BetAmount,
+                    round.ValidBetAmount,
+                    round.SettleAmount,
+                    round.Commission,
+                    round.Turnover,
+                    round.WinLoss,
+                    round.TieBetAdjustment,
+                    (ClientRoundStatus)round.ClientStatus,
+                    round.ReopenTurnoverAdjustment,
+                    round.ReopenedOn,
+                    round.EffectiveBettingPercentage,
+                    data.AdditionalData
+                    )).FirstOrDefaultAsync();
 
-            data.AdditionalData = roundDetail!.AdditionalData;
-
-            return data;
-        }
-
-        public async Task<GetRound?> GetRoundAsync(Guid gameProviderId, string externalRoundId, int gameId)
-        {
-            var round = await _context.Rounds.FirstOrDefaultAsync(x =>
-            x.GameProviderId == gameProviderId
-            && x.ExternalRoundId == externalRoundId
-            && x.GameId == gameId).ConfigureAwait(false);
-            if (round == null)
-            {
-                return null;
-            }
-            var roundDetail = await _context.RoundDetails.FirstOrDefaultAsync(x => x.RoundId == round.Id).ConfigureAwait(false);
-
-            var data = _mapper.Map<GetRound>(round);
-
-            data.AdditionalData = roundDetail!.AdditionalData;
-
-            return data;
-        }
-
-        public async Task<GetRound?> GetRoundAsync(Guid gameProviderId, string externalRoundId, int gameId, string playerCode)
-        {
-            var round = await _context.Rounds.FirstOrDefaultAsync(x =>
-            x.GameProviderId == gameProviderId
-            && x.ExternalRoundId == externalRoundId
-            && x.GameId == gameId
-            && x.PlayerCode == playerCode).ConfigureAwait(false);
-            if (round == null)
-            {
-                return null;
-            }
-            var roundDetail = await _context.RoundDetails.FirstOrDefaultAsync(x => x.RoundId == round.Id).ConfigureAwait(false);
-
-            var data = _mapper.Map<GetRound>(round);
-
-            data.AdditionalData = roundDetail!.AdditionalData;
-
-            return data;
-        }
+        public Task<RoundModel> GetAsync(Guid gameProviderId, string externalRoundId, int gameId, string playerCode)
+            => (from round in _context.Rounds.AsQueryable()
+                join roundDetail in _context.RoundDetails.AsQueryable()
+                on round.Id equals roundDetail.RoundId
+                into roundDetailData
+                from data in roundDetailData.DefaultIfEmpty()
+                where round.GameProviderId == gameProviderId
+                && round.ExternalRoundId == externalRoundId
+                && round.GameId == gameId
+                && round.PlayerCode == playerCode
+                select new RoundModel(
+                    round.Id,
+                    round.ExternalRoundId,
+                    round.GameProviderId,
+                    round.PlayerCode,
+                    round.GameId,
+                    round.CurrencyCode,
+                    (RoundStatus)round.Status,
+                    round.GameProviderConfigurationId,
+                    round.WalletId,
+                    round.CreatedOn,
+                    round.ClosedOn,
+                    round.UpdatedOn,
+                    round.BrandId,
+                    round.ExternalCreatedOn,
+                    round.ExternalClosedOn,
+                    round.BetAmount,
+                    round.ValidBetAmount,
+                    round.SettleAmount,
+                    round.Commission,
+                    round.Turnover,
+                    round.WinLoss,
+                    round.TieBetAdjustment,
+                    (ClientRoundStatus)round.ClientStatus,
+                    round.ReopenTurnoverAdjustment,
+                    round.ReopenedOn,
+                    round.EffectiveBettingPercentage,
+                    data.AdditionalData
+                    )).FirstOrDefaultAsync();
     }
 }

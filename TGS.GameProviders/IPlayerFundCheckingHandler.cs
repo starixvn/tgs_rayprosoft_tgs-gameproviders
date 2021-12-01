@@ -8,6 +8,7 @@ namespace TGS.GameProviders
 {
     public interface IPlayerFundCheckingHandler<TQuery, TRequest> where TQuery : PlayerFundCheckingQuery
     {
+        [HttpPost("PlayerFundChecking")]
         ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync([FromServices] IGetService<TQuery, PlayerFundCheckingResult> getService, TRequest request);
     }
 }

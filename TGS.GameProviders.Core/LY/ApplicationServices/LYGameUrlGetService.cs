@@ -39,13 +39,13 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
 
             if (command.GameType != GameType.CardGameLobby)
             {
-                var getGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
+                var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
                 if (getGame != null)
                 {
-                    if (getGame.Type != GameType.CardGameLobby)
+                    if (getGame.GameType != GameType.CardGameLobby)
                     {
-                        externalID = Convert.ToInt32(getGame.ExternalId);
+                        externalID = Convert.ToInt32(getGame.GameExternalId);
                     }
                 }
             }

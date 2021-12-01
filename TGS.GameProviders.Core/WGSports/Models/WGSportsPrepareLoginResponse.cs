@@ -6,6 +6,6 @@ namespace TGS.GameProviders.Core.WGSports.Models
     public record WGSportsPrepareLoginResponse : WGSportsResponse
     {
         [JsonPropertyName("Token")]
-        public string Token { get; init; }
+        public string Token { get; init; } = default!;
     }
 }
