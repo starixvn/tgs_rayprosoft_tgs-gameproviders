@@ -17,8 +17,8 @@ namespace TGS.GameProviders.ApiClients.Saba
 {
     internal class SabaApiClient : ISabaApiClient
     {
-        private readonly ILogger<SabaApiClient> _logger;
         private readonly HttpClient _client;
+        private readonly ILogger<SabaApiClient> _logger;
         private readonly ITgsLog _tgsLog;
 
         public SabaApiClient(
@@ -60,6 +60,18 @@ namespace TGS.GameProviders.ApiClients.Saba
                 "/api/GetSabaUrl",
                 parameters,
                 "GetSabaUrl");
+        }
+
+        public ValueTask<SabaKickUserResponse> KickUserAsync(Uri apiUrl, SabaKickUserRequest request)
+        {
+            var value = JsonSerializer.Serialize(request);
+            var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(value);
+
+            return PostAsync<SabaKickUserResponse>(
+                apiUrl,
+                "/api/KickUser",
+                parameters,
+                "KickUser");
         }
 
         private async ValueTask<TResponse> PostAsync<TResponse>(

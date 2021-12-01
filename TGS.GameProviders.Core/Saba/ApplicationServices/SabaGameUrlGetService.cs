@@ -12,20 +12,23 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
 {
     internal class SabaGameUrlGetService : IGetService<SabaGameUrlQuery, GameUrlResult>
     {
-        private readonly ILogger<SabaGameUrlGetService> _logger;
-        private readonly ISabaService _service;
-        private readonly ISabaGamePlayer _playerService;
         private readonly ISabaApiClient _client;
+        private readonly ILogger<SabaGameUrlGetService> _logger;
+        private readonly ISabaGamePlayer _playerService;
+        private readonly ISabaService _service;
+        private readonly ISabaUtility _utility;
 
         public SabaGameUrlGetService(
             ILogger<SabaGameUrlGetService> logger,
             ISabaService service,
             ISabaGamePlayer playerService,
+            ISabaUtility utility,
             ISabaApiClient client)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
+            _utility = utility ?? throw new ArgumentNullException(nameof(utility));
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
@@ -37,18 +40,18 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
             var response = await GetGameUrlAsync(gameProviderId, configuration, query)
                 .ConfigureAwait(false);
 
-            if (response is null || response.Code is not SabaGetGameUrlApiError.Ok)
+            if (response is null || response.ErrorCode is not SabaGetGameUrlApiError.Ok)
             {
                 return null;
             }
 
-            var cultureCode = await _service
+            var culture = await _service
                 .GetGameProviderLanguageCodeAsync(gameProviderId, query.Language)
                 .ConfigureAwait(false);
 
             var url = response.Url
                 .AppendQueryString($"tsId={query.LoginRecordId}")
-                .AppendQueryString($"lang={cultureCode}");
+                .AppendQueryString($"lang={culture}");
 
             return new GameUrlResult
             {
@@ -61,7 +64,7 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
             var isTestEnv = _service.IsTestEnvironment(configuration.TestEnvironments, query.EnvironmentName);
 
             var playerCode = query.PlayerCode;
-            var playerId = isTestEnv ? $"{playerCode}_test" : playerCode;
+            var playerId = _utility.ToSabaPlayerId(playerCode, isTestEnv);
 
             var platform = query.PlatformType == PlatformType.Mobile ? "2" : "1";
 
@@ -74,7 +77,7 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
 
             var response = await _client.GetGameUrlAsync(configuration.ApiUrl, request).ConfigureAwait(false);
 
-            if (response.Code is SabaGetGameUrlApiError.Ok or not SabaGetGameUrlApiError.MemberNotExist)
+            if (response.ErrorCode is SabaGetGameUrlApiError.Ok or not SabaGetGameUrlApiError.MemberNotExist)
             {
                 return response;
             }

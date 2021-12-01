@@ -111,7 +111,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services
                 .AddTransient<ISabaService, SabaService>()
-                .AddTransient<ISabaGamePlayer, SabaGamePlayer>();
+                .AddTransient<ISabaGamePlayer, SabaGamePlayer>()
+                .AddTransient<ISabaUtility, SabaUtility>();
 
             return services;
         }

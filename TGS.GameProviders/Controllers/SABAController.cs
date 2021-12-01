@@ -14,7 +14,8 @@ namespace TGS.GameProviders.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class SABAController : ControllerBase,
-        IGameUrlHandler<SabaGameUrlQuery>
+        IGameUrlHandler<SabaGameUrlQuery>,
+        IKickPlayerHandler<SabaKickPlayerCommand>
     {
         private readonly ILogger<SABAController> _logger;
         private readonly IMapper _mapper;
@@ -70,5 +71,26 @@ namespace TGS.GameProviders.Controllers
 
             return result == null ? null : _mapper.Map<GameUrlResponse>(result);
         }
+
+        /// <summary>
+        /// Kicks the player asynchronous.
+        /// </summary>
+        /// <param name="commandService">The command service.</param>
+        /// <param name="playerCode">The player code.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Delete saba/kickplayer/4ucmqplxb029
+        /// </remarks>
+        [HttpDelete("kickplayer/{playerCode}")]
+        public ValueTask KickPlayerAsync(
+            [FromServices] ICommandService<SabaKickPlayerCommand> commandService,
+            string playerCode)
+            => commandService.ExecuteAsync(new SabaKickPlayerCommand
+            {
+                PlayerCode = playerCode,
+                EnvironmentName = _webHostEnvironment.EnvironmentName
+            });
     }
 }

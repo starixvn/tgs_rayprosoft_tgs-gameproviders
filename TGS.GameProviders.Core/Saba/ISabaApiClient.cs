@@ -6,10 +6,6 @@ namespace TGS.GameProviders.Core.Saba
 {
     public interface ISabaApiClient
     {
-        ValueTask<SabaGameUrlResponse> GetGameUrlAsync(
-            Uri apiUrl,
-            SabaGameUrlRequest request);
-
         ValueTask<SabaCreateMemberResponse> CreateMemberAsync(
             Uri apiUrl,
             SabaCreateMemberRequest request);
@@ -17,5 +13,13 @@ namespace TGS.GameProviders.Core.Saba
         ValueTask<SabaGetRoundHistoryResponse> GetBetDetailByTransIdAsync(
             Uri apiUrl,
             SabaGetRoundHistoryRequest request);
+
+        ValueTask<SabaGameUrlResponse> GetGameUrlAsync(
+                            Uri apiUrl,
+            SabaGameUrlRequest request);
+
+        ValueTask<SabaKickUserResponse> KickUserAsync(
+            Uri apiUrl,
+            SabaKickUserRequest request);
     }
 }
