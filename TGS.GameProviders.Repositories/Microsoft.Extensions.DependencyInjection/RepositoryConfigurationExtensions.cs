@@ -12,8 +12,10 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<IServiceProvider, DbContextOptionsBuilder> efConfigure)
         {
             services.AddDbContext<BetContext>(efConfigure);
+
             return services
-                .AddTransient<IRoundRepository, RoundRepository>();
+                .AddTransient<IRoundRepository, RoundRepository>()
+                .AddTransient<IGameActionRepository, GameActionRepository>();
         }
 
         public static IServiceCollection AddDbTgsRepository(this IServiceCollection services,

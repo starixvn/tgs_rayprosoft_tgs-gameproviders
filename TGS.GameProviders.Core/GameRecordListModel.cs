@@ -3,7 +3,7 @@ using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core
 {
-    public record GameRecordListModle
+    public record GameRecordListModel
     {
         public string GameProviderCode { get; init; }
         public Guid GameProviderId { get; init; }

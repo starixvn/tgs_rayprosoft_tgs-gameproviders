@@ -3,6 +3,6 @@
     public record GameRecordListResult
     {
         public bool Success { get; init; }
-        public GameRecordListModle[] Datas { get; init; }
+        public GameRecordListModel[] Datas { get; init; }
     }
 }
