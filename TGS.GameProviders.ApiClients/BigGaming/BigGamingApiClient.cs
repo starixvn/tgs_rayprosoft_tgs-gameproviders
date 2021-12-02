@@ -209,6 +209,5 @@ namespace TGS.GameProviders.ApiClients.BigGaming
                 return hash.ToBase64String();
             }
         }
-
     }
 }
