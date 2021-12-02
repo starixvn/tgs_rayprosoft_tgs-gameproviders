@@ -135,7 +135,7 @@ namespace TGS.GameProviders.Controllers
                 RoundId = roundId,
                 Language = language
             }).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
     }
 }

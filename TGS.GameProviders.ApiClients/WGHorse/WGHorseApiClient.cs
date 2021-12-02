@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -19,24 +21,21 @@ namespace TGS.GameProviders.ApiClients.WGHorse
         private readonly HttpClient _client;
         private readonly ILogger<WGHorseApiClient> _logger;
         private readonly ITgsLog _tgsLog;
-        private readonly IWGHorseUtility _utility;
 
         public WGHorseApiClient(
             HttpClient client,
             ILogger<WGHorseApiClient> logger,
-            ITgsLog tgsLog,
-            IWGHorseUtility utility)
+            ITgsLog tgsLog)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
-            _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         }
 
         public ValueTask<WGHorseResponse> AccessMoneyAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseAccessMoneyRequest source)
         {
             var data = $"{source.PlayerCode}|{ (int)source.AmountType}|{source.OrderId}|{source.Amount}";
-            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=AccessMoney&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
             return GetAsync<WGHorseAccessMoneyRequest, WGHorseResponse>(url, source, "AccessMoney");
@@ -45,7 +44,7 @@ namespace TGS.GameProviders.ApiClients.WGHorse
         public ValueTask<WGHorseResponse> AccessMoneyQueryAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseAccessMoneyQueryRequest source)
         {
             var data = source.OrderId;
-            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=AccessMoneyQuery&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
             return GetAsync<WGHorseAccessMoneyQueryRequest, WGHorseResponse>(url, source, "AccessMoneyQuery");
@@ -54,7 +53,7 @@ namespace TGS.GameProviders.ApiClients.WGHorse
         public ValueTask<WGHorseGetBalanceResponse> GetBalanceAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseGetBalanceRequest source)
         {
             var data = source.PlayerCode;
-            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=GetBalance&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
             return GetAsync<WGHorseGetBalanceRequest, WGHorseGetBalanceResponse>(url, source, "Balance");
@@ -63,7 +62,7 @@ namespace TGS.GameProviders.ApiClients.WGHorse
         public ValueTask<WGHorseGameRecordResponse> GetGameRecordAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseGameRecordRequest source)
         {
             var data = $"|{source.StartTime:yyyy-MM-dd}|{source.EndTime:yyyy-MM-dd}|{source.PageIndex}|{source.PageSize}";
-            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=ShowBetList&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
             return GetAsync<WGHorseGameRecordRequest, WGHorseGameRecordResponse>(url, source, "GameRecord");
@@ -79,7 +78,7 @@ namespace TGS.GameProviders.ApiClients.WGHorse
         public ValueTask<WGHorsePrepareLoginResponse> GetPrepareLoginAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorsePrepareLoginRequest source)
         {
             var data = $"{source.Timestamp}|{source.PlayerCode}|{source.PlayerNickname}|{source.CurrencyCode}";
-            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=PrepareLogin&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
             return GetAsync<WGHorsePrepareLoginRequest, WGHorsePrepareLoginResponse>(url, source, "PrepareLogin");
@@ -88,7 +87,7 @@ namespace TGS.GameProviders.ApiClients.WGHorse
         public ValueTask<WGHorseResponse> LogoutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode)
         {
             var data = $"{playerCode}";
-            var dataEncrypt = _utility.AesEncrypt(data, partnerKey, partnerIV);
+            var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=Logout&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
             return GetAsync<string, WGHorseResponse>(url, playerCode, "Logout");
@@ -149,6 +148,38 @@ namespace TGS.GameProviders.ApiClients.WGHorse
             }
 
             return response;
+        }
+
+        private string GetAesEncrypt(string data, string secretKey, string secretIV)
+        {
+            byte[] keyBytes = Encoding.UTF8.GetBytes(secretKey);
+            byte[] ivBytes = Encoding.UTF8.GetBytes(secretIV);
+            byte[] dataBytes = Encoding.UTF8.GetBytes(data);
+            using (var aes = Aes.Create())
+            {
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
+                aes.KeySize = 128;
+                aes.BlockSize = 128;
+                aes.Key = keyBytes;
+                aes.IV = ivBytes;
+
+                byte[] encrypted;
+                using (var cryptoTransform = aes.CreateEncryptor())
+                {
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
+                        {
+                            cryptoStream.Write(dataBytes, 0, dataBytes.Length);
+                            cryptoStream.FlushFinalBlock();
+                            encrypted = memoryStream.ToArray();
+                            var base64Str = Convert.ToBase64String(encrypted, 0, encrypted.Length);
+                            return System.Web.HttpUtility.UrlEncode(base64Str);
+                        }
+                    }
+                }
+            }
         }
     }
 }

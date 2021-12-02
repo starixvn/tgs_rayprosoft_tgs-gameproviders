@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -20,18 +21,15 @@ namespace TGS.GameProviders.ApiClients.TCG
         private readonly HttpClient _client;
         private readonly ILogger<TCGApiClient> _logger;
         private readonly ITgsLog _tgsLog;
-        private readonly ITCGUtility _utility;
 
         public TCGApiClient(
             HttpClient client,
             ILogger<TCGApiClient> logger,
-            ITgsLog tgsLog,
-            ITCGUtility utility)
+            ITgsLog tgsLog)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
-            _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         }
 
         public ValueTask<TCGKickOutLottoPlayerResponse> KickOutLottoPlayerAsync(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TCGKickOutLottoPlayerRequest request)
@@ -59,8 +57,8 @@ namespace TGS.GameProviders.ApiClients.TCG
             var responseMessage = default(string);
             var response = default(TResponse);
             var jsonString = JsonSerializer.Serialize(request);
-            var encryptedParams = _utility.DESCEncrypt(jsonString, desKey);
-            var sign = _utility.GetHash256(encryptedParams, sha256Key);
+            var encryptedParams = GetDESCEncrypt(jsonString, desKey);
+            var sign = GetHash256(encryptedParams, sha256Key);
             var data =
                 "merchant_code=" + WebUtility.UrlEncode(merchantCode)
                 + "&params=" + WebUtility.UrlEncode(encryptedParams)
@@ -114,6 +112,62 @@ namespace TGS.GameProviders.ApiClients.TCG
             }
 
             return response;
+        }
+
+        private string DESCDecrypt(string data, string key)
+        {
+            if (string.IsNullOrEmpty(data))
+                return null;
+
+            Byte[] toEncryptArray = Convert.FromBase64String(data);
+
+            using (var dESCrypto = DES.Create())
+            {
+                dESCrypto.Key = Encoding.UTF8.GetBytes(key);
+                dESCrypto.Mode = CipherMode.ECB;
+                dESCrypto.Padding = PaddingMode.PKCS7;
+                ICryptoTransform cTransform = dESCrypto.CreateDecryptor();
+                var resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+                return Encoding.UTF8.GetString(resultArray);
+            }
+        }
+
+        private string GetDESCEncrypt(string data, string key)
+        {
+            if (string.IsNullOrEmpty(data))
+                return null;
+
+            byte[] dataBytes = Encoding.UTF8.GetBytes(data);
+
+            using (var des = DES.Create())
+            {
+                des.Key = Encoding.UTF8.GetBytes(key);
+                des.Mode = CipherMode.ECB;
+                des.Padding = PaddingMode.PKCS7;
+                using (var cryptoTransform = des.CreateEncryptor())
+                {
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
+                        {
+                            cryptoStream.Write(dataBytes, 0, dataBytes.Length);
+                            cryptoStream.FlushFinalBlock();
+                            var encrypted = memoryStream.ToArray();
+                            return Convert.ToBase64String(encrypted, 0, encrypted.Length);
+                        }
+                    }
+                }
+            }
+        }
+
+        private string GetHash256(string data, string hash_key)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] inputBytes = Encoding.UTF8.GetBytes(data + hash_key);
+                byte[] outputBytes = sha256.ComputeHash(inputBytes);
+                return BitConverter.ToString(outputBytes).Replace("-", "").ToLower();
+            }
         }
     }
 }

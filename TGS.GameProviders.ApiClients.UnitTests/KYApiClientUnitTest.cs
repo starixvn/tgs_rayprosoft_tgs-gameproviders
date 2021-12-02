@@ -22,16 +22,14 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         private readonly Uri _apiRecordUrl = new Uri("https://wc1-record.hddv1.com/getRecordHandle");
         private readonly Uri _apiUrl = new Uri("https://wc1-api.hddv1.com/channelHandle");
         private readonly IKYApiClient _client;
-        private readonly IKYUtility _utility;
 
         public KYApiClientUnitTest()
         {
-            _utility = new KYUtility();
             var client = new HttpClient();
             var faceLog = NullLogger<KYApiClient>.Instance;
             var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<IKYApiClient>();
-            //_client = new KYApiClient(client, faceLog, faceTgsLog, _utility);
+            //_client = new KYApiClient(client, faceLog, faceTgsLog);
         }
 
         [Test()]
