@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Core.Repositories.Models.Brand;
 using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.Repositories.Models.Player;
@@ -10,8 +9,6 @@ namespace TGS.GameProviders.Core.IMESports
 {
     public interface IIMESportsService
     {
-        ValueTask<BrandModel> GetBrandAsync(Guid brandId);
-
         ValueTask<GameModel> GetGameAsync(int gameId);
 
         ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId);

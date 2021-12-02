@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core.IMESports;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Brand;
 using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.Repositories.Models.Player;
@@ -14,7 +13,6 @@ namespace TGS.GameProviders.Services.IMESports
 {
     internal class IMESportsService : IIMESportsService
     {
-        private readonly IBrandRepository _brandRepository;
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameRepository _gameRepository;
         private readonly ILogger<IMESportsService> _logger;
@@ -26,19 +24,14 @@ namespace TGS.GameProviders.Services.IMESports
             ISettingRepository settingRepository,
             IGameProviderRepository gameProviderRepository,
             IGameRepository gameRepository,
-            IBrandRepository brandRepository,
             IPlayerRepository playerRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
-            _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
         }
-
-        public ValueTask<BrandModel> GetBrandAsync(Guid brandId)
-            => _brandRepository.GetAsync(brandId);
 
         public async ValueTask<GameModel> GetGameAsync(int gameId)
             => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);

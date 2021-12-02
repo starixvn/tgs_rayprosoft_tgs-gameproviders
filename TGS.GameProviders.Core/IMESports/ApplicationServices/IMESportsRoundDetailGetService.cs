@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.IMESports.Models;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Brand;
+using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -19,12 +19,12 @@ namespace TGS.GameProviders.Core.IMESports.ApplicationServices
     {
         private static readonly string _TimeFormat = "yyyy-MM-dd HH.mm.ss";
 
-        private readonly ILogger<IMESportsRoundDetailGetService> _logger;
-        private readonly IRoundRepository _roundRepository;
-        private readonly IIMESportsService _service;
-        private readonly IIMESportsMerchantMapper _merchantMapper;
         private readonly IIMESportsApiClient _client;
         private readonly JsonSerializerOptions _jsonSerialzierOptions;
+        private readonly ILogger<IMESportsRoundDetailGetService> _logger;
+        private readonly IIMESportsMerchantMapper _merchantMapper;
+        private readonly IRoundRepository _roundRepository;
+        private readonly IIMESportsService _service;
 
         public IMESportsRoundDetailGetService(
             ILogger<IMESportsRoundDetailGetService> logger,
@@ -67,15 +67,15 @@ namespace TGS.GameProviders.Core.IMESports.ApplicationServices
                 throw new Exception($"This game Id could not be found.{roundModel.GameId}");
             }
 
-            var brandModel = await _service.GetBrandAsync(roundModel.BrandId).ConfigureAwait(false);
-            if (brandModel == null)
+            var playerModel = await _service.GetPlayerAsync(roundModel.PlayerCode).ConfigureAwait(false);
+            if (playerModel == null)
             {
-                throw new Exception($"This brand Id could not be found.{roundModel.BrandId}");
+                throw new Exception($"This player could not be found.{roundModel.PlayerCode}");
             }
 
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            var result = await GetRoundResultAsync(configuration, roundModel, brandModel, query.Language).ConfigureAwait(false);
+            var result = await GetRoundResultAsync(configuration, roundModel, playerModel, query.Language).ConfigureAwait(false);
 
             var value = result == null ?
                 null :
@@ -100,13 +100,16 @@ namespace TGS.GameProviders.Core.IMESports.ApplicationServices
             };
         }
 
+        private IMESportsHistoryResult GetHistoryResult(IEnumerable<IMESportsHistoryResult> results, string transactionId)
+            => results.FirstOrDefault(r => r.BetId == transactionId);
+
         private async ValueTask<IMESportsHistoryResult> GetRoundResultAsync(
-            IMESportsConfiguration configuration,
+                    IMESportsConfiguration configuration,
             RoundModel roundModel,
-            BrandModel brandModel,
+            PlayerModel playerModel,
             string cultureCode)
         {
-            var merchant = _merchantMapper.GetBrandMerchant(configuration.BrandMerchants, brandModel.Code);
+            var merchant = _merchantMapper.GetBrandMerchant(configuration.BrandMerchants, playerModel.BrandCode);
 
             var gameProviderCultureCode = await _service
                 .GetGameProviderLanguageCodeAsync(roundModel.GameProviderId, cultureCode)
@@ -149,8 +152,5 @@ namespace TGS.GameProviders.Core.IMESports.ApplicationServices
 
             return result;
         }
-
-        private IMESportsHistoryResult GetHistoryResult(IEnumerable<IMESportsHistoryResult> results, string transactionId)
-            => results.FirstOrDefault(r => r.BetId == transactionId);
     }
 }
