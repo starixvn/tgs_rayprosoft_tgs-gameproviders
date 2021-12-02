@@ -93,6 +93,38 @@ namespace TGS.GameProviders.ApiClients.WGHorse
             return GetAsync<string, WGHorseResponse>(url, playerCode, "Logout");
         }
 
+        private string GetAesEncrypt(string data, string secretKey, string secretIV)
+        {
+            byte[] keyBytes = Encoding.UTF8.GetBytes(secretKey);
+            byte[] ivBytes = Encoding.UTF8.GetBytes(secretIV);
+            byte[] dataBytes = Encoding.UTF8.GetBytes(data);
+            using (var aes = Aes.Create())
+            {
+                aes.Mode = CipherMode.CBC;
+                aes.Padding = PaddingMode.PKCS7;
+                aes.KeySize = 128;
+                aes.BlockSize = 128;
+                aes.Key = keyBytes;
+                aes.IV = ivBytes;
+
+                byte[] encrypted;
+                using (var cryptoTransform = aes.CreateEncryptor())
+                {
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
+                        {
+                            cryptoStream.Write(dataBytes, 0, dataBytes.Length);
+                            cryptoStream.FlushFinalBlock();
+                            encrypted = memoryStream.ToArray();
+                            var base64Str = Convert.ToBase64String(encrypted, 0, encrypted.Length);
+                            return System.Web.HttpUtility.UrlEncode(base64Str);
+                        }
+                    }
+                }
+            }
+        }
+
         private async ValueTask<TResult> GetAsync<TSource, TResult>(Uri url, TSource request, string logPrefix)
         {
             logPrefix = $"{nameof(WGHorseApiClient).ToLower()}.{logPrefix}";
@@ -148,38 +180,6 @@ namespace TGS.GameProviders.ApiClients.WGHorse
             }
 
             return response;
-        }
-
-        private string GetAesEncrypt(string data, string secretKey, string secretIV)
-        {
-            byte[] keyBytes = Encoding.UTF8.GetBytes(secretKey);
-            byte[] ivBytes = Encoding.UTF8.GetBytes(secretIV);
-            byte[] dataBytes = Encoding.UTF8.GetBytes(data);
-            using (var aes = Aes.Create())
-            {
-                aes.Mode = CipherMode.CBC;
-                aes.Padding = PaddingMode.PKCS7;
-                aes.KeySize = 128;
-                aes.BlockSize = 128;
-                aes.Key = keyBytes;
-                aes.IV = ivBytes;
-
-                byte[] encrypted;
-                using (var cryptoTransform = aes.CreateEncryptor())
-                {
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
-                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
-                        {
-                            cryptoStream.Write(dataBytes, 0, dataBytes.Length);
-                            cryptoStream.FlushFinalBlock();
-                            encrypted = memoryStream.ToArray();
-                            var base64Str = Convert.ToBase64String(encrypted, 0, encrypted.Length);
-                            return System.Web.HttpUtility.UrlEncode(base64Str);
-                        }
-                    }
-                }
-            }
         }
     }
 }

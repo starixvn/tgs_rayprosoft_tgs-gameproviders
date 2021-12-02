@@ -16,9 +16,9 @@ namespace TGS.GameProviders.Core.AsiaGaming
 
         ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
 
-        ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode);
-
         ValueTask<Guid> GetGameProviderIdAsync();
+
+        ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode);
 
         ValueTask<decimal?> GetPlayerBalanceAsync(string playerCode);
 

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TGS.GameProviders.Core.KY.Models.Commons
+namespace TGS.GameProviders.Core.KY.Models
 {
     public record KYGameRecordList
     {

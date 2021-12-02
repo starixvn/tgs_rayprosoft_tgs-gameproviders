@@ -165,6 +165,41 @@ namespace TGS.GameProviders.ApiClients.LY
             return GetAPIAsync<LYKickResponse>(apiUrl, action, apiLYRequest, "Kick");
         }
 
+        private int GetAction(LYAction action)
+        {
+            return LYActionMapper.Mapper.Where(x => x.Key == action).First().Value;
+        }
+
+        private string GetAesEncrypt(string data, string key)
+        {
+            if (string.IsNullOrEmpty(data))
+                return null;
+
+            var dataByte = Encoding.UTF8.GetBytes(data);
+
+            using (var aes = Aes.Create())
+            {
+                aes.Mode = CipherMode.ECB;
+                aes.Padding = PaddingMode.PKCS7;
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.GenerateIV();
+                using (var cryptoTransform = aes.CreateEncryptor())
+                {
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
+                        {
+                            cryptoStream.Write(dataByte, 0, dataByte.Length);
+                            cryptoStream.FlushFinalBlock();
+                            var encrypted = memoryStream.ToArray();
+                            var base64Str = Convert.ToBase64String(encrypted, 0, encrypted.Length);
+                            return System.Web.HttpUtility.UrlEncode(base64Str);
+                        }
+                    }
+                }
+            }
+        }
+
         private async ValueTask<LYApiResponse<TData>> GetAPIAsync<TData>(Uri apiUrl, LYAction action, LYApiRequest request, string logPrefix)
         {
             logPrefix = $"{nameof(LYApiClient).ToLower() }.{logPrefix}";
@@ -224,48 +259,6 @@ namespace TGS.GameProviders.ApiClients.LY
             return response;
         }
 
-        private string GetAesEncrypt(string data, string key)
-        {
-            if (string.IsNullOrEmpty(data))
-                return null;
-
-            var dataByte = Encoding.UTF8.GetBytes(data);
-
-            using (var aes = Aes.Create())
-            {
-                aes.Mode = CipherMode.ECB;
-                aes.Padding = PaddingMode.PKCS7;
-                aes.Key = Encoding.UTF8.GetBytes(key);
-                aes.GenerateIV();
-                using (var cryptoTransform = aes.CreateEncryptor())
-                {
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
-                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
-                        {
-                            cryptoStream.Write(dataByte, 0, dataByte.Length);
-                            cryptoStream.FlushFinalBlock();
-                            var encrypted = memoryStream.ToArray();
-                            var base64Str = Convert.ToBase64String(encrypted, 0, encrypted.Length);
-                            return System.Web.HttpUtility.UrlEncode(base64Str);
-                        }
-                    }
-                }
-            }
-        }
-
-        private int GetAction(LYAction action)
-        {
-            return LYActionMapper.Mapper.Where(x => x.Key == action).First().Value;
-        }
-
-        private string GetPath<TRequest>(TRequest request, JsonSerializerOptions options = null)
-        {
-            var value = JsonSerializer.Serialize(request, options);
-            var items = JsonSerializer.Deserialize<Dictionary<string, object>>(value, options);
-            return string.Join("&", items.Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value)));
-        }
-
         private string GetHashMD5(string data)
         {
             using (var md5 = MD5.Create())
@@ -277,6 +270,13 @@ namespace TGS.GameProviders.ApiClients.LY
                     result += hash[i].ToString("x").PadLeft(2, '0');
                 return result;
             }
+        }
+
+        private string GetPath<TRequest>(TRequest request, JsonSerializerOptions options = null)
+        {
+            var value = JsonSerializer.Serialize(request, options);
+            var items = JsonSerializer.Deserialize<Dictionary<string, object>>(value, options);
+            return string.Join("&", items.Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value)));
         }
     }
 }

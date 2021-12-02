@@ -9,8 +9,8 @@ namespace TGS.GameProviders.Services.IMESports
 {
     internal class IMESportsGamePlayer : IIMESportsGamePlayer
     {
-        private readonly ILogger<IMESportsGamePlayer> _logger;
         private readonly IIMESportsApiClient _client;
+        private readonly ILogger<IMESportsGamePlayer> _logger;
 
         public IMESportsGamePlayer(
             ILogger<IMESportsGamePlayer> logger,

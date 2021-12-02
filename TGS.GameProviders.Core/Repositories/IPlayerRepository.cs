@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using TGS.GameProviders.Core.Repositories.Models.Player;
 
 namespace TGS.GameProviders.Core.Repositories
