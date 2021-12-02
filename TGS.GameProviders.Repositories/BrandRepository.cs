@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Brand;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Repositories.Entities;
 
 namespace TGS.GameProviders.Repositories
@@ -41,18 +39,5 @@ namespace TGS.GameProviders.Repositories
 
             return brand.Id;
         }
-
-        public async ValueTask<BrandModel?> GetAsync(Guid brandId)
-            => await _context.Brands
-                .Where(b => b.Id == brandId)
-                .Select(b => new BrandModel(
-                    b.Id,
-                    b.Code,
-                    b.Name,
-                    (BrandStatus)b.Status,
-                    b.Description,
-                    b.LicenseeId))
-                .FirstOrDefaultAsync()
-                .ConfigureAwait(false);
     }
 }
