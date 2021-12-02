@@ -3,6 +3,7 @@ using StackExchange.Redis;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Evolution;
+using TGS.GameProviders.Core.Habanero;
 using TGS.GameProviders.Core.IMESports;
 using TGS.GameProviders.Core.KY;
 using TGS.GameProviders.Core.LY;
@@ -19,6 +20,7 @@ using TGS.GameProviders.Core.WMCasino;
 using TGS.GameProviders.Services.AsiaGaming;
 using TGS.GameProviders.Services.BigGaming;
 using TGS.GameProviders.Services.Evolution;
+using TGS.GameProviders.Services.Habanero;
 using TGS.GameProviders.Services.IMESports;
 using TGS.GameProviders.Services.KY;
 using TGS.GameProviders.Services.LY;
@@ -113,6 +115,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<ISabaService, SabaService>()
                 .AddTransient<ISabaGamePlayer, SabaGamePlayer>()
                 .AddTransient<ISabaUtility, SabaUtility>();
+
+            services
+                .AddTransient<IHabaneroService, HabaneroService>();
 
             return services;
         }
