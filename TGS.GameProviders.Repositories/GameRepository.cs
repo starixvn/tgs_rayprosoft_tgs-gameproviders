@@ -21,7 +21,7 @@ namespace TGS.GameProviders.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public Task<GameModel> GetAsync(int gameId)
+        public Task<GameModel?> GetAsync(int gameId)
             => _context.Games
             .AsQueryable()
             .Where(x => x.Id == gameId)
@@ -47,7 +47,7 @@ namespace TGS.GameProviders.Repositories
                 ))
             .FirstOrDefaultAsync();
 
-        public Task<GameModel> GetAsync(Guid gameProviderId, string externalGameId)
+        public Task<GameModel?> GetAsync(Guid gameProviderId, string externalGameId)
             => _context.Games
             .AsQueryable()
             .Where(x => x.GameProviderId == gameProviderId && x.ExternalId == externalGameId)

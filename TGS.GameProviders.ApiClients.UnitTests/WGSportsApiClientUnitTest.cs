@@ -20,16 +20,14 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         private readonly string _partnerCode = "TA";
         private readonly string _partnerIV = "cba1238888888888";
         private readonly string _partnerKey = "abc1238888888888";
-        private readonly IWGSportsUtility _utility;
 
         public WGSportsApiClientUnitTest()
         {
-            _utility = new WGSportsUtility();
             var client = new HttpClient();
             var faceLog = NullLogger<WGSportsApiClient>.Instance;
             var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<IWGSportsApiClient>();
-            //_client = new WGSportsApiClient(client, faceLog, faceTgsLog, _utility);
+            //_client = new WGSportsApiClient(client, faceLog, faceTgsLog);
         }
 
         [Test]

@@ -21,16 +21,14 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         private readonly Uri _apiRecordUrl = new Uri("https://wc1-record.wwdlw78.com/getRecordHandle");
         private readonly Uri _apiUrl = new Uri("https://wc1-api.wwdlw78.com/channelHandle");
         private readonly ILYApiClient _client;
-        private readonly ILYUtility _utility;
 
         public LYApiClientUnitTest()
         {
-            _utility = new LYUtility();
             var client = new HttpClient();
             var faceLog = NullLogger<LYApiClient>.Instance;
             var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<ILYApiClient>();
-            //_client = new LYApiClient(client, faceLog, faceTgsLog, _utility);
+            _client = new LYApiClient(client, faceLog, faceTgsLog);
         }
 
         [Test]

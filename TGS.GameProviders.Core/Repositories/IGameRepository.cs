@@ -8,9 +8,9 @@ namespace TGS.GameProviders.Core.Repositories
 {
     public interface IGameRepository
     {
-        public Task<GameModel> GetAsync(int gameId);
+        public Task<GameModel?> GetAsync(int gameId);
 
-        public Task<GameModel> GetAsync(Guid gameProviderId, string externalGameId);
+        public Task<GameModel?> GetAsync(Guid gameProviderId, string externalGameId);
 
         public IAsyncEnumerable<GameModel> GetGameList(Guid gameProviderId);
 

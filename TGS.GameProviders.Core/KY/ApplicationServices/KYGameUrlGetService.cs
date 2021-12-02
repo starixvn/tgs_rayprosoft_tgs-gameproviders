@@ -52,7 +52,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
 
             var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
 
-            var orderId = $"{agentId}{dateTimeOffset.ToString("yyyyMMddHHmmssfff")}{command.PlayerCode}";
+            var orderId = $"{agentId}{dateTimeOffset:yyyyMMddHHmmssfff}{command.PlayerCode}";
 
             var data = new KYGameUrlRequest
             {

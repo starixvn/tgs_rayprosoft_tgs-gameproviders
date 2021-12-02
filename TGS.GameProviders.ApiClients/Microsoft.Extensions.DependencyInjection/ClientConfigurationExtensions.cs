@@ -37,17 +37,11 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddApiClients(this IServiceCollection services)
         {
-            services.AddScoped<IKYUtility, KYUtility>()
-                .AddScoped<IVRUtility, VRUtility>()
-                .AddScoped<IWGHorseUtility, WGHorseUtility>()
-                .AddScoped<IWGSportsUtility, WGSportsUtility>()
-                .AddScoped<ITCGUtility, TCGUtility>()
-                .AddScoped<ILYUtility, LYUtility>()
+            services
                 .AddScoped<IAsiaGamingUtility, AsiaGamingUtility>()
                 .AddScoped<IPragmaticPlayUtility, PragmaticPlayUtility>();
 
             services
-                .AddScoped<IBigGamingUtility, BigGamingUtility>()
                 .AddScoped<IBigGamingRoundDetailAnalyzeService, BigGamingRoundDetailAnalyzeService>();
 
             services

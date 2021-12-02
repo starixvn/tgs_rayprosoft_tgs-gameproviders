@@ -34,7 +34,7 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
             var agentId = await _service.GetAgentIdAsync(command.BrandCode, command.CurrencyCode).ConfigureAwait(false);
 
             var dateTimeOffset = _service.GetDateTimeOffsetTimeZone8();
-            var orderId = $"{agentId}{dateTimeOffset.ToString("yyyyMMddHHmmssfff")}{command.PlayerCode}";
+            var orderId = $"{agentId}{dateTimeOffset:yyyyMMddHHmmssfff}{command.PlayerCode}";
 
             var data = new LYFnudRequest
             {
