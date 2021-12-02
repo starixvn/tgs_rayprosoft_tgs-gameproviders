@@ -31,7 +31,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Get
         ///         {
         ///             "gameProviderCode": "ky",

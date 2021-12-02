@@ -6,7 +6,6 @@ using StackExchange.Redis;
 using TGS.GameProviders.Core.Skywind;
 using TGS.GameProviders.Core.Skywind.Models;
 using TGS.GameProviders.Domains;
-using TGS.GameProviders.Repositories;
 
 namespace TGS.GameProviders.Services.Skywind
 {

@@ -33,7 +33,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Get
         ///         {
         ///             "currencyCode": "CNY",
@@ -62,7 +62,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Get
         ///         {
         ///             "brandCode": "Default",
@@ -89,7 +89,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Get
         ///         {
         ///             "brandCode": "Default",
@@ -118,7 +118,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Get
         ///         {
         ///             "brandCode": "Default",
@@ -149,7 +149,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Get
         ///         {
         ///             "startTime": "2021-08-18T00:00:00+00:00",
@@ -175,7 +175,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Get
         ///         {
         ///             "isSettlement": true,
