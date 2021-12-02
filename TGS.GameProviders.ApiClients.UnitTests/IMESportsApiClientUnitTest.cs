@@ -87,6 +87,22 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 .ConfigureAwait(false);
         }
 
+        [Test]
+        public async Task GetRoundHistoryAsync()
+        {
+            var request = new IMESportsGetRoundHistoryRequest
+            {
+                MerchantCode = _merchantCode,
+                ProductWallet = _productWallet,
+                StartDate = "2021-11-26 18.46.44",
+                EndDate = "2021-11-26 18.49.44",
+                Page = 1,
+                Language = "EN"
+            };
+
+            var response = await _client.GetRoundHistoryAsync(_apiUrl, request);
+        }
+
         private string ToIMESportsPlayerId(string playerCode)
             => $"{_prefix}_{playerCode}";
     }
