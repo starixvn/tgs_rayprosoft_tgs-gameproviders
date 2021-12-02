@@ -2,7 +2,6 @@
 {
     public static class GameProviderType
     {
-        public const string MainWallet = "DEFAULT";
         public const string AllBet = "AB";
         public const string AsiaGaming = "AG";
         public const string BigGaming = "BG";
@@ -13,6 +12,7 @@
         public const string JDB = "JDB";
         public const string KY = "KY";
         public const string LY = "LY";
+        public const string MainWallet = "DEFAULT";
         public const string PragmaticPlay = "PP";
         public const string RedTiger = "RT";
         public const string Saba = "SABA";

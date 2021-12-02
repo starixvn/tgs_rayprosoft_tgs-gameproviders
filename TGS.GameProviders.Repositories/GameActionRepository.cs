@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.GameAction;
 using TGS.GameProviders.Domains;

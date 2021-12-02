@@ -50,6 +50,62 @@ namespace TGS.GameProviders.ApiClients.TCG
         public ValueTask<TCGUpdatePasswordPlayerResponse> UpdatePasswordPlayerAsync(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TCGUpdatePasswordPlayerRequest request)
             => PostAsync<TCGUpdatePasswordPlayerRequest, TCGUpdatePasswordPlayerResponse>(apiUrl, merchantCode, desKey, sha256Key, request, "RegisterPlayer");
 
+        private string DESCDecrypt(string data, string key)
+        {
+            if (string.IsNullOrEmpty(data))
+                return null;
+
+            Byte[] toEncryptArray = Convert.FromBase64String(data);
+
+            using (var dESCrypto = DES.Create())
+            {
+                dESCrypto.Key = Encoding.UTF8.GetBytes(key);
+                dESCrypto.Mode = CipherMode.ECB;
+                dESCrypto.Padding = PaddingMode.PKCS7;
+                ICryptoTransform cTransform = dESCrypto.CreateDecryptor();
+                var resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+                return Encoding.UTF8.GetString(resultArray);
+            }
+        }
+
+        private string GetDESCEncrypt(string data, string key)
+        {
+            if (string.IsNullOrEmpty(data))
+                return null;
+
+            byte[] dataBytes = Encoding.UTF8.GetBytes(data);
+
+            using (var des = DES.Create())
+            {
+                des.Key = Encoding.UTF8.GetBytes(key);
+                des.Mode = CipherMode.ECB;
+                des.Padding = PaddingMode.PKCS7;
+                using (var cryptoTransform = des.CreateEncryptor())
+                {
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
+                        {
+                            cryptoStream.Write(dataBytes, 0, dataBytes.Length);
+                            cryptoStream.FlushFinalBlock();
+                            var encrypted = memoryStream.ToArray();
+                            return Convert.ToBase64String(encrypted, 0, encrypted.Length);
+                        }
+                    }
+                }
+            }
+        }
+
+        private string GetHash256(string data, string hash_key)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] inputBytes = Encoding.UTF8.GetBytes(data + hash_key);
+                byte[] outputBytes = sha256.ComputeHash(inputBytes);
+                return BitConverter.ToString(outputBytes).Replace("-", "").ToLower();
+            }
+        }
+
         private async ValueTask<TResponse> PostAsync<TRequest, TResponse>(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TRequest request, string logPrefix) where TResponse : TCGBaseResponse
         {
             logPrefix = $"{nameof(TCGApiClient).ToLower() }.{logPrefix}";
@@ -112,62 +168,6 @@ namespace TGS.GameProviders.ApiClients.TCG
             }
 
             return response;
-        }
-
-        private string DESCDecrypt(string data, string key)
-        {
-            if (string.IsNullOrEmpty(data))
-                return null;
-
-            Byte[] toEncryptArray = Convert.FromBase64String(data);
-
-            using (var dESCrypto = DES.Create())
-            {
-                dESCrypto.Key = Encoding.UTF8.GetBytes(key);
-                dESCrypto.Mode = CipherMode.ECB;
-                dESCrypto.Padding = PaddingMode.PKCS7;
-                ICryptoTransform cTransform = dESCrypto.CreateDecryptor();
-                var resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
-                return Encoding.UTF8.GetString(resultArray);
-            }
-        }
-
-        private string GetDESCEncrypt(string data, string key)
-        {
-            if (string.IsNullOrEmpty(data))
-                return null;
-
-            byte[] dataBytes = Encoding.UTF8.GetBytes(data);
-
-            using (var des = DES.Create())
-            {
-                des.Key = Encoding.UTF8.GetBytes(key);
-                des.Mode = CipherMode.ECB;
-                des.Padding = PaddingMode.PKCS7;
-                using (var cryptoTransform = des.CreateEncryptor())
-                {
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
-                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
-                        {
-                            cryptoStream.Write(dataBytes, 0, dataBytes.Length);
-                            cryptoStream.FlushFinalBlock();
-                            var encrypted = memoryStream.ToArray();
-                            return Convert.ToBase64String(encrypted, 0, encrypted.Length);
-                        }
-                    }
-                }
-            }
-        }
-
-        private string GetHash256(string data, string hash_key)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                byte[] inputBytes = Encoding.UTF8.GetBytes(data + hash_key);
-                byte[] outputBytes = sha256.ComputeHash(inputBytes);
-                return BitConverter.ToString(outputBytes).Replace("-", "").ToLower();
-            }
         }
     }
 }

@@ -11,10 +11,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
+using TGS.GameProviders.ApiClients.KY.Models;
+using TGS.GameProviders.ApiClients.KY.Models.Commons;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.KY;
 using TGS.GameProviders.Core.KY.Models;
-using TGS.GameProviders.Core.KY.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.KY
 {
@@ -34,9 +35,45 @@ namespace TGS.GameProviders.ApiClients.KY
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         }
 
-        public ValueTask<KYApiResponse<KYFnudResponse>> FundAsync(Uri apiUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, KYAction action, KYFnudRequest request)
+        public async ValueTask<bool> FundCheckingAsync(Uri apiUrl, string deskey, string md5key, string agentId, string orderId)
         {
-            request.Action = GetAction(action);
+            var request = new Dictionary<string, object>() {
+                {"s", GetAction(KYAction.FundChecking)},
+                {"orderid",orderId}
+            };
+
+            var timestamp = GetUnixTimeMilliseconds(GetDateTimeOffsetNowTimeZone8());
+            var dataPath = GetPath(request);
+            var param = GetAesEncrypt(dataPath, deskey);
+            var plainText = $"{agentId}{timestamp}{md5key}";
+            var key = GetHashMD5(plainText);
+
+            var apiKYRequest = new KYApiRequest()
+            {
+                Agent = agentId,
+                Timestamp = timestamp,
+                Param = param,
+                Key = key
+            };
+
+            var response = await GetAPIAsync<KYFundCheckingResponse>(
+                apiUrl,
+                apiKYRequest,
+                KYAction.FundChecking.ToString()).ConfigureAwait(false);
+
+            return (response != null && response?.Data.Code == 0 && response?.Data.Status == 0);
+        }
+
+        public async ValueTask<(bool Success, string orderId)> FundInAsync(Uri apiUrl, string deskey, string md5key, string agentId, string playerCode, decimal amount)
+        {
+            var dateTimeOffset = GetDateTimeOffsetNowTimeZone8();
+            var orderId = $"{agentId}{dateTimeOffset:yyyyMMddHHmmssfff}{playerCode}";
+            var request = new Dictionary<string, object>() {
+                {"s", GetAction(KYAction.FundIn)}  ,
+                {"account",playerCode},
+                {"orderid",orderId},
+                {"money",amount}
+            };
 
             var timestamp = dateTimeOffset.ToUnixTimeMilliseconds();
             var dataPath = GetPath(request);
@@ -52,57 +89,26 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYFnudResponse>(apiUrl, action, apiKYRequest, "Fund");
+            var response = await GetAPIAsync<KYFnudResponse>(
+                apiUrl,
+                apiKYRequest,
+                KYAction.FundIn.ToString()).ConfigureAwait(false);
+
+            return (response != null && response?.Data.Code == 0) ?
+                new(true, orderId) :
+                new(false, orderId);
         }
 
-        public ValueTask<KYApiResponse<KYFundCheckingResponse>> FundCheckingAsync(Uri apiUrl, string deskey, string md5key, string agentId, KYFundCheckingRequest request)
+        public async ValueTask<(bool Success, string orderId)> FundOutAsync(Uri apiUrl, string deskey, string md5key, string agentId, string playerCode, decimal amount)
         {
-            var action = KYAction.FundChecking;
-            request.Action = GetAction(action);
-
-            var timestamp = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).ToUnixTimeMilliseconds();
-            var dataPath = GetPath(request);
-            var param = GetAesEncrypt(dataPath, deskey);
-            var plainText = $"{agentId}{timestamp}{md5key}";
-            var key = GetHashMD5(plainText);
-
-            var apiKYRequest = new KYApiRequest()
-            {
-                Agent = agentId,
-                Timestamp = timestamp,
-                Param = param,
-                Key = key
+            var dateTimeOffset = GetDateTimeOffsetNowTimeZone8();
+            var orderId = $"{agentId}{dateTimeOffset:yyyyMMddHHmmssfff}{playerCode}";
+            var request = new Dictionary<string, object>() {
+                {"s", GetAction(KYAction.FundOut)}  ,
+                {"account",playerCode},
+                {"orderid",orderId},
+                {"money",amount}
             };
-
-            return GetAPIAsync<KYFundCheckingResponse>(apiUrl, action, apiKYRequest, "FundChecking");
-        }
-
-        public ValueTask<KYApiResponse<KYGetBalanceResponse>> GetBalanceAsync(Uri apiUrl, string deskey, string md5key, string agentId, KYGetBalanceRequest request)
-        {
-            var action = KYAction.GetBalance;
-            request.Action = GetAction(action);
-
-            var timestamp = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).ToUnixTimeMilliseconds();
-            var dataPath = GetPath(request);
-            var param = GetAesEncrypt(dataPath, deskey);
-            var plainText = $"{agentId}{timestamp}{md5key}";
-            var key = GetHashMD5(plainText);
-
-            var apiKYRequest = new KYApiRequest()
-            {
-                Agent = agentId,
-                Timestamp = timestamp,
-                Param = param,
-                Key = key
-            };
-
-            return GetAPIAsync<KYGetBalanceResponse>(apiUrl, action, apiKYRequest, "Balance");
-        }
-
-        public ValueTask<KYApiResponse<KYGameRecordResponse>> GetGameRecordAsync(Uri apiRecordUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, KYGameRecordRequest request)
-        {
-            var action = KYAction.GameRecord;
-            request.Action = GetAction(action);
 
             var timestamp = dateTimeOffset.ToUnixTimeMilliseconds();
             var dataPath = GetPath(request);
@@ -118,15 +124,24 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYGameRecordResponse>(apiRecordUrl, action, apiKYRequest, "GameRecord");
+            var response = await GetAPIAsync<KYFnudResponse>(
+                apiUrl,
+                apiKYRequest,
+                KYAction.FundOut.ToString()).ConfigureAwait(false);
+
+            return (response != null && response?.Data.Code == 0) ?
+                new(true, orderId) :
+                new(false, orderId);
         }
 
-        public ValueTask<KYApiResponse<KYGameUrlResponse>> GetGameUrlAsync(Uri apiUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, KYGameUrlRequest request)
+        public async ValueTask<decimal?> GetBalanceAsync(Uri apiUrl, string deskey, string md5key, string agentId, string playerCode)
         {
-            var action = KYAction.GetGameUrl;
-            request.Action = GetAction(action);
+            var request = new Dictionary<string, object>() {
+                {"s", GetAction(KYAction.GetBalance)},
+                {"account",playerCode}
+            };
 
-            var timestamp = dateTimeOffset.ToUnixTimeMilliseconds();
+            var timestamp = GetUnixTimeMilliseconds(GetDateTimeOffsetNowTimeZone8());
             var dataPath = GetPath(request);
             var param = GetAesEncrypt(dataPath, deskey);
             var plainText = $"{agentId}{timestamp}{md5key}";
@@ -140,15 +155,23 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYGameUrlResponse>(apiUrl, action, apiKYRequest, "GameUrl");
+            var response = await GetAPIAsync<KYGetBalanceResponse>(
+                apiUrl,
+                apiKYRequest,
+                KYAction.GetBalance.ToString()).ConfigureAwait(false);
+
+            return (response?.Data.Code == 0) ? response.Data.Balance : null;
         }
 
-        public ValueTask<KYApiResponse<KYKickResponse>> KickAsync(Uri apiUrl, string deskey, string md5key, string agentId, KYKickRequest request)
+        public async ValueTask<(bool Success, KYGameRecordList GameRecordList)> GetGameRecordAsync(Uri apiRecordUrl, string deskey, string md5key, string agentId, long startTime, long endTime)
         {
-            var action = KYAction.Kick;
-            request.Action = GetAction(action);
+            var request = new Dictionary<string, object>() {
+                {"s", GetAction(KYAction.GameRecord)},
+                {"startTime",startTime},
+                {"endTime",endTime}
+            };
 
-            var timestamp = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).ToUnixTimeMilliseconds();
+            var timestamp = GetUnixTimeMilliseconds(GetDateTimeOffsetNowTimeZone8());
             var dataPath = GetPath(request);
             var param = GetAesEncrypt(dataPath, deskey);
             var plainText = $"{agentId}{timestamp}{md5key}";
@@ -162,10 +185,129 @@ namespace TGS.GameProviders.ApiClients.KY
                 Key = key
             };
 
-            return GetAPIAsync<KYKickResponse>(apiUrl, action, apiKYRequest, "Kick");
+            var response = await GetAPIAsync<KYGameRecordResponse>(
+                apiRecordUrl,
+                apiKYRequest,
+                KYAction.GameRecord.ToString()).ConfigureAwait(false);
+
+            if (response == null || response?.Data.Code != 0)
+            {
+                if (response?.Data.Code == 16)
+                {
+                    return new(true, null);
+                }
+                else
+                {
+                    return new(false, null);
+                }
+            }
+
+            if (response?.Data == null || response?.Data.List.GameID.Length == 0)
+            {
+                return new(true, null);
+            }
+
+            return new(true, response.Data.List);
         }
 
-        private async ValueTask<KYApiResponse<TData>> GetAPIAsync<TData>(Uri apiUrl, KYAction action, KYApiRequest request, string logPrefix)
+        public async ValueTask<Uri> GetGameUrlAsync(Uri apiUrl, string deskey, string md5key, string agentId, string playerCode, string ipAddress, string brandCode, int gameExternalID)
+        {
+            var dateTimeOffset = GetDateTimeOffsetNowTimeZone8();
+            var request = new Dictionary<string, object>() {
+                {"s", GetAction(KYAction.GetGameUrl)},
+                {"account",playerCode},
+                {"money",0m},
+                {"orderid",$"{agentId}{dateTimeOffset:yyyyMMddHHmmssfff}{playerCode}"},
+                {"ip",ipAddress},
+                {"lineCode",brandCode},
+                {"KindID",gameExternalID},
+            };
+
+            var timestamp = GetUnixTimeMilliseconds(dateTimeOffset);
+            var dataPath = GetPath(request);
+            var param = GetAesEncrypt(dataPath, deskey);
+            var plainText = $"{agentId}{timestamp}{md5key}";
+            var key = GetHashMD5(plainText);
+
+            var apiKYRequest = new KYApiRequest()
+            {
+                Agent = agentId,
+                Timestamp = timestamp,
+                Param = param,
+                Key = key
+            };
+
+            var response = await GetAPIAsync<KYGameUrlResponse>(
+                apiUrl,
+                apiKYRequest,
+                KYAction.GetGameUrl.ToString()).ConfigureAwait(false);
+
+            return (response != null && response?.Data.Code == 0) ? new(response.Data.Url) : null;
+        }
+
+        public async ValueTask KickAsync(Uri apiUrl, string deskey, string md5key, string agentId, string playerCode)
+        {
+            var request = new Dictionary<string, object>() {
+                {"s", GetAction(KYAction.Kick)},
+                {"account",playerCode}
+            };
+
+            var timestamp = GetUnixTimeMilliseconds(GetDateTimeOffsetNowTimeZone8());
+            var dataPath = GetPath(request);
+            var param = GetAesEncrypt(dataPath, deskey);
+            var plainText = $"{agentId}{timestamp}{md5key}";
+            var key = GetHashMD5(plainText);
+
+            var apiKYRequest = new KYApiRequest()
+            {
+                Agent = agentId,
+                Timestamp = timestamp,
+                Param = param,
+                Key = key
+            };
+
+            await GetAPIAsync<KYBaseDataResponse>(
+                apiUrl,
+                apiKYRequest,
+                KYAction.Kick.ToString()).ConfigureAwait(false);
+        }
+
+        private int GetAction(KYAction action)
+        {
+            return KYActionMapper.Mapper.Where(x => x.Key == action).First().Value;
+        }
+
+        private string GetAesEncrypt(string data, string key)
+        {
+            if (string.IsNullOrEmpty(data))
+                return null;
+
+            var dataByte = Encoding.UTF8.GetBytes(data);
+
+            using (var aes = Aes.Create())
+            {
+                aes.Mode = CipherMode.ECB;
+                aes.Padding = PaddingMode.PKCS7;
+                aes.Key = Encoding.UTF8.GetBytes(key);
+
+                using (var cryptoTransform = aes.CreateEncryptor())
+                {
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
+                        {
+                            cryptoStream.Write(dataByte, 0, dataByte.Length);
+                            cryptoStream.FlushFinalBlock();
+                            var encrypted = memoryStream.ToArray();
+                            var base64Str = Convert.ToBase64String(encrypted, 0, encrypted.Length);
+                            return System.Web.HttpUtility.UrlEncode(base64Str);
+                        }
+                    }
+                }
+            }
+        }
+
+        private async ValueTask<KYApiResponse<TData>> GetAPIAsync<TData>(Uri apiUrl, KYApiRequest request, string logPrefix)
         {
             logPrefix = $"{nameof(KYApiClient).ToLower() }.{logPrefix}";
             var sw = Stopwatch.StartNew();
@@ -224,47 +366,8 @@ namespace TGS.GameProviders.ApiClients.KY
             return response;
         }
 
-        private string GetAesEncrypt(string data, string key)
-        {
-            if (string.IsNullOrEmpty(data))
-                return null;
-
-            var dataByte = Encoding.UTF8.GetBytes(data);
-
-            using (var aes = Aes.Create())
-            {
-                aes.Mode = CipherMode.ECB;
-                aes.Padding = PaddingMode.PKCS7;
-                aes.Key = Encoding.UTF8.GetBytes(key);
-
-                using (var cryptoTransform = aes.CreateEncryptor())
-                {
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
-                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
-                        {
-                            cryptoStream.Write(dataByte, 0, dataByte.Length);
-                            cryptoStream.FlushFinalBlock();
-                            var encrypted = memoryStream.ToArray();
-                            var base64Str = Convert.ToBase64String(encrypted, 0, encrypted.Length);
-                            return System.Web.HttpUtility.UrlEncode(base64Str);
-                        }
-                    }
-                }
-            }
-        }
-
-        private int GetAction(KYAction action)
-        {
-            return KYActionMapper.Mapper.Where(x => x.Key == action).First().Value;
-        }
-
-        private string GetPath<TRequest>(TRequest request, JsonSerializerOptions options = null)
-        {
-            var value = JsonSerializer.Serialize(request, options);
-            var items = JsonSerializer.Deserialize<Dictionary<string, object>>(value, options);
-            return string.Join("&", items.Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value)));
-        }
+        private DateTimeOffset GetDateTimeOffsetNowTimeZone8()
+            => DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
 
         private string GetHashMD5(string data)
         {
@@ -278,5 +381,18 @@ namespace TGS.GameProviders.ApiClients.KY
                 return result;
             }
         }
+
+        private string GetPath(Dictionary<string, object> request)
+                            => string.Join("&", request.Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value)));
+
+        private string GetPath(KYApiRequest request, JsonSerializerOptions options = null)
+        {
+            var value = JsonSerializer.Serialize(request, options);
+            var items = JsonSerializer.Deserialize<Dictionary<string, object>>(value, options);
+            return string.Join("&", items.Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value)));
+        }
+
+        private long GetUnixTimeMilliseconds(DateTimeOffset dateTimeOffset)
+            => dateTimeOffset.ToUnixTimeMilliseconds();
     }
 }

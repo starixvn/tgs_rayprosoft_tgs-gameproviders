@@ -14,13 +14,12 @@ namespace TGS.GameProviders.ApiClients.UnitTests
     [TestFixture]
     public class IMESportsApiClientUnitTest
     {
+        private readonly Uri _apiUrl = new Uri("http://operatorapi.staging.imaegisapi.com");
         private readonly IIMESportsApiClient _client;
 
         private readonly string _merchantCode = "Ogt3HBRFebTqJczcN28CliP3BHqDWIYo";
         private readonly string _prefix = "IM1CP";
         private readonly int _productWallet = 401;
-
-        private readonly Uri _apiUrl = new Uri("http://operatorapi.staging.imaegisapi.com");
 
         public IMESportsApiClientUnitTest()
         {
@@ -71,6 +70,22 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         }
 
         [Test]
+        public async Task GetRoundHistoryAsync()
+        {
+            var request = new IMESportsGetRoundHistoryRequest
+            {
+                MerchantCode = _merchantCode,
+                ProductWallet = _productWallet,
+                StartDate = "2021-11-26 18.46.44",
+                EndDate = "2021-11-26 18.49.44",
+                Page = 1,
+                Language = "EN"
+            };
+
+            var response = await _client.GetRoundHistoryAsync(_apiUrl, request);
+        }
+
+        [Test]
         public async Task RegisterPlayerAsync()
         {
             var playerCode = "4ucmqplxb029";
@@ -85,22 +100,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
 
             var response = await _client.RegisterPlayerAsync(_apiUrl, request)
                 .ConfigureAwait(false);
-        }
-
-        [Test]
-        public async Task GetRoundHistoryAsync()
-        {
-            var request = new IMESportsGetRoundHistoryRequest
-            {
-                MerchantCode = _merchantCode,
-                ProductWallet = _productWallet,
-                StartDate = "2021-11-26 18.46.44",
-                EndDate = "2021-11-26 18.49.44",
-                Page = 1,
-                Language = "EN"
-            };
-
-            var response = await _client.GetRoundHistoryAsync(_apiUrl, request);
         }
 
         private string ToIMESportsPlayerId(string playerCode)

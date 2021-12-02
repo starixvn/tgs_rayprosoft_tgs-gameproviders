@@ -9,9 +9,9 @@ namespace TGS.GameProviders
         private readonly ConnectionMultiplexer _connectionMultiplexer;
         private bool _disposedValue;
 
-        public IConnectionMultiplexer Connection { get;  }
+        public IConnectionMultiplexer Connection { get; }
 
-        public IDatabase Database { get;  }
+        public IDatabase Database { get; }
 
         public RedisConnectionFactory(
             IOptions<RedisOptions> optionsAccessor)
@@ -34,7 +34,6 @@ namespace TGS.GameProviders
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
-
 
         protected virtual void Dispose(bool disposing)
         {

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using TGS.GameProviders.Core.KY.Models.Commons;
+using TGS.GameProviders.ApiClients.KY.Models.Commons;
 
-namespace TGS.GameProviders.Core.KY.Models
+namespace TGS.GameProviders.ApiClients.KY.Models
 {
     public record KYGetBalanceResponse : KYBaseDataResponse
     {
@@ -10,7 +10,7 @@ namespace TGS.GameProviders.Core.KY.Models
         /// 玩家账号
         /// </summary>
         [JsonPropertyName("account")]
-        public string PlayerCode { get; init; }
+        public string PlayerCode { get; init; } = default!;
         /// <summary>
         /// Gets or sets the total balance.
         /// 总余额

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.Core.Repositories;

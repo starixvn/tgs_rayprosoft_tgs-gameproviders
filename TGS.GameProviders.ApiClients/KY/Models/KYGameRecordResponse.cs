@@ -1,7 +1,8 @@
 ﻿using System.Text.Json.Serialization;
-using TGS.GameProviders.Core.KY.Models.Commons;
+using TGS.GameProviders.ApiClients.KY.Models.Commons;
+using TGS.GameProviders.Core.KY.Models;
 
-namespace TGS.GameProviders.Core.KY.Models
+namespace TGS.GameProviders.ApiClients.KY.Models
 {
     public record KYGameRecordResponse : KYBaseDataResponse
     {
