@@ -6,15 +6,20 @@ namespace TGS.GameProviders.Core.IMESports
 {
     public interface IIMESportsApiClient
     {
-        ValueTask<IMESportsLaunchGameResponse> LaunchDesktopGameAsync(
+        ValueTask<IMESportsGetRoundHistoryResponse> GetRoundHistoryAsync(
             Uri apiUrl,
+            IMESportsGetRoundHistoryRequest request);
+
+        ValueTask<IMESportsLaunchGameResponse> LaunchDesktopGameAsync(
+                    Uri apiUrl,
             IMESportsLaunchGameRequest request);
 
         ValueTask<IMESportsLaunchGameResponse> LaunchMobileGameAsync(
             Uri apiUrl,
             IMESportsLaunchGameRequest request);
 
-        ValueTask<IMESportsRegisterPlayerResponse> RegisterPlayerAsync(Uri apiUrl,
+        ValueTask<IMESportsRegisterPlayerResponse> RegisterPlayerAsync(
+            Uri apiUrl,
             IMESportsRegisterPlayerRequest request);
     }
 }

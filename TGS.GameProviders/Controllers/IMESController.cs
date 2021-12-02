@@ -1,10 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.IMESports.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers
@@ -12,7 +14,8 @@ namespace TGS.GameProviders.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class IMESController : ControllerBase,
-        IGameUrlHandler<IMESportsGameUrlQuery>
+        IGameUrlHandler<IMESportsGameUrlQuery>,
+        IRoundDetailHandler<IMESportsRoundDetailQuery>
     {
         private readonly ILogger<IMESController> _logger;
         private readonly IMapper _mapper;
@@ -21,8 +24,8 @@ namespace TGS.GameProviders.Controllers
             ILogger<IMESController> logger,
             IMapper mapper)
         {
-            _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
-            _mapper = mapper ?? throw new System.ArgumentNullException(nameof(mapper));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         /// <summary>
@@ -60,6 +63,33 @@ namespace TGS.GameProviders.Controllers
             return result == null ?
                 null :
                 _mapper.Map<GameUrlResponse>(result);
+        }
+
+        /// <summary>
+        /// Rounds the detail asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="roundId">The round identifier.</param>
+        /// <param name="language">The language.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get saba/rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
+        /// </remarks>
+        [HttpGet("RoundDetail/{roundId}")]
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromServices] IGetService<IMESportsRoundDetailQuery, RoundDetailResult> getService,
+            Guid roundId,
+            [FromQuery] string language)
+        {
+            var result = await getService.GetAsync(new IMESportsRoundDetailQuery
+            {
+                RoundId = roundId,
+                Language = language
+            }).ConfigureAwait(false);
+
+            return result ?? null;
         }
     }
 }

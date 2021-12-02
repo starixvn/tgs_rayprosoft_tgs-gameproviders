@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
@@ -16,8 +17,8 @@ namespace TGS.GameProviders.ApiClients.IMESports
 {
     internal class IMESportsApiClient : IIMESportsApiClient
     {
-        private readonly ILogger<IMESportsApiClient> _logger;
         private readonly HttpClient _client;
+        private readonly ILogger<IMESportsApiClient> _logger;
         private readonly ITgsLog _tgsLog;
 
         public IMESportsApiClient(
@@ -28,6 +29,27 @@ namespace TGS.GameProviders.ApiClients.IMESports
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
+        }
+
+        public ValueTask<IMESportsGetRoundHistoryResponse> GetRoundHistoryAsync(
+            Uri apiUrl,
+            IMESportsGetRoundHistoryRequest request)
+        {
+            var options = new JsonSerializerOptions
+            {
+                NumberHandling = JsonNumberHandling.AllowReadingFromString,
+                Converters =
+                {
+                    new JsonStringEnumConverter()
+                }
+            };
+
+            return PostAsync<IMESportsGetRoundHistoryRequest, IMESportsGetRoundHistoryResponse>(
+                apiUrl,
+                "/Report/GetBetLog",
+                request,
+                "GetRoundHistory",
+                options);
         }
 
         public ValueTask<IMESportsLaunchGameResponse> LaunchDesktopGameAsync(
@@ -61,7 +83,8 @@ namespace TGS.GameProviders.ApiClients.IMESports
             Uri apiUrl,
             string path,
             TRequest request,
-            string action)
+            string action,
+            JsonSerializerOptions serializerResponseOptions = null)
         {
             var logPrefix = $"{nameof(IMESportsApiClient).ToLower()}.{action}";
 
@@ -106,7 +129,7 @@ namespace TGS.GameProviders.ApiClients.IMESports
             if (!string.IsNullOrEmpty(responseMessage) &&
                 httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
-                return JsonSerializer.Deserialize<TResponse>(responseMessage);
+                return JsonSerializer.Deserialize<TResponse>(responseMessage, serializerResponseOptions);
             }
 
             _logger.LogError(JsonSerializer.Serialize(apiLogEvent));
