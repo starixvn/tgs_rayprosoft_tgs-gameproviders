@@ -16,10 +16,6 @@ namespace TGS.GameProviders.Core.Habanero
 
         ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId);
 
-        ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
-
-        ValueTask<Guid> GetGameProviderIdAsync();
-
         ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode);
 
         ValueTask<PlayerModel> GetPlayerAsync(string playerCode);

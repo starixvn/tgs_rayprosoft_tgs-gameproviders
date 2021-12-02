@@ -55,18 +55,6 @@ namespace TGS.GameProviders.Services.Habanero
         public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
             => _gameProviderRepository.GetAsync(gameProviderId);
 
-        public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
-        {
-            var (isCurrencyCode, gameProviderCurrencyCode) = await _gameProviderRepository
-                .GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)
-                .ConfigureAwait(false);
-
-            return isCurrencyCode ? gameProviderCurrencyCode : null;
-        }
-
-        public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.Habanero);
-
         public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
         {
             var (isCultureCode, gameProviderCultureCode) = await _gameProviderRepository
