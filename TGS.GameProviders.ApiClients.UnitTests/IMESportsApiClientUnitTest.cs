@@ -28,8 +28,8 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var logger = NullLogger<IMESportsApiClient>.Instance;
             var tgsLog = Substitute.For<ITgsLog>();
 
-            //_client = Substitute.For<IIMESportsApiClient>();
-            _client = new IMESportsApiClient(logger, httpClient, tgsLog);
+            _client = Substitute.For<IIMESportsApiClient>();
+            //_client = new IMESportsApiClient(logger, httpClient, tgsLog);
         }
 
         [Test]
