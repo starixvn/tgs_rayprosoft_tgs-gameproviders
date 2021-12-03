@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.WGSports.Models;
 
 namespace TGS.GameProviders.Core.WGSports.ApplicationServices
 {
@@ -27,21 +26,16 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            var source = new WGSportsAccessMoneyRequest()
-            {
-                PlayerCode = command.PlayerCode,
-                AmountType = WGSportsAmountTypes.FundIn,
-                OrderId = command.OrderId,
-                Amount = command.Amount.ToString()
-            };
-            var response = await _client.AccessMoneyAsync(
+            var response = await _client.AccessMoneyFundInAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                source).ConfigureAwait(false);
+                command.PlayerCode,
+                command.OrderId,
+                command.Amount).ConfigureAwait(false);
 
-            return (response != null && response?.ReturnCode == 1) ? new() { OrderId = command.OrderId } : null;
+            return response ? new() { OrderId = command.OrderId } : null;
         }
     }
 }

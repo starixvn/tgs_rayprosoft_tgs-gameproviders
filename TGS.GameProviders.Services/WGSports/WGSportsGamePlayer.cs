@@ -27,20 +27,19 @@ namespace TGS.GameProviders.Services.WGSports
         public async ValueTask<bool> CreatePlayerAsync(WGSportsConfiguration configuration, string playerCode, string currencyCode)
         {
             var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(currencyCode);
-            var prepareLoginRequest = new WGSportsPrepareLoginRequest()
-            {
-                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                PlayerCode = playerCode,
-                PlayerNickname = playerCode,
-                CurrencyCode = gameProviderCurrencyCode,
-            };
-            var prepareLoginResponse = await _client.GetPrepareLoginAsync(
+
+            var token = await _client.GetPrepareLoginAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                prepareLoginRequest).ConfigureAwait(false);
-            return (prepareLoginResponse.ReturnCode == 1);
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                playerCode,
+                playerCode,
+                gameProviderCurrencyCode,
+                string.Empty).ConfigureAwait(false);
+
+            return !string.IsNullOrEmpty(token);
         }
     }
 }

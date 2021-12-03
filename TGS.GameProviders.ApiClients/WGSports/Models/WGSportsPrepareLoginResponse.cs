@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using TGS.GameProviders.Core.WGSports.Models.Commons;
+using TGS.GameProviders.ApiClients.WGSports.Models.Commons;
 
-namespace TGS.GameProviders.Core.WGSports.Models
+namespace TGS.GameProviders.ApiClients.WGSports.Models
 {
     public record WGSportsPrepareLoginResponse : WGSportsResponse
     {

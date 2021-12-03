@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Extensions;
-using TGS.GameProviders.Core.WGSports.Models;
 using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.WGSports.ApplicationServices
@@ -32,31 +31,21 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            var data = new WGSportsGameRecordRequest
-            {
-                GameRecordTime = (command.IsSettlement) ? GameRecordTime.SettleDate : GameRecordTime.BetDate,
-                StartTime = command.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
-                EndTime = command.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
-            };
-
-            var response = await _client.GetGameRecordAsync(
+            (bool Success, TGS.GameProviders.Core.WGSports.Models.WGSportsBetInfo[]? BetInfos) = await _client.GetGameRecordAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                data);
+                (command.IsSettlement) ? GameRecordTime.SettleDate : GameRecordTime.BetDate,
+                command.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
+                command.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss")).ConfigureAwait(false);
 
-            if (response == null)
+            if (!Success)
             {
                 return new() { Success = false };
             }
 
-            if (response.ReturnCode.IgnoreCaseNotEquals("1"))
-            {
-                return new() { Success = false };
-            }
-
-            if (response.BetInfo == null || response.BetInfo.Length == 0)
+            if (Success && BetInfos == null)
             {
                 return new() { Success = true };
             }
@@ -64,7 +53,7 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
             var gameProviderCode = _service.GetGameProviderCode();
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
-            var datas = response.BetInfo
+            var datas = BetInfos
                 .Where(data => data.Reference.IgnoreCaseNotContains("不接受"))
                 .Select(data => new GameRecordListModel()
                 {
