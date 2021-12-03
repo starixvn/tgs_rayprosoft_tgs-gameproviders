@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using TGS.GameProviders.Core.LY.Models.Commons;
+using TGS.GameProviders.ApiClients.LY.Models.Commons;
 
-namespace TGS.GameProviders.Core.LY.Models
+namespace TGS.GameProviders.ApiClients.LY.Models
 {
     public record LYGameUrlResponse : LYBaseDataResponse
     {

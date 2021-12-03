@@ -1,24 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains.RoundDetail;
-using Tgs.ServiceUtility;
 
 namespace TGS.GameProviders.Core.Habanero.ApplicationServices
 {
     internal class HabaneroRoundDetailGetService : IGetService<HabaneroRoundDetailQuery, RoundDetailResult>
     {
         private readonly ILogger<HabaneroRoundDetailGetService> _logger;
-        private readonly IHabaneroService _service;
         private readonly IRoundRepository _roundRepository;
+        private readonly IHabaneroService _service;
 
         public HabaneroRoundDetailGetService(
             ILogger<HabaneroRoundDetailGetService> logger,

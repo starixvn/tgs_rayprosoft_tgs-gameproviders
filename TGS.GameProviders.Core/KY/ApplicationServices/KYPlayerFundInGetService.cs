@@ -39,8 +39,7 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
                 agentId,
                 command.PlayerCode,
                 command.Amount
-                )
-                .ConfigureAwait(false);
+                ).ConfigureAwait(false);
 
             return (Success) ? new() { OrderId = orderId } : null;
         }
