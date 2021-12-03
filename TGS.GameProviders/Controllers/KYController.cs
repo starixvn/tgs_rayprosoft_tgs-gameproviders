@@ -68,10 +68,24 @@ namespace TGS.GameProviders.Controllers
         /// <remarks>
         /// <b>Example</b><br />
         ///
-        ///     Post
+        ///     Post Fishing
         ///         {
         ///             "gameType": 9,
         ///             "gameId": 1000031,
+        ///             "brandCode": "GPI",
+        ///             "playerCode": "4ucmqplxb029",
+        ///             "currencyCode": "CNY",
+        ///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        ///             "platformType": 0,
+        ///             "language": "zh-CN",
+        ///             "ipAddress": "127.0.0.1",
+        ///             "backUrl": "https://dev-t1.rpgp.cc/"
+        ///         }
+        ///         
+        ///    Post CardGameLobby
+        ///         {
+        ///             "gameType": 8,
+        ///             "gameId": 1000032,
         ///             "brandCode": "GPI",
         ///             "playerCode": "4ucmqplxb029",
         ///             "currencyCode": "CNY",
