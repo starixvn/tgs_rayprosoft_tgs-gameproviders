@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TGS.GameProviders.Core.WGSports.Models.Commons
+namespace TGS.GameProviders.ApiClients.WGSports.Models.Commons
 {
     public record WGSportsResponse
     {

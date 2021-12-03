@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
-using TGS.GameProviders.Core.WGSports.Models.Commons;
+using TGS.GameProviders.ApiClients.WGSports.Models.Commons;
+using TGS.GameProviders.Core.WGSports.Models;
 
-namespace TGS.GameProviders.Core.WGSports.Models
+namespace TGS.GameProviders.ApiClients.WGSports.Models
 {
-    public record WGSportsGameRecordResponse
+    public record WGSportsGameRecordResponse : WGSportsResponse
     {
         [JsonPropertyName("bet_info")]
         public WGSportsBetInfo[]? BetInfo { get; set; }
@@ -15,7 +16,5 @@ namespace TGS.GameProviders.Core.WGSports.Models
         public string TotalResult { get; set; } = default!;
         [JsonPropertyName("total_active_amount")]
         public string TotalActiveAmount { get; set; } = default!;
-        [JsonPropertyName("ReturnCode")]
-        public string ReturnCode { get; set; } = default!;
     }
 }
