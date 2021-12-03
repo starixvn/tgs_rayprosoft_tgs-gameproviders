@@ -7,7 +7,6 @@ using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.LY;
 using TGS.GameProviders.Core.LY;
-using TGS.GameProviders.Core.LY.Models;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
@@ -34,80 +33,83 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         [Test]
         public async Task FundInAsync()
         {
-            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
             var playerCode = "4ucmqplxb029";
-            var data = new LYFnudRequest()
-            {
-                PlayerCode = playerCode,
-                OrderId = $"{ _agentId}{dateTimeOffset.ToString("yyyyMMddhhmmssfff")}{playerCode}",
-                Amount = 8
-            };
-            var response = await _client.FundAsync(_apiUrl, _deskey, _md5key, _agentId, dateTimeOffset, LYAction.FundIn, data).ConfigureAwait(false);
+
+            _ = await _client.FundInAsync(
+                _apiUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                playerCode,
+                10).ConfigureAwait(false);
         }
 
         [Test]
         public async Task FundOutAsync()
         {
-            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
             var playerCode = "4ucmqplxb029";
-            var data = new LYFnudRequest()
-            {
-                PlayerCode = playerCode,
-                OrderId = $"{ _agentId}{dateTimeOffset.ToString("yyyyMMddhhmmssfff")}{playerCode}",
-                Amount = 10
-            };
-            var response = await _client.FundAsync(_apiUrl, _deskey, _md5key, _agentId, dateTimeOffset, LYAction.FundOut, data).ConfigureAwait(false);
+
+            _ = await _client.FundOutAsync(
+                _apiUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                playerCode,
+                10).ConfigureAwait(false);
         }
 
         [Test]
         public async Task GetBalanceAsync()
         {
             var playerCode = "4ucmqplxb029";
-            var data = new LYGetBalanceRequest()
-            {
-                PlayerCode = playerCode
-            };
-            var response = await _client.GetBalanceAsync(_apiUrl, _deskey, _md5key, _agentId, data).ConfigureAwait(false);
+            _ = await _client.GetBalanceAsync(
+                _apiUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                playerCode).ConfigureAwait(false);
         }
 
         [Test]
         public async Task GetGameRecordAsync()
         {
             var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
-            var data = new LYGameRecordRequest()
-            {
-                StartTime = DateTimeOffset.Parse("2021-10-28 13:00").ToOffset(TimeSpan.FromHours(+8)).ToUnixTimeMilliseconds(),//dateTimeOffset.AddHours(-1).ToUnixTimeMilliseconds(),//1634537632446
-                EndTime = DateTimeOffset.Parse("2021-10-28 13:40").ToOffset(TimeSpan.FromHours(+8)).ToUnixTimeMilliseconds()//dateTimeOffset.ToUnixTimeMilliseconds()//1634541232446
-            };
-            var response = await _client.GetGameRecordAsync(_apiRecordUrl, _deskey, _md5key, _agentId, dateTimeOffset, data).ConfigureAwait(false);
+            var startTime = DateTimeOffset.Parse("2021-10-28 13:00").ToOffset(TimeSpan.FromHours(+8)).ToUnixTimeMilliseconds();//dateTimeOffset.AddHours(-1).ToUnixTimeMilliseconds(),//1634537632446
+            var endTime = DateTimeOffset.Parse("2021-10-28 13:40").ToOffset(TimeSpan.FromHours(+8)).ToUnixTimeMilliseconds();//dateTimeOffset.ToUnixTimeMilliseconds()//1634541232446
+            _ = await _client.GetGameRecordAsync(
+                _apiRecordUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                startTime,
+                endTime).ConfigureAwait(false);
         }
 
         [Test]
         public async Task GetGameUrlAsync()
         {
-            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
             var playerCode = "4ucmqplxb029";
-            var data = new LYGameUrlRequest()
-            {
-                PlayerCode = playerCode,
-                Amount = 0,
-                OrderId = $"{_agentId}{dateTimeOffset.ToString("yyyyMMddhhmmssfff")}{playerCode}",
-                IP = "220.132.206.70",
-                BrandsCode = "GPI",
-                ExternalID = 510
-            };
-            var response = await _client.GetGameUrlAsync(_apiUrl, _deskey, _md5key, _agentId, dateTimeOffset, data).ConfigureAwait(false);
+            _ = await _client.GetGameUrlAsync(
+                _apiUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                playerCode,
+                "220.132.206.70",
+                "GPI",
+                510).ConfigureAwait(false);
         }
 
         [Test]
         public async Task KickAsync()
         {
             var playerCode = "4ucmqplxb029";
-            var data = new LYKickRequest()
-            {
-                PlayerCode = playerCode
-            };
-            var response = await _client.KickAsync(_apiUrl, _deskey, _md5key, _agentId, data).ConfigureAwait(false);
+            await _client.KickAsync(
+                _apiUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                playerCode).ConfigureAwait(false);
         }
     }
 }

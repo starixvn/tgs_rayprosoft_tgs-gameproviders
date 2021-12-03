@@ -54,9 +54,6 @@ namespace TGS.GameProviders.Services.LY
                 0 => ClientRoundStatus.Draw
             };
 
-        public DateTimeOffset GetDateTimeOffsetTimeZone8() =>
-            DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
-
         public string GetGameProviderCode()
             => GameProviderType.LY;
 

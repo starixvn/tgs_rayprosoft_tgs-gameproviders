@@ -277,7 +277,7 @@ namespace TGS.GameProviders.ApiClients.KY
             return KYActionMapper.Mapper.Where(x => x.Key == action).First().Value;
         }
 
-        private string GetAesEncrypt(string data, string key)
+        private string GetAesEncrypt(string data, string secretKey)
         {
             if (string.IsNullOrEmpty(data))
                 return null;
@@ -288,7 +288,7 @@ namespace TGS.GameProviders.ApiClients.KY
             {
                 aes.Mode = CipherMode.ECB;
                 aes.Padding = PaddingMode.PKCS7;
-                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.Key = Encoding.UTF8.GetBytes(secretKey);
 
                 using (var cryptoTransform = aes.CreateEncryptor())
                 {

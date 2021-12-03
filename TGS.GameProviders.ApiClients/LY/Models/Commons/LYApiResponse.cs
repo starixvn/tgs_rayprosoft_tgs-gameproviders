@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TGS.GameProviders.Core.LY.Models.Commons
+namespace TGS.GameProviders.ApiClients.LY.Models.Commons
 {
     public record LYApiResponse<TData>
     {

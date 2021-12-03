@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.LY.Models;
 
 namespace TGS.GameProviders.Core.LY.ApplicationServices
 {
@@ -33,26 +32,16 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
             }
             var agentId = await _service.GetAgentIdAsync(command.BrandCode, command.CurrencyCode).ConfigureAwait(false);
 
-            var dateTimeOffset = _service.GetDateTimeOffsetTimeZone8();
-            var orderId = $"{agentId}{dateTimeOffset:yyyyMMddHHmmssfff}{command.PlayerCode}";
-
-            var data = new LYFnudRequest
-            {
-                PlayerCode = command.PlayerCode,
-                Amount = command.Amount,
-                OrderId = orderId
-            };
-
-            var response = await _client.FundAsync(
+            var (Success, orderId) = await _client.FundInAsync(
                 brandMerchant.ApiUrl,
                 brandMerchant.Deskey,
                 brandMerchant.Md5key,
-                agentId, dateTimeOffset,
-                LYAction.FundIn,
-                data)
-                .ConfigureAwait(false);
+                agentId,
+                command.PlayerCode,
+                command.Amount
+                ).ConfigureAwait(false);
 
-            return (response != null && response?.Data.Code == 0) ? new() { OrderId = orderId } : null;
+            return (Success) ? new() { OrderId = orderId } : null;
         }
     }
 }

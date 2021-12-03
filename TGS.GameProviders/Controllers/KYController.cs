@@ -81,7 +81,7 @@ namespace TGS.GameProviders.Controllers
         ///             "ipAddress": "127.0.0.1",
         ///             "backUrl": "https://dev-t1.rpgp.cc/"
         ///         }
-        ///         
+        ///
         ///    Post CardGameLobby
         ///         {
         ///             "gameType": 8,
