@@ -44,27 +44,27 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
             {
                 PlayerCode = playerModel.PlayerCode
             };
-            var response = await _client.GetBalanceAsync(
+            (bool IsPlayer, decimal? Balance) = await _client.GetBalanceAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                source).ConfigureAwait(false);
+                playerModel.PlayerCode).ConfigureAwait(false);
 
-            if (response.ReturnCode == 602)
+            if (!IsPlayer)
             {
                 if (await _playerCreate.CreatePlayerAsync(configuration, playerModel.PlayerCode, playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false))
                 {
-                    response = await _client.GetBalanceAsync(
+                    (IsPlayer, Balance) = await _client.GetBalanceAsync(
                         configuration.ApiUrl,
                         configuration.PartnerCode,
                         configuration.PartnerKey,
                         configuration.IV,
-                        source).ConfigureAwait(false);
+                        playerModel.PlayerCode).ConfigureAwait(false);
                 }
             }
 
-            return response.ReturnCode == 1 ? decimal.Parse(response.Balance) : null;
+            return IsPlayer && Balance.HasValue ? Balance.Value : null;
         }
     }
 }

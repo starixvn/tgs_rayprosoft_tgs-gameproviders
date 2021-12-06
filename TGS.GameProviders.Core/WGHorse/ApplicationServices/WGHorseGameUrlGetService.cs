@@ -37,31 +37,28 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
                 CurrencyCode = currencyCode
             };
 
-            var prepareLoginResponse = await _client.GetPrepareLoginAsync(
+            var token = await _client.GetPrepareLoginAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                prepareLoginRequest)
-                .ConfigureAwait(false);
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                command.PlayerCode,
+                command.PlayerCode,
+                currencyCode).ConfigureAwait(false);
 
-            if (prepareLoginResponse.ReturnCode is not 1)
+            if (string.IsNullOrEmpty(token))
             {
                 return null;
             }
 
-            var sportsLoginRequest = new WGHorseLoginRequest()
-            {
-                Token = prepareLoginResponse.Token,
-                Lang = cultureCode
-            };
-
-            var loginResponse = await _client.GetLoginAsync(
+            var gameUrl = await _client.GetLoginAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
-                sportsLoginRequest).ConfigureAwait(false);
+                token,
+                cultureCode).ConfigureAwait(false);
 
-            return prepareLoginResponse.ReturnCode is not 1 ? null : (new() { Url = new(loginResponse.LoginUrl) });
+            return gameUrl != null ? (new() { Url = gameUrl }) : null;
         }
     }
 }

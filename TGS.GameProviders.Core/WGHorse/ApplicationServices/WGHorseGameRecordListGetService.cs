@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.WGHorse.Models;
+using TGS.GameProviders.Core.WGHorse.Models.Commons;
 using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
@@ -32,37 +33,23 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            var data = new WGHorseGameRecordRequest
-            {
-                StartTime = command.StartTime,
-                EndTime = command.EndTime,
-                PageIndex = command.Page,
-                PageSize = command.Rows
-            };
 
-            var response = await _client.GetGameRecordAsync(
+            (bool Success, WGHorseGameRecord[]? GameRecord) = await _client.GetGameRecordAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                data
+                command.StartTime,
+                command.EndTime,
+                command.Page,
+                command.Rows
                 ).ConfigureAwait(false);
 
-            if (response == null)
+            if (!Success)
             {
                 return new() { Success = false };
             }
-
-            if (response?.ReturnCode != 1)
-            {
-                if (response?.ReturnCode != 503)
-                {
-                    return new() { Success = false };
-                }
-            }
-
-            if (command.Page.ToString().IgnoreCaseNotEquals(response.Page)
-                || response.ArrayInvoice == null || response.ArrayInvoice.Length == 0)
+            if (Success && GameRecord == null)
             {
                 return new() { Success = true };
             }
@@ -70,7 +57,7 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
             var gameProviderCode = _service.GetGameProviderCode();
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
-            var datas = response.ArrayInvoice.Select(data => new GameRecordListModel()
+            var datas = GameRecord.Select(data => new GameRecordListModel()
             {
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,

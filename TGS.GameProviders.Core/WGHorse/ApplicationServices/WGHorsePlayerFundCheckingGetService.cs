@@ -27,20 +27,14 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            var data = new WGHorseAccessMoneyQueryRequest
-            {
-                OrderId = command.OrderId
-            };
-
             var response = await _client.AccessMoneyQueryAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                data)
-                .ConfigureAwait(false);
+                command.OrderId).ConfigureAwait(false);
 
-            return new() { OrderStatus = (response != null && response?.ReturnCode == 1) };
+            return new() { OrderStatus = response };
         }
     }
 }

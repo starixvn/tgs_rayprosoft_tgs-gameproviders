@@ -33,129 +33,221 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         [Test]
         public async Task AccessMoneyQueryAsync()
         {
-            var data = new WGHorseAccessMoneyQueryRequest()
-            {
-                OrderId = "5671e95562f34674a4491bfc3e6aefb1",
-            };
-            _ = _client.AccessMoneyQueryAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).Returns(ValueTask.FromResult<WGHorseResponse>(
-                new()
-                {
-                    ReturnCode = 1
-                }));
-            var result = await _client.AccessMoneyQueryAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
-            Assert.AreEqual(1, result.ReturnCode);
+            var orderId = "5671e95562f34674a4491bfc3e6aefb1";
+
+            _ = _client.AccessMoneyQueryAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, orderId).Returns(ValueTask.FromResult(true));
+            var actual = await _client.AccessMoneyQueryAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, orderId).ConfigureAwait(false);
+            Assert.NotNull(actual);
+            Assert.AreEqual(true, actual);
         }
 
         [Test]
         public async Task FundInAsync()
         {
             var playerCode = "4ucmqplxb029";
-            var data = new WGHorseAccessMoneyRequest()
-            {
-                PlayerCode = playerCode,
-                AmountType = WGHorseAmountTypes.FundIn,
-                OrderId = Guid.NewGuid().ToString("N"),
-                Amount = "1"
-            };
-            _ = _client.AccessMoneyAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).Returns(ValueTask.FromResult<WGHorseResponse>
-                (new()
-                {
-                    ReturnCode = 1
-                }));
-            var result = await _client.AccessMoneyAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
-            Assert.AreEqual(1, result.ReturnCode);
+            var orderId = Guid.NewGuid().ToString("N");
+            var amount = 1m;
+
+            _ = _client.AccessMoneyFundInAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey,
+                _partnerIV,
+                playerCode,
+                orderId,
+                amount).Returns(ValueTask.FromResult(true));
+
+            var actual = await _client.AccessMoneyFundInAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey,
+                _partnerIV,
+                playerCode,
+                orderId,
+                amount).ConfigureAwait(false);
+
+            Assert.NotNull(actual);
+            Assert.AreEqual(true, actual);
         }
 
         [Test]
         public async Task FundOutAsync()
         {
             var playerCode = "4ucmqplxb029";
-            var data = new WGHorseAccessMoneyRequest()
-            {
-                PlayerCode = playerCode,
-                AmountType = WGHorseAmountTypes.FundOut,
-                OrderId = Guid.NewGuid().ToString("N"),
-                Amount = "1"
-            };
-            _ = _client.AccessMoneyAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).Returns(ValueTask.FromResult<WGHorseResponse>(
-                new()
-                {
-                    ReturnCode = 1
-                }));
-            var result = await _client.AccessMoneyAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
-            Assert.AreEqual(1, result.ReturnCode);
+            var orderId = Guid.NewGuid().ToString("N");
+            var amount = 1m;
+
+            _ = _client.AccessMoneyFundOutAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey,
+                _partnerIV,
+                playerCode,
+                orderId,
+                amount).Returns(ValueTask.FromResult(true));
+
+            var actual = await _client.AccessMoneyFundOutAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey,
+                _partnerIV,
+                playerCode,
+                orderId,
+                amount).ConfigureAwait(false);
+
+            Assert.NotNull(actual);
+            Assert.AreEqual(true, actual);
         }
 
         [Test]
         public async Task GetBalanceAsync()
         {
-            var data = new WGHorseGetBalanceRequest()
-            {
-                PlayerCode = "4ucmqplxb029"
-            };
+            var playerCode = "4ucmqplxb029";
+            (bool IsPlayer, decimal? Balance) = (true, 1);
 
-            _ = await _client.GetBalanceAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
+            _ = _client.GetBalanceAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey,
+                _partnerIV,
+                playerCode).Returns(ValueTask.FromResult((IsPlayer, Balance)));
+
+            var actual = await _client.GetBalanceAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey,
+                _partnerIV,
+                playerCode).ConfigureAwait(false);
+
+            Assert.NotNull(actual);
+            Assert.AreEqual(IsPlayer, actual.IsPlayer);
+            Assert.AreEqual(Balance, actual.Balance);
         }
 
         [Test]
         public async Task GetGameRecordAsync()
         {
-            _ = await _client.GetGameRecordAsync(
+            var startTime = DateTimeOffset.Parse("2021-10-30");
+            var endTime = DateTimeOffset.Parse("2021-11-01").AddMilliseconds(-1);
+            int pageIndex = 1;
+            int pageSize = 1000;
+            (bool Success, WGHorseGameRecord[]? GameRecord) = (true, null);
+
+            _ = _client.GetGameRecordAsync(
                 _apiUrl,
                 _partnerCode,
-                _partnerKey
-                , _partnerIV,
-                new()
-                {
-                    StartTime = DateTimeOffset.Parse("2021-10-30"),
-                    EndTime = DateTimeOffset.Parse("2021-11-01").AddMilliseconds(-1),
-                    PageIndex = 1,
-                    PageSize = 1000
-                }).ConfigureAwait(false);
+                _partnerKey,
+                _partnerIV,
+                startTime,
+                endTime,
+                pageIndex,
+                pageSize).Returns(ValueTask.FromResult((Success, GameRecord)));
+
+            var actual = await _client.GetGameRecordAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey,
+                _partnerIV,
+                startTime,
+                endTime,
+                pageIndex,
+                pageSize).ConfigureAwait(false);
+
+            Assert.NotNull(actual);
+            Assert.AreEqual(Success, actual.Success);
         }
 
         [Test]
         public async Task GetLoginAsync()
         {
             var playerCode = "4ucmqplxb029";
-            var data = new WGHorsePrepareLoginRequest()
-            {
-                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                PlayerCode = playerCode,
-                PlayerNickname = playerCode,
-                CurrencyCode = "RMB"
-            };
-            var token = new WGHorsePrepareLoginResponse()
-            {
-                Token = Guid.NewGuid().ToString("N")
-            };
-            var prepareLoginResponse = await _client.GetPrepareLoginAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
-            var loginRequest = new WGHorseLoginRequest
-            {
-                Token = prepareLoginResponse?.Token,
-                Lang = ""
-            };
-            _ = await _client.GetLoginAsync(_apiUrl, _partnerCode, loginRequest).ConfigureAwait(false);
+            var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var currencyCode = "RMB";
+            var lang = "0";
+            var token = Guid.NewGuid().ToString();
+            var gameUrl = new Uri("https://www.google.com/");
+
+            _ = _client.GetPrepareLoginAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey,
+                _partnerIV,
+                timestamp,
+                playerCode,
+                playerCode,
+                currencyCode).Returns(ValueTask.FromResult(token));
+
+            _ = _client.GetLoginAsync(
+                _apiUrl,
+                _partnerCode,
+                token,
+                lang).Returns(ValueTask.FromResult(gameUrl));
+
+            var actual = await _client.GetLoginAsync(
+                _apiUrl,
+                _partnerCode,
+                token,
+                lang).ConfigureAwait(false);
+
+            Assert.NotNull(actual);
+            Assert.AreEqual(gameUrl, actual);
         }
 
         [Test]
         public async Task GetPrepareLoginAsync()
         {
             var playerCode = "4ucmqplxb029";
-            var data = new WGHorsePrepareLoginRequest()
-            {
-                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
-                PlayerCode = playerCode,
-                PlayerNickname = playerCode,
-                CurrencyCode = "RMB"
-            };
-            _ = await _client.GetPrepareLoginAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, data).ConfigureAwait(false);
+            var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var currencyCode = "RMB";
+            var token = Guid.NewGuid().ToString();
+
+            _ = _client.GetPrepareLoginAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey,
+                _partnerIV,
+                timestamp,
+                playerCode,
+                playerCode,
+                currencyCode).Returns(ValueTask.FromResult(token));
+
+            var actual = await _client.GetPrepareLoginAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey,
+                _partnerIV,
+                timestamp,
+                playerCode,
+                playerCode,
+                currencyCode).ConfigureAwait(false);
+
+            Assert.NotNull(actual);
+            Assert.AreEqual(token, actual);
         }
 
         [Test]
         public async Task LogoutAsync()
         {
-            _ = await _client.LogoutAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, "4ucmqplxb029").ConfigureAwait(false);
+            var playerCode = "4ucmqplxb029";
+
+            var response = new WGHorseResponse()
+            {
+                ReturnCode = 1
+            };
+
+            _ = _client.LogoutAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey,
+                _partnerIV,
+                playerCode);
+
+            await _client.LogoutAsync(
+               _apiUrl,
+               _partnerCode,
+               _partnerKey,
+               _partnerIV,
+               playerCode).ConfigureAwait(false);
         }
     }
 }

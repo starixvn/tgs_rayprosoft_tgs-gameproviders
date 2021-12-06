@@ -32,65 +32,163 @@ namespace TGS.GameProviders.ApiClients.WGHorse
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         }
 
-        public ValueTask<WGHorseResponse> AccessMoneyAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseAccessMoneyRequest source)
+        public async ValueTask<bool> AccessMoneyFundInAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode, string orderId, decimal amount)
         {
-            var data = $"{source.PlayerCode}|{ (int)source.AmountType}|{source.OrderId}|{source.Amount}";
+            var request = new
+            {
+                PlayerCode = playerCode,
+                AmountType = WGHorseAmountTypes.FundIn,
+                OrderId = orderId,
+                Amount = amount
+            };
+            var data = $"{request.PlayerCode}|{(int)request.AmountType}|{request.OrderId}|{request.Amount}";
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=AccessMoney&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            return GetAsync<WGHorseAccessMoneyRequest, WGHorseResponse>(url, source, "AccessMoney");
+            var response = await GetAsync<WGHorseResponse>(
+                url,
+                request,
+                "AccessMoneyFundIn").ConfigureAwait(false);
+            return (response != null && response?.ReturnCode == 1);
         }
 
-        public ValueTask<WGHorseResponse> AccessMoneyQueryAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseAccessMoneyQueryRequest source)
+        public async ValueTask<bool> AccessMoneyFundOutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode, string orderId, decimal amount)
         {
-            var data = source.OrderId;
+            var request = new
+            {
+                PlayerCode = playerCode,
+                AmountType = WGHorseAmountTypes.FundOut,
+                OrderId = orderId,
+                Amount = amount
+            };
+            var data = $"{request.PlayerCode}|{(int)request.AmountType}|{request.OrderId}|{request.Amount}";
+            var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
+            var url = new Uri($"{apiUrl}?m=api&c=index&a=AccessMoney&Hash={dataEncrypt}&PartnerCode={partnerCode}");
+
+            var response = await GetAsync<WGHorseResponse>(
+                url,
+                request,
+                "AccessMoneyFundOut").ConfigureAwait(false);
+            return (response != null && response?.ReturnCode == 1);
+        }
+
+        public async ValueTask<bool> AccessMoneyQueryAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string orderId)
+        {
+            var request = new
+            {
+                OrderId = orderId
+            };
+            var data = orderId;
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=AccessMoneyQuery&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            return GetAsync<WGHorseAccessMoneyQueryRequest, WGHorseResponse>(url, source, "AccessMoneyQuery");
+            var response = await GetAsync<WGHorseResponse>(
+                url,
+                request,
+                "AccessMoneyQuery").ConfigureAwait(false);
+
+            return (response != null && response?.ReturnCode == 1);
         }
 
-        public ValueTask<WGHorseGetBalanceResponse> GetBalanceAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseGetBalanceRequest source)
+        public async ValueTask<(bool IsPlayer, decimal? Balance)> GetBalanceAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode)
         {
-            var data = source.PlayerCode;
+            var request = new
+            {
+                PlayerCode = playerCode
+            };
+            var data = playerCode;
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=GetBalance&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            return GetAsync<WGHorseGetBalanceRequest, WGHorseGetBalanceResponse>(url, source, "Balance");
+            var response = await GetAsync<WGHorseGetBalanceResponse>(url, request, "Balance").ConfigureAwait(false);
+
+            if (response.ReturnCode == 602)
+            {
+                return (false, null);
+            }
+
+            return (true, response.ReturnCode == 1 ? decimal.Parse(response.Balance) : null);
         }
 
-        public ValueTask<WGHorseGameRecordResponse> GetGameRecordAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseGameRecordRequest source)
+        public async ValueTask<(bool Success, WGHorseGameRecord[]? GameRecord)> GetGameRecordAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, DateTimeOffset startTime, DateTimeOffset endTime, int pageIndex, int pageSize)
         {
-            var data = $"|{source.StartTime:yyyy-MM-dd}|{source.EndTime:yyyy-MM-dd}|{source.PageIndex}|{source.PageSize}";
+            var request = new
+            {
+                StartTime = startTime,
+                EndTime = endTime,
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            };
+            var data = $"|{startTime:yyyy-MM-dd}|{endTime:yyyy-MM-dd}|{pageIndex}|{pageSize}";
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=ShowBetList&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            return GetAsync<WGHorseGameRecordRequest, WGHorseGameRecordResponse>(url, source, "GameRecord");
+            var response = await GetAsync<WGHorseGameRecordResponse>(url, request, "GameRecord").ConfigureAwait(false);
+            if (response == null)
+            {
+                return (false, null);
+            }
+
+            if (response?.ReturnCode != 1)
+            {
+                if (response?.ReturnCode != 503)
+                {
+                    return new() { Success = false };
+                }
+            }
+
+            if (pageIndex.ToString().IgnoreCaseNotEquals(response.Page)
+               || response.ArrayInvoice == null || response.ArrayInvoice.Length == 0)
+            {
+                return (true, null);
+            }
+            return (true, response.ArrayInvoice);
         }
 
-        public ValueTask<WGHorseLoginResponse> GetLoginAsync(Uri apiUrl, string partnerCode, WGHorseLoginRequest source)
+        public async ValueTask<Uri?> GetLoginAsync(Uri apiUrl, string partnerCode, string token, string lang)
         {
-            var url = new Uri($"{apiUrl}?m=api&c=index&a=Login&Token={System.Web.HttpUtility.UrlEncode(source.Token)}&PartnerCode={partnerCode}&Lang={source.Lang}");
+            var request = new
+            {
+                Token = token,
+                Lang = lang
+            };
 
-            return GetAsync<WGHorseLoginRequest, WGHorseLoginResponse>(url, source, "Login");
+            var url = new Uri($"{apiUrl}?m=api&c=index&a=Login&Token={System.Web.HttpUtility.UrlEncode(token)}&PartnerCode={partnerCode}&Lang={lang}");
+
+            var response = await GetAsync<WGHorseLoginResponse>(url, request, "Login").ConfigureAwait(false);
+
+            return response.ReturnCode is not 1 ? null : new(response.LoginUrl);
         }
 
-        public ValueTask<WGHorsePrepareLoginResponse> GetPrepareLoginAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorsePrepareLoginRequest source)
+        public async ValueTask<string?> GetPrepareLoginAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, long timestamp, string playerCode, string playerNickname, string currencyCode)
         {
-            var data = $"{source.Timestamp}|{source.PlayerCode}|{source.PlayerNickname}|{source.CurrencyCode}";
+            var request = new
+            {
+                Timestamp = timestamp,
+                PlayerCode = playerCode,
+                PlayerNickname = playerNickname,
+                CurrencyCode = currencyCode,
+            };
+            var data = $"{timestamp}|{playerCode}|{playerNickname}|{currencyCode}";
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=PrepareLogin&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            return GetAsync<WGHorsePrepareLoginRequest, WGHorsePrepareLoginResponse>(url, source, "PrepareLogin");
+            var response = await GetAsync<WGHorsePrepareLoginResponse>(url, request, "PrepareLogin").ConfigureAwait(false);
+
+            return (response.ReturnCode is not 1) ? null : response.Token;
         }
 
-        public ValueTask<WGHorseResponse> LogoutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode)
+        public async ValueTask LogoutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode)
         {
+            var request = new
+            {
+                PlayerCode = playerCode
+            };
             var data = $"{playerCode}";
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=Logout&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            return GetAsync<string, WGHorseResponse>(url, playerCode, "Logout");
+            await GetAsync<WGHorseResponse>(url, request, "Logout").ConfigureAwait(false);
         }
 
         private string GetAesEncrypt(string data, string secretKey, string secretIV)
@@ -125,7 +223,7 @@ namespace TGS.GameProviders.ApiClients.WGHorse
             }
         }
 
-        private async ValueTask<TResult> GetAsync<TSource, TResult>(Uri url, TSource request, string logPrefix)
+        private async ValueTask<TResult> GetAsync<TResult>(Uri url, object request, string logPrefix)
         {
             logPrefix = $"{nameof(WGHorseApiClient).ToLower()}.{logPrefix}";
             var sw = Stopwatch.StartNew();
