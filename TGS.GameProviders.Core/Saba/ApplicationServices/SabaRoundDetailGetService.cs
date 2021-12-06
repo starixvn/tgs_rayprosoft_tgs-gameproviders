@@ -18,7 +18,7 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
         private readonly IGameActionRepository _gameActionRepository;
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameRepository _gameRepository;
-        private readonly JsonSerializerOptions _jsonSerialzierOptions;
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
         private readonly ILogger<SabaRoundDetailGetService> _logger;
         private readonly IRoundRepository _roundRepository;
         private readonly ISabaService _service;
@@ -40,7 +40,7 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _client = client ?? throw new ArgumentNullException(nameof(client));
 
-            _jsonSerialzierOptions = new JsonSerializerOptions
+            _jsonSerializerOptions = new JsonSerializerOptions
             {
                 WriteIndented = false
             };
@@ -92,7 +92,7 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
 
             if (response.ErrorCode == SabaGetRoundHistoryApiError.Ok && response.Data?.Results?.Length > 0)
             {
-                value = JsonSerializer.Serialize(response.Data.Results, _jsonSerialzierOptions);
+                value = JsonSerializer.Serialize(response.Data.Results, _jsonSerializerOptions);
             }
 
             return new RoundDetailResult

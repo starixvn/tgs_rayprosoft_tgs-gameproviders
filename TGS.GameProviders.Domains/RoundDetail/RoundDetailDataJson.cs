@@ -9,6 +9,6 @@ namespace TGS.GameProviders.Domains.RoundDetail
         }
 
         [JsonPropertyName("value")]
-        public string Value { get; init; } = default!;
+        public string? Value { get; init; } = default!;
     }
 }

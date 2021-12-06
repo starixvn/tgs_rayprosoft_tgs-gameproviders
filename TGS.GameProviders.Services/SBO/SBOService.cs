@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.Game;
+using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.SBO;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -33,30 +34,28 @@ namespace TGS.GameProviders.Services.SBO
             int gameId)
             => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
-        public async ValueTask<string> GetGameProviderCultureCodeAsync(
-            string cultureCode)
-        {
-            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SBOBET)
-                .ConfigureAwait(false);
+        public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
+            => _gameProviderRepository.GetAsync(gameProviderId);
 
+        public async ValueTask<string> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode)
+        {
             var (isCultureCode, gameProviderCultureCode) = await _gameProviderRepository
                 .GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
 
             return isCultureCode ? gameProviderCultureCode : "en_US";
         }
 
-        public async ValueTask<string> GetGameProviderCurrencyCodeAsync(
-            string currencyCode)
+        public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
         {
-            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SBOBET)
-                .ConfigureAwait(false);
-
             var (isCurrencyCode, gameProviderCurrencyCode) = await _gameProviderRepository
                 .GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)
                 .ConfigureAwait(false);
 
             return isCurrencyCode ? gameProviderCurrencyCode : null;
         }
+
+        public ValueTask<Guid> GetGameProviderIdAsync()
+            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SBOBET);
 
         public async ValueTask<SBOConfiguration> GetSettingConfigurationAsync()
             => await _settingRepository.GetConfigurationAsync<SBOConfiguration>(GameProviderConfigurations.SBOBET)

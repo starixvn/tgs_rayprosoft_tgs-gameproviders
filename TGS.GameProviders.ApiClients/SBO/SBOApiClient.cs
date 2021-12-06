@@ -55,7 +55,11 @@ namespace TGS.GameProviders.ApiClients.SBO
         {
             var jsonSerializerOptions = new JsonSerializerOptions
             {
-                NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString
+                NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString,
+                Converters =
+                {
+                    new SBONumberToStringConverter()
+                }
             };
 
             return PostAsync<SBOGetBetHistoryRequest, SBOGetBetHistoryResponse>(
@@ -72,7 +76,11 @@ namespace TGS.GameProviders.ApiClients.SBO
         {
             var jsonSerializerOptions = new JsonSerializerOptions
             {
-                NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString
+                NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString,
+                Converters =
+                {
+                    new SBONumberToStringConverter()
+                }
             };
 
             return PostAsync<SBOGetRoundHistoryRequest, SBOGetRoundHistoryResponse>(
