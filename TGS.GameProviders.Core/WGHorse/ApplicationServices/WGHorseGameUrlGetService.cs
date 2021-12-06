@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.WGHorse.Models;
 
 namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
 {
@@ -28,14 +27,6 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var cultureCode = await _service.GetGameProviderCultureCodeAsync(command.Language).ConfigureAwait(false);
             var currencyCode = await _service.GetGameProviderCurrencyCodeAsync(command.CurrencyCode).ConfigureAwait(false);
-
-            var prepareLoginRequest = new WGHorsePrepareLoginRequest()
-            {
-                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                PlayerCode = command.PlayerCode,
-                PlayerNickname = command.PlayerCode,
-                CurrencyCode = currencyCode
-            };
 
             var token = await _client.GetPrepareLoginAsync(
                 configuration.ApiUrl,

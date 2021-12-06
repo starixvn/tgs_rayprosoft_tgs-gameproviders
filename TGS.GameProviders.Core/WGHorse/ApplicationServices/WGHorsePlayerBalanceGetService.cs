@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.WGHorse.Models;
 
 namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
 {
@@ -40,10 +39,7 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
             }
 
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-            var source = new WGHorseGetBalanceRequest()
-            {
-                PlayerCode = playerModel.PlayerCode
-            };
+
             (bool IsPlayer, decimal? Balance) = await _client.GetBalanceAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,

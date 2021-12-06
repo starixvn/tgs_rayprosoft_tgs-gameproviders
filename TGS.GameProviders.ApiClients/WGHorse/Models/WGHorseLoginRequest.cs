@@ -1,4 +1,4 @@
-﻿namespace TGS.GameProviders.Core.WGHorse.Models
+﻿namespace TGS.GameProviders.ApiClients.WGHorse.Models
 {
     public record WGHorseLoginRequest
     {

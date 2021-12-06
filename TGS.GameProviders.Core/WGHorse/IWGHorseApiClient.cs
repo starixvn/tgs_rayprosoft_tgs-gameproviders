@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.WGHorse.Models;
-using TGS.GameProviders.Core.WGHorse.Models.Commons;
 
 namespace TGS.GameProviders.Core.WGHorse
 {
     public interface IWGHorseApiClient
     {
         ValueTask<bool> AccessMoneyFundInAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode, string orderId, decimal amount);
+
         ValueTask<bool> AccessMoneyFundOutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode, string orderId, decimal amount);
 
         ValueTask<bool> AccessMoneyQueryAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string orderId);
@@ -21,6 +21,5 @@ namespace TGS.GameProviders.Core.WGHorse
         ValueTask<string?> GetPrepareLoginAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, long timestamp, string playerCode, string playerNickname, string currencyCode);
 
         ValueTask LogoutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode);
-
     }
 }

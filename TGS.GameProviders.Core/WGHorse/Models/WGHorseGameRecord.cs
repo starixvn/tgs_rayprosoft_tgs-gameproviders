@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TGS.GameProviders.Core.WGHorse.Models.Commons
+namespace TGS.GameProviders.Core.WGHorse.Models
 {
     public record WGHorseGameRecord
     {

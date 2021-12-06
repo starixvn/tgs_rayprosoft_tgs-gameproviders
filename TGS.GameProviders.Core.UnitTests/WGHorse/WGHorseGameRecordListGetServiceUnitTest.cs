@@ -6,7 +6,6 @@ using NUnit.Framework;
 using TGS.GameProviders.Core.WGHorse;
 using TGS.GameProviders.Core.WGHorse.ApplicationServices;
 using TGS.GameProviders.Core.WGHorse.Models;
-using TGS.GameProviders.Core.WGHorse.Models.Commons;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.UnitTests.WGHorse

@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.WGHorse.Models;
-using TGS.GameProviders.Core.WGHorse.Models.Commons;
 using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
@@ -32,7 +31,6 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
         public async ValueTask<GameRecordListResult> GetAsync(WGHorseGameRecordListQuery command, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-
 
             (bool Success, WGHorseGameRecord[]? GameRecord) = await _client.GetGameRecordAsync(
                 configuration.ApiUrl,

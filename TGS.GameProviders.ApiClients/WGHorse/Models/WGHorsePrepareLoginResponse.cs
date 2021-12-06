@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using TGS.GameProviders.Core.WGHorse.Models.Commons;
+using TGS.GameProviders.ApiClients.WGHorse.Models.Commons;
 
-namespace TGS.GameProviders.Core.WGHorse.Models
+namespace TGS.GameProviders.ApiClients.WGHorse.Models
 {
     public record WGHorsePrepareLoginResponse : WGHorseResponse
     {
