@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using TGS.GameProviders.ApiClients.WGSports.Models;
 using TGS.GameProviders.Core.WGSports;
 using TGS.GameProviders.Core.WGSports.ApplicationServices;
 using TGS.GameProviders.Core.WGSports.Models;
-using TGS.GameProviders.Core.WGSports.Models.Commons;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
@@ -48,7 +48,7 @@ namespace TGS.GameProviders.Core.UnitTests.WGSports
                 TotalAmount = "0",
                 TotalResult = "0",
                 TotalActiveAmount = "0",
-                ReturnCode = "1",
+                ReturnCode = 1,
                 BetInfo = new WGSportsBetInfo[]
                     {
                         new(){
@@ -93,12 +93,10 @@ namespace TGS.GameProviders.Core.UnitTests.WGSports
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                new()
-                {
-                    GameRecordTime = GameRecordTime.SettleDate,
-                    StartTime = query.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
-                    EndTime = query.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss")
-                }).Returns(ValueTask.FromResult(gameRecordResponse));
+                GameRecordTime.SettleDate,
+                query.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
+                query.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss")
+                ).Returns(ValueTask.FromResult((true, gameRecordResponse.BetInfo)));
 
             var actual = await fakeService.GetAsync(query).ConfigureAwait(false);
             Assert.NotNull(actual);
