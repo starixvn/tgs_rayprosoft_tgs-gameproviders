@@ -46,7 +46,7 @@ namespace TGS.GameProviders.ApiClients.WGSports
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=AccessMoney&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            var response = await GetAsync<object, WGSportsResponse>(
+            var response = await GetAsync<WGSportsResponse>(
                 url,
                 request,
                 "AccessMoneyFundIn").ConfigureAwait(false);
@@ -66,7 +66,7 @@ namespace TGS.GameProviders.ApiClients.WGSports
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=AccessMoney&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            var response = await GetAsync<object, WGSportsResponse>(
+            var response = await GetAsync<WGSportsResponse>(
                 url,
                 request,
                 "AccessMoneyFundOut").ConfigureAwait(false);
@@ -83,7 +83,7 @@ namespace TGS.GameProviders.ApiClients.WGSports
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=AccessMoneyQuery&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            var response = await GetAsync<object, WGSportsResponse>(
+            var response = await GetAsync<WGSportsResponse>(
                 url,
                 request,
                 "AccessMoneyQuery").ConfigureAwait(false);
@@ -101,7 +101,7 @@ namespace TGS.GameProviders.ApiClients.WGSports
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=GetBalance&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            var response = await GetAsync<object, WGSportsGetBalanceResponse>(url, request, "Balance").ConfigureAwait(false);
+            var response = await GetAsync<WGSportsGetBalanceResponse>(url, request, "Balance").ConfigureAwait(false);
 
             if (response.ReturnCode == 602)
             {
@@ -123,7 +123,7 @@ namespace TGS.GameProviders.ApiClients.WGSports
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=ShowBetList&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            var response = await GetAsync<object, WGSportsGameRecordResponse>(url, request, "GameRecord").ConfigureAwait(false);
+            var response = await GetAsync<WGSportsGameRecordResponse>(url, request, "GameRecord").ConfigureAwait(false);
             if (response == null)
             {
                 return (false, null);
@@ -151,7 +151,7 @@ namespace TGS.GameProviders.ApiClients.WGSports
 
             var url = new Uri($"{apiUrl}?m=api&c=index&a=Login&Token={System.Web.HttpUtility.UrlEncode(token)}&PartnerCode={partnerCode}&Lang={lang}");
 
-            var response = await GetAsync<object, WGSportsLoginResponse>(url, request, "Login").ConfigureAwait(false);
+            var response = await GetAsync<WGSportsLoginResponse>(url, request, "Login").ConfigureAwait(false);
 
             return response.ReturnCode is not 1 ? null : new(response.LoginUrl);
         }
@@ -170,7 +170,7 @@ namespace TGS.GameProviders.ApiClients.WGSports
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=PrepareLogin&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            var response = await GetAsync<object, WGSportsPrepareLoginResponse>(url, request, "PrepareLogin").ConfigureAwait(false);
+            var response = await GetAsync<WGSportsPrepareLoginResponse>(url, request, "PrepareLogin").ConfigureAwait(false);
 
             return (response.ReturnCode is not 1) ? null : response.Token;
         }
@@ -185,7 +185,7 @@ namespace TGS.GameProviders.ApiClients.WGSports
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=Logout&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            await GetAsync<object, WGSportsResponse>(url, request, "Logout").ConfigureAwait(false);
+            await GetAsync<WGSportsResponse>(url, request, "Logout").ConfigureAwait(false);
         }
 
         private string GetAesEncrypt(string data, string secretKey, string secretIV)
@@ -222,7 +222,7 @@ namespace TGS.GameProviders.ApiClients.WGSports
             }
         }
 
-        private async ValueTask<TResult> GetAsync<TSource, TResult>(Uri url, TSource request, string logPrefix)
+        private async ValueTask<TResult> GetAsync<TResult>(Uri url, object request, string logPrefix)
         {
             logPrefix = $"{nameof(WGSportsApiClient).ToLower()}.{logPrefix}";
             var sw = Stopwatch.StartNew();
