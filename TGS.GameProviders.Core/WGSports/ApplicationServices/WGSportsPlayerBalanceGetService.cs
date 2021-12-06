@@ -12,8 +12,8 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
     {
         private readonly IWGSportsApiClient _client;
         private readonly ILogger<WGSportsPlayerBalanceGetService> _logger;
-        private readonly IPlayerRepository _playerRepository;
         private readonly IWGSportsGamePlayer _playerCreate;
+        private readonly IPlayerRepository _playerRepository;
         private readonly IWGSportsService _service;
 
         public WGSportsPlayerBalanceGetService(
