@@ -20,13 +20,11 @@ namespace TGS.GameProviders.ApiClients.AsiaGaming
                 return original;
             }
 
-            using var des = new DESCryptoServiceProvider
-            {
-                IV = Encoding.UTF8.GetBytes(desKey),
-                Key = Encoding.UTF8.GetBytes(desKey),
-                Mode = CipherMode.ECB,
-                Padding = PaddingMode.PKCS7
-            };
+            using var des = DES.Create();
+            des.IV = Encoding.UTF8.GetBytes(desKey);
+            des.Key = Encoding.UTF8.GetBytes(desKey);
+            des.Mode = CipherMode.ECB;
+            des.Padding = PaddingMode.PKCS7;
 
             using var ct = des.CreateEncryptor();
             using var ms = new MemoryStream();

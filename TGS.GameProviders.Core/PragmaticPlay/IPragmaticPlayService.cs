@@ -12,7 +12,7 @@ namespace TGS.GameProviders.Core.PragmaticPlay
 
         ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId);
 
-        ValueTask<string> GetGameProviderCurrencyLanguageAsync(Guid gameProviderId, string cultureCode);
+        ValueTask<string> GetGameProviderLanguageAsync(Guid gameProviderId, string cultureCode);
 
         ValueTask<PragmaticPlayConfiguration> GetSettingConfigurationAsync();
     }
