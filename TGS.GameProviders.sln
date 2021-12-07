@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.Services"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.Core.UnitTests", "TGS.GameProviders.Core.UnitTests\TGS.GameProviders.Core.UnitTests.csproj", "{558C75E0-F830-4557-963D-7BE4752E9A5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGS.GameProviders.Client.IntegrationTests", "TGS.GameProviders.Client.UnitTests\TGS.GameProviders.Client.IntegrationTests.csproj", "{58421FD9-615D-416B-B450-384E19D8ADF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{558C75E0-F830-4557-963D-7BE4752E9A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{558C75E0-F830-4557-963D-7BE4752E9A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{558C75E0-F830-4557-963D-7BE4752E9A5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58421FD9-615D-416B-B450-384E19D8ADF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58421FD9-615D-416B-B450-384E19D8ADF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58421FD9-615D-416B-B450-384E19D8ADF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58421FD9-615D-416B-B450-384E19D8ADF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
