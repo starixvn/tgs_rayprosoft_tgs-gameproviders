@@ -14,7 +14,6 @@ namespace TGS.GameProviders.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class BCController : ControllerBase,
-        IGameUrlHandler<BetConstructGameUrlQuery>,
         IRoundDetailHandler<BetConstructRoundDetailQuery>
     {
         private readonly ILogger<BCController> _logger;
@@ -48,16 +47,32 @@ namespace TGS.GameProviders.Controllers
         ///             "platformType": 0,
         ///             "language": "zh-CN",
         ///             "ipAddress": "127.0.0.1",
-        ///             "backUrl": "https://dev-t1.rpgp.cc/"
-        ///         }                
+        ///             "backUrl": "https://dev-t1.rpgp.cc/",
+        ///             "lobbyDomain": "https://devsportsbook.srvttt.com"
+        ///         }
         /// </remarks>
         [HttpPost("GameUrl")]
         public async ValueTask<GameUrlResponse?> GameUrlAsync(
             [FromServices] IGetService<BetConstructGameUrlQuery, GameUrlResult> getService,
-            GameUrlRequest request)
+            GameBCUrlRequest request)
         {
+            var query = new BetConstructGameUrlQuery
+            {
+                GameType = request.GameType,
+                GameId = request.GameId,
+                BrandCode = request.BrandCode,
+                PlayerCode = request.PlayerCode,
+                CurrencyCode = request.CurrencyCode,
+                LoginRecordId = request.LoginRecordId,
+                PlatformType = request.PlatformType,
+                Language = request.Language,
+                IPAddress = request.IPAddress,
+                BackUrl = request.BackUrl,
+                LobbyDomain = request.LobbyDomain,
+            };
+
             var result = await getService
-                .GetAsync(_mapper.Map<BetConstructGameUrlQuery>(request))
+                .GetAsync(query)
                 .ConfigureAwait(false);
 
             return result == null ? null : _mapper.Map<GameUrlResponse>(result);

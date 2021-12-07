@@ -35,8 +35,6 @@ namespace TGS.GameProviders.Core.BetConstruct.ApplicationServices
                 _ => "eng"
             };
 
-            query.LobbyDomain = "https://devsportsbook.srvttt.com";
-
             var url = $"{query.LobbyDomain}/js/partnerinit.js?containerID=bcsportsbookcontainer&UserId={userId}&AuthToken={authToken}&lang={lang}&sport=1";
 
             return new GameUrlResult

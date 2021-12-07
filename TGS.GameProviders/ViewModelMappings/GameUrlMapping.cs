@@ -61,9 +61,7 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<GameUrlRequest, SabaGameUrlQuery>()
                 .ReverseMap();
             CreateMap<GameUrlRequest, HabaneroGameUrlQuery>()
-                .ReverseMap();
-            CreateMap<GameUrlRequest, BetConstructGameUrlQuery>()
-                .ReverseMap();
+                .ReverseMap();            
         }
     }
 }
