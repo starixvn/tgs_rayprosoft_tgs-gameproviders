@@ -1,6 +1,7 @@
 ﻿using System;
 using StackExchange.Redis;
 using TGS.GameProviders.Core.AsiaGaming;
+using TGS.GameProviders.Core.BetConstruct;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Evolution;
 using TGS.GameProviders.Core.Habanero;
@@ -18,6 +19,7 @@ using TGS.GameProviders.Core.WGHorse;
 using TGS.GameProviders.Core.WGSports;
 using TGS.GameProviders.Core.WMCasino;
 using TGS.GameProviders.Services.AsiaGaming;
+using TGS.GameProviders.Services.BetConstruct;
 using TGS.GameProviders.Services.BigGaming;
 using TGS.GameProviders.Services.Evolution;
 using TGS.GameProviders.Services.Habanero;
@@ -118,6 +120,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services
                 .AddTransient<IHabaneroService, HabaneroService>();
+
+            services
+                .AddTransient<IBetConstructService, BetConstructService>();
 
             return services;
         }

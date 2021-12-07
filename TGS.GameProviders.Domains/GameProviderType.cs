@@ -5,6 +5,7 @@
         public const string AllBet = "AB";
         public const string AsiaGaming = "AG";
         public const string BigGaming = "BG";
+        public const string BetConstruct = "BC";
         public const string Card365 = "365";
         public const string Evolution = "EVO";
         public const string Habanero = "HABA";
