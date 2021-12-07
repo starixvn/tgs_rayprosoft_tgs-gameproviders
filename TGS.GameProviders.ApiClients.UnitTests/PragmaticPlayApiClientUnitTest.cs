@@ -9,58 +9,71 @@ using TGS.GameProviders.ApiClients.PragmaticPlay;
 using TGS.GameProviders.Core.PragmaticPlay;
 using TGS.GameProviders.Core.PragmaticPlay.Models;
 
-namespace TGS.GameProviders.ApiClients.UnitTests
+namespace TGS.GameProviders.ApiClients.UnitTests;
+
+[TestFixture]
+public class PragmaticPlayApiClientUnitTest
 {
-    [TestFixture]
-    public class PragmaticPlayApiClientUnitTest
+    private readonly Uri _apiUrl = new Uri("https://api.prerelease-env.biz");
+    private readonly IPragmaticPlayApiClient _client;
+
+    private readonly string _secretKey = "testKey";
+    private readonly string _securityLogin = "tgs_tgs";
+
+    public PragmaticPlayApiClientUnitTest()
     {
-        private readonly Uri _apiUrl = new Uri("https://api.prerelease-env.biz");
-        private readonly IPragmaticPlayApiClient _client;
+        var httpClient = new HttpClient();
+        var logger = NullLogger<PragmaticPlayApiClient>.Instance;
+        var tgsLog = Substitute.For<ITgsLog>();
+        var utility = new PragmaticPlayUtility();
 
-        private readonly string _secretKey = "testKey";
-        private readonly string _securityLogin = "tgs_tgs";
+        //_client = new PragmaticPlayApiClient(httpClient, logger, tgsLog, utility);
+        _client = Substitute.For<IPragmaticPlayApiClient>();
+    }
 
-        public PragmaticPlayApiClientUnitTest()
+    [Test]
+    public async Task GetGameUrlAsync()
+    {
+        //var playerCode = "4ucmqplxb029";
+
+        var request = new PragmaticPlayGameUrlRequest()
         {
-            var httpClient = new HttpClient();
-            var logger = NullLogger<PragmaticPlayApiClient>.Instance;
-            var tgsLog = Substitute.For<ITgsLog>();
-            var utility = new PragmaticPlayUtility();
+            Token = "token",
+            ExternalGameId = "vs50juicyfr",
+            Language = "en",
+            Platform = "WEB",
+            LobbyUrl = "http://localhost:8081",
+            SecureLogin = _securityLogin
+        };
 
-            //_client = new PragmaticPlayApiClient(httpClient, logger, tgsLog, utility);
-            _client = Substitute.For<IPragmaticPlayApiClient>();
-        }
+        var response = await _client.GetGameUrlAsync(_apiUrl, _secretKey, request).ConfigureAwait(false);
+    }
 
-        [Test]
-        public async Task GetGameUrlAsync()
+    [Test]
+    public async Task KickPlayerAsync()
+    {
+        var playerCode = "4ucmqplxb029";
+
+        var request = new PragmaticPlayLogoutRequest
         {
-            //var playerCode = "4ucmqplxb029";
+            PlayerCode = playerCode,
+            SecureLogin = _securityLogin
+        };
 
-            var request = new PragmaticPlayGameUrlRequest()
-            {
-                Token = "token",
-                ExternalGameId = "vs50juicyfr",
-                Language = "en",
-                Platform = "WEB",
-                LobbyUrl = "http://localhost:8081",
-                SecureLogin = _securityLogin
-            };
+        var response = await _client.LogoutAsync(_apiUrl, _secretKey, request).ConfigureAwait(false);
+    }
 
-            var response = await _client.GetGameUrlAsync(_apiUrl, _secretKey, request).ConfigureAwait(false);
-        }
-
-        [Test]
-        public async Task KickPlayerAsync()
+    [Test]
+    public async Task GetRoundHistoryAsync()
+    {
+        var request = new PragmaticPlayOpenHistoryExtendedRequest
         {
-            var playerCode = "4ucmqplxb029";
+            SecureLogin = _securityLogin,
+            PlayerCode = "4ued5l50heuf",
+            RoundId = "2759382176",
+            Language = "en"
+        };
 
-            var request = new PragmaticPlayLogoutRequest
-            {
-                PlayerCode = playerCode,
-                SecureLogin = _securityLogin
-            };
-
-            var response = await _client.LogoutAsync(_apiUrl, _secretKey, request).ConfigureAwait(false);
-        }
+        var response = await _client.GetRoundHistoryAsync(_apiUrl, _secretKey, request).ConfigureAwait(false);
     }
 }
