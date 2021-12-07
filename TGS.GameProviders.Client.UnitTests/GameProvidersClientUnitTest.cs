@@ -1,7 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 using NUnit.Framework;
+using Tgs.Core.Infrastructures.Security;
+using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Client.IntegrationTests
@@ -12,10 +15,15 @@ namespace TGS.GameProviders.Client.IntegrationTests
         [Test]
         public async Task Test_GameProvidersClient_GameBCUrlAsync()
         {
+            var fakeTokenProvider = Substitute.For<ITokenProvider>();
+            var fakeSettingRepository = Substitute.For<ISettingRepository>();
+
             await using var web = new TestGameProvidersApplication(builder =>
             {
                 builder.ConfigureServices(services =>
                 {
+                    services.AddSingleton(fakeTokenProvider);
+                    services.AddSingleton(fakeSettingRepository);
                     services.AddFakeNatsMessageQueue();
                 });
             });
