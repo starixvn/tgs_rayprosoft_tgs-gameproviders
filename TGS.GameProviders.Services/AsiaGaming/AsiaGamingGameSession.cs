@@ -9,10 +9,10 @@ namespace TGS.GameProviders.Services.AsiaGaming
 {
     internal class AsiaGamingGameSession : IAsiaGamingGameSession
     {
+        private readonly IAsiaGamingApiClient _client;
         private readonly ILogger<AsiaGamingGameSession> _logger;
         private readonly IAsiaGamingService _service;
         private readonly IAsiaGamingUtility _utility;
-        private readonly IAsiaGamingApiClient _client;
 
         public AsiaGamingGameSession(
             ILogger<AsiaGamingGameSession> logger,

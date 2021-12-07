@@ -17,9 +17,9 @@ namespace TGS.GameProviders.ApiClients.AsiaGaming
     internal class AsiaGamingApiClient : IAsiaGamingApiClient
     {
         private readonly HttpClient _client;
-        private readonly IAsiaGamingUtility _utility;
         private readonly ILogger<AsiaGamingApiClient> _logger;
         private readonly ITgsLog _tgsLog;
+        private readonly IAsiaGamingUtility _utility;
 
         public AsiaGamingApiClient(
             ILogger<AsiaGamingApiClient> logger,

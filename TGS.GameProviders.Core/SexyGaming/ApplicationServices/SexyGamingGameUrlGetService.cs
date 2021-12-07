@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Extensions;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.SexyGaming.Models;
 using TGS.GameProviders.Domains;
 
@@ -15,7 +14,6 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
     public class SexyGamingGameUrlGetService : IGetService<SexyGamingGameUrlQuery, GameUrlResult>
     {
         private readonly ISexyGamingApiClient _client;
-        private readonly IGameRepository _gameRepository;
         private readonly ISexyGamingGamePlayer _gamingGamePlayerCreate;
         private readonly ILogger<SexyGamingGameUrlGetService> _logger;
         private readonly ISexyGamingService _service;
@@ -23,7 +21,6 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
 
         public SexyGamingGameUrlGetService(
             ISexyGamingApiClient client,
-            IGameRepository gameRepository,
             ILogger<SexyGamingGameUrlGetService> logger,
             ISexyGamingService service,
             ITokenProvider tokenProvider,
@@ -32,7 +29,6 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _tokenProvider = tokenProvider ?? throw new ArgumentNullException(nameof(tokenProvider));
             _gamingGamePlayerCreate = gamingGamePlayerCreate ?? throw new ArgumentNullException(nameof(gamingGamePlayerCreate));

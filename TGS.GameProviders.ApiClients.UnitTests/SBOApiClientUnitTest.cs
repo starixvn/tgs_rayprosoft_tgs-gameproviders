@@ -20,8 +20,8 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         private readonly ISBOApiClient _client;
 
         private readonly string _companyKey = "34B2C4ED616F4E7B965EAE0861A3F92E";
-        private readonly string _playerCurrencyCode = "CNY";
         private readonly string _gameProviderCurrencyCode = "CNY";
+        private readonly string _playerCurrencyCode = "CNY";
 
         public SBOApiClientUnitTest()
         {
@@ -94,6 +94,34 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             };
 
             var response = await _client.LogoutAsync(_apiUrl, request).ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task GetSportsBookRoundHistoryAsync()
+        {
+            var request = new SBOGetRoundHistoryRequest
+            {
+                CompanyKey = _companyKey,
+                Portfolio = "SportsBook",
+                ExternalRoundId = "4040907",
+                Language = "en_US"
+            };
+
+            var response = await _client.GetRoundHistoryAsync(_apiUrl, request).ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task GetVirtualSportsRoundHistoryAsync()
+        {
+            var request = new SBOGetRoundHistoryRequest
+            {
+                CompanyKey = _companyKey,
+                Portfolio = "VirtualSports",
+                ExternalRoundId = "B2677480",
+                Language = "en_US"
+            };
+
+            var response = await _client.GetRoundHistoryAsync(_apiUrl, request).ConfigureAwait(false);
         }
     }
 }

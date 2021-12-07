@@ -11,23 +11,25 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using TGS.GameProviders.Microsoft.Extensions.DependencyInjection;
 using TGS.GameProviders.ViewModelMappings;
 
 namespace TGS.GameProviders
 {
     public class Startup
     {
-        public Startup(
-            IConfiguration configuration)
-            => Configuration = configuration;
-
         public IConfiguration Configuration { get; }
+
+        public Startup(
+                    IConfiguration configuration)
+            => Configuration = configuration;
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
@@ -38,6 +40,8 @@ namespace TGS.GameProviders
             {
                 app.UseDeveloperExceptionPage();
             }
+            //使用IP解析需要使用
+            app.UseForwardedHeaders();
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TGS.GameProviders v1"));
@@ -161,15 +165,6 @@ namespace TGS.GameProviders
                 });
 
             services
-                .AddRedisRepository((
-                    options,
-                    sp) =>
-                {
-                    var configuration = sp.GetRequiredService<IConfiguration>();
-                    options.ConnectionString = configuration.GetConnectionString("RedisConfigurationString");
-                });
-
-            services
                 .AddNatsMessageQueue(natsConfig =>
                 {
                     natsConfig
@@ -181,19 +176,43 @@ namespace TGS.GameProviders
                 })
                 .AddTgsLog();
 
+            services.AddOptions<ForwardedHeadersOptions>()
+                .Configure<IConfiguration>((options, config) =>
+                {
+                    config.GetSection("ForwardedHeaders").Bind(options);
+                    var knownProxies = config.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
+                    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                    //options.ForwardLimit = 2;
+
+                    // Replace with IP of your proxy/load balancer
+                    foreach (var knownProxie in knownProxies)
+                        options.KnownProxies.Add(IPAddress.Parse(knownProxie));
+
+                    // 10/8 allows any from 10.0.0.0~10.255.255.255;
+                    options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("10.0.0.0"), 8));
+                    // 172.16/12  allows any from 172.16.0.0~172.31.255.255;
+                    options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("172.16.0.0"), 12));
+                    // 192.168/16 allows any from 192.168.0.0~192.168.255.255;
+                    options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("192.168.0.0"), 16));
+                });
+
             services
                 .AddApiClients()
-                .AddGameProvidersServices()
+                .UseRedis((options, sp) =>
+                {
+                    var configuration = sp.GetRequiredService<IConfiguration>();
+                    options.ConnectionString = configuration.GetConnectionString("RedisConfigurationString");
+                })
+                .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
                 .AddGameProvidersCore();
 
             services
                 .AddAutoMapper(config =>
                 {
                     config.AddProfile<GameUrlMapping>();
-                    config.AddProfile<KickPlayerMapping>();
-                    config.AddProfile<PlayerBalanceMapping>();
                     config.AddProfile<PlayerFundMapping>();
                     config.AddProfile<PlayerFundCheckingMapping>();
+                    config.AddProfile<RoundDetailMapping>();
                 });
 
             services

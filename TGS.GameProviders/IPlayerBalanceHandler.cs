@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
-using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders
 {
     public interface IPlayerBalanceHandler<TQuery> where TQuery : PlayerBalanceQuery
     {
-        ValueTask<PlayerBalanceResponse?> PlayerBalanceAsync([FromServices] IGetService<TQuery, PlayerBalanceResult> getService, PlayerBalanceRequest request);
+        [HttpGet("Balance/{playerCode}")]
+        ValueTask<decimal?> PlayerBalanceAsync([FromServices] IGetService<TQuery, decimal?> getService, string playerCode);
     }
 }

@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Extensions;
-using TGS.GameProviders.Core.WGSports.Models;
 using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.WGSports.ApplicationServices
@@ -32,31 +31,21 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            var data = new WGSportsGameRecordRequest
-            {
-                GameRecordTime = (command.IsSettlement) ? GameRecordTime.SettleDate : GameRecordTime.BetDate,
-                StartTime = command.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
-                EndTime = command.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
-            };
-
-            var response = await _client.GetGameRecordAsync(
+            (bool Success, TGS.GameProviders.Core.WGSports.Models.WGSportsBetInfo[]? BetInfos) = await _client.GetGameRecordAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                data);
+                (command.IsSettlement) ? GameRecordTime.SettleDate : GameRecordTime.BetDate,
+                command.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
+                command.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss")).ConfigureAwait(false);
 
-            if (response == null)
+            if (!Success)
             {
                 return new() { Success = false };
             }
 
-            if (response.ReturnCode.IgnoreCaseNotEquals("1"))
-            {
-                return new() { Success = false };
-            }
-
-            if (response.BetInfo == null || response.BetInfo.Length == 0)
+            if (Success && BetInfos == null)
             {
                 return new() { Success = true };
             }
@@ -64,25 +53,25 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
             var gameProviderCode = _service.GetGameProviderCode();
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
-            var datas = response.BetInfo
+            var datas = BetInfos
                 .Where(data => data.Reference.IgnoreCaseNotContains("不接受"))
-                .Select(data => new GameRecordListModle()
+                .Select(data => new GameRecordListModel()
                 {
                     GameProviderCode = gameProviderCode,
                     GameProviderId = gameProviderId,
                     PlayerCode = data.Username,
                     Status = data.InitData.Win.IgnoreCaseEquals("0") ? RoundStatus.Open : RoundStatus.Closed,
-                    ClientStatus = data.InitData.Win.IgnoreCaseEquals("0") ? ClientRoundStatus.Open : _service.GetClientRound(decimal.Parse(data.Result)),
+                    ClientStatus = data.InitData.Win.IgnoreCaseEquals("0") ? ClientRoundStatus.Open : _service.GetClientRound(data.Result),
                     ExternalRoundId = data.Reference,
                     ExternalGameId = "1",
                     ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(-4)),
                     ExternalClosedOn = data.InitData.Win.IgnoreCaseEquals("0") ? null : new DateTimeOffset(DateTime.Parse(data.SettleDate), TimeSpan.FromHours(-4)),
-                    BetAmount = decimal.Parse(data.InitData.BetAmount),
-                    ValidBetAmount = decimal.Parse(data.InitData.BetAmount),
-                    PlayerWinLoss = data.InitData.Win.IgnoreCaseEquals("0") ? null : decimal.Parse(data.Result),
+                    BetAmount = _service.GetAmount(data.InitData.BetAmount) ?? 0,
+                    ValidBetAmount = _service.GetAmount(data.InitData.BetAmount) ?? 0,
+                    PlayerWinLoss = data.InitData.Win.IgnoreCaseEquals("0") ? null : _service.GetAmount(data.Result),
                     Commission = 0,
                     Turnover = data.InitData.Win.IgnoreCaseEquals("0") ? null : decimal.Parse(data.InitData.BetAmount),
-                    SettleAmount = decimal.Parse(data.InitData.BetAmount) + decimal.Parse(data.Result),
+                    SettleAmount = _service.GetAmount(data.InitData.BetAmount) ?? 0 + _service.GetAmount(data.Result) ?? 0,
                     TieBetAdjustment = null,
 
                     AdditionalData = JsonSerializer.Serialize(data),

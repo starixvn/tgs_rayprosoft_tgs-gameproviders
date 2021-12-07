@@ -14,8 +14,6 @@ namespace TGS.GameProviders.Core.LY
 
         ClientRoundStatus GetClientRound(decimal playerWinLoss);
 
-        DateTimeOffset GetDateTimeOffsetTimeZone8();
-
         string GetGameProviderCode();
 
         ValueTask<Guid> GetGameProviderIdAsync();

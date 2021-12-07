@@ -13,16 +13,16 @@ namespace TGS.GameProviders.Services.SBO
             [GameType.VirtualSportsLobby] = "VirtualSports"
         };
 
-        public string GetPortfolio(
-            GameType gameType)
-            => !_Portfolios.TryGetValue(gameType, out var portfolio)
-                ? null
-                : portfolio;
-
         public string GetAgentId(
             string agentPrefix,
             string brandCode,
             string currencyCode)
             => $"{agentPrefix}{brandCode.ToUpper()}{currencyCode.Replace("_", string.Empty).ToUpper()}";
+
+        public string GetPortfolio(
+                    GameType gameType)
+            => !_Portfolios.TryGetValue(gameType, out var portfolio)
+                ? null
+                : portfolio;
     }
 }

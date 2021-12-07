@@ -68,7 +68,7 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
             var gameProviderCode = _service.GetGameProviderCode();
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
-            var datas = gameRecords.Items.Select(data => new GameRecordListModle()
+            var datas = gameRecords.Items.Select(data => new GameRecordListModel()
             {
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,

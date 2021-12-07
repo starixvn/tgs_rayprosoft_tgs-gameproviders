@@ -66,6 +66,10 @@ namespace TGS.GameProviders.Repositories.Entities.Configurations
                 .HasColumnType("timestamp with time zone")
                 .HasColumnName("first_deposit_on");
 
+            entity.Property(e => e.FirstPromotionOn)
+                .HasColumnType("timestamp with time zone")
+                .HasColumnName("first_promotion_on");
+
             entity.Property(e => e.IdNumber)
                 .HasMaxLength(50)
                 .HasColumnName("id_number");

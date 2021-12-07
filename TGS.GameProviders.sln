@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31624.102
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.Repositories", "TGS.GameProviders.Repositories\TGS.GameProviders.Repositories.csproj", "{C75C4C36-245C-4F6E-84C6-1F0CC2D0878D}"
 EndProject
@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.ApiClient
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.Repositories.UnitTests", "TGS.GameProviders.Repositories.UnitTests\TGS.GameProviders.Repositories.UnitTests.csproj", "{740F3020-0425-49B9-B84D-DC7A3AB87ED7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.RedisRepositories", "TGS.GameProviders.RedisRepositories\TGS.GameProviders.RedisRepositories.csproj", "{4271BEE6-248F-4028-BD84-FB2628FD317B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.Core", "TGS.GameProviders.Core\TGS.GameProviders.Core.csproj", "{A6745ED1-A15C-4046-9D08-01DD6FCEDC4D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.Client", "TGS.GameProviders.Client\TGS.GameProviders.Client.csproj", "{B8B6F8F0-9EF9-465F-9805-728BB535DD1A}"
@@ -31,7 +29,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{4CE298
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.ClientSample", "TGS.GameProviders.ClientSample\TGS.GameProviders.ClientSample.csproj", "{5F1BC202-C8C9-4F4F-B97D-0BBC72F661A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TGS.GameProviders.Services", "TGS.GameProviders.Services\TGS.GameProviders.Services.csproj", "{2F84E267-4C30-4A85-883F-CD9A3A5BD712}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.Services", "TGS.GameProviders.Services\TGS.GameProviders.Services.csproj", "{2F84E267-4C30-4A85-883F-CD9A3A5BD712}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TGS.GameProviders.Core.UnitTests", "TGS.GameProviders.Core.UnitTests\TGS.GameProviders.Core.UnitTests.csproj", "{558C75E0-F830-4557-963D-7BE4752E9A5A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,10 +63,6 @@ Global
 		{740F3020-0425-49B9-B84D-DC7A3AB87ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{740F3020-0425-49B9-B84D-DC7A3AB87ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{740F3020-0425-49B9-B84D-DC7A3AB87ED7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4271BEE6-248F-4028-BD84-FB2628FD317B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4271BEE6-248F-4028-BD84-FB2628FD317B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4271BEE6-248F-4028-BD84-FB2628FD317B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4271BEE6-248F-4028-BD84-FB2628FD317B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A6745ED1-A15C-4046-9D08-01DD6FCEDC4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6745ED1-A15C-4046-9D08-01DD6FCEDC4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6745ED1-A15C-4046-9D08-01DD6FCEDC4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -83,6 +79,10 @@ Global
 		{2F84E267-4C30-4A85-883F-CD9A3A5BD712}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F84E267-4C30-4A85-883F-CD9A3A5BD712}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F84E267-4C30-4A85-883F-CD9A3A5BD712}.Release|Any CPU.Build.0 = Release|Any CPU
+		{558C75E0-F830-4557-963D-7BE4752E9A5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{558C75E0-F830-4557-963D-7BE4752E9A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{558C75E0-F830-4557-963D-7BE4752E9A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{558C75E0-F830-4557-963D-7BE4752E9A5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

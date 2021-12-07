@@ -7,6 +7,6 @@ namespace TGS.GameProviders.Core.BigGaming
 {
     public interface IBigGamingGameUrl
     {
-        ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, string playerCode, GetGame game, string cultureCode);
+        ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, string playerCode, GameModel game, string cultureCode);
     }
 }

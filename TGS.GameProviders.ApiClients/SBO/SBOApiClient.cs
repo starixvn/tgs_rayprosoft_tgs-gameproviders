@@ -8,10 +8,10 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.Logging;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.SBO;
 using TGS.GameProviders.Core.SBO.Models;
-using Tgs.Logging;
 
 namespace TGS.GameProviders.ApiClients.SBO
 {
@@ -40,13 +40,26 @@ namespace TGS.GameProviders.ApiClients.SBO
                 request,
                 "CreateAgent");
 
-        public ValueTask<SBOGetBetHistoryResponse> GetBetHistoryAsync(
+        public ValueTask<SBOCreatePlayerResponse> CreatePlayerAsync(
             Uri apiUrl,
+            SBOCreatePlayerRequest request)
+            => PostAsync<SBOCreatePlayerRequest, SBOCreatePlayerResponse>(
+                apiUrl,
+                "/web-root/restricted/player/register-player.aspx",
+                request,
+                "CreatePlayer");
+
+        public ValueTask<SBOGetBetHistoryResponse> GetBetHistoryAsync(
+                    Uri apiUrl,
             SBOGetBetHistoryRequest request)
         {
             var jsonSerializerOptions = new JsonSerializerOptions
             {
-                NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString
+                NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString,
+                Converters =
+                {
+                    new SBONumberToStringConverter()
+                }
             };
 
             return PostAsync<SBOGetBetHistoryRequest, SBOGetBetHistoryResponse>(
@@ -63,7 +76,11 @@ namespace TGS.GameProviders.ApiClients.SBO
         {
             var jsonSerializerOptions = new JsonSerializerOptions
             {
-                NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString
+                NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString,
+                Converters =
+                {
+                    new SBONumberToStringConverter()
+                }
             };
 
             return PostAsync<SBOGetRoundHistoryRequest, SBOGetRoundHistoryResponse>(
@@ -91,15 +108,6 @@ namespace TGS.GameProviders.ApiClients.SBO
                 "/web-root/restricted/player/logout.aspx",
                 request,
                 "Logout");
-
-        public ValueTask<SBOCreatePlayerResponse> CreatePlayerAsync(
-            Uri apiUrl,
-            SBOCreatePlayerRequest request)
-            => PostAsync<SBOCreatePlayerRequest, SBOCreatePlayerResponse>(
-                apiUrl,
-                "/web-root/restricted/player/register-player.aspx",
-                request,
-                "CreatePlayer");
 
         public ValueTask<SBOUpdatePlayerBetLimitsResponse> UpdatePlayerBetLimitsAsync(
             Uri apiUrl,

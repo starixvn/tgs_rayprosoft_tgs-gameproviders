@@ -14,17 +14,14 @@ namespace TGS.GameProviders.ApiClients.UnitTests
     [TestFixture]
     public class AsiaGamingApiClientUnitTest
     {
-        private readonly Uri _loginApiUrl = new("http://gi.aggdemo.com:81");
-        private readonly Uri _serviceApiUrl = new("https://swapi.etwlt.com");
-
         private readonly string _agentCode = "JH2_AGIN";
-        private readonly string _productionId = "JH2";
-
-        private readonly string _desKey = "jh2hnM6K";
-        private readonly string _md5Key = "jh2bKFbpLZuW";
-
         private readonly IAsiaGamingApiClient _client;
+        private readonly string _desKey = "jh2hnM6K";
         private readonly string _gameProviderCurrencyCode = "CNY";
+        private readonly Uri _loginApiUrl = new("http://gi.aggdemo.com:81");
+        private readonly string _md5Key = "jh2bKFbpLZuW";
+        private readonly string _productionId = "JH2";
+        private readonly Uri _serviceApiUrl = new("https://swapi.etwlt.com");
 
         public AsiaGamingApiClientUnitTest()
         {

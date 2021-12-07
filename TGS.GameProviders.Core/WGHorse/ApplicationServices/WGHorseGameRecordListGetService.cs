@@ -32,36 +32,22 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            var data = new WGHorseGameRecordRequest
-            {
-                StartTime = command.StartTime,
-                EndTime = command.EndTime,
-                PageIndex = command.Page,
-                PageSize = command.Rows
-            };
-
-            var response = await _client.GetGameRecordAsync(
+            (bool Success, WGHorseGameRecord[]? GameRecord) = await _client.GetGameRecordAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                data);
+                command.StartTime,
+                command.EndTime,
+                command.Page,
+                command.Rows
+                ).ConfigureAwait(false);
 
-            if (response == null)
+            if (!Success)
             {
                 return new() { Success = false };
             }
-
-            if (response?.ReturnCode != 1)
-            {
-                if (response?.ReturnCode != 503)
-                {
-                    return new() { Success = false };
-                }
-            }
-
-            if (command.Page.ToString().IgnoreCaseNotEquals(response.Page)
-                || response.ArrayInvoice == null || response.ArrayInvoice.Length == 0)
+            if (Success && GameRecord == null)
             {
                 return new() { Success = true };
             }
@@ -69,23 +55,23 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
             var gameProviderCode = _service.GetGameProviderCode();
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
-            var datas = response.ArrayInvoice.Select(data => new GameRecordListModle()
+            var datas = GameRecord.Select(data => new GameRecordListModel()
             {
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,
                 PlayerCode = data.MemberCode,
                 Status = RoundStatus.Closed,
-                ClientStatus = _service.GetClientRound(decimal.Parse(data.ShowWin)),
+                ClientStatus = _service.GetClientRound(((data.ShowWin.IgnoreCaseContains("和局")) ? 0m : decimal.Parse(data.ShowWin))),
                 ExternalRoundId = data.BatchNo,
                 ExternalGameId = "1",
                 ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(+8)),
                 ExternalClosedOn = new DateTimeOffset(DateTime.Parse(data.ShowDivideDate), TimeSpan.FromHours(+8)),
                 BetAmount = decimal.Parse(data.ShowAmount),
                 ValidBetAmount = decimal.Parse(data.ShowAmount),
-                PlayerWinLoss = decimal.Parse(data.ShowWin),
+                PlayerWinLoss = (data.ShowWin.IgnoreCaseContains("和局")) ? 0 : decimal.Parse(data.ShowWin),
                 Commission = 0,
                 Turnover = decimal.Parse(data.ShowAmount),
-                SettleAmount = decimal.Parse(data.ShowAmount) + decimal.Parse(data.ShowWin),
+                SettleAmount = decimal.Parse(data.ShowAmount) + ((data.ShowWin.IgnoreCaseContains("和局")) ? 0m : decimal.Parse(data.ShowWin)),
                 TieBetAdjustment = null,
 
                 AdditionalData = JsonSerializer.Serialize(data),

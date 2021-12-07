@@ -8,9 +8,11 @@ namespace TGS.GameProviders.Core.WGSports
 {
     public interface IWGSportsService
     {
-        ClientRoundStatus GetClientRound(decimal playerWinLoss);
+        decimal? GetAmount(string amountString);
 
-        ValueTask<GetGame> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
+        ClientRoundStatus GetClientRound(string playerWinLoss);
+
+        ValueTask<GameModel> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
 
         string GetGameProviderCode();
 

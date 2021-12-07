@@ -27,16 +27,14 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         private readonly Uri _apiUrl = new("http://www.connect6play.com/doBusiness.do");
         private readonly ITCGApiClient _client;
         private readonly Uri _gameUrl = new("https://tcg-cny.srvttt.com");
-        private readonly ITCGUtility _utility;
 
         public TCGApiClientUnitTest()
         {
-            _utility = new TCGUtility();
             var client = new HttpClient();
             var faceLog = NullLogger<TCGApiClient>.Instance;
             var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<ITCGApiClient>();
-            //_client = new TCGApiClient(client, faceLog, faceTgsLog, _utility);
+            //_client = new TCGApiClient(client, faceLog, faceTgsLog);
         }
 
         [Test]

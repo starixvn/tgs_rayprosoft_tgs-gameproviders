@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.WGHorse.Models;
-using TGS.GameProviders.Core.WGHorse.Models.Commons;
 
 namespace TGS.GameProviders.Core.WGHorse
 {
     public interface IWGHorseApiClient
     {
-        ValueTask<WGHorseResponse> AccessMoneyAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseAccessMoneyRequest source);
+        ValueTask<bool> AccessMoneyFundInAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode, string orderId, decimal amount);
 
-        ValueTask<WGHorseResponse> AccessMoneyQueryAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseAccessMoneyQueryRequest source);
+        ValueTask<bool> AccessMoneyFundOutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode, string orderId, decimal amount);
 
-        ValueTask<WGHorseGetBalanceResponse> GetBalanceAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseGetBalanceRequest source);
+        ValueTask<bool> AccessMoneyQueryAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string orderId);
 
-        ValueTask<WGHorseGameRecordResponse> GetGameRecordAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorseGameRecordRequest source);
+        ValueTask<(bool IsPlayer, decimal? Balance)> GetBalanceAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode);
 
-        ValueTask<WGHorseLoginResponse> GetLoginAsync(Uri apiUrl, string partnerCode, WGHorseLoginRequest source);
+        ValueTask<(bool Success, WGHorseGameRecord[]? GameRecord)> GetGameRecordAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, DateTimeOffset startTime, DateTimeOffset endTime, int pageIndex, int pageSize);
 
-        ValueTask<WGHorsePrepareLoginResponse> GetPrepareLoginAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGHorsePrepareLoginRequest source);
+        ValueTask<Uri?> GetLoginAsync(Uri apiUrl, string partnerCode, string token, string lang);
 
-        ValueTask<WGHorseResponse> LogoutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode);
+        ValueTask<string?> GetPrepareLoginAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, long timestamp, string playerCode, string playerNickname, string currencyCode);
+
+        ValueTask LogoutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode);
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.SexyGaming.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers
@@ -14,7 +15,8 @@ namespace TGS.GameProviders.Controllers
     [Route("api/[controller]")]
     public class SGController : ControllerBase,
         IGameUrlHandler<SexyGamingGameUrlQuery>,
-        IKickPlayerHandler<SexyGamingKickPlayerCommand>
+        IKickPlayerHandler<SexyGamingKickPlayerCommand>,
+        IRoundDetailHandler<SexyGamingRoundDetailQuery>
     {
         private readonly ILogger<SGController> _logger;
         private readonly IMapper _mapper;
@@ -34,20 +36,21 @@ namespace TGS.GameProviders.Controllers
         /// <param name="request">The request.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
-        /// Post
-        ///     {
-        ///         "gameType": 6,
-        ///         "gameId": 500010,
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "CNY",
-        ///         "loginRecordId": "f325f1e8-c877-427c-5196-08d99762447f",
-        ///         "platformType": 0,
-        ///         "language": "zh-CN",
-        ///         "ipAddress": "127.0.0.1",
-        ///         "backUrl": "https://dev-t1.rpgp.cc/"
-        ///     }
+        /// <b>Example</b><br />
+        ///
+        ///     Post
+        ///         {
+        ///             "gameType": 6,
+        ///             "gameId": 500010,
+        ///             "brandCode": "GPI",
+        ///             "playerCode": "4ucmqplxb029",
+        ///             "currencyCode": "CNY",
+        ///             "loginRecordId": "f325f1e8-c877-427c-5196-08d99762447f",
+        ///             "platformType": 0,
+        ///             "language": "zh-CN",
+        ///             "ipAddress": "127.0.0.1",
+        ///             "backUrl": "https://dev-t1.rpgp.cc/"
+        ///         }
         /// </remarks>
         [HttpPost("GameUrl")]
         public async ValueTask<GameUrlResponse?> GameUrlAsync(
@@ -62,21 +65,45 @@ namespace TGS.GameProviders.Controllers
         /// Kicks the player asynchronous.
         /// </summary>
         /// <param name="commandService">The command service.</param>
-        /// <param name="request">The request.</param>
-        /// <returns></returns>
+        /// <param name="playerCode">The player code.</param>
         /// <remarks>
-        /// Example
-        /// Post
-        ///     {
-        ///         "brandCode": "GPI",
-        ///         "playerCode": "4ucmqplxb029",
-        ///         "currencyCode": "CNY"
-        ///     }
+        /// <b>Example</b><br />
+        ///
+        ///     Delete sg/kickplayer/4ucmqplxb029
         /// </remarks>
-        [HttpPost("KickPlayer")]
+        [HttpDelete("kickplayer/{playerCode}")]
         public ValueTask KickPlayerAsync(
             [FromServices] ICommandService<SexyGamingKickPlayerCommand> commandService,
-            KickPlayerRequest request)
-            => commandService.ExecuteAsync(_mapper.Map<SexyGamingKickPlayerCommand>(request));
+            string playerCode)
+            => commandService.ExecuteAsync(new()
+            {
+                PlayerCode = playerCode
+            });
+
+        /// <summary>
+        /// Rounds the detail asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="roundId">The round identifier.</param>
+        /// <param name="language">The language.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get sg/rounddetail/10b76524-838b-492d-3f4c-08d99fcafe7b?language=zh-CN
+        /// </remarks>
+        [HttpGet("RoundDetail/{roundId}")]
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromServices] IGetService<SexyGamingRoundDetailQuery, RoundDetailResult> getService,
+            Guid roundId,
+            [FromQuery] string language)
+        {
+            var result = await getService.GetAsync(new()
+            {
+                RoundId = roundId,
+                Language = language
+            }).ConfigureAwait(false);
+            return result == null ? null : result;
+        }
     }
 }

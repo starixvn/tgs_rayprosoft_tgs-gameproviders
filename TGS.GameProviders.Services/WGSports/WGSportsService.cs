@@ -25,15 +25,29 @@ namespace TGS.GameProviders.Services.WGSports
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         }
 
-        public ClientRoundStatus GetClientRound(decimal playerWinLoss)
-           => playerWinLoss switch
-           {
-               > 0 => ClientRoundStatus.Win,
-               <= 0 => ClientRoundStatus.Loss,
-           };
+        public decimal? GetAmount(string amountString)
+            => decimal.TryParse(amountString, out decimal amount) ? amount : null;
 
-        public async ValueTask<GetGame> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
-            => await _gameRepository.GetGameAsync(gameProviderId, externalGameId).ConfigureAwait(false);
+        public ClientRoundStatus GetClientRound(string playerWinLoss)
+        {
+            try
+            {
+                var winLoss = decimal.Parse(playerWinLoss);
+
+                return winLoss switch
+                {
+                    > 0 => ClientRoundStatus.Win,
+                    <= 0 => ClientRoundStatus.Loss,
+                };
+            }
+            catch
+            {
+                return ClientRoundStatus.Void;
+            }
+        }
+
+        public async ValueTask<GameModel> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
+            => await _gameRepository.GetAsync(gameProviderId, externalGameId).ConfigureAwait(false);
 
         public string GetGameProviderCode()
             => GameProviderType.WGSports;

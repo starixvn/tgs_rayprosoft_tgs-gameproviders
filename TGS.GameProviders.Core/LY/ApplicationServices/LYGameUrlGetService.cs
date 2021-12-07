@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.LY.Models;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
 
@@ -35,39 +34,32 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
 
             var agentId = await _service.GetAgentIdAsync(command.BrandCode, command.CurrencyCode).ConfigureAwait(false);
 
-            var externalID = 0;
+            var gameExternalID = 0;
 
             if (command.GameType != GameType.CardGameLobby)
             {
-                var getGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
+                var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
                 if (getGame != null)
                 {
-                    if (getGame.Type != GameType.CardGameLobby)
+                    if (getGame.GameType != GameType.CardGameLobby)
                     {
-                        externalID = Convert.ToInt32(getGame.ExternalId);
+                        gameExternalID = Convert.ToInt32(getGame.GameExternalId);
                     }
                 }
             }
 
-            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
+            var response = await _client.GetGameUrlAsync(
+                brandMerchant.ApiUrl,
+                brandMerchant.Deskey,
+                brandMerchant.Md5key,
+                agentId,
+                command.PlayerCode,
+                command.IPAddress,
+                command.BrandCode,
+                gameExternalID).ConfigureAwait(false);
 
-            var orderId = $"{agentId}{dateTimeOffset.ToString("yyyyMMddHHmmssfff")}{command.PlayerCode}";
-
-            var data = new LYGameUrlRequest
-            {
-                PlayerCode = command.PlayerCode,
-                OrderId = orderId,
-                Amount = 0m,
-                IP = command.IPAddress,
-                BrandsCode = command.BrandCode,
-                ExternalID = externalID
-            };
-
-            var response = await _client.GetGameUrlAsync(brandMerchant.ApiUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, dateTimeOffset, data)
-                .ConfigureAwait(false);
-
-            return (response != null && response?.Data.Code == 0) ? new() { Url = new(response.Data.Url) } : null;
+            return (response != null) ? new() { Url = response } : null;
         }
     }
 }

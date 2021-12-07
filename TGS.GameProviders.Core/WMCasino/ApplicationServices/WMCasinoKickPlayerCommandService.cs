@@ -36,7 +36,7 @@ namespace TGS.GameProviders.Core.WMCasino.ApplicationServices
 
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            var agent = _agentMapper.GetAgent(configuration.BrandMerchants, command.BrandCode,
+            var agent = _agentMapper.GetAgent(configuration.BrandMerchants, player.BrandCode,
                 player.DefaultWalletCurrencyCode);
 
             var playerId = _utility.ToWMCasinoPlayerId(player.PlayerCode, agent.Prefix, agent.Suffix);

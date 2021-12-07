@@ -49,14 +49,14 @@ namespace TGS.GameProviders.Core.TCG.ApplicationServices
             {
                 return null;
             }
-            var getGame = await _gameRepository.GetGameAsync(command.GameId.Value).ConfigureAwait(false);
+            var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
             if (getGame == null)
             {
                 return null;
             }
 
-            if (!_methodMapper.TryGetValue(getGame.ExternalId.ToUpper(), out var execute))
+            if (!_methodMapper.TryGetValue(getGame.GameExternalId.ToUpper(), out var execute))
             {
                 return null;
             }
@@ -123,7 +123,7 @@ namespace TGS.GameProviders.Core.TCG.ApplicationServices
             var data = new TCGLaunchGameByLOTTOVNRequest()
             {
                 UserName = source.UserName,
-                Platform = "WEB",
+                Platform = IsMobile ? "MOBILE" : "WEB",
                 GameMode = ((int)TCGPlayerGameMode.RealPlayer).ToString(),
                 GameCode = "lobby",
                 Language = source.Language,

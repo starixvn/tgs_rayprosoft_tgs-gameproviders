@@ -11,11 +11,11 @@ namespace TGS.GameProviders.Services.AsiaGaming
 {
     internal class AsiaGamingService : IAsiaGamingService
     {
+        private readonly IBrandRepository _brandRepository;
         private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly IGameRepository _gameRepository;
         private readonly ILogger<AsiaGamingService> _logger;
         private readonly IPlayerRepository _playerRepository;
-        private readonly IGameRepository _gameRepository;
-        private readonly IBrandRepository _brandRepository;
         private readonly ISettingRepository _settingRepository;
 
         public AsiaGamingService(
@@ -34,36 +34,11 @@ namespace TGS.GameProviders.Services.AsiaGaming
             _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
         }
 
-        public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
-        {
-            var (isCurrencyCode, gameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)
-                .ConfigureAwait(false);
+        public async ValueTask<Guid> GetBrandIdAsync(string brandCode)
+            => await _brandRepository.GetBrandIdAsync(brandCode).ConfigureAwait(false);
 
-            return isCurrencyCode ? gameProviderCurrencyCode : null;
-        }
-
-        public async ValueTask<string> GetGameProviderCurrencyLanguageAsync(Guid gameProviderId, string cultureCode)
-        {
-            var (isCultureCode, gameProviderCultureCode) = await _gameProviderRepository
-                .GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
-
-            return isCultureCode ? gameProviderCultureCode : "en_US";
-        }
-
-        public async ValueTask<Guid> GetGameProviderIdAsync()
-            => await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.AsiaGaming)
-                .ConfigureAwait(false);
-
-        public async ValueTask<decimal?> GetPlayerBalanceAsync(string playerCode)
-            => await _playerRepository.GetPlayerBalanceAsync(playerCode).ConfigureAwait(false);
-
-        public async ValueTask<AsiaGamingConfiguration> GetSettingConfigurationAsync()
-            => await _settingRepository
-                .GetConfigurationAsync<AsiaGamingConfiguration>(GameProviderConfigurations.AsiaGaming)
-                .ConfigureAwait(false);
-
-        public async ValueTask<GetGame> GetGameAsync(int gameId)
-            => await _gameRepository.GetGameAsync(gameId).ConfigureAwait(false);
+        public async ValueTask<GameModel> GetGameAsync(int gameId)
+            => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
         public async ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType)
         {
@@ -76,7 +51,32 @@ namespace TGS.GameProviders.Services.AsiaGaming
             return platformType == PlatformType.Mobile ? mobileEndpoint : desktopEndpoint;
         }
 
-        public async ValueTask<Guid> GetBrandIdAsync(string brandCode)
-            => await _brandRepository.GetBrandIdAsync(brandCode).ConfigureAwait(false);
+        public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
+        {
+            var (isCurrencyCode, gameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)
+                .ConfigureAwait(false);
+
+            return isCurrencyCode ? gameProviderCurrencyCode : null;
+        }
+
+        public async ValueTask<Guid> GetGameProviderIdAsync()
+            => await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.AsiaGaming)
+                .ConfigureAwait(false);
+
+        public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
+        {
+            var (isCultureCode, gameProviderCultureCode) = await _gameProviderRepository
+                .GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
+
+            return isCultureCode ? gameProviderCultureCode : "en_US";
+        }
+
+        public async ValueTask<decimal?> GetPlayerBalanceAsync(string playerCode)
+            => await _playerRepository.GetPlayerBalanceAsync(playerCode).ConfigureAwait(false);
+
+        public async ValueTask<AsiaGamingConfiguration> GetSettingConfigurationAsync()
+            => await _settingRepository
+                .GetConfigurationAsync<AsiaGamingConfiguration>(GameProviderConfigurations.AsiaGaming)
+                .ConfigureAwait(false);
     }
 }

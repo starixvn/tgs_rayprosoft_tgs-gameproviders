@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace TGS.GameProviders.Core.BigGaming.Models
 {
@@ -10,23 +9,23 @@ namespace TGS.GameProviders.Core.BigGaming.Models
         [JsonPropertyName("tranId")]
         public long? TranId { get; set; }
         [JsonPropertyName("sn")]
-        public string Sn { get; set; }
+        public string Sn { get; set; } = default!;
         [JsonPropertyName("uid")]
         public long Uid { get; set; }
         [JsonPropertyName("userId")]
         public long UserId { get; set; }
         [JsonPropertyName("loginId")]
-        public string LoginId { get; set; }
+        public string LoginId { get; set; } = default!;
         [JsonPropertyName("moduleId")]
         public int ModuleId { get; set; }
         [JsonPropertyName("moduleName")]
-        public string ModuleName { get; set; }
+        public string ModuleName { get; set; } = default!;
         [JsonPropertyName("gameId")]
         public int GameId { get; set; }
         [JsonPropertyName("gameName")]
-        public string GameName { get; set; }
+        public string GameName { get; set; } = default!;
         [JsonPropertyName("gameNameEn")]
-        public string GameNameEn { get; set; }
+        public string GameNameEn { get; set; } = default!;
         [JsonPropertyName("orderStatus")]
         public int OrderStatus { get; set; }
         [JsonPropertyName("bAmount")]
@@ -36,21 +35,21 @@ namespace TGS.GameProviders.Core.BigGaming.Models
         [JsonPropertyName("orderFrom")]
         public int OrderFrom { get; set; }
         [JsonPropertyName("orderTime")]
-        public String OrderTime { get; set; }
+        public string OrderTime { get; set; } = default!;
         [JsonPropertyName("lastUpdateTime")]
-        public String LastUpdateTime { get; set; }
+        public string LastUpdateTime { get; set; } = default!;
         [JsonPropertyName("fromIp")]
-        public string FromIp { get; set; }
+        public string FromIp { get; set; } = default!;
         [JsonPropertyName("tableId")]
-        public string TableId { get; set; }
+        public string TableId { get; set; } = default!;
         [JsonPropertyName("issueId")]
-        public string IssueId { get; set; }
+        public string IssueId { get; set; } = default!;
         [JsonPropertyName("playId")]
-        public string PlayId { get; set; }
+        public string PlayId { get; set; } = default!;
         [JsonPropertyName("playName")]
-        public string PlayName { get; set; }
+        public string PlayName { get; set; } = default!;
         [JsonPropertyName("playNameEn")]
-        public string PlayNameEn { get; set; }
+        public string PlayNameEn { get; set; } = default!;
         [JsonPropertyName("validBet")]
         public decimal ValidBet { get; set; }
         [JsonPropertyName("validAmount")]
@@ -58,6 +57,6 @@ namespace TGS.GameProviders.Core.BigGaming.Models
         [JsonPropertyName("payment")]
         public decimal Payment { get; set; }
         [JsonPropertyName("noComm")]
-        public string NoComm { get; set; }
+        public string NoComm { get; set; } = default!;
     }
 }

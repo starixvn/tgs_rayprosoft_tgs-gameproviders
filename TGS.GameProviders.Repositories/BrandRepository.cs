@@ -25,14 +25,17 @@ namespace TGS.GameProviders.Repositories
         public async ValueTask<Guid> GetBrandGameProviderConfigurationIdAsync(Guid gameProviderId, Guid brandId)
         {
             var data = await _context.BrandGameProviders
-                .FirstOrDefaultAsync(x => x.GameProviderId == gameProviderId && x.BrandId == brandId)
+                .FirstAsync(x => x.GameProviderId == gameProviderId && x.BrandId == brandId)
                 .ConfigureAwait(false);
+
             return data.GameProviderConfigurationId;
         }
 
         public async ValueTask<Guid> GetBrandIdAsync(string brandCode)
         {
-            var brand = await _context.Brands.FirstOrDefaultAsync(b => b.Code == brandCode).ConfigureAwait(false);
+            var brand = await _context.Brands
+                .FirstAsync(b => b.Code == brandCode)
+                .ConfigureAwait(false);
 
             return brand.Id;
         }

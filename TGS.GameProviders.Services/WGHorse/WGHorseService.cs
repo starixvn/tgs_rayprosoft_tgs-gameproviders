@@ -29,11 +29,12 @@ namespace TGS.GameProviders.Services.WGHorse
             => playerWinLoss switch
             {
                 > 0 => ClientRoundStatus.Win,
-                <= 0 => ClientRoundStatus.Loss,
+                0 => ClientRoundStatus.Draw,
+                < 0 => ClientRoundStatus.Loss,
             };
 
-        public async ValueTask<GetGame> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
-            => await _gameRepository.GetGameAsync(gameProviderId, externalGameId).ConfigureAwait(false);
+        public async ValueTask<GameModel> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
+            => await _gameRepository.GetAsync(gameProviderId, externalGameId).ConfigureAwait(false);
 
         public string GetGameProviderCode()
             => GameProviderType.WGHorse;

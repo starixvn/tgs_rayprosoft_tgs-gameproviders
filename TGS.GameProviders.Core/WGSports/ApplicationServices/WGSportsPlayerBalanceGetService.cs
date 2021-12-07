@@ -3,58 +3,64 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.WGSports.Models;
+using TGS.GameProviders.Core.Repositories;
 
 namespace TGS.GameProviders.Core.WGSports.ApplicationServices
 {
-    public class WGSportsPlayerBalanceGetService : IGetService<WGSportsPlayerBalanceQuery, PlayerBalanceResult>
+    public class WGSportsPlayerBalanceGetService : IGetService<WGSportsPlayerBalanceQuery, decimal?>
     {
         private readonly IWGSportsApiClient _client;
         private readonly ILogger<WGSportsPlayerBalanceGetService> _logger;
         private readonly IWGSportsGamePlayer _playerCreate;
+        private readonly IPlayerRepository _playerRepository;
         private readonly IWGSportsService _service;
 
         public WGSportsPlayerBalanceGetService(
-            ILogger<WGSportsPlayerBalanceGetService> logger,
             IWGSportsApiClient client,
-            IWGSportsService service,
-            IWGSportsGamePlayer playerCreate
+            ILogger<WGSportsPlayerBalanceGetService> logger,
+            IPlayerRepository playerRepository,
+            IWGSportsGamePlayer playerCreate,
+            IWGSportsService service
             )
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
             _playerCreate = playerCreate ?? throw new ArgumentNullException(nameof(playerCreate));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        public async ValueTask<PlayerBalanceResult> GetAsync(WGSportsPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<decimal?> GetAsync(WGSportsPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-            var source = new WGSportsGetBalanceRequest()
+            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerModel == null)
             {
-                PlayerCode = command.PlayerCode
-            };
-            var response = await _client.GetBalanceAsync(
+                throw new Exception($"The player does not exist.{command.PlayerCode}");
+            }
+
+            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+
+            (bool IsPlayer, decimal? balance) = await _client.GetBalanceAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                source).ConfigureAwait(false);
+                playerModel.PlayerCode).ConfigureAwait(false);
 
-            if (response.ReturnCode == 602)
+            if (!IsPlayer)
             {
-                if (await _playerCreate.CreatePlayerAsync(configuration, command.PlayerCode, command.CurrencyCode).ConfigureAwait(false))
+                if (await _playerCreate.CreatePlayerAsync(configuration, playerModel.PlayerCode, playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false))
                 {
-                    response = await _client.GetBalanceAsync(
+                    (IsPlayer, balance) = await _client.GetBalanceAsync(
                         configuration.ApiUrl,
                         configuration.PartnerCode,
                         configuration.PartnerKey,
                         configuration.IV,
-                        source).ConfigureAwait(false);
+                        playerModel.PlayerCode).ConfigureAwait(false);
                 }
             }
 
-            return response.ReturnCode == 1 ? new() { Balance = decimal.Parse(response.Balance) } : null;
+            return IsPlayer && balance.HasValue ? balance.Value : null;
         }
     }
 }

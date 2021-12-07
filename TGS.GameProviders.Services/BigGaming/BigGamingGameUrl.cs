@@ -28,12 +28,13 @@ namespace TGS.GameProviders.Services.BigGaming
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        public async ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, string playerCode, GetGame game, string cultureCode) => game.Type
-          switch
-        {
-            GameType.Fishing => await GetGameUrlFishingAsync(brandMerchant, playerCode, game.ExternalId, cultureCode).ConfigureAwait(false),
-            _ => await GetGameUrlLiveDealerAsync(brandMerchant, playerCode, cultureCode).ConfigureAwait(false)
-        };
+        public async ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, string playerCode, GameModel game, string cultureCode)
+            => game.GameType
+            switch
+            {
+                GameType.Fishing => await GetGameUrlFishingAsync(brandMerchant, playerCode, game.GameExternalId, cultureCode).ConfigureAwait(false),
+                _ => await GetGameUrlLiveDealerAsync(brandMerchant, playerCode, cultureCode).ConfigureAwait(false)
+            };
 
         private async ValueTask<BigGamingResponse> GetGameUrlFishingAsync(BigGamingBrandMerchant brandMerchant, string playerCode, string externalId, string cultureCode)
         {
@@ -42,7 +43,13 @@ namespace TGS.GameProviders.Services.BigGaming
                 Random = GuidExtensions.NewSequentialGuid().ToString(),
                 Sn = brandMerchant.SecretCode,
                 LoginId = playerCode,
-                Locale = cultureCode,
+                Lang = cultureCode.ToLower() switch
+                {
+                    "zh_cn" => "zh-CN",
+                    "vi_vn" => "vi-VN",
+                    "th_th" => "th-TH",
+                    _ => "en-US",
+                },
                 IsMobileUrl = 0,
                 IsHttpsUrl = 0,
                 ReturnUrl = string.Empty,

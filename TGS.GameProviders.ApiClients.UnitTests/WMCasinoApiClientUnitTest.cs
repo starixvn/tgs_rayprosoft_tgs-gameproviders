@@ -18,9 +18,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         private readonly string _agentPrefix = "pg";
         private readonly string _agentSuffix = "cny";
         private readonly Uri _apiUrl = new("https://api.a45.me/api/wallet/Gateway.php");
-        private readonly string _brandCode = "GPI";
         private readonly IWMCasinoApiClient _client;
-        private readonly string _currencyCode = "CNY";
         private readonly string _signature = "97ffc7ab86c2f54be533e90da6f6ab9f";
 
         public WMCasinoApiClientUnitTest()

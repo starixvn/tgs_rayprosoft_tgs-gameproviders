@@ -6,6 +6,6 @@ namespace TGS.GameProviders.Core.AsiaGaming.Models
     public record AsiaGamingCreateGameSessionResponse
     {
         [XmlElement(ElementName = "ResponseCode")]
-        public string Error { get; init; }
+        public string Error { get; init; } = default!;
     }
 }

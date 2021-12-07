@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -33,9 +34,14 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 
         public async ValueTask ExecuteAsync(BigGamingKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
+            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerModel == null)
+            {
+                throw new Exception($"The player does not exist.{command.PlayerCode}");
+            }
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
-            var games = await _gameRepository.GetGameList(gameProviderId, GameType.Fishing);
-            var brandMerchant = await _service.GetBrandMerchantAsync(command.CurrencyCode).ConfigureAwait(false);
+            var games = await _gameRepository.GetGameList(gameProviderId, GameType.Fishing).ToArrayAsync();
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
             var tasks = new List<Task>();
 
@@ -48,7 +54,7 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
                         Random = Guid.NewGuid().ToString(),
                         Sn = brandMerchant.SecretCode,
                         LoginId = command.PlayerCode,
-                        GameType = game.ExternalId
+                        GameType = game.GameExternalId
                     })
                    .ConfigureAwait(false);
                 }));

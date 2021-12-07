@@ -62,7 +62,7 @@ namespace TGS.GameProviders.Core.AsiaGaming.ApplicationServices
             var brandId = await _service.GetBrandIdAsync(query.BrandCode).ConfigureAwait(false);
             var game = await _service.GetGameAsync(query.GameId!.Value).ConfigureAwait(false);
             var gameProviderLanguage = await _service
-                .GetGameProviderCurrencyLanguageAsync(gameProviderId, query.Language).ConfigureAwait(false);
+                .GetGameProviderLanguageCodeAsync(gameProviderId, query.Language).ConfigureAwait(false);
 
             var domain = await _service.GetGameDomainAsync(brandId, gameProviderId, query.PlatformType)
                 .ConfigureAwait(false);
@@ -73,7 +73,7 @@ namespace TGS.GameProviders.Core.AsiaGaming.ApplicationServices
                 PlayerCode = query.PlayerCode,
                 Sid = $"{configuration.AgentCode}{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
                 Lang = gameProviderLanguage,
-                GameId = game.ExternalId,
+                GameId = game.GameExternalId,
                 ReturnUrl = query.BackUrl.AbsoluteUri,
                 Currency = gameProviderCurrencyCode
             };

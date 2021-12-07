@@ -7,7 +7,7 @@ using TGS.GameProviders.Core.Repositories;
 
 namespace TGS.GameProviders.Core.LY.ApplicationServices
 {
-    public class LYPlayerBalanceGetService : IGetService<LYPlayerBalanceQuery, PlayerBalanceResult>
+    public class LYPlayerBalanceGetService : IGetService<LYPlayerBalanceQuery, decimal?>
     {
         private readonly ILYApiClient _client;
         private readonly ILogger<LYPlayerBalanceGetService> _logger;
@@ -26,20 +26,22 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
             _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
         }
 
-        public async ValueTask<PlayerBalanceResult> GetAsync(LYPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<decimal?> GetAsync(LYPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
-            var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
-            var agentId = await _service.GetAgentIdAsync(command.BrandCode, command.CurrencyCode).ConfigureAwait(false);
-
-            var response = await _client.GetBalanceAsync(brandMerchant.ApiUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, new()
+            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerModel == null)
             {
-                PlayerCode = command.PlayerCode
-            }).ConfigureAwait(false);
+                throw new Exception($"The player does not exist.{command.PlayerCode}");
+            }
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode).ConfigureAwait(false);
+            var agentId = await _service.GetAgentIdAsync(playerModel.BrandCode, playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
-            return new()
-            {
-                Balance = response.Data.Balance
-            };
+            return await _client.GetBalanceAsync(
+                brandMerchant.ApiUrl,
+                brandMerchant.Deskey,
+                brandMerchant.Md5key,
+                agentId,
+                playerModel.PlayerCode).ConfigureAwait(false);
         }
     }
 }

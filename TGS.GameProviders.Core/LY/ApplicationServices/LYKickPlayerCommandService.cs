@@ -28,12 +28,19 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
 
         public async ValueTask ExecuteAsync(LYKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
-            var agentId = await _service.GetAgentIdAsync(command.BrandCode, command.CurrencyCode).ConfigureAwait(false);
-            await _client.KickAsync(brandMerchant.ApiUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, new()
+            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerModel == null)
             {
-                PlayerCode = command.PlayerCode
-            }).ConfigureAwait(false);
+                throw new Exception($"The player does not exist.{command.PlayerCode}");
+            }
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode).ConfigureAwait(false);
+            var agentId = await _service.GetAgentIdAsync(playerModel.BrandCode, playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
+            await _client.KickAsync(
+                brandMerchant.ApiUrl,
+                brandMerchant.Deskey,
+                brandMerchant.Md5key,
+                agentId,
+                command.PlayerCode).ConfigureAwait(false);
         }
     }
 }

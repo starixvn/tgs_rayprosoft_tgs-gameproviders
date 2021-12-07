@@ -47,24 +47,21 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
             }
 
             var gameProviderCulture =
-                await _service.GetGameProviderCultureCodeAsync(query.Language).ConfigureAwait(false);
+                await _service.GetGameProviderCultureCodeAsync(game.GameProviderId, query.Language).ConfigureAwait(false);
 
-            var url = game.Type switch
+            var url = game.GameType switch
             {
                 GameType.VirtualSports or GameType.VirtualSportsLobby => $"{response.Url}&lang={gameProviderCulture}",
                 GameType.Sportsbook => GetSportsbookUrl(query.PlatformType, response.Url, gameProviderCulture),
                 _ => default
             };
 
-            if (url == null)
-            {
-                return null;
-            }
-
-            return new GameUrlResult
-            {
-                Url = new Uri(url)
-            };
+            return url == null
+                ? null
+                : new GameUrlResult
+                {
+                    Url = new Uri(url)
+                };
         }
 
         private string GetSportsbookUrl(PlatformType platformType, string url, string cultureCode)
@@ -78,9 +75,9 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
         private async ValueTask<SBOLoginResponse> PlayerLoginAsync(
             SBOConfiguration configuration,
             SBOGameUrlQuery query,
-            GetGame game)
+            GameModel game)
         {
-            var portfolio = _utility.GetPortfolio(game.Type);
+            var portfolio = _utility.GetPortfolio(game.GameType);
             var playerCode = query.PlayerCode;
 
             var loginRequest = new SBOLoginRequest
@@ -96,8 +93,7 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
                 return loginResponse;
             }
 
-            var created = await _playerService.CreatePlayerAsync(configuration, query.BrandCode, query.PlayerCode,
-                query.CurrencyCode).ConfigureAwait(false);
+            var created = await _playerService.CreatePlayerAsync(configuration, query.BrandCode, query.PlayerCode, query.CurrencyCode).ConfigureAwait(false);
 
             return !created ? null : await _client.LoginAsync(configuration.ApiUrl, loginRequest).ConfigureAwait(false);
         }

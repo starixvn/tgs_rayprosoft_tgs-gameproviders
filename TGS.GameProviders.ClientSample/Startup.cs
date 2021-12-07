@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -62,17 +60,7 @@ namespace TGS.GameProviders.ClientSample
             services.AddGameProvidersClient((options, sp) =>
             {
                 var configuration = sp.GetRequiredService<IConfiguration>();
-
-                configuration.GetSection("TGSGameProviders").Bind(options);
-
-                options.JsonSerializerOptions = new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    Converters =
-                        {
-                            new JsonStringEnumConverter()
-                        }
-                };
+                options.BaseUrl = new(configuration.GetConnectionString("TGSGameProviders"));
             });
         }
     }

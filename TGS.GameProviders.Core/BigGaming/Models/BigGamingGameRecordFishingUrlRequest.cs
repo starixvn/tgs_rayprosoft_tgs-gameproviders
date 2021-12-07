@@ -9,16 +9,16 @@ namespace TGS.GameProviders.Core.BigGaming.Models
         /// The external round identifier
         /// </summary>
         [JsonPropertyName("orderId")]
-        public long ExternalBetId { get; set; }
+        public long ExternalBetId { get; init; }
         /// <summary>
         /// The game identifier
         /// </summary>
         [JsonPropertyName("gameType")]
-        public int GameId { get; set; }
+        public int GameId { get; init; }
         /// <summary>
         /// The locale
         /// </summary>
         [JsonPropertyName("locale")]
-        public string Locale;
+        public string Locale { get; init; } = default!;
     }
 }

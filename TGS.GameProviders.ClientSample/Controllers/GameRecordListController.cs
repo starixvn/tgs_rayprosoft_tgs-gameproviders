@@ -32,7 +32,8 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <param name="rows">The rows.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        ///
         ///     Get
         ///         {
         ///             "currencyCode": "CNY",
@@ -60,7 +61,8 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <param name="endTime">The end time.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        ///
         ///     Get
         ///         {
         ///             "brandCode": "Default",
@@ -86,7 +88,8 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <param name="endTime">The end time.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        ///
         ///     Get
         ///         {
         ///             "brandCode": "Default",
@@ -114,7 +117,8 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <param name="rows">The rows.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        ///
         ///     Get
         ///         {
         ///             "brandCode": "Default",
@@ -136,29 +140,6 @@ namespace TGS.GameProviders.ClientSample.Controllers
             => _client.VRGameRecordListAsync(brandCode, isUpdateTime, startTime, endTime, page, rows);
 
         /// <summary>
-        /// WGFMs the game record list asynchronous.
-        /// </summary>
-        /// <param name="isSettlement">if set to <c>true</c> [is settlement].</param>
-        /// <param name="startTime">The start time.</param>
-        /// <param name="endTime">The end time.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Example
-        ///     Get
-        ///         {
-        ///             "isSettlement": true,
-        ///             "startTime": "2021-10-26T03:34:00-04:00",
-        ///             "endTime": "2021-10-26T03:44:00-04:00"
-        ///         }
-        /// </remarks>
-        [HttpPost("WGFM")]
-        public ValueTask<GameRecordListResponse?> WGSportsGameRecordListAsync(
-            [FromQuery] bool isSettlement,
-            [FromQuery] DateTimeOffset startTime,
-            [FromQuery] DateTimeOffset endTime)
-            => _client.WGSportsGameRecordListAsync(isSettlement, startTime, endTime);
-
-        /// <summary>
         /// Wgvias the game record list asynchronous.
         /// </summary>
         /// <param name="startTime">The start time.</param>
@@ -167,7 +148,8 @@ namespace TGS.GameProviders.ClientSample.Controllers
         /// <param name="rows">The rows.</param>
         /// <returns></returns>
         /// <remarks>
-        /// Example
+        /// <b>Example</b><br />
+        ///
         ///     Get
         ///         {
         ///             "startTime": "2021-08-18T00:00:00+00:00",
@@ -183,5 +165,29 @@ namespace TGS.GameProviders.ClientSample.Controllers
             [FromQuery] int page,
             [FromQuery] int rows)
             => _client.WGHorseGameRecordListAsync(startTime, endTime, page, rows);
+
+        /// <summary>
+        /// WGFMs the game record list asynchronous.
+        /// </summary>
+        /// <param name="isSettlement">if set to <c>true</c> [is settlement].</param>
+        /// <param name="startTime">The start time.</param>
+        /// <param name="endTime">The end time.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get
+        ///         {
+        ///             "isSettlement": true,
+        ///             "startTime": "2021-10-26T03:34:00-04:00",
+        ///             "endTime": "2021-10-26T03:44:00-04:00"
+        ///         }
+        /// </remarks>
+        [HttpPost("WGFM")]
+        public ValueTask<GameRecordListResponse?> WGSportsGameRecordListAsync(
+            [FromQuery] bool isSettlement,
+            [FromQuery] DateTimeOffset startTime,
+            [FromQuery] DateTimeOffset endTime)
+            => _client.WGSportsGameRecordListAsync(isSettlement, startTime, endTime);
     }
 }

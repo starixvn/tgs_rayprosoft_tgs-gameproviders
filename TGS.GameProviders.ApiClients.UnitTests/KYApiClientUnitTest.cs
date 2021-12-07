@@ -7,8 +7,6 @@ using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.KY;
 using TGS.GameProviders.Core.KY;
-using TGS.GameProviders.Core.KY.Models;
-using TGS.GameProviders.Core.KY.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
@@ -16,115 +14,121 @@ namespace TGS.GameProviders.ApiClients.UnitTests
     public class KYApiClientUnitTest
     {
         private const string _agentId = "72412";
-        private const string _currencyCode = "CNY";
         private const string _deskey = "E2F3A416006F84F8";
         private const string _md5key = "B563DF2A3DE58DFB";
         private readonly Uri _apiRecordUrl = new Uri("https://wc1-record.hddv1.com/getRecordHandle");
         private readonly Uri _apiUrl = new Uri("https://wc1-api.hddv1.com/channelHandle");
         private readonly IKYApiClient _client;
-        private readonly IKYUtility _utility;
 
         public KYApiClientUnitTest()
         {
-            _utility = new KYUtility();
             var client = new HttpClient();
             var faceLog = NullLogger<KYApiClient>.Instance;
             var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<IKYApiClient>();
-            //_client = new KYApiClient(client, faceLog, faceTgsLog, _utility);
+            //_client = new KYApiClient(client, faceLog, faceTgsLog);
         }
 
         [Test()]
-        [TestCase("72412202110271546265054ucmqplxb029", 0)]
-        [TestCase("72412202110271546265055ucmqplxb029", -1)]
-        public async Task FundCheckingAsync(string orderId, int status)
+        [TestCase("72412202110271546265054ucmqplxb029", true)]
+        [TestCase("72412202110271546265055ucmqplxb029", false)]
+        public async Task FundCheckingAsync(string orderId, bool status)
         {
-            var data = new KYFundCheckingRequest()
-            {
-                OrderId = orderId
-            };
-            _ = _client.FundCheckingAsync(_apiUrl, _deskey, _md5key, _agentId, data).Returns(ValueTask.FromResult<KYApiResponse<KYFundCheckingResponse>>(new() { Data = new() { Status = status } }));
-            var response = await _client.FundCheckingAsync(_apiUrl, _deskey, _md5key, _agentId, data).ConfigureAwait(false);
-            Assert.AreEqual(status, response.Data.Status);
+            _ = _client.FundCheckingAsync(
+                _apiUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                orderId).Returns(ValueTask.FromResult<bool>(status));
+            var response = await _client.FundCheckingAsync(
+                _apiUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                orderId).ConfigureAwait(false);
+            Assert.AreEqual(status, response);
         }
 
         [Test]
         public async Task FundInAsync()
         {
-            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
             var playerCode = "4ucmqplxb029";
-            var data = new KYFnudRequest()
-            {
-                PlayerCode = playerCode,
-                OrderId = $"{ _agentId}{dateTimeOffset.ToString("yyyyMMddhhmmssfff")}{playerCode}",
-                Amount = 10
-            };
-            var response = await _client.FundAsync(_apiUrl, _deskey, _md5key, _agentId, dateTimeOffset, KYAction.FundIn, data).ConfigureAwait(false);
+
+            _ = await _client.FundInAsync(
+                _apiUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                playerCode,
+                10).ConfigureAwait(false);
         }
 
         [Test]
         public async Task FundOutAsync()
         {
-            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
             var playerCode = "4ucmqplxb029";
-            var data = new KYFnudRequest()
-            {
-                PlayerCode = playerCode,
-                OrderId = $"{ _agentId}{dateTimeOffset.ToString("yyyyMMddhhmmssfff")}{playerCode}",
-                Amount = 10
-            };
-            var response = await _client.FundAsync(_apiUrl, _deskey, _md5key, _agentId, dateTimeOffset, KYAction.FundOut, data).ConfigureAwait(false);
+
+            _ = await _client.FundOutAsync(
+                _apiUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                playerCode,
+                10).ConfigureAwait(false);
         }
 
         [Test]
         public async Task GetBalanceAsync()
         {
             var playerCode = "4ucmqplxb029";
-            var data = new KYGetBalanceRequest()
-            {
-                PlayerCode = playerCode
-            };
-            var response = await _client.GetBalanceAsync(_apiUrl, _deskey, _md5key, _agentId, data).ConfigureAwait(false);
+            _ = await _client.GetBalanceAsync(
+                _apiUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                playerCode).ConfigureAwait(false);
         }
 
         [Test]
         public async Task GetGameRecordAsync()
         {
             var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
-            var data = new KYGameRecordRequest()
-            {
-                StartTime = dateTimeOffset.AddHours(-1).ToUnixTimeMilliseconds(),//1634537632446
-                EndTime = dateTimeOffset.ToUnixTimeMilliseconds()//1634541232446
-            };
-            var response = await _client.GetGameRecordAsync(_apiRecordUrl, _deskey, _md5key, _agentId, dateTimeOffset, data).ConfigureAwait(false);
+            var startTime = dateTimeOffset.AddHours(-1).ToUnixTimeMilliseconds();//1634537632446
+            var endTime = dateTimeOffset.ToUnixTimeMilliseconds();//1634541232446
+            _ = await _client.GetGameRecordAsync(
+                _apiRecordUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                startTime,
+                endTime).ConfigureAwait(false);
         }
 
         [Test]
         public async Task GetGameUrlAsync()
         {
-            var dateTimeOffset = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
             var playerCode = "4ucmqplxb029";
-            var data = new KYGameUrlRequest()
-            {
-                PlayerCode = playerCode,
-                Amount = 0,
-                OrderId = $"{_agentId}{dateTimeOffset.ToString("yyyyMMddhhmmssfff")}{playerCode}",
-                IP = "220.132.206.70",
-                BrandsCode = "GPI",
-                ExternalID = 510
-            };
-            var response = await _client.GetGameUrlAsync(_apiUrl, _deskey, _md5key, _agentId, dateTimeOffset, data).ConfigureAwait(false);
+            _ = await _client.GetGameUrlAsync(
+                _apiUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                playerCode,
+                "220.132.206.70",
+                "GPI",
+                510).ConfigureAwait(false);
         }
 
         [Test]
         public async Task KickAsync()
         {
             var playerCode = "4ucmqplxb029";
-            var data = new KYKickRequest()
-            {
-                PlayerCode = playerCode
-            };
-            var response = await _client.KickAsync(_apiUrl, _deskey, _md5key, _agentId, data).ConfigureAwait(false);
+            await _client.KickAsync(
+                _apiUrl,
+                _deskey,
+                _md5key,
+                _agentId,
+                playerCode).ConfigureAwait(false);
         }
     }
 }

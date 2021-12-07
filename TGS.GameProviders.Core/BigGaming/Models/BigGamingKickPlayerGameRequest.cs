@@ -9,11 +9,11 @@ namespace TGS.GameProviders.Core.BigGaming.Models
         /// 登录ID.
         /// </summary>
         [JsonPropertyName("loginId")]
-        public string LoginId { get; set; }
+        public string LoginId { get; init; } = default!;
         /// <summary>
         /// 105:捕鱼大师(默认); 411:西游捕鱼; 484:大仙捕鱼; 443:棋牌; 362:竞彩
         /// </summary>
         [JsonPropertyName("gameType")]
-        public string GameType { get; set; }
+        public string GameType { get; init; } = default!;
     }
 }

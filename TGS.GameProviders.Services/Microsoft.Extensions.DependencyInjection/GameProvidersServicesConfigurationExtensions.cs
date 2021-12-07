@@ -1,11 +1,15 @@
-﻿// ReSharper disable CheckNamespace
-
+﻿using System;
+using StackExchange.Redis;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.BetConstruct;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Evolution;
+using TGS.GameProviders.Core.Habanero;
+using TGS.GameProviders.Core.IMESports;
 using TGS.GameProviders.Core.KY;
 using TGS.GameProviders.Core.LY;
+using TGS.GameProviders.Core.PragmaticPlay;
+using TGS.GameProviders.Core.Saba;
 using TGS.GameProviders.Core.SBO;
 using TGS.GameProviders.Core.SexyGaming;
 using TGS.GameProviders.Core.Skywind;
@@ -18,8 +22,12 @@ using TGS.GameProviders.Services.AsiaGaming;
 using TGS.GameProviders.Services.BetConstruct;
 using TGS.GameProviders.Services.BigGaming;
 using TGS.GameProviders.Services.Evolution;
+using TGS.GameProviders.Services.Habanero;
+using TGS.GameProviders.Services.IMESports;
 using TGS.GameProviders.Services.KY;
 using TGS.GameProviders.Services.LY;
+using TGS.GameProviders.Services.PragmaticPlay;
+using TGS.GameProviders.Services.Saba;
 using TGS.GameProviders.Services.SBO;
 using TGS.GameProviders.Services.SexyGaming;
 using TGS.GameProviders.Services.Skywind;
@@ -34,7 +42,8 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class GameProvidersServicesConfigurationExtensions
     {
         public static IServiceCollection AddGameProvidersServices(
-            this IServiceCollection services)
+            this IServiceCollection services,
+             Func<IServiceProvider, IDatabase> redisDatabaseResolver)
         {
             services
                 .AddTransient<IKYService, KYService>();
@@ -61,8 +70,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<ISexyGamingGamePlayer, SexyGamingGamePlayer>();
 
             services
-                .AddTransient<ISkywindService, SkywindService>()
-                .AddTransient<ISkywindAccessToken, SkywindAccessToken>();
+                .AddTransient<ISkywindService, SkywindService>();
+            services
+                .AddTransient<ISkywindAccessToken>(sp => ActivatorUtilities.CreateInstance<SkywindAccessToken>(sp, redisDatabaseResolver(sp)));
 
             services
                 .AddTransient<ITCGService, TCGService>()
@@ -90,6 +100,26 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IAsiaGamingService, AsiaGamingService>()
                 .AddTransient<IAsiaGamingGameSession, AsiaGamingGameSession>()
                 .AddTransient<IAsiaGamingGamePlayer, AsiaGamingGamePlayer>();
+
+            services
+                .AddTransient<IPragmaticPlayService, PragmaticPlayService>();
+
+            services
+                .AddTransient<IIMESportsMerchantMapper, IMESportsMerchantMapper>()
+                .AddTransient<IIMESportsGamePlayer, IMESportsGamePlayer>()
+                .AddTransient<IIMESportsUtility, IMESportsUtility>()
+                .AddTransient<IIMESportsService, IMESportsService>();
+
+            services
+                .AddTransient<IIMESportsDataStore>(sp => ActivatorUtilities.CreateInstance<IMESportsRedisDataStore>(sp, redisDatabaseResolver(sp)));
+
+            services
+                .AddTransient<ISabaService, SabaService>()
+                .AddTransient<ISabaGamePlayer, SabaGamePlayer>()
+                .AddTransient<ISabaUtility, SabaUtility>();
+
+            services
+                .AddTransient<IHabaneroService, HabaneroService>();
 
             services
                 .AddTransient<IBetConstructService, BetConstructService>();
