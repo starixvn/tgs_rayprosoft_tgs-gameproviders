@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using TGS.GameProviders.Domains;
 
@@ -13,7 +14,10 @@ namespace TGS.GameProviders.Client.IntegrationTests
         {
             await using var web = new TestGameProvidersApplication(builder =>
             {
-                builder.ConfigureServices(services => { });
+                builder.ConfigureServices(services =>
+                {
+                    services.AddFakeNatsMessageQueue();
+                });
             });
 
             var httpClient = web.CreateClient();
