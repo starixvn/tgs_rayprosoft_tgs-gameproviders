@@ -22,6 +22,7 @@
         WMCasino = 17,
         TCG = 18,
         Card365 = 19,
-        LY = 20
+        LY = 20,
+        BetConstruct = 21
     }
 }
