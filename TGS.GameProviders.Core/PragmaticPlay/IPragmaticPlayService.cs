@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using TGS.GameProviders.Core.Repositories.Models.Game;
+using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.PragmaticPlay
@@ -8,7 +10,9 @@ namespace TGS.GameProviders.Core.PragmaticPlay
     {
         ValueTask<GameModel> GetGameAsync(int gameId);
 
-        ValueTask<string> GetGameProviderCurrencyLanguageAsync(string cultureCode);
+        ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId);
+
+        ValueTask<string> GetGameProviderCurrencyLanguageAsync(Guid gameProviderId, string cultureCode);
 
         ValueTask<PragmaticPlayConfiguration> GetSettingConfigurationAsync();
     }
