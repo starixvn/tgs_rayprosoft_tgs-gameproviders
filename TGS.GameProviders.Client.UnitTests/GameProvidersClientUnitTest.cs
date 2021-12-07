@@ -36,7 +36,7 @@ namespace TGS.GameProviders.Client.IntegrationTests
             var ipAddress = "127.0.0.1";
             var lobbyDomain = "https://devsportsbook.srvttt.com";
 
-            var actual = await sut.GameBCUrlAsync(
+            var actual = await sut.GameBetConstructUrlAsync(
                 gameProviderCode,
                 gameType,
                 gameId,
