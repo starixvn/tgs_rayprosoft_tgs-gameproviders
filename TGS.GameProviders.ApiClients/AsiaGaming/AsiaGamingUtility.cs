@@ -54,10 +54,10 @@ namespace TGS.GameProviders.ApiClients.AsiaGaming
 
         public string Md5Hash(string original)
         {
-            using var provider = new MD5CryptoServiceProvider();
+            using var hasher = MD5.Create();
             var data = Encoding.UTF8.GetBytes(original);
 
-            var hash = provider.ComputeHash(data);
+            var hash = hasher.ComputeHash(data);
             return hash.ToHexString();
         }
     }
