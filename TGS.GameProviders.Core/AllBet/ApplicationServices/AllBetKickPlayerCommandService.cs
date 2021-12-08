@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.AllBet.Models;
 using TGS.GameProviders.Core.Repositories;
-using Tgs.ServiceUtility;
 
 namespace TGS.GameProviders.Core.AllBet.ApplicationServices;
 

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core.AllBet;
-using TGS.GameProviders.Core.AllBet.ApplicationServices;
 using TGS.GameProviders.Core.AllBet.Models;
 using TGS.GameProviders.Domains.SettingConfiguration.AllBet;
 
