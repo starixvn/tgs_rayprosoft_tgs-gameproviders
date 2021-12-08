@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.AllBet.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers;
@@ -14,7 +15,8 @@ namespace TGS.GameProviders.Controllers;
 [ApiController]
 public class ABController : ControllerBase,
     IGameUrlHandler<AllBetGameUrlQuery>,
-    IKickPlayerHandler<AllBetKickPlayerCommand>
+    IKickPlayerHandler<AllBetKickPlayerCommand>,
+    IRoundDetailHandler<AllBetRoundDetailQuery>
 {
     private readonly ILogger<ABController> _logger;
     private readonly IMapper _mapper;
@@ -83,4 +85,29 @@ public class ABController : ControllerBase,
         {
             PlayerCode = playerCode
         });
+
+    /// <summary>
+    /// Rounds the detail asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="roundId">The round identifier.</param>
+    /// <param name="language">The language.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Get ab/rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
+    /// </remarks>
+    [HttpGet("RoundDetail/{roundId}")]
+    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+        [FromServices] IGetService<AllBetRoundDetailQuery, RoundDetailResult> getService,
+        Guid roundId,
+        string language)
+        => await getService
+            .GetAsync(new AllBetRoundDetailQuery
+            {
+                RoundId = roundId,
+                Language = language
+            })
+            .ConfigureAwait(false);
 }
