@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using TGS.GameProviders.Domains.SettingConfiguration.AllBet;
 
-namespace TGS.GameProviders.Core.AllBet.ApplicationServices;
+namespace TGS.GameProviders.Core.AllBet;
 
 public interface IAllBetGamePlayer
 {

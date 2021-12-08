@@ -6,11 +6,21 @@ namespace TGS.GameProviders.Core.AllBet;
 
 public interface IAllBetApiClient
 {
+    ValueTask<AllBetCheckOrCreateMemberResponse> CheckOrCreateMemberAsync(
+        Uri apiUrl,
+        string propertyId,
+        string apiKey,
+        AllBetCheckOrCreateMemberRequest request);
+
     ValueTask<AllBetLoginResponse> LoginAsync(
-        Uri apiUrl, string propertyId, string apiKey,
+            Uri apiUrl,
+        string propertyId,
+        string apiKey,
         AllBetLoginRequest request);
 
-    ValueTask<AllBetCheckOrCreateMemberResponse> CheckOrCreateMemberAsync(
-        Uri apiUrl, string propertyId,
-        string apiKey, AllBetCheckOrCreateMemberRequest request);
+    ValueTask<AllBetLogoutResponse> LogoutAsync(
+        Uri apiUrl,
+        string propertyId,
+        string apiKey,
+        AllBetLogoutRequest request);
 }

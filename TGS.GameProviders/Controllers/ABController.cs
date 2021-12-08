@@ -13,7 +13,8 @@ namespace TGS.GameProviders.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class ABController : ControllerBase,
-    IGameUrlHandler<AllBetGameUrlQuery>
+    IGameUrlHandler<AllBetGameUrlQuery>,
+    IKickPlayerHandler<AllBetKickPlayerCommand>
 {
     private readonly ILogger<ABController> _logger;
     private readonly IMapper _mapper;
@@ -62,4 +63,24 @@ public class ABController : ControllerBase,
             null :
             _mapper.Map<GameUrlResponse>(result);
     }
+
+    /// <summary>
+    /// Kicks the player asynchronous.
+    /// </summary>
+    /// <param name="commandService">The command service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Delete ab/kickplayer/4ucmqplxb029
+    /// </remarks>
+    [HttpDelete("kickplayer/{playerCode}")]
+    public ValueTask KickPlayerAsync(
+        [FromServices] ICommandService<AllBetKickPlayerCommand> commandService,
+        string playerCode)
+        => commandService.ExecuteAsync(new AllBetKickPlayerCommand
+        {
+            PlayerCode = playerCode
+        });
 }
