@@ -42,7 +42,7 @@ namespace TGS.GameProviders.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Post
         ///         {
         ///             "brandCode": "Default",
@@ -57,7 +57,7 @@ namespace TGS.GameProviders.Controllers
             LYGameRecordListQuery request)
         {
             var result = await getService.GetAsync(request).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace TGS.GameProviders.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Post
         ///         {
         ///             "gameType": 8,
@@ -140,7 +140,7 @@ namespace TGS.GameProviders.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Post
         ///         {
         ///             "brandCode": "GPI",
@@ -166,7 +166,7 @@ namespace TGS.GameProviders.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Post
         ///         {
         ///             "brandCode": "GPI",
@@ -193,7 +193,7 @@ namespace TGS.GameProviders.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Post
         ///         {
         ///             "brandCode": "GPI",
@@ -235,7 +235,7 @@ namespace TGS.GameProviders.Controllers
                 RoundId = roundId,
                 Language = language
             }).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
     }
 }

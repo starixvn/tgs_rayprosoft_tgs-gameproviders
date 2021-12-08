@@ -95,5 +95,33 @@ namespace TGS.GameProviders.ApiClients.UnitTests
 
             var response = await _client.LogoutAsync(_apiUrl, request).ConfigureAwait(false);
         }
+
+        [Test]
+        public async Task GetSportsBookRoundHistoryAsync()
+        {
+            var request = new SBOGetRoundHistoryRequest
+            {
+                CompanyKey = _companyKey,
+                Portfolio = "SportsBook",
+                ExternalRoundId = "4040907",
+                Language = "en_US"
+            };
+
+            var response = await _client.GetRoundHistoryAsync(_apiUrl, request).ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task GetVirtualSportsRoundHistoryAsync()
+        {
+            var request = new SBOGetRoundHistoryRequest
+            {
+                CompanyKey = _companyKey,
+                Portfolio = "VirtualSports",
+                ExternalRoundId = "B2677480",
+                Language = "en_US"
+            };
+
+            var response = await _client.GetRoundHistoryAsync(_apiUrl, request).ConfigureAwait(false);
+        }
     }
 }

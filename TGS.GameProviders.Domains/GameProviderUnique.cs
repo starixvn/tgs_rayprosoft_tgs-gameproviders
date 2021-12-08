@@ -2,6 +2,7 @@
 {
     public enum GameProviderUnique
     {
+        MainWallet = 0,
         SBOBET = 1,
         Habanero = 2,
         PragmaticPlay = 3,
@@ -21,6 +22,7 @@
         WMCasino = 17,
         TCG = 18,
         Card365 = 19,
-        LY = 20
+        LY = 20,
+        BetConstruct = 21
     }
 }

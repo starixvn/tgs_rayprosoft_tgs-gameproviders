@@ -30,12 +30,12 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            _ = await _client.LogoutAsync(
-                configuration.ApiUrl,
-                configuration.PartnerCode,
-                configuration.PartnerKey,
-                configuration.IV,
-                command.PlayerCode).ConfigureAwait(false);
+            await _client.LogoutAsync(
+               configuration.ApiUrl,
+               configuration.PartnerCode,
+               configuration.PartnerKey,
+               configuration.IV,
+               command.PlayerCode).ConfigureAwait(false);
         }
     }
 }

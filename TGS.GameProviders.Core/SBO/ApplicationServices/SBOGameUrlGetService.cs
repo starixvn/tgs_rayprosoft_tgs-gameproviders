@@ -47,7 +47,7 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
             }
 
             var gameProviderCulture =
-                await _service.GetGameProviderCultureCodeAsync(query.Language).ConfigureAwait(false);
+                await _service.GetGameProviderCultureCodeAsync(game.GameProviderId, query.Language).ConfigureAwait(false);
 
             var url = game.GameType switch
             {
@@ -93,8 +93,7 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
                 return loginResponse;
             }
 
-            var created = await _playerService.CreatePlayerAsync(configuration, query.BrandCode, query.PlayerCode,
-                query.CurrencyCode).ConfigureAwait(false);
+            var created = await _playerService.CreatePlayerAsync(configuration, query.BrandCode, query.PlayerCode, query.CurrencyCode).ConfigureAwait(false);
 
             return !created ? null : await _client.LoginAsync(configuration.ApiUrl, loginRequest).ConfigureAwait(false);
         }

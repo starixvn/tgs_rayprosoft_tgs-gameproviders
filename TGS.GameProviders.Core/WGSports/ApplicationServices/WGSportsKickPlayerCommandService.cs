@@ -30,7 +30,7 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            _ = await _client.LogoutAsync(
+            await _client.LogoutAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
                 configuration.PartnerKey,

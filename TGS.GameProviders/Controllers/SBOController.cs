@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.SBO.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers
@@ -14,7 +15,8 @@ namespace TGS.GameProviders.Controllers
     [Route("api/[controller]")]
     public class SBOController : ControllerBase,
         IGameUrlHandler<SBOGameUrlQuery>,
-        IKickPlayerHandler<SBOKickPlayerCommand>
+        IKickPlayerHandler<SBOKickPlayerCommand>,
+        IRoundDetailHandler<SBORoundDetailQuery>
     {
         private readonly ILogger<SBOController> _logger;
         private readonly IMapper _mapper;
@@ -35,7 +37,7 @@ namespace TGS.GameProviders.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Post
         ///         {
         ///             "gameType": 1,
@@ -78,5 +80,32 @@ namespace TGS.GameProviders.Controllers
             {
                 PlayerCode = playerCode
             });
+
+        /// <summary>
+        /// Rounds the detail asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="roundId">The round identifier.</param>
+        /// <param name="language">The language.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get sbo/rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
+        /// </remarks>
+        [HttpGet("RoundDetail/{roundId}")]
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromServices] IGetService<SBORoundDetailQuery, RoundDetailResult> getService,
+            Guid roundId,
+            [FromQuery] string language)
+        {
+            var result = await getService.GetAsync(new SBORoundDetailQuery
+            {
+                RoundId = roundId,
+                Language = language
+            }).ConfigureAwait(false);
+
+            return result ?? null;
+        }
     }
 }

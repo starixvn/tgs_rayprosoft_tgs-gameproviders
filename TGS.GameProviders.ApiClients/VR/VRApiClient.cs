@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -20,18 +23,15 @@ namespace TGS.GameProviders.ApiClients.VR
         private readonly HttpClient _client;
         private readonly ILogger<VRApiClient> _logger;
         private readonly ITgsLog _tgsLog;
-        private readonly IVRUtility _utility;
 
         public VRApiClient(
             HttpClient client,
             ILogger<VRApiClient> logger,
-            ITgsLog tgsLog,
-            IVRUtility utility)
+            ITgsLog tgsLog)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
-            _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         }
 
         public ValueTask<VRErrorCodeResponse> CreatePlayerAsync(Uri apiUrl, string merchantid, string version, string deskey, VRCreatePlayerRequest source)
@@ -52,9 +52,9 @@ namespace TGS.GameProviders.ApiClients.VR
         public Uri GetGameURL(Uri apiUrl, string merchantid, string version, string deskey, VRGameUrlRequest source)
 
         {
-            var path = _utility.GetPath(source);
+            var path = GetPath(source);
 
-            var dataEncrypt = _utility.AesEncrypt(path, deskey, true);
+            var dataEncrypt = AesEncrypt(path, deskey, true);
 
             var data = new VRApiRequest()
             {
@@ -63,11 +63,97 @@ namespace TGS.GameProviders.ApiClients.VR
                 data = dataEncrypt,
             };
 
-            return new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{_utility.GetAction(VRAction.GetGameUrl)}?{_utility.GetPath(data)}");
+            return new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{GetAction(VRAction.GetGameUrl)}?{GetPath(data)}");
         }
 
         public ValueTask<VRErrorCodeResponse> KickAsync(Uri apiUrl, string merchantid, string version, string deskey, VRKickRequest source)
              => PostAsync<VRKickRequest, VRErrorCodeResponse>(apiUrl, merchantid, version, deskey, VRAction.Kick, source);
+
+        private string AesDecrypt(string data, string secretKey, bool isDecodeUrl = true)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(data))
+                    return null;
+                if (isDecodeUrl)
+                    data = System.Web.HttpUtility.UrlDecode(data);
+
+                byte[] dataBytes = Convert.FromBase64String(data);
+
+                using (var aes = Aes.Create())
+                {
+                    aes.Mode = CipherMode.ECB;
+                    aes.Padding = PaddingMode.PKCS7;
+                    aes.Key = Encoding.UTF8.GetBytes(secretKey);
+                    aes.GenerateIV();
+
+                    using (ICryptoTransform cryptoTransform = aes.CreateDecryptor())
+                    {
+                        using (MemoryStream memoryStream = new MemoryStream(dataBytes))
+                        {
+                            using (CryptoStream csDecrypt = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Read))
+                            {
+                                using (StreamReader streamReader = new StreamReader(csDecrypt))
+                                {
+                                    return streamReader.ReadToEnd();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private string AesEncrypt(string data, string secretKey, bool isEncodeUrl = true)
+        {
+            if (string.IsNullOrEmpty(data))
+                return null;
+            byte[] dataBytes = Encoding.UTF8.GetBytes(data);
+
+            using (var aes = Aes.Create())
+            {
+                aes.Mode = CipherMode.ECB;
+                aes.Padding = PaddingMode.PKCS7;
+                aes.KeySize = 128;
+                aes.BlockSize = 128;
+                aes.Key = Encoding.UTF8.GetBytes(secretKey);
+                aes.GenerateIV();
+
+                byte[] encrypted;
+                using (var cryptoTransform = aes.CreateEncryptor())
+                {
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
+                        {
+                            cryptoStream.Write(dataBytes, 0, dataBytes.Length);
+                            cryptoStream.FlushFinalBlock();
+                            encrypted = memoryStream.ToArray();
+
+                            var base64Str = Convert.ToBase64String(encrypted, 0, encrypted.Length);
+
+                            return isEncodeUrl ? System.Web.HttpUtility.UrlEncode(base64Str) : base64Str;
+                        }
+                    }
+                }
+            }
+        }
+
+        private string GetAction(VRAction action)
+        {
+            return VRActionMapper.Mapper.Where(x => x.Key == action).First().Value;
+        }
+
+        private string GetPath<TRequest>(TRequest request, JsonSerializerOptions options = null)
+        {
+            var value = JsonSerializer.Serialize(request, options);
+            var items = JsonSerializer.Deserialize<Dictionary<string, object>>(value, options);
+            return string.Join("&", items.Where(x => x.Value != null).Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value)));
+        }
 
         private async ValueTask<ResultData> PostAsync<SourceData, ResultData>(Uri apiUrl, string merchantid, string version, string deskey, VRAction action, SourceData source)
         {
@@ -76,7 +162,7 @@ namespace TGS.GameProviders.ApiClients.VR
             var responseMessage = default(string);
             var response = default(ResultData);
 
-            var dataEncrypt = _utility.AesEncrypt(JsonSerializer.Serialize(source), deskey, false);
+            var dataEncrypt = AesEncrypt(JsonSerializer.Serialize(source), deskey, false);
 
             var data = new VRApiRequest()
             {
@@ -87,7 +173,7 @@ namespace TGS.GameProviders.ApiClients.VR
 
             HttpContent content = new StringContent(JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
 
-            var url = new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{_utility.GetAction(action)}");
+            var url = new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{GetAction(action)}");
 
             var httpResponseMessage = await _client.PostAsync(url, content);
             sw.Stop();
@@ -114,7 +200,7 @@ namespace TGS.GameProviders.ApiClients.VR
 
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
-                var contentDecrypt = _utility.AesDecrypt(responseMessage, deskey, false);
+                var contentDecrypt = AesDecrypt(responseMessage, deskey, false);
                 if (!string.IsNullOrEmpty(contentDecrypt))
                 {
                     responseMessage = contentDecrypt;

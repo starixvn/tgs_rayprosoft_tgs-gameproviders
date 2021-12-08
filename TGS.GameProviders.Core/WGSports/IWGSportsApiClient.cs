@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.WGSports.Models;
-using TGS.GameProviders.Core.WGSports.Models.Commons;
 
 namespace TGS.GameProviders.Core.WGSports
 {
     public interface IWGSportsApiClient
     {
-        ValueTask<WGSportsResponse> AccessMoneyAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGSportsAccessMoneyRequest source);
+        ValueTask<bool> AccessMoneyFundInAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode, string orderId, decimal amount);
 
-        ValueTask<WGSportsResponse> AccessMoneyQueryAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGSportsAccessMoneyQueryRequest source);
+        ValueTask<bool> AccessMoneyFundOutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode, string orderId, decimal amount);
 
-        ValueTask<WGSportsGetBalanceResponse> GetBalanceAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGSportsGetBalanceRequest source);
+        ValueTask<bool> AccessMoneyQueryAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string orderId);
 
-        ValueTask<WGSportsGameRecordResponse> GetGameRecordAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGSportsGameRecordRequest source);
+        ValueTask<(bool IsPlayer, decimal? Balance)> GetBalanceAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode);
 
-        ValueTask<WGSportsLoginResponse> GetLoginAsync(Uri apiUrl, string partnerCode, WGSportsLoginRequest source);
+        ValueTask<(bool Success, WGSportsBetInfo[]? BetInfos)> GetGameRecordAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, GameRecordTime gameRecordTime, string startTime, string endTime);
 
-        ValueTask<WGSportsPrepareLoginResponse> GetPrepareLoginAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, WGSportsPrepareLoginRequest source);
+        ValueTask<Uri?> GetLoginAsync(Uri apiUrl, string partnerCode, string token, string lang);
 
-        ValueTask<WGSportsResponse> LogoutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode);
+        ValueTask<string?> GetPrepareLoginAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, long timestamp, string playerCode, string playerNickname, string currencyCode, string handicap);
+
+        ValueTask LogoutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode);
     }
 }

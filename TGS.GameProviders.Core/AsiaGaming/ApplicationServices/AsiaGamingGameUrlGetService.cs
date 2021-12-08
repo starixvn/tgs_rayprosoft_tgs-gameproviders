@@ -62,7 +62,7 @@ namespace TGS.GameProviders.Core.AsiaGaming.ApplicationServices
             var brandId = await _service.GetBrandIdAsync(query.BrandCode).ConfigureAwait(false);
             var game = await _service.GetGameAsync(query.GameId!.Value).ConfigureAwait(false);
             var gameProviderLanguage = await _service
-                .GetGameProviderCurrencyLanguageAsync(gameProviderId, query.Language).ConfigureAwait(false);
+                .GetGameProviderLanguageCodeAsync(gameProviderId, query.Language).ConfigureAwait(false);
 
             var domain = await _service.GetGameDomainAsync(brandId, gameProviderId, query.PlatformType)
                 .ConfigureAwait(false);

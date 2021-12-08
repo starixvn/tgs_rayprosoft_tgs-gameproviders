@@ -36,7 +36,7 @@ namespace TGS.GameProviders.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Post
         ///         LiveDealerLobby
         ///         {
@@ -51,7 +51,7 @@ namespace TGS.GameProviders.Controllers
         ///             "ipAddress": "127.0.0.1",
         ///             "backUrl": "https://dev-t1.rpgp.cc/"
         ///         }
-        ///         
+        ///
         ///     Post
         ///         Slot
         ///         {

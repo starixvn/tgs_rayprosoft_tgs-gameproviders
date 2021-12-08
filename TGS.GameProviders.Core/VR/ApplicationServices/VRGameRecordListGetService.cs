@@ -68,7 +68,7 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
             var gameProviderCode = _service.GetGameProviderCode();
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
-            var datas = response.Records.Select(data => new GameRecordListModle()
+            var datas = response.Records.Select(data => new GameRecordListModel()
             {
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,

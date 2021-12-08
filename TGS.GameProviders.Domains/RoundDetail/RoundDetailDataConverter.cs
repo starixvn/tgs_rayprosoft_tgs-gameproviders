@@ -27,7 +27,7 @@ namespace TGS.GameProviders.Domains.RoundDetail
             }
 
             var o = JsonSerializer.Deserialize(root.GetRawText(), type, options);
-            return (RoundDetailDataBase)o;
+            return (RoundDetailDataBase?)o;
         }
 
         public override void Write(Utf8JsonWriter writer, RoundDetailDataBase value, JsonSerializerOptions options)

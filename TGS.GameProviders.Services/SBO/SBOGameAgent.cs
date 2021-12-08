@@ -28,7 +28,10 @@ namespace TGS.GameProviders.Services.SBO
             string agentId,
             string currencyCode)
         {
-            var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(currencyCode)
+            var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
+
+            var gameProviderCurrencyCode = await _service
+                .GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)
                 .ConfigureAwait(false);
 
             var request = new SBOCreateAgentRequest
