@@ -60,7 +60,7 @@ internal class PragmaticPlayRoundDetailGetService : IGetService<PragmaticPlayRou
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
         var gameProviderCultureCode = await _service
-            .GetGameProviderCurrencyLanguageAsync(gameProviderModel.GameProviderId, query.Language)
+            .GetGameProviderLanguageAsync(gameProviderModel.GameProviderId, query.Language)
             .ConfigureAwait(false);
 
         var gameActions = await _gameActionRepository
