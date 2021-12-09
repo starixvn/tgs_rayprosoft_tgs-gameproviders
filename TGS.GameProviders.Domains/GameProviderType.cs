@@ -25,5 +25,6 @@
         public const string WGHorse = "WGVIA";
         public const string WGSports = "WGFM";
         public const string WMCasino = "WM";
+        public const string Avia = "AVIA";
     }
 }

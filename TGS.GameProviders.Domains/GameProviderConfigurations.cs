@@ -25,5 +25,6 @@
         public static readonly string WGHorse = string.Format(_template, GameProviderType.WGHorse);
         public static readonly string WGSports = string.Format(_template, GameProviderType.WGSports);
         public static readonly string WMCasino = string.Format(_template, GameProviderType.WMCasino);
+        public static readonly string Avia = string.Format(_template, GameProviderType.Avia);
     }
 }

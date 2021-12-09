@@ -2,6 +2,7 @@
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.AllBet.ApplicationServices;
 using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
+using TGS.GameProviders.Core.Avia.ApplicationServices;
 using TGS.GameProviders.Core.BetConstruct.ApplicationServices;
 using TGS.GameProviders.Core.BigGaming.ApplicationServices;
 using TGS.GameProviders.Core.Evolution.ApplicationServices;
@@ -63,8 +64,9 @@ namespace TGS.GameProviders.ViewModelMappings
                 .ReverseMap();
             CreateMap<GameUrlRequest, HabaneroGameUrlQuery>()
                 .ReverseMap();
-
             CreateMap<GameUrlRequest, AllBetGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, AviaGameUrlQuery>()
                 .ReverseMap();
         }
     }

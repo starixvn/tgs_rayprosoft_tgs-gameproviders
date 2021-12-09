@@ -3,6 +3,7 @@ using StackExchange.Redis;
 using TGS.GameProviders.Core.AllBet;
 using TGS.GameProviders.Core.AllBet.ApplicationServices;
 using TGS.GameProviders.Core.AsiaGaming;
+using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.BetConstruct;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Evolution;
@@ -22,6 +23,7 @@ using TGS.GameProviders.Core.WGSports;
 using TGS.GameProviders.Core.WMCasino;
 using TGS.GameProviders.Services.AllBet;
 using TGS.GameProviders.Services.AsiaGaming;
+using TGS.GameProviders.Services.Avia;
 using TGS.GameProviders.Services.BetConstruct;
 using TGS.GameProviders.Services.BigGaming;
 using TGS.GameProviders.Services.Evolution;
@@ -131,6 +133,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IAllBetService, AllBetService>()
                 .AddTransient<IAllBetAgentMapper, AllBetAgentMapper>()
                 .AddTransient<IAllBetGamePlayer, AllBetGamePlayer>();
+
+            services
+                .AddTransient<IAviaService, AviaService>();
 
             return services;
         }

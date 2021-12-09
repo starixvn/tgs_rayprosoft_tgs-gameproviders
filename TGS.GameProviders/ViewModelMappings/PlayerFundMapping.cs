@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.Avia.ApplicationServices;
 using TGS.GameProviders.Core.KY.ApplicationServices;
 using TGS.GameProviders.Core.LY.ApplicationServices;
 using TGS.GameProviders.Core.VR.ApplicationServices;
@@ -39,6 +40,10 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<PlayerFundRequest, LYPlayerFundOutQuery>()
                 .ReverseMap();
             CreateMap<PlayerFundRequest, LYPlayerFundInQuery>()
+                .ReverseMap();
+            CreateMap<PlayerFundRequest, AviaPlayerFundOutQuery>()
+                .ReverseMap();
+            CreateMap<PlayerFundRequest, AviaPlayerFundInQuery>()
                 .ReverseMap();
         }
     }
