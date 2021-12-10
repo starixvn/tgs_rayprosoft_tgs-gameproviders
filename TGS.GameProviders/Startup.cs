@@ -216,9 +216,9 @@ namespace TGS.GameProviders
                 });
 
             services
-                .AddHealthChecks()
-                .AddRedis(Configuration.GetConnectionString("RedisConfigurationString"), name: "Redis Default")
-                .AddNpgSql(Configuration.GetConnectionString("Tgs"), name: "PostgreSQL Tgs");
+                .AddHealthChecks();
+                //.AddRedis(Configuration.GetConnectionString("RedisConfigurationString"), name: "Redis Default")
+                //.AddNpgSql(Configuration.GetConnectionString("Tgs"), name: "PostgreSQL Tgs");
         }
     }
 }
