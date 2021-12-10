@@ -6,24 +6,6 @@ metadata:
 data:
   appsettings.json: |
     {
-      "Logging": {
-        "LogLevel": {
-          "Default": "Information",
-          "Microsoft": "Warning",
-          "Microsoft.Hosting.Lifetime": "Information"
-        },
-        "TgsLog": {
-          "LogLevel": {
-            "Default": "Information",
-            "Microsoft": "Warning",
-            "Microsoft.Hosting.Lifetime": "None",
-            "TGS": "Information"
-          }
-        },
-        "Console": {
-          "FormatterName": "Simple"
-        }
-      },
       "ForwardedHeaders": {
         "ForwardLimit": 2,
         "KnownProxies": [
