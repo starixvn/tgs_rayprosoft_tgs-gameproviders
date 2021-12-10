@@ -53,8 +53,6 @@ namespace TGS.GameProviders.ApiClients.WGHorse
             return (response != null && response?.ReturnCode == 1);
         }
 
-        ValueTask<bool> IWGHorseApiClient.AccessMoneyFundInAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode, string orderId, decimal amount) => throw new NotImplementedException();
-
         public async ValueTask<bool> AccessMoneyFundOutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode, string orderId, decimal amount)
         {
             var request = new
@@ -75,8 +73,6 @@ namespace TGS.GameProviders.ApiClients.WGHorse
             return (response != null && response?.ReturnCode == 1);
         }
 
-        ValueTask<bool> IWGHorseApiClient.AccessMoneyFundOutAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode, string orderId, decimal amount) => throw new NotImplementedException();
-
         public async ValueTask<bool> AccessMoneyQueryAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string orderId)
         {
             var request = new
@@ -94,8 +90,6 @@ namespace TGS.GameProviders.ApiClients.WGHorse
 
             return (response != null && response?.ReturnCode == 1);
         }
-
-        ValueTask<bool> IWGHorseApiClient.AccessMoneyQueryAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string orderId) => throw new NotImplementedException();
 
         public async ValueTask<(bool IsPlayer, decimal? Balance)> GetBalanceAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode)
         {
