@@ -1,25 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.Avia;
-using TGS.GameProviders.ApiClients.KY;
 using TGS.GameProviders.Core.Avia;
+using TGS.GameProviders.Core.Avia.Models;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
     [TestFixture]
     public class AviaApiClientUnitTest
     {
-        private readonly Uri _apiUrl = new Uri("https://api.aviaapi.vip");
         private const string _authorization = "81e2d1a24c684a76a710a70f4900a353";
-
+        private readonly Uri _apiUrl = new Uri("https://api.aviaapi.vip");
         private readonly IAviaApiClient _client;
 
         public AviaApiClientUnitTest()
@@ -31,14 +27,12 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             //_client = new AviaApiClient(client, faceLog, faceTgsLog);
         }
 
-
         [Test]
         public async Task CreatePlayerAsync()
         {
             var playerCode = "4ucmqplxb029";
             var password = "TgsP@ssw0rd";
             var currency = "CNY";
-
 
             _ = _client.RegisterAsync(
                 _apiUrl,
@@ -59,63 +53,114 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         }
 
         [Test]
-        public async Task TransferOutAsync()
+        public async Task GetBalanceAsync()
         {
+            var playerCode = "4ucmqplxb023";
+            var isPlayer = true;
+            decimal? balance = 100m;
 
-            var playerCode = "4ucmqplxb029";
-            var currency = "CNY";
-            var orderId = Guid.NewGuid().ToString("N");
-            var amount = 100;
-            var id = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+            _ = _client.BalanceAsync(
+                 _apiUrl,
+                 _authorization,
+                 playerCode).Returns(ValueTask.FromResult((isPlayer, balance)));
 
-            _ = _client.TransferOutAsync(
+            var actual = await _client.BalanceAsync(
                 _apiUrl,
                 _authorization,
-                playerCode,
-                currency,
-                orderId,
-                amount).Returns(ValueTask.FromResult((true, id)));
-
-            var actual = await _client.TransferOutAsync(
-                _apiUrl,
-                _authorization,
-                playerCode,
-                currency,
-                orderId,
-                amount).ConfigureAwait(false);
+                playerCode).ConfigureAwait(false);
 
             Assert.NotNull(actual);
-            Assert.AreEqual(true, actual.Success);
+            Assert.AreEqual(balance, actual.Balance);
         }
 
         [Test]
-        public async Task TransferInAsync()
+        public async Task GetGameRecordAsync()
         {
+            DateTimeOffset startTime = DateTimeOffset.UtcNow.AddDays(-7).ToOffset(TimeSpan.FromHours(8));
+            DateTimeOffset endTime = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
+            int pageIndex = 1;
+            int pageSize = 20;
 
-            var playerCode = "4ucmqplxb029";
-            var currency = "CNY";
-            var orderId = Guid.NewGuid().ToString("N");
-            var amount = 100;
-            var id = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+            bool success = true;
+            AviaGameRecordData[]? datas = new AviaGameRecordData[1] {
+                    new AviaGameRecordData {
+                        Type= "Combo",
+                ComboType= "Combo",
+                OrderID= "136122074377333076",
+                UserName= "4ucmqplxb029",
+                Status= "Win",
+                        CreateAt= "2021/12/9 13:45:43",
+                UpdateAt= "2021/12/10 1:13:26",
+                Timestamp= 1639070006598,
+                RewardAt= "2021/12/10 1:13:26",
+                BetMoney= 10.00m,
+                Money=15.09m,
+                OddsType= "EU",
+                BetAmount= 10.00m,
+                Odds=2.5113m,
+                IP= "220.132.206.70",
+                Language="CHN",
+                Platform= new string[2] {"PC",  " MAC" },
+                ReSettlement= 0,
+                IsTest= 0,
+                Currency= "CNY",
+                Details=new AviaGameRecordDetail[2] {
+                    new AviaGameRecordDetail{
+                        DetailID="136122074377533955",
+                        CateID="10",
+                        Category="刀塔II",
+                        LeagueID="4425",
+                        League="i-联赛",
+                        MatchID= "5733",
+                        Match="Xtreme Gaming VS Intense Gaming",
+                        BetID= "27513",
+                        Bet="地图1 - 获胜者",
+                        Content= "XG",
+                        ResultAt= "2021/12/10 0:57:45",
+                        Result= "XG",
+                        OddsType= "EU",
+                        Odds="1.610",
+                        Status= "Win"
+                    },
+                    new AviaGameRecordDetail()
+                    {
+                        DetailID= "136122074377533965",
+                        CateID= "1",
+                        Category="绝地求生",
+                        LeagueID= "2080",
+                        League="虎牙天命杯",
+                        MatchID= "5736",
+                        Match= "PUBG Global Invitational  VS SP",
+                        BetID= "27507",
+                        Bet= "地图1 - 排名第一队伍",
+                        Content= "",
+                        ResultAt= "2021/12/10 0:56:28",
+                        Result="",
+                        OddsType="EU",
+                        Odds= "1.559",
+                        Status="Win",
+                    }   }
+                    } };
 
-            _ = _client.TransferInAsync(
+            _ = _client.GetGameRecordAsync(
                 _apiUrl,
                 _authorization,
-                playerCode,
-                currency,
-                orderId,
-                amount).Returns(ValueTask.FromResult((true, id)));
+                startTime,
+                endTime,
+                pageIndex,
+                pageSize).Returns(ValueTask.FromResult<(bool Success, AviaGameRecordData[]? GameRecords)>((success, datas)));
 
-            var actual = await _client.TransferInAsync(
-                _apiUrl,
+            var actual = await _client.GetGameRecordAsync(
+                 _apiUrl,
                 _authorization,
-                playerCode,
-                currency,
-                orderId,
-                amount).ConfigureAwait(false);
+                startTime,
+                endTime,
+                pageIndex,
+                pageSize).ConfigureAwait(false);
 
             Assert.NotNull(actual);
             Assert.AreEqual(true, actual.Success);
+            Assert.AreEqual(datas, actual.GameRecords);
         }
 
         [Test]
@@ -125,6 +170,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var lang = "ENG";
             var cateId = default(int?);
             var matchId = default(int?);
+            var isPlayer = true;
             var url = new Uri("https://www.google.com/");
 
             _ = _client.GetGameUrlAsync(
@@ -133,7 +179,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 playerCode,
                 lang,
                 cateId,
-                matchId).Returns(ValueTask.FromResult(url));
+                matchId).Returns(ValueTask.FromResult((isPlayer, url)));
 
             var actual = await _client.GetGameUrlAsync(
                 _apiUrl,
@@ -144,32 +190,62 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 matchId).ConfigureAwait(false);
 
             Assert.NotNull(actual);
-            Assert.AreEqual(url, actual);
-
-
-
+            Assert.AreEqual(isPlayer, actual.IsPlayer);
+            Assert.AreEqual(url, actual.GameUrl);
         }
 
         [Test]
-        public async Task GetBalanceAsync()
+        public async Task TransferInAsync()
         {
+            var playerCode = "4ucmqplxb029";
+            var currency = "CNY";
+            var orderId = $"{DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)):yyyyMMddHHmmssfff}{playerCode}";
+            var amount = 100;
 
-            var playerCode = "4ucmqplxb023";
-
-            decimal? balance = 100m;
-
-            _ = _client.BalanceAsync(
+            _ = _client.TransferInAsync(
                 _apiUrl,
                 _authorization,
-                playerCode).Returns(ValueTask.FromResult((true, balance)));
+                playerCode,
+                currency,
+                amount).Returns(ValueTask.FromResult((true, orderId)));
 
-            var actual = await _client.BalanceAsync(
+            var actual = await _client.TransferInAsync(
                 _apiUrl,
                 _authorization,
-                playerCode).ConfigureAwait(false);
+                playerCode,
+                currency,
+                amount).ConfigureAwait(false);
 
             Assert.NotNull(actual);
-            Assert.AreEqual(balance, actual.Balance);
+            Assert.AreEqual(true, actual.Success);
+            Assert.AreEqual(orderId, actual.orderId);
+        }
+
+        [Test]
+        public async Task TransferOutAsync()
+        {
+            var playerCode = "4ucmqplxb029";
+            var currency = "CNY";
+            var orderId = $"{DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)):yyyyMMddHHmmssfff}{playerCode}";
+            var amount = 100;
+
+            _ = _client.TransferOutAsync(
+                _apiUrl,
+                _authorization,
+                playerCode,
+                currency,
+                amount).Returns(ValueTask.FromResult((true, orderId)));
+
+            var actual = await _client.TransferOutAsync(
+                _apiUrl,
+                _authorization,
+                playerCode,
+                currency,
+                amount).ConfigureAwait(false);
+
+            Assert.NotNull(actual);
+            Assert.AreEqual(true, actual.Success);
+            Assert.AreEqual(orderId, actual.orderId);
         }
     }
 }

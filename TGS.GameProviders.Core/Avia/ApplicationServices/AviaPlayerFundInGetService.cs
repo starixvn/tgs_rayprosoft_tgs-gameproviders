@@ -31,7 +31,6 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
                 configuration.Authorization,
                 command.PlayerCode,
                 gameProviderCurrencyCode,
-                command.OrderId,
                 command.Amount
                 ).ConfigureAwait(false);
 

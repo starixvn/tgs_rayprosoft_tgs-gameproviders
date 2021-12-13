@@ -13,6 +13,7 @@ using Tgs.Logging;
 using TGS.GameProviders.ApiClients.Avia.Models;
 using TGS.GameProviders.ApiClients.Avia.Models.Commons;
 using TGS.GameProviders.Core.Avia;
+using TGS.GameProviders.Core.Avia.Models;
 using TGS.GameProviders.Core.Extensions;
 
 namespace TGS.GameProviders.ApiClients.Avia
@@ -40,21 +41,52 @@ namespace TGS.GameProviders.ApiClients.Avia
                 UserName = playerCode
             };
 
-            var response = await PostAsync<AviaBaseInfoResponse<AviaBalanceResponse>>(
+            var response = await PostAsync<AviaBaseResponse<AviaBalanceResponse>>(
                 apiUrl,
                 authorization,
                 ToFormData(request),
                 AviaAction.Balance).ConfigureAwait(false);
 
-            if (response.Success == 0 )
+            if (response.Success == 0)
+            {
+                if (response.Info.Error.Contains("NOUSER"))
+                {
+                    return (false, null);
+                }
+                else
+                {
+                    return (true, null);
+                }
+            }
+
+            return (true, response.Info.Money);
+        }
+
+        public async ValueTask<(bool Success, AviaGameRecordData[]? GameRecords)> GetGameRecordAsync(Uri apiUrl, string authorization, DateTimeOffset startTime, DateTimeOffset endTime, int pageIndex = 1, int pageSize = 20)
+        {
+            var request = new
+            {
+                StartAt = startTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                EndAt = endTime.ToString("yyyy-MM-dd HH:mm:ss"),
+                PageIndex = pageIndex.ToString(),
+                PageSize = pageSize.ToString()
+            };
+
+            var response = await PostAsync<AviaBaseResponse<AviaGameRecordInfoResponse>>(
+                apiUrl,
+                authorization,
+                ToFormData(request),
+                AviaAction.GameRecord).ConfigureAwait(false);
+
+            if (response.Success == 0)
             {
                 return (false, null);
             }
 
-            return (true, response.Success == 1 ? response.Info.Money : null);
+            return (true, response.Info.List);
         }
 
-        public async ValueTask<Uri> GetGameUrlAsync(Uri apiUrl, string authorization, string playerCode, string lang, int? cateId, int? matchId)
+        public async ValueTask<(bool IsPlayer, Uri? GameUrl)> GetGameUrlAsync(Uri apiUrl, string authorization, string playerCode, string lang, int? cateId, int? matchId)
         {
             var request = new
             {
@@ -63,7 +95,7 @@ namespace TGS.GameProviders.ApiClients.Avia
                 MatchID = matchId
             };
 
-            var response = await PostAsync<AviaBaseInfoResponse<AviaLoginResponse>>(
+            var response = await PostAsync<AviaBaseResponse<AviaLoginResponse>>(
                 apiUrl,
                 authorization,
                 ToFormData(request),
@@ -71,7 +103,19 @@ namespace TGS.GameProviders.ApiClients.Avia
                 lang
                 ).ConfigureAwait(false);
 
-            return response.Success == 1 ? new(response.Info.Url) : null;
+            if (response.Success == 0)
+            {
+                if (response.Info.Error.Contains("NOUSER"))
+                {
+                    return (false, null);
+                }
+                else
+                {
+                    return (true, null);
+                }
+            }
+
+            return (true, new(response.Info.Url));
         }
 
         public async ValueTask KickAsync(Uri apiUrl, string authorization, string playerCode)
@@ -81,7 +125,7 @@ namespace TGS.GameProviders.ApiClients.Avia
                 UserName = playerCode,
             };
 
-            _ = await PostAsync<AviaBaseResponse>(
+            _ = await PostAsync<AviaBaseResponse<AviaErrorResponse>>(
                  apiUrl,
                  authorization,
                  ToFormData(request),
@@ -98,7 +142,7 @@ namespace TGS.GameProviders.ApiClients.Avia
                 Password = password,
                 Currency = currency
             };
-            var response = await PostAsync<AviaBaseResponse>(
+            var response = await PostAsync<AviaBaseResponse<AviaErrorResponse>>(
                 apiUrl,
                 authorization,
                 ToFormData(request),
@@ -107,44 +151,46 @@ namespace TGS.GameProviders.ApiClients.Avia
             return response.Success == 1;
         }
 
-        public async ValueTask<(bool Success, string orderId)> TransferInAsync(Uri apiUrl, string authorization, string playerCode, string currency, string orderId, decimal amount)
+        public async ValueTask<(bool Success, string orderId)> TransferInAsync(Uri apiUrl, string authorization, string playerCode, string currency, decimal amount)
         {
+            var orderId = $"{GetDateTimeOffsetNowTimeZone8():yyyyMMddHHmmssfff}{playerCode}";
             var request = new
             {
                 UserName = playerCode,
                 Type = "OUT",
-                Money = amount,
+                Money = amount.ToString("#0.00"),
                 ID = orderId,
                 Currency = currency
             };
 
-            var response = await PostAsync<AviaBaseInfoResponse<AviaTransferResponse>>(
+            var response = await PostAsync<AviaBaseResponse<AviaTransferResponse>>(
                  apiUrl,
                  authorization,
                  ToFormData(request),
                  AviaAction.TransferIn).ConfigureAwait(false);
 
-            return response.Success == 1 ? new(true, response.Info.ID.ToString()) : (false, null);
+            return response.Success == 1 ? new(true, response.Info.OrderID.ToString()) : (false, null);
         }
 
-        public async ValueTask<(bool Success, string orderId)> TransferOutAsync(Uri apiUrl, string authorization, string playerCode, string currency, string orderId, decimal amount)
+        public async ValueTask<(bool Success, string orderId)> TransferOutAsync(Uri apiUrl, string authorization, string playerCode, string currency, decimal amount)
         {
+            var orderId = $"{GetDateTimeOffsetNowTimeZone8():yyyyMMddHHmmssfff}{playerCode}";
             var request = new
             {
                 UserName = playerCode,
                 Type = "IN",
-                Money = amount,
+                Money = amount.ToString("#0.00"),
                 ID = orderId,
                 Currency = currency
             };
 
-            var response = await PostAsync<AviaBaseInfoResponse<AviaTransferResponse>>(
+            var response = await PostAsync<AviaBaseResponse<AviaTransferResponse>>(
                  apiUrl,
                  authorization,
                  ToFormData(request),
                  AviaAction.TransferOut).ConfigureAwait(false);
 
-            return response.Success == 1 ? new(true, response.Info.ID.ToString()) : (false, null);
+            return response.Success == 1 ? new(true, response.Info.OrderID.ToString()) : (false, null);
         }
 
         public async ValueTask<bool> TranslateinfoAsync(Uri apiUrl, string authorization, string orderId)
@@ -154,19 +200,29 @@ namespace TGS.GameProviders.ApiClients.Avia
                 ID = orderId
             };
 
-            var response = await PostAsync<AviaBaseInfoResponse<AviaTransferInfoResponse>>(
+            var response = await PostAsync<AviaBaseResponse<AviaTransferInfoResponse>>(
                  apiUrl,
                  authorization,
                  ToFormData(request),
                  AviaAction.Transferinfo).ConfigureAwait(false);
 
-            return response.Success == 1 && response.Info.Status == AviaTransferInfoStatus.Finish;
+            if (response.Success == 0)
+            {
+                return false;
+            }
+
+            AviaMapper.AviaTransferInfoStatusMapper.TryGetValue(response.Info.Status, out AviaTransferInfoStatus transferInfoStatus);
+
+            return response.Success == 1 && transferInfoStatus == AviaTransferInfoStatus.Finish;
         }
+
+        private DateTimeOffset GetDateTimeOffsetNowTimeZone8()
+            => DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
 
         private async Task<TResponse> PostAsync<TResponse>(Uri apiUrl, string authorization, Dictionary<string, string> parameters, AviaAction action, string contentLanguage = "CHN")
         {
             var logPrefix = $"{nameof(AviaApiClient).ToLower()}.{action.ToString()}";
-            var requestUri = AviaActionMapper.Mapper.Where(x => x.Key == action).First().Value;
+            var requestUri = AviaMapper.AviaActionMapper.Where(x => x.Key == action).First().Value;
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
             var response = default(TResponse);
@@ -177,7 +233,7 @@ namespace TGS.GameProviders.ApiClients.Avia
             HttpRequestMessage requestMessage = new HttpRequestMessage();
             requestMessage.Method = HttpMethod.Post;
             requestMessage.RequestUri = new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{requestUri}");
-            //requestMessage.Headers.Authorization = new AuthenticationHeaderValue(authorization);
+            requestMessage.Headers.Authorization = new AuthenticationHeaderValue(authorization);
 
             requestMessage.Content = content;
             var httpResponseMessage = await _client.SendAsync(requestMessage);

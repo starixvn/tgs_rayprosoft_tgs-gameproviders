@@ -9,13 +9,15 @@ namespace TGS.GameProviders.Domains.SettingConfiguration
     public record AviaConfiguration : PluggableConfigurationBase
     {
 
-        public decimal AmountMaximum { get; set; }
+        public decimal AmountMaximum { get; init; }
 
-        public string AmountFormat { get; set; }
+        public string AmountFormat { get; init; } = default!;
 
 
-        public Uri ApiUrl { get; init; }
+        public Uri ApiUrl { get; init; } = default!;
 
-        public string Authorization { get; set; }
+        public string Authorization { get; init; } = default!;
+
+        public string PlayerPassword { get; init; } = default!;
     }
 }

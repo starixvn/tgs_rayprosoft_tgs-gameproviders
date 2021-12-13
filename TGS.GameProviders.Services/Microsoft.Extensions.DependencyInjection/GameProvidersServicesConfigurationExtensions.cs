@@ -135,7 +135,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IAllBetGamePlayer, AllBetGamePlayer>();
 
             services
-                .AddTransient<IAviaService, AviaService>();
+                .AddTransient<IAviaService, AviaService>()
+                .AddTransient<IAviaGamePlayerService, AviaGamePlayer>();
 
             return services;
         }

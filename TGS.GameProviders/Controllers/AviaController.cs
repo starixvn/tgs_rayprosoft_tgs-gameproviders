@@ -14,6 +14,7 @@ namespace TGS.GameProviders.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class AviaController : ControllerBase,
+        IGameRecordListHandler<AviaGameRecordListQuery, AviaGameRecordListQuery>,
         IGameUrlHandler<AviaGameUrlQuery>,
         IKickPlayerHandler<AviaKickPlayerCommand>,
         IPlayerBalanceHandler<AviaPlayerBalanceQuery>,
@@ -29,6 +30,31 @@ namespace TGS.GameProviders.Controllers
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        }
+        /// <summary>
+        /// Games the record list asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="request">The request.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Post
+        ///         {
+        ///             "startTime": "2021-12-01T00:00:00+00:00",
+        ///             "endTime": "2021-12-13T00:00:00+00:00",
+        ///             "page": 1,
+        ///             "rows": 20
+        ///         }
+        /// </remarks>
+        [HttpPost("GameRecordList")]
+        public async ValueTask<GameRecordListResult?> GameRecordListAsync(
+            [FromServices] IGetService<AviaGameRecordListQuery, GameRecordListResult> getService,
+            AviaGameRecordListQuery request)
+        {
+            var result = await getService.GetAsync(request).ConfigureAwait(false);
+            return result == null ? null : result;
         }
 
 

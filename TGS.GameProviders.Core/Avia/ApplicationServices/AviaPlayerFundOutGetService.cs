@@ -6,7 +6,7 @@ using Tgs.ServiceUtility;
 
 namespace TGS.GameProviders.Core.Avia.ApplicationServices
 {
-    public class AviaPlayerFundOutGetService : IGetService<AviaPlayerFundInQuery, PlayerFundResult>
+    public class AviaPlayerFundOutGetService : IGetService<AviaPlayerFundOutQuery, PlayerFundResult>
     {
         private readonly IAviaApiClient _client;
         private readonly ILogger<AviaPlayerFundOutGetService> _logger;
@@ -22,7 +22,7 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        public async ValueTask<PlayerFundResult> GetAsync(AviaPlayerFundInQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<PlayerFundResult> GetAsync(AviaPlayerFundOutQuery command, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(command.CurrencyCode).ConfigureAwait(false);
@@ -31,7 +31,6 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
                 configuration.Authorization,
                 command.PlayerCode,
                 gameProviderCurrencyCode,
-                command.OrderId,
                 command.Amount
                 ).ConfigureAwait(false);
 

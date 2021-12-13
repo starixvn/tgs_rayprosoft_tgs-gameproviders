@@ -7,6 +7,9 @@ namespace TGS.GameProviders.ApiClients.Avia.Models
         [JsonPropertyName("Currency")]
         public string Currency { get; init; }
 
+        [JsonPropertyName("Error")]
+        public string Error { get; init; }
+
         [JsonPropertyName("Money")]
         [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         public decimal Money { get; init; }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.Repositories;
@@ -24,14 +21,26 @@ namespace TGS.GameProviders.Services.Avia
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         }
 
+        public ClientRoundStatus GetClientRound(string state)
+            => state switch
+            {
+                "None" => ClientRoundStatus.Open,
+                "Cancel" => ClientRoundStatus.Void,
+                "Win" => ClientRoundStatus.Win,
+                "Lose" => ClientRoundStatus.Loss,
+                _ => ClientRoundStatus.Void
+            };
+
         public string GetGameProviderCode()
             => GameProviderType.Avia;
+
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
             var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.Avia).ConfigureAwait(false);
             var (IsCultureCode, GameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
             return (IsCultureCode) ? GameProviderCultureCode : "ENG";
         }
+
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
         {
             var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SexyGaming).ConfigureAwait(false);
@@ -41,6 +50,14 @@ namespace TGS.GameProviders.Services.Avia
 
         public ValueTask<Guid> GetGameProviderIdAsync()
              => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.Avia);
+
+        public RoundStatus GetRoundStatus(string state)
+            => state switch
+            {
+                "None" => RoundStatus.Open,
+                _ => RoundStatus.Closed
+            };
+
         public Task<AviaConfiguration> GetSettingConfigurationAsync()
             => _settingRepository.GetConfigurationAsync<AviaConfiguration>(GameProviderConfigurations.Avia);
     }

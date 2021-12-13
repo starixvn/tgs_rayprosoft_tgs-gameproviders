@@ -37,9 +37,7 @@ namespace TGS.GameProviders.Repositories
                  brand.Id,
                  brand.Code,
                  player.PlayerCode,
-                 player.IdNumber,
                  player.Username,
-                 player.RealName,
                  player.DefaultWalletId,
                  player.DefaultWalletCurrencyCode,
                  (PlayerStatus)player.Status

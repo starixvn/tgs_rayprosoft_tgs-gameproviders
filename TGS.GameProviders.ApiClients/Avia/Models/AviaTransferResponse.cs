@@ -4,17 +4,18 @@ namespace TGS.GameProviders.ApiClients.Avia.Models
 {
     internal record AviaTransferResponse
     {
+        [JsonPropertyName("Error")]
+        public string Error { get; init; }
+
         [JsonPropertyName("ID")]
-        public int ID { get; init; }
+        public string ID { get; init; }
 
         [JsonPropertyName("OrderID")]
         public string OrderID { get; init; }
 
         [JsonPropertyName("Balance")]
-        public float Balance { get; init; }
-
-        [JsonPropertyName("Credit")]
-        public float Credit { get; init; }
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+        public decimal Balance { get; init; }
 
         [JsonPropertyName("Currency")]
         public string Currency { get; init; }
