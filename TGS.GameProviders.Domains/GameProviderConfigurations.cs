@@ -6,8 +6,9 @@
 
         public static readonly string AllBet = string.Format(_template, GameProviderType.AllBet);
         public static readonly string AsiaGaming = string.Format(_template, GameProviderType.AsiaGaming);
-        public static readonly string BigGaming = string.Format(_template, GameProviderType.BigGaming);
+        public static readonly string Avia = string.Format(_template, GameProviderType.Avia);
         public static readonly string BetConstruct = string.Format(_template, GameProviderType.BetConstruct);
+        public static readonly string BigGaming = string.Format(_template, GameProviderType.BigGaming);
         public static readonly string Card365 = string.Format(_template, GameProviderType.Card365);
         public static readonly string Evolution = string.Format(_template, GameProviderType.Evolution);
         public static readonly string Habanero = string.Format(_template, GameProviderType.Habanero);
@@ -25,6 +26,5 @@
         public static readonly string WGHorse = string.Format(_template, GameProviderType.WGHorse);
         public static readonly string WGSports = string.Format(_template, GameProviderType.WGSports);
         public static readonly string WMCasino = string.Format(_template, GameProviderType.WMCasino);
-        public static readonly string Avia = string.Format(_template, GameProviderType.Avia);
     }
 }

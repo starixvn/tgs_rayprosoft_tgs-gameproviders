@@ -5,7 +5,6 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
 using TGS.GameProviders.Core.BetConstruct;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
@@ -17,7 +16,7 @@ namespace TGS.GameProviders.Client.IntegrationTests
         [Test]
         public async Task Test_GameProvidersClient_GameBCUrlAsync()
         {
-            var fakeTokenProvider = Substitute.For<ITokenProvider>();            
+            var fakeTokenProvider = Substitute.For<ITokenProvider>();
             var fakeBetConstructService = Substitute.For<IBetConstructService>();
 
             await using var web = new TestGameProvidersApplication(builder =>
@@ -25,7 +24,7 @@ namespace TGS.GameProviders.Client.IntegrationTests
                 builder.ConfigureServices(services =>
                 {
                     services.AddSingleton(fakeTokenProvider);
-                    services.AddSingleton(fakeBetConstructService);                    
+                    services.AddSingleton(fakeBetConstructService);
                     services.AddFakeNatsMessageQueue();
                 });
             });

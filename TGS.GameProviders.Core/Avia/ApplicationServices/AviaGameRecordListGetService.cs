@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.VR.Models;
 using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.Avia.ApplicationServices
@@ -30,11 +28,16 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
 
         public async ValueTask<GameRecordListResult> GetAsync(AviaGameRecordListQuery command, CancellationToken cancellationToken = default)
         {
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+            var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode);
+
+            if (brandMerchant == null)
+            {
+                throw new ArgumentNullException(nameof(brandMerchant));
+            }
 
             (bool Success, Models.AviaGameRecordData[]? GameRecords) = await _client.GetGameRecordAsync(
-               configuration.ApiUrl,
-               configuration.Authorization,
+               brandMerchant.ApiUrl,
+               brandMerchant.Authorization,
                command.StartTime.ToOffset(TimeSpan.FromHours(8)),
                command.EndTime.ToOffset(TimeSpan.FromHours(8)),
                command.Page,

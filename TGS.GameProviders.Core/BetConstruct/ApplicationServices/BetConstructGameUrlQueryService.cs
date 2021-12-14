@@ -8,8 +8,8 @@ namespace TGS.GameProviders.Core.BetConstruct.ApplicationServices
 {
     public class BetConstructGameUrlQueryService : IGetService<BetConstructGameUrlQuery, GameUrlResult>
     {
-        private readonly ITokenProvider _tokenProvider;
         private readonly IBetConstructService _service;
+        private readonly ITokenProvider _tokenProvider;
 
         public BetConstructGameUrlQueryService(
             ITokenProvider tokenProvider,

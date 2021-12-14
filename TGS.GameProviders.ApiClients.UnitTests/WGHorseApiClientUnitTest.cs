@@ -6,9 +6,9 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.WGHorse;
+using TGS.GameProviders.ApiClients.WGHorse.Models.Commons;
 using TGS.GameProviders.Core.WGHorse;
 using TGS.GameProviders.Core.WGHorse.Models;
-using TGS.GameProviders.ApiClients.WGHorse.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {

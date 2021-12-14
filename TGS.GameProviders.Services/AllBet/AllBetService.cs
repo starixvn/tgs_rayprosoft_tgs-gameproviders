@@ -10,9 +10,9 @@ namespace TGS.GameProviders.Services.AllBet
 {
     internal class AllBetService : IAllBetService
     {
+        private readonly IGameProviderRepository _gameProviderRepository;
         private readonly ILogger<AllBetService> _logger;
         private readonly ISettingRepository _settingRepository;
-        private readonly IGameProviderRepository _gameProviderRepository;
 
         public AllBetService(
             ILogger<AllBetService> logger,

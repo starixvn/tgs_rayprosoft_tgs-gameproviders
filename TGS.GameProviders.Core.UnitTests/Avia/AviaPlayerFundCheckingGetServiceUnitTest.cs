@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.Avia.ApplicationServices;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.Domains.SettingConfiguration.Avia;
 
 namespace TGS.GameProviders.Core.UnitTests.Avia
 {
@@ -33,23 +28,19 @@ namespace TGS.GameProviders.Core.UnitTests.Avia
                 OrderId = "202112131400370384ucmqplxb029"
             };
 
-
-
-            var configuration = new AviaConfiguration()
+            var brandMerchant = new AviaBrandMerchant()
             {
-                ServiceEndpointUrl = new("http://game-avia"),
-                AmountMaximum = 10000000,
-                AmountFormat = "10,2",
+                BrandCode = "Default",
                 ApiUrl = new("https://api.aviaapi.vip"),
                 Authorization = "81e2d1a24c684a76a710a70f4900a353",
                 PlayerPassword = "TgsP@ssw0rd"
-
             };
+
             var expected = true;
-            _ = fakeAviaService.GetSettingConfigurationAsync().Returns(Task.FromResult(configuration));
+            _ = fakeAviaService.GetBrandMerchantAsync(query.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
             _ = fakeAviaApiClient.TranslateinfoAsync(
-                configuration.ApiUrl,
-                configuration.Authorization,
+                brandMerchant.ApiUrl,
+                brandMerchant.Authorization,
                 query.OrderId).Returns(ValueTask.FromResult<bool>((expected)));
 
             var actual = await fakeService.GetAsync(query).ConfigureAwait(false);

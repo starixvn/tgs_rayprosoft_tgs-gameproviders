@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.Avia.ApplicationServices;
-using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.Domains.SettingConfiguration.Avia;
 
 namespace TGS.GameProviders.Core.UnitTests.Avia
 {
@@ -33,27 +30,23 @@ namespace TGS.GameProviders.Core.UnitTests.Avia
                 Amount = 1.00m
             };
 
-
-            var configuration = new AviaConfiguration()
+            var brandMerchant = new AviaBrandMerchant()
             {
-                ServiceEndpointUrl = new("http://game-avia"),
-                AmountMaximum = 10000000,
-                AmountFormat = "10,2",
+                BrandCode = "Default",
                 ApiUrl = new("https://api.aviaapi.vip"),
                 Authorization = "81e2d1a24c684a76a710a70f4900a353",
                 PlayerPassword = "TgsP@ssw0rd"
-
             };
 
             var success = true;
             var orderId = $"{ DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)):yyyyMMddHHmmssfff}{query.PlayerCode}";
             var gameProviderCurrencyCode = "CNY";
 
-            _ = fakeAviaService.GetSettingConfigurationAsync().Returns(Task.FromResult(configuration));
+            _ = fakeAviaService.GetBrandMerchantAsync(query.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
             _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
             _ = fakeAviaApiClient.TransferInAsync(
-                configuration.ApiUrl,
-                configuration.Authorization,
+                brandMerchant.ApiUrl,
+                brandMerchant.Authorization,
                 query.PlayerCode,
                 query.CurrencyCode,
                 query.Amount).Returns(ValueTask.FromResult<(bool Success, string orderId)>((success, orderId)));

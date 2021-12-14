@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
@@ -31,6 +30,7 @@ namespace TGS.GameProviders.Controllers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
+
         /// <summary>
         /// Games the record list asynchronous.
         /// </summary>
@@ -42,6 +42,7 @@ namespace TGS.GameProviders.Controllers
         ///
         ///     Post
         ///         {
+        ///             "brandCode": "Default",
         ///             "startTime": "2021-12-01T00:00:00+00:00",
         ///             "endTime": "2021-12-13T00:00:00+00:00",
         ///             "page": 1,
@@ -56,8 +57,6 @@ namespace TGS.GameProviders.Controllers
             var result = await getService.GetAsync(request).ConfigureAwait(false);
             return result == null ? null : result;
         }
-
-
 
         /// <summary>
         /// Games the URL asynchronous.

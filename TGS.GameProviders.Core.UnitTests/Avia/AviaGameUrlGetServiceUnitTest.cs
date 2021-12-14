@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
@@ -9,7 +6,7 @@ using NUnit.Framework;
 using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.Avia.ApplicationServices;
 using TGS.GameProviders.Domains;
-using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.Domains.SettingConfiguration.Avia;
 
 namespace TGS.GameProviders.Core.UnitTests.Avia
 {
@@ -40,25 +37,23 @@ namespace TGS.GameProviders.Core.UnitTests.Avia
                 BackUrl = new("https://dev-t1.rpgp.cc/")
             };
 
-            var configuration = new AviaConfiguration()
+            var brandMerchant = new AviaBrandMerchant()
             {
-                ServiceEndpointUrl = new("http://game-avia"),
-                AmountMaximum = 10000000,
-                AmountFormat = "10,2",
+                BrandCode = "Default",
                 ApiUrl = new("https://api.aviaapi.vip"),
                 Authorization = "81e2d1a24c684a76a710a70f4900a353",
                 PlayerPassword = "TgsP@ssw0rd"
-
             };
+
             var gameProviderCurrencyCode = "CNY";
             var gameProviderCultureCode = "CHN";
             Uri? gameUrl = new("https://www.google.com/");
-            _ = fakeAviaService.GetSettingConfigurationAsync().Returns(Task.FromResult(configuration));
+            _ = fakeAviaService.GetBrandMerchantAsync(query.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
             _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
             _ = fakeAviaService.GetGameProviderCultureCodeAsync(query.Language).Returns(ValueTask.FromResult(gameProviderCultureCode));
             _ = fakeAviaApiClient.GetGameUrlAsync(
-                configuration.ApiUrl,
-                configuration.Authorization,
+                brandMerchant.ApiUrl,
+                brandMerchant.Authorization,
                 query.PlayerCode,
                 gameProviderCultureCode,
                 null,

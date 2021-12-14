@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.Avia;
-using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.Domains.SettingConfiguration.Avia;
 
 namespace TGS.GameProviders.Services.Avia
 {
@@ -14,12 +14,12 @@ namespace TGS.GameProviders.Services.Avia
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public ValueTask<bool> CreatePlayerAsync(AviaConfiguration configuration, string playerCode, string currencyCode)
+        public ValueTask<bool> CreatePlayerAsync(AviaBrandMerchant brandMerchant, string playerCode, string currencyCode)
             => _client.RegisterAsync(
-                configuration.ApiUrl,
-                configuration.Authorization,
+                brandMerchant.ApiUrl,
+                brandMerchant.Authorization,
                 playerCode,
-                configuration.PlayerPassword,
+                brandMerchant.PlayerPassword,
                 currencyCode);
     }
 }

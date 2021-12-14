@@ -24,11 +24,16 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
 
         public async ValueTask<PlayerFundCheckingResult> GetAsync(AviaPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
         {
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+            var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode);
+
+            if (brandMerchant == null)
+            {
+                throw new ArgumentNullException(nameof(brandMerchant));
+            }
 
             var response = await _client.TranslateinfoAsync(
-                configuration.ApiUrl,
-                configuration.Authorization,
+                brandMerchant.ApiUrl,
+                brandMerchant.Authorization,
                 command.OrderId).ConfigureAwait(false);
 
             return new() { OrderStatus = response };

@@ -50,20 +50,6 @@ public class PragmaticPlayApiClientUnitTest
     }
 
     [Test]
-    public async Task KickPlayerAsync()
-    {
-        var playerCode = "4ucmqplxb029";
-
-        var request = new PragmaticPlayLogoutRequest
-        {
-            PlayerCode = playerCode,
-            SecureLogin = _securityLogin
-        };
-
-        var response = await _client.LogoutAsync(_apiUrl, _secretKey, request).ConfigureAwait(false);
-    }
-
-    [Test]
     public async Task GetRoundHistoryAsync()
     {
         var request = new PragmaticPlayOpenHistoryExtendedRequest
@@ -75,5 +61,19 @@ public class PragmaticPlayApiClientUnitTest
         };
 
         var response = await _client.GetRoundHistoryAsync(_apiUrl, _secretKey, request).ConfigureAwait(false);
+    }
+
+    [Test]
+    public async Task KickPlayerAsync()
+    {
+        var playerCode = "4ucmqplxb029";
+
+        var request = new PragmaticPlayLogoutRequest
+        {
+            PlayerCode = playerCode,
+            SecureLogin = _securityLogin
+        };
+
+        var response = await _client.LogoutAsync(_apiUrl, _secretKey, request).ConfigureAwait(false);
     }
 }

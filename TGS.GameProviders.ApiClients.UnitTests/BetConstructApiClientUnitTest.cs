@@ -10,62 +10,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
     public class BetConstructApiClientUnitTest
     {
         [Test]
-        public void Test_GetClientDetails_Hash_String()
-        {
-            var authToken = "your_client_security_token";
-            var ts = 1461682696;
-
-            var dict = new Dictionary<string, object>
-            {
-                { "AuthToken", authToken},
-                { "TS", ts }
-            };
-
-            var sharedKey = "your_shared_key";
-
-            var content = string.Join(
-                "",
-                dict.Where(x => x.Value != null && x.Value.ToString() != "")
-                    .Select(x =>
-                    {
-                        return $"{x.Key}{x.Value}";
-                    }));
-            var expected = "AuthTokenyour_client_security_tokenTS1461682696your_shared_key";
-
-            var actual = string.Join("", dict.Select(x => $"{x.Key}{x.Value}").ToArray()) + sharedKey;
-
-            Assert.AreEqual(expected, actual);
-        }
-
-        [Test]
-        public void Test_GetClientBalance_Hash_String()
-        {
-            var authToken = "your_client_security_token";
-            var ts = 1461682696;
-
-            var dict = new Dictionary<string, object>
-            {
-                { "AuthToken", authToken},
-                { "TS", ts }
-            };
-
-            var sharedKey = "your_shared_key";
-
-            var content = string.Join(
-                "",
-                dict.Where(x => x.Value != null && x.Value.ToString() != "")
-                    .Select(x =>
-                    {
-                        return $"{x.Key}{x.Value}";
-                    }));
-            var expected = "AuthTokenyour_client_security_tokenTS1461682696your_shared_key";
-
-            var actual = string.Join("", dict.Select(x => $"{x.Key}{x.Value}").ToArray()) + sharedKey;
-
-            Assert.AreEqual(expected, actual);
-        }
-
-        [Test]
         public void Test_BetPlaced_Hash_String()
         {
             var authToken = "your_client_security_token";
@@ -107,34 +51,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var actual = string.Join("", dict.Select(x => $"{x.Key}{x.Value}")) + sharedKey;
 
             Assert.AreEqual(expected, actual);
-        }
-
-        [Test]
-        public void Test_GetClientDetails()
-        {
-            var authToken = "ZYE5oSH5I1hzmrgnQnh3R6";
-            var ts = 1461682696;
-            var dict = new Dictionary<string, object>
-            {
-                { "AuthToken", authToken},
-                { "TS", ts }
-            };
-
-            var sharedKey = "jiLEPYw5n3n5kcx6T3";
-
-            var content = string.Join(
-                "",
-                dict.Where(x => x.Value != null && x.Value.ToString() != "")
-                    .Select(x =>
-                    {
-                        return $"{x.Key}{x.Value}";
-                    }));
-
-            var plainText = $"{content}{sharedKey}";
-
-            var utility = new BetConstructUtility();
-
-            var hash = utility.MD5Hash(plainText);
         }
 
         [Test]
@@ -181,6 +97,90 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var hash = utility.MD5Hash(plainText);
 
             Assert.AreEqual(expected, hash);
+        }
+
+        [Test]
+        public void Test_GetClientBalance_Hash_String()
+        {
+            var authToken = "your_client_security_token";
+            var ts = 1461682696;
+
+            var dict = new Dictionary<string, object>
+            {
+                { "AuthToken", authToken},
+                { "TS", ts }
+            };
+
+            var sharedKey = "your_shared_key";
+
+            var content = string.Join(
+                "",
+                dict.Where(x => x.Value != null && x.Value.ToString() != "")
+                    .Select(x =>
+                    {
+                        return $"{x.Key}{x.Value}";
+                    }));
+            var expected = "AuthTokenyour_client_security_tokenTS1461682696your_shared_key";
+
+            var actual = string.Join("", dict.Select(x => $"{x.Key}{x.Value}").ToArray()) + sharedKey;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_GetClientDetails()
+        {
+            var authToken = "ZYE5oSH5I1hzmrgnQnh3R6";
+            var ts = 1461682696;
+            var dict = new Dictionary<string, object>
+            {
+                { "AuthToken", authToken},
+                { "TS", ts }
+            };
+
+            var sharedKey = "jiLEPYw5n3n5kcx6T3";
+
+            var content = string.Join(
+                "",
+                dict.Where(x => x.Value != null && x.Value.ToString() != "")
+                    .Select(x =>
+                    {
+                        return $"{x.Key}{x.Value}";
+                    }));
+
+            var plainText = $"{content}{sharedKey}";
+
+            var utility = new BetConstructUtility();
+
+            var hash = utility.MD5Hash(plainText);
+        }
+
+        [Test]
+        public void Test_GetClientDetails_Hash_String()
+        {
+            var authToken = "your_client_security_token";
+            var ts = 1461682696;
+
+            var dict = new Dictionary<string, object>
+            {
+                { "AuthToken", authToken},
+                { "TS", ts }
+            };
+
+            var sharedKey = "your_shared_key";
+
+            var content = string.Join(
+                "",
+                dict.Where(x => x.Value != null && x.Value.ToString() != "")
+                    .Select(x =>
+                    {
+                        return $"{x.Key}{x.Value}";
+                    }));
+            var expected = "AuthTokenyour_client_security_tokenTS1461682696your_shared_key";
+
+            var actual = string.Join("", dict.Select(x => $"{x.Key}{x.Value}").ToArray()) + sharedKey;
+
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]

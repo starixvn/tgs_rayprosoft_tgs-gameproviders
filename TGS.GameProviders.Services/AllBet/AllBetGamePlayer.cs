@@ -9,8 +9,8 @@ namespace TGS.GameProviders.Services.AllBet;
 
 internal class AllBetGamePlayer : IAllBetGamePlayer
 {
-    private readonly ILogger<AllBetGamePlayer> _logger;
     private readonly IAllBetApiClient _client;
+    private readonly ILogger<AllBetGamePlayer> _logger;
 
     public AllBetGamePlayer(
         ILogger<AllBetGamePlayer> logger,

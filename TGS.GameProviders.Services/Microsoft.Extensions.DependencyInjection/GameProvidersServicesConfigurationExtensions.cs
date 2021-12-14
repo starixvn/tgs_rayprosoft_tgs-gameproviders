@@ -1,7 +1,6 @@
 ﻿using System;
 using StackExchange.Redis;
 using TGS.GameProviders.Core.AllBet;
-using TGS.GameProviders.Core.AllBet.ApplicationServices;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.BetConstruct;

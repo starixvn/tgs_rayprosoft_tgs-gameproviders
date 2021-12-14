@@ -33,10 +33,16 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
             {
                 throw new Exception($"The player does not exist.{command.PlayerCode}");
             }
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode);
+
+            if (brandMerchant == null)
+            {
+                throw new ArgumentNullException(nameof(brandMerchant));
+            }
+
             await _client.KickAsync(
-                configuration.ApiUrl,
-                configuration.Authorization,
+                brandMerchant.ApiUrl,
+                brandMerchant.Authorization,
                 command.PlayerCode).ConfigureAwait(false);
         }
     }

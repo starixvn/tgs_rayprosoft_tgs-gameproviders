@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
@@ -11,7 +8,7 @@ using TGS.GameProviders.Core.Avia.ApplicationServices;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Domains;
-using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.Domains.SettingConfiguration.Avia;
 
 namespace TGS.GameProviders.Core.UnitTests.Avia
 {
@@ -47,24 +44,22 @@ namespace TGS.GameProviders.Core.UnitTests.Avia
                 "CNY",
                 PlayerStatus.Enabled);
 
-            var configuration = new AviaConfiguration()
+            var brandMerchant = new AviaBrandMerchant()
             {
-                ServiceEndpointUrl = new("http://game-avia"),
-                AmountMaximum = 10000000,
-                AmountFormat = "10,2",
+                BrandCode = "Default",
                 ApiUrl = new("https://api.aviaapi.vip"),
                 Authorization = "81e2d1a24c684a76a710a70f4900a353",
                 PlayerPassword = "TgsP@ssw0rd"
-
             };
+
             var gameProviderCurrencyCode = "CNY";
             decimal? balance = 100;
-            _ = fakeAviaService.GetSettingConfigurationAsync().Returns(Task.FromResult(configuration));
+            _ = fakeAviaService.GetBrandMerchantAsync(playerModel.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
             _ = fakePlayerRepository.GetAsync(query.PlayerCode).Returns(Task.FromResult(playerModel));
             _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(playerModel.DefaultWalletCurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
             _ = fakeAviaApiClient.BalanceAsync(
-                configuration.ApiUrl,
-                configuration.Authorization,
+                brandMerchant.ApiUrl,
+                brandMerchant.Authorization,
                 query.PlayerCode).Returns(ValueTask.FromResult<(bool Success, decimal?)>((true, balance)));
 
             var actual = await fakeService.GetAsync(query).ConfigureAwait(false);

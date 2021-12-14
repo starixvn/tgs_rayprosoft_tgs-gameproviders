@@ -28,13 +28,19 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
 
         public async ValueTask<GameUrlResult> GetAsync(AviaGameUrlQuery command, CancellationToken cancellationToken = default)
         {
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+            var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode);
+
+            if (brandMerchant == null)
+            {
+                throw new ArgumentNullException(nameof(brandMerchant));
+            }
+
             var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(command.CurrencyCode).ConfigureAwait(false);
             var gameProviderCultureCode = await _service.GetGameProviderCultureCodeAsync(command.Language).ConfigureAwait(false);
 
             (bool IsPlayer, Uri? GameUrl) = await _client.GetGameUrlAsync(
-                configuration.ApiUrl,
-                configuration.Authorization,
+                brandMerchant.ApiUrl,
+                brandMerchant.Authorization,
                 command.PlayerCode,
                 gameProviderCultureCode,
                 null,
@@ -43,14 +49,14 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
             if (!IsPlayer)
             {
                 var createPlayerResult = await _gamePlayerService.CreatePlayerAsync(
-                    configuration,
+                    brandMerchant,
                     command.PlayerCode,
                     gameProviderCurrencyCode).ConfigureAwait(false);
                 if (createPlayerResult)
                 {
                     (IsPlayer, GameUrl) = await _client.GetGameUrlAsync(
-                        configuration.ApiUrl,
-                        configuration.Authorization,
+                        brandMerchant.ApiUrl,
+                        brandMerchant.Authorization,
                         command.PlayerCode,
                         gameProviderCultureCode,
                         null,
