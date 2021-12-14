@@ -83,7 +83,7 @@ namespace TGS.GameProviders.ApiClients.Avia
                 return (false, null);
             }
 
-            return (true, response.Info.List);
+            return (true, response.Info.List.Length > 0 ? response.Info.List : null);
         }
 
         public async ValueTask<(bool IsPlayer, Uri? GameUrl)> GetGameUrlAsync(Uri apiUrl, string authorization, string playerCode, string lang, int? cateId, int? matchId)
