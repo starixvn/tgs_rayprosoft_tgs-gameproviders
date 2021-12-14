@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.Core.PragmaticPlay.Models;
 using Tgs.ServiceUtility;
+using TGS.GameProviders.Core.PragmaticPlay.Models;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains.RoundDetail;
 
@@ -12,12 +12,12 @@ namespace TGS.GameProviders.Core.PragmaticPlay.ApplicationServices;
 
 internal class PragmaticPlayRoundDetailGetService : IGetService<PragmaticPlayRoundDetailQuery, RoundDetailResult>
 {
+    private readonly IPragmaticPlayApiClient _client;
+    private readonly IGameActionRepository _gameActionRepository;
     private readonly ILogger<PragmaticPlayRoundDetailGetService> _logger;
     private readonly IRoundRepository _roundRepository;
-    private readonly IGameActionRepository _gameActionRepository;
     private readonly IPragmaticPlayService _service;
     private readonly IPragmaticPlayUtility _utility;
-    private readonly IPragmaticPlayApiClient _client;
 
     public PragmaticPlayRoundDetailGetService(
         ILogger<PragmaticPlayRoundDetailGetService> logger,

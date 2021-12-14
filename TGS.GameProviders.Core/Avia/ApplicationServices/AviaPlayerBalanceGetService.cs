@@ -38,23 +38,29 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
                 throw new Exception($"The player does not exist.{command.PlayerCode}");
             }
             var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
-            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode);
+
+            if (brandMerchant == null)
+            {
+                throw new ArgumentNullException(nameof(brandMerchant));
+            }
 
             (bool IsPlayer, decimal? Balance) = await _client.BalanceAsync(
-                configuration.ApiUrl,
-                configuration.Authorization,
+                brandMerchant.ApiUrl,
+                brandMerchant.Authorization,
                 playerModel.PlayerCode).ConfigureAwait(false);
             if (!IsPlayer)
             {
                 var createPlayerResult = await _gamePlayer.CreatePlayerAsync(
-                    configuration,
+                    brandMerchant,
                     command.PlayerCode,
                     gameProviderCurrencyCode).ConfigureAwait(false);
                 if (createPlayerResult)
                 {
                     (IsPlayer, Balance) = await _client.BalanceAsync(
-                        configuration.ApiUrl,
-                        configuration.Authorization,
+                        brandMerchant.ApiUrl,
+                        brandMerchant.Authorization,
                         playerModel.PlayerCode).ConfigureAwait(false);
                 }
             }

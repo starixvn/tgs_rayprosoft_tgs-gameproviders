@@ -10,11 +10,11 @@ namespace TGS.GameProviders.Core.AllBet.ApplicationServices;
 
 internal class AllBetKickPlayerCommandService : ICommandService<AllBetKickPlayerCommand>
 {
+    private readonly IAllBetAgentMapper _agentMapper;
+    private readonly IAllBetApiClient _client;
     private readonly ILogger<AllBetKickPlayerCommandService> _logger;
     private readonly IPlayerRepository _playerRepository;
     private readonly IAllBetService _service;
-    private readonly IAllBetAgentMapper _agentMapper;
-    private readonly IAllBetApiClient _client;
 
     public AllBetKickPlayerCommandService(
         ILogger<AllBetKickPlayerCommandService> logger,

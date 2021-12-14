@@ -11,9 +11,9 @@ namespace TGS.GameProviders.Core.BetConstruct.ApplicationServices
 {
     internal class BetConstructRoundDetailGetService : IGetService<BetConstructRoundDetailQuery, RoundDetailResult>
     {
-        private readonly IRoundRepository _roundRepository;
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameRepository _gameRepository;
+        private readonly IRoundRepository _roundRepository;
 
         public BetConstructRoundDetailGetService(
             IRoundRepository roundRepository,

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.Avia;
+using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.Domains.SettingConfiguration.Avia;
 
 namespace TGS.GameProviders.Services.Avia
 {
@@ -19,6 +22,17 @@ namespace TGS.GameProviders.Services.Avia
         {
             _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+        }
+
+        public async ValueTask<AviaBrandMerchant> GetBrandMerchantAsync(string brandCode)
+        {
+            var configuration = await GetSettingConfigurationAsync().ConfigureAwait(false);
+            var brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
+            if (brandMerchant == null)
+            {
+                brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals("Default") && x.Status).FirstOrDefault();
+            }
+            return brandMerchant;
         }
 
         public ClientRoundStatus GetClientRound(string state)

@@ -9,11 +9,11 @@ namespace TGS.GameProviders.Core.AllBet.ApplicationServices;
 
 internal class AllBetGameUrlGetService : IGetService<AllBetGameUrlQuery, GameUrlResult>
 {
-    private readonly ILogger<AllBetGameUrlGetService> _logger;
-    private readonly IAllBetService _service;
     private readonly IAllBetAgentMapper _agentMapper;
-    private readonly IAllBetGamePlayer _playerService;
     private readonly IAllBetApiClient _client;
+    private readonly ILogger<AllBetGameUrlGetService> _logger;
+    private readonly IAllBetGamePlayer _playerService;
+    private readonly IAllBetService _service;
 
     public AllBetGameUrlGetService(
         ILogger<AllBetGameUrlGetService> logger,

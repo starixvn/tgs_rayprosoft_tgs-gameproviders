@@ -3,7 +3,6 @@ using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.AllBet.ApplicationServices;
 using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
 using TGS.GameProviders.Core.Avia.ApplicationServices;
-using TGS.GameProviders.Core.BetConstruct.ApplicationServices;
 using TGS.GameProviders.Core.BigGaming.ApplicationServices;
 using TGS.GameProviders.Core.Evolution.ApplicationServices;
 using TGS.GameProviders.Core.Habanero.ApplicationServices;
