@@ -1,5 +1,6 @@
 ﻿using TGS.GameProviders.ApiClients.AllBet;
 using TGS.GameProviders.ApiClients.AsiaGaming;
+using TGS.GameProviders.ApiClients.Avia;
 using TGS.GameProviders.ApiClients.BigGaming;
 using TGS.GameProviders.ApiClients.Evolution;
 using TGS.GameProviders.ApiClients.IMESports;
@@ -17,6 +18,7 @@ using TGS.GameProviders.ApiClients.WGSports;
 using TGS.GameProviders.ApiClients.WMCasino;
 using TGS.GameProviders.Core.AllBet;
 using TGS.GameProviders.Core.AsiaGaming;
+using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Evolution;
 using TGS.GameProviders.Core.IMESports;
@@ -69,6 +71,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddHttpClient<IIMESportsApiClient, IMESportsApiClient>();
             services.AddHttpClient<ISabaApiClient, SabaApiClient>();
             services.AddHttpClient<IAllBetApiClient, AllBetApiClient>();
+            services.AddHttpClient<IAviaApiClient, AviaApiClient>();
 
             return services;
         }
