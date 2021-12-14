@@ -134,8 +134,6 @@ namespace TGS.GameProviders.ApiClients.Avia
 
         public async ValueTask<bool> RegisterAsync(Uri apiUrl, string authorization, string playerCode, string password, string currency)
         {
-            var logPrefix = $"{nameof(AviaApiClient).ToLower()}.Register";
-
             var request = new
             {
                 UserName = playerCode,
@@ -221,7 +219,7 @@ namespace TGS.GameProviders.ApiClients.Avia
 
         private async Task<TResponse> PostAsync<TResponse>(Uri apiUrl, string authorization, Dictionary<string, string> parameters, AviaAction action, string contentLanguage = "CHN")
         {
-            var logPrefix = $"{nameof(AviaApiClient).ToLower()}.{action.ToString()}";
+            var logPrefix = $"{nameof(AviaApiClient).ToLower()}.{action}";
             var requestUri = AviaMapper.AviaActionMapper.Where(x => x.Key == action).First().Value;
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
