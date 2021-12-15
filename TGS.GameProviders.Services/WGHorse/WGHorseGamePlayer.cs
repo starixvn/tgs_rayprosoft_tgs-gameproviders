@@ -27,20 +27,17 @@ namespace TGS.GameProviders.Services.WGHorse
         public async ValueTask<bool> CreatePlayerAsync(WGHorseConfiguration configuration, string playerCode, string currencyCode)
         {
             var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(currencyCode);
-            var prepareLoginRequest = new WGHorsePrepareLoginRequest()
-            {
-                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                PlayerCode = playerCode,
-                PlayerNickname = playerCode,
-                CurrencyCode = gameProviderCurrencyCode,
-            };
-            var prepareLoginResponse = await _client.GetPrepareLoginAsync(
+
+            var token = await _client.GetPrepareLoginAsync(
                 configuration.ApiUrl,
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                prepareLoginRequest).ConfigureAwait(false);
-            return (prepareLoginResponse.ReturnCode == 1);
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                playerCode,
+                playerCode,
+                gameProviderCurrencyCode).ConfigureAwait(false);
+            return !string.IsNullOrEmpty(token);
         }
     }
 }

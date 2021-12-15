@@ -36,6 +36,39 @@ namespace TGS.GameProviders.Client
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
+        public async ValueTask<Uri?> GameBetConstructUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl, string lobbyDomain)
+        {
+            var request = new
+            {
+                GameType = gameType,
+                GameId = gameId,
+                BrandCode = brandCode,
+                PlayerCode = playerCode,
+                CurrencyCode = currencyCode,
+                LoginRecordId = loginRecordId,
+                PlatformType = platformType,
+                Language = language,
+                IPAddress = ipAddress,
+                BackUrl = backUrl,
+                LobbyDomain = lobbyDomain
+            };
+
+            var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
+            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var response = await _httpClient
+               .PostAsync(
+                   string.Format(_GameURL, gameProviderCode),
+                   requestContent)
+               .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<GameUrlResponse>(contentJson, _SerializerOptions)?.Url;
+        }
+
         public async ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl)
         {
             var request = new
@@ -78,7 +111,7 @@ namespace TGS.GameProviders.Client
             response.EnsureSuccessStatusCode();
         }
 
-        public async ValueTask<decimal> PlayerBalanceAsync(string gameProviderCode, string playerCode)
+        public async ValueTask<decimal?> PlayerBalanceAsync(string gameProviderCode, string playerCode)
         {
             var response = await _httpClient
                 .GetAsync(
@@ -89,7 +122,7 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<decimal>(contentJson);
+            return JsonSerializer.Deserialize<decimal?>(contentJson);
         }
 
         public async ValueTask<bool?> PlayerFundCheckingAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId)

@@ -20,16 +20,14 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         private readonly string _currencyCode = "CNY";
         private readonly string _secretCode = "jk06";
         private readonly string _secretKey = "8153503006031672EF300005E5EF6AEF";
-        private readonly IBigGamingUtility _utility;
 
         public BigGamingApiClientUnitTest()
         {
-            _utility = new BigGamingUtility();
             var client = new HttpClient();
             var faceLog = NullLogger<BigGamingApiClient>.Instance;
             var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<IBigGamingApiClient>();
-            //_client = new BigGamingApiClient(client, faceLog, faceTgsLog, _utility);
+            //_client = new BigGamingApiClient(client, faceLog, faceTgsLog);
         }
 
         [Test]

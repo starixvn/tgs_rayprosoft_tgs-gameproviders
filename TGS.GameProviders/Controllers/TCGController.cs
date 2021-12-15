@@ -37,7 +37,7 @@ namespace TGS.GameProviders.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Post
         ///         TCG_SEA
         ///         {
@@ -52,7 +52,7 @@ namespace TGS.GameProviders.Controllers
         ///             "ipAddress": "127.0.0.1",
         ///             "backUrl": "https://dev-t1.rpgp.cc/"
         ///         }
-        ///         
+        ///
         ///     Post
         ///         TCG_LOTTO
         ///         {
@@ -67,7 +67,7 @@ namespace TGS.GameProviders.Controllers
         ///             "ipAddress": "127.0.0.1",
         ///             "backUrl": "https://dev-t1.rpgp.cc/"
         ///         }
-        ///         
+        ///
         ///     Post
         ///         TCG_LOTTO_VN
         ///         {
@@ -135,7 +135,7 @@ namespace TGS.GameProviders.Controllers
                 RoundId = roundId,
                 Language = language
             }).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
     }
 }

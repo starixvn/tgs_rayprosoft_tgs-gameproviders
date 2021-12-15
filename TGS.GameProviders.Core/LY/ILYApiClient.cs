@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.LY.Models;
-using TGS.GameProviders.Core.LY.Models.Commons;
 
 namespace TGS.GameProviders.Core.LY
 {
     public interface ILYApiClient
     {
-        ValueTask<LYApiResponse<LYFnudResponse>> FundAsync(Uri apiUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, LYAction action, LYFnudRequest request);
+        ValueTask<bool> FundCheckingAsync(Uri apiUrl, string deskey, string md5key, string agentId, string orderId);
 
-        ValueTask<LYApiResponse<LYFundCheckingResponse>> FundCheckingAsync(Uri apiUrl, string deskey, string md5key, string agentId, LYFundCheckingRequest request);
+        ValueTask<(bool Success, string orderId)> FundInAsync(Uri apiUrl, string deskey, string md5key, string agentId, string playerCode, decimal amount);
 
-        ValueTask<LYApiResponse<LYGetBalanceResponse>> GetBalanceAsync(Uri apiUrl, string deskey, string md5key, string agentId, LYGetBalanceRequest request);
+        ValueTask<(bool Success, string orderId)> FundOutAsync(Uri apiUrl, string deskey, string md5key, string agentId, string playerCode, decimal amount);
 
-        ValueTask<LYApiResponse<LYGameRecordResponse>> GetGameRecordAsync(Uri apiRecordUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, LYGameRecordRequest request);
+        ValueTask<decimal?> GetBalanceAsync(Uri apiUrl, string deskey, string md5key, string agentId, string playerCode);
 
-        ValueTask<LYApiResponse<LYGameUrlResponse>> GetGameUrlAsync(Uri apiUrl, string deskey, string md5key, string agentId, DateTimeOffset dateTimeOffset, LYGameUrlRequest request);
+        ValueTask<(bool Success, LYGameRecordList GameRecordList)> GetGameRecordAsync(Uri apiRecordUrl, string deskey, string md5key, string agentId, long startTime, long endTime);
 
-        ValueTask<LYApiResponse<LYKickResponse>> KickAsync(Uri apiUrl, string deskey, string md5key, string agentId, LYKickRequest request);
+        ValueTask<Uri> GetGameUrlAsync(Uri apiUrl, string deskey, string md5key, string agentId, string playerCode, string ipAddress, string brandCode, int gameExternalID);
+
+        ValueTask KickAsync(Uri apiUrl, string deskey, string md5key, string agentId, string playerCode);
     }
 }

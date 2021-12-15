@@ -59,17 +59,17 @@ namespace TGS.GameProviders.Services.AsiaGaming
             return isCurrencyCode ? gameProviderCurrencyCode : null;
         }
 
-        public async ValueTask<string> GetGameProviderCurrencyLanguageAsync(Guid gameProviderId, string cultureCode)
+        public async ValueTask<Guid> GetGameProviderIdAsync()
+            => await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.AsiaGaming)
+                .ConfigureAwait(false);
+
+        public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
         {
             var (isCultureCode, gameProviderCultureCode) = await _gameProviderRepository
                 .GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
 
             return isCultureCode ? gameProviderCultureCode : "en_US";
         }
-
-        public async ValueTask<Guid> GetGameProviderIdAsync()
-            => await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.AsiaGaming)
-                .ConfigureAwait(false);
 
         public async ValueTask<decimal?> GetPlayerBalanceAsync(string playerCode)
             => await _playerRepository.GetPlayerBalanceAsync(playerCode).ConfigureAwait(false);

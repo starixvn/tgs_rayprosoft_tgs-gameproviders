@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.Core.Repositories;
@@ -16,15 +15,6 @@ namespace TGS.GameProviders.Repositories.UnitTests
             var fakeRoundRepository = Substitute.For<IPlayerRepository>();
             _ = fakeRoundRepository.GetAsync(Arg.Any<string>()).Returns(Task.FromResult<PlayerModel>(null));
             var result = await fakeRoundRepository.GetAsync(Arg.Any<string>()).ConfigureAwait(false);
-            Assert.AreEqual(null, result);
-        }
-
-        [Test]
-        public async Task GetPlayerByUsernameAsync()
-        {
-            var fakeRoundRepository = Substitute.For<IPlayerRepository>();
-            _ = fakeRoundRepository.GetAsync(Arg.Any<Guid>(), Arg.Any<string>()).Returns(Task.FromResult<PlayerModel>(null));
-            var result = await fakeRoundRepository.GetAsync(Arg.Any<Guid>(), Arg.Any<string>()).ConfigureAwait(false);
             Assert.AreEqual(null, result);
         }
     }

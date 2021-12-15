@@ -20,7 +20,7 @@ namespace TGS.GameProviders.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public Task<RoundModel> GetAsync(Guid roundId)
+        public Task<RoundModel?> GetAsync(Guid roundId)
             => (from round in _context.Rounds.AsQueryable()
                 join roundDetail in _context.RoundDetails.AsQueryable()
                 on round.Id equals roundDetail.RoundId
@@ -57,7 +57,7 @@ namespace TGS.GameProviders.Repositories
                     data.AdditionalData
                     )).FirstOrDefaultAsync();
 
-        public Task<RoundModel> GetAsync(Guid gameProviderId, string externalRoundId, int gameId)
+        public Task<RoundModel?> GetAsync(Guid gameProviderId, string externalRoundId, int gameId)
             => (from round in _context.Rounds.AsQueryable()
                 join roundDetail in _context.RoundDetails.AsQueryable()
                 on round.Id equals roundDetail.RoundId
@@ -96,7 +96,7 @@ namespace TGS.GameProviders.Repositories
                     data.AdditionalData
                     )).FirstOrDefaultAsync();
 
-        public Task<RoundModel> GetAsync(Guid gameProviderId, string externalRoundId, int gameId, string playerCode)
+        public Task<RoundModel?> GetAsync(Guid gameProviderId, string externalRoundId, int gameId, string playerCode)
             => (from round in _context.Rounds.AsQueryable()
                 join roundDetail in _context.RoundDetails.AsQueryable()
                 on round.Id equals roundDetail.RoundId

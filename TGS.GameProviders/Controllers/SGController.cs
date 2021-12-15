@@ -37,7 +37,7 @@ namespace TGS.GameProviders.Controllers
         /// <returns></returns>
         /// <remarks>
         /// <b>Example</b><br />
-        /// 
+        ///
         ///     Post
         ///         {
         ///             "gameType": 6,

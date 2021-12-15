@@ -76,9 +76,6 @@ namespace TGS.GameProviders.Core.SBO.Models
         [JsonPropertyName("gameId")]
         public string GameId { get; init; }
 
-        /// <summary>
-        /// Virtual Sports only
-        /// </summary>
         [JsonPropertyName("productType")]
         public string ProductType { get; init; }
 

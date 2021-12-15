@@ -35,10 +35,12 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
             }
             var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode).ConfigureAwait(false);
             var agentId = await _service.GetAgentIdAsync(playerModel.BrandCode, playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
-            await _client.KickAsync(brandMerchant.ApiUrl, brandMerchant.Deskey, brandMerchant.Md5key, agentId, new()
-            {
-                PlayerCode = command.PlayerCode
-            }).ConfigureAwait(false);
+            await _client.KickAsync(
+                brandMerchant.ApiUrl,
+                brandMerchant.Deskey,
+                brandMerchant.Md5key,
+                agentId,
+                command.PlayerCode).ConfigureAwait(false);
         }
     }
 }

@@ -19,16 +19,14 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         private const string _version = "1.0";
         private readonly Uri _apiUrl = new("https://pmws.vrbetapi.com/");
         private readonly IVRApiClient _client;
-        private readonly IVRUtility _utility;
 
         public VRApiClientUnitTest()
         {
-            _utility = new VRUtility();
             var client = new HttpClient();
             var faceLog = NullLogger<VRApiClient>.Instance;
             var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<IVRApiClient>();
-            //_client = new VRApiClient(client, faceLog, faceTgsLog, _utility);
+            //_client = new VRApiClient(client, faceLog, faceTgsLog);
         }
 
         [Test()]

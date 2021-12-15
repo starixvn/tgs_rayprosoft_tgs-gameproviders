@@ -6,10 +6,10 @@ namespace TGS.GameProviders.Core.Repositories
 {
     public interface IRoundRepository
     {
-        Task<RoundModel> GetAsync(Guid roundId);
+        Task<RoundModel?> GetAsync(Guid roundId);
 
-        Task<RoundModel> GetAsync(Guid gameProviderId, string externalRoundId, int gameId);
+        Task<RoundModel?> GetAsync(Guid gameProviderId, string externalRoundId, int gameId);
 
-        Task<RoundModel> GetAsync(Guid gameProviderId, string externalRoundId, int gameId, string playerCode);
+        Task<RoundModel?> GetAsync(Guid gameProviderId, string externalRoundId, int gameId, string playerCode);
     }
 }

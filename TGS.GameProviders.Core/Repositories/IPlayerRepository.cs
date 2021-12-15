@@ -1,14 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using TGS.GameProviders.Core.Repositories.Models.Player;
 
 namespace TGS.GameProviders.Core.Repositories
 {
     public interface IPlayerRepository
     {
-        Task<PlayerModel> GetAsync(string playerCode);
-
-        Task<PlayerModel> GetAsync(Guid brandId, string username);
+        Task<PlayerModel?> GetAsync(string playerCode);
 
         Task<decimal?> GetPlayerBalanceAsync(string playerCode);
     }

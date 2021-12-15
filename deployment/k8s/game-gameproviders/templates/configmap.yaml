@@ -6,25 +6,19 @@ metadata:
 data:
   appsettings.json: |
     {
-      "Logging": {
-        "LogLevel": {
-          "Default": "Information",
-          "Microsoft": "Warning",
-          "Microsoft.Hosting.Lifetime": "Information"
-        },
-        "TgsLog": {
-          "LogLevel": {
-            "Default": "None",
-            "Microsoft": "Warning",
-            "Microsoft.Hosting.Lifetime": "None",
-            "TGS": "Information"
-          }
-        }
+      "ForwardedHeaders": {
+        "ForwardLimit": 2,
+        "KnownProxies": [
+          "192.168.50.1",
+          "220.132.206.70",
+          "211.24.72.160",
+          "18.167.169.96"
+        ]
       },
       "AllowedHosts": "*",
       "ConnectionStrings": {
         "Tgs": "{{ .Values.connectionStrings.tgs }}",
         "RedisConfigurationString": "{{ .Values.connectionStrings.redis }}",
         "NatsMQ": "{{ .Values.nats.urls }}"
-      },
+      }
     }
