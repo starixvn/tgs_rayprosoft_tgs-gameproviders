@@ -65,8 +65,8 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
                 ClientStatus = _service.GetClientRound(data.Status),
                 ExternalRoundId = data.OrderID,
                 ExternalGameId = "4",
-                ExternalCreatedOn = DateTimeOffset.Parse(data.CreateAt).ToOffset(TimeSpan.FromHours(+8)),
-                ExternalClosedOn = _service.GetRoundStatus(data.Status) == RoundStatus.Closed ? DateTimeOffset.Parse(data.RewardAt).ToOffset(TimeSpan.FromHours(+8)) : null,
+                ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.CreateAt), TimeSpan.FromHours(+8)),
+                ExternalClosedOn = _service.GetRoundStatus(data.Status) == RoundStatus.Closed ? new DateTimeOffset(DateTime.Parse(data.RewardAt), TimeSpan.FromHours(+8)) : null,
                 BetAmount = data.BetAmount,
                 ValidBetAmount = data.BetMoney,
                 PlayerWinLoss = data.Money,
@@ -75,8 +75,7 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
                 SettleAmount = data.BetMoney + data.Money,
                 TieBetAdjustment = null,
                 AdditionalData = JsonSerializer.Serialize(data),
-            })
-               .ToArray();
+            }).ToArray();
 
             return new() { Success = true, Datas = datas };
         }
