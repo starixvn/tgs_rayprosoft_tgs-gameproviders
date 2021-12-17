@@ -11,5 +11,11 @@ namespace TGS.GameProviders.Core.Jili
             string agentId,
             string agentKey,
             JiliLoginWithoutRedirectRequest request);
+
+        ValueTask<JiliKickMemberResponse> KickMemberAsync(
+            Uri apiUrl,
+            string jiliPlayerId,
+            string agentId,
+            string agentKey);
     }
 }

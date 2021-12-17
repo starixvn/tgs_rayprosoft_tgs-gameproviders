@@ -13,7 +13,8 @@ using Tgs.ServiceUtility;
 namespace TGS.GameProviders.Controllers;
 
 public class JILIController : ControllerBase,
-    IGameUrlHandler<JiliGameUrlQuery>
+    IGameUrlHandler<JiliGameUrlQuery>,
+    IKickPlayerHandler<JiliKickPlayerCommand>
 {
     private readonly ILogger<JILIController> _logger;
     private readonly IMapper _mapper;
@@ -62,4 +63,24 @@ public class JILIController : ControllerBase,
 
         return result == null ? null : _mapper.Map<GameUrlResponse>(result);
     }
+
+    /// <summary>
+    /// Kicks the player asynchronous.
+    /// </summary>
+    /// <param name="commandService">The command service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Delete ab/kickplayer/4ucmqplxb029
+    /// </remarks>
+    [HttpDelete("kickplayer/{playerCode}")]
+    public ValueTask KickPlayerAsync(
+        [FromServices] ICommandService<JiliKickPlayerCommand> commandService,
+        string playerCode)
+        => commandService.ExecuteAsync(new JiliKickPlayerCommand
+        {
+            PlayerCode = playerCode
+        });
 }

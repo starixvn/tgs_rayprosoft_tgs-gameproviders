@@ -17,9 +17,9 @@ namespace TGS.GameProviders.ApiClients.UnitTests
     [TestFixture]
     public class JiliApiClientUnitTest
     {
-        private readonly Uri _apiUrl = new Uri("https://uat-wb-api.jlfafafa2.com/singleWallet");
+        private readonly Uri _apiUrl = new Uri("https://uat-wb-api.jlfafafa2.com");
         private readonly string _agentId = "PG_Seamless";
-        private readonly string _agentKey = "ed7c0450d69bcec7ddf42124ecb7493ef9597083";
+        private readonly string _agentKey = "0d90dda822b6df548460da8f551c1a76c01b6a9e";
 
         private readonly IJiliApiClient _client;
 
@@ -46,8 +46,16 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var response = await _client
                 .LoginWithoutRedirectAsync(_apiUrl, _agentId, _agentKey, request)
                 .ConfigureAwait(false);
+        }
 
-            Assert.AreEqual("no api callback", response.ErrorMessage);
+        [Test]
+        public async ValueTask KickMemberAsync()
+        {
+            var jiliPlayerId = "GPI_4ucmqplxb029";
+
+            var response = await _client
+                .KickMemberAsync(_apiUrl, jiliPlayerId, _agentId, _agentKey)
+                .ConfigureAwait(false);
         }
     }
 }
