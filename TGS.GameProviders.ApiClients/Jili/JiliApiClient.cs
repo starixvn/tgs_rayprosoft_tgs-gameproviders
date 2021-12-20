@@ -36,6 +36,31 @@ internal class JiliApiClient : IJiliApiClient
         _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
+    public ValueTask<JiliGetGameDetailUrlResponse> GetGameDetailUrlAsync(
+        Uri apiUrl,
+        string agentId,
+        string agentKey,
+        string language,
+        string externalRoundId)
+    {
+        var parameters = new Dictionary<string, string>
+        {
+            ["WagersId"] = externalRoundId,
+            ["AgentId"] = agentId
+        };
+
+        var keyGen = GetKeyGen(agentId, agentKey);
+        var key = GetKey(keyGen, parameters);
+        parameters["Key"] = key;
+        parameters["Lang"] = language;
+
+        return PostAsync<JiliGetGameDetailUrlResponse>(
+            apiUrl,
+            "/api1/GetGameDetailUrl",
+            parameters,
+            "GetGameDetailUrl");
+    }
+
     public ValueTask<JiliKickMemberResponse> KickMemberAsync(
         Uri apiUrl,
         string jiliPlayerId,

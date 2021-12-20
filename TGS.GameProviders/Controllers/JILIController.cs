@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using Castle.Core.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.Core;
-using TGS.GameProviders.Core.Avia.ApplicationServices;
-using TGS.GameProviders.Core.Jili.ApplicationServices;
-using TGS.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
+using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.Jili.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
+using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers;
 
+[Route("api/[controller]")]
+[ApiController]
 public class JILIController : ControllerBase,
     IGameUrlHandler<JiliGameUrlQuery>,
-    IKickPlayerHandler<JiliKickPlayerCommand>
+    IKickPlayerHandler<JiliKickPlayerCommand>,
+    IRoundDetailHandler<JiliRoundDetailQuery>
 {
     private readonly ILogger<JILIController> _logger;
     private readonly IMapper _mapper;
@@ -73,7 +75,7 @@ public class JILIController : ControllerBase,
     /// <remarks>
     /// <b>Example</b><br />
     ///
-    ///     Delete ab/kickplayer/4ucmqplxb029
+    ///     Delete jili/kickplayer/4ucmqplxb029
     /// </remarks>
     [HttpDelete("kickplayer/{playerCode}")]
     public ValueTask KickPlayerAsync(
@@ -83,4 +85,29 @@ public class JILIController : ControllerBase,
         {
             PlayerCode = playerCode
         });
+
+    /// <summary>
+    /// Rounds the detail asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="roundId">The round identifier.</param>
+    /// <param name="language">The language.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Get jili/rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
+    /// </remarks>
+    [HttpGet("RoundDetail/{roundId}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
+        [FromServices] IGetService<JiliRoundDetailQuery, RoundDetailResult> getService,
+        Guid roundId,
+        string language)
+        => getService
+            .GetAsync(
+                new JiliRoundDetailQuery
+                {
+                    RoundId = roundId,
+                    Language = language
+                });
 }
