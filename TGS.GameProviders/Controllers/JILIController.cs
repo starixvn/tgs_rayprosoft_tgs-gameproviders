@@ -40,7 +40,7 @@ public class JILIController : ControllerBase,
     ///
     ///     Post
     ///         {
-    ///             "gameType": 1,
+    ///             "gameType": 15,
     ///             "gameId": 2200001,
     ///             "brandCode": "GPI",
     ///             "playerCode": "4ucmqplxb029",

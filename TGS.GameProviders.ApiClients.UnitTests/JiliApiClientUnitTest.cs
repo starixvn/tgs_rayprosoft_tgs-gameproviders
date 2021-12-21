@@ -14,10 +14,9 @@ namespace TGS.GameProviders.ApiClients.UnitTests;
 [TestFixture]
 public class JiliApiClientUnitTest
 {
-    private readonly Uri _apiUrl = new Uri("https://uat-wb-api.jlfafafa2.com");
     private readonly string _agentId = "PG_Seamless";
     private readonly string _agentKey = "0d90dda822b6df548460da8f551c1a76c01b6a9e";
-
+    private readonly Uri _apiUrl = new Uri("https://uat-wb-api.jlfafafa2.com");
     private readonly IJiliApiClient _client;
 
     public JiliApiClientUnitTest()
@@ -31,17 +30,13 @@ public class JiliApiClientUnitTest
     }
 
     [Test]
-    public async ValueTask LoginWithoutRedirectAsync()
+    public async Task GetGameDetailUrlAsync()
     {
-        var request = new JiliLoginWithoutRedirectRequest
-        {
-            GameExternalId = "10",
-            Token = "token",
-            Language = "en-US"
-        };
+        var language = "en-US";
+        var externalRoundId = "1639679431950180036";
 
         var response = await _client
-            .LoginWithoutRedirectAsync(_apiUrl, _agentId, _agentKey, request)
+            .GetGameDetailUrlAsync(_apiUrl, _agentId, _agentKey, language, externalRoundId)
             .ConfigureAwait(false);
     }
 
@@ -56,13 +51,17 @@ public class JiliApiClientUnitTest
     }
 
     [Test]
-    public async Task GetGameDetailUrlAsync()
+    public async ValueTask LoginWithoutRedirectAsync()
     {
-        var language = "en-US";
-        var externalRoundId = "1639679431950180036";
+        var request = new JiliLoginWithoutRedirectRequest
+        {
+            GameExternalId = "10",
+            Token = "token",
+            Language = "en-US"
+        };
 
         var response = await _client
-            .GetGameDetailUrlAsync(_apiUrl, _agentId, _agentKey, language, externalRoundId)
+            .LoginWithoutRedirectAsync(_apiUrl, _agentId, _agentKey, request)
             .ConfigureAwait(false);
     }
 }
