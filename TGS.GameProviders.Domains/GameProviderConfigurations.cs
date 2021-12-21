@@ -14,6 +14,7 @@
         public static readonly string Habanero = string.Format(_template, GameProviderType.Habanero);
         public static readonly string IMESports = string.Format(_template, GameProviderType.IMESports);
         public static readonly string JDB = string.Format(_template, GameProviderType.JDB);
+        public static readonly string Jili = string.Format(_template, GameProviderType.Jili);
         public static readonly string KY = string.Format(_template, GameProviderType.KY);
         public static readonly string LY = string.Format(_template, GameProviderType.LY);
         public static readonly string PragmaticPlay = string.Format(_template, GameProviderType.PragmaticPlay);
