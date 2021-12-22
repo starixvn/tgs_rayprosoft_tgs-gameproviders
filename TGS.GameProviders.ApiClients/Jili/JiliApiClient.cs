@@ -193,7 +193,14 @@ internal class JiliApiClient : IJiliApiClient
         var data = Encoding.UTF8.GetBytes(original);
         var hash = MD5.HashData(data);
 
-        return new BigInteger(hash, isBigEndian: true).ToString("x");
+        var sb = new StringBuilder();
+
+        foreach (var t in hash)
+        {
+            sb.Append(t.ToString("x2"));
+        }
+
+        return sb.ToString();
     }
 
     private async ValueTask<TResponse> PostAsync<TResponse>(Uri apiUrl, string path,
