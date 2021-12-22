@@ -6,9 +6,9 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.Logging;
 using TGS.GameProviders.ApiClients.WGSports;
+using TGS.GameProviders.ApiClients.WGSports.Models.Commons;
 using TGS.GameProviders.Core.WGSports;
 using TGS.GameProviders.Core.WGSports.Models;
-using TGS.GameProviders.ApiClients.WGSports.Models.Commons;
 
 namespace TGS.GameProviders.ApiClients.UnitTests
 {
@@ -137,6 +137,36 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         }
 
         [Test]
+        public async Task GetGameRecordAsync()
+        {
+            var startTime = DateTimeOffset.UtcNow.AddMinutes(-20).ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss");
+            var endTime = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss");
+
+            (bool Success, WGSportsBetInfo[]? BetInfos) = (true, null);
+
+            _ = _client.GetGameRecordAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey,
+                _partnerIV,
+                GameRecordTime.BetDate,
+                startTime,
+                endTime).Returns(ValueTask.FromResult((Success, BetInfos)));
+
+            var actual = await _client.GetGameRecordAsync(
+                _apiUrl,
+                _partnerCode,
+                _partnerKey,
+                _partnerIV,
+                GameRecordTime.BetDate,
+                startTime,
+                endTime).ConfigureAwait(false);
+
+            Assert.NotNull(actual);
+            Assert.AreEqual(Success, actual.Success);
+        }
+
+        [Test]
         public async Task GetLoginAsync()
         {
             var playerCode = "4ucmqplxb029";
@@ -171,7 +201,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
 
             Assert.NotNull(actual);
             Assert.AreEqual(gameUrl, actual);
-
         }
 
         [Test]
@@ -231,36 +260,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                _partnerKey,
                _partnerIV,
                playerCode).ConfigureAwait(false);
-        }
-
-        [Test]
-        public async Task GetGameRecordAsync()
-        {
-            var startTime = DateTimeOffset.UtcNow.AddMinutes(-20).ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss");
-            var endTime = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss");
-
-            (bool Success, WGSportsBetInfo[]? BetInfos) = (true, null);
-
-            _ = _client.GetGameRecordAsync(
-                _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
-                GameRecordTime.BetDate,
-                startTime,
-                endTime).Returns(ValueTask.FromResult((Success, BetInfos)));
-
-            var actual = await _client.GetGameRecordAsync(
-                _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
-                GameRecordTime.BetDate,
-                startTime,
-                endTime).ConfigureAwait(false);
-
-            Assert.NotNull(actual);
-            Assert.AreEqual(Success, actual.Success);
         }
     }
 }

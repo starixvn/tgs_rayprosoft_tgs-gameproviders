@@ -11,9 +11,7 @@ namespace TGS.GameProviders.Core.Repositories.Models.Player
         Guid BrandId,
         string BrandCode,
         string PlayerCode,
-        string? IdNumber,
         string Username,
-        string? RealName,
         Guid DefaultWalletId,
         string DefaultWalletCurrencyCode,
         PlayerStatus Status

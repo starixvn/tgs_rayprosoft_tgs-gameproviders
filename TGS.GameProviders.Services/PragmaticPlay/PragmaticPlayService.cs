@@ -35,7 +35,7 @@ internal class PragmaticPlayService : IPragmaticPlayService
     public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
         => _gameProviderRepository.GetAsync(gameProviderId);
 
-    public async ValueTask<string> GetGameProviderCurrencyLanguageAsync(Guid gameProviderId, string cultureCode)
+    public async ValueTask<string> GetGameProviderLanguageAsync(Guid gameProviderId, string cultureCode)
     {
         var (isCultureCode, gameProviderCultureCode) = await _gameProviderRepository
             .GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);

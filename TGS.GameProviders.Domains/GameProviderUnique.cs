@@ -23,6 +23,8 @@
         TCG = 18,
         Card365 = 19,
         LY = 20,
-        BetConstruct = 21
+        BetConstruct = 21,
+        Jili = 22,
+        Avia = 23
     }
 }

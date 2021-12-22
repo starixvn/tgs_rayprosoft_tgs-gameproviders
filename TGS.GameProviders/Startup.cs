@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Microsoft.Extensions.DependencyInjection;
 using TGS.GameProviders.ViewModelMappings;
 
@@ -179,21 +180,29 @@ namespace TGS.GameProviders
             services.AddOptions<ForwardedHeadersOptions>()
                 .Configure<IConfiguration>((options, config) =>
                 {
-                    config.GetSection("ForwardedHeaders").Bind(options);
+                    options.ForwardedHeaders = ForwardedHeaders.All;
+                    options.ForwardLimit = config.GetValue<int>("ForwardedHeaders:ForwardLimit");
+
                     var knownProxies = config.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
                     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-                    //options.ForwardLimit = 2;
+
 
                     // Replace with IP of your proxy/load balancer
                     foreach (var knownProxie in knownProxies)
                         options.KnownProxies.Add(IPAddress.Parse(knownProxie));
 
-                    // 10/8 allows any from 10.0.0.0~10.255.255.255;
-                    options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("10.0.0.0"), 8));
-                    // 172.16/12  allows any from 172.16.0.0~172.31.255.255;
-                    options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("172.16.0.0"), 12));
-                    // 192.168/16 allows any from 192.168.0.0~192.168.255.255;
-                    options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("192.168.0.0"), 16));
+                    var knowNetworks = config.GetSection("ForwardedHeaders:KnowNetworks").Get<string[]>() ?? Array.Empty<string>();
+                    foreach (var cidr in knowNetworks)
+                    {
+                        (string ip, string range) = cidr.Split("/");
+
+                        options.KnownNetworks.Add(
+                            new IPNetwork(
+                                IPAddress.Parse(ip),
+                                string.IsNullOrEmpty(range)
+                                    ? 32
+                                    : int.Parse(range)));
+                    }
                 });
 
             services
@@ -217,8 +226,8 @@ namespace TGS.GameProviders
 
             services
                 .AddHealthChecks();
-                //.AddRedis(Configuration.GetConnectionString("RedisConfigurationString"), name: "Redis Default")
-                //.AddNpgSql(Configuration.GetConnectionString("Tgs"), name: "PostgreSQL Tgs");
+            //.AddRedis(Configuration.GetConnectionString("RedisConfigurationString"), name: "Redis Default")
+            //.AddNpgSql(Configuration.GetConnectionString("Tgs"), name: "PostgreSQL Tgs");
         }
     }
 }

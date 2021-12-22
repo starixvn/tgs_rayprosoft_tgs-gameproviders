@@ -36,7 +36,7 @@ namespace TGS.GameProviders.Core.PragmaticPlay.ApplicationServices
             var encryptedToken = await _tokenProvider.EncryptAsync(query.LoginRecordId).ConfigureAwait(false);
 
             var game = await _service.GetGameAsync(query.GameId!.Value).ConfigureAwait(false);
-            var culture = await _service.GetGameProviderCurrencyLanguageAsync(game.GameProviderId, query.Language).ConfigureAwait(false);
+            var culture = await _service.GetGameProviderLanguageAsync(game.GameProviderId, query.Language).ConfigureAwait(false);
 
             var request = new PragmaticPlayGameUrlRequest
             {
