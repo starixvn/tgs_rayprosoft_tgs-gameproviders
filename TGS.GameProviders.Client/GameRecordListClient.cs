@@ -29,6 +29,32 @@ namespace TGS.GameProviders.Client
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
+        public async ValueTask<GameRecordListResponse?> AviaGameRecordListAsync(string brandCode, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
+        {
+            var source = new
+            {
+                BrandCode = brandCode,
+                StartTime = startTime,
+                EndTime = endTime,
+                Page = page,
+                Rows = rows
+            };
+            var requestContent = new StringContent(JsonSerializer.Serialize(source, _SerializerOptions));
+            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var response = await _httpClient
+               .PostAsync(
+                $"/api/{GameProviderType.Avia}/GameRecordList",
+                requestContent)
+               .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
+        }
+
         public async ValueTask<GameRecordListResponse?> BigGamingFishingGameRecordListAsync(string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
         {
             var source = new

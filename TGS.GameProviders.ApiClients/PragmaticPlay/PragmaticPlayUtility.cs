@@ -17,10 +17,10 @@ namespace TGS.GameProviders.ApiClients.PragmaticPlay
 
             var original = $"{string.Join("&", values)}{md5Key}";
 
-            using var provider = new MD5CryptoServiceProvider();
+            using var hasher = MD5.Create();
             var data = Encoding.UTF8.GetBytes(original);
 
-            var hash = provider.ComputeHash(data);
+            var hash = hasher.ComputeHash(data);
             return hash.ToHexString();
         }
     }

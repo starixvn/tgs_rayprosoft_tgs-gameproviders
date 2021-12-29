@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.AllBet.ApplicationServices;
 using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
-using TGS.GameProviders.Core.BetConstruct.ApplicationServices;
+using TGS.GameProviders.Core.Avia.ApplicationServices;
 using TGS.GameProviders.Core.BigGaming.ApplicationServices;
 using TGS.GameProviders.Core.Evolution.ApplicationServices;
 using TGS.GameProviders.Core.Habanero.ApplicationServices;
 using TGS.GameProviders.Core.IMESports.ApplicationServices;
+using TGS.GameProviders.Core.Jili.ApplicationServices;
 using TGS.GameProviders.Core.KY.ApplicationServices;
 using TGS.GameProviders.Core.LY.ApplicationServices;
 using TGS.GameProviders.Core.PragmaticPlay.ApplicationServices;
@@ -61,7 +63,13 @@ namespace TGS.GameProviders.ViewModelMappings
             CreateMap<GameUrlRequest, SabaGameUrlQuery>()
                 .ReverseMap();
             CreateMap<GameUrlRequest, HabaneroGameUrlQuery>()
-                .ReverseMap();            
+                .ReverseMap();
+            CreateMap<GameUrlRequest, AllBetGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, AviaGameUrlQuery>()
+                .ReverseMap();
+            CreateMap<GameUrlRequest, JiliGameUrlQuery>()
+                .ReverseMap();
         }
     }
 }

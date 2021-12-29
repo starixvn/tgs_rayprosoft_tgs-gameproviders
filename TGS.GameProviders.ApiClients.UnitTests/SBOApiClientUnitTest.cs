@@ -83,20 +83,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         }
 
         [Test]
-        public async Task KickAsync()
-        {
-            var playerCode = "4ucmqplxb029";
-
-            var request = new SBOLogoutRequest
-            {
-                CompanyKey = _companyKey,
-                PlayerCode = playerCode
-            };
-
-            var response = await _client.LogoutAsync(_apiUrl, request).ConfigureAwait(false);
-        }
-
-        [Test]
         public async Task GetSportsBookRoundHistoryAsync()
         {
             var request = new SBOGetRoundHistoryRequest
@@ -122,6 +108,20 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             };
 
             var response = await _client.GetRoundHistoryAsync(_apiUrl, request).ConfigureAwait(false);
+        }
+
+        [Test]
+        public async Task KickAsync()
+        {
+            var playerCode = "4ucmqplxb029";
+
+            var request = new SBOLogoutRequest
+            {
+                CompanyKey = _companyKey,
+                PlayerCode = playerCode
+            };
+
+            var response = await _client.LogoutAsync(_apiUrl, request).ConfigureAwait(false);
         }
     }
 }

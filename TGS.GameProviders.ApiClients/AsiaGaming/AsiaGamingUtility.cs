@@ -20,13 +20,11 @@ namespace TGS.GameProviders.ApiClients.AsiaGaming
                 return original;
             }
 
-            using var des = new DESCryptoServiceProvider
-            {
-                IV = Encoding.UTF8.GetBytes(desKey),
-                Key = Encoding.UTF8.GetBytes(desKey),
-                Mode = CipherMode.ECB,
-                Padding = PaddingMode.PKCS7
-            };
+            using var des = DES.Create();
+            des.IV = Encoding.UTF8.GetBytes(desKey);
+            des.Key = Encoding.UTF8.GetBytes(desKey);
+            des.Mode = CipherMode.ECB;
+            des.Padding = PaddingMode.PKCS7;
 
             using var ct = des.CreateEncryptor();
             using var ms = new MemoryStream();
@@ -56,10 +54,10 @@ namespace TGS.GameProviders.ApiClients.AsiaGaming
 
         public string Md5Hash(string original)
         {
-            using var provider = new MD5CryptoServiceProvider();
+            using var hasher = MD5.Create();
             var data = Encoding.UTF8.GetBytes(original);
 
-            var hash = provider.ComputeHash(data);
+            var hash = hasher.ComputeHash(data);
             return hash.ToHexString();
         }
     }
