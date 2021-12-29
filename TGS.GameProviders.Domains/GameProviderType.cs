@@ -23,6 +23,7 @@
         public const string SexyGaming = "SG";
         public const string Skywind = "SW";
         public const string TCG = "TCG";
+        public const string TFGaming = "TF";
         public const string VR = "VR";
         public const string WGHorse = "WGVIA";
         public const string WGSports = "WGFM";
