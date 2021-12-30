@@ -44,11 +44,13 @@ namespace TGS.GameProviders.Core.TFGaming.ApplicationServices
                 throw new Exception($"This game Id could not be found..{gameModel.GameId}");
             }
 
-            var gameRecord = JsonSerializer.Deserialize<TFGameRecord>(roundModel.AdditionalData, new JsonSerializerOptions
-            {
-                // 設定在做序列化/反序列化時，尊重名稱大小寫
-                PropertyNameCaseInsensitive = true
-            });
+            var gameRecord = string.IsNullOrEmpty(roundModel.AdditionalData)
+                ? null
+                : JsonSerializer.Deserialize<TFGameRecord>(roundModel.AdditionalData, new JsonSerializerOptions
+                {
+                    // 設定在做序列化/反序列化時，尊重名稱大小寫
+                    PropertyNameCaseInsensitive = true
+                });
 
             return gameRecord == null
                ? (new()

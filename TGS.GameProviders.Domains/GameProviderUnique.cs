@@ -25,6 +25,7 @@
         LY = 20,
         BetConstruct = 21,
         Jili = 22,
-        Avia = 23
+        Avia = 23,
+        TFGaming = 24
     }
 }
