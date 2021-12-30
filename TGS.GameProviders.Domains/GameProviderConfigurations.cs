@@ -23,6 +23,7 @@
         public static readonly string SexyGaming = string.Format(_template, GameProviderType.SexyGaming);
         public static readonly string Skywind = string.Format(_template, GameProviderType.Skywind);
         public static readonly string TCG = string.Format(_template, GameProviderType.TCG);
+        public static readonly string TFGaming = string.Format(_template, GameProviderType.TFGaming);
         public static readonly string VR = string.Format(_template, GameProviderType.VR);
         public static readonly string WGHorse = string.Format(_template, GameProviderType.WGHorse);
         public static readonly string WGSports = string.Format(_template, GameProviderType.WGSports);

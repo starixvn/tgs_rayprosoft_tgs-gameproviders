@@ -13,6 +13,7 @@ using TGS.GameProviders.ApiClients.SBO;
 using TGS.GameProviders.ApiClients.SexyGaming;
 using TGS.GameProviders.ApiClients.Skywind;
 using TGS.GameProviders.ApiClients.TCG;
+using TGS.GameProviders.ApiClients.TF;
 using TGS.GameProviders.ApiClients.VR;
 using TGS.GameProviders.ApiClients.WGHorse;
 using TGS.GameProviders.ApiClients.WGSports;
@@ -32,6 +33,7 @@ using TGS.GameProviders.Core.SBO;
 using TGS.GameProviders.Core.SexyGaming;
 using TGS.GameProviders.Core.Skywind;
 using TGS.GameProviders.Core.TCG;
+using TGS.GameProviders.Core.TFGaming;
 using TGS.GameProviders.Core.VR;
 using TGS.GameProviders.Core.WGHorse;
 using TGS.GameProviders.Core.WGSports;
@@ -75,6 +77,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddHttpClient<IAllBetApiClient, AllBetApiClient>();
             services.AddHttpClient<IAviaApiClient, AviaApiClient>();
             services.AddHttpClient<IJiliApiClient, JiliApiClient>();
+            services.AddHttpClient<ITFApiClient, TFApiClient>();
 
             return services;
         }
