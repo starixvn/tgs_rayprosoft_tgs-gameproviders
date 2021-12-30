@@ -57,7 +57,7 @@ namespace TGS.GameProviders.Services.Avia
 
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
         {
-            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SexyGaming).ConfigureAwait(false);
+            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.Avia).ConfigureAwait(false);
             var (IsCurrencyCode, GameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
             return (IsCurrencyCode) ? GameProviderCurrencyCode : null;
         }
