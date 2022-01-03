@@ -77,7 +77,7 @@ namespace TGS.GameProviders.Core.TFGaming.Models
         /// 赛事开始时间
         /// </summary>
         [JsonPropertyName("event_datetime")]
-        public DateTime EventDatetime { get; set; }
+        public DateTimeOffset EventDatetime { get; set; }
 
         /// <summary>
         /// 赛事ID
@@ -113,7 +113,8 @@ namespace TGS.GameProviders.Core.TFGaming.Models
         /// 让分数
         /// </summary>
         [JsonPropertyName("handicap")]
-        public string Handicap { get; set; }
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+        public decimal? Handicap { get; set; }
 
         /// <summary>
         /// 注单号
