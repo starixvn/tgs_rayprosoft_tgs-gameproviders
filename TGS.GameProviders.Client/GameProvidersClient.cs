@@ -106,9 +106,7 @@ namespace TGS.GameProviders.Client
             var response = await _httpClient
                .DeleteAsync(
                    string.Format(_KickPlayerPath, gameProviderCode, playerCode))
-               .ConfigureAwait(false);
-
-            response.EnsureSuccessStatusCode();
+               .ConfigureAwait(false);            
         }
 
         public async ValueTask<decimal?> PlayerBalanceAsync(string gameProviderCode, string playerCode)
