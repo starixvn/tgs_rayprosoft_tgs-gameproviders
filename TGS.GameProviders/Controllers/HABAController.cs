@@ -15,7 +15,8 @@ namespace TGS.GameProviders.Controllers
     [ApiController]
     public class HABAController : ControllerBase,
         IGameUrlHandler<HabaneroGameUrlQuery>,
-        IRoundDetailHandler<HabaneroRoundDetailQuery>
+        IRoundDetailHandler<HabaneroRoundDetailQuery>,
+        IKickPlayerHandler<HabaneroKickPlayerCommand>
     {
         private readonly ILogger<HABAController> _logger;
         private readonly IMapper _mapper;
@@ -91,5 +92,25 @@ namespace TGS.GameProviders.Controllers
 
             return result ?? null;
         }
+
+        /// <summary>
+        /// Kicks the player asynchronous.
+        /// </summary>
+        /// <param name="commandService">The command service.</param>
+        /// <param name="playerCode">The player code.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Delete haba/kickplayer/4ucmqplxb029
+        /// </remarks>
+        [HttpDelete("kickplayer/{playerCode}")]
+        public ValueTask KickPlayerAsync(
+            [FromServices] ICommandService<HabaneroKickPlayerCommand> commandService,
+            string playerCode)
+            => commandService.ExecuteAsync(new()
+            {
+                PlayerCode = playerCode
+            });
     }
 }

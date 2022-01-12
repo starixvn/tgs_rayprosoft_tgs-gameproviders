@@ -1,0 +1,51 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core.Habanero.Models;
+using TGS.GameProviders.Core.Repositories;
+using Tgs.ServiceUtility;
+
+namespace TGS.GameProviders.Core.Habanero.ApplicationServices;
+
+internal class HabaneroKickPlayerCommandService : ICommandService<HabaneroKickPlayerCommand>
+{
+    private readonly ILogger<HabaneroKickPlayerCommandService> _logger;
+    private readonly IHabaneroService _service;
+    private readonly IHabaneroApiClient _client;
+
+    public HabaneroKickPlayerCommandService(
+        ILogger<HabaneroKickPlayerCommandService> logger,
+        IHabaneroService service,
+        IHabaneroApiClient client)
+    {
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _service = service ?? throw new ArgumentNullException(nameof(service));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+    }
+
+    public async ValueTask ExecuteAsync(
+        HabaneroKickPlayerCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        var playerModel = await _service.GetPlayerAsync(command.PlayerCode).ConfigureAwait(false);
+        if (playerModel == null)
+        {
+            throw new Exception($"The player does not exist.{command.PlayerCode}");
+        }
+
+        var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+
+        var request = new HabaneroLogoutRequest
+        {
+            BrandId = configuration.BrandId,
+            ApiKey = configuration.ApiKey,
+            PlayerCode = command.PlayerCode
+        };
+
+        _ = await _client.LogoutAsync(configuration.ApiUrl, request).ConfigureAwait(false);
+    }
+}
