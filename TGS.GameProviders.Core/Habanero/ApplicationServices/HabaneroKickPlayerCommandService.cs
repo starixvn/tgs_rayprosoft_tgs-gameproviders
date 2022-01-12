@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.Core.Habanero.Models;
-using TGS.GameProviders.Core.Repositories;
 using Tgs.ServiceUtility;
+using TGS.GameProviders.Core.Habanero.Models;
 
 namespace TGS.GameProviders.Core.Habanero.ApplicationServices;
 

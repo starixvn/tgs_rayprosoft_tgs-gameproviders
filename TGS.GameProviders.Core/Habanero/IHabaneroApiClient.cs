@@ -2,12 +2,11 @@
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.Habanero.Models;
 
-namespace TGS.GameProviders.Core.Habanero
+namespace TGS.GameProviders.Core.Habanero;
+
+public interface IHabaneroApiClient
 {
-    public interface IHabaneroApiClient
-    {
-        ValueTask<HabaneroLogoutResponse> LogoutAsync(
-            Uri apiUrl,
-            HabaneroLogoutRequest request);
-    }
+    ValueTask<HabaneroLogoutResponse> LogoutAsync(
+        Uri apiUrl,
+        HabaneroLogoutRequest request);
 }
