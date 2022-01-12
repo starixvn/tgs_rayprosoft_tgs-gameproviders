@@ -15,7 +15,4 @@ public record HabaneroLogoutRequest
 
     [JsonPropertyName("password")]
     public string Password => string.Empty;
-
-    //[JsonPropertyName("CurrencyCode")]
-    //public string CurrencyCode { get; init; }
 }

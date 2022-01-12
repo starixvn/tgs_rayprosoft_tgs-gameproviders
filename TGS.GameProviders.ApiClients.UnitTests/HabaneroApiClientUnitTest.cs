@@ -28,9 +28,8 @@ public class HabaneroApiClientUnitTest
         var logger = NullLogger<HabaneroApiClient>.Instance;
         var tgsLog = Substitute.For<ITgsLog>();
 
-        _client = new HabaneroApiClient(httpClient, logger, tgsLog);
-
-        //_client = Substitute.For<IHabaneroApiClient>();
+        //_client = new HabaneroApiClient(httpClient, logger, tgsLog);
+        _client = Substitute.For<IHabaneroApiClient>();
     }
 
     [Test]
