@@ -13,7 +13,8 @@ namespace TGS.GameProviders.Controllers;
 [ApiController]
 [Route("api/365")]
 public class Card365Controller :
-    IGameUrlHandler<Card365GameUrlQuery>
+    IGameUrlHandler<Card365GameUrlQuery>,
+    IKickPlayerHandler<Card365KickPlayerCommand>
 {
     private readonly ILogger<Card365Controller> _logger;
     private readonly IMapper _mapper;
@@ -62,4 +63,25 @@ public class Card365Controller :
             null :
             _mapper.Map<GameUrlResponse>(result);
     }
+
+    /// <summary>
+    /// Kicks the player asynchronous.
+    /// </summary>
+    /// <param name="commandService">The command service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Delete 365/kickplayer/4ucmqplxb029
+    /// </remarks>
+    [HttpDelete("kickplayer/{playerCode}")]
+    public ValueTask KickPlayerAsync(
+        [FromServices] ICommandService<Card365KickPlayerCommand> commandService,
+        string playerCode)
+        => commandService.ExecuteAsync(
+            new Card365KickPlayerCommand
+            {
+                PlayerCode = playerCode
+            });
 }
