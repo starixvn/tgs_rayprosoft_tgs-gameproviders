@@ -17,6 +17,7 @@ using TGS.GameProviders.Core.SBO;
 using TGS.GameProviders.Core.SexyGaming;
 using TGS.GameProviders.Core.Skywind;
 using TGS.GameProviders.Core.TCG;
+using TGS.GameProviders.Core.TFGaming;
 using TGS.GameProviders.Core.VR;
 using TGS.GameProviders.Core.WGHorse;
 using TGS.GameProviders.Core.WGSports;
@@ -38,6 +39,7 @@ using TGS.GameProviders.Services.SBO;
 using TGS.GameProviders.Services.SexyGaming;
 using TGS.GameProviders.Services.Skywind;
 using TGS.GameProviders.Services.TCG;
+using TGS.GameProviders.Services.TFGaming;
 using TGS.GameProviders.Services.VR;
 using TGS.GameProviders.Services.WGHorse;
 using TGS.GameProviders.Services.WGSports;
@@ -142,6 +144,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services
                 .AddTransient<IJiliService, JiliService>()
                 .AddTransient<IJiliMerchantMapper, JiliMerchantMapper>();
+
+            services
+                .AddTransient<ITFGamingService, TFGamingService>();
 
             return services;
         }
