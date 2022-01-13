@@ -2,6 +2,7 @@
 using TGS.GameProviders.ApiClients.AsiaGaming;
 using TGS.GameProviders.ApiClients.Avia;
 using TGS.GameProviders.ApiClients.BigGaming;
+using TGS.GameProviders.ApiClients.Card365;
 using TGS.GameProviders.ApiClients.Evolution;
 using TGS.GameProviders.ApiClients.Habanero;
 using TGS.GameProviders.ApiClients.IMESports;
@@ -23,6 +24,7 @@ using TGS.GameProviders.Core.AllBet;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.BigGaming;
+using TGS.GameProviders.Core.Card365;
 using TGS.GameProviders.Core.Evolution;
 using TGS.GameProviders.Core.Habanero;
 using TGS.GameProviders.Core.IMESports;
@@ -81,6 +83,7 @@ public static class ClientConfigurationExtensions
         services.AddHttpClient<IJiliApiClient, JiliApiClient>();
         services.AddHttpClient<ITFApiClient, TFApiClient>();
         services.AddHttpClient<IHabaneroApiClient, HabaneroApiClient>();
+        services.AddHttpClient<ICard365ApiClient, Card365ApiClient>();
 
         return services;
     }
