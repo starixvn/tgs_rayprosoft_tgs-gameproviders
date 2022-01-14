@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Card365.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers;
@@ -14,7 +15,8 @@ namespace TGS.GameProviders.Controllers;
 [Route("api/365")]
 public class Card365Controller :
     IGameUrlHandler<Card365GameUrlQuery>,
-    IKickPlayerHandler<Card365KickPlayerCommand>
+    IKickPlayerHandler<Card365KickPlayerCommand>,
+    IRoundDetailHandler<Card365RoundDetailQuery>
 {
     private readonly ILogger<Card365Controller> _logger;
     private readonly IMapper _mapper;
@@ -84,4 +86,31 @@ public class Card365Controller :
             {
                 PlayerCode = playerCode
             });
+
+    /// <summary>
+    /// Rounds the detail asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="roundId">The round identifier.</param>
+    /// <param name="language">The language.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Get ab/rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
+    /// </remarks>
+    [HttpGet("RoundDetail/{roundId}")]
+    public async ValueTask<RoundDetailResult> RoundDetailAsync(
+        [FromServices] IGetService<Card365RoundDetailQuery, RoundDetailResult> getService,
+        Guid roundId,
+        [FromQuery] string language)
+    {
+        var result = await getService.GetAsync(new Card365RoundDetailQuery
+        {
+            RoundId = roundId,
+            Language = language
+        }).ConfigureAwait(false);
+
+        return result ?? null;
+    }
 }
