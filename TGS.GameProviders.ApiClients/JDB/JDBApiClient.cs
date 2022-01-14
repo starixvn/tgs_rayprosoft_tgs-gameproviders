@@ -5,16 +5,15 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
+using Tgs.Logging;
 using TGS.GameProviders.ApiClients.PragmaticPlay;
 using TGS.GameProviders.Core.Extensions;
-using Tgs.Logging;
 using TGS.GameProviders.Core.JDB;
 using TGS.GameProviders.Core.JDB.Models;
-using System.Text;
 
 namespace TGS.GameProviders.ApiClients.JDB;
 

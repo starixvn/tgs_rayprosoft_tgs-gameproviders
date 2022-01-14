@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using TGS.GameProviders.Core.Repositories;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Card365.Model;
+using TGS.GameProviders.Core.Repositories;
 
 namespace TGS.GameProviders.Core.Card365.ApplicationServices;
 

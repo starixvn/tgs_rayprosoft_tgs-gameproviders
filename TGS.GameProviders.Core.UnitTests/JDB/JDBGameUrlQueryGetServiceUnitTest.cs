@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NSubstitute.Core.DependencyInjection;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using TGS.GameProviders.Core.JDB;
