@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.JDB.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers;
@@ -14,7 +15,8 @@ namespace TGS.GameProviders.Controllers;
 [ApiController]
 public class JDBController : ControllerBase,
     IGameUrlHandler<JDBGameUrlQuery>,
-    IKickPlayerHandler<JDBKickPlayerCommand>
+    IKickPlayerHandler<JDBKickPlayerCommand>,
+    IRoundDetailHandler<JDBRoundDetailQuery>
 {
     private readonly ILogger<JDBController> _logger;
     private readonly IMapper _mapper;
@@ -84,4 +86,29 @@ public class JDBController : ControllerBase,
             {
                 PlayerCode = playerCode
             });
+
+    /// <summary>
+    /// Rounds the detail asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="roundId">The round identifier.</param>
+    /// <param name="language">The language.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Get jdb/rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
+    /// </remarks>
+    [HttpGet("RoundDetail/{roundId}")]
+    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+        [FromServices] IGetService<JDBRoundDetailQuery, RoundDetailResult> getService,
+        Guid roundId,
+        [FromQuery] string language)
+        => await getService
+            .GetAsync(new JDBRoundDetailQuery
+            {
+                RoundId = roundId,
+                Language = language
+            })
+            .ConfigureAwait(false);
 }

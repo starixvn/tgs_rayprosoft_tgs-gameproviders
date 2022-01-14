@@ -8,17 +8,17 @@ using Tgs.ServiceUtility;
 
 namespace TGS.GameProviders.Core.JDB.ApplicationServices;
 
-internal class JDBGameUrlQueryGetService : IGetService<JDBGameUrlQuery, GameUrlResult>
+internal class JDBGameUrlGetService : IGetService<JDBGameUrlQuery, GameUrlResult>
 {
-    private readonly ILogger<JDBGameUrlQueryGetService> _logger;
+    private readonly ILogger<JDBGameUrlGetService> _logger;
     private readonly IPlayerRepository _playerRepository;
     private readonly IGameRepository _gameRepository;
     private readonly IJDBService _service;
     private readonly IJDBAgentMapper _agentMapper;
     private readonly IJDBApiClient _client;
 
-    public JDBGameUrlQueryGetService(
-        ILogger<JDBGameUrlQueryGetService> logger,
+    public JDBGameUrlGetService(
+        ILogger<JDBGameUrlGetService> logger,
         IPlayerRepository playerRepository,
         IGameRepository gameRepository,
         IJDBService service,

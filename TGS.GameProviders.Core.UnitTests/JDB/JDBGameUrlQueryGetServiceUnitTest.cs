@@ -26,7 +26,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<JDBGameUrlQueryGetService>.Instance;
+        var fakeLogger = NullLogger<JDBGameUrlGetService>.Instance;
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeService = Substitute.For<IJDBService>();
@@ -133,7 +133,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
                     Path = gameUrl.AbsoluteUri
                 }));
 
-        var sut = new JDBGameUrlQueryGetService(
+        var sut = new JDBGameUrlGetService(
             fakeLogger,
             fakePlayerRepository,
             fakeGameRepository,
