@@ -9,6 +9,7 @@ using TGS.GameProviders.Core.Card365;
 using TGS.GameProviders.Core.Evolution;
 using TGS.GameProviders.Core.Habanero;
 using TGS.GameProviders.Core.IMESports;
+using TGS.GameProviders.Core.JDB;
 using TGS.GameProviders.Core.Jili;
 using TGS.GameProviders.Core.KY;
 using TGS.GameProviders.Core.LY;
@@ -32,6 +33,7 @@ using TGS.GameProviders.Services.Card365;
 using TGS.GameProviders.Services.Evolution;
 using TGS.GameProviders.Services.Habanero;
 using TGS.GameProviders.Services.IMESports;
+using TGS.GameProviders.Services.JDB;
 using TGS.GameProviders.Services.Jili;
 using TGS.GameProviders.Services.KY;
 using TGS.GameProviders.Services.LY;
@@ -153,6 +155,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services
                 .AddTransient<ICard365Service, Card365Service>()
                 .AddTransient<ICard365AgentMapper, Card365AgentMapper>();
+
+            services
+                .AddTransient<IJDBService, JDBService>()
+                .AddTransient<IJDBAgentMapper, JDBAgentMapper>();
 
             return services;
         }
