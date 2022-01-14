@@ -6,6 +6,7 @@ using TGS.GameProviders.ApiClients.Card365;
 using TGS.GameProviders.ApiClients.Evolution;
 using TGS.GameProviders.ApiClients.Habanero;
 using TGS.GameProviders.ApiClients.IMESports;
+using TGS.GameProviders.ApiClients.JDB;
 using TGS.GameProviders.ApiClients.Jili;
 using TGS.GameProviders.ApiClients.KY;
 using TGS.GameProviders.ApiClients.LY;
@@ -28,6 +29,7 @@ using TGS.GameProviders.Core.Card365;
 using TGS.GameProviders.Core.Evolution;
 using TGS.GameProviders.Core.Habanero;
 using TGS.GameProviders.Core.IMESports;
+using TGS.GameProviders.Core.JDB;
 using TGS.GameProviders.Core.Jili;
 using TGS.GameProviders.Core.KY;
 using TGS.GameProviders.Core.LY;
@@ -84,6 +86,7 @@ public static class ClientConfigurationExtensions
         services.AddHttpClient<ITFApiClient, TFApiClient>();
         services.AddHttpClient<IHabaneroApiClient, HabaneroApiClient>();
         services.AddHttpClient<ICard365ApiClient, Card365ApiClient>();
+        services.AddHttpClient<IJDBApiClient, JDBApiClient>();
 
         return services;
     }
