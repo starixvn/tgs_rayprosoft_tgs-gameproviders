@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using Castle.Core.Logging;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.JDB.ApplicationServices;
 using TGS.GameProviders.ViewModels;
-using Tgs.ServiceUtility;
-using Microsoft.Extensions.Logging;
 
 namespace TGS.GameProviders.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 public class JDBController : ControllerBase,
-    IGameUrlHandler<JDBGameUrlQuery>
+    IGameUrlHandler<JDBGameUrlQuery>,
+    IKickPlayerHandler<JDBKickPlayerCommand>
 {
     private readonly ILogger<JDBController> _logger;
     private readonly IMapper _mapper;
@@ -64,4 +63,25 @@ public class JDBController : ControllerBase,
             null :
             _mapper.Map<GameUrlResponse>(result);
     }
+
+    /// <summary>
+    /// Kicks the player asynchronous.
+    /// </summary>
+    /// <param name="commandService">The command service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Delete jdb/kickplayer/4ucmqplxb029
+    /// </remarks>
+    [HttpDelete("kickplayer/{playerCode}")]
+    public ValueTask KickPlayerAsync(
+        [FromServices] ICommandService<JDBKickPlayerCommand> commandService,
+        string playerCode)
+        => commandService.ExecuteAsync(
+            new JDBKickPlayerCommand
+            {
+                PlayerCode = playerCode
+            });
 }
