@@ -102,7 +102,7 @@ public class JILIController : ControllerBase,
     public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<JiliRoundDetailQuery, RoundDetailResult> getService,
         Guid roundId,
-        string language)
+        [FromQuery] string language)
         => getService
             .GetAsync(
                 new JiliRoundDetailQuery
