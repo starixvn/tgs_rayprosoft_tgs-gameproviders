@@ -185,7 +185,8 @@ public class AsiaGamingGameUrlGetServiceUnitTest
             PlatformType = PlatformType.Desktop,
             Language = "en-US",
             IPAddress = "127.0.0.1",
-            BackUrl = new("https://dev-t1.rpgp.cc/")
+            BackUrl = new("https://dev-t1.rpgp.cc/"),
+            PlayerBalance = 1000m
         };
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
@@ -206,7 +207,12 @@ public class AsiaGamingGameUrlGetServiceUnitTest
         fakePlayerService.CheckOrCreateAccountAsync(configuration, query.PlayerCode, gameProviderCurrencyCode)
             .Returns(ValueTask.FromResult(true));
 
-        fakeSessionService.CreateGameSessionAsync(configuration, query.PlayerCode, query.LoginRecordId)
+        fakeSessionService
+            .CreateGameSessionAsync(
+                configuration,
+                query.PlayerCode,
+                query.LoginRecordId,
+                query.PlayerBalance)
             .Returns(ValueTask.FromResult(true));
 
         fakeUtility.GetQueryString(

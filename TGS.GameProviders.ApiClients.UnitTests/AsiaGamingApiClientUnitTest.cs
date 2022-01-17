@@ -39,14 +39,15 @@ namespace TGS.GameProviders.ApiClients.UnitTests
         {
             var playerCode = "4ucmqplxb029";
 
-            var request = new AsiaGamingCheckOrCreateAccountRequest()
+            var request = new AsiaGamingCheckOrCreateAccountRequest
             {
                 AgentCode = _agentCode,
                 PlayerCode = playerCode,
                 Currency = _gameProviderCurrencyCode
             };
 
-            var response = await _client.CheckOrCreateAccountAsync(_loginApiUrl, _md5Key, _desKey, request)
+            var response = await _client
+                .CheckOrCreateAccountAsync(_loginApiUrl, _md5Key, _desKey, request)
                 .ConfigureAwait(false);
         }
 
@@ -63,7 +64,8 @@ namespace TGS.GameProviders.ApiClients.UnitTests
                 Balance = 0
             };
 
-            var response = await _client.CreateGameSessionAsync(_serviceApiUrl, request)
+            var response = await _client
+                .CreateGameSessionAsync(_serviceApiUrl, request)
                 .ConfigureAwait(false);
         }
     }

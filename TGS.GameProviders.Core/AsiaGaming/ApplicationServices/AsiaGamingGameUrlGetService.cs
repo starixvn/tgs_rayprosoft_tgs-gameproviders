@@ -51,7 +51,11 @@ namespace TGS.GameProviders.Core.AsiaGaming.ApplicationServices
             }
 
             var sessionCreated = await _sessionService
-                .CreateGameSessionAsync(configuration, query.PlayerCode, query.LoginRecordId)
+                .CreateGameSessionAsync(
+                    configuration,
+                    query.PlayerCode,
+                    query.LoginRecordId,
+                    query.PlayerBalance)
                 .ConfigureAwait(false);
 
             if (!sessionCreated)

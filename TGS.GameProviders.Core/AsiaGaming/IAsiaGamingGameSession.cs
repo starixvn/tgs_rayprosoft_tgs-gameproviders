@@ -6,7 +6,10 @@ namespace TGS.GameProviders.Core.AsiaGaming
 {
     public interface IAsiaGamingGameSession
     {
-        public ValueTask<bool> CreateGameSessionAsync(AsiaGamingConfiguration configuration, string playerCode,
-            Guid loginRecordId);
+        public ValueTask<bool> CreateGameSessionAsync(
+            AsiaGamingConfiguration configuration,
+            string playerCode,
+            Guid loginRecordId,
+            decimal playerBalance);
     }
 }

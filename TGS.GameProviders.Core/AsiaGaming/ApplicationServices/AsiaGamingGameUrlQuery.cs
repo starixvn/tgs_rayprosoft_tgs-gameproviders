@@ -1,4 +1,6 @@
-﻿namespace TGS.GameProviders.Core.AsiaGaming.ApplicationServices
+﻿namespace TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
+
+public record AsiaGamingGameUrlQuery : GameUrlQuery
 {
-    public record AsiaGamingGameUrlQuery : GameUrlQuery;
+    public decimal PlayerBalance { get; init; }
 }
