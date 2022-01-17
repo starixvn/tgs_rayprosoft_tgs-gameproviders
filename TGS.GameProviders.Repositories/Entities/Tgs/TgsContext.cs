@@ -38,7 +38,6 @@ namespace TGS.GameProviders.Repositories.Entities
         public virtual DbSet<Reseller> Resellers { get; set; }
         public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<SubGameProvider> SubGameProviders { get; set; }
-        public virtual DbSet<Wallet> Wallets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -64,7 +63,6 @@ namespace TGS.GameProviders.Repositories.Entities
             modelBuilder.ApplyConfiguration(new Configurations.ResellerConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.SettingConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.SubGameProviderConfiguration());
-            modelBuilder.ApplyConfiguration(new Configurations.WalletConfiguration());
             OnModelCreatingPartial(modelBuilder);
         }
 
