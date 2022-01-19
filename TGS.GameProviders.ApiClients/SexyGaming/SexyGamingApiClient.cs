@@ -8,10 +8,12 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Polly;
 using Tgs.Logging;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.SexyGaming;
 using TGS.GameProviders.Core.SexyGaming.Models;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.ApiClients.SexyGaming
 {
@@ -35,8 +37,31 @@ namespace TGS.GameProviders.ApiClients.SexyGaming
         public ValueTask<SexyGamingCreateMemberResponse> CreatePlayerAsync(Uri apiUrl, SexyGamingCreateMemberRequest request)
             => PostAsync<SexyGamingCreateMemberRequest, SexyGamingCreateMemberResponse>(apiUrl, "/wallet/createMember", request, $"CreatePlayerAsync");
 
-        public ValueTask<SexyGamingGameUrlResponse> GetGamingGameUrlAsync(Uri apiUrl, SexyGamingGameUrlRequest request)
-            => PostAsync<SexyGamingGameUrlRequest, SexyGamingGameUrlResponse>(apiUrl, "/wallet/login", request, "GetGamingGameUrlAsync");
+        public async ValueTask<SexyGamingGameUrlResponse> GetGamingGameUrlAsync(Uri apiUrl, SexyGamingGameUrlRequest request)
+        {
+            var tryCount = 3;
+            var seconds = 1;
+
+            var retryPolicy = Policy.HandleResult<SexyGamingGameUrlResponse>(r
+                 => r.Status == ((int)SexyGamingGameApiError.UnableToProceedPleaseTryAgainLater).ToString("d4"))
+             .WaitAndRetryAsync(tryCount,
+                 retryAttempt => TimeSpan.FromSeconds(seconds),
+                 (response, retryTime, context) =>
+                 {
+                     var data = new
+                     {
+                         GameProviderCode = GameProviderType.SexyGaming,
+                         Request = request,
+                         Response = response,
+                         Delay = retryTime,
+                         CreationTime = DateTimeOffset.UtcNow
+                     };
+                     _logger.LogWarning(System.Text.Json.JsonSerializer.Serialize(data));
+                 });
+
+            return await retryPolicy.ExecuteAsync(async ()
+                => await PostAsync<SexyGamingGameUrlRequest, SexyGamingGameUrlResponse>(apiUrl, "/wallet/login", request, "GetGamingGameUrlAsync"));
+        }
 
         public ValueTask<SexyGamingGameUrlResponse> GetGamingLoginGameAsync(Uri apiUrl, SexyGamingLoginGameRequest request)
             => PostAsync<SexyGamingLoginGameRequest, SexyGamingGameUrlResponse>(apiUrl, "/wallet/doLoginAndLaunchGame", request, "GetGamingLoginGameAsync");
@@ -51,7 +76,7 @@ namespace TGS.GameProviders.ApiClients.SexyGaming
             var responseMessage = default(string);
             var response = default(TResult);
 
-            var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(System.Text.Json.JsonSerializer.Serialize(source));
+            var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(source));
 
             var url = new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{path}");
 

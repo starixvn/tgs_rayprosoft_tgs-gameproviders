@@ -22,14 +22,11 @@ namespace TGS.GameProviders.Controllers
         IPlayerFundHandler<WGSportsPlayerFundInQuery, WGSportsPlayerFundOutQuery>,
         IRoundDetailHandler<WGSportsRoundDetailQuery>
     {
-        private readonly ILogger<WGFMController> _logger;
         private readonly IMapper _mapper;
 
         public WGFMController(
-            ILogger<WGFMController> logger,
             IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -55,7 +52,7 @@ namespace TGS.GameProviders.Controllers
             WGSportsGameRecordListQuery request)
         {
             var result = await getService.GetAsync(request).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
 
         /// <summary>
@@ -233,7 +230,7 @@ namespace TGS.GameProviders.Controllers
                 RoundId = roundId,
                 Language = language
             }).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
     }
 }
