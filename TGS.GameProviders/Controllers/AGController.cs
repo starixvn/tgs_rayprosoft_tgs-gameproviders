@@ -14,7 +14,6 @@ namespace TGS.GameProviders.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class AGController : ControllerBase,
-    IGameUrlHandler<AsiaGamingGameUrlQuery>,
     IRoundDetailHandler<AsiaGamingRoundDetailQuery>
 {
     private readonly ILogger<AGController> _logger;
@@ -48,15 +47,31 @@ public class AGController : ControllerBase,
     ///             "platformType": 0,
     ///             "language": "zh-CN",
     ///             "ipAddress": "127.0.0.1",
-    ///             "backUrl": "https://dev-t1.rpgp.cc/"
+    ///             "backUrl": "https://dev-t1.rpgp.cc/",
+    ///             "playerBalance": 1000
     ///         }
     /// </remarks>
     [HttpPost("GameUrl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<AsiaGamingGameUrlQuery, GameUrlResult> getService,
-        GameUrlRequest request)
+        AGGameUrlRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<AsiaGamingGameUrlQuery>(request)).ConfigureAwait(false);
+        var query = new AsiaGamingGameUrlQuery
+        {
+            GameType = request.GameType,
+            GameId = request.GameId,
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            LoginRecordId = request.LoginRecordId,
+            PlatformType = request.PlatformType,
+            Language = request.Language,
+            IPAddress = request.IPAddress,
+            BackUrl = request.BackUrl,
+            PlayerBalance = request.PlayerBalance
+        };
+
+        var result = await getService.GetAsync(query).ConfigureAwait(false);
 
         return result == null ? null : _mapper.Map<GameUrlResponse>(result);
     }

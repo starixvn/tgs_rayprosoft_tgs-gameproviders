@@ -27,6 +27,8 @@ namespace TGS.GameProviders.Repositories.Entities.Configurations
                 .ValueGeneratedNever()
                 .HasColumnName("id");
 
+            entity.Property(e => e.AgentDividendType).HasColumnName("agent_dividend_type");
+
             entity.Property(e => e.ApiKey)
                 .IsRequired()
                 .HasMaxLength(64)
@@ -71,7 +73,11 @@ namespace TGS.GameProviders.Repositories.Entities.Configurations
                 .HasMaxLength(256)
                 .HasColumnName("description");
 
+            entity.Property(e => e.EnableAgentSms).HasColumnName("enable_agent_sms");
+
             entity.Property(e => e.EnableSms).HasColumnName("enable_sms");
+
+            entity.Property(e => e.EnableSmsRegisterFlow).HasColumnName("enable_sms_register_flow");
 
             entity.Property(e => e.LicenseeId).HasColumnName("licensee_id");
 
