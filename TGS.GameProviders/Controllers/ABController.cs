@@ -102,7 +102,7 @@ public class ABController : ControllerBase,
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<AllBetRoundDetailQuery, RoundDetailResult> getService,
         Guid roundId,
-        string language)
+        [FromQuery] string language)
         => await getService
             .GetAsync(new AllBetRoundDetailQuery
             {
