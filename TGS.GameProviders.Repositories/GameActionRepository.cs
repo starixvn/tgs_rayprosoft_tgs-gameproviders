@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.GameAction;
 using TGS.GameProviders.Domains;
@@ -19,7 +20,6 @@ namespace TGS.GameProviders.Repositories
 
         public IAsyncEnumerable<GameActionModel> GetGameActionsByRoundIdAsync(Guid roundId)
          => _context.GameActions
-                .AsAsyncEnumerable()
                 .Where(ga => ga.RoundId == roundId)
                 .Select(ga => new GameActionModel(
                     ga.Id,
@@ -39,6 +39,7 @@ namespace TGS.GameProviders.Repositories
                     ga.RecordedOn,
                     ga.SentOn,
                     ga.ExtraData,
-                    ga.JackpotContribution));
+                    ga.JackpotContribution))
+                .AsAsyncEnumerable();
     }
 }
