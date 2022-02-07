@@ -9,9 +9,9 @@ namespace TGS.GameProviders.Core.Habanero.ApplicationServices;
 
 internal class HabaneroKickPlayerCommandService : ICommandService<HabaneroKickPlayerCommand>
 {
+    private readonly IHabaneroApiClient _client;
     private readonly ILogger<HabaneroKickPlayerCommandService> _logger;
     private readonly IHabaneroService _service;
-    private readonly IHabaneroApiClient _client;
 
     public HabaneroKickPlayerCommandService(
         ILogger<HabaneroKickPlayerCommandService> logger,

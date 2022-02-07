@@ -186,7 +186,6 @@ namespace TGS.GameProviders
                     var knownProxies = config.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
                     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
 
-
                     // Replace with IP of your proxy/load balancer
                     foreach (var knownProxie in knownProxies)
                         options.KnownProxies.Add(IPAddress.Parse(knownProxie));
@@ -213,7 +212,11 @@ namespace TGS.GameProviders
                     options.ConnectionString = configuration.GetConnectionString("RedisConfigurationString");
                 })
                 .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
-                .AddGameProvidersCore();
+                .AddGameProviders((options, sp) =>
+                {
+                    var configuration = sp.GetRequiredService<IConfiguration>();
+                    options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameProvidersQueryServerBaseUrl");
+                });
 
             services
                 .AddAutoMapper(config =>

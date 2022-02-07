@@ -9,7 +9,6 @@ using TGS.GameProviders.Core.Jili.Models;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
@@ -28,7 +27,7 @@ public class JiliRoundDetailGetServiceUnitTest
         var fakeRoundRepository = Substitute.For<IRoundRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakePlayerService = Substitute.For<IPlayerService>();
         var fakeService = Substitute.For<IJiliService>();
         var fakeMerchantMapper = Substitute.For<IJiliMerchantMapper>();
         var fakeApiClient = Substitute.For<IJiliApiClient>();
@@ -54,7 +53,7 @@ public class JiliRoundDetailGetServiceUnitTest
             SecretKey = "SecretKey"
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -140,7 +139,7 @@ public class JiliRoundDetailGetServiceUnitTest
         _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
         _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
         _ = fakeGameRepository.GetAsync(roundModel.GameId).Returns(Task.FromResult(gameModel));
-        _ = fakePlayerRepository.GetAsync(roundModel.PlayerCode).Returns(Task.FromResult(playerModel));
+        _ = fakePlayerService.GetAsync(roundModel.PlayerCode).Returns(Task.FromResult(playerModel));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, playerModel.BrandCode).Returns(merchant);
         _ = fakeService
@@ -187,7 +186,7 @@ public class JiliRoundDetailGetServiceUnitTest
             fakeRoundRepository,
             fakeGameProviderRepository,
             fakeGameRepository,
-            fakePlayerRepository,
+            fakePlayerService,
             fakeService,
             fakeMerchantMapper,
             fakeApiClient);

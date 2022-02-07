@@ -1,9 +1,8 @@
 ﻿using System;
-using TGS.GameProviders.Domains;
 
-namespace TGS.GameProviders.Core.Repositories.Models.Player
+namespace TGS.GameProviders.Core
 {
-    public record PlayerModel(
+    public record PlayerInfo(
         Guid ResellerId,
         string ResellerCode,
         Guid LicenseeId,

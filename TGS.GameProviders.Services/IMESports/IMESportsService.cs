@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.IMESports;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
@@ -16,7 +16,7 @@ namespace TGS.GameProviders.Services.IMESports
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameRepository _gameRepository;
         private readonly ILogger<IMESportsService> _logger;
-        private readonly IPlayerRepository _playerRepository;
+        private readonly IPlayerService _playerService;
         private readonly ISettingRepository _settingRepository;
 
         public IMESportsService(
@@ -24,13 +24,13 @@ namespace TGS.GameProviders.Services.IMESports
             ISettingRepository settingRepository,
             IGameProviderRepository gameProviderRepository,
             IGameRepository gameRepository,
-            IPlayerRepository playerRepository)
+            IPlayerService playerService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
-            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+            _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         }
 
         public async ValueTask<GameModel> GetGameAsync(int gameId)
@@ -60,8 +60,8 @@ namespace TGS.GameProviders.Services.IMESports
             return isCultureCode ? gameProviderCultureCode : "EN";
         }
 
-        public async ValueTask<PlayerModel> GetPlayerAsync(string playerCode)
-            => await _playerRepository.GetAsync(playerCode).ConfigureAwait(false);
+        public async ValueTask<PlayerInfo> GetPlayerAsync(string playerCode)
+            => await _playerService.GetAsync(playerCode).ConfigureAwait(false);
 
         public async ValueTask<IMESportsConfiguration> GetSettingConfigurationAsync()
                     => await _settingRepository

@@ -10,21 +10,21 @@ namespace TGS.GameProviders.Core.Jili.ApplicationServices;
 
 internal class JiliRoundDetailGetService : IGetService<JiliRoundDetailQuery, RoundDetailResult>
 {
-    private readonly ILogger<JiliRoundDetailGetService> _logger;
-    private readonly IRoundRepository _roundRepository;
+    private readonly IJiliApiClient _client;
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IGameRepository _gameRepository;
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IJiliService _service;
+    private readonly ILogger<JiliRoundDetailGetService> _logger;
     private readonly IJiliMerchantMapper _merchantMapper;
-    private readonly IJiliApiClient _client;
+    private readonly IPlayerService _playerService;
+    private readonly IRoundRepository _roundRepository;
+    private readonly IJiliService _service;
 
     public JiliRoundDetailGetService(
         ILogger<JiliRoundDetailGetService> logger,
         IRoundRepository roundRepository,
         IGameProviderRepository gameProviderRepository,
         IGameRepository gameRepository,
-        IPlayerRepository playerRepository,
+        IPlayerService playerService,
         IJiliService service,
         IJiliMerchantMapper merchantMapper,
         IJiliApiClient client)
@@ -33,7 +33,7 @@ internal class JiliRoundDetailGetService : IGetService<JiliRoundDetailQuery, Rou
         _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
         _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
-        _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _merchantMapper = merchantMapper ?? throw new ArgumentNullException(nameof(merchantMapper));
         _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -61,7 +61,7 @@ internal class JiliRoundDetailGetService : IGetService<JiliRoundDetailQuery, Rou
             throw new Exception($"This game Id could not be found.{roundModel.GameId}");
         }
 
-        var playerModel = await _playerRepository.GetAsync(roundModel.PlayerCode).ConfigureAwait(false);
+        var playerModel = await _playerService.GetAsync(roundModel.PlayerCode).ConfigureAwait(false);
         if (playerModel == null)
         {
             throw new Exception($"This player could not be found.{roundModel.PlayerCode}");

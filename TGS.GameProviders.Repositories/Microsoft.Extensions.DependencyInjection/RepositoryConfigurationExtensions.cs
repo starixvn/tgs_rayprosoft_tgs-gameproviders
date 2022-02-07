@@ -27,8 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IGameProviderRepository, GameProviderRepository>()
                 .AddTransient<ISettingRepository, SettingRepository>()
                 .AddTransient<IGameRepository, GameRepository>()
-                .AddTransient<IBrandRepository, BrandRepository>()
-                .AddTransient<IPlayerRepository, PlayerRepository>();
+                .AddTransient<IBrandRepository, BrandRepository>();
         }
     }
 }

@@ -15,26 +15,26 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
         private readonly IBigGamingApiClient _client;
         private readonly IGameRepository _gameRepository;
         private readonly ILogger<BigGamingKickPlayerCommandService> _logger;
-        private readonly IPlayerRepository _playerRepository;
+        private readonly IPlayerService _playerService;
         private readonly IBigGamingService _service;
 
         public BigGamingKickPlayerCommandService(
             ILogger<BigGamingKickPlayerCommandService> logger,
             IBigGamingApiClient client,
             IBigGamingService service,
-            IPlayerRepository playerRepository,
+            IPlayerService playerService,
             IGameRepository gameRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
-            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+            _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         }
 
         public async ValueTask ExecuteAsync(BigGamingKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            var playerModel = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
             if (playerModel == null)
             {
                 throw new Exception($"The player does not exist.{command.PlayerCode}");

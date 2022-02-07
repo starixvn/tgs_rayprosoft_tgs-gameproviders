@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Player;
+
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
@@ -18,7 +18,7 @@ public interface IHabaneroService
 
     ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode);
 
-    ValueTask<PlayerModel> GetPlayerAsync(string playerCode);
+    ValueTask<PlayerInfo> GetPlayerAsync(string playerCode);
 
     ValueTask<HabaneroConfiguration> GetSettingConfigurationAsync();
 }

@@ -7,11 +7,11 @@ namespace TGS.GameProviders.Client
 {
     public interface IGameProvidersClient
     {
+        ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl);
+
         ValueTask<Uri?> GameUrlByAsiaGamingAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl, decimal playerBalance);
 
         ValueTask<Uri?> GameUrlByBetConstructAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl, string lobbyDomain);
-
-        ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl);
 
         ValueTask KickPlayerAsync(string gameProviderCode, string playerCode);
 

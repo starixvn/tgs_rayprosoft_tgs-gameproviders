@@ -12,19 +12,19 @@ namespace TGS.GameProviders.Core.JDB.ApplicationServices;
 
 internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, RoundDetailResult>
 {
-    private readonly ILogger<JDBRoundDetailGetService> _logger;
-    private readonly IRoundRepository _roundRepository;
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IGameProviderRepository _gameProviderRepository;
-    private readonly IGameRepository _gameRepository;
-    private readonly IJDBService _service;
     private readonly IJDBAgentMapper _agentMapper;
     private readonly IJDBApiClient _client;
+    private readonly IGameProviderRepository _gameProviderRepository;
+    private readonly IGameRepository _gameRepository;
+    private readonly ILogger<JDBRoundDetailGetService> _logger;
+    private readonly IPlayerService _playerService;
+    private readonly IRoundRepository _roundRepository;
+    private readonly IJDBService _service;
 
     public JDBRoundDetailGetService(
         ILogger<JDBRoundDetailGetService> logger,
         IRoundRepository roundRepository,
-        IPlayerRepository playerRepository,
+        IPlayerService playerService,
         IGameProviderRepository gameProviderRepository,
         IGameRepository gameRepository,
         IJDBService service,
@@ -33,7 +33,7 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
-        _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -51,7 +51,7 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
             throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        var playerModel = await _playerRepository.GetAsync(roundModel.PlayerCode).ConfigureAwait(false);
+        var playerModel = await _playerService.GetCacheAsync(roundModel.PlayerCode).ConfigureAwait(false);
         if (playerModel == null)
         {
             throw new Exception($"The player does not exist.{roundModel.PlayerCode}");

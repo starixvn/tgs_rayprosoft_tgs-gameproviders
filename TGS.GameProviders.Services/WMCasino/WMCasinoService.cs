@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Core.WMCasino;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -16,19 +16,19 @@ public class WMCasinoService : IWMCasinoService
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IGameRepository _gameRepository;
     private readonly ILogger<WMCasinoService> _logger;
-    private readonly IPlayerRepository _playerRepository;
+    private readonly IPlayerService _playerService;
     private readonly ISettingRepository _settingRepository;
 
     public WMCasinoService(
         ILogger<WMCasinoService> logger,
         ISettingRepository settingRepository,
-        IPlayerRepository playerRepository,
+        IPlayerService playerService,
         IGameProviderRepository gameProviderRepository,
         IGameRepository gameRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
-        _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         _gameProviderRepository =
             gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
@@ -51,8 +51,8 @@ public class WMCasinoService : IWMCasinoService
         return isCultureCode ? gameProviderCultureCode : "en_US";
     }
 
-    public async ValueTask<PlayerModel> GetPlayerAsync(string playerCode)
-        => await _playerRepository.GetAsync(playerCode).ConfigureAwait(false);
+    public async ValueTask<PlayerInfo> GetPlayerAsync(string playerCode)
+        => await _playerService.GetAsync(playerCode).ConfigureAwait(false);
 
     public async ValueTask<WMCasinoConfiguration> GetSettingConfigurationAsync()
         => await _settingRepository

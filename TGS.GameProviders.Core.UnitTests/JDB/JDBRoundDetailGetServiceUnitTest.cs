@@ -9,7 +9,6 @@ using TGS.GameProviders.Core.JDB.Models;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
@@ -25,7 +24,7 @@ public class JDBRoundDetailGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<JDBRoundDetailGetService>.Instance;
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakePlayerService = Substitute.For<IPlayerService>();
         var fakeRoundRepository = Substitute.For<IRoundRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
@@ -54,7 +53,7 @@ public class JDBRoundDetailGetServiceUnitTest
             Agents = new[] { agent }
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
          "TGS",
          Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -163,7 +162,7 @@ public class JDBRoundDetailGetServiceUnitTest
             .Returns(agent);
 
         fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
-        fakePlayerRepository.GetAsync(roundModel.PlayerCode).Returns(Task.FromResult(playerModel));
+        fakePlayerService.GetCacheAsync(roundModel.PlayerCode).Returns(Task.FromResult(playerModel));
         fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
         fakeGameRepository.GetAsync(roundModel.GameId).Returns(Task.FromResult(gameModel));
 
@@ -197,7 +196,7 @@ public class JDBRoundDetailGetServiceUnitTest
         var sut = new JDBRoundDetailGetService(
             fakeLogger,
             fakeRoundRepository,
-            fakePlayerRepository,
+            fakePlayerService,
             fakeGameProviderRepository,
             fakeGameRepository,
             fakeService,
