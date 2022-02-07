@@ -17,6 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddGameProvidersQueryServerClient(gameProvidersQueryServerClientOptions)
                 .AddSecurity()//Tgs.Core.Infrastructures.Security
                 .AddMemoryCache()
+                .AddTransient<IBrandService, BrandService>()
                 .AddTransient<IPlayerService, PlayerService>();
     }
 }

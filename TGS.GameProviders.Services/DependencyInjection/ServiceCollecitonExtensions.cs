@@ -51,7 +51,7 @@ using TGS.GameProviders.Services.WMCasino;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class GameProvidersServicesConfigurationExtensions
+    public static class ServiceCollecitonExtensions
     {
         public static IServiceCollection AddGameProvidersServices(
             this IServiceCollection services,

@@ -1,11 +1,12 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace TGS.GameProviders.Core.Repositories
+namespace TGS.GameProviders.Core
 {
-    public interface IBrandRepository
+    public interface IBrandService
     {
         ValueTask<Guid> GetBrandGameProviderConfigurationIdAsync(Guid gameProviderId, Guid brandId);
 
