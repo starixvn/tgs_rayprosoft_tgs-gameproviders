@@ -29,9 +29,8 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
         public async ValueTask ExecuteAsync(SabaKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-            var isTestEnv = _service.IsTestEnvironment(configuration.TestEnvironments, command.EnvironmentName);
 
-            var playerId = _utility.ToSabaPlayerId(command.PlayerCode, isTestEnv);
+            var playerId = _utility.ToSabaPlayerId(command.PlayerCode, configuration.IsTestEnvironment);
 
             var request = new SabaKickUserRequest
             {

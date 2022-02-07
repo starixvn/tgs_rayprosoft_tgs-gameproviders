@@ -40,7 +40,7 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
             var response = await GetGameUrlAsync(gameProviderId, configuration, query)
                 .ConfigureAwait(false);
 
-            if (response is null || response.ErrorCode is not SabaGetGameUrlApiError.Ok)
+            if (response?.ErrorCode is not SabaGetGameUrlApiError.Ok)
             {
                 return null;
             }
@@ -61,7 +61,7 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
 
         private async ValueTask<SabaGameUrlResponse> GetGameUrlAsync(Guid gameProviderId, SabaConfiguration configuration, SabaGameUrlQuery query)
         {
-            var isTestEnv = _service.IsTestEnvironment(configuration.TestEnvironments, query.EnvironmentName);
+            var isTestEnv = configuration.IsTestEnvironment;
 
             var playerCode = query.PlayerCode;
             var playerId = _utility.ToSabaPlayerId(playerCode, isTestEnv);
@@ -83,7 +83,7 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
             }
 
             var created = await _playerService
-                .CreateMemberAsync(gameProviderId, configuration, playerId, query.CurrencyCode, isTestEnv)
+                .CreateMemberAsync(gameProviderId, configuration, playerId, query.CurrencyCode)
                 .ConfigureAwait(false);
 
             return !created ?

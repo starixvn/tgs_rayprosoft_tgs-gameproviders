@@ -1,7 +1,3 @@
-﻿namespace TGS.GameProviders.Core.Saba.ApplicationServices
-{
-    public record SabaGameUrlQuery : GameUrlQuery
-    {
-        public string EnvironmentName { get; init; } = default!;
-    }
-}
+﻿namespace TGS.GameProviders.Core.Saba.ApplicationServices;
+
+public record SabaGameUrlQuery : GameUrlQuery;

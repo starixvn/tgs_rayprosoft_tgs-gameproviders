@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
@@ -21,16 +20,13 @@ namespace TGS.GameProviders.Controllers
     {
         private readonly ILogger<SABAController> _logger;
         private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public SABAController(
             ILogger<SABAController> logger,
-            IMapper mapper,
-            IWebHostEnvironment webHostEnvironment)
+            IMapper mapper)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
         }
 
         /// <summary>
@@ -61,11 +57,7 @@ namespace TGS.GameProviders.Controllers
             [FromServices] IGetService<SabaGameUrlQuery, GameUrlResult> getService,
             GameUrlRequest request)
         {
-            var map = _mapper.Map<SabaGameUrlQuery>(request);
-            var query = map with
-            {
-                EnvironmentName = _webHostEnvironment.EnvironmentName
-            };
+            var query = _mapper.Map<SabaGameUrlQuery>(request);
 
             var result = await getService
                 .GetAsync(query)
@@ -91,8 +83,7 @@ namespace TGS.GameProviders.Controllers
             string playerCode)
             => commandService.ExecuteAsync(new SabaKickPlayerCommand
             {
-                PlayerCode = playerCode,
-                EnvironmentName = _webHostEnvironment.EnvironmentName
+                PlayerCode = playerCode
             });
 
         /// <summary>
