@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
@@ -14,7 +13,5 @@ namespace TGS.GameProviders.Core.Saba
         ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode);
 
         ValueTask<SabaConfiguration> GetSettingConfigurationAsync();
-
-        bool IsTestEnvironment(IEnumerable<string> testEnvironments, string currentEnvironmentName);
     }
 }

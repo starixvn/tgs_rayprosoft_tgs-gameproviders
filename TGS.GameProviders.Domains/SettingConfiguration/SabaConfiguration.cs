@@ -12,6 +12,6 @@ namespace TGS.GameProviders.Domains.SettingConfiguration
 
         public Uri ApiUrl { get; init; } = default!;
 
-        public string[] TestEnvironments { get; init; } = Array.Empty<string>();
+        public bool IsTestEnvironment { get; init; } = false;
     }
 }

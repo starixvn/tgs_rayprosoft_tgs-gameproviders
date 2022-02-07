@@ -10,7 +10,6 @@ namespace TGS.GameProviders.Core.Saba
             Guid gameProviderId,
             SabaConfiguration configuration,
             string sabaPlayerId,
-            string currencyCode,
-            bool isTestEnvironment);
+            string currencyCode);
     }
 }

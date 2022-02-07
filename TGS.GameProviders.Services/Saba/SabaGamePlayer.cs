@@ -27,11 +27,10 @@ namespace TGS.GameProviders.Services.Saba
             Guid gameProviderId,
             SabaConfiguration configuration,
             string sabaPlayerId,
-            string currencyCode,
-            bool isTestEnvironment)
+            string currencyCode)
         {
             var oddsType = GetOddsType(currencyCode);
-            var gameProviderCurrencyCode = isTestEnvironment ?
+            var gameProviderCurrencyCode = configuration.IsTestEnvironment ?
                 "20" :
                 await _service
                     .GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)

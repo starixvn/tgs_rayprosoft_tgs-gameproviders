@@ -17,9 +17,8 @@ namespace TGS.GameProviders.Repositories
             TgsContext context)
             => _context = context ?? throw new ArgumentNullException(nameof(context));
 
-        public ValueTask<GameProviderModel?> GetAsync(string gameProviderCode)
-            => _context.GameProviders
-            .ToAsyncEnumerable()
+        public async ValueTask<GameProviderModel?> GetAsync(string gameProviderCode)
+            => await _context.GameProviders
             .Where(x => x.Code == gameProviderCode)
             .Select(x => new GameProviderModel(
                 x.Id,
@@ -36,11 +35,11 @@ namespace TGS.GameProviders.Repositories
                 x.Name,
                 x.Localization
                 ))
-           .FirstOrDefaultAsync();
+           .FirstOrDefaultAsync()
+           .ConfigureAwait(false);
 
-        public ValueTask<GameProviderModel?> GetAsync(Guid gameProviderId)
-            => _context.GameProviders
-            .ToAsyncEnumerable()
+        public async ValueTask<GameProviderModel?> GetAsync(Guid gameProviderId)
+            => await _context.GameProviders
             .Where(x => x.Id == gameProviderId)
             .Select(x => new GameProviderModel(
                 x.Id,
@@ -57,13 +56,13 @@ namespace TGS.GameProviders.Repositories
                 x.Name,
                 x.Localization
                 ))
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync()
+            .ConfigureAwait(false);
 
         public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId)
         {
             var data = await _context.GameProviderConfigs
-                .ToAsyncEnumerable()
-                .FirstOrDefaultAsync(gpc => gpc.Id == gameProviderConfigurationId)
+                .FirstAsync(gpc => gpc.Id == gameProviderConfigurationId)
                 .ConfigureAwait(false);
 
             return (data.DesktopEndpoint, data.MobileEndpoint);
@@ -73,8 +72,9 @@ namespace TGS.GameProviders.Repositories
                     Guid gameProviderId, string cultureCode)
         {
             var gameProviderLanguage = await _context.GameProviderLanguages
-                .ToAsyncEnumerable()
-                .FirstOrDefaultAsync(x => x.GameProviderId == gameProviderId && x.CultureCode == cultureCode)
+                .FirstOrDefaultAsync(x =>
+                    x.GameProviderId == gameProviderId &&
+                    x.CultureCode == cultureCode)
                 .ConfigureAwait(false);
 
             return gameProviderLanguage == null
@@ -86,8 +86,9 @@ namespace TGS.GameProviders.Repositories
             Guid gameProviderId, string currencyCode)
         {
             var gameProviderCurrency = await _context.GameProviderCurrencies
-                .ToAsyncEnumerable()
-                .FirstOrDefaultAsync(x => x.GameProviderId == gameProviderId && x.CurrencyCode == currencyCode)
+                .FirstOrDefaultAsync(x =>
+                    x.GameProviderId == gameProviderId &&
+                    x.CurrencyCode == currencyCode)
                 .ConfigureAwait(false);
 
             return gameProviderCurrency == null
@@ -98,9 +99,9 @@ namespace TGS.GameProviders.Repositories
         public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
         {
             var data = await _context.GameProviders
-                .AsQueryable()
-                .Where(x => x.Code == gameProviderCode)
-                .FirstAsync().ConfigureAwait(false);
+                .FirstAsync(x => x.Code == gameProviderCode)
+                .ConfigureAwait(false);
+
             return data.Id;
         }
     }
