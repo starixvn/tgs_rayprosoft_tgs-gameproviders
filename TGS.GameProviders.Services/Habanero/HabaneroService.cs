@@ -13,7 +13,7 @@ namespace TGS.GameProviders.Services.Habanero
 {
     internal class HabaneroService : IHabaneroService
     {
-        private readonly IBrandRepository _brandRepository;
+        private readonly IBrandService _brandService;
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameRepository _gameRepository;
         private readonly ILogger<HabaneroService> _logger;
@@ -22,14 +22,14 @@ namespace TGS.GameProviders.Services.Habanero
 
         public HabaneroService(
             ILogger<HabaneroService> logger,
-            IBrandRepository brandRepository,
+            IBrandService brandService,
             IGameProviderRepository gameProviderRepository,
             IGameRepository gameRepository,
             IPlayerService playerService,
             ISettingRepository settingRepository)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
+            _brandService = brandService ?? throw new ArgumentNullException(nameof(brandService));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
             _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
@@ -41,7 +41,7 @@ namespace TGS.GameProviders.Services.Habanero
 
         public async ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType)
         {
-            var configurationId = await _brandRepository
+            var configurationId = await _brandService
                 .GetBrandGameProviderConfigurationIdAsync(gameProviderId, brandId)
                 .ConfigureAwait(false);
 

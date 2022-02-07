@@ -6,7 +6,7 @@ using TGS.GameProviders.Repositories.Entities;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class RepositoryConfigurationExtensions
+    public static class ServiceCollecitonExtensions
     {
         public static IServiceCollection AddDbBetRepository(this IServiceCollection services,
             Action<IServiceProvider, DbContextOptionsBuilder> efConfigure)
@@ -26,8 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return services
                 .AddTransient<IGameProviderRepository, GameProviderRepository>()
                 .AddTransient<ISettingRepository, SettingRepository>()
-                .AddTransient<IGameRepository, GameRepository>()
-                .AddTransient<IBrandRepository, BrandRepository>();
+                .AddTransient<IGameRepository, GameRepository>();
         }
     }
 }
