@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Core.Saba;
 using TGS.GameProviders.Core.Saba.ApplicationServices;
 using TGS.GameProviders.Core.Saba.Models;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.UnitTests.Saba;
@@ -26,7 +20,7 @@ public class SabaKickPlayerCommandServiceUnitTest
         var fakeService = Substitute.For<ISabaService>();
         var fakeApiClient = Substitute.For<ISabaApiClient>();
         var fakeUtility = Substitute.For<ISabaUtility>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakePlayerService = Substitute.For<IPlayerService>();
 
         var configuration = new SabaConfiguration
         {
@@ -38,7 +32,7 @@ public class SabaKickPlayerCommandServiceUnitTest
             IsTestEnvironment = false
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -56,13 +50,13 @@ public class SabaKickPlayerCommandServiceUnitTest
             PlayerCode = playerModel.PlayerCode
         };
 
-        fakePlayerRepository.GetAsync(playerModel.PlayerCode).Returns(Task.FromResult(playerModel));
+        fakePlayerService.GetCacheAsync(playerModel.PlayerCode).Returns(Task.FromResult(playerModel));
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         fakeUtility.ToSabaPlayerId(playerModel.PlayerCode, configuration.IsTestEnvironment).Returns(playerModel.PlayerCode);
 
         var sut = new SabaKickPlayerCommandService(
             fakeLogger,
-            fakePlayerRepository,
+            fakePlayerService,
             fakeService,
             fakeUtility,
             fakeApiClient);
@@ -87,7 +81,7 @@ public class SabaKickPlayerCommandServiceUnitTest
         var fakeService = Substitute.For<ISabaService>();
         var fakeApiClient = Substitute.For<ISabaApiClient>();
         var fakeUtility = Substitute.For<ISabaUtility>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakePlayerService = Substitute.For<IPlayerService>();
 
         var configuration = new SabaConfiguration
         {
@@ -99,7 +93,7 @@ public class SabaKickPlayerCommandServiceUnitTest
             IsTestEnvironment = true
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -119,13 +113,13 @@ public class SabaKickPlayerCommandServiceUnitTest
 
         var playerId = $"{playerModel.PlayerCode}_test";
 
-        fakePlayerRepository.GetAsync(playerModel.PlayerCode).Returns(Task.FromResult(playerModel));
+        fakePlayerService.GetCacheAsync(playerModel.PlayerCode).Returns(Task.FromResult(playerModel));
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         fakeUtility.ToSabaPlayerId(playerModel.PlayerCode, configuration.IsTestEnvironment).Returns(playerId);
 
         var sut = new SabaKickPlayerCommandService(
             fakeLogger,
-            fakePlayerRepository,
+            fakePlayerService,
             fakeService,
             fakeUtility,
             fakeApiClient);

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
@@ -10,7 +9,6 @@ using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameAction;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Core.Saba;
 using TGS.GameProviders.Core.Saba.ApplicationServices;
@@ -45,7 +43,7 @@ public class SabaRoundDetailGetServiceUnitTest
             IsTestEnvironment = false
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
          "TGS",
          Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
