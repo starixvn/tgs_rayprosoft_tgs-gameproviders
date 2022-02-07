@@ -67,6 +67,26 @@ public class HABAController : ControllerBase,
     }
 
     /// <summary>
+    /// Kicks the player asynchronous.
+    /// </summary>
+    /// <param name="commandService">The command service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Delete haba/kickplayer/4ucmqplxb029
+    /// </remarks>
+    [HttpDelete("kickplayer/{playerCode}")]
+    public ValueTask KickPlayerAsync(
+        [FromServices] ICommandService<HabaneroKickPlayerCommand> commandService,
+        string playerCode)
+        => commandService.ExecuteAsync(new()
+        {
+            PlayerCode = playerCode
+        });
+
+    /// <summary>
     /// Rounds the detail asynchronous.
     /// </summary>
     /// <param name="getService">The get service.</param>
@@ -92,24 +112,4 @@ public class HABAController : ControllerBase,
 
         return result ?? null;
     }
-
-    /// <summary>
-    /// Kicks the player asynchronous.
-    /// </summary>
-    /// <param name="commandService">The command service.</param>
-    /// <param name="playerCode">The player code.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Delete haba/kickplayer/4ucmqplxb029
-    /// </remarks>
-    [HttpDelete("kickplayer/{playerCode}")]
-    public ValueTask KickPlayerAsync(
-        [FromServices] ICommandService<HabaneroKickPlayerCommand> commandService,
-        string playerCode)
-        => commandService.ExecuteAsync(new()
-        {
-            PlayerCode = playerCode
-        });
 }

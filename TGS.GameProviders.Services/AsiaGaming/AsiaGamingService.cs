@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.Game;
@@ -15,21 +16,21 @@ internal class AsiaGamingService : IAsiaGamingService
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IGameRepository _gameRepository;
     private readonly ILogger<AsiaGamingService> _logger;
-    private readonly IPlayerRepository _playerRepository;
+    private readonly IPlayerService _playerService;
     private readonly ISettingRepository _settingRepository;
 
     public AsiaGamingService(
         ILogger<AsiaGamingService> logger,
         ISettingRepository settingRepository,
         IGameProviderRepository gameProviderRepository,
-        IPlayerRepository playerRepository,
+        IPlayerService playerService,
         IGameRepository gameRepository,
         IBrandRepository brandRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
         _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-        _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
     }

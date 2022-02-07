@@ -9,7 +9,6 @@ using TGS.GameProviders.Core.JDB.ApplicationServices;
 using TGS.GameProviders.Core.JDB.Models;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.JDB;
@@ -23,7 +22,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<JDBGameUrlGetService>.Instance;
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakePlayerService = Substitute.For<IPlayerService>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeService = Substitute.For<IJDBService>();
         var fakeAgentMapper = Substitute.For<IJDBAgentMapper>();
@@ -70,7 +69,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
             null,
             "JDB");
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -104,7 +103,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
         fakeAgentMapper.GetAgent(configuration.Agents, playerModel.DefaultWalletCurrencyCode)
             .Returns(agent);
 
-        fakePlayerRepository.GetAsync(query.PlayerCode).Returns(Task.FromResult(playerModel));
+        fakePlayerService.GetCacheAsync(query.PlayerCode).Returns(Task.FromResult(playerModel));
         fakeGameRepository.GetAsync(query.GameId.Value).Returns(Task.FromResult(gameModel));
 
         var items = gameModel.GameExternalId.Split('_');
@@ -131,7 +130,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
 
         var sut = new JDBGameUrlGetService(
             fakeLogger,
-            fakePlayerRepository,
+            fakePlayerService,
             fakeGameRepository,
             fakeService,
             fakeAgentMapper,

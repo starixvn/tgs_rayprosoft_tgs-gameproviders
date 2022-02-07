@@ -10,23 +10,23 @@ namespace TGS.GameProviders.Core.JDB.ApplicationServices;
 
 internal class JDBGameUrlGetService : IGetService<JDBGameUrlQuery, GameUrlResult>
 {
-    private readonly ILogger<JDBGameUrlGetService> _logger;
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IGameRepository _gameRepository;
-    private readonly IJDBService _service;
     private readonly IJDBAgentMapper _agentMapper;
     private readonly IJDBApiClient _client;
+    private readonly IGameRepository _gameRepository;
+    private readonly ILogger<JDBGameUrlGetService> _logger;
+    private readonly IPlayerService _playerService;
+    private readonly IJDBService _service;
 
     public JDBGameUrlGetService(
         ILogger<JDBGameUrlGetService> logger,
-        IPlayerRepository playerRepository,
+        IPlayerService playerService,
         IGameRepository gameRepository,
         IJDBService service,
         IJDBAgentMapper agentMapper,
         IJDBApiClient client)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _agentMapper = agentMapper ?? throw new ArgumentNullException(nameof(agentMapper));
@@ -37,7 +37,7 @@ internal class JDBGameUrlGetService : IGetService<JDBGameUrlQuery, GameUrlResult
         JDBGameUrlQuery query,
         CancellationToken cancellationToken = default)
     {
-        var playerModel = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
+        var playerModel = await _playerService.GetCacheAsync(query.PlayerCode).ConfigureAwait(false);
         var gameModel = await _gameRepository.GetAsync(query.GameId!.Value).ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);

@@ -12,11 +12,11 @@ namespace TGS.GameProviders.Core.Card365.ApplicationServices;
 
 internal class Card365RoundDetailGetService : IGetService<Card365RoundDetailQuery, RoundDetailResult>
 {
-    private readonly ILogger<Card365RoundDetailGetService> _logger;
-    private readonly IRoundRepository _roundRepository;
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IGameRepository _gameRepository;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
+    private readonly ILogger<Card365RoundDetailGetService> _logger;
+    private readonly IRoundRepository _roundRepository;
 
     public Card365RoundDetailGetService(
         ILogger<Card365RoundDetailGetService> logger,

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
@@ -9,9 +6,6 @@ using NUnit.Framework;
 using TGS.GameProviders.Core.AllBet;
 using TGS.GameProviders.Core.AllBet.ApplicationServices;
 using TGS.GameProviders.Core.AllBet.Models;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Player;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.AllBet;
 
@@ -27,7 +21,7 @@ public class AllBetKickPlayerCommandServiceUnitTest
         var fakeService = Substitute.For<IAllBetService>();
         var fakeApiClient = Substitute.For<IAllBetApiClient>();
         var fakeAgentMapper = Substitute.For<IAllBetAgentMapper>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakePlayerService = Substitute.For<IPlayerService>();
 
         var agent = new AllBetAgent
         {
@@ -55,7 +49,7 @@ public class AllBetKickPlayerCommandServiceUnitTest
             }
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -75,7 +69,7 @@ public class AllBetKickPlayerCommandServiceUnitTest
             PlayerCode = playerModel.PlayerCode
         };
 
-        fakePlayerRepository.GetAsync(playerModel.PlayerCode).Returns(Task.FromResult(playerModel));
+        fakePlayerService.GetCacheAsync(playerModel.PlayerCode).Returns(Task.FromResult(playerModel));
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         fakeService.ToAllBetPlayerId(playerModel.PlayerCode, agent.Suffix).Returns(allBetPlayerId);
 
@@ -88,7 +82,7 @@ public class AllBetKickPlayerCommandServiceUnitTest
 
         var sut = new AllBetKickPlayerCommandService(
             fakeLogger,
-            fakePlayerRepository,
+            fakePlayerService,
             fakeService,
             fakeAgentMapper,
             fakeApiClient);

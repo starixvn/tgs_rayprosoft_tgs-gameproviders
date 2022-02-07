@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.IMESports.Models;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -106,10 +105,10 @@ namespace TGS.GameProviders.Core.IMESports.ApplicationServices
         private async ValueTask<IMESportsHistoryResult> GetRoundResultAsync(
                     IMESportsConfiguration configuration,
             RoundModel roundModel,
-            PlayerModel playerModel,
+            PlayerInfo playerInfo,
             string cultureCode)
         {
-            var merchant = _merchantMapper.GetBrandMerchant(configuration.BrandMerchants, playerModel.BrandCode);
+            var merchant = _merchantMapper.GetBrandMerchant(configuration.BrandMerchants, playerInfo.BrandCode);
 
             var gameProviderCultureCode = await _service
                 .GetGameProviderLanguageCodeAsync(roundModel.GameProviderId, cultureCode)

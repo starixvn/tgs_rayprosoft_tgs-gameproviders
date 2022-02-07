@@ -10,8 +10,8 @@ namespace TGS.GameProviders.Services.Card365;
 
 internal class Card365Service : ICard365Service
 {
-    private readonly ILogger<Card365Service> _logger;
     private readonly IGameProviderRepository _gameProviderRepository;
+    private readonly ILogger<Card365Service> _logger;
     private readonly ISettingRepository _settingRepository;
 
     public Card365Service(

@@ -11,12 +11,12 @@ namespace TGS.GameProviders.Core.Jili.ApplicationServices;
 
 internal class JiliGameUrlGetService : IGetService<JiliGameUrlQuery, GameUrlResult>
 {
-    private readonly ILogger<JiliGameUrlGetService> _logger;
-    private readonly IGameRepository _gameRepository;
-    private readonly ITokenProvider _tokenProvider;
-    private readonly IJiliService _service;
-    private readonly IJiliMerchantMapper _merchantMapper;
     private readonly IJiliApiClient _client;
+    private readonly IGameRepository _gameRepository;
+    private readonly ILogger<JiliGameUrlGetService> _logger;
+    private readonly IJiliMerchantMapper _merchantMapper;
+    private readonly IJiliService _service;
+    private readonly ITokenProvider _tokenProvider;
 
     public JiliGameUrlGetService(
         ILogger<JiliGameUrlGetService> logger,

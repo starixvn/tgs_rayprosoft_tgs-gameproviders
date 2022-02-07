@@ -5,12 +5,12 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
 using TGS.GameProviders.Core.AsiaGaming.Models;
 using TGS.GameProviders.Core.BetConstruct;
 using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.AsiaGaming;
@@ -172,7 +172,7 @@ namespace TGS.GameProviders.Client.IntegrationTests
                 null,
                 "AG");
 
-            var playerModel = new PlayerModel(
+            var playerModel = new PlayerInfo(
                 Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
                 "TGS",
                 Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -183,7 +183,7 @@ namespace TGS.GameProviders.Client.IntegrationTests
                 "4ucmqplxb029",
                 Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
                 "CNY",
-                PlayerStatus.Enabled);
+                Core.PlayerStatus.Enabled);
 
             var query = new AsiaGamingGameUrlQuery
             {

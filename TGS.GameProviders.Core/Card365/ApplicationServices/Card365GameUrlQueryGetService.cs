@@ -9,23 +9,22 @@ using Tgs.Core.Infrastructures.Security;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Card365.Model;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Player;
 
 namespace TGS.GameProviders.Core.Card365.ApplicationServices;
 
 internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, GameUrlResult>
 {
-    private readonly ILogger<Card365GameUrlQueryGetService> _logger;
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IGameRepository _gameRepository;
-    private readonly ICard365Service _service;
     private readonly ICard365AgentMapper _agentMapper;
     private readonly ICard365ApiClient _client;
+    private readonly IGameRepository _gameRepository;
+    private readonly ILogger<Card365GameUrlQueryGetService> _logger;
+    private readonly IPlayerService _playerService;
+    private readonly ICard365Service _service;
     private readonly ITokenProvider _tokenProvider;
 
     public Card365GameUrlQueryGetService(
         ILogger<Card365GameUrlQueryGetService> logger,
-        IPlayerRepository playerRepository,
+        IPlayerService playerService,
         IGameRepository gameRepository,
         ICard365Service service,
         ICard365AgentMapper agentMapper,
@@ -33,7 +32,7 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
         ITokenProvider tokenProvider)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _agentMapper = agentMapper ?? throw new ArgumentNullException(nameof(agentMapper));
@@ -45,7 +44,7 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
         Card365GameUrlQuery query,
         CancellationToken cancellationToken = default)
     {
-        var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
+        var player = await _playerService.GetCacheAsync(query.PlayerCode).ConfigureAwait(false);
         var game = await _gameRepository.GetAsync(query.GameId!.Value).ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
@@ -92,7 +91,7 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
         string website,
         string agentId,
         string accessKey,
-        PlayerModel player,
+        PlayerInfo player,
         string gameProviderLanguageCode,
         Guid loginRecordId)
     {
@@ -141,7 +140,7 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
         string website,
         string agentId,
         Guid gameProviderId,
-        PlayerModel playerModel)
+        PlayerInfo playerModel)
     {
         var gameProviderCurrencyCode = await _service
             .GetGameProviderCurrencyCodeAsync(gameProviderId, playerModel.DefaultWalletCurrencyCode)

@@ -6,8 +6,6 @@ using NUnit.Framework;
 using TGS.GameProviders.Core.Habanero;
 using TGS.GameProviders.Core.Habanero.ApplicationServices;
 using TGS.GameProviders.Core.Habanero.Models;
-using TGS.GameProviders.Core.Repositories.Models.Player;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.UnitTests.Habanero;
@@ -28,7 +26,7 @@ public class HabaneroKickPlayerCommandServiceUnitTest
             PlayerCode = "4ucmqplxb029"
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),

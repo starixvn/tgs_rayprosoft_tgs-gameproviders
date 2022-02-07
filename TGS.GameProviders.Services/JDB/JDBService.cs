@@ -10,9 +10,9 @@ namespace TGS.GameProviders.Services.JDB;
 
 internal class JDBService : IJDBService
 {
+    private readonly IGameProviderRepository _gameProviderRepository;
     private readonly ILogger<JDBService> _logger;
     private readonly ISettingRepository _settingRepository;
-    private readonly IGameProviderRepository _gameProviderRepository;
 
     public JDBService(
         ILogger<JDBService> logger,

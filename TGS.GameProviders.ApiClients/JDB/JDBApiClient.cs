@@ -19,8 +19,8 @@ namespace TGS.GameProviders.ApiClients.JDB;
 
 internal class JDBApiClient : IJDBApiClient
 {
-    private readonly ILogger<JDBApiClient> _logger;
     private readonly HttpClient _client;
+    private readonly ILogger<JDBApiClient> _logger;
     private readonly ITgsLog _tgsLog;
 
     public JDBApiClient(

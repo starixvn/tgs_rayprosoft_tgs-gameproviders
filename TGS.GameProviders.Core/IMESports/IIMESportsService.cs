@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.IMESports
@@ -19,7 +18,7 @@ namespace TGS.GameProviders.Core.IMESports
 
         ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode);
 
-        ValueTask<PlayerModel> GetPlayerAsync(string playerCode);
+        ValueTask<PlayerInfo> GetPlayerAsync(string playerCode);
 
         ValueTask<IMESportsConfiguration> GetSettingConfigurationAsync();
     }

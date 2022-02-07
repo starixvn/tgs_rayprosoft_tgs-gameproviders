@@ -9,7 +9,6 @@ using TGS.GameProviders.Core.Card365.ApplicationServices;
 using TGS.GameProviders.Core.Card365.Model;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.Card365;
@@ -27,7 +26,7 @@ public class Card365GameUrlQueryGetServiceUnitTest
         var fakeApiClient = Substitute.For<ICard365ApiClient>();
         var fakeAgentMapper = Substitute.For<ICard365AgentMapper>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakePlayerService = Substitute.For<IPlayerService>();
         var fakeTokenProvider = Substitute.For<ITokenProvider>();
 
         var token = "token";
@@ -73,7 +72,7 @@ public class Card365GameUrlQueryGetServiceUnitTest
             null,
             "365");
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -110,7 +109,7 @@ public class Card365GameUrlQueryGetServiceUnitTest
             .GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-        fakePlayerRepository.GetAsync(query.PlayerCode).Returns(Task.FromResult(playerModel));
+        fakePlayerService.GetCacheAsync(query.PlayerCode).Returns(Task.FromResult(playerModel));
         fakeGameRepository.GetAsync(query.GameId!.Value).Returns(Task.FromResult(gameModel));
         fakeAgentMapper.GetAgent(configuration.BrandAgents, playerModel.BrandCode).Returns(agent);
         fakeTokenProvider.EncryptAsync(query.LoginRecordId).Returns(ValueTask.FromResult(token));
@@ -135,7 +134,7 @@ public class Card365GameUrlQueryGetServiceUnitTest
 
         var sut = new Card365GameUrlQueryGetService(
             fakeLogger,
-            fakePlayerRepository,
+            fakePlayerService,
             fakeGameRepository,
             fakeService,
             fakeAgentMapper,

@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
 
 namespace TGS.GameProviders.Core.Avia.ApplicationServices
 {
@@ -12,26 +11,26 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
         private readonly IAviaApiClient _client;
         private readonly IAviaGamePlayerService _gamePlayer;
         private readonly ILogger<AviaPlayerBalanceGetService> _logger;
-        private readonly IPlayerRepository _playerRepository;
+        private readonly IPlayerService _playerService;
         private readonly IAviaService _service;
 
         public AviaPlayerBalanceGetService(
             ILogger<AviaPlayerBalanceGetService> logger,
             IAviaApiClient client,
             IAviaService service,
-            IPlayerRepository playerRepository,
+            IPlayerService playerService,
             IAviaGamePlayerService gamePlayer)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
-            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+            _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
             _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
         }
 
         public async ValueTask<decimal?> GetAsync(AviaPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
-            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            var playerModel = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
 
             if (playerModel == null)
             {
