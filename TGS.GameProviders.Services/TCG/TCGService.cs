@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.TCG;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -14,22 +14,22 @@ namespace TGS.GameProviders.Services.TCG
     internal class TCGService : ITCGService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly IGameRepository _gameRepository;
+        private readonly IGameService _gameService;
         private readonly ISettingRepository _settingRepository;
 
         public TCGService(
             ISettingRepository settingRepository,
             IGameProviderRepository gameProviderRepository,
-            IGameRepository gameRepository
+            IGameService gameService
             )
         {
             _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
 
-        public IAsyncEnumerable<GameModel> GetGameLotteryLobbyAsync(Guid gameProviderId)
-            => _gameRepository.GetGameList(gameProviderId, GameType.LotteryLobby);
+        public IAsyncEnumerable<GameInfo> GetGameLotteryLobbyAsync(Guid gameProviderId)
+            => _gameService.GetGameListAsync(gameProviderId, Core.GameType.LotteryLobby);
 
         public string GetGameProviderCode()
             => GameProviderType.TCG;

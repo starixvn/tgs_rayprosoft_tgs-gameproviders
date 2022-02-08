@@ -3,11 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Saba;
 using TGS.GameProviders.Core.Saba.ApplicationServices;
 using TGS.GameProviders.Core.Saba.Models;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.UnitTests.Saba;
@@ -37,7 +35,7 @@ public class SabaGameUrlGetServiceUnitTest
             IsTestEnvironment = false
         };
 
-        var gameModel = new GameModel(
+        var gameInfo = new GameInfo(
             600001,
             GameStatus.Active,
             "1",
@@ -72,8 +70,8 @@ public class SabaGameUrlGetServiceUnitTest
 
         var query = new SabaGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.GameType,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
             PlayerCode = playerModel.PlayerCode,
             CurrencyCode = "CNY",
@@ -85,7 +83,7 @@ public class SabaGameUrlGetServiceUnitTest
         };
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameModel.GameProviderId));
+        fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
         fakeUtility.ToSabaPlayerId(playerModel.PlayerCode, configuration.IsTestEnvironment).Returns(playerModel.PlayerCode);
         fakeApiClient
             .GetGameUrlAsync(
@@ -99,7 +97,7 @@ public class SabaGameUrlGetServiceUnitTest
                 Url = returnUrl.AbsoluteUri
             }));
 
-        fakeService.GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
+        fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         var gameUrl = new Uri($"{returnUrl.AbsoluteUri}?tsId={query.LoginRecordId}&lang={gameProviderLanguageCode}");
@@ -134,7 +132,7 @@ public class SabaGameUrlGetServiceUnitTest
             IsTestEnvironment = true
         };
 
-        var gameModel = new GameModel(
+        var gameInfo = new GameInfo(
             600001,
             GameStatus.Active,
             "1",
@@ -169,8 +167,8 @@ public class SabaGameUrlGetServiceUnitTest
 
         var query = new SabaGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.GameType,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
             PlayerCode = playerModel.PlayerCode,
             CurrencyCode = "CNY",
@@ -184,7 +182,7 @@ public class SabaGameUrlGetServiceUnitTest
         var playerId = $"{playerModel.PlayerCode}_test";
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameModel.GameProviderId));
+        fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
         fakeUtility.ToSabaPlayerId(playerModel.PlayerCode, configuration.IsTestEnvironment).Returns(playerId);
         fakeApiClient
             .GetGameUrlAsync(
@@ -198,7 +196,7 @@ public class SabaGameUrlGetServiceUnitTest
                 Url = returnUrl.AbsoluteUri
             }));
 
-        fakeService.GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
+        fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         var gameUrl = new Uri($"{returnUrl.AbsoluteUri}?tsId={query.LoginRecordId}&lang={gameProviderLanguageCode}");

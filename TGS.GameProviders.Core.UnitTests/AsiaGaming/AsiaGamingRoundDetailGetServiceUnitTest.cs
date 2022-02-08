@@ -9,7 +9,6 @@ using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
 using TGS.GameProviders.Core.AsiaGaming.Models;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains;
@@ -28,7 +27,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
         var fakeLogger = NullLogger<AsiaGamingRoundDetailGetService>.Instance;
         var fakeRoundRepository = Substitute.For<IRoundRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeGameService = Substitute.For<IGameService>();
         var fakeService = Substitute.For<IAsiaGamingService>();
 
         var configuration = new AsiaGamingConfiguration
@@ -163,7 +162,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             "AsiaGaming",
             null);
 
-        var gameModel = new GameModel(
+        var gameModel = new GameInfo(
             400013,
             GameStatus.Active,
             "AGIN_AGQ_BAC",
@@ -242,14 +241,14 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
 
         _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
         _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
-        _ = fakeGameRepository.GetAsync(roundModel.GameId).Returns(Task.FromResult(gameModel));
+        _ = fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
 
         var sut = new AsiaGamingRoundDetailGetService(
             fakeLogger,
             fakeRoundRepository,
             fakeGameProviderRepository,
-            fakeGameRepository,
+            fakeGameService,
             fakeService);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);

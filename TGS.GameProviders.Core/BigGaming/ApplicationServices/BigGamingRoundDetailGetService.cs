@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.BigGaming.Models;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
@@ -16,7 +15,7 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
         private readonly IBigGamingRoundDetailAnalyzeService _bigGamingRoundDetailAnalyzeService;
         private readonly IBigGamingApiClient _client;
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly IGameRepository _gameRepository;
+        private readonly IGameService _gameService;
         private readonly IRoundRepository _roundRepository;
         private readonly IBigGamingService _service;
 
@@ -24,7 +23,7 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
             IBigGamingRoundDetailAnalyzeService bigGamingRoundDetailAnalyzeService,
             IBigGamingApiClient client,
             IGameProviderRepository gameProviderRepository,
-            IGameRepository gameRepository,
+            IGameService gameService,
             IRoundRepository roundRepository,
             IBigGamingService service
             )
@@ -32,7 +31,7 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
             _bigGamingRoundDetailAnalyzeService = bigGamingRoundDetailAnalyzeService ?? throw new ArgumentNullException(nameof(bigGamingRoundDetailAnalyzeService));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
@@ -50,7 +49,7 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
                 throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
             }
 
-            var gameModel = await _gameRepository.GetAsync(roundModel.GameId).ConfigureAwait(false);
+            var gameModel = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
             if (gameModel == null)
             {
                 throw new Exception($"This game Id could not be found..{gameModel.GameId}");

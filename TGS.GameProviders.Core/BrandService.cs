@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Tgs.GameProviders.QueryServer.Client;
@@ -21,6 +18,7 @@ namespace TGS.GameProviders.Core
             _gameProvidersQueryServerClient = gameProvidersQueryServerClient ?? throw new ArgumentNullException(nameof(gameProvidersQueryServerClient));
             _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
         }
+
         public async ValueTask<Guid> GetBrandGameProviderConfigurationIdAsync(Guid gameProviderId, Guid brandId)
         {
             var gameProviderConfigurationId = await _gameProvidersQueryServerClient.BrandGetGameProviderConfigurationIdAsync(brandId, gameProviderId).ConfigureAwait(false);
@@ -28,6 +26,7 @@ namespace TGS.GameProviders.Core
                 ? gameProviderConfigurationId.Value
                 : throw new Exception($"The gameprovider configuration id does not exist.(gameProviderId={gameProviderId}、brandId{brandId})");
         }
+
         public async ValueTask<Guid> GetBrandIdAsync(string brandCode)
         {
             if (!_memoryCache.TryGetValue(brandCode, out Guid? brandId))

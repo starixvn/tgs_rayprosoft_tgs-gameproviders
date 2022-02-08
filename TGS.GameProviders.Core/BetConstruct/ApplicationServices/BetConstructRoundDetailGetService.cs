@@ -12,17 +12,17 @@ namespace TGS.GameProviders.Core.BetConstruct.ApplicationServices
     internal class BetConstructRoundDetailGetService : IGetService<BetConstructRoundDetailQuery, RoundDetailResult>
     {
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly IGameRepository _gameRepository;
+        private readonly IGameService _gameService;
         private readonly IRoundRepository _roundRepository;
 
         public BetConstructRoundDetailGetService(
             IRoundRepository roundRepository,
             IGameProviderRepository gameProviderRepository,
-            IGameRepository gameRepository)
+            IGameService gameService)
         {
             _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
 
         public async ValueTask<RoundDetailResult> GetAsync(BetConstructRoundDetailQuery query, CancellationToken cancellationToken = default)
@@ -39,7 +39,7 @@ namespace TGS.GameProviders.Core.BetConstruct.ApplicationServices
                 throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
             }
 
-            var gameModel = await _gameRepository.GetAsync(roundModel.GameId).ConfigureAwait(false);
+            var gameModel = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
             if (gameModel == null)
             {
                 throw new Exception($"This game Id could not be found..{gameModel.GameId}");

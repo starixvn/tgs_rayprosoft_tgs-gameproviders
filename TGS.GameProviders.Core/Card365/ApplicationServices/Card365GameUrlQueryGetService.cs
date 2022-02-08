@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Card365.Model;
-using TGS.GameProviders.Core.Repositories;
 
 namespace TGS.GameProviders.Core.Card365.ApplicationServices;
 
@@ -16,7 +15,7 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
 {
     private readonly ICard365AgentMapper _agentMapper;
     private readonly ICard365ApiClient _client;
-    private readonly IGameRepository _gameRepository;
+    private readonly IGameService _gameService;
     private readonly ILogger<Card365GameUrlQueryGetService> _logger;
     private readonly IPlayerService _playerService;
     private readonly ICard365Service _service;
@@ -25,7 +24,7 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
     public Card365GameUrlQueryGetService(
         ILogger<Card365GameUrlQueryGetService> logger,
         IPlayerService playerService,
-        IGameRepository gameRepository,
+        IGameService gameService,
         ICard365Service service,
         ICard365AgentMapper agentMapper,
         ICard365ApiClient client,
@@ -33,7 +32,7 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
-        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _agentMapper = agentMapper ?? throw new ArgumentNullException(nameof(agentMapper));
         _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -45,7 +44,8 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
         CancellationToken cancellationToken = default)
     {
         var player = await _playerService.GetCacheAsync(query.PlayerCode).ConfigureAwait(false);
-        var game = await _gameRepository.GetAsync(query.GameId!.Value).ConfigureAwait(false);
+
+        var game = await _gameService.GetCacheAsync(query.GameId!.Value).ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
         var agent = _agentMapper.GetAgent(configuration.BrandAgents, player!.BrandCode);

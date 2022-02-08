@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.SBO;
 using TGS.GameProviders.Domains;
@@ -13,7 +13,7 @@ namespace TGS.GameProviders.Services.SBO
     internal class SBOService : ISBOService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly IGameRepository _gameRepository;
+        private readonly IGameService _gameService;
         private readonly ILogger<SBOService> _logger;
         private readonly ISettingRepository _settingRepository;
 
@@ -21,18 +21,18 @@ namespace TGS.GameProviders.Services.SBO
             ILogger<SBOService> logger,
             ISettingRepository settingRepository,
             IGameProviderRepository gameProviderRepository,
-            IGameRepository gameRepository)
+            IGameService gameService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
             _gameProviderRepository =
                 gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
 
-        public async ValueTask<GameModel> GetGameAsync(
+        public async ValueTask<GameInfo> GetGameAsync(
             int gameId)
-            => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
+            => await _gameService.GetAsync(gameId).ConfigureAwait(false);
 
         public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
             => _gameProviderRepository.GetAsync(gameProviderId);

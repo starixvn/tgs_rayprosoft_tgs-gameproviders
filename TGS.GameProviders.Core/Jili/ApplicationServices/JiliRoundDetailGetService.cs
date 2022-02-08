@@ -12,7 +12,7 @@ internal class JiliRoundDetailGetService : IGetService<JiliRoundDetailQuery, Rou
 {
     private readonly IJiliApiClient _client;
     private readonly IGameProviderRepository _gameProviderRepository;
-    private readonly IGameRepository _gameRepository;
+    private readonly IGameService _gameService;
     private readonly ILogger<JiliRoundDetailGetService> _logger;
     private readonly IJiliMerchantMapper _merchantMapper;
     private readonly IPlayerService _playerService;
@@ -23,7 +23,7 @@ internal class JiliRoundDetailGetService : IGetService<JiliRoundDetailQuery, Rou
         ILogger<JiliRoundDetailGetService> logger,
         IRoundRepository roundRepository,
         IGameProviderRepository gameProviderRepository,
-        IGameRepository gameRepository,
+        IGameService gameService,
         IPlayerService playerService,
         IJiliService service,
         IJiliMerchantMapper merchantMapper,
@@ -32,7 +32,7 @@ internal class JiliRoundDetailGetService : IGetService<JiliRoundDetailQuery, Rou
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
         _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _merchantMapper = merchantMapper ?? throw new ArgumentNullException(nameof(merchantMapper));
@@ -55,7 +55,7 @@ internal class JiliRoundDetailGetService : IGetService<JiliRoundDetailQuery, Rou
             throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
         }
 
-        var gameModel = await _gameRepository.GetAsync(roundModel.GameId).ConfigureAwait(false);
+        var gameModel = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
         if (gameModel == null)
         {
             throw new Exception($"This game Id could not be found.{roundModel.GameId}");

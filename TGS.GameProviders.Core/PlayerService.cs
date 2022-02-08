@@ -47,23 +47,10 @@ namespace TGS.GameProviders.Core
         {
             if (!_memoryCache.TryGetValue(playerCode, out PlayerInfo playerInfo))
             {
-                var playerViewModel = await _gameProvidersQueryServerClient.PlayerGetAsync(playerCode).ConfigureAwait(false);
+                playerInfo = await GetAsync(playerCode).ConfigureAwait(false);
 
-                if (playerViewModel != null)
+                if (playerInfo != null)
                 {
-                    playerInfo = new PlayerInfo(
-                        playerViewModel.ResellerId,
-                        playerViewModel.ResellerCode,
-                        playerViewModel.LicenseeId,
-                        playerViewModel.LicenseeCode,
-                        playerViewModel.BrandId,
-                        playerViewModel.BrandCode,
-                        playerViewModel.PlayerCode,
-                        playerViewModel.Username,
-                        playerViewModel.DefaultWalletId,
-                        playerViewModel.DefaultWalletCurrencyCode,
-                       (PlayerStatus)playerViewModel.Status
-                        );
                     _memoryCache.Set(playerCode, playerInfo, TimeSpan.FromHours(1));
                 }
             }

@@ -7,9 +7,6 @@ using NUnit.Framework.Internal;
 using TGS.GameProviders.Core.JDB;
 using TGS.GameProviders.Core.JDB.ApplicationServices;
 using TGS.GameProviders.Core.JDB.Models;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.JDB;
 
@@ -23,7 +20,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
     {
         var fakeLogger = NullLogger<JDBGameUrlGetService>.Instance;
         var fakePlayerService = Substitute.For<IPlayerService>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeGameService = Substitute.For<IGameService>();
         var fakeService = Substitute.For<IJDBService>();
         var fakeAgentMapper = Substitute.For<IJDBAgentMapper>();
         var fakeApiClient = Substitute.For<IJDBApiClient>();
@@ -49,7 +46,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
             Agents = new[] { agent }
         };
 
-        var gameModel = new GameModel(
+        var gameModel = new GameInfo(
             700010,
             GameStatus.Active,
             "0_14034",
@@ -104,7 +101,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
             .Returns(agent);
 
         fakePlayerService.GetCacheAsync(query.PlayerCode).Returns(Task.FromResult(playerModel));
-        fakeGameRepository.GetAsync(query.GameId.Value).Returns(Task.FromResult(gameModel));
+        fakeGameService.GetCacheAsync(query.GameId.Value).Returns(ValueTask.FromResult(gameModel));
 
         var items = gameModel.GameExternalId.Split('_');
 
@@ -131,7 +128,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
         var sut = new JDBGameUrlGetService(
             fakeLogger,
             fakePlayerService,
-            fakeGameRepository,
+            fakeGameService,
             fakeService,
             fakeAgentMapper,
             fakeApiClient);

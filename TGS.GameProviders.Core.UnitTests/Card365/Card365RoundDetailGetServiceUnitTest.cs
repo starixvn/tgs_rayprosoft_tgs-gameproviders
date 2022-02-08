@@ -6,7 +6,6 @@ using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.Core.Card365.ApplicationServices;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains;
@@ -23,7 +22,7 @@ internal class Card365RoundDetailGetServiceUnitTest
         var fakeLogger = NullLogger<Card365RoundDetailGetService>.Instance;
         var fakeRoundRepository = Substitute.For<IRoundRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeGameService = Substitute.For<IGameService>();
 
         var playerModel = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
@@ -53,7 +52,7 @@ internal class Card365RoundDetailGetServiceUnitTest
             "365",
             null);
 
-        var gameModel = new GameModel(
+        var gameModel = new GameInfo(
             1900008,
             GameStatus.Active,
             "563",
@@ -132,13 +131,13 @@ internal class Card365RoundDetailGetServiceUnitTest
 
         _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
         _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
-        _ = fakeGameRepository.GetAsync(roundModel.GameId).Returns(Task.FromResult(gameModel));
+        _ = fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
 
         var sut = new Card365RoundDetailGetService(
             fakeLogger,
             fakeRoundRepository,
             fakeGameProviderRepository,
-            fakeGameRepository);
+            fakeGameService);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 

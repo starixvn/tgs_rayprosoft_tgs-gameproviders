@@ -6,7 +6,6 @@ using NUnit.Framework;
 using TGS.GameProviders.Core.Habanero;
 using TGS.GameProviders.Core.Habanero.ApplicationServices;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains;
@@ -66,7 +65,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             "Habanero",
             null);
 
-        var gameModel = new GameModel(
+        var gameModel = new GameInfo(
             200001,
             GameStatus.Active,
             "SGTotemTowers",

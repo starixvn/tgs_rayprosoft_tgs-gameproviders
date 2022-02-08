@@ -4,9 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.TCG.Models;
-using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.TCG.ApplicationServices
 {
@@ -14,14 +12,14 @@ namespace TGS.GameProviders.Core.TCG.ApplicationServices
     {
         private readonly ITCGApiClient _client;
         private readonly ITCGGamePlayer _gamePlayerCreate;
-        private readonly IGameRepository _gameRepository;
+        private readonly IGameService _gameService;
         private readonly ILogger<TCGGameUrlGetService> _logger;
         private readonly IReadOnlyDictionary<string, Func<Uri, string, string, string, bool, TCGLaunchGameRequest, ValueTask<TCGLaunchGameResponse>>> _methodMapper;
         private readonly ITCGService _service;
 
         public TCGGameUrlGetService(
             ITCGApiClient client,
-            IGameRepository gameRepository,
+            IGameService gameService,
             ILogger<TCGGameUrlGetService> logger,
             ITCGService service,
             ITCGGamePlayer gamePlayerCreate
@@ -29,7 +27,7 @@ namespace TGS.GameProviders.Core.TCG.ApplicationServices
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _gamePlayerCreate = gamePlayerCreate ?? throw new ArgumentNullException(nameof(gamePlayerCreate));
             _methodMapper = new Dictionary<string, Func<Uri, string, string, string, bool, TCGLaunchGameRequest, ValueTask<TCGLaunchGameResponse>>>
@@ -49,7 +47,7 @@ namespace TGS.GameProviders.Core.TCG.ApplicationServices
             {
                 return null;
             }
-            var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
+            var getGame = await _gameService.GetCacheAsync(command.GameId.Value).ConfigureAwait(false);
 
             if (getGame == null)
             {
