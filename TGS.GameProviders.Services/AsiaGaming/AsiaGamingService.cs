@@ -14,17 +14,17 @@ internal class AsiaGamingService : IAsiaGamingService
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IGameService _gameService;
     private readonly ILogger<AsiaGamingService> _logger;
-    private readonly ISettingRepository _settingRepository;
+    private readonly ISettingService _settingService;
 
     public AsiaGamingService(
         ILogger<AsiaGamingService> logger,
-        ISettingRepository settingRepository,
+        ISettingService settingService,
         IGameProviderRepository gameProviderRepository,
         IGameService gameService,
         IBrandService brandService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+        _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
         _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         _brandService = brandService ?? throw new ArgumentNullException(nameof(brandService));
@@ -68,7 +68,7 @@ internal class AsiaGamingService : IAsiaGamingService
     }
 
     public async ValueTask<AsiaGamingConfiguration> GetSettingConfigurationAsync()
-        => await _settingRepository
+        => await _settingService
             .GetConfigurationAsync<AsiaGamingConfiguration>(Domains.GameProviderConfigurations.AsiaGaming)
             .ConfigureAwait(false);
 }

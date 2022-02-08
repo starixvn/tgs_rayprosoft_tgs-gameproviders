@@ -85,7 +85,7 @@ namespace TGS.GameProviders.Core.UnitTests.WGSports
                             }}
                     }
             };
-            _ = fakeWGHorseService.GetSettingConfigurationAsync().Returns(Task.FromResult(configuration));
+            _ = fakeWGHorseService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
             _ = fakeWGHorseService.GetClientRound(gameRecordResponse.BetInfo[0].Result).Returns(ClientRoundStatus.Void);
 
             _ = fakeWGHorseApiClient.GetGameRecordAsync(

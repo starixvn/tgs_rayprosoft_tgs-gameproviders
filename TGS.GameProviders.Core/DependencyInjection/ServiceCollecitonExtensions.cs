@@ -19,6 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddMemoryCache()
                 .AddTransient<IBrandService, BrandService>()
                 .AddTransient<IGameService, GameService>()
-                .AddTransient<IPlayerService, PlayerService>();
+                .AddTransient<IPlayerService, PlayerService>()
+                .AddTransient<ISettingService, SettingService>();
     }
 }

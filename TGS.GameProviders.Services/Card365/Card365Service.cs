@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Card365;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
@@ -12,16 +13,16 @@ internal class Card365Service : ICard365Service
 {
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly ILogger<Card365Service> _logger;
-    private readonly ISettingRepository _settingRepository;
+    private readonly ISettingService _settingService;
 
     public Card365Service(
         ILogger<Card365Service> logger,
         IGameProviderRepository gameProviderRepository,
-        ISettingRepository settingRepository)
+        ISettingService settingService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _gameProviderRepository = gameProviderRepository;
-        _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+        _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+        _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
     }
 
     public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
@@ -43,7 +44,7 @@ internal class Card365Service : ICard365Service
     }
 
     public async ValueTask<Card365Configuration> GetSettingConfigurationAsync()
-        => await _settingRepository
+        => await _settingService
             .GetConfigurationAsync<Card365Configuration>(GameProviderConfigurations.Card365)
             .ConfigureAwait(false);
 }

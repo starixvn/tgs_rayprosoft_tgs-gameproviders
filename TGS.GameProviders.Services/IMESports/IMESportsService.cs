@@ -16,17 +16,17 @@ namespace TGS.GameProviders.Services.IMESports
         private readonly IGameService _gameService;
         private readonly ILogger<IMESportsService> _logger;
         private readonly IPlayerService _playerService;
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
         public IMESportsService(
             ILogger<IMESportsService> logger,
-            ISettingRepository settingRepository,
+            ISettingService settingService,
             IGameProviderRepository gameProviderRepository,
             IGameService gameService,
             IPlayerService playerService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
@@ -63,7 +63,7 @@ namespace TGS.GameProviders.Services.IMESports
             => await _playerService.GetAsync(playerCode).ConfigureAwait(false);
 
         public async ValueTask<IMESportsConfiguration> GetSettingConfigurationAsync()
-                    => await _settingRepository
+            => await _settingService
                 .GetConfigurationAsync<IMESportsConfiguration>(GameProviderConfigurations.IMESports)
                 .ConfigureAwait(false);
     }

@@ -19,6 +19,6 @@ namespace TGS.GameProviders.Core.WGHorse
 
         ValueTask<Guid> GetGameProviderIdAsync();
 
-        Task<WGHorseConfiguration> GetSettingConfigurationAsync();
+        ValueTask<WGHorseConfiguration> GetSettingConfigurationAsync();
     }
 }

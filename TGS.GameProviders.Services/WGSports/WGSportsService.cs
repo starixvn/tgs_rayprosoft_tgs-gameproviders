@@ -12,15 +12,15 @@ namespace TGS.GameProviders.Services.WGSports
     {
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameService _gameService;
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
         public WGSportsService(
-            ISettingRepository settingRepository,
+            ISettingService settingService,
             IGameProviderRepository gameProviderRepository,
             IGameService gameService
             )
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
@@ -69,7 +69,7 @@ namespace TGS.GameProviders.Services.WGSports
         public ValueTask<Guid> GetGameProviderIdAsync()
             => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports);
 
-        public Task<WGSportsConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<WGSportsConfiguration>(GameProviderConfigurations.WGSports);
+        public ValueTask<WGSportsConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<WGSportsConfiguration>(GameProviderConfigurations.WGSports);
     }
 }

@@ -22,6 +22,6 @@ namespace TGS.GameProviders.Core.Avia
 
         RoundStatus GetRoundStatus(string state);
 
-        Task<AviaConfiguration> GetSettingConfigurationAsync();
+        ValueTask<AviaConfiguration> GetSettingConfigurationAsync();
     }
 }

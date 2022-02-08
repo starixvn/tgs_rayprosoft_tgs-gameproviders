@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.KY;
 using TGS.GameProviders.Core.Repositories;
@@ -13,14 +14,14 @@ namespace TGS.GameProviders.Services.KY
     internal class KYService : IKYService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
         public KYService(
-            ISettingRepository settingRepository,
+            ISettingService settingService,
             IGameProviderRepository gameProviderRepository
             )
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         }
 
@@ -37,7 +38,7 @@ namespace TGS.GameProviders.Services.KY
 
         public async Task<KYBrandMerchant> GetBrandMerchantAsync(string brandCode)
         {
-            var configuration = await _settingRepository.GetConfigurationAsync<KYConfiguration>(GameProviderConfigurations.KY).ConfigureAwait(false);
+            var configuration = await _settingService.GetConfigurationAsync<KYConfiguration>(GameProviderConfigurations.KY).ConfigureAwait(false);
             var brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
             if (brandMerchant == null)
             {
@@ -63,7 +64,7 @@ namespace TGS.GameProviders.Services.KY
         public ValueTask<Guid> GetGameProviderIdAsync()
             => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.KY);
 
-        public Task<KYConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<KYConfiguration>(GameProviderConfigurations.KY);
+        public ValueTask<KYConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<KYConfiguration>(GameProviderConfigurations.KY);
     }
 }

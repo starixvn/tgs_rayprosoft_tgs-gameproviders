@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Skywind;
 using TGS.GameProviders.Domains;
@@ -10,14 +11,14 @@ namespace TGS.GameProviders.Services.Skywind
     internal class SkywindService : ISkywindService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
         public SkywindService(
-            ISettingRepository settingRepository,
+            ISettingService settingService,
             IGameProviderRepository gameProviderRepository
             )
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         }
 
@@ -34,7 +35,7 @@ namespace TGS.GameProviders.Services.Skywind
         public ValueTask<Guid> GetGameProviderIdAsync()
             => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.Skywind);
 
-        public Task<SkywindConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<SkywindConfiguration>(GameProviderConfigurations.Skywind);
+        public ValueTask<SkywindConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<SkywindConfiguration>(GameProviderConfigurations.Skywind);
     }
 }

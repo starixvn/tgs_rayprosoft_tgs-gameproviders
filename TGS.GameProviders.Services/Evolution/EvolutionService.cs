@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Evolution;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
@@ -10,14 +11,14 @@ namespace TGS.GameProviders.Services.Evolution
     internal class EvolutionService : IEvolutionService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
         public EvolutionService(
-            ISettingRepository settingRepository,
+            ISettingService settingService,
             IGameProviderRepository gameProviderRepository
             )
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         }
 
@@ -41,7 +42,7 @@ namespace TGS.GameProviders.Services.Evolution
         public async Task<Guid> GetGameProviderIdAsync()
             => await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.Evolution).ConfigureAwait(false);
 
-        public Task<EvolutionConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<EvolutionConfiguration>(GameProviderConfigurations.Evolution);
+        public ValueTask<EvolutionConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<EvolutionConfiguration>(GameProviderConfigurations.Evolution);
     }
 }

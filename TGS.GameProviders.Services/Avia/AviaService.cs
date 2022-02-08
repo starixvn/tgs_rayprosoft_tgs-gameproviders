@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.Repositories;
@@ -13,14 +14,14 @@ namespace TGS.GameProviders.Services.Avia
     internal class AviaService : IAviaService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
         public AviaService(
-            ISettingRepository settingRepository,
+            ISettingService settingService,
             IGameProviderRepository gameProviderRepository
             )
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         }
 
@@ -72,7 +73,7 @@ namespace TGS.GameProviders.Services.Avia
                 _ => RoundStatus.Closed
             };
 
-        public Task<AviaConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<AviaConfiguration>(GameProviderConfigurations.Avia);
+        public ValueTask<AviaConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<AviaConfiguration>(GameProviderConfigurations.Avia);
     }
 }

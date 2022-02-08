@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Saba;
 using TGS.GameProviders.Domains;
@@ -12,16 +13,16 @@ internal class SabaService : ISabaService
 {
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly ILogger<SabaService> _logger;
-    private readonly ISettingRepository _settingRepository;
+    private readonly ISettingService _settingService;
 
     public SabaService(
         ILogger<SabaService> logger,
         IGameProviderRepository gameProviderRepository,
-        ISettingRepository settingRepository)
+        ISettingService settingService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-        _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+        _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
     }
 
     public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
@@ -46,7 +47,7 @@ internal class SabaService : ISabaService
     }
 
     public async ValueTask<SabaConfiguration> GetSettingConfigurationAsync()
-        => await _settingRepository
+        => await _settingService
             .GetConfigurationAsync<SabaConfiguration>(GameProviderConfigurations.Saba)
             .ConfigureAwait(false);
 }

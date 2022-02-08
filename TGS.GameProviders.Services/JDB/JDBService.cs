@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.JDB;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
@@ -12,15 +13,15 @@ internal class JDBService : IJDBService
 {
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly ILogger<JDBService> _logger;
-    private readonly ISettingRepository _settingRepository;
+    private readonly ISettingService _settingService;
 
     public JDBService(
         ILogger<JDBService> logger,
-        ISettingRepository settingRepository,
+        ISettingService settingService,
         IGameProviderRepository gameProviderRepository)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+        _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
         _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
     }
 
@@ -33,7 +34,7 @@ internal class JDBService : IJDBService
     }
 
     public async ValueTask<JDBConfiguration> GetSettingConfigurationAsync()
-        => await _settingRepository
+        => await _settingService
             .GetConfigurationAsync<JDBConfiguration>(GameProviderConfigurations.JDB)
             .ConfigureAwait(false);
 }

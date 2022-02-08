@@ -12,15 +12,15 @@ namespace TGS.GameProviders.Services.WGHorse
     {
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameService _gameService;
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
         public WGHorseService(
-            ISettingRepository settingRepository,
+            ISettingService settingService,
             IGameProviderRepository gameProviderRepository,
             IGameService gameService
             )
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
@@ -56,7 +56,7 @@ namespace TGS.GameProviders.Services.WGHorse
         public ValueTask<Guid> GetGameProviderIdAsync()
             => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGHorse);
 
-        public Task<WGHorseConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<WGHorseConfiguration>(GameProviderConfigurations.WGHorse);
+        public ValueTask<WGHorseConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<WGHorseConfiguration>(GameProviderConfigurations.WGHorse);
     }
 }

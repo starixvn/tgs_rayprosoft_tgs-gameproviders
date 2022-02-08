@@ -18,6 +18,6 @@ namespace TGS.GameProviders.Core.VR
 
         RoundStatus GetRoundStatus(int state);
 
-        Task<VRConfiguration> GetSettingConfigurationAsync();
+        ValueTask<VRConfiguration> GetSettingConfigurationAsync();
     }
 }

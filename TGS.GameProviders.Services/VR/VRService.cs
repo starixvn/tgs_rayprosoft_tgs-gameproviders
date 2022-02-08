@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.VR;
@@ -13,20 +14,20 @@ namespace TGS.GameProviders.Services.VR
     internal class VRService : IVRService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
         public VRService(
-            ISettingRepository settingRepository,
+            ISettingService settingService,
             IGameProviderRepository gameProviderRepository
             )
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         }
 
         public async ValueTask<VRBrandMerchant> GetBrandMerchantAsync(string brandCode)
         {
-            var configuration = await _settingRepository.GetConfigurationAsync<VRConfiguration>(GameProviderConfigurations.VR).ConfigureAwait(false);
+            var configuration = await _settingService.GetConfigurationAsync<VRConfiguration>(GameProviderConfigurations.VR).ConfigureAwait(false);
             var brandMerchant = configuration.BrandMerchants
                  .Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
             if (brandMerchant == null)
@@ -61,7 +62,7 @@ namespace TGS.GameProviders.Services.VR
                _ => RoundStatus.Open
            };
 
-        public Task<VRConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<VRConfiguration>(GameProviderConfigurations.VR);
+        public ValueTask<VRConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<VRConfiguration>(GameProviderConfigurations.VR);
     }
 }

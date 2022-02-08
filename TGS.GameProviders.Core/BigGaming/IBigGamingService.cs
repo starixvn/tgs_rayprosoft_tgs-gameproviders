@@ -18,6 +18,6 @@ namespace TGS.GameProviders.Core.BigGaming
 
         ValueTask<Guid> GetGameProviderIdAsync();
 
-        Task<BigGamingConfiguration> GetSettingConfigurationAsync();
+        ValueTask<BigGamingConfiguration> GetSettingConfigurationAsync();
     }
 }

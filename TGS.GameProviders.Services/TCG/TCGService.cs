@@ -15,15 +15,15 @@ namespace TGS.GameProviders.Services.TCG
     {
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameService _gameService;
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
         public TCGService(
-            ISettingRepository settingRepository,
+            ISettingService settingService,
             IGameProviderRepository gameProviderRepository,
             IGameService gameService
             )
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
@@ -46,18 +46,18 @@ namespace TGS.GameProviders.Services.TCG
 
         public async ValueTask<TCGMerchant> GetMerchantAsync(string currencyCode)
         {
-            var configuration = await _settingRepository.GetConfigurationAsync<TCGConfiguration>(GameProviderConfigurations.TCG).ConfigureAwait(false);
+            var configuration = await _settingService.GetConfigurationAsync<TCGConfiguration>(GameProviderConfigurations.TCG).ConfigureAwait(false);
             return configuration.Merchants.Where(x => x.CurrencyCode == currencyCode).FirstOrDefault();
         }
 
         public async ValueTask<TCGMerchant> GetMerchantByMerchantCodeAsync(string merchantCode)
         {
-            var configuration = await _settingRepository.GetConfigurationAsync<TCGConfiguration>(GameProviderConfigurations.TCG).ConfigureAwait(false);
+            var configuration = await _settingService.GetConfigurationAsync<TCGConfiguration>(GameProviderConfigurations.TCG).ConfigureAwait(false);
             return configuration.Merchants.Where(x => x.MerchantCode == merchantCode).FirstOrDefault();
         }
 
-        public Task<TCGConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<TCGConfiguration>(GameProviderConfigurations.TCG);
+        public ValueTask<TCGConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<TCGConfiguration>(GameProviderConfigurations.TCG);
 
         public (string SubGP, string MerchantCode) GetSubGPAndMerchantCode(string agentId)
         {

@@ -17,17 +17,17 @@ public class WMCasinoService : IWMCasinoService
     private readonly IGameService _gameService;
     private readonly ILogger<WMCasinoService> _logger;
     private readonly IPlayerService _playerService;
-    private readonly ISettingRepository _settingRepository;
+    private readonly ISettingService _settingService;
 
     public WMCasinoService(
         ILogger<WMCasinoService> logger,
-        ISettingRepository settingRepository,
+        ISettingService settingService,
         IPlayerService playerService,
         IGameProviderRepository gameProviderRepository,
         IGameService gameService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+        _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
         _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         _gameProviderRepository =
             gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
@@ -55,7 +55,7 @@ public class WMCasinoService : IWMCasinoService
         => await _playerService.GetAsync(playerCode).ConfigureAwait(false);
 
     public async ValueTask<WMCasinoConfiguration> GetSettingConfigurationAsync()
-        => await _settingRepository
+        => await _settingService
             .GetConfigurationAsync<WMCasinoConfiguration>(GameProviderConfigurations.WMCasino)
             .ConfigureAwait(false);
 }
