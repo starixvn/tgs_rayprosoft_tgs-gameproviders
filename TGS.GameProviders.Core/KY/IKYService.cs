@@ -20,6 +20,6 @@ namespace TGS.GameProviders.Core.KY
 
         ValueTask<Guid> GetGameProviderIdAsync();
 
-        Task<KYConfiguration> GetSettingConfigurationAsync();
+        ValueTask<KYConfiguration> GetSettingConfigurationAsync();
     }
 }

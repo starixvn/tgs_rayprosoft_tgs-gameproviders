@@ -15,18 +15,18 @@ internal class PragmaticPlayService : IPragmaticPlayService
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IGameService _gameService;
     private readonly ILogger<PragmaticPlayService> _logger;
-    private readonly ISettingRepository _settingRepository;
+    private readonly ISettingService _settingService;
 
     public PragmaticPlayService(
         ILogger<PragmaticPlayService> logger,
         IGameProviderRepository gameProviderRepository,
         IGameService gameService,
-        ISettingRepository settingRepository)
+        ISettingService settingService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _gameProviderRepository = gameProviderRepository;
         _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-        _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+        _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
     }
 
     public async ValueTask<GameInfo> GetGameAsync(int gameId)
@@ -44,7 +44,7 @@ internal class PragmaticPlayService : IPragmaticPlayService
     }
 
     public async ValueTask<PragmaticPlayConfiguration> GetSettingConfigurationAsync()
-        => await _settingRepository
+        => await _settingService
             .GetConfigurationAsync<PragmaticPlayConfiguration>(GameProviderConfigurations.PragmaticPlay)
             .ConfigureAwait(false);
 }

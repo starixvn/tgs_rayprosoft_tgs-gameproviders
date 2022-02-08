@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.LY;
 using TGS.GameProviders.Core.Repositories;
@@ -13,14 +14,14 @@ namespace TGS.GameProviders.Services.LY
     internal class LYService : ILYService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
         public LYService(
-            ISettingRepository settingRepository,
+            ISettingService settingService,
             IGameProviderRepository gameProviderRepository
             )
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         }
 
@@ -37,7 +38,7 @@ namespace TGS.GameProviders.Services.LY
 
         public async Task<LYBrandMerchant> GetBrandMerchantAsync(string brandCode)
         {
-            var configuration = await _settingRepository.GetConfigurationAsync<LYConfiguration>(GameProviderConfigurations.LY).ConfigureAwait(false);
+            var configuration = await _settingService.GetConfigurationAsync<LYConfiguration>(GameProviderConfigurations.LY).ConfigureAwait(false);
             var brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
             if (brandMerchant == null)
             {
@@ -60,7 +61,7 @@ namespace TGS.GameProviders.Services.LY
         public ValueTask<Guid> GetGameProviderIdAsync()
             => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.LY);
 
-        public Task<LYConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<LYConfiguration>(GameProviderConfigurations.LY);
+        public ValueTask<LYConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<LYConfiguration>(GameProviderConfigurations.LY);
     }
 }

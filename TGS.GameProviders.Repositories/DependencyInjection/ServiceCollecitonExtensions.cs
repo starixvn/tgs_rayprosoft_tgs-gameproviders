@@ -24,8 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddDbContext<TgsContext>(efConfigure);
 
             return services
-                .AddTransient<IGameProviderRepository, GameProviderRepository>()
-                .AddTransient<ISettingRepository, SettingRepository>();
+                .AddTransient<IGameProviderRepository, GameProviderRepository>();
         }
     }
 }

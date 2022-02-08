@@ -15,16 +15,16 @@ namespace TGS.GameProviders.Services.SBO
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameService _gameService;
         private readonly ILogger<SBOService> _logger;
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
         public SBOService(
             ILogger<SBOService> logger,
-            ISettingRepository settingRepository,
+            ISettingService settingService,
             IGameProviderRepository gameProviderRepository,
             IGameService gameService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderRepository =
                 gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
@@ -58,7 +58,7 @@ namespace TGS.GameProviders.Services.SBO
             => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SBOBET);
 
         public async ValueTask<SBOConfiguration> GetSettingConfigurationAsync()
-            => await _settingRepository.GetConfigurationAsync<SBOConfiguration>(GameProviderConfigurations.SBOBET)
+            => await _settingService.GetConfigurationAsync<SBOConfiguration>(GameProviderConfigurations.SBOBET)
                 .ConfigureAwait(false);
     }
 }

@@ -20,7 +20,7 @@ namespace TGS.GameProviders.Core.TCG
 
         ValueTask<TCGMerchant> GetMerchantByMerchantCodeAsync(string merchantCode);
 
-        Task<TCGConfiguration> GetSettingConfigurationAsync();
+        ValueTask<TCGConfiguration> GetSettingConfigurationAsync();
 
         (string SubGP, string MerchantCode) GetSubGPAndMerchantCode(string agentId);
     }

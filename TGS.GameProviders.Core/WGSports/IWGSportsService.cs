@@ -21,6 +21,6 @@ namespace TGS.GameProviders.Core.WGSports
 
         ValueTask<Guid> GetGameProviderIdAsync();
 
-        Task<WGSportsConfiguration> GetSettingConfigurationAsync();
+        ValueTask<WGSportsConfiguration> GetSettingConfigurationAsync();
     }
 }

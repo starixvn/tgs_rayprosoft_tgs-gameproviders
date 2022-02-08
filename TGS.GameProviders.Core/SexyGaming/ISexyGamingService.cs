@@ -14,6 +14,6 @@ namespace TGS.GameProviders.Core.SexyGaming
 
         ValueTask<Guid> GetGameProviderIdAsync();
 
-        Task<SexyGamingConfiguration> GetSettingConfigurationAsync();
+        ValueTask<SexyGamingConfiguration> GetSettingConfigurationAsync();
     }
 }

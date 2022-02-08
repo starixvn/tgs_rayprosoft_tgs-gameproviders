@@ -18,6 +18,6 @@ namespace TGS.GameProviders.Core.LY
 
         ValueTask<Guid> GetGameProviderIdAsync();
 
-        Task<LYConfiguration> GetSettingConfigurationAsync();
+        ValueTask<LYConfiguration> GetSettingConfigurationAsync();
     }
 }

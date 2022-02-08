@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using TGS.GameProviders.Core.Repositories;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.TFGaming;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -10,16 +10,16 @@ namespace TGS.GameProviders.Services.TFGaming
 {
     internal class TFGamingService : ITFGamingService
     {
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
-        public TFGamingService(ISettingRepository settingRepository)
+        public TFGamingService(ISettingService settingService)
         {
-            _settingRepository = settingRepository ?? throw new System.ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new System.ArgumentNullException(nameof(settingService));
         }
 
-        public async Task<TFBrandMerchant> GetBrandMerchantAsync(string brandCode, string currencyCode)
+        public async ValueTask<TFBrandMerchant> GetBrandMerchantAsync(string brandCode, string currencyCode)
         {
-            var configuration = await _settingRepository.GetConfigurationAsync<TFGamingConfiguration>(GameProviderConfigurations.TFGaming).ConfigureAwait(false);
+            var configuration = await _settingService.GetConfigurationAsync<TFGamingConfiguration>(GameProviderConfigurations.TFGaming).ConfigureAwait(false);
             var brandMerchant = configuration.BrandMerchants.Where(brand => brand.BrandCode == brandCode && brand.BrandCurrency == currencyCode).FirstOrDefault();
 
             if (brandMerchant == null)
@@ -29,7 +29,7 @@ namespace TGS.GameProviders.Services.TFGaming
             return brandMerchant;
         }
 
-        public Task<TFGamingConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<TFGamingConfiguration>(GameProviderConfigurations.TFGaming);
+        public ValueTask<TFGamingConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<TFGamingConfiguration>(GameProviderConfigurations.TFGaming);
     }
 }

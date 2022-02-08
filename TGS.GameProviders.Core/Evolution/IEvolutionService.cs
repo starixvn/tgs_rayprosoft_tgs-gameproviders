@@ -14,6 +14,6 @@ namespace TGS.GameProviders.Core.Evolution
 
         Task<Guid> GetGameProviderIdAsync();
 
-        Task<EvolutionConfiguration> GetSettingConfigurationAsync();
+        ValueTask<EvolutionConfiguration> GetSettingConfigurationAsync();
     }
 }

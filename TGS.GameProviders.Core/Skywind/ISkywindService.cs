@@ -12,6 +12,6 @@ namespace TGS.GameProviders.Core.Skywind
 
         ValueTask<Guid> GetGameProviderIdAsync();
 
-        Task<SkywindConfiguration> GetSettingConfigurationAsync();
+        ValueTask<SkywindConfiguration> GetSettingConfigurationAsync();
     }
 }

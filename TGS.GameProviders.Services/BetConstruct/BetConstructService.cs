@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.BetConstruct;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
@@ -9,15 +9,15 @@ namespace TGS.GameProviders.Services.BetConstruct
 {
     internal class BetConstructService : IBetConstructService
     {
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
-        public BetConstructService(ISettingRepository settingRepository)
+        public BetConstructService(ISettingService settingService)
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
         }
 
         public async ValueTask<BetConstructConfiguration> GetSettingConfigurationAsync() =>
-            await _settingRepository
+            await _settingService
                 .GetConfigurationAsync<BetConstructConfiguration>(GameProviderConfigurations.BetConstruct)
                 .ConfigureAwait(false);
     }

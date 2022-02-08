@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.Repositories;
@@ -13,20 +14,20 @@ namespace TGS.GameProviders.Services.BigGaming
     internal class BigGamingService : IBigGamingService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly ISettingRepository _settingRepository;
+        private readonly ISettingService _settingService;
 
         public BigGamingService(
-            ISettingRepository settingRepository,
+            ISettingService settingService,
             IGameProviderRepository gameProviderRepository
             )
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         }
 
         public async ValueTask<BigGamingBrandMerchant> GetBrandMerchantAsync(string currencyCode)
         {
-            var configuration = await _settingRepository.GetConfigurationAsync<BigGamingConfiguration>(GameProviderConfigurations.BigGaming).ConfigureAwait(false);
+            var configuration = await _settingService.GetConfigurationAsync<BigGamingConfiguration>(GameProviderConfigurations.BigGaming).ConfigureAwait(false);
             return configuration.BrandMerchants.Where(x => x.CurrencyCode.IgnoreCaseEquals(currencyCode) && x.Status).FirstOrDefault();
         }
 
@@ -51,7 +52,7 @@ namespace TGS.GameProviders.Services.BigGaming
         public ValueTask<Guid> GetGameProviderIdAsync()
             => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.BigGaming);
 
-        public Task<BigGamingConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<BigGamingConfiguration>(GameProviderConfigurations.BigGaming);
+        public ValueTask<BigGamingConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<BigGamingConfiguration>(GameProviderConfigurations.BigGaming);
     }
 }
