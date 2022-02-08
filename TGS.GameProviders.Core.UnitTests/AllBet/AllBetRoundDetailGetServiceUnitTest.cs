@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -9,7 +10,6 @@ using TGS.GameProviders.Core.AllBet.ApplicationServices;
 using TGS.GameProviders.Core.AllBet.Models;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 
@@ -22,7 +22,7 @@ public class AllBetRoundDetailGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<AllBetRoundDetailGetService>.Instance;
-        var fakeRoundRepository = Substitute.For<IRoundRepository>();
+        var fakeRoundService = Substitute.For<IRoundService>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameService = Substitute.For<IGameService>();
         var fakePlayerService = Substitute.For<IPlayerService>();
@@ -75,14 +75,14 @@ public class AllBetRoundDetailGetServiceUnitTest
             null,
             "AB");
 
-        var roundModel = new RoundModel(
+        var roundModel = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "1639679431950180036",
             gameProviderModel.GameProviderId,
             playerModel.PlayerCode,
             gameModel.GameId,
             playerModel.DefaultWalletCurrencyCode,
-            RoundStatus.Closed,
+            (Tgs.GameProviders.QueryServer.Client.RoundStatus)RoundStatus.Closed,
             Guid.NewGuid(),
             playerModel.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -98,7 +98,7 @@ public class AllBetRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            ClientRoundStatus.Win,
+            (Tgs.GameProviders.QueryServer.Client.RoundClientStatus)ClientRoundStatus.Win,
             null,
             null,
             null,
@@ -112,46 +112,33 @@ public class AllBetRoundDetailGetServiceUnitTest
 
         var expected = new RoundDetailResult
         {
-            GameProviderName = gameProviderModel.Name,
-            GameName = gameModel.Name,
-            ExternalRoundId = roundModel.ExternalRoundId,
-            BetAmount = roundModel.BetAmount,
-            Turnover = roundModel.Turnover,
-            Winloss = roundModel.WinLoss,
-            GameResult = roundModel.ClientStatus.ToString(),
             Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataJson
                 {
                     Value = JsonSerializer.Serialize(new Dictionary<string, string>
                     {
-                        ["Player"] = "♦8;♥11",
-                        ["Banker"] = "♣2;♣13"
+                        ["Player"] = "♦8;♥J",
+                        ["Banker"] = "♣2;♣K"
                     })
                 }
             }
         };
 
-        _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundModel));
         _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
         _ = fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
         _ = fakePlayerService.GetAsync(roundModel.PlayerCode).Returns(Task.FromResult(playerModel));
 
         var sut = new AllBetRoundDetailGetService(
             fakeLogger,
-            fakeRoundRepository,
+            fakeRoundService,
             fakeGameProviderRepository,
             fakeGameService);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(expected.GameProviderName, actual.GameProviderName);
-        Assert.AreEqual(expected.GameName, actual.GameName);
-        Assert.AreEqual(expected.ExternalRoundId, actual.ExternalRoundId);
-        Assert.AreEqual(expected.BetAmount, actual.BetAmount);
-        Assert.AreEqual(expected.Turnover, actual.Turnover);
-        Assert.AreEqual(expected.Winloss, actual.Winloss);
-        Assert.AreEqual(expected.GameResult, actual.GameResult);
+        CollectionAssert.AreEqual(expected.Data, actual.Data);
     }
 }

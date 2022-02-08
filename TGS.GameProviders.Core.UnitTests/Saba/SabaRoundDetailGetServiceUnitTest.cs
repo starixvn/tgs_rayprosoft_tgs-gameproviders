@@ -7,7 +7,6 @@ using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Core.Saba;
 using TGS.GameProviders.Core.Saba.ApplicationServices;
 using TGS.GameProviders.Core.Saba.Models;
@@ -29,7 +28,7 @@ public class SabaRoundDetailGetServiceUnitTest
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameService = Substitute.For<IGameService>();
         var fakeGameActionService = Substitute.For<IGameActionService>();
-        var fakeRoundRepository = Substitute.For<IRoundRepository>();
+        var fakeRoundService = Substitute.For<IRoundService>();
 
         var configuration = new SabaConfiguration
         {
@@ -159,14 +158,14 @@ public class SabaRoundDetailGetServiceUnitTest
             }
         };
 
-        var roundModel = new RoundModel(
+        var roundModel = new RoundInfo(
             gameActionModel.RoundId,
             "1639679431950180036",
             gameProviderModel.GameProviderId,
             playerModel.PlayerCode,
             gameModel.GameId,
             playerModel.DefaultWalletCurrencyCode,
-            RoundStatus.Closed,
+            Tgs.GameProviders.QueryServer.Client.RoundStatus.Closed,
             Guid.NewGuid(),
             playerModel.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -182,7 +181,7 @@ public class SabaRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            ClientRoundStatus.Win,
+            Tgs.GameProviders.QueryServer.Client.RoundClientStatus.Win,
             null,
             null,
             null,
@@ -201,23 +200,16 @@ public class SabaRoundDetailGetServiceUnitTest
 
         var expected = new RoundDetailResult
         {
-            GameProviderName = gameProviderModel.Name,
-            GameName = gameModel.Name,
-            ExternalRoundId = roundModel.ExternalRoundId,
-            BetAmount = roundModel.BetAmount,
-            Turnover = roundModel.Turnover,
-            Winloss = roundModel.WinLoss,
-            GameResult = roundModel.ClientStatus.ToString(),
             Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataJson
                 {
-                    Value = JsonSerializer.Serialize(historyData)
+                    Value = JsonSerializer.Serialize(historyData.Results)
                 }
             }
         };
 
-        _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundModel));
         _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
         _ = fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
         _ = fakeGameActionService.QueryAsync(query.RoundId).Returns(gameActions);
@@ -240,7 +232,7 @@ public class SabaRoundDetailGetServiceUnitTest
             fakeLogger,
             fakeGameProviderRepository,
             fakeGameService,
-            fakeRoundRepository,
+            fakeRoundService,
             fakeGameActionService,
             fakeService,
             fakeApiClient);
@@ -248,12 +240,6 @@ public class SabaRoundDetailGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(expected.GameProviderName, actual.GameProviderName);
-        Assert.AreEqual(expected.GameName, actual.GameName);
-        Assert.AreEqual(expected.ExternalRoundId, actual.ExternalRoundId);
-        Assert.AreEqual(expected.BetAmount, actual.BetAmount);
-        Assert.AreEqual(expected.Turnover, actual.Turnover);
-        Assert.AreEqual(expected.Winloss, actual.Winloss);
-        Assert.AreEqual(expected.GameResult, actual.GameResult);
+        CollectionAssert.AreEqual(expected.Data, actual.Data);
     }
 }

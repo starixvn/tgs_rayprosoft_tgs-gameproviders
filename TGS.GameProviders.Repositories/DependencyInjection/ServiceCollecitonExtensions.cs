@@ -8,15 +8,6 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollecitonExtensions
     {
-        public static IServiceCollection AddDbBetRepository(this IServiceCollection services,
-            Action<IServiceProvider, DbContextOptionsBuilder> efConfigure)
-        {
-            services.AddDbContext<BetContext>(efConfigure);
-
-            return services
-                .AddTransient<IRoundRepository, RoundRepository>();
-        }
-
         public static IServiceCollection AddDbTgsRepository(this IServiceCollection services,
                     Action<IServiceProvider, DbContextOptionsBuilder> efConfigure)
         {

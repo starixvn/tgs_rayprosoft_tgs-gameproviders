@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.SBO.Models;
 using TGS.GameProviders.Domains.RoundDetail;
 
@@ -15,19 +14,19 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
         private readonly ISBOApiClient _client;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
         private readonly ILogger<SBORoundDetailGetService> _logger;
-        private readonly IRoundRepository _roundRepository;
+        private readonly IRoundService _roundService;
         private readonly ISBOService _service;
         private readonly ISBOUtility _utility;
 
         public SBORoundDetailGetService(
             ILogger<SBORoundDetailGetService> logger,
-            IRoundRepository roundRepository,
+            IRoundService roundService,
             ISBOService service,
             ISBOUtility utility,
             ISBOApiClient client)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
+            _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _utility = utility ?? throw new ArgumentNullException(nameof(utility));
             _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -41,7 +40,7 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
         public async ValueTask<RoundDetailResult> GetAsync(SBORoundDetailQuery query,
             CancellationToken cancellationToken = default)
         {
-            var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
+            var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
             if (roundModel == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
@@ -89,13 +88,6 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
 
             return new RoundDetailResult
             {
-                GameProviderName = gameProviderModel.Name,
-                GameName = gameModel.Name,
-                ExternalRoundId = roundModel.ExternalRoundId,
-                BetAmount = roundModel.BetAmount,
-                Turnover = roundModel.Turnover,
-                Winloss = roundModel.WinLoss,
-                GameResult = roundModel.ClientStatus.ToString(),
                 Data = new RoundDetailDataBase[]
                 {
                     new RoundDetailDataJson

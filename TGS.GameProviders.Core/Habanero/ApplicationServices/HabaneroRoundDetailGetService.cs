@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Extensions;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.Habanero.ApplicationServices
@@ -15,24 +14,24 @@ namespace TGS.GameProviders.Core.Habanero.ApplicationServices
     internal class HabaneroRoundDetailGetService : IGetService<HabaneroRoundDetailQuery, RoundDetailResult>
     {
         private readonly ILogger<HabaneroRoundDetailGetService> _logger;
-        private readonly IRoundRepository _roundRepository;
+        private readonly IRoundService _roundService;
         private readonly IHabaneroService _service;
 
         public HabaneroRoundDetailGetService(
             ILogger<HabaneroRoundDetailGetService> logger,
             IHabaneroService service,
-            IRoundRepository roundRepository)
+            IRoundService roundService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _service = service ?? throw new ArgumentNullException(nameof(service));
-            _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
+            _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         }
 
         public async ValueTask<RoundDetailResult> GetAsync(
             HabaneroRoundDetailQuery query,
             CancellationToken cancellationToken = default)
         {
-            var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
+            var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
             if (roundModel == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
@@ -78,13 +77,6 @@ namespace TGS.GameProviders.Core.Habanero.ApplicationServices
 
             return new RoundDetailResult
             {
-                GameProviderName = gameProviderModel.Name,
-                GameName = gameModel.Name,
-                ExternalRoundId = roundModel.ExternalRoundId,
-                BetAmount = roundModel.BetAmount,
-                Turnover = roundModel.Turnover,
-                Winloss = roundModel.WinLoss,
-                GameResult = roundModel.ClientStatus.ToString(),
                 Data = new RoundDetailDataBase[]
                 {
                     new RoundDetailDataUrl

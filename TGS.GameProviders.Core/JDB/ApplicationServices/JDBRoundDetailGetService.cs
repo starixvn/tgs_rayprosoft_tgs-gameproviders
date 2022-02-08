@@ -18,12 +18,12 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
     private readonly IGameService _gameService;
     private readonly ILogger<JDBRoundDetailGetService> _logger;
     private readonly IPlayerService _playerService;
-    private readonly IRoundRepository _roundRepository;
+    private readonly IRoundService _roundService;
     private readonly IJDBService _service;
 
     public JDBRoundDetailGetService(
         ILogger<JDBRoundDetailGetService> logger,
-        IRoundRepository roundRepository,
+        IRoundService roundService,
         IPlayerService playerService,
         IGameProviderRepository gameProviderRepository,
         IGameService gameService,
@@ -32,7 +32,7 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
         IJDBApiClient client)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
+        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
@@ -45,14 +45,14 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
         JDBRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
+        var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
         if (roundModel == null)
         {
             throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        var playerModel = await _playerService.GetCacheAsync(roundModel.PlayerCode).ConfigureAwait(false);
-        if (playerModel == null)
+        var playerInfo = await _playerService.GetCacheAsync(roundModel.PlayerCode).ConfigureAwait(false);
+        if (playerInfo == null)
         {
             throw new Exception($"The player does not exist.{roundModel.PlayerCode}");
         }
@@ -63,8 +63,8 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
             throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
         }
 
-        var gameModel = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
-        if (gameModel == null)
+        var gameInfo = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
+        if (gameInfo == null)
         {
             throw new Exception($"This game Id could not be found.{roundModel.GameId}");
         }
@@ -74,12 +74,12 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
             .ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-        var agent = _agentMapper.GetAgent(configuration.Agents, playerModel.DefaultWalletCurrencyCode);
+        var agent = _agentMapper.GetAgent(configuration.Agents, playerInfo.DefaultWalletCurrencyCode);
 
-        var items = gameModel.GameExternalId.Split("_");
+        var items = gameInfo.GameExternalId.Split("_");
         if (items.Length != 2 || !int.TryParse(items[0], out var gtype))
         {
-            throw new ArgumentException($"Invalid external game id '{gameModel.GameExternalId}'");
+            throw new ArgumentException($"Invalid external game id '{gameInfo.GameExternalId}'");
         }
 
         if (!long.TryParse(roundModel.ExternalRoundId, out var externalRoundId))
@@ -91,7 +91,7 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
         {
             Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
             Parent = agent.Id,
-            UserId = playerModel.PlayerCode,
+            UserId = playerInfo.PlayerCode,
             Language = gameProviderLanguageCode,
             GameType = gtype,
             SequenceNo = externalRoundId
@@ -114,13 +114,6 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
 
         return new RoundDetailResult
         {
-            GameProviderName = gameProviderModel.Name,
-            GameName = gameModel.Name,
-            ExternalRoundId = roundModel.ExternalRoundId,
-            BetAmount = roundModel.BetAmount,
-            Turnover = roundModel.Turnover,
-            Winloss = roundModel.WinLoss,
-            GameResult = roundModel.ClientStatus.ToString(),
             Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataUrl

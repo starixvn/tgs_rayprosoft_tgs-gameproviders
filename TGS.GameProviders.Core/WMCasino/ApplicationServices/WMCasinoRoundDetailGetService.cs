@@ -13,16 +13,16 @@ namespace TGS.GameProviders.Core.WMCasino.ApplicationServices;
 internal class WMCasinoRoundDetailGetService : IGetService<WMCasinoRoundDetailQuery, RoundDetailResult>
 {
     private readonly ILogger<WMCasinoRoundDetailGetService> _logger;
-    private readonly IRoundRepository _roundRepository;
+    private readonly IRoundService _roundService;
     private readonly IWMCasinoService _service;
 
     public WMCasinoRoundDetailGetService(
         ILogger<WMCasinoRoundDetailGetService> logger,
-        IRoundRepository roundRepository,
+        IRoundService roundService,
         IWMCasinoService service)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
+        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         _service = service ?? throw new ArgumentNullException(nameof(service));
     }
 
@@ -30,7 +30,7 @@ internal class WMCasinoRoundDetailGetService : IGetService<WMCasinoRoundDetailQu
         WMCasinoRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
+        var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
         if (roundModel == null)
         {
             throw new Exception($"This game round number could not be found.{query.RoundId}");
@@ -52,13 +52,6 @@ internal class WMCasinoRoundDetailGetService : IGetService<WMCasinoRoundDetailQu
 
         return new RoundDetailResult
         {
-            GameProviderName = gameProviderModel.Name,
-            GameName = gameModel.Name,
-            ExternalRoundId = roundModel.ExternalRoundId,
-            BetAmount = roundModel.BetAmount,
-            Turnover = roundModel.Turnover,
-            Winloss = roundModel.WinLoss,
-            GameResult = roundModel.ClientStatus.ToString(),
             Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataJson

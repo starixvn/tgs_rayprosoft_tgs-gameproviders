@@ -10,7 +10,6 @@ using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
 using TGS.GameProviders.Core.AsiaGaming.Models;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -25,8 +24,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<AsiaGamingRoundDetailGetService>.Instance;
-        var fakeRoundRepository = Substitute.For<IRoundRepository>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+        var fakeRoundService = Substitute.For<IRoundService>();
         var fakeGameService = Substitute.For<IGameService>();
         var fakeService = Substitute.For<IAsiaGamingService>();
 
@@ -147,21 +145,6 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
          "CNY",
          PlayerStatus.Enabled);
 
-        var gameProviderModel = new GameProviderModel(
-            Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
-            GameProviderStatus.Active,
-            null,
-            true,
-            true,
-            true,
-            10,
-            5,
-            13,
-            false,
-            "AG",
-            "AsiaGaming",
-            null);
-
         var gameModel = new GameInfo(
             400013,
             GameStatus.Active,
@@ -182,14 +165,14 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             null,
             "AG");
 
-        var roundModel = new RoundModel(
+        var roundModel = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "GN0022160907S",
-            gameProviderModel.GameProviderId,
+            Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
             playerModel.PlayerCode,
             gameModel.GameId,
             playerModel.DefaultWalletCurrencyCode,
-            RoundStatus.Closed,
+            (Tgs.GameProviders.QueryServer.Client.RoundStatus)RoundStatus.Closed,
             Guid.NewGuid(),
             playerModel.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -205,7 +188,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            ClientRoundStatus.Win,
+            (Tgs.GameProviders.QueryServer.Client.RoundClientStatus)ClientRoundStatus.Win,
             null,
             null,
             null,
@@ -219,13 +202,6 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
 
         var expected = new RoundDetailResult
         {
-            GameProviderName = gameProviderModel.Name,
-            GameName = gameModel.Name,
-            ExternalRoundId = roundModel.ExternalRoundId,
-            BetAmount = roundModel.BetAmount,
-            Turnover = roundModel.Turnover,
-            Winloss = roundModel.WinLoss,
-            GameResult = roundModel.ClientStatus.ToString(),
             Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataJson
@@ -239,27 +215,19 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             }
         };
 
-        _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
-        _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundModel));
         _ = fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
 
         var sut = new AsiaGamingRoundDetailGetService(
             fakeLogger,
-            fakeRoundRepository,
-            fakeGameProviderRepository,
+            fakeRoundService,
             fakeGameService,
             fakeService);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(expected.GameProviderName, actual.GameProviderName);
-        Assert.AreEqual(expected.GameName, actual.GameName);
-        Assert.AreEqual(expected.ExternalRoundId, actual.ExternalRoundId);
-        Assert.AreEqual(expected.BetAmount, actual.BetAmount);
-        Assert.AreEqual(expected.Turnover, actual.Turnover);
-        Assert.AreEqual(expected.Winloss, actual.Winloss);
-        Assert.AreEqual(expected.GameResult, actual.GameResult);
+        CollectionAssert.AreEqual(expected.Data, actual.Data);
     }
 }

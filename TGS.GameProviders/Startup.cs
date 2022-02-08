@@ -152,20 +152,6 @@ namespace TGS.GameProviders
             });
 
             services
-                .AddDbBetRepository((
-                    sp,
-                    dbBuilder) =>
-                {
-                    var config = sp.GetRequiredService<IConfiguration>();
-
-                    dbBuilder
-                        .UseLazyLoadingProxies();
-
-                    dbBuilder.UseNpgsql(
-                        config.GetConnectionString("Tgs"));
-                });
-
-            services
                 .AddNatsMessageQueue(natsConfig =>
                 {
                     natsConfig

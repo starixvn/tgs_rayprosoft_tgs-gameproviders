@@ -8,7 +8,6 @@ using TGS.GameProviders.Core.Jili.ApplicationServices;
 using TGS.GameProviders.Core.Jili.Models;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -23,9 +22,7 @@ public class JiliRoundDetailGetServiceUnitTest
     public async ValueTask Normal_Process()
     {
         var fakeLogger = NullLogger<JiliRoundDetailGetService>.Instance;
-        var fakeRoundRepository = Substitute.For<IRoundRepository>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameService = Substitute.For<IGameService>();
+        var fakeRoundService = Substitute.For<IRoundService>();
         var fakePlayerService = Substitute.For<IPlayerService>();
         var fakeService = Substitute.For<IJiliService>();
         var fakeMerchantMapper = Substitute.For<IJiliMerchantMapper>();
@@ -65,49 +62,14 @@ public class JiliRoundDetailGetServiceUnitTest
             "CNY",
             PlayerStatus.Enabled);
 
-        var gameProviderModel = new GameProviderModel(
-            Guid.Parse("b957e28c-0e94-40af-9d37-ab48cdeb5d29"),
-            GameProviderStatus.Active,
-            null,
-            true,
-            true,
-            true,
-            10,
-            5,
-            22,
-            false,
-            "JILI",
-            "JILI",
-            null);
-
-        var gameInfo = new GameInfo(
-            2200001,
-            GameStatus.Active,
-            "10",
-            null,
-            null,
-            null,
-            gameProviderModel.GameProviderId,
-            GameType.Slot,
-            GamePlatformType.Desktop,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "FaFaFa",
-            "FaFaFa",
-            null,
-            "JILI");
-
-        var roundModel = new RoundModel(
+        var roundInfo = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "1639679431950180036",
-            gameProviderModel.GameProviderId,
+            Guid.Parse("b957e28c-0e94-40af-9d37-ab48cdeb5d29"),
             playerModel.PlayerCode,
-            gameInfo.GameId,
+            2200001,
             playerModel.DefaultWalletCurrencyCode,
-            RoundStatus.Closed,
+            Tgs.GameProviders.QueryServer.Client.RoundStatus.Closed,
             Guid.NewGuid(),
             playerModel.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -123,7 +85,7 @@ public class JiliRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            ClientRoundStatus.Win,
+            Tgs.GameProviders.QueryServer.Client.RoundClientStatus.Win,
             null,
             null,
             null,
@@ -131,18 +93,16 @@ public class JiliRoundDetailGetServiceUnitTest
 
         var query = new JiliRoundDetailQuery
         {
-            RoundId = roundModel.RoundId,
+            RoundId = roundInfo.RoundId,
             Language = "en-US"
         };
 
-        _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
-        _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
-        _ = fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameInfo));
-        _ = fakePlayerService.GetAsync(roundModel.PlayerCode).Returns(Task.FromResult(playerModel));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
+        _ = fakePlayerService.GetAsync(roundInfo.PlayerCode).Returns(Task.FromResult(playerModel));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, playerModel.BrandCode).Returns(merchant);
         _ = fakeService
-            .GetGameProviderLanguageCodeAsync(gameProviderModel.GameProviderId, query.Language)
+            .GetGameProviderLanguageCodeAsync(Guid.Parse("b957e28c-0e94-40af-9d37-ab48cdeb5d29"), query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         _ = fakeApiClient
@@ -151,7 +111,7 @@ public class JiliRoundDetailGetServiceUnitTest
                 merchant.AgentId,
                 merchant.AgentKey,
                 gameProviderLanguageCode,
-                roundModel.ExternalRoundId)
+                roundInfo.ExternalRoundId)
             .Returns(ValueTask.FromResult(
                 new JiliGetGameDetailUrlResponse
                 {
@@ -164,13 +124,6 @@ public class JiliRoundDetailGetServiceUnitTest
 
         var expected = new RoundDetailResult
         {
-            GameProviderName = gameProviderModel.Name,
-            GameName = gameInfo.Name,
-            ExternalRoundId = roundModel.ExternalRoundId,
-            BetAmount = roundModel.BetAmount,
-            Turnover = roundModel.Turnover,
-            Winloss = roundModel.WinLoss,
-            GameResult = roundModel.ClientStatus.ToString(),
             Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataUrl
@@ -182,9 +135,7 @@ public class JiliRoundDetailGetServiceUnitTest
 
         var sut = new JiliRoundDetailGetService(
             fakeLogger,
-            fakeRoundRepository,
-            fakeGameProviderRepository,
-            fakeGameService,
+            fakeRoundService,
             fakePlayerService,
             fakeService,
             fakeMerchantMapper,
@@ -193,13 +144,6 @@ public class JiliRoundDetailGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(expected.GameProviderName, actual.GameProviderName);
-        Assert.AreEqual(expected.GameName, actual.GameName);
-        Assert.AreEqual(expected.ExternalRoundId, actual.ExternalRoundId);
-        Assert.AreEqual(expected.BetAmount, actual.BetAmount);
-        Assert.AreEqual(expected.Turnover, actual.Turnover);
-        Assert.AreEqual(expected.Winloss, actual.Winloss);
-        Assert.AreEqual(expected.GameResult, actual.GameResult);
         CollectionAssert.AreEqual(expected.Data, actual.Data);
     }
 }
