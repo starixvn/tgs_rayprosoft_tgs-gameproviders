@@ -12,7 +12,7 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
     {
         private readonly ISkywindApiClient _client;
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly IGameRepository _gameRepository;
+        private readonly IGameService _gameService;
         private readonly IRoundRepository _roundRepository;
         private readonly ISkywindService _service;
         private readonly ISkywindAccessToken _skywindAccessToken;
@@ -20,7 +20,7 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
         public SkywindRoundDetailGetService(
             ISkywindApiClient client,
             IGameProviderRepository gameProviderRepository,
-            IGameRepository gameRepository,
+            IGameService gameService,
             IRoundRepository roundRepository,
             ISkywindService service,
             ISkywindAccessToken skywindAccessToken
@@ -28,7 +28,7 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _skywindAccessToken = skywindAccessToken ?? throw new ArgumentNullException(nameof(skywindAccessToken));
@@ -47,7 +47,7 @@ namespace TGS.GameProviders.Core.Skywind.ApplicationServices
                 throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
             }
 
-            var gameModel = await _gameRepository.GetAsync(roundModel.GameId).ConfigureAwait(false);
+            var gameModel = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
             if (gameModel == null)
             {
                 throw new Exception($"This game Id could not be found..{gameModel.GameId}");

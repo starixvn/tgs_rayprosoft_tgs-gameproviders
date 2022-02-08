@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.SBO;
-using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Services.SBO
 {

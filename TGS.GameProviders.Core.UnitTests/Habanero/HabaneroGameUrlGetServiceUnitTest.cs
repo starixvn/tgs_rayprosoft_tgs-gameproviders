@@ -6,8 +6,6 @@ using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
 using TGS.GameProviders.Core.Habanero;
 using TGS.GameProviders.Core.Habanero.ApplicationServices;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.UnitTests.Habanero;
@@ -39,7 +37,7 @@ public class HabaneroGameUrlGetServiceUnitTest
             BetHistoryUrl = new("https://app-test.insvr.com")
         };
 
-        var game = new GameModel(
+        var game = new GameInfo(
             200001,
             GameStatus.Active,
             "SGTotemTowers",

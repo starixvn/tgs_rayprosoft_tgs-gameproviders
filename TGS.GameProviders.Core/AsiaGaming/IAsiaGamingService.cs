@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.AsiaGaming;
@@ -10,7 +8,7 @@ public interface IAsiaGamingService
 {
     ValueTask<Guid> GetBrandIdAsync(string brandCode);
 
-    ValueTask<GameModel> GetGameAsync(int gameId);
+    ValueTask<GameInfo> GetGameAsync(int gameId);
 
     ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType);
 

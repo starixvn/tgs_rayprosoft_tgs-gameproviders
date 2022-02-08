@@ -5,7 +5,6 @@ using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.Avia.ApplicationServices;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration.Avia;
 
 namespace TGS.GameProviders.Core.UnitTests.Avia

@@ -7,9 +7,6 @@ using Tgs.Core.Infrastructures.Security;
 using TGS.GameProviders.Core.Jili;
 using TGS.GameProviders.Core.Jili.ApplicationServices;
 using TGS.GameProviders.Core.Jili.Models;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.Jili;
 
@@ -22,7 +19,7 @@ public class JiliGameUrlGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<JiliGameUrlGetService>.Instance;
-        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeGameService = Substitute.For<IGameService>();
         var fakeTokenProvider = Substitute.For<ITokenProvider>();
         var fakeService = Substitute.For<IJiliService>();
         var fakeMerchantMapper = Substitute.For<IJiliMerchantMapper>();
@@ -50,7 +47,7 @@ public class JiliGameUrlGetServiceUnitTest
             SecretKey = "SecretKey"
         };
 
-        var game = new GameModel(
+        var game = new GameInfo(
             2200001,
             GameStatus.Active,
             "10",
@@ -86,7 +83,7 @@ public class JiliGameUrlGetServiceUnitTest
 
         var sut = new JiliGameUrlGetService(
             fakeLogger,
-            fakeGameRepository,
+            fakeGameService,
             fakeTokenProvider,
             fakeService,
             fakeMerchantMapper,
@@ -95,7 +92,7 @@ public class JiliGameUrlGetServiceUnitTest
         fakeTokenProvider.EncryptAsync(Arg.Any<string>()).Returns(ValueTask.FromResult(token));
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         fakeMerchantMapper.GetMerchant(configuration.Merchants, query.BrandCode).Returns(merchant);
-        fakeGameRepository.GetAsync(game.GameId).Returns(Task.FromResult(game));
+        fakeGameService.GetCacheAsync(game.GameId).Returns(ValueTask.FromResult(game));
         fakeService
             .GetGameProviderLanguageCodeAsync(game.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));

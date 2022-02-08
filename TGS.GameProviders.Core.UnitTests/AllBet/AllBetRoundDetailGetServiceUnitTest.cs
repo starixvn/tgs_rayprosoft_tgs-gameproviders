@@ -8,7 +8,6 @@ using NUnit.Framework;
 using TGS.GameProviders.Core.AllBet.ApplicationServices;
 using TGS.GameProviders.Core.AllBet.Models;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains;
@@ -25,7 +24,7 @@ public class AllBetRoundDetailGetServiceUnitTest
         var fakeLogger = NullLogger<AllBetRoundDetailGetService>.Instance;
         var fakeRoundRepository = Substitute.For<IRoundRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeGameService = Substitute.For<IGameService>();
         var fakePlayerService = Substitute.For<IPlayerService>();
 
         var playerModel = new PlayerInfo(
@@ -56,7 +55,7 @@ public class AllBetRoundDetailGetServiceUnitTest
             "AllBet",
             null);
 
-        var gameModel = new GameModel(
+        var gameModel = new GameInfo(
             1300002,
             GameStatus.Active,
             "101",
@@ -135,14 +134,14 @@ public class AllBetRoundDetailGetServiceUnitTest
 
         _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
         _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
-        _ = fakeGameRepository.GetAsync(roundModel.GameId).Returns(Task.FromResult(gameModel));
+        _ = fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
         _ = fakePlayerService.GetAsync(roundModel.PlayerCode).Returns(Task.FromResult(playerModel));
 
         var sut = new AllBetRoundDetailGetService(
             fakeLogger,
             fakeRoundRepository,
             fakeGameProviderRepository,
-            fakeGameRepository);
+            fakeGameService);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 

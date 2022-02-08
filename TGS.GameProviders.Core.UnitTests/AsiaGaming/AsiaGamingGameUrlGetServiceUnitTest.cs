@@ -7,7 +7,6 @@ using NUnit.Framework;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
 using TGS.GameProviders.Core.AsiaGaming.Models;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.AsiaGaming;
@@ -140,7 +139,7 @@ public class AsiaGamingGameUrlGetServiceUnitTest
             OppositeBets = Array.Empty<OppositeBetSetting>()
         };
 
-        var gameModel = new GameModel(
+        var gameModel = new GameInfo(
             400001,
             GameStatus.Active,
             "asiagaminglobby",

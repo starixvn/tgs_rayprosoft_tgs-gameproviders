@@ -25,8 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services
                 .AddTransient<IGameProviderRepository, GameProviderRepository>()
-                .AddTransient<ISettingRepository, SettingRepository>()
-                .AddTransient<IGameRepository, GameRepository>();
+                .AddTransient<ISettingRepository, SettingRepository>();
         }
     }
 }

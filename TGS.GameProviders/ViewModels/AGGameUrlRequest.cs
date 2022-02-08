@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using TGS.GameProviders.Domains;
+using TGS.GameProviders.Core;
 
 namespace TGS.GameProviders.ViewModels;
 

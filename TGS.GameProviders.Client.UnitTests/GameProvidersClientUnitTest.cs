@@ -10,7 +10,6 @@ using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
 using TGS.GameProviders.Core.AsiaGaming.Models;
 using TGS.GameProviders.Core.BetConstruct;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.AsiaGaming;
@@ -152,16 +151,16 @@ namespace TGS.GameProviders.Client.IntegrationTests
                 OppositeBets = Array.Empty<OppositeBetSetting>()
             };
 
-            var gameModel = new GameModel(
+            var gameInfo = new GameInfo(
                 400001,
-                GameStatus.Active,
+                Core.GameStatus.Active,
                 "asiagaminglobby",
                 null,
                 "/forwardGame.do?params={PARAS}&key={KEY}",
                 null,
                 Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
-                GameType.LiveDealerLobby,
-                GamePlatformType.DesktopAndMobile,
+                Core.GameType.LiveDealerLobby,
+                Core.GamePlatformType.DesktopAndMobile,
                 false,
                 true,
                 false,
@@ -187,13 +186,13 @@ namespace TGS.GameProviders.Client.IntegrationTests
 
             var query = new AsiaGamingGameUrlQuery
             {
-                GameType = gameModel.GameType,
-                GameId = gameModel.GameId,
+                GameType = gameInfo.GameType,
+                GameId = gameInfo.GameId,
                 BrandCode = "GPI",
                 PlayerCode = playerModel.PlayerCode,
                 CurrencyCode = "CNY",
                 LoginRecordId = Guid.NewGuid(),
-                PlatformType = PlatformType.Desktop,
+                PlatformType = Core.PlatformType.Desktop,
                 Language = "en-US",
                 IPAddress = "127.0.0.1",
                 BackUrl = new("https://dev-t1.rpgp.cc/"),
@@ -205,19 +204,19 @@ namespace TGS.GameProviders.Client.IntegrationTests
                 .Returns(ValueTask.FromResult(configuration));
 
             fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-            fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameModel.GameProviderId));
-            fakeService.GetGameAsync(gameModel.GameId).Returns(ValueTask.FromResult(gameModel));
+            fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
+            fakeService.GetGameAsync(gameInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
 
             fakeService
-                .GetGameProviderCurrencyCodeAsync(gameModel.GameProviderId, query.CurrencyCode)
+                .GetGameProviderCurrencyCodeAsync(gameInfo.GameProviderId, query.CurrencyCode)
                 .Returns(ValueTask.FromResult(gameProviderCurrencyCode));
 
-            fakeService.GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
+            fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
                 .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
             fakeService.GetBrandIdAsync(playerModel.BrandCode).Returns(ValueTask.FromResult(playerModel.BrandId));
             fakeService
-                .GetGameDomainAsync(playerModel.BrandId, gameModel.GameProviderId, query.PlatformType)
+                .GetGameDomainAsync(playerModel.BrandId, gameInfo.GameProviderId, query.PlatformType)
                 .Returns(ValueTask.FromResult(domain));
 
             fakePlayerService.CheckOrCreateAccountAsync(configuration, playerModel.PlayerCode, gameProviderCurrencyCode)
@@ -236,7 +235,7 @@ namespace TGS.GameProviders.Client.IntegrationTests
                         x.AgentCode == configuration.AgentCode &&
                         x.PlayerCode == playerModel.PlayerCode &&
                         x.Lang == gameProviderLanguageCode &&
-                        x.GameId == gameModel.GameExternalId &&
+                        x.GameId == gameInfo.GameExternalId &&
                         x.Currency == gameProviderCurrencyCode),
                     Arg.Any<string>())
                 .Returns(queryString);
@@ -250,13 +249,13 @@ namespace TGS.GameProviders.Client.IntegrationTests
 
             var actual = await sut.GameUrlByAsiaGamingAsync(
                 "AG",
-                query.GameType,
+                (Domains.GameType)query.GameType,
                 query.GameId.Value,
                 query.BrandCode,
                 query.PlayerCode,
                 query.CurrencyCode,
                 query.LoginRecordId,
-                query.PlatformType,
+                (Domains.PlatformType)query.PlatformType,
                 query.Language,
                 query.IPAddress,
                 query.BackUrl,
@@ -295,12 +294,12 @@ namespace TGS.GameProviders.Client.IntegrationTests
             var sut = new GameProvidersClient(httpClient);
 
             var gameProviderCode = "BC";
-            var gameType = GameType.Sportsbook;
+            var gameType = Domains.GameType.Sportsbook;
             var gameId = 2100001;
             var brandCode = "GPI";
             var currencyCode = "CNY";
             var loginRecordId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-            var platformType = PlatformType.Desktop;
+            var platformType = Domains.PlatformType.Desktop;
             var language = "zh-CN";
             var ipAddress = "127.0.0.1";
             var lobbyDomain = "https://devsportsbook.srvttt.com";

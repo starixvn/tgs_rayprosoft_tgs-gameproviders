@@ -5,15 +5,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 {
     public class BigGamingKickPlayerCommandService : ICommandService<BigGamingKickPlayerCommand>
     {
         private readonly IBigGamingApiClient _client;
-        private readonly IGameRepository _gameRepository;
+        private readonly IGameService _gameService;
         private readonly ILogger<BigGamingKickPlayerCommandService> _logger;
         private readonly IPlayerService _playerService;
         private readonly IBigGamingService _service;
@@ -23,13 +21,13 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
             IBigGamingApiClient client,
             IBigGamingService service,
             IPlayerService playerService,
-            IGameRepository gameRepository)
+            IGameService gameService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
 
         public async ValueTask ExecuteAsync(BigGamingKickPlayerCommand command, CancellationToken cancellationToken = default)
@@ -40,7 +38,7 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
                 throw new Exception($"The player does not exist.{command.PlayerCode}");
             }
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
-            var games = await _gameRepository.GetGameList(gameProviderId, GameType.Fishing).ToArrayAsync();
+            var games = await _gameService.GetGameListAsync(gameProviderId, GameType.Fishing).ToArrayAsync();
             var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
             var tasks = new List<Task>();

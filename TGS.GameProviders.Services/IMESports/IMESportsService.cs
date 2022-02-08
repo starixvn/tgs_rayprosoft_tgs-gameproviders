@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.IMESports;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -14,7 +13,7 @@ namespace TGS.GameProviders.Services.IMESports
     internal class IMESportsService : IIMESportsService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly IGameRepository _gameRepository;
+        private readonly IGameService _gameService;
         private readonly ILogger<IMESportsService> _logger;
         private readonly IPlayerService _playerService;
         private readonly ISettingRepository _settingRepository;
@@ -23,18 +22,18 @@ namespace TGS.GameProviders.Services.IMESports
             ILogger<IMESportsService> logger,
             ISettingRepository settingRepository,
             IGameProviderRepository gameProviderRepository,
-            IGameRepository gameRepository,
+            IGameService gameService,
             IPlayerService playerService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         }
 
-        public async ValueTask<GameModel> GetGameAsync(int gameId)
-            => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
+        public async ValueTask<GameInfo> GetGameAsync(int gameId)
+            => await _gameService.GetAsync(gameId).ConfigureAwait(false);
 
         public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
             => _gameProviderRepository.GetAsync(gameProviderId);

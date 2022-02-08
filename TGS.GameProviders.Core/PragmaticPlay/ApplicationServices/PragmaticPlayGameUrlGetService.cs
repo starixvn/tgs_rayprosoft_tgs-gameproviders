@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.PragmaticPlay.Models;
-using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.PragmaticPlay.ApplicationServices
 {

@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameAction;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.Repositories.Models.Rounds;
@@ -29,7 +28,7 @@ public class SabaRoundDetailGetServiceUnitTest
         var fakeService = Substitute.For<ISabaService>();
         var fakeApiClient = Substitute.For<ISabaApiClient>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeGameService = Substitute.For<IGameService>();
         var fakeGameActionRepository = Substitute.For<IGameActionRepository>();
         var fakeRoundRepository = Substitute.For<IRoundRepository>();
 
@@ -71,7 +70,7 @@ public class SabaRoundDetailGetServiceUnitTest
             "Saba Sports",
             null);
 
-        var gameModel = new GameModel(
+        var gameModel = new GameInfo(
             600001,
             GameStatus.Active,
             "1",
@@ -216,7 +215,7 @@ public class SabaRoundDetailGetServiceUnitTest
 
         _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
         _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
-        _ = fakeGameRepository.GetAsync(roundModel.GameId).Returns(Task.FromResult(gameModel));
+        _ = fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
         _ = fakeGameActionRepository.GetGameActionsByRoundIdAsync(query.RoundId).Returns(gameActions);
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeApiClient
@@ -236,7 +235,7 @@ public class SabaRoundDetailGetServiceUnitTest
         var sut = new SabaRoundDetailGetService(
             fakeLogger,
             fakeGameProviderRepository,
-            fakeGameRepository,
+            fakeGameService,
             fakeRoundRepository,
             fakeGameActionRepository,
             fakeService,

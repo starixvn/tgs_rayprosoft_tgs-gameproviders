@@ -7,9 +7,6 @@ using Tgs.Core.Infrastructures.Security;
 using TGS.GameProviders.Core.Card365;
 using TGS.GameProviders.Core.Card365.ApplicationServices;
 using TGS.GameProviders.Core.Card365.Model;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.Card365;
 
@@ -25,7 +22,7 @@ public class Card365GameUrlQueryGetServiceUnitTest
         var fakeService = Substitute.For<ICard365Service>();
         var fakeApiClient = Substitute.For<ICard365ApiClient>();
         var fakeAgentMapper = Substitute.For<ICard365AgentMapper>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeGameService = Substitute.For<IGameService>();
         var fakePlayerService = Substitute.For<IPlayerService>();
         var fakeTokenProvider = Substitute.For<ITokenProvider>();
 
@@ -52,7 +49,7 @@ public class Card365GameUrlQueryGetServiceUnitTest
             BrandAgents = new[] { agent }
         };
 
-        var gameModel = new GameModel(
+        var gameModel = new GameInfo(
             1900001,
             GameStatus.Active,
             "384",
@@ -110,7 +107,7 @@ public class Card365GameUrlQueryGetServiceUnitTest
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         fakePlayerService.GetCacheAsync(query.PlayerCode).Returns(Task.FromResult(playerModel));
-        fakeGameRepository.GetAsync(query.GameId!.Value).Returns(Task.FromResult(gameModel));
+        fakeGameService.GetCacheAsync(query.GameId!.Value).Returns(ValueTask.FromResult(gameModel));
         fakeAgentMapper.GetAgent(configuration.BrandAgents, playerModel.BrandCode).Returns(agent);
         fakeTokenProvider.EncryptAsync(query.LoginRecordId).Returns(ValueTask.FromResult(token));
         fakeApiClient
@@ -135,7 +132,7 @@ public class Card365GameUrlQueryGetServiceUnitTest
         var sut = new Card365GameUrlQueryGetService(
             fakeLogger,
             fakePlayerService,
-            fakeGameRepository,
+            fakeGameService,
             fakeService,
             fakeAgentMapper,
             fakeApiClient,

@@ -7,7 +7,6 @@ using TGS.GameProviders.Core.JDB;
 using TGS.GameProviders.Core.JDB.ApplicationServices;
 using TGS.GameProviders.Core.JDB.Models;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains;
@@ -27,7 +26,7 @@ public class JDBRoundDetailGetServiceUnitTest
         var fakePlayerService = Substitute.For<IPlayerService>();
         var fakeRoundRepository = Substitute.For<IRoundRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeGameService = Substitute.For<IGameService>();
         var fakeService = Substitute.For<IJDBService>();
         var fakeAgentMapper = Substitute.For<IJDBAgentMapper>();
         var fakeApiClient = Substitute.For<IJDBApiClient>();
@@ -81,7 +80,7 @@ public class JDBRoundDetailGetServiceUnitTest
             "JDB",
             null);
 
-        var gameModel = new GameModel(
+        var gameModel = new GameInfo(
             700010,
             GameStatus.Active,
             "0_14034",
@@ -164,7 +163,7 @@ public class JDBRoundDetailGetServiceUnitTest
         fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
         fakePlayerService.GetCacheAsync(roundModel.PlayerCode).Returns(Task.FromResult(playerModel));
         fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
-        fakeGameRepository.GetAsync(roundModel.GameId).Returns(Task.FromResult(gameModel));
+        fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
 
         var items = gameModel.GameExternalId.Split('_');
 
@@ -198,7 +197,7 @@ public class JDBRoundDetailGetServiceUnitTest
             fakeRoundRepository,
             fakePlayerService,
             fakeGameProviderRepository,
-            fakeGameRepository,
+            fakeGameService,
             fakeService,
             fakeAgentMapper,
             fakeApiClient);

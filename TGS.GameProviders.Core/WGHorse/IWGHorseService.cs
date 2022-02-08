@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
@@ -10,7 +9,7 @@ namespace TGS.GameProviders.Core.WGHorse
     {
         ClientRoundStatus GetClientRound(decimal playerWinLoss);
 
-        ValueTask<GameModel> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
+        ValueTask<GameInfo> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
 
         string GetGameProviderCode();
 

@@ -6,8 +6,6 @@ using NUnit.Framework;
 using TGS.GameProviders.Core.AllBet;
 using TGS.GameProviders.Core.AllBet.ApplicationServices;
 using TGS.GameProviders.Core.AllBet.Models;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.AllBet;
 
@@ -54,7 +52,7 @@ public class AllBetGameUrlGetServiceUnitTest
             }
         };
 
-        var gameModel = new GameModel(
+        var gameModel = new GameInfo(
             1300001,
             GameStatus.Active,
             "AllBetLobby",

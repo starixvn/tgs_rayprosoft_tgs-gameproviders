@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
+
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.WMCasino;
 using TGS.GameProviders.Domains;
@@ -14,7 +14,7 @@ namespace TGS.GameProviders.Services.WMCasino;
 public class WMCasinoService : IWMCasinoService
 {
     private readonly IGameProviderRepository _gameProviderRepository;
-    private readonly IGameRepository _gameRepository;
+    private readonly IGameService _gameService;
     private readonly ILogger<WMCasinoService> _logger;
     private readonly IPlayerService _playerService;
     private readonly ISettingRepository _settingRepository;
@@ -24,18 +24,18 @@ public class WMCasinoService : IWMCasinoService
         ISettingRepository settingRepository,
         IPlayerService playerService,
         IGameProviderRepository gameProviderRepository,
-        IGameRepository gameRepository)
+        IGameService gameService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
         _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         _gameProviderRepository =
             gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
     }
 
-    public async ValueTask<GameModel> GetGameAsync(int gameId)
-        => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
+    public async ValueTask<GameInfo> GetGameAsync(int gameId)
+        => await _gameService.GetAsync(gameId).ConfigureAwait(false);
 
     public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
         => _gameProviderRepository.GetAsync(gameProviderId);

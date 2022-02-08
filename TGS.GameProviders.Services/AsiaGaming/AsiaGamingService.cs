@@ -4,8 +4,6 @@ using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Services.AsiaGaming;
@@ -14,7 +12,7 @@ internal class AsiaGamingService : IAsiaGamingService
 {
     private readonly IBrandService _brandService;
     private readonly IGameProviderRepository _gameProviderRepository;
-    private readonly IGameRepository _gameRepository;
+    private readonly IGameService _gameService;
     private readonly ILogger<AsiaGamingService> _logger;
     private readonly ISettingRepository _settingRepository;
 
@@ -22,21 +20,21 @@ internal class AsiaGamingService : IAsiaGamingService
         ILogger<AsiaGamingService> logger,
         ISettingRepository settingRepository,
         IGameProviderRepository gameProviderRepository,
-        IGameRepository gameRepository,
+        IGameService gameService,
         IBrandService brandService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
         _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         _brandService = brandService ?? throw new ArgumentNullException(nameof(brandService));
     }
 
     public async ValueTask<Guid> GetBrandIdAsync(string brandCode)
         => await _brandService.GetBrandIdAsync(brandCode).ConfigureAwait(false);
 
-    public async ValueTask<GameModel> GetGameAsync(int gameId)
-        => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
+    public async ValueTask<GameInfo> GetGameAsync(int gameId)
+        => await _gameService.GetAsync(gameId).ConfigureAwait(false);
 
     public async ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType)
     {
@@ -58,7 +56,7 @@ internal class AsiaGamingService : IAsiaGamingService
     }
 
     public async ValueTask<Guid> GetGameProviderIdAsync()
-        => await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.AsiaGaming)
+        => await _gameProviderRepository.GetGameProviderIdAsync(Domains.GameProviderType.AsiaGaming)
             .ConfigureAwait(false);
 
     public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
@@ -71,6 +69,6 @@ internal class AsiaGamingService : IAsiaGamingService
 
     public async ValueTask<AsiaGamingConfiguration> GetSettingConfigurationAsync()
         => await _settingRepository
-            .GetConfigurationAsync<AsiaGamingConfiguration>(GameProviderConfigurations.AsiaGaming)
+            .GetConfigurationAsync<AsiaGamingConfiguration>(Domains.GameProviderConfigurations.AsiaGaming)
             .ConfigureAwait(false);
 }

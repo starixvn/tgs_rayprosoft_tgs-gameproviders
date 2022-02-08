@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.WGSports;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -11,18 +11,18 @@ namespace TGS.GameProviders.Services.WGSports
     internal class WGSportsService : IWGSportsService
     {
         private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly IGameRepository _gameRepository;
+        private readonly IGameService _gameService;
         private readonly ISettingRepository _settingRepository;
 
         public WGSportsService(
             ISettingRepository settingRepository,
             IGameProviderRepository gameProviderRepository,
-            IGameRepository gameRepository
+            IGameService gameService
             )
         {
             _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
 
         public decimal? GetAmount(string amountString)
@@ -46,8 +46,8 @@ namespace TGS.GameProviders.Services.WGSports
             }
         }
 
-        public async ValueTask<GameModel> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
-            => await _gameRepository.GetAsync(gameProviderId, externalGameId).ConfigureAwait(false);
+        public async ValueTask<GameInfo> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
+            => await _gameService.GetAsync(gameProviderId, externalGameId).ConfigureAwait(false);
 
         public string GetGameProviderCode()
             => GameProviderType.WGSports;

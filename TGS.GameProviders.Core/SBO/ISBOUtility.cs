@@ -1,6 +1,4 @@
-﻿using TGS.GameProviders.Domains;
-
-namespace TGS.GameProviders.Core.SBO
+﻿namespace TGS.GameProviders.Core.SBO
 {
     public interface ISBOUtility
     {

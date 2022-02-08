@@ -3,27 +3,25 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.LY.ApplicationServices
 {
     public class LYGameUrlGetService : IGetService<LYGameUrlQuery, GameUrlResult>
     {
         private readonly ILYApiClient _client;
-        private readonly IGameRepository _gameRepository;
+        private readonly IGameService _gameService;
         private readonly ILogger<LYGameUrlGetService> _logger;
         private readonly ILYService _service;
 
         public LYGameUrlGetService(
             ILYApiClient client,
-            IGameRepository gameRepository,
+            IGameService gameService,
             ILogger<LYGameUrlGetService> logger,
             ILYService service
             )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
@@ -38,7 +36,7 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
 
             if (command.GameType != GameType.CardGameLobby)
             {
-                var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
+                var getGame = await _gameService.GetCacheAsync(command.GameId.Value).ConfigureAwait(false);
 
                 if (getGame != null)
                 {
