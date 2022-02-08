@@ -18,6 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddSecurity()//Tgs.Core.Infrastructures.Security
                 .AddMemoryCache()
                 .AddTransient<IBrandService, BrandService>()
+                .AddTransient<IGameActionService, GameActionService>()
                 .AddTransient<IGameService, GameService>()
                 .AddTransient<IPlayerService, PlayerService>()
                 .AddTransient<ISettingService, SettingService>();

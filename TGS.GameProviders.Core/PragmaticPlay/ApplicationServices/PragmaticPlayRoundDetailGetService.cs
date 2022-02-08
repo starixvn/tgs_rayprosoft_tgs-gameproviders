@@ -13,7 +13,7 @@ namespace TGS.GameProviders.Core.PragmaticPlay.ApplicationServices;
 internal class PragmaticPlayRoundDetailGetService : IGetService<PragmaticPlayRoundDetailQuery, RoundDetailResult>
 {
     private readonly IPragmaticPlayApiClient _client;
-    private readonly IGameActionRepository _gameActionRepository;
+    private readonly IGameActionService _gameActionService;
     private readonly ILogger<PragmaticPlayRoundDetailGetService> _logger;
     private readonly IRoundRepository _roundRepository;
     private readonly IPragmaticPlayService _service;
@@ -22,14 +22,14 @@ internal class PragmaticPlayRoundDetailGetService : IGetService<PragmaticPlayRou
     public PragmaticPlayRoundDetailGetService(
         ILogger<PragmaticPlayRoundDetailGetService> logger,
         IRoundRepository roundRepository,
-        IGameActionRepository gameActionRepository,
+        IGameActionService gameActionService,
         IPragmaticPlayService service,
         IPragmaticPlayUtility utility,
         IPragmaticPlayApiClient client)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
-        _gameActionRepository = gameActionRepository ?? throw new ArgumentNullException(nameof(gameActionRepository));
+        _gameActionService = gameActionService ?? throw new ArgumentNullException(nameof(gameActionService));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -63,8 +63,8 @@ internal class PragmaticPlayRoundDetailGetService : IGetService<PragmaticPlayRou
             .GetGameProviderLanguageAsync(gameProviderModel.GameProviderId, query.Language)
             .ConfigureAwait(false);
 
-        var gameActions = await _gameActionRepository
-            .GetGameActionsByRoundIdAsync(query.RoundId)
+        var gameActions = await _gameActionService
+            .QueryAsync(query.RoundId)
             .ToArrayAsync(cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 

@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.GameAction;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Core.Saba;
@@ -29,7 +28,7 @@ public class SabaRoundDetailGetServiceUnitTest
         var fakeApiClient = Substitute.For<ISabaApiClient>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameService = Substitute.For<IGameService>();
-        var fakeGameActionRepository = Substitute.For<IGameActionRepository>();
+        var fakeGameActionService = Substitute.For<IGameActionService>();
         var fakeRoundRepository = Substitute.For<IRoundRepository>();
 
         var configuration = new SabaConfiguration
@@ -90,7 +89,7 @@ public class SabaRoundDetailGetServiceUnitTest
             null,
             "SABA");
 
-        var gameActionModel = new GameActionModel(
+        var gameActionModel = new GameActionInfo(
             Guid.NewGuid(),
             Guid.NewGuid(),
             playerModel.PlayerCode,
@@ -100,15 +99,20 @@ public class SabaRoundDetailGetServiceUnitTest
             0m,
             0m,
             0m,
-            null,
+            0m,
             "1639679431950180036",
             "1639679431950180036",
             null,
             null,
-            DateTime.UtcNow,
+            null,
             DateTime.UtcNow,
             null,
-            null);
+            false,
+            null,
+            "::1",
+            null,
+            null,
+            DateTime.UtcNow);
 
         var historyData = new SabaBetHistoryData
         {
@@ -216,7 +220,7 @@ public class SabaRoundDetailGetServiceUnitTest
         _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
         _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
         _ = fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
-        _ = fakeGameActionRepository.GetGameActionsByRoundIdAsync(query.RoundId).Returns(gameActions);
+        _ = fakeGameActionService.QueryAsync(query.RoundId).Returns(gameActions);
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeApiClient
             .GetBetDetailByTransIdAsync(
@@ -237,7 +241,7 @@ public class SabaRoundDetailGetServiceUnitTest
             fakeGameProviderRepository,
             fakeGameService,
             fakeRoundRepository,
-            fakeGameActionRepository,
+            fakeGameActionService,
             fakeService,
             fakeApiClient);
 

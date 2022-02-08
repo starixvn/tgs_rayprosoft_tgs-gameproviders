@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Saba.Models;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.Saba.ApplicationServices
@@ -15,7 +14,7 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
     internal class SabaRoundDetailGetService : IGetService<SabaRoundDetailQuery, RoundDetailResult>
     {
         private readonly ISabaApiClient _client;
-        private readonly IGameActionRepository _gameActionRepository;
+        private readonly IGameActionService _gameActionService;
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameService _gameService;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
@@ -28,7 +27,7 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
             IGameProviderRepository gameProviderRepository,
             IGameService gameService,
             IRoundRepository roundRepository,
-            IGameActionRepository gameActionRepository,
+            IGameActionService gameActionService,
             ISabaService service,
             ISabaApiClient client)
         {
@@ -36,7 +35,7 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
-            _gameActionRepository = gameActionRepository ?? throw new ArgumentNullException(nameof(gameActionRepository));
+            _gameActionService = gameActionService ?? throw new ArgumentNullException(nameof(gameActionService));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _client = client ?? throw new ArgumentNullException(nameof(client));
 
@@ -68,8 +67,8 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
                 throw new Exception($"This game Id could not be found.{roundModel.GameId}");
             }
 
-            var gameActionModel = await _gameActionRepository
-                .GetGameActionsByRoundIdAsync(query.RoundId)
+            var gameActionModel = await _gameActionService
+                .QueryAsync(query.RoundId)
                 .FirstOrDefaultAsync(ga => ga.Type == GameActionType.PlaceBet, cancellationToken)
                 .ConfigureAwait(false);
 
