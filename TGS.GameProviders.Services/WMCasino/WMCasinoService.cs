@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.WMCasino;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -11,7 +10,7 @@ namespace TGS.GameProviders.Services.WMCasino;
 
 public class WMCasinoService : IWMCasinoService
 {
-    private readonly IGameProviderRepository _gameProviderRepository;
+    private readonly IGameProviderService _gameProviderService;
     private readonly ILogger<WMCasinoService> _logger;
     private readonly IPlayerService _playerService;
     private readonly ISettingService _settingService;
@@ -20,24 +19,23 @@ public class WMCasinoService : IWMCasinoService
         ILogger<WMCasinoService> logger,
         ISettingService settingService,
         IPlayerService playerService,
-        IGameProviderRepository gameProviderRepository)
+        IGameProviderService gameProviderService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
         _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
-        _gameProviderRepository =
-            gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+        _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
     }
 
     public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
     {
-        var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WMCasino)
+        var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.WMCasino)
             .ConfigureAwait(false);
 
-        var (isCultureCode, gameProviderCultureCode) = await _gameProviderRepository
+        var gameProviderCultureCode = await _gameProviderService
             .GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
 
-        return isCultureCode ? gameProviderCultureCode : "en_US";
+        return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "en_US";
     }
 
     public async ValueTask<PlayerInfo> GetPlayerAsync(string playerCode)

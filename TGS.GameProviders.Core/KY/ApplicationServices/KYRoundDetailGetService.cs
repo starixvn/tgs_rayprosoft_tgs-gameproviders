@@ -4,24 +4,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.KY.Models;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.KY.ApplicationServices
 {
     internal class KYRoundDetailGetService : IGetService<KYRoundDetailQuery, RoundDetailResult>
     {
-        private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly IGameService _gameService;
         private readonly IRoundService _roundService;
 
-        public KYRoundDetailGetService(
-            IGameProviderRepository gameProviderRepository,
-            IGameService gameService,
-            IRoundService roundService)
+        public KYRoundDetailGetService(IRoundService roundService)
         {
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         }
 

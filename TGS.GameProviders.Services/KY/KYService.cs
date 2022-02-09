@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.KY;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.KY;
@@ -13,16 +12,16 @@ namespace TGS.GameProviders.Services.KY
 {
     internal class KYService : IKYService
     {
-        private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly IGameProviderService _gameProviderService;
         private readonly ISettingService _settingService;
 
         public KYService(
             ISettingService settingService,
-            IGameProviderRepository gameProviderRepository
+            IGameProviderService gameProviderService
             )
         {
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+            _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
         }
 
         public async Task<string> GetAgentIdAsync(string brandCode, string currencyCode)
@@ -62,7 +61,7 @@ namespace TGS.GameProviders.Services.KY
             => GameProviderType.KY;
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.KY);
+            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.KY);
 
         public ValueTask<KYConfiguration> GetSettingConfigurationAsync()
             => _settingService.GetConfigurationAsync<KYConfiguration>(GameProviderConfigurations.KY);

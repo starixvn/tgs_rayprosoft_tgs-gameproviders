@@ -3,7 +3,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.TFGaming.Models;
 using TGS.GameProviders.Domains.RoundDetail;
 

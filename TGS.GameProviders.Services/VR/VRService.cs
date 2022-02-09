@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Extensions;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.VR;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -13,16 +12,16 @@ namespace TGS.GameProviders.Services.VR
 {
     internal class VRService : IVRService
     {
-        private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly IGameProviderService _gameProviderService;
         private readonly ISettingService _settingService;
 
         public VRService(
             ISettingService settingService,
-            IGameProviderRepository gameProviderRepository
+            IGameProviderService gameProviderService
             )
         {
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+            _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
         }
 
         public async ValueTask<VRBrandMerchant> GetBrandMerchantAsync(string brandCode)
@@ -51,7 +50,7 @@ namespace TGS.GameProviders.Services.VR
             => GameProviderType.VR;
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.VR);
+            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.VR);
 
         public RoundStatus GetRoundStatus(int state) =>
            state switch

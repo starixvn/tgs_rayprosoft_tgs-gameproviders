@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.QueryServer.Client;
 using TGS.GameProviders.Core.Habanero;
 using TGS.GameProviders.Core.Habanero.ApplicationServices;
-using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
@@ -48,7 +47,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             "CNY",
             PlayerStatus.Enabled);
 
-        var gameProviderModel = new GameProviderModel(
+        var gameProviderInfo = new GameProviderInfo(
             Guid.Parse("de301075-182b-453f-a316-28e3164b2d06"),
             GameProviderStatus.Active,
             null,
@@ -70,7 +69,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             null,
             "?brandId={BRANDID}&token={TOKEN}&locale={CULTURE}&mode=real",
             null,
-            gameProviderModel.GameProviderId,
+            gameProviderInfo.GameProviderId,
             GameType.Slot,
             GamePlatformType.Desktop,
             false,
@@ -86,7 +85,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
         var roundInfo = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             externalRoundId,
-            gameProviderModel.GameProviderId,
+            gameProviderInfo.GameProviderId,
             playerInfo.PlayerCode,
             gameInfo.GameId,
             playerInfo.DefaultWalletCurrencyCode,
@@ -121,12 +120,12 @@ public class HabaneroRoundDetailGetServiceUnitTest
         };
 
         _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
-        _ = fakeService.GetGameProviderAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
+        _ = fakeService.GetGameProviderAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderInfo));
         _ = fakeService.GetGameAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
         _ = fakeService.GetPlayerAsync(roundInfo.PlayerCode).Returns(ValueTask.FromResult(playerInfo));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeService
-            .GetGameProviderLanguageCodeAsync(gameProviderModel.GameProviderId, query.Language)
+            .GetGameProviderLanguageCodeAsync(gameProviderInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         var expected = new RoundDetailResult

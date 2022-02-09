@@ -20,6 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IBrandService, BrandService>()
                 .AddTransient<IGameActionService, GameActionService>()
                 .AddTransient<IGameService, GameService>()
+                .AddTransient<IGameProviderService, GameProviderService>()
                 .AddTransient<IPlayerService, PlayerService>()
                 .AddTransient<IRoundService, RoundService>()
                 .AddTransient<ISettingService, SettingService>();

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.WGSports;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -10,18 +9,18 @@ namespace TGS.GameProviders.Services.WGSports
 {
     internal class WGSportsService : IWGSportsService
     {
-        private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly IGameProviderService _gameProviderService;
         private readonly IGameService _gameService;
         private readonly ISettingService _settingService;
 
         public WGSportsService(
             ISettingService settingService,
-            IGameProviderRepository gameProviderRepository,
+            IGameProviderService gameProviderService,
             IGameService gameService
             )
         {
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+            _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
 
@@ -54,20 +53,20 @@ namespace TGS.GameProviders.Services.WGSports
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
-            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
-            var (IsCultureCode, GameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
-            return (IsCultureCode) ? GameProviderCultureCode : "2";
+            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
+            var gameProviderCultureCode = await _gameProviderService.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
+            return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "2";
         }
 
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
         {
-            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
-            var (IsCurrencyCode, GameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
-            return (IsCurrencyCode) ? GameProviderCurrencyCode : null;
+            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
+            var gameProviderCurrencyCode = await _gameProviderService.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
+            return !string.IsNullOrEmpty(gameProviderCurrencyCode) ? gameProviderCurrencyCode : null;
         }
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports);
+            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.WGSports);
 
         public ValueTask<WGSportsConfiguration> GetSettingConfigurationAsync()
             => _settingService.GetConfigurationAsync<WGSportsConfiguration>(GameProviderConfigurations.WGSports);

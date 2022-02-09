@@ -6,11 +6,7 @@ namespace TGS.GameProviders.Core.Skywind
 {
     public interface ISkywindService
     {
-        string GetGameProviderCode();
-
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
-
-        ValueTask<Guid> GetGameProviderIdAsync();
 
         ValueTask<SkywindConfiguration> GetSettingConfigurationAsync();
     }

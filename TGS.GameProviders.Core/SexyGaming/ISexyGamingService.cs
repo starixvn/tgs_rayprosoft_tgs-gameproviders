@@ -6,13 +6,9 @@ namespace TGS.GameProviders.Core.SexyGaming
 {
     public interface ISexyGamingService
     {
-        string GetGameProviderCode();
-
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 
         ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
-
-        ValueTask<Guid> GetGameProviderIdAsync();
 
         ValueTask<SexyGamingConfiguration> GetSettingConfigurationAsync();
     }

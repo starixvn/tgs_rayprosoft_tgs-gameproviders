@@ -3,12 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.QueryServer.Client;
 using TGS.GameProviders.Core.JDB;
 using TGS.GameProviders.Core.JDB.ApplicationServices;
 using TGS.GameProviders.Core.JDB.Models;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.JDB;
@@ -24,7 +22,7 @@ public class JDBRoundDetailGetServiceUnitTest
         var fakeLogger = NullLogger<JDBRoundDetailGetService>.Instance;
         var fakePlayerService = Substitute.For<IPlayerService>();
         var fakeRoundService = Substitute.For<IRoundService>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+        var fakeGameProviderService = Substitute.For<IGameProviderService>();
         var fakeGameService = Substitute.For<IGameService>();
         var fakeService = Substitute.For<IJDBService>();
         var fakeAgentMapper = Substitute.For<IJDBAgentMapper>();
@@ -64,7 +62,7 @@ public class JDBRoundDetailGetServiceUnitTest
          "CNY",
          PlayerStatus.Enabled);
 
-        var gameProviderModel = new GameProviderModel(
+        var gameProviderInfo = new GameProviderInfo(
             Guid.Parse("65cc2057-cb52-44aa-8bff-dbb3d9ebdddc"),
             GameProviderStatus.Active,
             null,
@@ -86,7 +84,7 @@ public class JDBRoundDetailGetServiceUnitTest
             null,
             null,
             null,
-            gameProviderModel.GameProviderId,
+            gameProviderInfo.GameProviderId,
             GameType.Slot,
             GamePlatformType.DesktopAndMobile,
             false,
@@ -102,7 +100,7 @@ public class JDBRoundDetailGetServiceUnitTest
         var roundInfo = new RoundInfo(
             Guid.Parse("015dc0ab-eecc-49da-299e-08d9d18bf7ef"),
             "5250172280339",
-            gameProviderModel.GameProviderId,
+            gameProviderInfo.GameProviderId,
             playerInfo.PlayerCode,
             gameInfo.GameId,
             playerInfo.DefaultWalletCurrencyCode,
@@ -154,7 +152,7 @@ public class JDBRoundDetailGetServiceUnitTest
 
         fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
         fakePlayerService.GetCacheAsync(roundInfo.PlayerCode).Returns(Task.FromResult(playerInfo));
-        fakeGameProviderRepository.GetAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
+        fakeGameProviderService.GetAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderInfo));
         fakeGameService.GetCacheAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
 
         var items = gameInfo.GameExternalId.Split('_');
@@ -188,7 +186,7 @@ public class JDBRoundDetailGetServiceUnitTest
             fakeLogger,
             fakeRoundService,
             fakePlayerService,
-            fakeGameProviderRepository,
+            fakeGameProviderService,
             fakeGameService,
             fakeService,
             fakeAgentMapper,

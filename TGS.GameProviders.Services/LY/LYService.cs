@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.LY;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.LY;
@@ -13,16 +12,16 @@ namespace TGS.GameProviders.Services.LY
 {
     internal class LYService : ILYService
     {
-        private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly IGameProviderService _gameProviderService;
         private readonly ISettingService _settingService;
 
         public LYService(
             ISettingService settingService,
-            IGameProviderRepository gameProviderRepository
+            IGameProviderService gameProviderService
             )
         {
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+            _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
         }
 
         public async Task<string> GetAgentIdAsync(string brandCode, string currencyCode)
@@ -59,7 +58,7 @@ namespace TGS.GameProviders.Services.LY
             => GameProviderType.LY;
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.LY);
+            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.LY);
 
         public ValueTask<LYConfiguration> GetSettingConfigurationAsync()
             => _settingService.GetConfigurationAsync<LYConfiguration>(GameProviderConfigurations.LY);

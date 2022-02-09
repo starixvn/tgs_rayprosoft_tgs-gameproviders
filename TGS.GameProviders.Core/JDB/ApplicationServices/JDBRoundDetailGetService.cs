@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.JDB.Models;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.JDB.ApplicationServices;
@@ -14,7 +13,7 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
 {
     private readonly IJDBAgentMapper _agentMapper;
     private readonly IJDBApiClient _client;
-    private readonly IGameProviderRepository _gameProviderRepository;
+    private readonly IGameProviderService _gameProviderService;
     private readonly IGameService _gameService;
     private readonly ILogger<JDBRoundDetailGetService> _logger;
     private readonly IPlayerService _playerService;
@@ -25,7 +24,7 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
         ILogger<JDBRoundDetailGetService> logger,
         IRoundService roundService,
         IPlayerService playerService,
-        IGameProviderRepository gameProviderRepository,
+        IGameProviderService gameProviderService,
         IGameService gameService,
         IJDBService service,
         IJDBAgentMapper agentMapper,
@@ -34,7 +33,7 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
-        _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+        _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
         _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _agentMapper = agentMapper ?? throw new ArgumentNullException(nameof(agentMapper));
@@ -57,8 +56,8 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
             throw new Exception($"The player does not exist.{roundInfo.PlayerCode}");
         }
 
-        var gameProviderModel = await _gameProviderRepository.GetAsync(roundInfo.GameProviderId).ConfigureAwait(false);
-        if (gameProviderModel == null)
+        var gameProviderInfo = await _gameProviderService.GetAsync(roundInfo.GameProviderId).ConfigureAwait(false);
+        if (gameProviderInfo == null)
         {
             throw new Exception($"This game manufacturer does not exist.{roundInfo.GameProviderId}");
         }
@@ -70,7 +69,7 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
         }
 
         var gameProviderLanguageCode = await _service
-            .GetGameProviderLanguageAsync(gameProviderModel.GameProviderId, query.Language)
+            .GetGameProviderLanguageAsync(gameProviderInfo.GameProviderId, query.Language)
             .ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
