@@ -51,7 +51,7 @@ public class JDBRoundDetailGetServiceUnitTest
             Agents = new[] { agent }
         };
 
-        var playerModel = new PlayerInfo(
+        var playerInfo = new PlayerInfo(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
          "TGS",
          Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -79,7 +79,7 @@ public class JDBRoundDetailGetServiceUnitTest
             "JDB",
             null);
 
-        var gameModel = new GameInfo(
+        var gameInfo = new GameInfo(
             700010,
             GameStatus.Active,
             "0_14034",
@@ -99,20 +99,20 @@ public class JDBRoundDetailGetServiceUnitTest
             null,
             "JDB");
 
-        var roundModel = new RoundInfo(
+        var roundInfo = new RoundInfo(
             Guid.Parse("015dc0ab-eecc-49da-299e-08d9d18bf7ef"),
             "5250172280339",
             gameProviderModel.GameProviderId,
-            playerModel.PlayerCode,
-            gameModel.GameId,
-            playerModel.DefaultWalletCurrencyCode,
+            playerInfo.PlayerCode,
+            gameInfo.GameId,
+            playerInfo.DefaultWalletCurrencyCode,
             Tgs.GameProviders.QueryServer.Client.RoundStatus.Closed,
             Guid.NewGuid(),
-            playerModel.DefaultWalletId,
+            playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerModel.BrandId,
+            playerInfo.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,
@@ -130,7 +130,7 @@ public class JDBRoundDetailGetServiceUnitTest
 
         var query = new JDBRoundDetailQuery
         {
-            RoundId = roundModel.RoundId,
+            RoundId = roundInfo.RoundId,
             Language = "en-US"
         };
 
@@ -146,18 +146,18 @@ public class JDBRoundDetailGetServiceUnitTest
         };
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderLanguageAsync(gameModel.GameProviderId, query.Language)
+        fakeService.GetGameProviderLanguageAsync(roundInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-        fakeAgentMapper.GetAgent(configuration.Agents, playerModel.DefaultWalletCurrencyCode)
+        fakeAgentMapper.GetAgent(configuration.Agents, playerInfo.DefaultWalletCurrencyCode)
             .Returns(agent);
 
-        fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundModel));
-        fakePlayerService.GetCacheAsync(roundModel.PlayerCode).Returns(Task.FromResult(playerModel));
-        fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
-        fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
+        fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
+        fakePlayerService.GetCacheAsync(roundInfo.PlayerCode).Returns(Task.FromResult(playerInfo));
+        fakeGameProviderRepository.GetAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
+        fakeGameService.GetCacheAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
 
-        var items = gameModel.GameExternalId.Split('_');
+        var items = gameInfo.GameExternalId.Split('_');
 
         fakeApiClient
             .GetBetHistoryUrlAsync(
@@ -167,10 +167,10 @@ public class JDBRoundDetailGetServiceUnitTest
                 configuration.AESKey,
                 Arg.Is<JDBBetHistoryRequest>(x
                     => x.Parent == agent.Id &&
-                       x.UserId == playerModel.PlayerCode &&
+                       x.UserId == playerInfo.PlayerCode &&
                        x.Language == gameProviderLanguageCode &&
                        x.GameType == int.Parse(items[0]) &&
-                       x.SequenceNo == long.Parse(roundModel.ExternalRoundId)))
+                       x.SequenceNo == long.Parse(roundInfo.ExternalRoundId)))
             .Returns(ValueTask.FromResult(
                 new JDBBetHistoryResponse
                 {

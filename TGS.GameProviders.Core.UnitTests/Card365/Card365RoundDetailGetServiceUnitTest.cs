@@ -5,9 +5,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.Core.Card365.ApplicationServices;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.UnitTests.Card365;
@@ -21,7 +18,7 @@ internal class Card365RoundDetailGetServiceUnitTest
         var fakeLogger = NullLogger<Card365RoundDetailGetService>.Instance;
         var fakeRoundService = Substitute.For<IRoundService>();
 
-        var playerModel = new PlayerInfo(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -38,16 +35,16 @@ internal class Card365RoundDetailGetServiceUnitTest
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "1639679431950180036",
             Guid.Parse("630e822b-2635-4314-a7e4-5c7057c1a920"),
-            playerModel.PlayerCode,
+            playerInfo.PlayerCode,
             1900008,
-            playerModel.DefaultWalletCurrencyCode,
+            playerInfo.DefaultWalletCurrencyCode,
             Tgs.GameProviders.QueryServer.Client.RoundStatus.Closed,
             Guid.NewGuid(),
-            playerModel.DefaultWalletId,
+            playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerModel.BrandId,
+            playerInfo.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,

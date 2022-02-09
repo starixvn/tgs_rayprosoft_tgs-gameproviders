@@ -6,9 +6,6 @@ using NUnit.Framework;
 using TGS.GameProviders.Core.Jili;
 using TGS.GameProviders.Core.Jili.ApplicationServices;
 using TGS.GameProviders.Core.Jili.Models;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.Jili;
@@ -49,7 +46,7 @@ public class JiliRoundDetailGetServiceUnitTest
             SecretKey = "SecretKey"
         };
 
-        var playerModel = new PlayerInfo(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -66,16 +63,16 @@ public class JiliRoundDetailGetServiceUnitTest
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "1639679431950180036",
             Guid.Parse("b957e28c-0e94-40af-9d37-ab48cdeb5d29"),
-            playerModel.PlayerCode,
+            playerInfo.PlayerCode,
             2200001,
-            playerModel.DefaultWalletCurrencyCode,
+            playerInfo.DefaultWalletCurrencyCode,
             Tgs.GameProviders.QueryServer.Client.RoundStatus.Closed,
             Guid.NewGuid(),
-            playerModel.DefaultWalletId,
+            playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerModel.BrandId,
+            playerInfo.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,
@@ -98,9 +95,9 @@ public class JiliRoundDetailGetServiceUnitTest
         };
 
         _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
-        _ = fakePlayerService.GetAsync(roundInfo.PlayerCode).Returns(Task.FromResult(playerModel));
+        _ = fakePlayerService.GetAsync(roundInfo.PlayerCode).Returns(Task.FromResult(playerInfo));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, playerModel.BrandCode).Returns(merchant);
+        _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, playerInfo.BrandCode).Returns(merchant);
         _ = fakeService
             .GetGameProviderLanguageCodeAsync(Guid.Parse("b957e28c-0e94-40af-9d37-ab48cdeb5d29"), query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));

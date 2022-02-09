@@ -22,53 +22,53 @@ namespace TGS.GameProviders.Core
 
         public async ValueTask<GameInfo?> GetAsync(int gameId)
         {
-            var gameViewModel = await _gameProvidersQueryServerClient.GameGetAsync(gameId).ConfigureAwait(false);
-            return gameViewModel != null
+            var data = await _gameProvidersQueryServerClient.GameGetAsync(gameId).ConfigureAwait(false);
+            return data != null
                 ? new GameInfo(
-                    gameViewModel.GameId,
-                    (GameStatus)gameViewModel.Status,
-                    gameViewModel.GameExternalId,
-                    gameViewModel.Description,
-                    gameViewModel.EndpointPath,
-                    gameViewModel.RuleUrl,
-                    gameViewModel.GameProviderId,
-                    (GameType)gameViewModel.GameType,
-                    (GamePlatformType)gameViewModel.PlatformType,
-                    gameViewModel.SubGame,
-                    gameViewModel.AvailableToBrand,
-                    gameViewModel.HasTurnoverOnTieBet,
-                    gameViewModel.Html5,
-                    gameViewModel.AvailableCurrencies,
-                    gameViewModel.GameCode,
-                    gameViewModel.Name,
-                    gameViewModel.Localization,
-                    gameViewModel.SubGameProviderCode)
+                    data.GameId,
+                    (GameStatus)data.Status,
+                    data.GameExternalId,
+                    data.Description,
+                    data.EndpointPath,
+                    data.RuleUrl,
+                    data.GameProviderId,
+                    (GameType)data.GameType,
+                    (GamePlatformType)data.PlatformType,
+                    data.SubGame,
+                    data.AvailableToBrand,
+                    data.HasTurnoverOnTieBet,
+                    data.Html5,
+                    data.AvailableCurrencies,
+                    data.GameCode,
+                    data.Name,
+                    data.Localization,
+                    data.SubGameProviderCode)
                 : null;
         }
 
         public async ValueTask<GameInfo?> GetAsync(Guid gameProviderId, string externalGameId)
         {
-            var gameViewModel = await _gameProvidersQueryServerClient.GameGetAsync(gameProviderId, externalGameId).ConfigureAwait(false);
-            return gameViewModel != null
+            var data = await _gameProvidersQueryServerClient.GameGetAsync(gameProviderId, externalGameId).ConfigureAwait(false);
+            return data != null
                 ? new GameInfo(
-                    gameViewModel.GameId,
-                    (GameStatus)gameViewModel.Status,
-                    gameViewModel.GameExternalId,
-                    gameViewModel.Description,
-                    gameViewModel.EndpointPath,
-                    gameViewModel.RuleUrl,
-                    gameViewModel.GameProviderId,
-                    (GameType)gameViewModel.GameType,
-                    (GamePlatformType)gameViewModel.PlatformType,
-                    gameViewModel.SubGame,
-                    gameViewModel.AvailableToBrand,
-                    gameViewModel.HasTurnoverOnTieBet,
-                    gameViewModel.Html5,
-                    gameViewModel.AvailableCurrencies,
-                    gameViewModel.GameCode,
-                    gameViewModel.Name,
-                    gameViewModel.Localization,
-                    gameViewModel.SubGameProviderCode)
+                    data.GameId,
+                    (GameStatus)data.Status,
+                    data.GameExternalId,
+                    data.Description,
+                    data.EndpointPath,
+                    data.RuleUrl,
+                    data.GameProviderId,
+                    (GameType)data.GameType,
+                    (GamePlatformType)data.PlatformType,
+                    data.SubGame,
+                    data.AvailableToBrand,
+                    data.HasTurnoverOnTieBet,
+                    data.Html5,
+                    data.AvailableCurrencies,
+                    data.GameCode,
+                    data.Name,
+                    data.Localization,
+                    data.SubGameProviderCode)
                 : null;
         }
 

@@ -8,8 +8,6 @@ using NUnit.Framework;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
 using TGS.GameProviders.Core.AsiaGaming.Models;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -132,7 +130,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             OppositeBets = Array.Empty<OppositeBetSetting>()
         };
 
-        var playerModel = new PlayerInfo(
+        var playerInfo = new PlayerInfo(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
          "TGS",
          Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -145,7 +143,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
          "CNY",
          PlayerStatus.Enabled);
 
-        var gameModel = new GameInfo(
+        var gameInfo = new GameInfo(
             400013,
             GameStatus.Active,
             "AGIN_AGQ_BAC",
@@ -165,20 +163,20 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             null,
             "AG");
 
-        var roundModel = new RoundInfo(
+        var roundInfo = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "GN0022160907S",
             Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
-            playerModel.PlayerCode,
-            gameModel.GameId,
-            playerModel.DefaultWalletCurrencyCode,
+            playerInfo.PlayerCode,
+            gameInfo.GameId,
+            playerInfo.DefaultWalletCurrencyCode,
             (Tgs.GameProviders.QueryServer.Client.RoundStatus)RoundStatus.Closed,
             Guid.NewGuid(),
-            playerModel.DefaultWalletId,
+            playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerModel.BrandId,
+            playerInfo.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,
@@ -196,7 +194,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
 
         var query = new AsiaGamingRoundDetailQuery
         {
-            RoundId = roundModel.RoundId,
+            RoundId = roundInfo.RoundId,
             Language = "en-US"
         };
 
@@ -215,8 +213,8 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             }
         };
 
-        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundModel));
-        _ = fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
+        _ = fakeGameService.GetCacheAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
 
         var sut = new AsiaGamingRoundDetailGetService(

@@ -27,8 +27,8 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
 
         public async ValueTask<RoundDetailResult> GetAsync(AviaRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
-            var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-            if (roundModel == null)
+            var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+            if (roundInfo == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
@@ -37,7 +37,7 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
             {
                 Data = new RoundDetailDataBase[]
                 {
-                    new RoundDetailDataJson {Value = roundModel.AdditionalData}
+                    new RoundDetailDataJson {Value = roundInfo.AdditionalData}
                 }
             };
         }

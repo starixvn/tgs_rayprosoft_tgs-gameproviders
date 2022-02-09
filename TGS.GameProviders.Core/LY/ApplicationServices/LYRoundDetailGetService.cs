@@ -20,13 +20,13 @@ namespace TGS.GameProviders.Core.LY.ApplicationServices
 
         public async ValueTask<RoundDetailResult> GetAsync(LYRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
-            var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-            if (roundModel == null)
+            var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+            if (roundInfo == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
 
-            var gameRecord = JsonSerializer.Deserialize<LYGameRecord>(roundModel.AdditionalData, new JsonSerializerOptions
+            var gameRecord = JsonSerializer.Deserialize<LYGameRecord>(roundInfo.AdditionalData, new JsonSerializerOptions
             {
                 // 設定在做序列化/反序列化時，尊重名稱大小寫
                 PropertyNameCaseInsensitive = true

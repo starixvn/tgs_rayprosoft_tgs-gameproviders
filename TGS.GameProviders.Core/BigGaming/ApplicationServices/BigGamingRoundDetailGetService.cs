@@ -34,27 +34,27 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 
         public async ValueTask<RoundDetailResult> GetAsync(BigGamingRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
-            var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-            if (roundModel == null)
+            var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+            if (roundInfo == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
 
-            var gameModel = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
-            if (gameModel == null)
+            var gameInfo = await _gameService.GetCacheAsync(roundInfo.GameId).ConfigureAwait(false);
+            if (gameInfo == null)
             {
-                throw new Exception($"This game Id could not be found..{gameModel.GameId}");
+                throw new Exception($"This game Id could not be found..{gameInfo.GameId}");
             }
 
-            var brandMerchant = await _service.GetBrandMerchantAsync(roundModel.CurrencyCode).ConfigureAwait(false);
+            var brandMerchant = await _service.GetBrandMerchantAsync(roundInfo.CurrencyCode).ConfigureAwait(false);
 
-            if (gameModel.GameType == GameType.LiveDealer)
+            if (gameInfo.GameType == GameType.LiveDealer)
             {
                 var request = new BigGamingVideoRoundQueryRequest
                 {
                     Random = Guid.NewGuid().ToString(),
                     Sn = brandMerchant.SecretCode,
-                    Round = roundModel.ExternalRoundId
+                    Round = roundInfo.ExternalRoundId
                 };
 
                 var response = await _client.GetVideoRoundQueryAsync(brandMerchant.ApiUrl, brandMerchant.SecretKey, request).ConfigureAwait(false);
@@ -80,13 +80,13 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
             else
             {
                 var culture = await _service.GetGameProviderCultureCodeAsync(query.Language).ConfigureAwait(false);
-                var record = JsonSerializer.Deserialize<BigGamingGameRecordFishingResponse>(roundModel.AdditionalData);
+                var record = JsonSerializer.Deserialize<BigGamingGameRecordFishingResponse>(roundInfo.AdditionalData);
                 var request = new BigGamingGameRecordFishingUrlRequest
                 {
                     Random = Guid.NewGuid().ToString(),
                     Sn = brandMerchant.SecretCode,
                     ExternalBetId = long.Parse(record.ExternalBetId),
-                    GameId = int.Parse(gameModel.GameExternalId),
+                    GameId = int.Parse(gameInfo.GameExternalId),
                     Locale = culture
                 };
 

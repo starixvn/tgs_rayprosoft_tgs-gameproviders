@@ -28,7 +28,7 @@ namespace TGS.GameProviders.Core.UnitTests.Avia
                 PlayerCode = "4ucmqplxb029"
             };
 
-            var playerModel = new PlayerInfo(
+            var playerInfo = new PlayerInfo(
                 Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
                 "TGS",
                 Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -51,9 +51,9 @@ namespace TGS.GameProviders.Core.UnitTests.Avia
 
             var gameProviderCurrencyCode = "CNY";
             decimal? balance = 100;
-            _ = fakeAviaService.GetBrandMerchantAsync(playerModel.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
-            _ = fakePlayerService.GetCacheAsync(query.PlayerCode).Returns(Task.FromResult(playerModel));
-            _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(playerModel.DefaultWalletCurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
+            _ = fakeAviaService.GetBrandMerchantAsync(playerInfo.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
+            _ = fakePlayerService.GetCacheAsync(query.PlayerCode).Returns(Task.FromResult(playerInfo));
+            _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(playerInfo.DefaultWalletCurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
             _ = fakeAviaApiClient.BalanceAsync(
                 brandMerchant.ApiUrl,
                 brandMerchant.Authorization,

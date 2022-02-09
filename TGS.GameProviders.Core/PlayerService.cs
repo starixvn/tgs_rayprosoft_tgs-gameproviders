@@ -22,22 +22,22 @@ namespace TGS.GameProviders.Core
         public async Task<PlayerInfo> GetAsync(string playerCode)
         {
             var playerInfo = default(PlayerInfo);
-            var playerViewModel = await _gameProvidersQueryServerClient.PlayerGetAsync(playerCode).ConfigureAwait(false);
+            var data = await _gameProvidersQueryServerClient.PlayerGetAsync(playerCode).ConfigureAwait(false);
 
-            if (playerViewModel != null)
+            if (data != null)
             {
                 playerInfo = new PlayerInfo(
-                     playerViewModel.ResellerId,
-                     playerViewModel.ResellerCode,
-                     playerViewModel.LicenseeId,
-                     playerViewModel.LicenseeCode,
-                     playerViewModel.BrandId,
-                     playerViewModel.BrandCode,
-                     playerViewModel.PlayerCode,
-                     playerViewModel.Username,
-                     playerViewModel.DefaultWalletId,
-                     playerViewModel.DefaultWalletCurrencyCode,
-                    (PlayerStatus)playerViewModel.Status
+                     data.ResellerId,
+                     data.ResellerCode,
+                     data.LicenseeId,
+                     data.LicenseeCode,
+                     data.BrandId,
+                     data.BrandCode,
+                     data.PlayerCode,
+                     data.Username,
+                     data.DefaultWalletId,
+                     data.DefaultWalletCurrencyCode,
+                    (PlayerStatus)data.Status
                      );
             }
             return playerInfo;

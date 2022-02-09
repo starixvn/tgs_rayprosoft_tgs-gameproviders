@@ -27,13 +27,13 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
 
         public async ValueTask ExecuteAsync(VRKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var playerModel = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-            if (playerModel == null)
+            var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerInfo == null)
             {
                 throw new Exception($"The player does not exist.{command.PlayerCode}");
             }
 
-            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode).ConfigureAwait(false);
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerInfo.BrandCode).ConfigureAwait(false);
 
             await _client.KickAsync(
                 brandMerchant.ApiUrl,
@@ -42,7 +42,7 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
                 brandMerchant.Deskey,
                 new()
                 {
-                    PlayerCode = playerModel.PlayerCode
+                    PlayerCode = playerInfo.PlayerCode
                 }).ConfigureAwait(false);
         }
     }

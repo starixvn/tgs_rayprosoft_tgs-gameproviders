@@ -15,8 +15,6 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
     {
         private readonly ISabaApiClient _client;
         private readonly IGameActionService _gameActionService;
-        private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly IGameService _gameService;
         private readonly JsonSerializerOptions _jsonSerializerOptions;
         private readonly ILogger<SabaRoundDetailGetService> _logger;
         private readonly IRoundService _roundService;
@@ -24,16 +22,12 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
 
         public SabaRoundDetailGetService(
             ILogger<SabaRoundDetailGetService> logger,
-            IGameProviderRepository gameProviderRepository,
-            IGameService gameService,
             IRoundService roundService,
             IGameActionService gameActionService,
             ISabaService service,
             ISabaApiClient client)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
             _gameActionService = gameActionService ?? throw new ArgumentNullException(nameof(gameActionService));
             _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -49,32 +43,20 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
             SabaRoundDetailQuery query,
             CancellationToken cancellationToken = default)
         {
-            var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-            if (roundModel == null)
+            var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+            if (roundInfo == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
 
-            var gameProviderModel = await _gameProviderRepository.GetAsync(roundModel.GameProviderId).ConfigureAwait(false);
-            if (gameProviderModel == null)
-            {
-                throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
-            }
-
-            var gameModel = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
-            if (gameModel == null)
-            {
-                throw new Exception($"This game Id could not be found.{roundModel.GameId}");
-            }
-
-            var gameActionModel = await _gameActionService
+            var gameActionInfo = await _gameActionService
                 .QueryAsync(query.RoundId)
                 .FirstOrDefaultAsync(ga => ga.Type == GameActionType.PlaceBet, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (gameActionModel == null)
+            if (gameActionInfo == null)
             {
-                throw new Exception($"The place bet game action of given round id could not be found. {roundModel.RoundId}");
+                throw new Exception($"The place bet game action of given round id could not be found. {roundInfo.RoundId}");
             }
 
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
@@ -82,7 +64,7 @@ namespace TGS.GameProviders.Core.Saba.ApplicationServices
             var request = new SabaGetRoundHistoryRequest
             {
                 VendorId = configuration.VendorId,
-                ExternalTransactionId = gameActionModel.ExternalTransactionId
+                ExternalTransactionId = gameActionInfo.ExternalTransactionId
             };
 
             var response = await _client.GetBetDetailByTransIdAsync(configuration.ApiUrl, request).ConfigureAwait(false);

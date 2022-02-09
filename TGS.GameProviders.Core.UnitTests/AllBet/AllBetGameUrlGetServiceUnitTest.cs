@@ -52,7 +52,7 @@ public class AllBetGameUrlGetServiceUnitTest
             }
         };
 
-        var gameModel = new GameInfo(
+        var gameInfo = new GameInfo(
             1300001,
             GameStatus.Active,
             "AllBetLobby",
@@ -72,7 +72,7 @@ public class AllBetGameUrlGetServiceUnitTest
             null,
             "AB");
 
-        var playerModel = new PlayerInfo(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -85,14 +85,14 @@ public class AllBetGameUrlGetServiceUnitTest
             "CNY",
             PlayerStatus.Enabled);
 
-        var allBetPlayerId = $"{playerModel.PlayerCode}_{agent.Suffix}";
+        var allBetPlayerId = $"{playerInfo.PlayerCode}_{agent.Suffix}";
 
         var query = new AllBetGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.GameType,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
-            PlayerCode = playerModel.PlayerCode,
+            PlayerCode = playerInfo.PlayerCode,
             CurrencyCode = "CNY",
             LoginRecordId = Guid.NewGuid(),
             PlatformType = PlatformType.Desktop,
@@ -102,7 +102,7 @@ public class AllBetGameUrlGetServiceUnitTest
         };
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.ToAllBetPlayerId(playerModel.PlayerCode, agent.Suffix).Returns(allBetPlayerId);
+        fakeService.ToAllBetPlayerId(playerInfo.PlayerCode, agent.Suffix).Returns(allBetPlayerId);
 
         fakeAgentMapper.GetAgent(configuration.BrandMerchants, query.BrandCode, query.CurrencyCode)
             .Returns(agent);

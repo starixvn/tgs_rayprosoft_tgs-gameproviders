@@ -35,7 +35,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             BetHistoryUrl = new("https://app-test.insvr.com")
         };
 
-        var playerModel = new PlayerInfo(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -63,7 +63,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             "Habanero",
             null);
 
-        var gameModel = new GameInfo(
+        var gameInfo = new GameInfo(
             200001,
             GameStatus.Active,
             "SGTotemTowers",
@@ -83,20 +83,20 @@ public class HabaneroRoundDetailGetServiceUnitTest
             null,
             "HABA");
 
-        var roundModel = new RoundInfo(
+        var roundInfo = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             externalRoundId,
             gameProviderModel.GameProviderId,
-            playerModel.PlayerCode,
-            gameModel.GameId,
-            playerModel.DefaultWalletCurrencyCode,
+            playerInfo.PlayerCode,
+            gameInfo.GameId,
+            playerInfo.DefaultWalletCurrencyCode,
             Tgs.GameProviders.QueryServer.Client.RoundStatus.Closed,
             Guid.NewGuid(),
-            playerModel.DefaultWalletId,
+            playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerModel.BrandId,
+            playerInfo.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,
@@ -116,14 +116,14 @@ public class HabaneroRoundDetailGetServiceUnitTest
 
         var query = new HabaneroRoundDetailQuery
         {
-            RoundId = roundModel.RoundId,
+            RoundId = roundInfo.RoundId,
             Language = "en-US"
         };
 
-        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundModel));
-        _ = fakeService.GetGameProviderAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
-        _ = fakeService.GetGameAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
-        _ = fakeService.GetPlayerAsync(roundModel.PlayerCode).Returns(ValueTask.FromResult(playerModel));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
+        _ = fakeService.GetGameProviderAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
+        _ = fakeService.GetGameAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
+        _ = fakeService.GetPlayerAsync(roundInfo.PlayerCode).Returns(ValueTask.FromResult(playerInfo));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeService
             .GetGameProviderLanguageCodeAsync(gameProviderModel.GameProviderId, query.Language)

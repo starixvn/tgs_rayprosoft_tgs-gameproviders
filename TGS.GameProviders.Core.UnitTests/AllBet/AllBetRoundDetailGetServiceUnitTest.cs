@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -8,8 +7,6 @@ using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.Core.AllBet.ApplicationServices;
 using TGS.GameProviders.Core.AllBet.Models;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 
@@ -23,11 +20,8 @@ public class AllBetRoundDetailGetServiceUnitTest
     {
         var fakeLogger = NullLogger<AllBetRoundDetailGetService>.Instance;
         var fakeRoundService = Substitute.For<IRoundService>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameService = Substitute.For<IGameService>();
-        var fakePlayerService = Substitute.For<IPlayerService>();
 
-        var playerModel = new PlayerInfo(
+        var playerInfo = new PlayerInfo(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
          "TGS",
          Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -40,55 +34,20 @@ public class AllBetRoundDetailGetServiceUnitTest
          "CNY",
          PlayerStatus.Enabled);
 
-        var gameProviderModel = new GameProviderModel(
-            Guid.Parse("579d6da3-b0ed-4e3f-bd4a-434a98efbd68"),
-            GameProviderStatus.Active,
-            null,
-            true,
-            true,
-            true,
-            10,
-            5,
-            13,
-            false,
-            "AB",
-            "AllBet",
-            null);
-
-        var gameModel = new GameInfo(
-            1300002,
-            GameStatus.Active,
-            "101",
-            null,
-            null,
-            null,
-            gameProviderModel.GameProviderId,
-            GameType.LiveDealer,
-            GamePlatformType.Desktop,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "Normal_Baccarat",
-            "Normal Baccarat",
-            null,
-            "AB");
-
-        var roundModel = new RoundInfo(
+        var roundInfo = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "1639679431950180036",
-            gameProviderModel.GameProviderId,
-            playerModel.PlayerCode,
-            gameModel.GameId,
-            playerModel.DefaultWalletCurrencyCode,
+            Guid.Parse("579d6da3-b0ed-4e3f-bd4a-434a98efbd68"),
+            playerInfo.PlayerCode,
+            1300002,
+            playerInfo.DefaultWalletCurrencyCode,
             (Tgs.GameProviders.QueryServer.Client.RoundStatus)RoundStatus.Closed,
             Guid.NewGuid(),
-            playerModel.DefaultWalletId,
+            playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerModel.BrandId,
+            playerInfo.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,
@@ -106,7 +65,7 @@ public class AllBetRoundDetailGetServiceUnitTest
 
         var query = new AllBetRoundDetailQuery
         {
-            RoundId = roundModel.RoundId,
+            RoundId = roundInfo.RoundId,
             Language = "en-US"
         };
 
@@ -125,16 +84,11 @@ public class AllBetRoundDetailGetServiceUnitTest
             }
         };
 
-        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundModel));
-        _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
-        _ = fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
-        _ = fakePlayerService.GetAsync(roundModel.PlayerCode).Returns(Task.FromResult(playerModel));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
 
         var sut = new AllBetRoundDetailGetService(
             fakeLogger,
-            fakeRoundService,
-            fakeGameProviderRepository,
-            fakeGameService);
+            fakeRoundService);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 

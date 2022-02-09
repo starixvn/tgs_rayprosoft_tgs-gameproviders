@@ -30,15 +30,15 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
 
         public async ValueTask<decimal?> GetAsync(AviaPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
-            var playerModel = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
+            var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
 
-            if (playerModel == null)
+            if (playerInfo == null)
             {
                 throw new Exception($"The player does not exist.{command.PlayerCode}");
             }
-            var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
+            var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(playerInfo.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
-            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode);
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerInfo.BrandCode);
 
             if (brandMerchant == null)
             {
@@ -48,7 +48,7 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
             (bool IsPlayer, decimal? Balance) = await _client.BalanceAsync(
                 brandMerchant.ApiUrl,
                 brandMerchant.Authorization,
-                playerModel.PlayerCode).ConfigureAwait(false);
+                playerInfo.PlayerCode).ConfigureAwait(false);
             if (!IsPlayer)
             {
                 var createPlayerResult = await _gamePlayer.CreatePlayerAsync(
@@ -60,7 +60,7 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
                     (IsPlayer, Balance) = await _client.BalanceAsync(
                         brandMerchant.ApiUrl,
                         brandMerchant.Authorization,
-                        playerModel.PlayerCode).ConfigureAwait(false);
+                        playerInfo.PlayerCode).ConfigureAwait(false);
                 }
             }
             return Balance;

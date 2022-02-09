@@ -45,28 +45,28 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
         JDBRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundModel == null)
+        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+        if (roundInfo == null)
         {
             throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        var playerInfo = await _playerService.GetCacheAsync(roundModel.PlayerCode).ConfigureAwait(false);
+        var playerInfo = await _playerService.GetCacheAsync(roundInfo.PlayerCode).ConfigureAwait(false);
         if (playerInfo == null)
         {
-            throw new Exception($"The player does not exist.{roundModel.PlayerCode}");
+            throw new Exception($"The player does not exist.{roundInfo.PlayerCode}");
         }
 
-        var gameProviderModel = await _gameProviderRepository.GetAsync(roundModel.GameProviderId).ConfigureAwait(false);
+        var gameProviderModel = await _gameProviderRepository.GetAsync(roundInfo.GameProviderId).ConfigureAwait(false);
         if (gameProviderModel == null)
         {
-            throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
+            throw new Exception($"This game manufacturer does not exist.{roundInfo.GameProviderId}");
         }
 
-        var gameInfo = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
+        var gameInfo = await _gameService.GetCacheAsync(roundInfo.GameId).ConfigureAwait(false);
         if (gameInfo == null)
         {
-            throw new Exception($"This game Id could not be found.{roundModel.GameId}");
+            throw new Exception($"This game Id could not be found.{roundInfo.GameId}");
         }
 
         var gameProviderLanguageCode = await _service
@@ -82,7 +82,7 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
             throw new ArgumentException($"Invalid external game id '{gameInfo.GameExternalId}'");
         }
 
-        if (!long.TryParse(roundModel.ExternalRoundId, out var externalRoundId))
+        if (!long.TryParse(roundInfo.ExternalRoundId, out var externalRoundId))
         {
             throw new ArgumentException("Invalid external round id");
         }

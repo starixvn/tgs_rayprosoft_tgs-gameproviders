@@ -33,21 +33,21 @@ internal class Card365KickPlayerCommandService : ICommandService<Card365KickPlay
         Card365KickPlayerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var playerModel = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-        if (playerModel == null)
+        var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
+        if (playerInfo == null)
         {
             throw new Exception($"The player does not exist.{command.PlayerCode}");
         }
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-        var agent = _agentMapper.GetAgent(configuration.BrandAgents, playerModel.BrandCode);
+        var agent = _agentMapper.GetAgent(configuration.BrandAgents, playerInfo.BrandCode);
 
         var request = new Card365LogoutRequest
         {
             Cert = configuration.Cert,
             AgentId = agent.AgentId,
-            PlayerCode = playerModel.PlayerCode
+            PlayerCode = playerInfo.PlayerCode
         };
 
         _ = await _client.LogoutAsync(

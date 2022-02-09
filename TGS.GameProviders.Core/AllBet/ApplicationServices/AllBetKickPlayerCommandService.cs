@@ -33,8 +33,8 @@ internal class AllBetKickPlayerCommandService : ICommandService<AllBetKickPlayer
         AllBetKickPlayerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var playerModel = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-        if (playerModel == null)
+        var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
+        if (playerInfo == null)
         {
             throw new Exception($"The player does not exist.{command.PlayerCode}");
         }
@@ -42,10 +42,10 @@ internal class AllBetKickPlayerCommandService : ICommandService<AllBetKickPlayer
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
         var agent = _agentMapper.GetAgent(configuration.BrandMerchants,
-            playerModel.BrandCode,
-            playerModel.DefaultWalletCurrencyCode);
+            playerInfo.BrandCode,
+            playerInfo.DefaultWalletCurrencyCode);
 
-        var allBetPlayerId = _service.ToAllBetPlayerId(playerModel.PlayerCode, agent.Suffix);
+        var allBetPlayerId = _service.ToAllBetPlayerId(playerInfo.PlayerCode, agent.Suffix);
 
         var request = new AllBetLogoutRequest
         {

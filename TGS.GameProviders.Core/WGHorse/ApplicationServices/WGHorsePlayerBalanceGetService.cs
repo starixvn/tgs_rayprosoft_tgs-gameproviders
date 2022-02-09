@@ -31,8 +31,8 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
 
         public async ValueTask<decimal?> GetAsync(WGHorsePlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
-            var playerModel = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-            if (playerModel == null)
+            var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerInfo == null)
             {
                 throw new Exception($"The player does not exist.{command.PlayerCode}");
             }
@@ -44,18 +44,18 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                playerModel.PlayerCode).ConfigureAwait(false);
+                playerInfo.PlayerCode).ConfigureAwait(false);
 
             if (!IsPlayer)
             {
-                if (await _playerCreate.CreatePlayerAsync(configuration, playerModel.PlayerCode, playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false))
+                if (await _playerCreate.CreatePlayerAsync(configuration, playerInfo.PlayerCode, playerInfo.DefaultWalletCurrencyCode).ConfigureAwait(false))
                 {
                     (IsPlayer, Balance) = await _client.GetBalanceAsync(
                         configuration.ApiUrl,
                         configuration.PartnerCode,
                         configuration.PartnerKey,
                         configuration.IV,
-                        playerModel.PlayerCode).ConfigureAwait(false);
+                        playerInfo.PlayerCode).ConfigureAwait(false);
                 }
             }
 

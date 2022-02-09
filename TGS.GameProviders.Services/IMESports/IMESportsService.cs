@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.IMESports;
 using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
@@ -34,9 +33,6 @@ namespace TGS.GameProviders.Services.IMESports
 
         public async ValueTask<GameInfo> GetGameAsync(int gameId)
             => await _gameService.GetAsync(gameId).ConfigureAwait(false);
-
-        public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
-            => _gameProviderRepository.GetAsync(gameProviderId);
 
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
         {

@@ -9,8 +9,6 @@ namespace TGS.GameProviders.Core.SBO
     {
         ValueTask<GameInfo> GetGameAsync(int value);
 
-        ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId);
-
         ValueTask<string> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode);
 
         ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);

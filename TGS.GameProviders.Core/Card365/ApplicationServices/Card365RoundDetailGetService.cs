@@ -28,13 +28,13 @@ internal class Card365RoundDetailGetService : IGetService<Card365RoundDetailQuer
         Card365RoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundModel == null)
+        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+        if (roundInfo == null)
         {
             throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        var value = GetGameHistory(roundModel.AdditionalData);
+        var value = GetGameHistory(roundInfo.AdditionalData);
 
         return new RoundDetailResult
         {

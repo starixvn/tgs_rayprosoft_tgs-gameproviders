@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.AllBet.Models;
 using TGS.GameProviders.Core.Extensions;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.AllBet.ApplicationServices;
@@ -21,9 +20,7 @@ internal class AllBetRoundDetailGetService : IGetService<AllBetRoundDetailQuery,
 
     public AllBetRoundDetailGetService(
         ILogger<AllBetRoundDetailGetService> logger,
-        IRoundService roundService,
-        IGameProviderRepository gameProviderRepository,
-        IGameService gameService)
+        IRoundService roundService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
@@ -33,13 +30,13 @@ internal class AllBetRoundDetailGetService : IGetService<AllBetRoundDetailQuery,
         AllBetRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundModel == null)
+        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+        if (roundInfo == null)
         {
             throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        var value = GetGameHistory(roundModel.AdditionalData);
+        var value = GetGameHistory(roundInfo.AdditionalData);
 
         return new RoundDetailResult
         {

@@ -32,13 +32,13 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
 
         public async ValueTask<decimal?> GetAsync(VRPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
-            var playerModel = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-            if (playerModel == null)
+            var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerInfo == null)
             {
                 throw new Exception($"The player does not exist.{command.PlayerCode}");
             }
 
-            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode).ConfigureAwait(false);
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerInfo.BrandCode).ConfigureAwait(false);
 
             if (brandMerchant == null)
             {
@@ -59,7 +59,7 @@ namespace TGS.GameProviders.Core.VR.ApplicationServices
 
             if (string.IsNullOrEmpty(response.PlayerName) || response.Balance == -1)
             {
-                if (await _playerCreate.CreatePlayerAsync(brandMerchant, playerModel.PlayerCode).ConfigureAwait(false))
+                if (await _playerCreate.CreatePlayerAsync(brandMerchant, playerInfo.PlayerCode).ConfigureAwait(false))
                 {
                     response = await _client.GetBalanceAsync(
                         brandMerchant.ApiUrl,

@@ -171,7 +171,7 @@ namespace TGS.GameProviders.Client.IntegrationTests
                 null,
                 "AG");
 
-            var playerModel = new PlayerInfo(
+            var playerInfo = new PlayerInfo(
                 Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
                 "TGS",
                 Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -189,7 +189,7 @@ namespace TGS.GameProviders.Client.IntegrationTests
                 GameType = gameInfo.GameType,
                 GameId = gameInfo.GameId,
                 BrandCode = "GPI",
-                PlayerCode = playerModel.PlayerCode,
+                PlayerCode = playerInfo.PlayerCode,
                 CurrencyCode = "CNY",
                 LoginRecordId = Guid.NewGuid(),
                 PlatformType = Core.PlatformType.Desktop,
@@ -214,18 +214,18 @@ namespace TGS.GameProviders.Client.IntegrationTests
             fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
                 .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-            fakeService.GetBrandIdAsync(playerModel.BrandCode).Returns(ValueTask.FromResult(playerModel.BrandId));
+            fakeService.GetBrandIdAsync(playerInfo.BrandCode).Returns(ValueTask.FromResult(playerInfo.BrandId));
             fakeService
-                .GetGameDomainAsync(playerModel.BrandId, gameInfo.GameProviderId, query.PlatformType)
+                .GetGameDomainAsync(playerInfo.BrandId, gameInfo.GameProviderId, query.PlatformType)
                 .Returns(ValueTask.FromResult(domain));
 
-            fakePlayerService.CheckOrCreateAccountAsync(configuration, playerModel.PlayerCode, gameProviderCurrencyCode)
+            fakePlayerService.CheckOrCreateAccountAsync(configuration, playerInfo.PlayerCode, gameProviderCurrencyCode)
                 .Returns(ValueTask.FromResult(true));
 
             fakeSessionService
                 .CreateGameSessionAsync(
                     configuration,
-                    playerModel.PlayerCode,
+                    playerInfo.PlayerCode,
                     query.LoginRecordId,
                     query.PlayerBalance)
                 .Returns(ValueTask.FromResult(true));
@@ -233,7 +233,7 @@ namespace TGS.GameProviders.Client.IntegrationTests
             fakeUtility.GetQueryString(
                     Arg.Is<AsiaGamingGameUrlRequest>(x =>
                         x.AgentCode == configuration.AgentCode &&
-                        x.PlayerCode == playerModel.PlayerCode &&
+                        x.PlayerCode == playerInfo.PlayerCode &&
                         x.Lang == gameProviderLanguageCode &&
                         x.GameId == gameInfo.GameExternalId &&
                         x.Currency == gameProviderCurrencyCode),

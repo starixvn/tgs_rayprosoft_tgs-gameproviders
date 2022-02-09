@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
@@ -20,7 +19,6 @@ public class SabaKickPlayerCommandServiceUnitTest
         var fakeService = Substitute.For<ISabaService>();
         var fakeApiClient = Substitute.For<ISabaApiClient>();
         var fakeUtility = Substitute.For<ISabaUtility>();
-        var fakePlayerService = Substitute.For<IPlayerService>();
 
         var configuration = new SabaConfiguration
         {
@@ -32,31 +30,16 @@ public class SabaKickPlayerCommandServiceUnitTest
             IsTestEnvironment = false
         };
 
-        var playerModel = new PlayerInfo(
-            Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
-            "TGS",
-            Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
-            "TGS",
-            Guid.Parse("4e86719f-243f-46f6-b010-5c758b7285af"),
-            "GPI",
-            "4ucmqplxb029",
-            "4ucmqplxb029",
-            Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY",
-            PlayerStatus.Enabled);
-
         var command = new SabaKickPlayerCommand
         {
-            PlayerCode = playerModel.PlayerCode
+            PlayerCode = "4ucmqplxb029"
         };
 
-        fakePlayerService.GetCacheAsync(playerModel.PlayerCode).Returns(Task.FromResult(playerModel));
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeUtility.ToSabaPlayerId(playerModel.PlayerCode, configuration.IsTestEnvironment).Returns(playerModel.PlayerCode);
+        fakeUtility.ToSabaPlayerId(command.PlayerCode, configuration.IsTestEnvironment).Returns(command.PlayerCode);
 
         var sut = new SabaKickPlayerCommandService(
             fakeLogger,
-            fakePlayerService,
             fakeService,
             fakeUtility,
             fakeApiClient);
@@ -69,7 +52,7 @@ public class SabaKickPlayerCommandServiceUnitTest
                 configuration.ApiUrl,
                 new SabaKickUserRequest
                 {
-                    PlayerId = playerModel.PlayerCode,
+                    PlayerId = command.PlayerCode,
                     VendorId = configuration.VendorId
                 });
     }
@@ -81,7 +64,6 @@ public class SabaKickPlayerCommandServiceUnitTest
         var fakeService = Substitute.For<ISabaService>();
         var fakeApiClient = Substitute.For<ISabaApiClient>();
         var fakeUtility = Substitute.For<ISabaUtility>();
-        var fakePlayerService = Substitute.For<IPlayerService>();
 
         var configuration = new SabaConfiguration
         {
@@ -93,33 +75,18 @@ public class SabaKickPlayerCommandServiceUnitTest
             IsTestEnvironment = true
         };
 
-        var playerModel = new PlayerInfo(
-            Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
-            "TGS",
-            Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
-            "TGS",
-            Guid.Parse("4e86719f-243f-46f6-b010-5c758b7285af"),
-            "GPI",
-            "4ucmqplxb029",
-            "4ucmqplxb029",
-            Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY",
-            PlayerStatus.Enabled);
-
         var command = new SabaKickPlayerCommand
         {
-            PlayerCode = playerModel.PlayerCode
+            PlayerCode = "4ucmqplxb029"
         };
 
-        var playerId = $"{playerModel.PlayerCode}_test";
+        var playerId = $"{command.PlayerCode}_test";
 
-        fakePlayerService.GetCacheAsync(playerModel.PlayerCode).Returns(Task.FromResult(playerModel));
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeUtility.ToSabaPlayerId(playerModel.PlayerCode, configuration.IsTestEnvironment).Returns(playerId);
+        fakeUtility.ToSabaPlayerId(command.PlayerCode, configuration.IsTestEnvironment).Returns(playerId);
 
         var sut = new SabaKickPlayerCommandService(
             fakeLogger,
-            fakePlayerService,
             fakeService,
             fakeUtility,
             fakeApiClient);

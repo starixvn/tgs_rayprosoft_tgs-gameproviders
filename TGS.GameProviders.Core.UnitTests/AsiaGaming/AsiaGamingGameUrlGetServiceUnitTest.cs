@@ -139,7 +139,7 @@ public class AsiaGamingGameUrlGetServiceUnitTest
             OppositeBets = Array.Empty<OppositeBetSetting>()
         };
 
-        var gameModel = new GameInfo(
+        var gameInfo = new GameInfo(
             400001,
             GameStatus.Active,
             "asiagaminglobby",
@@ -159,7 +159,7 @@ public class AsiaGamingGameUrlGetServiceUnitTest
             null,
             "AG");
 
-        var playerModel = new PlayerInfo(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -174,10 +174,10 @@ public class AsiaGamingGameUrlGetServiceUnitTest
 
         var query = new AsiaGamingGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.GameType,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
-            PlayerCode = playerModel.PlayerCode,
+            PlayerCode = playerInfo.PlayerCode,
             CurrencyCode = "CNY",
             LoginRecordId = Guid.NewGuid(),
             PlatformType = PlatformType.Desktop,
@@ -188,18 +188,18 @@ public class AsiaGamingGameUrlGetServiceUnitTest
         };
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameModel.GameProviderId));
-        fakeService.GetGameAsync(query.GameId.Value).Returns(ValueTask.FromResult(gameModel));
+        fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
+        fakeService.GetGameAsync(query.GameId.Value).Returns(ValueTask.FromResult(gameInfo));
 
         fakeService
-            .GetGameProviderCurrencyCodeAsync(gameModel.GameProviderId, query.CurrencyCode)
+            .GetGameProviderCurrencyCodeAsync(gameInfo.GameProviderId, query.CurrencyCode)
             .Returns(ValueTask.FromResult(gameProviderCurrencyCode));
 
-        fakeService.GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
+        fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-        fakeService.GetBrandIdAsync(query.BrandCode).Returns(ValueTask.FromResult(playerModel.BrandId));
-        fakeService.GetGameDomainAsync(playerModel.BrandId, gameModel.GameProviderId, query.PlatformType)
+        fakeService.GetBrandIdAsync(query.BrandCode).Returns(ValueTask.FromResult(playerInfo.BrandId));
+        fakeService.GetGameDomainAsync(playerInfo.BrandId, gameInfo.GameProviderId, query.PlatformType)
             .Returns(ValueTask.FromResult(domain));
 
         fakePlayerService.CheckOrCreateAccountAsync(configuration, query.PlayerCode, gameProviderCurrencyCode)
@@ -218,7 +218,7 @@ public class AsiaGamingGameUrlGetServiceUnitTest
                     x.AgentCode == configuration.AgentCode &&
                     x.PlayerCode == query.PlayerCode &&
                     x.Lang == gameProviderLanguageCode &&
-                    x.GameId == gameModel.GameExternalId &&
+                    x.GameId == gameInfo.GameExternalId &&
                     x.ReturnUrl == query.BackUrl.AbsoluteUri &&
                     x.Currency == gameProviderCurrencyCode),
                 Arg.Any<string>())

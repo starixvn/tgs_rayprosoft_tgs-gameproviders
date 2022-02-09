@@ -18,38 +18,38 @@ namespace TGS.GameProviders.Core
         public async ValueTask<RoundInfo> GetAsync(Guid roundId)
         {
             var roundInfo = default(RoundInfo);
-            var viewModel = await _gameProvidersQueryServerClient.RoundGetAsync(roundId).ConfigureAwait(false);
+            var data = await _gameProvidersQueryServerClient.RoundGetAsync(roundId).ConfigureAwait(false);
 
-            if (viewModel != null)
+            if (data != null)
             {
                 roundInfo = new RoundInfo(
-                    viewModel.RoundId,
-                    viewModel.ExternalRoundId,
-                    viewModel.GameProviderId,
-                    viewModel.PlayerCode,
-                    viewModel.GameId,
-                    viewModel.CurrencyCode,
-                    viewModel.Status,
-                    viewModel.GameProviderConfigurationId,
-                    viewModel.WalletId,
-                    viewModel.CreatedOn,
-                    viewModel.ClosedOn,
-                    viewModel.UpdatedOn,
-                    viewModel.BrandId,
-                    viewModel.ExternalCreatedOn,
-                    viewModel.ExternalClosedOn,
-                    viewModel.BetAmount,
-                    viewModel.ValidBetAmount,
-                    viewModel.SettleAmount,
-                    viewModel.Commission,
-                    viewModel.Turnover,
-                    viewModel.WinLoss,
-                    viewModel.TieBetAdjustment,
-                    viewModel.ClientStatus,
-                    viewModel.ReopenTurnoverAdjustment,
-                    viewModel.ReopenedOn,
-                    viewModel.EffectiveBettingPercentage,
-                    viewModel.AdditionalData
+                    data.RoundId,
+                    data.ExternalRoundId,
+                    data.GameProviderId,
+                    data.PlayerCode,
+                    data.GameId,
+                    data.CurrencyCode,
+                    data.Status,
+                    data.GameProviderConfigurationId,
+                    data.WalletId,
+                    data.CreatedOn,
+                    data.ClosedOn,
+                    data.UpdatedOn,
+                    data.BrandId,
+                    data.ExternalCreatedOn,
+                    data.ExternalClosedOn,
+                    data.BetAmount,
+                    data.ValidBetAmount,
+                    data.SettleAmount,
+                    data.Commission,
+                    data.Turnover,
+                    data.WinLoss,
+                    data.TieBetAdjustment,
+                    data.ClientStatus,
+                    data.ReopenTurnoverAdjustment,
+                    data.ReopenedOn,
+                    data.EffectiveBettingPercentage,
+                    data.AdditionalData
                      );
             }
             return roundInfo;

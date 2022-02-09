@@ -23,16 +23,16 @@ namespace TGS.GameProviders.Core.TFGaming.ApplicationServices
 
         public async ValueTask ExecuteAsync(TFKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var playerModel = await _playerService
+            var playerInfo = await _playerService
                 .GetCacheAsync(command.PlayerCode)
                 .ConfigureAwait(false);
 
-            if (playerModel == null)
+            if (playerInfo == null)
             {
                 throw new Exception($"The player does not exist.{command.PlayerCode}");
             }
 
-            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode, playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerInfo.BrandCode, playerInfo.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
             await _client
                 .KickAsync(brandMerchant.ApiUrl, brandMerchant.PrivateToken, brandMerchant.PartnerId, command.PlayerCode)

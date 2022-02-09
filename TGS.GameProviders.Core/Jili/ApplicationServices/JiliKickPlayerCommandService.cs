@@ -32,15 +32,15 @@ internal class JiliKickPlayerCommandService : ICommandService<JiliKickPlayerComm
         JiliKickPlayerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var playerModel = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-        if (playerModel == null)
+        var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
+        if (playerInfo == null)
         {
             throw new Exception($"The player does not exist.{command.PlayerCode}");
         }
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-        var merchant = _merchantMapper.GetMerchant(configuration.Merchants, playerModel.BrandCode);
-        var jiliPlayerId = $"{playerModel.BrandCode}_{playerModel.PlayerCode}";
+        var merchant = _merchantMapper.GetMerchant(configuration.Merchants, playerInfo.BrandCode);
+        var jiliPlayerId = $"{playerInfo.BrandCode}_{playerInfo.PlayerCode}";
 
         await _client.KickMemberAsync(
                 configuration.ApiUrl,
