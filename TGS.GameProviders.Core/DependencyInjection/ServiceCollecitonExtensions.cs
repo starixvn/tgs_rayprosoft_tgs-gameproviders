@@ -21,6 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IGameActionService, GameActionService>()
                 .AddTransient<IGameService, GameService>()
                 .AddTransient<IPlayerService, PlayerService>()
+                .AddTransient<IRoundService, RoundService>()
                 .AddTransient<ISettingService, SettingService>();
     }
 }

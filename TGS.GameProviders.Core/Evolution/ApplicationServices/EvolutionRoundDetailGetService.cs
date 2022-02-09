@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Evolution.Models;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.Evolution.ApplicationServices
@@ -12,39 +11,31 @@ namespace TGS.GameProviders.Core.Evolution.ApplicationServices
     {
         private readonly IEvolutionApiClient _client;
         private readonly IEvolutionRoundDetailAnalyzeService _evolutionRoundDetailAnalyzeService;
-        private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameService _gameService;
-        private readonly IRoundRepository _roundRepository;
+        private readonly IRoundService _roundService;
         private readonly IEvolutionService _service;
 
         public EvolutionRoundDetailGetService(
           IEvolutionApiClient client,
           IEvolutionRoundDetailAnalyzeService evolutionRoundDetailAnalyzeService,
-          IGameProviderRepository gameProviderRepository,
           IGameService gameService,
-          IRoundRepository roundRepository,
+          IRoundService roundService,
           IEvolutionService service
             )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _evolutionRoundDetailAnalyzeService = evolutionRoundDetailAnalyzeService ?? throw new ArgumentNullException(nameof(evolutionRoundDetailAnalyzeService));
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-            _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
+            _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         public async ValueTask<RoundDetailResult> GetAsync(EvolutionRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
-            var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
+            var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
             if (roundModel == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
-            }
-            var gameProviderModel = await _gameProviderRepository.GetAsync(roundModel.GameProviderId).ConfigureAwait(false);
-            if (gameProviderModel == null)
-            {
-                throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
             }
 
             var gameModel = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
@@ -68,13 +59,6 @@ namespace TGS.GameProviders.Core.Evolution.ApplicationServices
             return gameModel.GameType == GameType.Slot
                 ? new RoundDetailResult
                 {
-                    GameProviderName = gameProviderModel.Name,
-                    GameName = gameModel.Name,
-                    ExternalRoundId = roundModel.ExternalRoundId,
-                    BetAmount = roundModel.BetAmount,
-                    Turnover = roundModel.Turnover,
-                    Winloss = roundModel.WinLoss,
-                    GameResult = roundModel.ClientStatus.ToString(),
                     Data = new RoundDetailDataBase[]
                     {
                         new RoundDetailDataUrl {Url = _evolutionRoundDetailAnalyzeService.GetAnalyzeSlot(configuration.ApiUrl,response)}
@@ -82,13 +66,6 @@ namespace TGS.GameProviders.Core.Evolution.ApplicationServices
                 }
                 : new RoundDetailResult
                 {
-                    GameProviderName = gameProviderModel.Name,
-                    GameName = gameModel.Name,
-                    ExternalRoundId = roundModel.ExternalRoundId,
-                    BetAmount = roundModel.BetAmount,
-                    Turnover = roundModel.Turnover,
-                    Winloss = roundModel.WinLoss,
-                    GameResult = roundModel.ClientStatus.ToString(),
                     Data = new RoundDetailDataBase[]
                 {
                     new RoundDetailDataJson {Value = _evolutionRoundDetailAnalyzeService.GetAnalyze(response)}

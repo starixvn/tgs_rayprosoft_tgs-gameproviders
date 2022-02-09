@@ -5,9 +5,7 @@ using NSubstitute;
 using NUnit.Framework;
 using TGS.GameProviders.Core.Habanero;
 using TGS.GameProviders.Core.Habanero.ApplicationServices;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -21,7 +19,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
     public async ValueTask Normal_Process()
     {
         var fakeLogger = NullLogger<HabaneroRoundDetailGetService>.Instance;
-        var fakeRoundRepository = Substitute.For<IRoundRepository>();
+        var fakeRoundService = Substitute.For<IRoundService>();
         var fakeService = Substitute.For<IHabaneroService>();
 
         var externalRoundId = "1639679431950180036";
@@ -85,14 +83,14 @@ public class HabaneroRoundDetailGetServiceUnitTest
             null,
             "HABA");
 
-        var roundModel = new RoundModel(
+        var roundModel = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             externalRoundId,
             gameProviderModel.GameProviderId,
             playerModel.PlayerCode,
             gameModel.GameId,
             playerModel.DefaultWalletCurrencyCode,
-            RoundStatus.Closed,
+            Tgs.GameProviders.QueryServer.Client.RoundStatus.Closed,
             Guid.NewGuid(),
             playerModel.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -108,13 +106,13 @@ public class HabaneroRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            ClientRoundStatus.Win,
+            Tgs.GameProviders.QueryServer.Client.RoundClientStatus.Win,
             null,
             null,
             null,
             null);
 
-        var sut = new HabaneroRoundDetailGetService(fakeLogger, fakeService, fakeRoundRepository);
+        var sut = new HabaneroRoundDetailGetService(fakeLogger, fakeService, fakeRoundService);
 
         var query = new HabaneroRoundDetailQuery
         {
@@ -122,7 +120,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             Language = "en-US"
         };
 
-        _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundModel));
         _ = fakeService.GetGameProviderAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
         _ = fakeService.GetGameAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
         _ = fakeService.GetPlayerAsync(roundModel.PlayerCode).Returns(ValueTask.FromResult(playerModel));
@@ -133,13 +131,6 @@ public class HabaneroRoundDetailGetServiceUnitTest
 
         var expected = new RoundDetailResult
         {
-            GameProviderName = gameProviderModel.Name,
-            GameName = gameModel.Name,
-            ExternalRoundId = roundModel.ExternalRoundId,
-            BetAmount = roundModel.BetAmount,
-            Turnover = roundModel.Turnover,
-            Winloss = roundModel.WinLoss,
-            GameResult = roundModel.ClientStatus.ToString(),
             Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataUrl
@@ -152,13 +143,6 @@ public class HabaneroRoundDetailGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(expected.GameProviderName, actual.GameProviderName);
-        Assert.AreEqual(expected.GameName, actual.GameName);
-        Assert.AreEqual(expected.ExternalRoundId, actual.ExternalRoundId);
-        Assert.AreEqual(expected.BetAmount, actual.BetAmount);
-        Assert.AreEqual(expected.Turnover, actual.Turnover);
-        Assert.AreEqual(expected.Winloss, actual.Winloss);
-        Assert.AreEqual(expected.GameResult, actual.GameResult);
         CollectionAssert.AreEqual(expected.Data, actual.Data);
     }
 }

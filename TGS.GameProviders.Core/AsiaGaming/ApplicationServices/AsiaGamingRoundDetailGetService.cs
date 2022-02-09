@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.AsiaGaming.Models;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration.AsiaGaming;
 
@@ -15,22 +14,19 @@ namespace TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
 
 internal class AsiaGamingRoundDetailGetService : IGetService<AsiaGamingRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IGameService _gameService;
     private readonly ILogger<AsiaGamingRoundDetailGetService> _logger;
-    private readonly IRoundRepository _roundRepository;
+    private readonly IRoundService _roundService;
     private readonly IAsiaGamingService _service;
 
     public AsiaGamingRoundDetailGetService(
         ILogger<AsiaGamingRoundDetailGetService> logger,
-        IRoundRepository roundRepository,
-        IGameProviderRepository gameProviderRepository,
+        IRoundService roundService,
         IGameService gameService,
         IAsiaGamingService service)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
-        _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         _service = service ?? throw new ArgumentNullException(nameof(service));
     }
@@ -39,42 +35,29 @@ internal class AsiaGamingRoundDetailGetService : IGetService<AsiaGamingRoundDeta
         AsiaGamingRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundModel == null)
+        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+        if (roundInfo == null)
         {
             throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        var gameProviderModel = await _gameProviderRepository.GetAsync(roundModel.GameProviderId).ConfigureAwait(false);
-        if (gameProviderModel == null)
+        var gameInfo = await _gameService.GetCacheAsync(roundInfo.GameId).ConfigureAwait(false);
+        if (gameInfo == null)
         {
-            throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
-        }
-
-        var gameModel = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
-        if (gameModel == null)
-        {
-            throw new Exception($"This game Id could not be found.{roundModel.GameId}");
+            throw new Exception($"This game Id could not be found.{roundInfo.GameId}");
         }
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-        var agGameType = gameModel.GameExternalId.Split('_')[2];
+        var agGameType = gameInfo.GameExternalId.Split('_')[2];
 
         var gameHistoryType = configuration.GameHistoryTypes?
             .FirstOrDefault(h => h.GameTypes.Contains(agGameType, StringComparer.OrdinalIgnoreCase));
 
-        var value = GetGameHistory(gameHistoryType, roundModel.AdditionalData);
+        var value = GetGameHistory(gameHistoryType, roundInfo.AdditionalData);
 
         return new RoundDetailResult
         {
-            GameProviderName = gameProviderModel.Name,
-            GameName = gameModel.Name,
-            ExternalRoundId = roundModel.ExternalRoundId,
-            BetAmount = roundModel.BetAmount,
-            Turnover = roundModel.Turnover,
-            Winloss = roundModel.WinLoss,
-            GameResult = roundModel.ClientStatus.ToString(),
             Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataJson

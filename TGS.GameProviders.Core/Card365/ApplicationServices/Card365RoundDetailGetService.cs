@@ -5,29 +5,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.Card365.ApplicationServices;
 
 internal class Card365RoundDetailGetService : IGetService<Card365RoundDetailQuery, RoundDetailResult>
 {
-    private readonly IGameProviderRepository _gameProviderRepository;
-    private readonly IGameService _gameService;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
     private readonly ILogger<Card365RoundDetailGetService> _logger;
-    private readonly IRoundRepository _roundRepository;
+    private readonly IRoundService _roundService;
 
     public Card365RoundDetailGetService(
         ILogger<Card365RoundDetailGetService> logger,
-        IRoundRepository roundRepository,
-        IGameProviderRepository gameProviderRepository,
-        IGameService gameService)
+        IRoundService roundService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
-        _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = false };
     }
 
@@ -35,35 +28,16 @@ internal class Card365RoundDetailGetService : IGetService<Card365RoundDetailQuer
         Card365RoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
+        var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
         if (roundModel == null)
         {
             throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
-
-        var gameProviderModel = await _gameProviderRepository.GetAsync(roundModel.GameProviderId).ConfigureAwait(false);
-        if (gameProviderModel == null)
-        {
-            throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
-        }
-
-        var gameModel = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
-        if (gameModel == null)
-        {
-            throw new Exception($"This game Id could not be found.{roundModel.GameId}");
         }
 
         var value = GetGameHistory(roundModel.AdditionalData);
 
         return new RoundDetailResult
         {
-            GameProviderName = gameProviderModel.Name,
-            GameName = gameModel.Name,
-            ExternalRoundId = roundModel.ExternalRoundId,
-            BetAmount = roundModel.BetAmount,
-            Turnover = roundModel.Turnover,
-            Winloss = roundModel.WinLoss,
-            GameResult = roundModel.ClientStatus.ToString(),
             Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataJson

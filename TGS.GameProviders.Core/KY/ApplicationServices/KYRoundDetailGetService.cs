@@ -13,36 +13,24 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
     {
         private readonly IGameProviderRepository _gameProviderRepository;
         private readonly IGameService _gameService;
-        private readonly IRoundRepository _roundRepository;
+        private readonly IRoundService _roundService;
 
         public KYRoundDetailGetService(
             IGameProviderRepository gameProviderRepository,
             IGameService gameService,
-            IRoundRepository roundRepository
-            )
+            IRoundService roundService)
         {
             _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-            _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
+            _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         }
 
         public async ValueTask<RoundDetailResult> GetAsync(KYRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
-            var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
+            var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
             if (roundModel == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
-            }
-            var gameProviderModel = await _gameProviderRepository.GetAsync(roundModel.GameProviderId).ConfigureAwait(false);
-            if (gameProviderModel == null)
-            {
-                throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
-            }
-
-            var gameModel = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
-            if (gameModel == null)
-            {
-                throw new Exception($"This game Id could not be found..{gameModel.GameId}");
             }
 
             var gameRecord = JsonSerializer.Deserialize<KYGameRecord>(roundModel.AdditionalData, new JsonSerializerOptions
@@ -54,13 +42,6 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
             return gameRecord == null
                 ? (new()
                 {
-                    GameProviderName = gameProviderModel.Name,
-                    GameName = gameModel.Name,
-                    ExternalRoundId = roundModel.ExternalRoundId,
-                    BetAmount = roundModel.BetAmount,
-                    Turnover = roundModel.Turnover,
-                    Winloss = roundModel.WinLoss,
-                    GameResult = roundModel.ClientStatus.ToString(),
                     Data = new RoundDetailDataBase[]
                     {
                         new RoundDetailDataJson {Value = null}
@@ -68,13 +49,6 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
                 })
                 : (new()
                 {
-                    GameProviderName = gameProviderModel.Name,
-                    GameName = gameModel.Name,
-                    ExternalRoundId = roundModel.ExternalRoundId,
-                    BetAmount = roundModel.BetAmount,
-                    Turnover = roundModel.Turnover,
-                    Winloss = roundModel.WinLoss,
-                    GameResult = roundModel.ClientStatus.ToString(),
                     Data = new RoundDetailDataBase[]
                 {
                     new RoundDetailDataJson {Value = gameRecord.CardValue}
