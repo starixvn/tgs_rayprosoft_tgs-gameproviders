@@ -9,8 +9,6 @@ namespace TGS.GameProviders.Core.IMESports
     {
         ValueTask<GameInfo> GetGameAsync(int gameId);
 
-        ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId);
-
         ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
 
         ValueTask<Guid> GetGameProviderIdAsync();

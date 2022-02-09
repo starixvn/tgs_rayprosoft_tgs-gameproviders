@@ -33,20 +33,20 @@ internal class JDBKickPlayerCommandService : ICommandService<JDBKickPlayerComman
         JDBKickPlayerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var playerModel = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-        if (playerModel == null)
+        var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
+        if (playerInfo == null)
         {
             throw new Exception($"The player does not exist.{command.PlayerCode}");
         }
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-        var agent = _agentMapper.GetAgent(configuration.Agents, playerModel.DefaultWalletCurrencyCode);
+        var agent = _agentMapper.GetAgent(configuration.Agents, playerInfo.DefaultWalletCurrencyCode);
 
         var request = new JDBLogoutRequest
         {
             Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
             Parent = agent.Id,
-            UserId = playerModel.PlayerCode,
+            UserId = playerInfo.PlayerCode,
         };
 
         _ = await _client.LogoutAsync(

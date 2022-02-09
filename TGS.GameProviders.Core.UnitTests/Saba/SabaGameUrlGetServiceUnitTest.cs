@@ -55,7 +55,7 @@ public class SabaGameUrlGetServiceUnitTest
             null,
             "SABA");
 
-        var playerModel = new PlayerInfo(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -73,7 +73,7 @@ public class SabaGameUrlGetServiceUnitTest
             GameType = gameInfo.GameType,
             GameId = gameInfo.GameId,
             BrandCode = "GPI",
-            PlayerCode = playerModel.PlayerCode,
+            PlayerCode = playerInfo.PlayerCode,
             CurrencyCode = "CNY",
             LoginRecordId = Guid.NewGuid(),
             PlatformType = PlatformType.Desktop,
@@ -84,13 +84,13 @@ public class SabaGameUrlGetServiceUnitTest
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
-        fakeUtility.ToSabaPlayerId(playerModel.PlayerCode, configuration.IsTestEnvironment).Returns(playerModel.PlayerCode);
+        fakeUtility.ToSabaPlayerId(playerInfo.PlayerCode, configuration.IsTestEnvironment).Returns(playerInfo.PlayerCode);
         fakeApiClient
             .GetGameUrlAsync(
                 configuration.ApiUrl,
                 Arg.Is<SabaGameUrlRequest>(x =>
                     x.VendorId == configuration.VendorId &&
-                    x.PlayerId == playerModel.PlayerCode)
+                    x.PlayerId == playerInfo.PlayerCode)
             ).Returns(ValueTask.FromResult(new SabaGameUrlResponse
             {
                 ErrorCode = SabaGetGameUrlApiError.Ok,
@@ -152,7 +152,7 @@ public class SabaGameUrlGetServiceUnitTest
             null,
             "SABA");
 
-        var playerModel = new PlayerInfo(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -170,7 +170,7 @@ public class SabaGameUrlGetServiceUnitTest
             GameType = gameInfo.GameType,
             GameId = gameInfo.GameId,
             BrandCode = "GPI",
-            PlayerCode = playerModel.PlayerCode,
+            PlayerCode = playerInfo.PlayerCode,
             CurrencyCode = "CNY",
             LoginRecordId = Guid.NewGuid(),
             PlatformType = PlatformType.Desktop,
@@ -179,11 +179,11 @@ public class SabaGameUrlGetServiceUnitTest
             BackUrl = new("https://dev-t1.rpgp.cc/")
         };
 
-        var playerId = $"{playerModel.PlayerCode}_test";
+        var playerId = $"{playerInfo.PlayerCode}_test";
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
-        fakeUtility.ToSabaPlayerId(playerModel.PlayerCode, configuration.IsTestEnvironment).Returns(playerId);
+        fakeUtility.ToSabaPlayerId(playerInfo.PlayerCode, configuration.IsTestEnvironment).Returns(playerId);
         fakeApiClient
             .GetGameUrlAsync(
                 configuration.ApiUrl,

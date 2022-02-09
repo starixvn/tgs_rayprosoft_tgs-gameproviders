@@ -27,13 +27,13 @@ namespace TGS.GameProviders.Core.KY.ApplicationServices
 
         public async ValueTask ExecuteAsync(KYKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var playerModel = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-            if (playerModel == null)
+            var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerInfo == null)
             {
                 throw new Exception($"The player does not exist.{command.PlayerCode}");
             }
-            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode).ConfigureAwait(false);
-            var agentId = await _service.GetAgentIdAsync(playerModel.BrandCode, playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerInfo.BrandCode).ConfigureAwait(false);
+            var agentId = await _service.GetAgentIdAsync(playerInfo.BrandCode, playerInfo.DefaultWalletCurrencyCode).ConfigureAwait(false);
             await _client.KickAsync(
                 brandMerchant.ApiUrl,
                 brandMerchant.Deskey,

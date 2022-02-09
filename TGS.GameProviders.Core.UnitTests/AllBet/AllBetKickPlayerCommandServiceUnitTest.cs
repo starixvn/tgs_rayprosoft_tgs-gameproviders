@@ -49,7 +49,7 @@ public class AllBetKickPlayerCommandServiceUnitTest
             }
         };
 
-        var playerModel = new PlayerInfo(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -62,22 +62,22 @@ public class AllBetKickPlayerCommandServiceUnitTest
             "CNY",
             PlayerStatus.Enabled);
 
-        var allBetPlayerId = $"{playerModel.PlayerCode}_{agent.Suffix}";
+        var allBetPlayerId = $"{playerInfo.PlayerCode}_{agent.Suffix}";
 
         var command = new AllBetKickPlayerCommand
         {
-            PlayerCode = playerModel.PlayerCode
+            PlayerCode = playerInfo.PlayerCode
         };
 
-        fakePlayerService.GetCacheAsync(playerModel.PlayerCode).Returns(Task.FromResult(playerModel));
+        fakePlayerService.GetCacheAsync(playerInfo.PlayerCode).Returns(Task.FromResult(playerInfo));
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.ToAllBetPlayerId(playerModel.PlayerCode, agent.Suffix).Returns(allBetPlayerId);
+        fakeService.ToAllBetPlayerId(playerInfo.PlayerCode, agent.Suffix).Returns(allBetPlayerId);
 
         fakeAgentMapper
             .GetAgent(
                 configuration.BrandMerchants,
-                playerModel.BrandCode,
-                playerModel.DefaultWalletCurrencyCode)
+                playerInfo.BrandCode,
+                playerInfo.DefaultWalletCurrencyCode)
             .Returns(agent);
 
         var sut = new AllBetKickPlayerCommandService(

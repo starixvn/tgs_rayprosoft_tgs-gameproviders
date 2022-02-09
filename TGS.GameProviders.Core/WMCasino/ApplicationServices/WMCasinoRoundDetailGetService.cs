@@ -14,41 +14,26 @@ internal class WMCasinoRoundDetailGetService : IGetService<WMCasinoRoundDetailQu
 {
     private readonly ILogger<WMCasinoRoundDetailGetService> _logger;
     private readonly IRoundService _roundService;
-    private readonly IWMCasinoService _service;
 
     public WMCasinoRoundDetailGetService(
         ILogger<WMCasinoRoundDetailGetService> logger,
-        IRoundService roundService,
-        IWMCasinoService service)
+        IRoundService roundService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
-        _service = service ?? throw new ArgumentNullException(nameof(service));
     }
 
     public async ValueTask<RoundDetailResult> GetAsync(
         WMCasinoRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundModel == null)
+        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+        if (roundInfo == null)
         {
             throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        var gameProviderModel = await _service.GetGameProviderAsync(roundModel.GameProviderId).ConfigureAwait(false);
-        if (gameProviderModel == null)
-        {
-            throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
-        }
-
-        var gameModel = await _service.GetGameAsync(roundModel.GameId).ConfigureAwait(false);
-        if (gameModel == null)
-        {
-            throw new Exception($"This game Id could not be found.{roundModel.GameId}");
-        }
-
-        var value = GetGameHistory(roundModel.AdditionalData);
+        var value = GetGameHistory(roundInfo.AdditionalData);
 
         return new RoundDetailResult
         {

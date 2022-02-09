@@ -20,13 +20,13 @@ namespace TGS.GameProviders.Core.BetConstruct.ApplicationServices
 
         public async ValueTask<RoundDetailResult> GetAsync(BetConstructRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
-            var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-            if (roundModel == null)
+            var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+            if (roundInfo == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
 
-            var gameRecord = JsonSerializer.Deserialize<BetConstructGameRecord[]>(roundModel.AdditionalData);
+            var gameRecord = JsonSerializer.Deserialize<BetConstructGameRecord[]>(roundInfo.AdditionalData);
 
             return gameRecord == null
                 ? (new RoundDetailResult()

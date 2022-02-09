@@ -40,38 +40,32 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
         public async ValueTask<RoundDetailResult> GetAsync(SBORoundDetailQuery query,
             CancellationToken cancellationToken = default)
         {
-            var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-            if (roundModel == null)
+            var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+            if (roundInfo == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
 
-            var gameProviderModel = await _service.GetGameProviderAsync(roundModel.GameProviderId).ConfigureAwait(false);
-            if (gameProviderModel == null)
+            var gameInfo = await _service.GetGameAsync(roundInfo.GameId).ConfigureAwait(false);
+            if (gameInfo == null)
             {
-                throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
-            }
-
-            var gameModel = await _service.GetGameAsync(roundModel.GameId).ConfigureAwait(false);
-            if (gameModel == null)
-            {
-                throw new Exception($"This game Id could not be found.{roundModel.GameId}");
+                throw new Exception($"This game Id could not be found.{roundInfo.GameId}");
             }
 
             var gameProviderCultureCode = await _service
-                .GetGameProviderCultureCodeAsync(roundModel.GameProviderId, query.Language)
+                .GetGameProviderCultureCodeAsync(roundInfo.GameProviderId, query.Language)
                 .ConfigureAwait(false);
 
             var configuration = await _service.GetSettingConfigurationAsync()
                 .ConfigureAwait(false);
 
-            var portfolio = _utility.GetPortfolio(gameModel.GameType);
+            var portfolio = _utility.GetPortfolio(gameInfo.GameType);
 
             var request = new SBOGetRoundHistoryRequest
             {
                 CompanyKey = configuration.CompanyKey,
                 Portfolio = portfolio,
-                ExternalRoundId = roundModel.ExternalRoundId,
+                ExternalRoundId = roundInfo.ExternalRoundId,
                 Language = gameProviderCultureCode
             };
 

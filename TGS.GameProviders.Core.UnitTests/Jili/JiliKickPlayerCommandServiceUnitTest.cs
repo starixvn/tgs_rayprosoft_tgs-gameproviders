@@ -27,7 +27,7 @@ internal class JiliKickPlayerCommandServiceUnitTest
             PlayerCode = "4ucmqplxb029"
         };
 
-        var playerModel = new PlayerInfo(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -66,15 +66,15 @@ internal class JiliKickPlayerCommandServiceUnitTest
             fakeApiClient);
 
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, playerModel.BrandCode).Returns(merchant);
-        _ = fakePlayerService.GetCacheAsync(command.PlayerCode).Returns(Task.FromResult(playerModel));
+        _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, playerInfo.BrandCode).Returns(merchant);
+        _ = fakePlayerService.GetCacheAsync(command.PlayerCode).Returns(Task.FromResult(playerInfo));
 
         await sut.ExecuteAsync(command).ConfigureAwait(false);
 
         _ = fakeApiClient.Received(1)
             .KickMemberAsync(
                 configuration.ApiUrl,
-                $"{playerModel.BrandCode}_{playerModel.PlayerCode}",
+                $"{playerInfo.BrandCode}_{playerInfo.PlayerCode}",
                 merchant.AgentId,
                 merchant.AgentKey);
     }

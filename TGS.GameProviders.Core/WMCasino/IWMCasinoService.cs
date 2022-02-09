@@ -7,9 +7,6 @@ namespace TGS.GameProviders.Core.WMCasino
 {
     public interface IWMCasinoService
     {
-        ValueTask<GameInfo> GetGameAsync(int gameId);
-
-        ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId);
 
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 

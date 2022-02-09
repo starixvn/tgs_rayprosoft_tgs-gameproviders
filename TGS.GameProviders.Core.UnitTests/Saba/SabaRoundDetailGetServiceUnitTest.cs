@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Core.Saba;
 using TGS.GameProviders.Core.Saba.ApplicationServices;
 using TGS.GameProviders.Core.Saba.Models;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
@@ -25,8 +22,6 @@ public class SabaRoundDetailGetServiceUnitTest
         var fakeLogger = NullLogger<SabaRoundDetailGetService>.Instance;
         var fakeService = Substitute.For<ISabaService>();
         var fakeApiClient = Substitute.For<ISabaApiClient>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameService = Substitute.For<IGameService>();
         var fakeGameActionService = Substitute.For<IGameActionService>();
         var fakeRoundService = Substitute.For<IRoundService>();
 
@@ -40,7 +35,7 @@ public class SabaRoundDetailGetServiceUnitTest
             IsTestEnvironment = false
         };
 
-        var playerModel = new PlayerInfo(
+        var playerInfo = new PlayerInfo(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
          "TGS",
          Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -53,45 +48,10 @@ public class SabaRoundDetailGetServiceUnitTest
          "CNY",
          PlayerStatus.Enabled);
 
-        var gameProviderModel = new GameProviderModel(
-            Guid.Parse("09d8d244-206b-4030-8110-b2ea90dc9d2f"),
-            GameProviderStatus.Active,
-            null,
-            true,
-            true,
-            true,
-            10,
-            5,
-            6,
-            false,
-            "SABA",
-            "Saba Sports",
-            null);
-
-        var gameModel = new GameInfo(
-            600001,
-            GameStatus.Active,
-            "1",
-            null,
-            null,
-            null,
-            gameProviderModel.GameProviderId,
-            GameType.Sportsbook,
-            GamePlatformType.DesktopAndMobile,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "Sportsbook",
-            "Sportsbook",
-            null,
-            "SABA");
-
-        var gameActionModel = new GameActionInfo(
+        var gameActionInfo = new GameActionInfo(
             Guid.NewGuid(),
             Guid.NewGuid(),
-            playerModel.PlayerCode,
+            playerInfo.PlayerCode,
             "1639679431950180036",
             GameActionType.PlaceBet,
             20m,
@@ -121,7 +81,7 @@ public class SabaRoundDetailGetServiceUnitTest
                 new()
                 {
                     ExternalTransactionId = 1639679431950180036,
-                    PlayerCode = playerModel.PlayerCode,
+                    PlayerCode = playerInfo.PlayerCode,
                     LeagueId = 1,
                     LeagueName = new SabaName[]
                     {
@@ -158,20 +118,20 @@ public class SabaRoundDetailGetServiceUnitTest
             }
         };
 
-        var roundModel = new RoundInfo(
-            gameActionModel.RoundId,
+        var roundInfo = new RoundInfo(
+            gameActionInfo.RoundId,
             "1639679431950180036",
-            gameProviderModel.GameProviderId,
-            playerModel.PlayerCode,
-            gameModel.GameId,
-            playerModel.DefaultWalletCurrencyCode,
+            Guid.Parse("09d8d244-206b-4030-8110-b2ea90dc9d2f"),
+            playerInfo.PlayerCode,
+            600001,
+            playerInfo.DefaultWalletCurrencyCode,
             Tgs.GameProviders.QueryServer.Client.RoundStatus.Closed,
             Guid.NewGuid(),
-            playerModel.DefaultWalletId,
+            playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerModel.BrandId,
+            playerInfo.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,
@@ -190,12 +150,12 @@ public class SabaRoundDetailGetServiceUnitTest
         var query = new SabaRoundDetailQuery
         {
             Language = "en-US",
-            RoundId = roundModel.RoundId
+            RoundId = roundInfo.RoundId
         };
 
         var gameActions = new[]
         {
-            gameActionModel
+            gameActionInfo
         }.ToAsyncEnumerable();
 
         var expected = new RoundDetailResult
@@ -209,9 +169,7 @@ public class SabaRoundDetailGetServiceUnitTest
             }
         };
 
-        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundModel));
-        _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
-        _ = fakeGameService.GetCacheAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
         _ = fakeGameActionService.QueryAsync(query.RoundId).Returns(gameActions);
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeApiClient
@@ -219,7 +177,7 @@ public class SabaRoundDetailGetServiceUnitTest
                 configuration.ApiUrl,
                 new SabaGetRoundHistoryRequest
                 {
-                    ExternalTransactionId = gameActionModel.ExternalTransactionId,
+                    ExternalTransactionId = gameActionInfo.ExternalTransactionId,
                     VendorId = configuration.VendorId
                 })
             .Returns(ValueTask.FromResult(new SabaGetRoundHistoryResponse
@@ -230,8 +188,6 @@ public class SabaRoundDetailGetServiceUnitTest
 
         var sut = new SabaRoundDetailGetService(
             fakeLogger,
-            fakeGameProviderRepository,
-            fakeGameService,
             fakeRoundService,
             fakeGameActionService,
             fakeService,

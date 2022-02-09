@@ -36,23 +36,23 @@ internal class JDBGameUrlGetService : IGetService<JDBGameUrlQuery, GameUrlResult
         JDBGameUrlQuery query,
         CancellationToken cancellationToken = default)
     {
-        var playerModel = await _playerService.GetCacheAsync(query.PlayerCode).ConfigureAwait(false);
-        var gameModel = await _gameService.GetCacheAsync(query.GameId!.Value).ConfigureAwait(false);
+        var playerInfo = await _playerService.GetCacheAsync(query.PlayerCode).ConfigureAwait(false);
+        var gameInfo = await _gameService.GetCacheAsync(query.GameId!.Value).ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-        var agent = _agentMapper.GetAgent(configuration.Agents, playerModel!.DefaultWalletCurrencyCode);
+        var agent = _agentMapper.GetAgent(configuration.Agents, playerInfo!.DefaultWalletCurrencyCode);
 
         var gameProviderLanguageCode = await _service
-            .GetGameProviderLanguageAsync(gameModel!.GameProviderId, query.Language)
+            .GetGameProviderLanguageAsync(gameInfo!.GameProviderId, query.Language)
             .ConfigureAwait(false);
 
-        var items = gameModel.GameExternalId.Split('_');
+        var items = gameInfo.GameExternalId.Split('_');
 
         var request = new JDBGetTokenRequest
         {
             Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
             Parent = agent.Id,
-            UserId = playerModel.PlayerCode,
+            UserId = playerInfo.PlayerCode,
             Language = gameProviderLanguageCode,
             GameType = items[0],
             MachineType = items[1],

@@ -32,16 +32,16 @@ namespace TGS.GameProviders.Core.Evolution.ApplicationServices
 
         public async ValueTask<RoundDetailResult> GetAsync(EvolutionRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
-            var roundModel = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-            if (roundModel == null)
+            var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+            if (roundInfo == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
 
-            var gameModel = await _gameService.GetCacheAsync(roundModel.GameId).ConfigureAwait(false);
-            if (gameModel == null)
+            var gameInfo = await _gameService.GetCacheAsync(roundInfo.GameId).ConfigureAwait(false);
+            if (gameInfo == null)
             {
-                throw new Exception($"This game Id could not be found..{gameModel.GameId}");
+                throw new Exception($"This game Id could not be found..{roundInfo.GameId}");
             }
 
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
@@ -52,11 +52,11 @@ namespace TGS.GameProviders.Core.Evolution.ApplicationServices
                 configuration.GameHistoryApiToken,
                 new EvolutionGamHistoryRoundRequest
                 {
-                    PlayerCode = roundModel.PlayerCode,
-                    RoundId = roundModel.ExternalRoundId
+                    PlayerCode = roundInfo.PlayerCode,
+                    RoundId = roundInfo.ExternalRoundId
                 }).ConfigureAwait(false);
 
-            return gameModel.GameType == GameType.Slot
+            return gameInfo.GameType == GameType.Slot
                 ? new RoundDetailResult
                 {
                     Data = new RoundDetailDataBase[]

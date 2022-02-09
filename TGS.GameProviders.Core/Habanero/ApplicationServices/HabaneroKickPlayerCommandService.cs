@@ -27,12 +27,6 @@ internal class HabaneroKickPlayerCommandService : ICommandService<HabaneroKickPl
         HabaneroKickPlayerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var playerModel = await _service.GetPlayerAsync(command.PlayerCode).ConfigureAwait(false);
-        if (playerModel == null)
-        {
-            throw new Exception($"The player does not exist.{command.PlayerCode}");
-        }
-
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
         var request = new HabaneroLogoutRequest
