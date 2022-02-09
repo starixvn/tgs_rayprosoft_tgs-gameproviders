@@ -23,7 +23,6 @@ data:
       },
       "AllowedHosts": "*",
       "ConnectionStrings": {
-        "Tgs": "{{ .Values.connectionStrings.tgs }}",
         "RedisConfigurationString": "{{ .Values.connectionStrings.redis }}",
         "NatsMQ": "{{ .Values.nats.urls }}"
       },

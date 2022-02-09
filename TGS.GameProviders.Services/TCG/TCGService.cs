@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TGS.GameProviders.Core;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.TCG;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -13,36 +12,30 @@ namespace TGS.GameProviders.Services.TCG
 {
     internal class TCGService : ITCGService
     {
-        private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly IGameProviderService _gameProviderService;
         private readonly IGameService _gameService;
         private readonly ISettingService _settingService;
 
         public TCGService(
             ISettingService settingService,
-            IGameProviderRepository gameProviderRepository,
+            IGameProviderService gameProviderService,
             IGameService gameService
             )
         {
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+            _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
 
         public IAsyncEnumerable<GameInfo> GetGameLotteryLobbyAsync(Guid gameProviderId)
             => _gameService.GetGameListAsync(gameProviderId, Core.GameType.LotteryLobby);
 
-        public string GetGameProviderCode()
-            => GameProviderType.TCG;
-
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
-            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.TCG).ConfigureAwait(false);
-            var (IsCultureCode, GameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
-            return (IsCultureCode) ? GameProviderCultureCode : "EN";
+            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.TCG).ConfigureAwait(false);
+            var gameProviderCultureCode = await _gameProviderService.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
+            return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "EN";
         }
-
-        public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.TCG);
 
         public async ValueTask<TCGMerchant> GetMerchantAsync(string currencyCode)
         {

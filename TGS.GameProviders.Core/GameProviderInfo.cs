@@ -1,9 +1,9 @@
 ﻿using System;
-using TGS.GameProviders.Domains;
+using Tgs.GameProviders.QueryServer.Client;
 
-namespace TGS.GameProviders.Core.Repositories.Models.GameProvider
+namespace TGS.GameProviders.Core
 {
-    public record GameProviderModel(
+    public record GameProviderInfo(
         Guid GameProviderId,
         GameProviderStatus Status,
         string? Description,

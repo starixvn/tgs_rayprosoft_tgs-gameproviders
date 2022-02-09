@@ -12,8 +12,6 @@ namespace TGS.GameProviders.Core.Evolution
 
         ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
 
-        Task<Guid> GetGameProviderIdAsync();
-
         ValueTask<EvolutionConfiguration> GetSettingConfigurationAsync();
     }
 }

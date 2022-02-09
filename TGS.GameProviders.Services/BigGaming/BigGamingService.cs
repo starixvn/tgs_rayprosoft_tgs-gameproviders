@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Extensions;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
@@ -13,16 +12,16 @@ namespace TGS.GameProviders.Services.BigGaming
 {
     internal class BigGamingService : IBigGamingService
     {
-        private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly IGameProviderService _gameProviderService;
         private readonly ISettingService _settingService;
 
         public BigGamingService(
             ISettingService settingService,
-            IGameProviderRepository gameProviderRepository
+            IGameProviderService gameProviderRepository
             )
         {
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+            _gameProviderService = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         }
 
         public async ValueTask<BigGamingBrandMerchant> GetBrandMerchantAsync(string currencyCode)
@@ -44,13 +43,13 @@ namespace TGS.GameProviders.Services.BigGaming
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
-            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.Skywind).ConfigureAwait(false);
-            var (IsCultureCode, GameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
-            return (IsCultureCode) ? GameProviderCultureCode : "en_US";
+            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.Skywind).ConfigureAwait(false);
+            var gameProviderCultureCode = await _gameProviderService.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
+            return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "en_US";
         }
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.BigGaming);
+            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.BigGaming);
 
         public ValueTask<BigGamingConfiguration> GetSettingConfigurationAsync()
             => _settingService.GetConfigurationAsync<BigGamingConfiguration>(GameProviderConfigurations.BigGaming);

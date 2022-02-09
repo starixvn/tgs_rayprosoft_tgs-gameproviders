@@ -138,19 +138,6 @@ namespace TGS.GameProviders
                     });
             });
 
-            services.AddDbTgsRepository((
-                sp,
-                dbBuilder) =>
-            {
-                var config = sp.GetRequiredService<IConfiguration>();
-
-                dbBuilder
-                    .UseLazyLoadingProxies();
-
-                dbBuilder.UseNpgsql(
-                    config.GetConnectionString("Tgs"));
-            });
-
             services
                 .AddNatsMessageQueue(natsConfig =>
                 {
@@ -215,8 +202,6 @@ namespace TGS.GameProviders
 
             services
                 .AddHealthChecks();
-            //.AddRedis(Configuration.GetConnectionString("RedisConfigurationString"), name: "Redis Default")
-            //.AddNpgSql(Configuration.GetConnectionString("Tgs"), name: "PostgreSQL Tgs");
         }
     }
 }

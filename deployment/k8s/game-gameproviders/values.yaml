@@ -18,7 +18,6 @@ nameOverride: "game-gameproviders"
 fullnameOverride: "game-gameproviders"
 
 connectionStrings:
-  tgs: Server=pgpool;Port=9999;Database=tgs;User Id=rpdev;Password=abcd1234
   redis: redis-master,abortConnect=false,connectTimeout=3000,password=1qaz2wsx
 
 nats:
@@ -47,11 +46,11 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 500m
+    memory: 512Mi
   requests:
-    cpu: 50m
-    memory: 64Mi
+    cpu: 100m
+    memory: 100Mi
 
 autoscaling:
   enabled: false

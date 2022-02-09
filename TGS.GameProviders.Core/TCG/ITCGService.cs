@@ -10,11 +10,7 @@ namespace TGS.GameProviders.Core.TCG
     {
         IAsyncEnumerable<GameInfo> GetGameLotteryLobbyAsync(Guid gameProviderId);
 
-        string GetGameProviderCode();
-
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
-
-        ValueTask<Guid> GetGameProviderIdAsync();
 
         ValueTask<TCGMerchant> GetMerchantAsync(string currencyCode);
 

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.AsiaGaming;
-using TGS.GameProviders.Core.Repositories;
+using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Services.AsiaGaming;
@@ -11,7 +11,7 @@ namespace TGS.GameProviders.Services.AsiaGaming;
 internal class AsiaGamingService : IAsiaGamingService
 {
     private readonly IBrandService _brandService;
-    private readonly IGameProviderRepository _gameProviderRepository;
+    private readonly IGameProviderService _gameProviderService;
     private readonly IGameService _gameService;
     private readonly ILogger<AsiaGamingService> _logger;
     private readonly ISettingService _settingService;
@@ -19,13 +19,13 @@ internal class AsiaGamingService : IAsiaGamingService
     public AsiaGamingService(
         ILogger<AsiaGamingService> logger,
         ISettingService settingService,
-        IGameProviderRepository gameProviderRepository,
+        IGameProviderService gameProviderService,
         IGameService gameService,
         IBrandService brandService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
-        _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+        _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
         _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         _brandService = brandService ?? throw new ArgumentNullException(nameof(brandService));
     }
@@ -41,7 +41,7 @@ internal class AsiaGamingService : IAsiaGamingService
         var gameProviderConfigurationId = await _brandService
             .GetBrandGameProviderConfigurationIdAsync(gameProviderId, brandId).ConfigureAwait(false);
 
-        var (desktopEndpoint, mobileEndpoint) = await _gameProviderRepository
+        var (desktopEndpoint, mobileEndpoint) = await _gameProviderService
             .GetGameEndpointsAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         return platformType == PlatformType.Mobile ? mobileEndpoint : desktopEndpoint;
@@ -49,22 +49,20 @@ internal class AsiaGamingService : IAsiaGamingService
 
     public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
     {
-        var (isCurrencyCode, gameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)
-            .ConfigureAwait(false);
+        var gameProviderCurrencyCode = await _gameProviderService.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
 
-        return isCurrencyCode ? gameProviderCurrencyCode : null;
+        return !string.IsNullOrEmpty(gameProviderCurrencyCode) ? gameProviderCurrencyCode : null;
     }
 
     public async ValueTask<Guid> GetGameProviderIdAsync()
-        => await _gameProviderRepository.GetGameProviderIdAsync(Domains.GameProviderType.AsiaGaming)
+        => await _gameProviderService.GetCacheGameProviderIdAsync(Domains.GameProviderType.AsiaGaming)
             .ConfigureAwait(false);
 
     public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
     {
-        var (isCultureCode, gameProviderCultureCode) = await _gameProviderRepository
-            .GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
+        var gameProviderCultureCode = await _gameProviderService.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
 
-        return isCultureCode ? gameProviderCultureCode : "en_US";
+        return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "en_US";
     }
 
     public async ValueTask<AsiaGamingConfiguration> GetSettingConfigurationAsync()

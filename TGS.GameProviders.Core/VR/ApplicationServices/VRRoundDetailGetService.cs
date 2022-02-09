@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.VR.ApplicationServices
