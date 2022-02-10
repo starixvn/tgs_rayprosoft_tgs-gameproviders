@@ -93,7 +93,7 @@ namespace TGS.GameProviders.Core.IMESports.ApplicationServices
                 .GetGameProviderLanguageCodeAsync(roundInfo.GameProviderId, cultureCode)
                 .ConfigureAwait(false);
 
-            var createdOn = new DateTimeOffset(roundInfo.ExternalCreatedOn!.Value).ToOffset(TimeSpan.FromHours(8));
+            var createdOn = new DateTimeOffset(roundInfo.ExternalCreatedOn!.Value.UtcDateTime).ToOffset(TimeSpan.FromHours(8));
 
             var startDate = createdOn.AddMinutes(-1).ToString(_TimeFormat);
             var endDate = createdOn.AddMinutes(1).ToString(_TimeFormat);
