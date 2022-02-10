@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameProviders.QueryServer.Client;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.JDB;
 using TGS.GameProviders.Core.JDB.ApplicationServices;
 using TGS.GameProviders.Core.JDB.Models;
@@ -104,7 +105,7 @@ public class JDBRoundDetailGetServiceUnitTest
             playerInfo.PlayerCode,
             gameInfo.GameId,
             playerInfo.DefaultWalletCurrencyCode,
-            Tgs.GameProviders.QueryServer.Client.RoundStatus.Closed,
+            RoundStatus.Closed,
             Guid.NewGuid(),
             playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -120,7 +121,7 @@ public class JDBRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            Tgs.GameProviders.QueryServer.Client.RoundClientStatus.Win,
+            RoundClientStatus.Win,
             null,
             null,
             null,
