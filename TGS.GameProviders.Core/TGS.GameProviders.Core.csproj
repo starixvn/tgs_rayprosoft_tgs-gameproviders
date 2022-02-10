@@ -11,7 +11,7 @@
     <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="Tgs.Core.Infrastructures.Security" Version="0.0.1" />
-    <PackageReference Include="Tgs.GameProviders.QueryServer.Client" Version="0.0.6" />
+    <PackageReference Include="Tgs.GameProviders.QueryServer.Client" Version="0.0.7" />
     <PackageReference Include="TGS.ServiceUtility" Version="0.1.0" />
   </ItemGroup>
 

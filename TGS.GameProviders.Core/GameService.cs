@@ -113,7 +113,7 @@ namespace TGS.GameProviders.Core
 
         public async IAsyncEnumerable<GameInfo> GetGameListAsync(Guid gameProviderId, GameType gameType)
         {
-            var gameViewModels = await _gameProvidersQueryServerClient.GameQueryAsync(gameProviderId, (Tgs.GameProviders.QueryServer.Client.GameType)gameType).ConfigureAwait(false);
+            var gameViewModels = await _gameProvidersQueryServerClient.GameQueryAsync(gameProviderId, (Tgs.GameProviders.QueryServer.Models.GameType)gameType).ConfigureAwait(false);
 
             foreach (var gameViewModel in gameViewModels)
                 yield return new GameInfo(

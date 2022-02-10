@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameProviders.QueryServer.Client;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.Habanero;
 using TGS.GameProviders.Core.Habanero.ApplicationServices;
 using TGS.GameProviders.Domains.RoundDetail;
@@ -89,7 +90,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             playerInfo.PlayerCode,
             gameInfo.GameId,
             playerInfo.DefaultWalletCurrencyCode,
-            Tgs.GameProviders.QueryServer.Client.RoundStatus.Closed,
+            Tgs.GameProviders.QueryServer.Models.RoundStatus.Closed,
             Guid.NewGuid(),
             playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -105,7 +106,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            Tgs.GameProviders.QueryServer.Client.RoundClientStatus.Win,
+            Tgs.GameProviders.QueryServer.Models.RoundClientStatus.Win,
             null,
             null,
             null,
