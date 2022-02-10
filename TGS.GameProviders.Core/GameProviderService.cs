@@ -48,10 +48,10 @@ namespace TGS.GameProviders.Core
                 : (new(data.DesktopEndpoint, data.MobileEndpoint));
         }
         public ValueTask<string> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode)
-            => _gameProvidersQueryServerClient.GameProviderGetGameProviderCultureCodeAsync(gameProviderId, cultureCode);
+            => _gameProvidersQueryServerClient.GameProviderGetCultureCodeAsync(gameProviderId, cultureCode);
 
         public ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
-            => _gameProvidersQueryServerClient.GameProviderGetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode);
+            => _gameProvidersQueryServerClient.GameProviderGetCurrencyCodeAsync(gameProviderId, currencyCode);
 
         public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
         {
