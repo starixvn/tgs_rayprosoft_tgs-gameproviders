@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.Extensions;
@@ -30,12 +31,12 @@ namespace TGS.GameProviders.Services.BigGaming
             return configuration.BrandMerchants.Where(x => x.CurrencyCode.IgnoreCaseEquals(currencyCode) && x.Status).FirstOrDefault();
         }
 
-        public ClientRoundStatus GetClientRound(decimal winLoss)
+        public RoundClientStatus GetClientRound(decimal winLoss)
             => winLoss switch
             {
-                > 0 => ClientRoundStatus.Win,
-                < 0 => ClientRoundStatus.Loss,
-                0 => ClientRoundStatus.Draw
+                > 0 => RoundClientStatus.Win,
+                < 0 => RoundClientStatus.Loss,
+                0 => RoundClientStatus.Draw
             };
 
         public string GetGameProviderCode()

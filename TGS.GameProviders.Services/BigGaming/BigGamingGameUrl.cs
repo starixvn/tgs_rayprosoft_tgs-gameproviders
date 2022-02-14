@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.BigGaming.Models;
 using TGS.GameProviders.Core.BigGaming.Models.Commons;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
-using GameType = TGS.GameProviders.Core.GameType;
 
 namespace TGS.GameProviders.Services.BigGaming
 {

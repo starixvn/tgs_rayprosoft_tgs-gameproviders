@@ -1,4 +1,6 @@
-﻿namespace TGS.GameProviders.Core.SBO
+﻿using Tgs.GameProviders.QueryServer.Models;
+
+namespace TGS.GameProviders.Core.SBO
 {
     public interface ISBOUtility
     {

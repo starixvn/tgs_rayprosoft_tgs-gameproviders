@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TGS.GameProviders.Domains.SettingConfiguration.Avia
+﻿namespace TGS.GameProviders.Domains.SettingConfiguration.Avia
 {
     public class AviaBrandMerchant
     {

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace TGS.GameProviders.Domains.SettingConfiguration.AsiaGaming
+﻿namespace TGS.GameProviders.Domains.SettingConfiguration.AsiaGaming
 {
     public record AsiaGamingGameHistoryType
     {

@@ -37,7 +37,7 @@ namespace TGS.GameProviders.Core
                      data.Username,
                      data.DefaultWalletId,
                      data.DefaultWalletCurrencyCode,
-                    (PlayerStatus)data.Status
+                     data.Status
                      );
             }
             return playerInfo;

@@ -25,7 +25,7 @@ namespace TGS.GameProviders.Core
                     viewModel.RoundId,
                     viewModel.PlayerCode,
                     viewModel.ExternalTransactionId,
-                    (GameActionType)viewModel.Type,
+                    viewModel.Type,
                     viewModel.Amount,
                     viewModel.Turnover,
                     viewModel.WinLoss,

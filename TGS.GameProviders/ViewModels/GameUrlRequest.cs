@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core;
 
 namespace TGS.GameProviders.ViewModels

@@ -1,5 +1,4 @@
 ﻿using System;
-using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Client
 {
@@ -9,7 +8,7 @@ namespace TGS.GameProviders.Client
         public Guid GameProviderId { get; init; }
         public string PlayerCode { get; init; } = default!;
         public RoundStatus Status { get; init; }
-        public ClientRoundStatus ClientStatus { get; init; }
+        public RoundClientStatus ClientStatus { get; init; }
         public string ExternalRoundId { get; init; } = default!;
         public string ExternalGameId { get; init; } = default!;
         public DateTimeOffset? ExternalCreatedOn { get; init; }

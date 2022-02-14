@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace TGS.GameProviders.Core.BigGaming.ApplicationServices

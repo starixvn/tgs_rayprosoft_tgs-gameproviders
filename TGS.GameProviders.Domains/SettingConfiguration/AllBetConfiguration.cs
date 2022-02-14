@@ -1,5 +1,4 @@
-﻿using System;
-using TGS.GameProviders.Domains.SettingConfiguration.AllBet;
+﻿using TGS.GameProviders.Domains.SettingConfiguration.AllBet;
 
 namespace TGS.GameProviders.Domains.SettingConfiguration
 {

@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.ApiClients.WGSports.Models;
 using TGS.GameProviders.Core.WGSports;
 using TGS.GameProviders.Core.WGSports.ApplicationServices;
 using TGS.GameProviders.Core.WGSports.Models;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.UnitTests.WGSports
@@ -86,7 +86,7 @@ namespace TGS.GameProviders.Core.UnitTests.WGSports
                     }
             };
             _ = fakeWGHorseService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-            _ = fakeWGHorseService.GetClientRound(gameRecordResponse.BetInfo[0].Result).Returns(ClientRoundStatus.Void);
+            _ = fakeWGHorseService.GetClientRound(gameRecordResponse.BetInfo[0].Result).Returns(RoundClientStatus.Void);
 
             _ = fakeWGHorseApiClient.GetGameRecordAsync(
                  configuration.ApiUrl,
@@ -101,7 +101,7 @@ namespace TGS.GameProviders.Core.UnitTests.WGSports
             var actual = await fakeService.GetAsync(query).ConfigureAwait(false);
             Assert.NotNull(actual);
             Assert.AreEqual(true, actual.Success);
-            Assert.AreEqual(ClientRoundStatus.Void, actual.Datas[0].ClientStatus);
+            Assert.AreEqual(RoundClientStatus.Void, actual.Datas[0].ClientStatus);
         }
     }
 }

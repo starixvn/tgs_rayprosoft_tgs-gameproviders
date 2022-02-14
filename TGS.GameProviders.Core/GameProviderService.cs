@@ -19,7 +19,6 @@ namespace TGS.GameProviders.Core
             _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
         }
 
-
         public async ValueTask<GameProviderInfo> GetAsync(Guid gameProviderId)
         {
             var data = await _gameProvidersQueryServerClient.GameProviderGetAsync(gameProviderId).ConfigureAwait(false);
@@ -40,24 +39,6 @@ namespace TGS.GameProviders.Core
                 data.Name,
                 data.Localization);
         }
-        public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId)
-        {
-            var data = await _gameProvidersQueryServerClient.GameProviderGetGameProviderConfigAsync(gameProviderConfigurationId).ConfigureAwait(false);
-            return data == null
-                ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
-                : (new(data.DesktopEndpoint, data.MobileEndpoint));
-        }
-        public ValueTask<string> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode)
-            => _gameProvidersQueryServerClient.GameProviderGetGameProviderCultureCodeAsync(gameProviderId, cultureCode);
-
-        public ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
-            => _gameProvidersQueryServerClient.GameProviderGetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode);
-
-        public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
-        {
-            var gameProviderId = await _gameProvidersQueryServerClient.GameProviderGetGameProviderIdAsync(gameProviderCode).ConfigureAwait(false);
-            return !gameProviderId.HasValue ? throw new Exception($"Game Provider does not exist.({gameProviderCode})") : gameProviderId.Value;
-        }
 
         public async ValueTask<Guid> GetCacheGameProviderIdAsync(string gameProviderCode)
         {
@@ -68,6 +49,25 @@ namespace TGS.GameProviders.Core
             }
             return gameProviderId;
         }
+
+        public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId)
+        {
+            var data = await _gameProvidersQueryServerClient.GameProviderGetGameProviderConfigAsync(gameProviderConfigurationId).ConfigureAwait(false);
+            return data == null
+                ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+                : (new(data.DesktopEndpoint, data.MobileEndpoint));
+        }
+
+        public ValueTask<string> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode)
+            => _gameProvidersQueryServerClient.GameProviderGetCultureCodeAsync(gameProviderId, cultureCode);
+
+        public ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
+            => _gameProvidersQueryServerClient.GameProviderGetCurrencyCodeAsync(gameProviderId, currencyCode);
+
+        public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
+        {
+            var gameProviderId = await _gameProvidersQueryServerClient.GameProviderGetGameProviderIdAsync(gameProviderCode).ConfigureAwait(false);
+            return !gameProviderId.HasValue ? throw new Exception($"Game Provider does not exist.({gameProviderCode})") : gameProviderId.Value;
+        }
     }
 }
-

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Domains;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.KY;
 
@@ -12,7 +12,7 @@ namespace TGS.GameProviders.Core.KY
 
         Task<KYBrandMerchant> GetBrandMerchantAsync(string brandCode);
 
-        ClientRoundStatus GetClientRound(decimal playerWinLoss);
+        RoundClientStatus GetClientRound(decimal playerWinLoss);
 
         DateTimeOffset GetDateTimeOffsetTimeZone8();
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
 using TGS.GameProviders.Core.AsiaGaming.Models;
@@ -170,7 +171,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             playerInfo.PlayerCode,
             gameInfo.GameId,
             playerInfo.DefaultWalletCurrencyCode,
-            (Tgs.GameProviders.QueryServer.Models.RoundStatus)RoundStatus.Closed,
+            RoundStatus.Closed,
             Guid.NewGuid(),
             playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -186,7 +187,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            (Tgs.GameProviders.QueryServer.Models.RoundClientStatus)ClientRoundStatus.Win,
+            RoundClientStatus.Win,
             null,
             null,
             null,

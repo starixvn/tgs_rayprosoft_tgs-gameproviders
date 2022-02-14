@@ -47,7 +47,7 @@ using TGS.GameProviders.Core.WMCasino;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class ClientConfigurationExtensions
+public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApiClients(this IServiceCollection services)
     {

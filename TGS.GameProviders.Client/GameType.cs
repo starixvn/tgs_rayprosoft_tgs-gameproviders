@@ -1,4 +1,4 @@
-﻿namespace TGS.GameProviders.Domains
+﻿namespace TGS.GameProviders.Client
 {
     public enum GameType
     {

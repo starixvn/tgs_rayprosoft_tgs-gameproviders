@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using TGS.GameProviders.Core;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.SBO;
 
 namespace TGS.GameProviders.Services.SBO

@@ -1,4 +1,5 @@
 ﻿using System;
+using Tgs.GameProviders.QueryServer.Models;
 
 namespace TGS.GameProviders.Core
 {

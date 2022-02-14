@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.TCG;
 using TGS.GameProviders.Domains;
@@ -28,7 +29,7 @@ namespace TGS.GameProviders.Services.TCG
         }
 
         public IAsyncEnumerable<GameInfo> GetGameLotteryLobbyAsync(Guid gameProviderId)
-            => _gameService.GetGameListAsync(gameProviderId, Core.GameType.LotteryLobby);
+            => _gameService.GetGameListAsync(gameProviderId, GameType.LotteryLobby);
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {

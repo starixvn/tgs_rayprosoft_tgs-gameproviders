@@ -1,5 +1,4 @@
-﻿using System;
-using TGS.GameProviders.Domains.SettingConfiguration.TCG;
+﻿using TGS.GameProviders.Domains.SettingConfiguration.TCG;
 
 namespace TGS.GameProviders.Domains.SettingConfiguration
 {

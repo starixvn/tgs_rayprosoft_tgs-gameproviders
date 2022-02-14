@@ -9,8 +9,8 @@ namespace TGS.GameProviders.Services.SexyGaming
 {
     internal class SexyGamingService : ISexyGamingService
     {
-        private readonly ISettingService _settingService;
         private readonly IGameProviderService _gameProviderService;
+        private readonly ISettingService _settingService;
 
         public SexyGamingService(
             ISettingService settingService,
@@ -20,7 +20,6 @@ namespace TGS.GameProviders.Services.SexyGaming
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
         }
-
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {

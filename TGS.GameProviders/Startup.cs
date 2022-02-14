@@ -119,7 +119,10 @@ namespace TGS.GameProviders
         {
             services
                 .AddRouting(options => options.LowercaseUrls = true)
-                .AddControllers()
+                .AddControllers(configure =>
+                {
+                    configure.Filters.Add<ExceptionFilter>();
+                })
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());

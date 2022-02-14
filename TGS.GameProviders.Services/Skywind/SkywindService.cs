@@ -28,7 +28,6 @@ namespace TGS.GameProviders.Services.Skywind
             return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "en";
         }
 
-
         public ValueTask<SkywindConfiguration> GetSettingConfigurationAsync()
             => _settingService.GetConfigurationAsync<SkywindConfiguration>(GameProviderConfigurations.Skywind);
     }

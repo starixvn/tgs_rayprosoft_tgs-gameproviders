@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace TGS.GameProviders.Core
 {
     public interface IGameProviderService
     {
-
         ValueTask<GameProviderInfo> GetAsync(Guid gameProviderId);
+
+        ValueTask<Guid> GetCacheGameProviderIdAsync(string gameProviderCode);
 
         ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId);
 
@@ -18,7 +16,5 @@ namespace TGS.GameProviders.Core
         ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
 
         ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode);
-
-        ValueTask<Guid> GetCacheGameProviderIdAsync(string gameProviderCode);
     }
 }

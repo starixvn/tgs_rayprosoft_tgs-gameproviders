@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Domains;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.WGHorse
 {
     public interface IWGHorseService
     {
-        ClientRoundStatus GetClientRound(decimal playerWinLoss);
+        RoundClientStatus GetClientRound(decimal playerWinLoss);
 
         ValueTask<GameInfo> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
 
