@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Skywind.Models;
 

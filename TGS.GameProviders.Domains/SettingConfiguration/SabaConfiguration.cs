@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TGS.GameProviders.Domains.SettingConfiguration
+﻿namespace TGS.GameProviders.Domains.SettingConfiguration
 {
     public record SabaConfiguration : PluggableConfigurationBase
     {

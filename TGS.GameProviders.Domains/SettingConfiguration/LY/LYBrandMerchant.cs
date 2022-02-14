@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TGS.GameProviders.Domains.SettingConfiguration.LY
+﻿namespace TGS.GameProviders.Domains.SettingConfiguration.LY
 {
     public record LYBrandMerchant
     {

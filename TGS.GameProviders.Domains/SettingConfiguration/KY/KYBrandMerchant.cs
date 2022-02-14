@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TGS.GameProviders.Domains.SettingConfiguration.KY
+﻿namespace TGS.GameProviders.Domains.SettingConfiguration.KY
 {
     public record KYBrandMerchant
     {

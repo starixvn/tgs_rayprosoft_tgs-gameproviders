@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Domains;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.WGSports
@@ -9,7 +9,7 @@ namespace TGS.GameProviders.Core.WGSports
     {
         decimal? GetAmount(string amountString);
 
-        ClientRoundStatus GetClientRound(string playerWinLoss);
+        RoundClientStatus GetClientRound(string playerWinLoss);
 
         ValueTask<GameInfo> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
 

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TGS.GameProviders.Domains.SettingConfiguration.TCG
+﻿namespace TGS.GameProviders.Domains.SettingConfiguration.TCG
 {
     public record TCGMerchant
     {

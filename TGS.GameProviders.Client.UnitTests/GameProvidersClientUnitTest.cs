@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.AsiaGaming;
 using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
@@ -153,14 +154,14 @@ namespace TGS.GameProviders.Client.IntegrationTests
 
             var gameInfo = new GameInfo(
                 400001,
-                Core.GameStatus.Active,
+                GameStatus.Active,
                 "asiagaminglobby",
                 null,
                 "/forwardGame.do?params={PARAS}&key={KEY}",
                 null,
                 Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
-                Core.GameType.LiveDealerLobby,
-                Core.GamePlatformType.DesktopAndMobile,
+                Tgs.GameProviders.QueryServer.Models.GameType.LiveDealerLobby,
+                GamePlatformType.DesktopAndMobile,
                 false,
                 true,
                 false,
@@ -182,7 +183,7 @@ namespace TGS.GameProviders.Client.IntegrationTests
                 "4ucmqplxb029",
                 Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
                 "CNY",
-                Core.PlayerStatus.Enabled);
+                PlayerStatus.Enabled);
 
             var query = new AsiaGamingGameUrlQuery
             {
@@ -249,13 +250,13 @@ namespace TGS.GameProviders.Client.IntegrationTests
 
             var actual = await sut.GameUrlByAsiaGamingAsync(
                 "AG",
-                (Domains.GameType)query.GameType,
+                (GameType)query.GameType,
                 query.GameId.Value,
                 query.BrandCode,
                 query.PlayerCode,
                 query.CurrencyCode,
                 query.LoginRecordId,
-                (Domains.PlatformType)query.PlatformType,
+                (PlatformType)query.PlatformType,
                 query.Language,
                 query.IPAddress,
                 query.BackUrl,
@@ -294,12 +295,12 @@ namespace TGS.GameProviders.Client.IntegrationTests
             var sut = new GameProvidersClient(httpClient);
 
             var gameProviderCode = "BC";
-            var gameType = Domains.GameType.Sportsbook;
+            var gameType = GameType.Sportsbook;
             var gameId = 2100001;
             var brandCode = "GPI";
             var currencyCode = "CNY";
             var loginRecordId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-            var platformType = Domains.PlatformType.Desktop;
+            var platformType = PlatformType.Desktop;
             var language = "zh-CN";
             var ipAddress = "127.0.0.1";
             var lobbyDomain = "https://devsportsbook.srvttt.com";

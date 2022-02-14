@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.AllBet.ApplicationServices;
 using TGS.GameProviders.Core.AllBet.Models;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.UnitTests.AllBet;
@@ -41,7 +41,7 @@ public class AllBetRoundDetailGetServiceUnitTest
             playerInfo.PlayerCode,
             1300002,
             playerInfo.DefaultWalletCurrencyCode,
-            (Tgs.GameProviders.QueryServer.Models.RoundStatus)RoundStatus.Closed,
+            Tgs.GameProviders.QueryServer.Models.RoundStatus.Closed,
             Guid.NewGuid(),
             playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -57,7 +57,7 @@ public class AllBetRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            (Tgs.GameProviders.QueryServer.Models.RoundClientStatus)ClientRoundStatus.Win,
+            RoundClientStatus.Win,
             null,
             null,
             null,

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using TGS.GameProviders.Domains.SettingConfiguration.Jili;
+﻿using TGS.GameProviders.Domains.SettingConfiguration.Jili;
 
 namespace TGS.GameProviders.Domains.SettingConfiguration
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.KY;
@@ -46,12 +47,12 @@ namespace TGS.GameProviders.Services.KY
             return brandMerchant;
         }
 
-        public ClientRoundStatus GetClientRound(decimal playerWinLoss)
+        public RoundClientStatus GetClientRound(decimal playerWinLoss)
             => playerWinLoss switch
             {
-                > 0 => ClientRoundStatus.Win,
-                < 0 => ClientRoundStatus.Loss,
-                0 => ClientRoundStatus.Draw
+                > 0 => RoundClientStatus.Win,
+                < 0 => RoundClientStatus.Loss,
+                0 => RoundClientStatus.Draw
             };
 
         public DateTimeOffset GetDateTimeOffsetTimeZone8() =>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.Extensions;
@@ -35,14 +36,14 @@ namespace TGS.GameProviders.Services.Avia
             return brandMerchant;
         }
 
-        public ClientRoundStatus GetClientRound(string state)
+        public RoundClientStatus GetClientRound(string state)
             => state switch
             {
-                "None" => ClientRoundStatus.Open,
-                "Cancel" => ClientRoundStatus.Void,
-                "Win" => ClientRoundStatus.Win,
-                "Lose" => ClientRoundStatus.Loss,
-                _ => ClientRoundStatus.Void
+                "None" => RoundClientStatus.Open,
+                "Cancel" => RoundClientStatus.Void,
+                "Win" => RoundClientStatus.Win,
+                "Lose" => RoundClientStatus.Loss,
+                _ => RoundClientStatus.Void
             };
 
         public string GetGameProviderCode()

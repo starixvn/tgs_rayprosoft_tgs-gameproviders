@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.JDB;
 using TGS.GameProviders.Core.JDB.ApplicationServices;
 using TGS.GameProviders.Core.JDB.Models;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.WGHorse;
 using TGS.GameProviders.Domains;
@@ -24,12 +25,12 @@ namespace TGS.GameProviders.Services.WGHorse
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
 
-        public ClientRoundStatus GetClientRound(decimal playerWinLoss)
+        public RoundClientStatus GetClientRound(decimal playerWinLoss)
             => playerWinLoss switch
             {
-                > 0 => ClientRoundStatus.Win,
-                0 => ClientRoundStatus.Draw,
-                < 0 => ClientRoundStatus.Loss,
+                > 0 => RoundClientStatus.Win,
+                0 => RoundClientStatus.Draw,
+                < 0 => RoundClientStatus.Loss,
             };
 
         public async ValueTask<GameInfo> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)

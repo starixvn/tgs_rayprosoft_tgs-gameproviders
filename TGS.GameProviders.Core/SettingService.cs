@@ -15,8 +15,8 @@ namespace TGS.GameProviders.Core
         {
             _gameProvidersQueryServerClient = gameProvidersQueryServerClient ?? throw new ArgumentNullException(nameof(gameProvidersQueryServerClient));
         }
+
         public ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase
             => _gameProvidersQueryServerClient.SettingGetConfigurationAsync<TConfiguration>(key);
-
     }
 }

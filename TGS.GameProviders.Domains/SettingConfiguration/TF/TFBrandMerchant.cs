@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TGS.GameProviders.Domains.SettingConfiguration.TF
+﻿namespace TGS.GameProviders.Domains.SettingConfiguration.TF
 {
     public record TFBrandMerchant
     {

@@ -1,6 +1,6 @@
-﻿namespace TGS.GameProviders.Domains
+﻿namespace TGS.GameProviders.Client
 {
-    public enum ClientRoundStatus
+    public enum RoundClientStatus
     {
         Open = 1,
         Void = 2,
