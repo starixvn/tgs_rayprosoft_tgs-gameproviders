@@ -250,13 +250,13 @@ namespace TGS.GameProviders.Client.IntegrationTests
 
             var actual = await sut.GameUrlByAsiaGamingAsync(
                 "AG",
-                (GameType)query.GameType,
+                (GameProvidersClientGameType)query.GameType,
                 query.GameId.Value,
                 query.BrandCode,
                 query.PlayerCode,
                 query.CurrencyCode,
                 query.LoginRecordId,
-                (PlatformType)query.PlatformType,
+                (GameProvidersClientPlatformType)query.PlatformType,
                 query.Language,
                 query.IPAddress,
                 query.BackUrl,
@@ -295,12 +295,12 @@ namespace TGS.GameProviders.Client.IntegrationTests
             var sut = new GameProvidersClient(httpClient);
 
             var gameProviderCode = "BC";
-            var gameType = GameType.Sportsbook;
+            var gameType = GameProvidersClientGameType.Sportsbook;
             var gameId = 2100001;
             var brandCode = "GPI";
             var currencyCode = "CNY";
             var loginRecordId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-            var platformType = PlatformType.Desktop;
+            var platformType = GameProvidersClientPlatformType.Desktop;
             var language = "zh-CN";
             var ipAddress = "127.0.0.1";
             var lobbyDomain = "https://devsportsbook.srvttt.com";

@@ -35,7 +35,7 @@ namespace TGS.GameProviders.Client
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public async ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl)
+        public async ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl)
         {
             var request = new
             {
@@ -69,13 +69,13 @@ namespace TGS.GameProviders.Client
 
         public async ValueTask<Uri?> GameUrlByAsiaGamingAsync(
             string gameProviderCode,
-            GameType gameType,
+            GameProvidersClientGameType gameType,
             int gameId,
             string brandCode,
             string playerCode,
             string currencyCode,
             Guid loginRecordId,
-            PlatformType platformType,
+            GameProvidersClientPlatformType platformType,
             string language,
             string ipAddress,
             Uri? backUrl,
@@ -112,7 +112,7 @@ namespace TGS.GameProviders.Client
             return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<GameUrlResponse>(contentJson, _SerializerOptions)?.Url;
         }
 
-        public async ValueTask<Uri?> GameUrlByBetConstructAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl, string lobbyDomain)
+        public async ValueTask<Uri?> GameUrlByBetConstructAsync(string gameProviderCode, GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, string lobbyDomain)
         {
             var request = new
             {

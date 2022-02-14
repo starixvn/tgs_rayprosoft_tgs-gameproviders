@@ -1,6 +1,6 @@
 ﻿namespace TGS.GameProviders.Client
 {
-    public enum PlatformType
+    public enum GameProvidersClientPlatformType
     {
         /// <summary>
         ///     Desktop

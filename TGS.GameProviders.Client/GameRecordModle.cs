@@ -2,13 +2,13 @@
 
 namespace TGS.GameProviders.Client
 {
-    public record GameRecordListViewModle
+    public record GameRecordModle
     {
         public string GameProviderCode { get; init; } = default!;
         public Guid GameProviderId { get; init; }
         public string PlayerCode { get; init; } = default!;
-        public RoundStatus Status { get; init; }
-        public RoundClientStatus ClientStatus { get; init; }
+        public GameRecordRoundStatus Status { get; init; }
+        public GameRecordRoundClientStatus ClientStatus { get; init; }
         public string ExternalRoundId { get; init; } = default!;
         public string ExternalGameId { get; init; } = default!;
         public DateTimeOffset? ExternalCreatedOn { get; init; }

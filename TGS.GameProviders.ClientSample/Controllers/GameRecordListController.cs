@@ -44,7 +44,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///         }
         /// </remarks>
         [HttpGet("BigGamingFishing")]
-        public ValueTask<GameRecordListResponse?> BigGamingFishingGameRecordListAsync(
+        public ValueTask<GameRecordResponse?> BigGamingFishingGameRecordListAsync(
             [FromQuery] string currencyCode,
             [FromQuery] DateTimeOffset startTime,
             [FromQuery] DateTimeOffset endTime,
@@ -72,7 +72,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///         }
         /// </remarks>
         [HttpGet("KY")]
-        public ValueTask<GameRecordListResponse?> KYGameRecordListAsync(
+        public ValueTask<GameRecordResponse?> KYGameRecordListAsync(
            [FromQuery] string brandCode,
            [FromQuery] string currencyCode,
            [FromQuery] DateTimeOffset startTime,
@@ -99,7 +99,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///         }
         /// </remarks>
         [HttpGet("LY")]
-        public ValueTask<GameRecordListResponse?> LYGameRecordListAsync(
+        public ValueTask<GameRecordResponse?> LYGameRecordListAsync(
            [FromQuery] string brandCode,
            [FromQuery] string currencyCode,
            [FromQuery] DateTimeOffset startTime,
@@ -130,7 +130,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///         }
         /// </remarks>
         [HttpGet("VR")]
-        public ValueTask<GameRecordListResponse?> VRGameRecordListAsync(
+        public ValueTask<GameRecordResponse?> VRGameRecordListAsync(
            [FromQuery] string brandCode,
            [FromQuery] bool isUpdateTime,
            [FromQuery] DateTimeOffset startTime,
@@ -159,7 +159,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///         }
         /// </remarks>
         [HttpGet("WGVIA")]
-        public ValueTask<GameRecordListResponse?> WGHorseGameRecordListAsync(
+        public ValueTask<GameRecordResponse?> WGHorseGameRecordListAsync(
             [FromQuery] DateTimeOffset startTime,
             [FromQuery] DateTimeOffset endTime,
             [FromQuery] int page,
@@ -184,7 +184,7 @@ namespace TGS.GameProviders.ClientSample.Controllers
         ///         }
         /// </remarks>
         [HttpPost("WGFM")]
-        public ValueTask<GameRecordListResponse?> WGSportsGameRecordListAsync(
+        public ValueTask<GameRecordResponse?> WGSportsGameRecordListAsync(
             [FromQuery] bool isSettlement,
             [FromQuery] DateTimeOffset startTime,
             [FromQuery] DateTimeOffset endTime)

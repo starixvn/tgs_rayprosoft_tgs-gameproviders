@@ -1,6 +1,6 @@
 ﻿namespace TGS.GameProviders.Client
 {
-    public enum GameType
+    public enum GameProvidersClientGameType
     {
         Sportsbook = 1,
         VirtualSports = 2,
