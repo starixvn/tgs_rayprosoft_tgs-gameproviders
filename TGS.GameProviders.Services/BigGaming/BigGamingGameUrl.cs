@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.GameProviders.QueryServer.Models;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.BigGaming;
 using TGS.GameProviders.Core.BigGaming.Models;
 using TGS.GameProviders.Core.BigGaming.Models.Commons;
 using TGS.GameProviders.Core.Extensions;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
 
 namespace TGS.GameProviders.Services.BigGaming
@@ -28,7 +28,7 @@ namespace TGS.GameProviders.Services.BigGaming
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        public async ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, string playerCode, GameModel game, string cultureCode)
+        public async ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, string playerCode, GameInfo game, string cultureCode)
             => game.GameType
             switch
             {

@@ -7,7 +7,6 @@ using Tgs.Core.Infrastructures.Security;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.SexyGaming.Models;
-using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
 {

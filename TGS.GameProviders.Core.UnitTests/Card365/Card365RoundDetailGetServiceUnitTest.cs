@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.Card365.ApplicationServices;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Player;
-using TGS.GameProviders.Core.Repositories.Models.Rounds;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.UnitTests.Card365;
@@ -23,11 +17,9 @@ internal class Card365RoundDetailGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<Card365RoundDetailGetService>.Instance;
-        var fakeRoundRepository = Substitute.For<IRoundRepository>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeRoundService = Substitute.For<IRoundService>();
 
-        var playerModel = new PlayerModel(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -40,55 +32,20 @@ internal class Card365RoundDetailGetServiceUnitTest
             "CNY",
             PlayerStatus.Enabled);
 
-        var gameProviderModel = new GameProviderModel(
-            Guid.Parse("630e822b-2635-4314-a7e4-5c7057c1a920"),
-            GameProviderStatus.Active,
-            null,
-            true,
-            true,
-            true,
-            10,
-            5,
-            19,
-            false,
-            "365",
-            "365",
-            null);
-
-        var gameModel = new GameModel(
-            1900008,
-            GameStatus.Active,
-            "563",
-            null,
-            null,
-            null,
-            gameProviderModel.GameProviderId,
-            GameType.CardGame,
-            GamePlatformType.DesktopAndMobile,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "Three_Pictures",
-            "Three Pictures",
-            null,
-            "365");
-
-        var roundModel = new RoundModel(
+        var roundInfo = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "1639679431950180036",
-            gameProviderModel.GameProviderId,
-            playerModel.PlayerCode,
-            gameModel.GameId,
-            playerModel.DefaultWalletCurrencyCode,
-            RoundStatus.Closed,
+            Guid.Parse("630e822b-2635-4314-a7e4-5c7057c1a920"),
+            playerInfo.PlayerCode,
+            1900008,
+            playerInfo.DefaultWalletCurrencyCode,
+            Tgs.GameProviders.QueryServer.Models.RoundStatus.Closed,
             Guid.NewGuid(),
-            playerModel.DefaultWalletId,
+            playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerModel.BrandId,
+            playerInfo.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,
@@ -98,7 +55,7 @@ internal class Card365RoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            ClientRoundStatus.Win,
+            Tgs.GameProviders.QueryServer.Models.RoundClientStatus.Win,
             null,
             null,
             null,
@@ -106,19 +63,12 @@ internal class Card365RoundDetailGetServiceUnitTest
 
         var query = new Card365RoundDetailQuery
         {
-            RoundId = roundModel.RoundId,
+            RoundId = roundInfo.RoundId,
             Language = "en-US"
         };
 
         var expected = new RoundDetailResult
         {
-            GameProviderName = gameProviderModel.Name,
-            GameName = gameModel.Name,
-            ExternalRoundId = roundModel.ExternalRoundId,
-            BetAmount = roundModel.BetAmount,
-            Turnover = roundModel.Turnover,
-            Winloss = roundModel.WinLoss,
-            GameResult = roundModel.ClientStatus.ToString(),
             Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataJson
@@ -132,25 +82,15 @@ internal class Card365RoundDetailGetServiceUnitTest
             }
         };
 
-        _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
-        _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
-        _ = fakeGameRepository.GetAsync(roundModel.GameId).Returns(Task.FromResult(gameModel));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
 
         var sut = new Card365RoundDetailGetService(
             fakeLogger,
-            fakeRoundRepository,
-            fakeGameProviderRepository,
-            fakeGameRepository);
+            fakeRoundService);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(expected.GameProviderName, actual.GameProviderName);
-        Assert.AreEqual(expected.GameName, actual.GameName);
-        Assert.AreEqual(expected.ExternalRoundId, actual.ExternalRoundId);
-        Assert.AreEqual(expected.BetAmount, actual.BetAmount);
-        Assert.AreEqual(expected.Turnover, actual.Turnover);
-        Assert.AreEqual(expected.Winloss, actual.Winloss);
-        Assert.AreEqual(expected.GameResult, actual.GameResult);
+        CollectionAssert.AreEqual(expected.Data, actual.Data);
     }
 }

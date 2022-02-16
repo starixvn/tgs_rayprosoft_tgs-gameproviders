@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
 
 namespace TGS.GameProviders.Core.WGSports.ApplicationServices
 {
@@ -12,28 +11,28 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
         private readonly IWGSportsApiClient _client;
         private readonly ILogger<WGSportsPlayerBalanceGetService> _logger;
         private readonly IWGSportsGamePlayer _playerCreate;
-        private readonly IPlayerRepository _playerRepository;
+        private readonly IPlayerService _playerService;
         private readonly IWGSportsService _service;
 
         public WGSportsPlayerBalanceGetService(
             IWGSportsApiClient client,
             ILogger<WGSportsPlayerBalanceGetService> logger,
-            IPlayerRepository playerRepository,
+            IPlayerService playerService,
             IWGSportsGamePlayer playerCreate,
             IWGSportsService service
             )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+            _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
             _playerCreate = playerCreate ?? throw new ArgumentNullException(nameof(playerCreate));
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         public async ValueTask<decimal?> GetAsync(WGSportsPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
-            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
-            if (playerModel == null)
+            var playerInfo = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerInfo == null)
             {
                 throw new Exception($"The player does not exist.{command.PlayerCode}");
             }
@@ -45,18 +44,18 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                playerModel.PlayerCode).ConfigureAwait(false);
+                playerInfo.PlayerCode).ConfigureAwait(false);
 
             if (!IsPlayer)
             {
-                if (await _playerCreate.CreatePlayerAsync(configuration, playerModel.PlayerCode, playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false))
+                if (await _playerCreate.CreatePlayerAsync(configuration, playerInfo.PlayerCode, playerInfo.DefaultWalletCurrencyCode).ConfigureAwait(false))
                 {
                     (IsPlayer, balance) = await _client.GetBalanceAsync(
                         configuration.ApiUrl,
                         configuration.PartnerCode,
                         configuration.PartnerKey,
                         configuration.IV,
-                        playerModel.PlayerCode).ConfigureAwait(false);
+                        playerInfo.PlayerCode).ConfigureAwait(false);
                 }
             }
 

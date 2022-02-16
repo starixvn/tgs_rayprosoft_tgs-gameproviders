@@ -5,7 +5,6 @@ using System.Net.Mime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Client
@@ -36,7 +35,84 @@ namespace TGS.GameProviders.Client
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public async ValueTask<Uri?> GameBetConstructUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl, string lobbyDomain)
+        public async ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl)
+        {
+            var request = new
+            {
+                GameType = gameType,
+                GameId = gameId,
+                BrandCode = brandCode,
+                PlayerCode = playerCode,
+                CurrencyCode = currencyCode,
+                LoginRecordId = loginRecordId,
+                PlatformType = platformType,
+                Language = language,
+                IPAddress = ipAddress,
+                BackUrl = backUrl
+            };
+
+            var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
+            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var response = await _httpClient
+               .PostAsync(
+                   string.Format(_GameURL, gameProviderCode),
+                   requestContent)
+               .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<GameUrlResponse>(contentJson, _SerializerOptions)?.Url;
+        }
+
+        public async ValueTask<Uri?> GameUrlByAsiaGamingAsync(
+            string gameProviderCode,
+            GameProvidersClientGameType gameType,
+            int gameId,
+            string brandCode,
+            string playerCode,
+            string currencyCode,
+            Guid loginRecordId,
+            GameProvidersClientPlatformType platformType,
+            string language,
+            string ipAddress,
+            Uri? backUrl,
+            decimal playerBalance)
+        {
+            var request = new
+            {
+                GameType = gameType,
+                GameId = gameId,
+                BrandCode = brandCode,
+                PlayerCode = playerCode,
+                CurrencyCode = currencyCode,
+                LoginRecordId = loginRecordId,
+                PlatformType = platformType,
+                Language = language,
+                IPAddress = ipAddress,
+                BackUrl = backUrl,
+                PlayerBalance = playerBalance
+            };
+
+            var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
+            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var response = await _httpClient
+                .PostAsync(
+                    string.Format(_GameURL, gameProviderCode),
+                    requestContent)
+                .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<GameUrlResponse>(contentJson, _SerializerOptions)?.Url;
+        }
+
+        public async ValueTask<Uri?> GameUrlByBetConstructAsync(string gameProviderCode, GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, string lobbyDomain)
         {
             var request = new
             {
@@ -69,44 +145,12 @@ namespace TGS.GameProviders.Client
             return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<GameUrlResponse>(contentJson, _SerializerOptions)?.Url;
         }
 
-        public async ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl)
-        {
-            var request = new
-            {
-                GameType = gameType,
-                GameId = gameId,
-                BrandCode = brandCode,
-                PlayerCode = playerCode,
-                CurrencyCode = currencyCode,
-                LoginRecordId = loginRecordId,
-                PlatformType = platformType,
-                Language = language,
-                IPAddress = ipAddress,
-                BackUrl = backUrl
-            };
-
-            var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
-            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-            var response = await _httpClient
-               .PostAsync(
-                   string.Format(_GameURL, gameProviderCode),
-                   requestContent)
-               .ConfigureAwait(false);
-
-            response.EnsureSuccessStatusCode();
-
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-            return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<GameUrlResponse>(contentJson, _SerializerOptions)?.Url;
-        }
-
         public async ValueTask KickPlayerAsync(string gameProviderCode, string playerCode)
         {
             var response = await _httpClient
                .DeleteAsync(
                    string.Format(_KickPlayerPath, gameProviderCode, playerCode))
-               .ConfigureAwait(false);            
+               .ConfigureAwait(false);
         }
 
         public async ValueTask<decimal?> PlayerBalanceAsync(string gameProviderCode, string playerCode)

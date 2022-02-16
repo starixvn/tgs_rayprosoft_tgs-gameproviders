@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Tgs.GameProviders.QueryServer.Models;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.KY;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.KY;
@@ -12,16 +13,16 @@ namespace TGS.GameProviders.Services.KY
 {
     internal class KYService : IKYService
     {
-        private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly ISettingRepository _settingRepository;
+        private readonly IGameProviderService _gameProviderService;
+        private readonly ISettingService _settingService;
 
         public KYService(
-            ISettingRepository settingRepository,
-            IGameProviderRepository gameProviderRepository
+            ISettingService settingService,
+            IGameProviderService gameProviderService
             )
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
+            _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
         }
 
         public async Task<string> GetAgentIdAsync(string brandCode, string currencyCode)
@@ -37,7 +38,7 @@ namespace TGS.GameProviders.Services.KY
 
         public async Task<KYBrandMerchant> GetBrandMerchantAsync(string brandCode)
         {
-            var configuration = await _settingRepository.GetConfigurationAsync<KYConfiguration>(GameProviderConfigurations.KY).ConfigureAwait(false);
+            var configuration = await _settingService.GetConfigurationAsync<KYConfiguration>(GameProviderConfigurations.KY).ConfigureAwait(false);
             var brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
             if (brandMerchant == null)
             {
@@ -46,12 +47,12 @@ namespace TGS.GameProviders.Services.KY
             return brandMerchant;
         }
 
-        public ClientRoundStatus GetClientRound(decimal playerWinLoss)
+        public RoundClientStatus GetClientRound(decimal playerWinLoss)
             => playerWinLoss switch
             {
-                > 0 => ClientRoundStatus.Win,
-                < 0 => ClientRoundStatus.Loss,
-                0 => ClientRoundStatus.Draw
+                > 0 => RoundClientStatus.Win,
+                < 0 => RoundClientStatus.Loss,
+                0 => RoundClientStatus.Draw
             };
 
         public DateTimeOffset GetDateTimeOffsetTimeZone8() =>
@@ -61,9 +62,9 @@ namespace TGS.GameProviders.Services.KY
             => GameProviderType.KY;
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.KY);
+            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.KY);
 
-        public Task<KYConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<KYConfiguration>(GameProviderConfigurations.KY);
+        public ValueTask<KYConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<KYConfiguration>(GameProviderConfigurations.KY);
     }
 }

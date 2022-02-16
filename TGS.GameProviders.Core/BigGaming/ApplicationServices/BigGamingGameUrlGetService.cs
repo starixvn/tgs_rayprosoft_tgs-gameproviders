@@ -4,28 +4,27 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
 
 namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 {
     public class BigGamingGameUrlGetService : IGetService<BigGamingGameUrlQuery, GameUrlResult>
     {
-        private readonly IGameRepository _gameRepository;
+        private readonly IGameService _gameService;
         private readonly IBigGamingGameUrl _gameUrl;
         private readonly IBigGamingGamePlayer _gamingGamePlayerCreate;
         private readonly ILogger<BigGamingGameUrlGetService> _logger;
         private readonly IBigGamingService _service;
 
         public BigGamingGameUrlGetService(
-            IGameRepository gameRepository,
+            IGameService gameService,
             ILogger<BigGamingGameUrlGetService> logger,
             IBigGamingService service,
             IBigGamingGamePlayer gamingGamePlayerCreate,
             IBigGamingGameUrl gameUrl
             )
         {
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _gamingGamePlayerCreate = gamingGamePlayerCreate ?? throw new ArgumentNullException(nameof(gamingGamePlayerCreate));
             _gameUrl = gameUrl ?? throw new ArgumentNullException(nameof(gameUrl));
@@ -41,7 +40,7 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
                 throw new Exception("The merchant does not exist.");
             }
 
-            var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
+            var getGame = await _gameService.GetCacheAsync(command.GameId.Value).ConfigureAwait(false);
 
             if (getGame == null)
             {

@@ -3,15 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.Jili;
 using TGS.GameProviders.Core.Jili.ApplicationServices;
 using TGS.GameProviders.Core.Jili.Models;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Player;
-using TGS.GameProviders.Core.Repositories.Models.Rounds;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.Jili;
@@ -25,10 +20,8 @@ public class JiliRoundDetailGetServiceUnitTest
     public async ValueTask Normal_Process()
     {
         var fakeLogger = NullLogger<JiliRoundDetailGetService>.Instance;
-        var fakeRoundRepository = Substitute.For<IRoundRepository>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakeRoundService = Substitute.For<IRoundService>();
+        var fakePlayerService = Substitute.For<IPlayerService>();
         var fakeService = Substitute.For<IJiliService>();
         var fakeMerchantMapper = Substitute.For<IJiliMerchantMapper>();
         var fakeApiClient = Substitute.For<IJiliApiClient>();
@@ -54,7 +47,7 @@ public class JiliRoundDetailGetServiceUnitTest
             SecretKey = "SecretKey"
         };
 
-        var playerModel = new PlayerModel(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -67,55 +60,20 @@ public class JiliRoundDetailGetServiceUnitTest
             "CNY",
             PlayerStatus.Enabled);
 
-        var gameProviderModel = new GameProviderModel(
-            Guid.Parse("b957e28c-0e94-40af-9d37-ab48cdeb5d29"),
-            GameProviderStatus.Active,
-            null,
-            true,
-            true,
-            true,
-            10,
-            5,
-            22,
-            false,
-            "JILI",
-            "JILI",
-            null);
-
-        var gameModel = new GameModel(
-            2200001,
-            GameStatus.Active,
-            "10",
-            null,
-            null,
-            null,
-            gameProviderModel.GameProviderId,
-            GameType.Slot,
-            GamePlatformType.Desktop,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "FaFaFa",
-            "FaFaFa",
-            null,
-            "JILI");
-
-        var roundModel = new RoundModel(
+        var roundInfo = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "1639679431950180036",
-            gameProviderModel.GameProviderId,
-            playerModel.PlayerCode,
-            gameModel.GameId,
-            playerModel.DefaultWalletCurrencyCode,
-            RoundStatus.Closed,
+            Guid.Parse("b957e28c-0e94-40af-9d37-ab48cdeb5d29"),
+            playerInfo.PlayerCode,
+            2200001,
+            playerInfo.DefaultWalletCurrencyCode,
+            Tgs.GameProviders.QueryServer.Models.RoundStatus.Closed,
             Guid.NewGuid(),
-            playerModel.DefaultWalletId,
+            playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerModel.BrandId,
+            playerInfo.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,
@@ -125,7 +83,7 @@ public class JiliRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            ClientRoundStatus.Win,
+            Tgs.GameProviders.QueryServer.Models.RoundClientStatus.Win,
             null,
             null,
             null,
@@ -133,18 +91,16 @@ public class JiliRoundDetailGetServiceUnitTest
 
         var query = new JiliRoundDetailQuery
         {
-            RoundId = roundModel.RoundId,
+            RoundId = roundInfo.RoundId,
             Language = "en-US"
         };
 
-        _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
-        _ = fakeGameProviderRepository.GetAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
-        _ = fakeGameRepository.GetAsync(roundModel.GameId).Returns(Task.FromResult(gameModel));
-        _ = fakePlayerRepository.GetAsync(roundModel.PlayerCode).Returns(Task.FromResult(playerModel));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
+        _ = fakePlayerService.GetAsync(roundInfo.PlayerCode).Returns(Task.FromResult(playerInfo));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, playerModel.BrandCode).Returns(merchant);
+        _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, playerInfo.BrandCode).Returns(merchant);
         _ = fakeService
-            .GetGameProviderLanguageCodeAsync(gameProviderModel.GameProviderId, query.Language)
+            .GetGameProviderLanguageCodeAsync(Guid.Parse("b957e28c-0e94-40af-9d37-ab48cdeb5d29"), query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         _ = fakeApiClient
@@ -153,7 +109,7 @@ public class JiliRoundDetailGetServiceUnitTest
                 merchant.AgentId,
                 merchant.AgentKey,
                 gameProviderLanguageCode,
-                roundModel.ExternalRoundId)
+                roundInfo.ExternalRoundId)
             .Returns(ValueTask.FromResult(
                 new JiliGetGameDetailUrlResponse
                 {
@@ -166,13 +122,6 @@ public class JiliRoundDetailGetServiceUnitTest
 
         var expected = new RoundDetailResult
         {
-            GameProviderName = gameProviderModel.Name,
-            GameName = gameModel.Name,
-            ExternalRoundId = roundModel.ExternalRoundId,
-            BetAmount = roundModel.BetAmount,
-            Turnover = roundModel.Turnover,
-            Winloss = roundModel.WinLoss,
-            GameResult = roundModel.ClientStatus.ToString(),
             Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataUrl
@@ -184,10 +133,8 @@ public class JiliRoundDetailGetServiceUnitTest
 
         var sut = new JiliRoundDetailGetService(
             fakeLogger,
-            fakeRoundRepository,
-            fakeGameProviderRepository,
-            fakeGameRepository,
-            fakePlayerRepository,
+            fakeRoundService,
+            fakePlayerService,
             fakeService,
             fakeMerchantMapper,
             fakeApiClient);
@@ -195,13 +142,6 @@ public class JiliRoundDetailGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(expected.GameProviderName, actual.GameProviderName);
-        Assert.AreEqual(expected.GameName, actual.GameName);
-        Assert.AreEqual(expected.ExternalRoundId, actual.ExternalRoundId);
-        Assert.AreEqual(expected.BetAmount, actual.BetAmount);
-        Assert.AreEqual(expected.Turnover, actual.Turnover);
-        Assert.AreEqual(expected.Winloss, actual.Winloss);
-        Assert.AreEqual(expected.GameResult, actual.GameResult);
         CollectionAssert.AreEqual(expected.Data, actual.Data);
     }
 }

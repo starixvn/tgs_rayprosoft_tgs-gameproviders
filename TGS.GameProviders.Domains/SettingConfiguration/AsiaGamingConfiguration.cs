@@ -1,5 +1,4 @@
-﻿using System;
-using TGS.GameProviders.Domains.SettingConfiguration.AsiaGaming;
+﻿using TGS.GameProviders.Domains.SettingConfiguration.AsiaGaming;
 
 namespace TGS.GameProviders.Domains.SettingConfiguration
 {

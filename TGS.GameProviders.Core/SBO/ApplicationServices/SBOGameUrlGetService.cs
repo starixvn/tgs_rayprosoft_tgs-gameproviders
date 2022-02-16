@@ -2,10 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories.Models.Game;
 using TGS.GameProviders.Core.SBO.Models;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using static TGS.GameProviders.Core.SBO.Models.SBOApiErrorCode;
 
@@ -75,7 +74,7 @@ namespace TGS.GameProviders.Core.SBO.ApplicationServices
         private async ValueTask<SBOLoginResponse> PlayerLoginAsync(
             SBOConfiguration configuration,
             SBOGameUrlQuery query,
-            GameModel game)
+            GameInfo game)
         {
             var portfolio = _utility.GetPortfolio(game.GameType);
             var playerCode = query.PlayerCode;

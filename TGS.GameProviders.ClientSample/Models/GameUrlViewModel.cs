@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using TGS.GameProviders.Domains;
+using TGS.GameProviders.Client;
 
 namespace TGS.GameProviders.ClientSample.Models
 {
@@ -20,7 +20,7 @@ namespace TGS.GameProviders.ClientSample.Models
         public string GameProviderCode { get; init; } = default!;
 
         [Required(ErrorMessage = "Please enter GameType")]
-        public GameType GameType { get; init; } = default!;
+        public GameProvidersClientGameType GameType { get; init; } = default!;
 
         [Required(ErrorMessage = "Please enter IPAddress")]
         public string IPAddress { get; init; } = default!;
@@ -32,7 +32,7 @@ namespace TGS.GameProviders.ClientSample.Models
         public Guid LoginRecordId { get; init; } = default!;
 
         [Required(ErrorMessage = "Please enter PlatformType")]
-        public PlatformType PlatformType { get; init; } = PlatformType.Desktop;
+        public GameProvidersClientPlatformType PlatformType { get; init; } = GameProvidersClientPlatformType.Desktop;
 
         [Required(ErrorMessage = "Please enter PlayerCode")]
         public string PlayerCode { get; init; } = default!;

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.JDB.ApplicationServices;
@@ -18,14 +17,10 @@ public class JDBController : ControllerBase,
     IKickPlayerHandler<JDBKickPlayerCommand>,
     IRoundDetailHandler<JDBRoundDetailQuery>
 {
-    private readonly ILogger<JDBController> _logger;
     private readonly IMapper _mapper;
 
-    public JDBController(
-        ILogger<JDBController> logger,
-        IMapper mapper)
+    public JDBController(IMapper mapper)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
@@ -101,7 +96,7 @@ public class JDBController : ControllerBase,
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<JDBRoundDetailQuery, RoundDetailResult> getService,
+        [FromServices] IGetService<JDBRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
         => await getService

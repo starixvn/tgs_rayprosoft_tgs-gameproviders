@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Domains;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.WGHorse
 {
     public interface IWGHorseService
     {
-        ClientRoundStatus GetClientRound(decimal playerWinLoss);
+        RoundClientStatus GetClientRound(decimal playerWinLoss);
 
-        ValueTask<GameModel> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
+        ValueTask<GameInfo> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
 
         string GetGameProviderCode();
 
@@ -20,6 +19,6 @@ namespace TGS.GameProviders.Core.WGHorse
 
         ValueTask<Guid> GetGameProviderIdAsync();
 
-        Task<WGHorseConfiguration> GetSettingConfigurationAsync();
+        ValueTask<WGHorseConfiguration> GetSettingConfigurationAsync();
     }
 }

@@ -5,29 +5,28 @@ using Microsoft.Extensions.Logging;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Jili.Models;
-using TGS.GameProviders.Core.Repositories;
 
 namespace TGS.GameProviders.Core.Jili.ApplicationServices;
 
 internal class JiliGameUrlGetService : IGetService<JiliGameUrlQuery, GameUrlResult>
 {
-    private readonly ILogger<JiliGameUrlGetService> _logger;
-    private readonly IGameRepository _gameRepository;
-    private readonly ITokenProvider _tokenProvider;
-    private readonly IJiliService _service;
-    private readonly IJiliMerchantMapper _merchantMapper;
     private readonly IJiliApiClient _client;
+    private readonly IGameService _gameService;
+    private readonly ILogger<JiliGameUrlGetService> _logger;
+    private readonly IJiliMerchantMapper _merchantMapper;
+    private readonly IJiliService _service;
+    private readonly ITokenProvider _tokenProvider;
 
     public JiliGameUrlGetService(
         ILogger<JiliGameUrlGetService> logger,
-        IGameRepository gameRepository,
+        IGameService gameService,
         ITokenProvider tokenProvider,
         IJiliService service,
         IJiliMerchantMapper merchantMapper,
         IJiliApiClient client)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         _tokenProvider = tokenProvider ?? throw new ArgumentNullException(nameof(tokenProvider));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _merchantMapper = merchantMapper ?? throw new ArgumentNullException(nameof(merchantMapper));
@@ -42,7 +41,7 @@ internal class JiliGameUrlGetService : IGetService<JiliGameUrlQuery, GameUrlResu
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
         var merchant = _merchantMapper.GetMerchant(configuration.Merchants, query.BrandCode);
 
-        var game = await _gameRepository.GetAsync(query.GameId!.Value).ConfigureAwait(false);
+        var game = await _gameService.GetCacheAsync(query.GameId!.Value).ConfigureAwait(false);
         var gameProviderCultureCode =
             await _service.GetGameProviderLanguageCodeAsync(game!.GameProviderId, query.Language);
 

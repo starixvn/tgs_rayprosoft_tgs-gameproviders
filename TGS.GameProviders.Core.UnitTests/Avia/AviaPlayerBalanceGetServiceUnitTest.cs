@@ -3,11 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.Avia.ApplicationServices;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Player;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration.Avia;
 
 namespace TGS.GameProviders.Core.UnitTests.Avia
@@ -21,17 +19,17 @@ namespace TGS.GameProviders.Core.UnitTests.Avia
             var faceLogger = NullLogger<AviaPlayerBalanceGetService>.Instance;
             var fakeAviaApiClient = Substitute.For<IAviaApiClient>();
             var fakeAviaService = Substitute.For<IAviaService>();
-            var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+            var fakePlayerService = Substitute.For<IPlayerService>();
             var fakeAviaGamePlayerService = Substitute.For<IAviaGamePlayerService>();
 
-            var fakeService = new AviaPlayerBalanceGetService(faceLogger, fakeAviaApiClient, fakeAviaService, fakePlayerRepository, fakeAviaGamePlayerService);
+            var fakeService = new AviaPlayerBalanceGetService(faceLogger, fakeAviaApiClient, fakeAviaService, fakePlayerService, fakeAviaGamePlayerService);
 
             var query = new AviaPlayerBalanceQuery()
             {
                 PlayerCode = "4ucmqplxb029"
             };
 
-            var playerModel = new PlayerModel(
+            var playerInfo = new PlayerInfo(
                 Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
                 "TGS",
                 Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -54,9 +52,9 @@ namespace TGS.GameProviders.Core.UnitTests.Avia
 
             var gameProviderCurrencyCode = "CNY";
             decimal? balance = 100;
-            _ = fakeAviaService.GetBrandMerchantAsync(playerModel.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
-            _ = fakePlayerRepository.GetAsync(query.PlayerCode).Returns(Task.FromResult(playerModel));
-            _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(playerModel.DefaultWalletCurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
+            _ = fakeAviaService.GetBrandMerchantAsync(playerInfo.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
+            _ = fakePlayerService.GetCacheAsync(query.PlayerCode).Returns(Task.FromResult(playerInfo));
+            _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(playerInfo.DefaultWalletCurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
             _ = fakeAviaApiClient.BalanceAsync(
                 brandMerchant.ApiUrl,
                 brandMerchant.Authorization,

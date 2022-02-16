@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Saba.ApplicationServices;
@@ -19,18 +17,11 @@ namespace TGS.GameProviders.Controllers
         IKickPlayerHandler<SabaKickPlayerCommand>,
         IRoundDetailHandler<SabaRoundDetailQuery>
     {
-        private readonly ILogger<SABAController> _logger;
         private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public SABAController(
-            ILogger<SABAController> logger,
-            IMapper mapper,
-            IWebHostEnvironment webHostEnvironment)
+        public SABAController(IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
         }
 
         /// <summary>
@@ -61,11 +52,7 @@ namespace TGS.GameProviders.Controllers
             [FromServices] IGetService<SabaGameUrlQuery, GameUrlResult> getService,
             GameUrlRequest request)
         {
-            var map = _mapper.Map<SabaGameUrlQuery>(request);
-            var query = map with
-            {
-                EnvironmentName = _webHostEnvironment.EnvironmentName
-            };
+            var query = _mapper.Map<SabaGameUrlQuery>(request);
 
             var result = await getService
                 .GetAsync(query)
@@ -91,8 +78,7 @@ namespace TGS.GameProviders.Controllers
             string playerCode)
             => commandService.ExecuteAsync(new SabaKickPlayerCommand
             {
-                PlayerCode = playerCode,
-                EnvironmentName = _webHostEnvironment.EnvironmentName
+                PlayerCode = playerCode
             });
 
         /// <summary>
@@ -109,7 +95,7 @@ namespace TGS.GameProviders.Controllers
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-            [FromServices] IGetService<SabaRoundDetailQuery, RoundDetailResult> getService,
+            [FromServices] IGetService<SabaRoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
         {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Domains;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.BigGaming;
 
@@ -10,7 +10,7 @@ namespace TGS.GameProviders.Core.BigGaming
     {
         ValueTask<BigGamingBrandMerchant> GetBrandMerchantAsync(string currencyCode);
 
-        ClientRoundStatus GetClientRound(decimal winLoss);
+        RoundClientStatus GetClientRound(decimal winLoss);
 
         string GetGameProviderCode();
 
@@ -18,6 +18,6 @@ namespace TGS.GameProviders.Core.BigGaming
 
         ValueTask<Guid> GetGameProviderIdAsync();
 
-        Task<BigGamingConfiguration> GetSettingConfigurationAsync();
+        ValueTask<BigGamingConfiguration> GetSettingConfigurationAsync();
     }
 }

@@ -17,7 +17,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var transactionId = 34234324;
             var betId = 123456;
             var amount = 123.00m;
-            var bonusBetAmount = 10.00m;
             var created = "2016-04-26T11:35:30.054Z";
             var betType = 1;
             var systemMinCount = new object();
@@ -61,7 +60,6 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var transactionId = 34234324;
             var betId = 123456;
             var amount = 123.00m;
-            var bonusBetAmount = 10.00m;
             var created = "2016-04-26T11:35:30.0543787Z";
             var betType = 1;
             var systemMinCount = new object();

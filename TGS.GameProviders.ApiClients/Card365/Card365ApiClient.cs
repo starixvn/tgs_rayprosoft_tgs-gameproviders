@@ -16,8 +16,8 @@ namespace TGS.GameProviders.ApiClients.Card365;
 
 internal class Card365ApiClient : ICard365ApiClient
 {
-    private readonly ILogger<Card365ApiClient> _logger;
     private readonly HttpClient _client;
+    private readonly ILogger<Card365ApiClient> _logger;
     private readonly ITgsLog _tgsLog;
 
     public Card365ApiClient(

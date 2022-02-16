@@ -3,27 +3,26 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
 
 namespace TGS.GameProviders.Core.Jili.ApplicationServices;
 
 internal class JiliKickPlayerCommandService : ICommandService<JiliKickPlayerCommand>
 {
-    private readonly ILogger<JiliKickPlayerCommandService> _logger;
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IJiliService _service;
-    private readonly IJiliMerchantMapper _merchantMapper;
     private readonly IJiliApiClient _client;
+    private readonly ILogger<JiliKickPlayerCommandService> _logger;
+    private readonly IJiliMerchantMapper _merchantMapper;
+    private readonly IPlayerService _playerService;
+    private readonly IJiliService _service;
 
     public JiliKickPlayerCommandService(
         ILogger<JiliKickPlayerCommandService> logger,
-        IPlayerRepository playerRepository,
+        IPlayerService playerService,
         IJiliService service,
         IJiliMerchantMapper merchantMapper,
         IJiliApiClient client)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _merchantMapper = merchantMapper ?? throw new ArgumentNullException(nameof(merchantMapper));
         _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -33,15 +32,15 @@ internal class JiliKickPlayerCommandService : ICommandService<JiliKickPlayerComm
         JiliKickPlayerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        if (playerModel == null)
+        var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
+        if (playerInfo == null)
         {
             throw new Exception($"The player does not exist.{command.PlayerCode}");
         }
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-        var merchant = _merchantMapper.GetMerchant(configuration.Merchants, playerModel.BrandCode);
-        var jiliPlayerId = $"{playerModel.BrandCode}_{playerModel.PlayerCode}";
+        var merchant = _merchantMapper.GetMerchant(configuration.Merchants, playerInfo.BrandCode);
+        var jiliPlayerId = $"{playerInfo.BrandCode}_{playerInfo.PlayerCode}";
 
         await _client.KickMemberAsync(
                 configuration.ApiUrl,

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Tgs.GameProviders.QueryServer.Models;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.Extensions;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.Avia;
@@ -12,16 +13,16 @@ namespace TGS.GameProviders.Services.Avia
 {
     internal class AviaService : IAviaService
     {
-        private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly ISettingRepository _settingRepository;
+        private readonly IGameProviderService _gameProviderService;
+        private readonly ISettingService _settingService;
 
         public AviaService(
-            ISettingRepository settingRepository,
-            IGameProviderRepository gameProviderRepository
+            ISettingService settingService,
+            IGameProviderService gameProviderService
             )
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
+            _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
         }
 
         public async ValueTask<AviaBrandMerchant> GetBrandMerchantAsync(string brandCode)
@@ -35,14 +36,14 @@ namespace TGS.GameProviders.Services.Avia
             return brandMerchant;
         }
 
-        public ClientRoundStatus GetClientRound(string state)
+        public RoundClientStatus GetClientRound(string state)
             => state switch
             {
-                "None" => ClientRoundStatus.Open,
-                "Cancel" => ClientRoundStatus.Void,
-                "Win" => ClientRoundStatus.Win,
-                "Lose" => ClientRoundStatus.Loss,
-                _ => ClientRoundStatus.Void
+                "None" => RoundClientStatus.Open,
+                "Cancel" => RoundClientStatus.Void,
+                "Win" => RoundClientStatus.Win,
+                "Lose" => RoundClientStatus.Loss,
+                _ => RoundClientStatus.Void
             };
 
         public string GetGameProviderCode()
@@ -50,20 +51,20 @@ namespace TGS.GameProviders.Services.Avia
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
-            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.Avia).ConfigureAwait(false);
-            var (IsCultureCode, GameProviderCultureCode) = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
-            return (IsCultureCode) ? GameProviderCultureCode : "ENG";
+            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.Avia).ConfigureAwait(false);
+            var gameProviderCultureCode = await _gameProviderService.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
+            return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "ENG";
         }
 
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
         {
-            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.Avia).ConfigureAwait(false);
-            var (IsCurrencyCode, GameProviderCurrencyCode) = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
-            return (IsCurrencyCode) ? GameProviderCurrencyCode : null;
+            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.Avia).ConfigureAwait(false);
+            var gameProviderCurrencyCode = await _gameProviderService.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
+            return !string.IsNullOrEmpty(gameProviderCurrencyCode) ? gameProviderCurrencyCode : null;
         }
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-             => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.Avia);
+             => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.Avia);
 
         public RoundStatus GetRoundStatus(string state)
             => state switch
@@ -72,7 +73,7 @@ namespace TGS.GameProviders.Services.Avia
                 _ => RoundStatus.Closed
             };
 
-        public Task<AviaConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<AviaConfiguration>(GameProviderConfigurations.Avia);
+        public ValueTask<AviaConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<AviaConfiguration>(GameProviderConfigurations.Avia);
     }
 }

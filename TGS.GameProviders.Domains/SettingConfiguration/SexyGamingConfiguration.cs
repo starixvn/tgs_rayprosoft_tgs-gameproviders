@@ -1,5 +1,4 @@
-﻿using System;
-using TGS.GameProviders.Domains.SettingConfiguration.SexyGaming;
+﻿using TGS.GameProviders.Domains.SettingConfiguration.SexyGaming;
 
 namespace TGS.GameProviders.Domains.SettingConfiguration
 {

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.WGSports.ApplicationServices;
@@ -221,7 +220,7 @@ namespace TGS.GameProviders.Controllers
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-            [FromServices] IGetService<WGSportsRoundDetailQuery, RoundDetailResult> getService,
+            [FromServices] IGetService<WGSportsRoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
         {

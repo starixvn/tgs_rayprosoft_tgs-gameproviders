@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.WGHorse.ApplicationServices;
@@ -22,14 +21,10 @@ namespace TGS.GameProviders.Controllers
         IPlayerFundHandler<WGHorsePlayerFundInQuery, WGHorsePlayerFundOutQuery>,
         IRoundDetailHandler<WGHorseRoundDetailQuery>
     {
-        private readonly ILogger<WGVIAController> _logger;
         private readonly IMapper _mapper;
 
-        public WGVIAController(
-            ILogger<WGVIAController> logger,
-            IMapper mapper)
+        public WGVIAController(IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -225,7 +220,7 @@ namespace TGS.GameProviders.Controllers
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-            [FromServices] IGetService<WGHorseRoundDetailQuery, RoundDetailResult> getService,
+            [FromServices] IGetService<WGHorseRoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
         {

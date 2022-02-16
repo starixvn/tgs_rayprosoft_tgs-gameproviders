@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Avia.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers
@@ -18,16 +18,14 @@ namespace TGS.GameProviders.Controllers
         IKickPlayerHandler<AviaKickPlayerCommand>,
         IPlayerBalanceHandler<AviaPlayerBalanceQuery>,
         IPlayerFundCheckingHandler<AviaPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-        IPlayerFundHandler<AviaPlayerFundInQuery, AviaPlayerFundOutQuery>
+        IPlayerFundHandler<AviaPlayerFundInQuery, AviaPlayerFundOutQuery>,
+        IRoundDetailHandler<AviaRoundDetailQuery>
     {
-        private readonly ILogger<AviaController> _logger;
         private readonly IMapper _mapper;
 
         public AviaController(
-            ILogger<AviaController> logger,
             IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -55,7 +53,7 @@ namespace TGS.GameProviders.Controllers
             AviaGameRecordListQuery request)
         {
             var result = await getService.GetAsync(request).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
 
         /// <summary>
@@ -209,5 +207,30 @@ namespace TGS.GameProviders.Controllers
             var result = await getService.GetAsync(_mapper.Map<AviaPlayerFundOutQuery>(request)).ConfigureAwait(false);
             return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
         }
+
+        /// <summary>
+        /// Rounds the detail asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="roundId">The round identifier.</param>
+        /// <param name="language">The language.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get ab/rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
+        /// </remarks>
+        [HttpGet("RoundDetail/{roundId}")]
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromServices] IGetService<AviaRoundDetailQuery, RoundDetailResult?> getService,
+            Guid roundId,
+            [FromQuery] string language)
+            => await getService
+            .GetAsync(new AviaRoundDetailQuery
+            {
+                RoundId = roundId,
+                Language = language
+            })
+            .ConfigureAwait(false);
     }
 }

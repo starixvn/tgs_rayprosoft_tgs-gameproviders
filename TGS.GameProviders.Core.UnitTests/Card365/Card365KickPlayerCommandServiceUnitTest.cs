@@ -3,12 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.Card365;
 using TGS.GameProviders.Core.Card365.ApplicationServices;
 using TGS.GameProviders.Core.Card365.Model;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Player;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.Card365;
 
@@ -24,7 +22,7 @@ public class Card365KickPlayerCommandServiceUnitTest
         var fakeService = Substitute.For<ICard365Service>();
         var fakeApiClient = Substitute.For<ICard365ApiClient>();
         var fakeAgentMapper = Substitute.For<ICard365AgentMapper>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakePlayerService = Substitute.For<IPlayerService>();
 
         var agent = new Card365BrandAgent
         {
@@ -41,7 +39,7 @@ public class Card365KickPlayerCommandServiceUnitTest
             BrandAgents = new[] { agent }
         };
 
-        var playerModel = new PlayerModel(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -56,16 +54,16 @@ public class Card365KickPlayerCommandServiceUnitTest
 
         var command = new Card365KickPlayerCommand
         {
-            PlayerCode = playerModel.PlayerCode
+            PlayerCode = playerInfo.PlayerCode
         };
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakePlayerRepository.GetAsync(command.PlayerCode).Returns(Task.FromResult(playerModel));
-        fakeAgentMapper.GetAgent(configuration.BrandAgents, playerModel.BrandCode).Returns(agent);
+        fakePlayerService.GetCacheAsync(command.PlayerCode).Returns(Task.FromResult(playerInfo));
+        fakeAgentMapper.GetAgent(configuration.BrandAgents, playerInfo.BrandCode).Returns(agent);
 
         var sut = new Card365KickPlayerCommandService(
             fakeLogger,
-            fakePlayerRepository,
+            fakePlayerService,
             fakeService,
             fakeAgentMapper,
             fakeApiClient);
@@ -79,7 +77,7 @@ public class Card365KickPlayerCommandServiceUnitTest
                  configuration.Website,
                  new Card365LogoutRequest
                  {
-                     PlayerCode = playerModel.PlayerCode,
+                     PlayerCode = playerInfo.PlayerCode,
                      Cert = configuration.Cert,
                      AgentId = agent.AgentId
                  });

@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.IMESports.Models;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using static TGS.GameProviders.Core.IMESports.Models.IMESportsGameApiError;
 
@@ -71,7 +69,7 @@ namespace TGS.GameProviders.Core.IMESports.ApplicationServices
         private async ValueTask<IMESportsLaunchGameResponse> LaunchGameAsync(
             IMESportsGameUrlQuery query,
             IMESportsConfiguration configuration,
-            GameModel game)
+            GameInfo game)
         {
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
             var cultureCode = await _service.GetGameProviderLanguageCodeAsync(gameProviderId, query.Language).ConfigureAwait(false);

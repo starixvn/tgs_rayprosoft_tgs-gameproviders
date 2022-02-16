@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 
 		<Nullable>enable</Nullable>
 		<IsPackable>true</IsPackable>
@@ -9,7 +9,7 @@
 
 	<PropertyGroup>
 		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
-		<Version>0.0.22</Version>
+		<Version>0.0.26</Version>
 		<Authors>Raypro</Authors>
 		<Description>TGS Game Providers Client</Description>
 		<PackageProjectUrl>https://gitlab.com/rayprosoft/tgs-gameproviders</PackageProjectUrl>

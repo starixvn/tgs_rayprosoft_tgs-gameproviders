@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TGS.GameProviders.Domains.SettingConfiguration
+﻿namespace TGS.GameProviders.Domains.SettingConfiguration
 {
     public record SabaConfiguration : PluggableConfigurationBase
     {
@@ -12,6 +10,6 @@ namespace TGS.GameProviders.Domains.SettingConfiguration
 
         public Uri ApiUrl { get; init; } = default!;
 
-        public string[] TestEnvironments { get; init; } = Array.Empty<string>();
+        public bool IsTestEnvironment { get; init; } = false;
     }
 }

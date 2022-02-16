@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.IMESports;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Player;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
@@ -13,58 +10,55 @@ namespace TGS.GameProviders.Services.IMESports
 {
     internal class IMESportsService : IIMESportsService
     {
-        private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly IGameRepository _gameRepository;
+        private readonly IGameProviderService _gameProviderService;
+        private readonly IGameService _gameService;
         private readonly ILogger<IMESportsService> _logger;
-        private readonly IPlayerRepository _playerRepository;
-        private readonly ISettingRepository _settingRepository;
+        private readonly IPlayerService _playerService;
+        private readonly ISettingService _settingService;
 
         public IMESportsService(
             ILogger<IMESportsService> logger,
-            ISettingRepository settingRepository,
-            IGameProviderRepository gameProviderRepository,
-            IGameRepository gameRepository,
-            IPlayerRepository playerRepository)
+            ISettingService settingService,
+            IGameProviderService gameProviderService,
+            IGameService gameService,
+            IPlayerService playerService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
-            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
+            _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+            _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         }
 
-        public async ValueTask<GameModel> GetGameAsync(int gameId)
-            => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
-
-        public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
-            => _gameProviderRepository.GetAsync(gameProviderId);
+        public async ValueTask<GameInfo> GetGameAsync(int gameId)
+            => await _gameService.GetAsync(gameId).ConfigureAwait(false);
 
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
         {
-            var (isCurrencyCode, gameProviderCurrencyCode) = await _gameProviderRepository
+            var gameProviderCurrencyCode = await _gameProviderService
                 .GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)
                 .ConfigureAwait(false);
 
-            return isCurrencyCode ? gameProviderCurrencyCode : null;
+            return !string.IsNullOrEmpty(gameProviderCurrencyCode) ? gameProviderCurrencyCode : null;
         }
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.IMESports);
+            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.IMESports);
 
         public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
         {
-            var (isCultureCode, gameProviderCultureCode) = await _gameProviderRepository
+            var gameProviderCultureCode = await _gameProviderService
                 .GetGameProviderCultureCodeAsync(gameProviderId, cultureCode)
                 .ConfigureAwait(false);
 
-            return isCultureCode ? gameProviderCultureCode : "EN";
+            return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "EN";
         }
 
-        public async ValueTask<PlayerModel> GetPlayerAsync(string playerCode)
-            => await _playerRepository.GetAsync(playerCode).ConfigureAwait(false);
+        public async ValueTask<PlayerInfo> GetPlayerAsync(string playerCode)
+            => await _playerService.GetAsync(playerCode).ConfigureAwait(false);
 
         public async ValueTask<IMESportsConfiguration> GetSettingConfigurationAsync()
-                    => await _settingRepository
+            => await _settingService
                 .GetConfigurationAsync<IMESportsConfiguration>(GameProviderConfigurations.IMESports)
                 .ConfigureAwait(false);
     }

@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.WMCasino.ApplicationServices;
@@ -13,52 +12,30 @@ namespace TGS.GameProviders.Core.WMCasino.ApplicationServices;
 internal class WMCasinoRoundDetailGetService : IGetService<WMCasinoRoundDetailQuery, RoundDetailResult>
 {
     private readonly ILogger<WMCasinoRoundDetailGetService> _logger;
-    private readonly IRoundRepository _roundRepository;
-    private readonly IWMCasinoService _service;
+    private readonly IRoundService _roundService;
 
     public WMCasinoRoundDetailGetService(
         ILogger<WMCasinoRoundDetailGetService> logger,
-        IRoundRepository roundRepository,
-        IWMCasinoService service)
+        IRoundService roundService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
-        _service = service ?? throw new ArgumentNullException(nameof(service));
+        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }
 
     public async ValueTask<RoundDetailResult> GetAsync(
         WMCasinoRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundModel == null)
+        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+        if (roundInfo == null)
         {
             throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        var gameProviderModel = await _service.GetGameProviderAsync(roundModel.GameProviderId).ConfigureAwait(false);
-        if (gameProviderModel == null)
-        {
-            throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
-        }
-
-        var gameModel = await _service.GetGameAsync(roundModel.GameId).ConfigureAwait(false);
-        if (gameModel == null)
-        {
-            throw new Exception($"This game Id could not be found.{roundModel.GameId}");
-        }
-
-        var value = GetGameHistory(roundModel.AdditionalData);
+        var value = GetGameHistory(roundInfo.AdditionalData);
 
         return new RoundDetailResult
         {
-            GameProviderName = gameProviderModel.Name,
-            GameName = gameModel.Name,
-            ExternalRoundId = roundModel.ExternalRoundId,
-            BetAmount = roundModel.BetAmount,
-            Turnover = roundModel.Turnover,
-            Winloss = roundModel.WinLoss,
-            GameResult = roundModel.ClientStatus.ToString(),
             Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataJson
