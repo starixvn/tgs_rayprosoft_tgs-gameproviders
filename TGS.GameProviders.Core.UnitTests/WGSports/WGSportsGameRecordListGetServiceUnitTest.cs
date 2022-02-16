@@ -96,7 +96,7 @@ namespace TGS.GameProviders.Core.UnitTests.WGSports
                 GameRecordTime.SettleDate,
                 query.StartTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss"),
                 query.EndTime.ToOffset(TimeSpan.FromHours(-4)).ToString("yyyy-MM-dd HH:mm:ss")
-                ).Returns(ValueTask.FromResult((true, gameRecordResponse.BetInfo)));
+                ).Returns(ValueTask.FromResult<(bool Success, WGSportsBetInfo[]? BetInfos)>((true, gameRecordResponse.BetInfo)));
 
             var actual = await fakeService.GetAsync(query).ConfigureAwait(false);
             Assert.NotNull(actual);

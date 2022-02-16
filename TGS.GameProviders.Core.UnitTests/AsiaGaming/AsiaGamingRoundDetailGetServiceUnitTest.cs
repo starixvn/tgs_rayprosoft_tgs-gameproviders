@@ -214,8 +214,8 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             }
         };
 
-        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
-        _ = fakeGameService.GetCacheAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
+        _ = fakeGameService.GetCacheAsync(roundInfo.GameId).Returns(ValueTask.FromResult<GameInfo?>(gameInfo));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
 
         var sut = new AsiaGamingRoundDetailGetService(

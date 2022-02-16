@@ -150,10 +150,10 @@ public class JDBRoundDetailGetServiceUnitTest
         fakeAgentMapper.GetAgent(configuration.Agents, playerInfo.DefaultWalletCurrencyCode)
             .Returns(agent);
 
-        fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
+        fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
         fakePlayerService.GetCacheAsync(roundInfo.PlayerCode).Returns(Task.FromResult(playerInfo));
         fakeGameProviderService.GetAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderInfo));
-        fakeGameService.GetCacheAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
+        fakeGameService.GetCacheAsync(roundInfo.GameId).Returns(ValueTask.FromResult<GameInfo?>(gameInfo));
 
         var items = gameInfo.GameExternalId.Split('_');
 

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Saba.ApplicationServices;
@@ -18,14 +17,10 @@ namespace TGS.GameProviders.Controllers
         IKickPlayerHandler<SabaKickPlayerCommand>,
         IRoundDetailHandler<SabaRoundDetailQuery>
     {
-        private readonly ILogger<SABAController> _logger;
         private readonly IMapper _mapper;
 
-        public SABAController(
-            ILogger<SABAController> logger,
-            IMapper mapper)
+        public SABAController(IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -100,7 +95,7 @@ namespace TGS.GameProviders.Controllers
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-            [FromServices] IGetService<SabaRoundDetailQuery, RoundDetailResult> getService,
+            [FromServices] IGetService<SabaRoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
         {

@@ -142,6 +142,7 @@ namespace TGS.GameProviders
             });
 
             services
+                .AddMessageQueue()
                 .AddNatsMessageQueue(natsConfig =>
                 {
                     natsConfig
@@ -151,7 +152,7 @@ namespace TGS.GameProviders
                         options.Url = configuration.GetConnectionString("NatsMQ");
                     });
                 })
-                .AddTgsLog();
+                .AddNatsGlobPatternExchange("*");
 
             services.AddOptions<ForwardedHeadersOptions>()
                 .Configure<IConfiguration>((options, config) =>

@@ -84,7 +84,7 @@ public class AllBetRoundDetailGetServiceUnitTest
             }
         };
 
-        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
 
         var sut = new AllBetRoundDetailGetService(
             fakeLogger,

@@ -102,7 +102,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
             .Returns(agent);
 
         fakePlayerService.GetCacheAsync(query.PlayerCode).Returns(Task.FromResult(playerInfo));
-        fakeGameService.GetCacheAsync(query.GameId.Value).Returns(ValueTask.FromResult(gameInfo));
+        fakeGameService.GetCacheAsync(query.GameId.Value).Returns(ValueTask.FromResult<GameInfo?>(gameInfo));
 
         var items = gameInfo.GameExternalId.Split('_');
 

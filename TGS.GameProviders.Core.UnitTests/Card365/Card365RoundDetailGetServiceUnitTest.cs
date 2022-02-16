@@ -82,7 +82,7 @@ internal class Card365RoundDetailGetServiceUnitTest
             }
         };
 
-        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
 
         var sut = new Card365RoundDetailGetService(
             fakeLogger,

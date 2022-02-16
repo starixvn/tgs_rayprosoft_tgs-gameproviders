@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.PragmaticPlay.ApplicationServices;
@@ -18,14 +17,10 @@ public class PPController : ControllerBase,
     IKickPlayerHandler<PragmaticPlayKickPlayerCommand>,
     IRoundDetailHandler<PragmaticPlayRoundDetailQuery>
 {
-    private readonly ILogger<PPController> _logger;
     private readonly IMapper _mapper;
 
-    public PPController(
-        ILogger<PPController> logger,
-        IMapper mapper)
+    public PPController(IMapper mapper)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
@@ -96,7 +91,7 @@ public class PPController : ControllerBase,
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<PragmaticPlayRoundDetailQuery, RoundDetailResult> getService,
+        [FromServices] IGetService<PragmaticPlayRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
         => await getService.GetAsync(new PragmaticPlayRoundDetailQuery

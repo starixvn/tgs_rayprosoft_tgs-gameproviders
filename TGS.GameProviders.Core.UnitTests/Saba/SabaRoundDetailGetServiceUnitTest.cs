@@ -170,7 +170,7 @@ public class SabaRoundDetailGetServiceUnitTest
             }
         };
 
-        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
         _ = fakeGameActionService.QueryAsync(query.RoundId).Returns(gameActions);
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeApiClient

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Habanero.ApplicationServices;
@@ -18,14 +17,10 @@ public class HABAController : ControllerBase,
     IRoundDetailHandler<HabaneroRoundDetailQuery>,
     IKickPlayerHandler<HabaneroKickPlayerCommand>
 {
-    private readonly ILogger<HABAController> _logger;
     private readonly IMapper _mapper;
 
-    public HABAController(
-        ILogger<HABAController> logger,
-        IMapper mapper)
+    public HABAController(IMapper mapper)
     {
-        _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
         _mapper = mapper ?? throw new System.ArgumentNullException(nameof(mapper));
     }
 
@@ -100,7 +95,7 @@ public class HABAController : ControllerBase,
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<HabaneroRoundDetailQuery, RoundDetailResult> getService,
+        [FromServices] IGetService<HabaneroRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
     {

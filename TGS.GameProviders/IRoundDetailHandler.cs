@@ -10,6 +10,6 @@ namespace TGS.GameProviders
     public interface IRoundDetailHandler<TQuery> where TQuery : RoundDetailQuery
     {
         [HttpGet("RoundDetail/{roundId}")]
-        ValueTask<RoundDetailResult?> RoundDetailAsync([FromServices] IGetService<TQuery, RoundDetailResult> getService, Guid roundId, [FromQuery] string language);
+        ValueTask<RoundDetailResult?> RoundDetailAsync([FromServices] IGetService<TQuery, RoundDetailResult?> getService, Guid roundId, [FromQuery] string language);
     }
 }

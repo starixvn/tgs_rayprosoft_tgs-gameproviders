@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.VR.ApplicationServices;
@@ -22,14 +21,10 @@ namespace TGS.GameProviders.Controllers
         IPlayerFundHandler<VRPlayerFundInQuery, VRPlayerFundOutQuery>,
         IRoundDetailHandler<VRRoundDetailQuery>
     {
-        private readonly ILogger<VRController> _logger;
         private readonly IMapper _mapper;
 
-        public VRController(
-            ILogger<VRController> logger,
-            IMapper mapper)
+        public VRController(IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -58,7 +53,7 @@ namespace TGS.GameProviders.Controllers
             VRGameRecordListQuery request)
         {
             var result = await getService.GetAsync(request).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
 
         /// <summary>
@@ -229,7 +224,7 @@ namespace TGS.GameProviders.Controllers
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-            [FromServices] IGetService<VRRoundDetailQuery, RoundDetailResult> getService,
+            [FromServices] IGetService<VRRoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
         {
@@ -238,7 +233,7 @@ namespace TGS.GameProviders.Controllers
                 RoundId = roundId,
                 Language = language
             }).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
     }
 }

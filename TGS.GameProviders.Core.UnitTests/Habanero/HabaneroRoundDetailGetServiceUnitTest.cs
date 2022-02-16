@@ -119,7 +119,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             Language = "en-US"
         };
 
-        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
         _ = fakeService.GetGameProviderAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderInfo));
         _ = fakeService.GetGameAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
         _ = fakeService.GetPlayerAsync(roundInfo.PlayerCode).Returns(ValueTask.FromResult(playerInfo));

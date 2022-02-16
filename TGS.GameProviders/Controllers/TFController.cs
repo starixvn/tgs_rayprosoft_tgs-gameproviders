@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.TFGaming.ApplicationServices;
@@ -17,14 +16,10 @@ namespace TGS.GameProviders.Controllers
         IRoundDetailHandler<TFGamingRoundDetailQuery>,
         IKickPlayerHandler<TFKickPlayerCommand>
     {
-        private readonly ILogger<TFController> _logger;
         private readonly IMapper _mapper;
 
-        public TFController(
-            ILogger<TFController> logger,
-            IMapper mapper)
+        public TFController(IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -110,8 +105,8 @@ namespace TGS.GameProviders.Controllers
         ///     Get tf/rounddetail/09eeecb8-9b64-ec11-a744-ac82478e2af1
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
-        public async ValueTask<RoundDetailResult> RoundDetailAsync(
-            [FromServices] IGetService<TFGamingRoundDetailQuery, RoundDetailResult> getService,
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromServices] IGetService<TFGamingRoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
         {
@@ -121,7 +116,7 @@ namespace TGS.GameProviders.Controllers
                 Language = language
             }).ConfigureAwait(false);
 
-            return result == null ? null : result;
+            return result ?? null;
         }
     }
 }

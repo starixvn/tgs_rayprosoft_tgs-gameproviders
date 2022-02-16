@@ -108,7 +108,7 @@ public class Card365GameUrlQueryGetServiceUnitTest
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         fakePlayerService.GetCacheAsync(query.PlayerCode).Returns(Task.FromResult(playerInfo));
-        fakeGameService.GetCacheAsync(query.GameId!.Value).Returns(ValueTask.FromResult(gameInfo));
+        fakeGameService.GetCacheAsync(query.GameId!.Value).Returns(ValueTask.FromResult<GameInfo?>(gameInfo));
         fakeAgentMapper.GetAgent(configuration.BrandAgents, playerInfo.BrandCode).Returns(agent);
         fakeTokenProvider.EncryptAsync(query.LoginRecordId).Returns(ValueTask.FromResult(token));
         fakeApiClient

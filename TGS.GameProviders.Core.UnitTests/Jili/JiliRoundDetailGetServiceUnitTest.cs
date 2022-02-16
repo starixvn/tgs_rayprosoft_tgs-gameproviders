@@ -95,7 +95,7 @@ public class JiliRoundDetailGetServiceUnitTest
             Language = "en-US"
         };
 
-        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
         _ = fakePlayerService.GetAsync(roundInfo.PlayerCode).Returns(Task.FromResult(playerInfo));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, playerInfo.BrandCode).Returns(merchant);

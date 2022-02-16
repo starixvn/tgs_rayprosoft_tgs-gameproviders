@@ -137,10 +137,10 @@ namespace TGS.GameProviders.Client.IntegrationTests.GameRecordList
                 query.Rows).ConfigureAwait(false);
 
             Assert.IsNotNull(actual);
-            Assert.AreEqual(success, actual.Success);
-            Assert.AreEqual(gameProviderCode, actual.Datas[0].GameProviderCode);
-            Assert.AreEqual(gameProviderId, actual.Datas[0].GameProviderId);
-            Assert.AreEqual(datas[0].OrderID, actual.Datas[0].ExternalRoundId);
+            Assert.AreEqual(success, actual!.Success);
+            Assert.AreEqual(gameProviderCode, actual.Datas![0].GameProviderCode);
+            Assert.AreEqual(gameProviderId, actual.Datas![0].GameProviderId);
+            Assert.AreEqual(datas[0].OrderID, actual.Datas![0].ExternalRoundId);
         }
     }
 }

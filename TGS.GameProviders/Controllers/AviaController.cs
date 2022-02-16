@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Avia.ApplicationServices;
@@ -22,14 +21,11 @@ namespace TGS.GameProviders.Controllers
         IPlayerFundHandler<AviaPlayerFundInQuery, AviaPlayerFundOutQuery>,
         IRoundDetailHandler<AviaRoundDetailQuery>
     {
-        private readonly ILogger<AviaController> _logger;
         private readonly IMapper _mapper;
 
         public AviaController(
-            ILogger<AviaController> logger,
             IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -57,7 +53,7 @@ namespace TGS.GameProviders.Controllers
             AviaGameRecordListQuery request)
         {
             var result = await getService.GetAsync(request).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
 
         /// <summary>
@@ -225,8 +221,8 @@ namespace TGS.GameProviders.Controllers
         ///     Get ab/rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
-        public async ValueTask<RoundDetailResult> RoundDetailAsync(
-            [FromServices] IGetService<AviaRoundDetailQuery, RoundDetailResult> getService,
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+            [FromServices] IGetService<AviaRoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
             => await getService

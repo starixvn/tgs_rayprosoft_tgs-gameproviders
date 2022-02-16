@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
@@ -16,14 +15,11 @@ namespace TGS.GameProviders.Controllers;
 public class AGController : ControllerBase,
     IRoundDetailHandler<AsiaGamingRoundDetailQuery>
 {
-    private readonly ILogger<AGController> _logger;
     private readonly IMapper _mapper;
 
     public AGController(
-        ILogger<AGController> logger,
         IMapper mapper)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
@@ -90,7 +86,7 @@ public class AGController : ControllerBase,
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<AsiaGamingRoundDetailQuery, RoundDetailResult> getService,
+        [FromServices] IGetService<AsiaGamingRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
         => await getService.GetAsync(new AsiaGamingRoundDetailQuery

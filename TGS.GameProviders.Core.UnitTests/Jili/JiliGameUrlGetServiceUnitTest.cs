@@ -93,7 +93,7 @@ public class JiliGameUrlGetServiceUnitTest
         fakeTokenProvider.EncryptAsync(Arg.Any<string>()).Returns(ValueTask.FromResult(token));
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         fakeMerchantMapper.GetMerchant(configuration.Merchants, query.BrandCode).Returns(merchant);
-        fakeGameService.GetCacheAsync(game.GameId).Returns(ValueTask.FromResult(game));
+        fakeGameService.GetCacheAsync(game.GameId).Returns(ValueTask.FromResult<GameInfo?>(game));
         fakeService
             .GetGameProviderLanguageCodeAsync(game.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
