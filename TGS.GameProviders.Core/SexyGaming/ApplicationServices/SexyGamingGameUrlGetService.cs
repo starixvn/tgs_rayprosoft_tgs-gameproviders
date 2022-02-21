@@ -47,6 +47,8 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
 
             var data = new SexyGamingGameUrlRequest
             {
+                AgentId = configuration.AgentId,
+                Cert = configuration.Cert,
                 UserId = command.PlayerCode,
                 IsMobileLogin = command.PlatformType == PlatformType.Mobile,
                 Language = gameProviderCulture,
