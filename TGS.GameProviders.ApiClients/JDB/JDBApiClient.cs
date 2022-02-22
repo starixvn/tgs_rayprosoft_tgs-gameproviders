@@ -10,7 +10,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Logging;
-using TGS.GameProviders.ApiClients.PragmaticPlay;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.JDB;
 using TGS.GameProviders.Core.JDB.Models;
@@ -130,7 +129,7 @@ internal class JDBApiClient : IJDBApiClient
         IEnumerable<KeyValuePair<string, string>> parameters,
         string action)
     {
-        var logPrefix = $"{nameof(PragmaticPlayApiClient).ToLower()}.{action}";
+        var logPrefix = $"{nameof(JDBApiClient).ToLower()}.{action}";
         var uriString = $"{apiUrl.AbsoluteUri.TrimEnd('/')}{path}";
 
         var sw = Stopwatch.StartNew();
