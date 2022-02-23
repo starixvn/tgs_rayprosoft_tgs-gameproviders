@@ -26,6 +26,11 @@ namespace TGS.GameProviders.Core.BetConstruct.ApplicationServices
 
             var authToken = await _tokenProvider.EncryptAsync(query.PlayerCode);
 
+            var oddsType = "decimal";
+
+            if (query.BrandCode is "HK28")
+                oddsType = "hongkong";
+
             var lang = query.Language switch
             {
                 "zh-CN" => "chi",
@@ -35,7 +40,7 @@ namespace TGS.GameProviders.Core.BetConstruct.ApplicationServices
                 _ => "eng"
             };
 
-            var url = $"{query.LobbyDomain}/js/partnerinit.js?containerID=bcsportsbookcontainer&UserId={userId}&AuthToken={authToken}&lang={lang}&sport=1";
+            var url = $"{query.LobbyDomain}/js/partnerinit.js?containerID=bcsportsbookcontainer&UserId={userId}&AuthToken={authToken}&lang={lang}&sport=1&oddsType={oddsType}";
 
             return new GameUrlResult
             {
