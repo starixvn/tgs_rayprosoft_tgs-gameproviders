@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.Evolution
@@ -12,8 +11,6 @@ namespace TGS.GameProviders.Core.Evolution
 
         ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
 
-        Task<Guid> GetGameProviderIdAsync();
-
-        Task<EvolutionConfiguration> GetSettingConfigurationAsync();
+        ValueTask<EvolutionConfiguration> GetSettingConfigurationAsync();
     }
 }

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.SexyGaming.ApplicationServices;
@@ -18,14 +17,10 @@ namespace TGS.GameProviders.Controllers
         IKickPlayerHandler<SexyGamingKickPlayerCommand>,
         IRoundDetailHandler<SexyGamingRoundDetailQuery>
     {
-        private readonly ILogger<SGController> _logger;
         private readonly IMapper _mapper;
 
-        public SGController(
-            ILogger<SGController> logger,
-            IMapper mapper)
+        public SGController(IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -94,7 +89,7 @@ namespace TGS.GameProviders.Controllers
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-            [FromServices] IGetService<SexyGamingRoundDetailQuery, RoundDetailResult> getService,
+            [FromServices] IGetService<SexyGamingRoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
         {
@@ -103,7 +98,7 @@ namespace TGS.GameProviders.Controllers
                 RoundId = roundId,
                 Language = language
             }).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
     }
 }

@@ -14,10 +14,10 @@ namespace TGS.GameProviders.ApiClients.UnitTests;
 [TestFixture]
 public class HabaneroApiClientUnitTest
 {
-    private readonly IHabaneroApiClient _client;
+    private readonly string _apiKey = "349F896E-DBC8-4A9D-963D-EFC921AD19FC";
     private readonly Uri _apiUrl = new Uri("https://ws-test.insvr.com");
     private readonly string _brandId = "a5df0ada-7b6a-eb11-9889-00155db5435a";
-    private readonly string _apiKey = "349F896E-DBC8-4A9D-963D-EFC921AD19FC";
+    private readonly IHabaneroApiClient _client;
 
     public HabaneroApiClientUnitTest()
     {

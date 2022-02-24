@@ -84,6 +84,8 @@ namespace TGS.GameProviders.ApiClients.UnitTests
 
             var request = new SexyGamingCreateMemberRequest
             {
+                AgentId = _agentId,
+                Cert = _cert,
                 UserId = playerCode,
                 Currency = currencyCode,
                 BetLimit = JsonSerializer.Serialize(new

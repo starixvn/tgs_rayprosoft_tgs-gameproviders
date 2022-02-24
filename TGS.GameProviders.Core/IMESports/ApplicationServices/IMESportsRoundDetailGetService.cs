@@ -7,9 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.IMESports.Models;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Player;
-using TGS.GameProviders.Core.Repositories.Models.Rounds;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
@@ -23,18 +20,18 @@ namespace TGS.GameProviders.Core.IMESports.ApplicationServices
         private readonly JsonSerializerOptions _jsonSerialzierOptions;
         private readonly ILogger<IMESportsRoundDetailGetService> _logger;
         private readonly IIMESportsMerchantMapper _merchantMapper;
-        private readonly IRoundRepository _roundRepository;
+        private readonly IRoundService _roundService;
         private readonly IIMESportsService _service;
 
         public IMESportsRoundDetailGetService(
             ILogger<IMESportsRoundDetailGetService> logger,
-            IRoundRepository roundRepository,
+            IRoundService roundService,
             IIMESportsService service,
             IIMESportsMerchantMapper merchantMapper,
             IIMESportsApiClient client)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
+            _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _merchantMapper = merchantMapper ?? throw new ArgumentNullException(nameof(merchantMapper));
             _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -49,33 +46,21 @@ namespace TGS.GameProviders.Core.IMESports.ApplicationServices
             IMESportsRoundDetailQuery query,
             CancellationToken cancellationToken = default)
         {
-            var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
-            if (roundModel == null)
+            var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+            if (roundInfo == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
 
-            var gameProviderModel = await _service.GetGameProviderAsync(roundModel.GameProviderId).ConfigureAwait(false);
-            if (gameProviderModel == null)
+            var playerInfo = await _service.GetPlayerAsync(roundInfo.PlayerCode).ConfigureAwait(false);
+            if (playerInfo == null)
             {
-                throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
-            }
-
-            var gameModel = await _service.GetGameAsync(roundModel.GameId).ConfigureAwait(false);
-            if (gameModel == null)
-            {
-                throw new Exception($"This game Id could not be found.{roundModel.GameId}");
-            }
-
-            var playerModel = await _service.GetPlayerAsync(roundModel.PlayerCode).ConfigureAwait(false);
-            if (playerModel == null)
-            {
-                throw new Exception($"This player could not be found.{roundModel.PlayerCode}");
+                throw new Exception($"This player could not be found.{roundInfo.PlayerCode}");
             }
 
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            var result = await GetRoundResultAsync(configuration, roundModel, playerModel, query.Language).ConfigureAwait(false);
+            var result = await GetRoundResultAsync(configuration, roundInfo, playerInfo, query.Language).ConfigureAwait(false);
 
             var value = result == null ?
                 null :
@@ -83,13 +68,6 @@ namespace TGS.GameProviders.Core.IMESports.ApplicationServices
 
             return new RoundDetailResult
             {
-                GameProviderName = gameProviderModel.Name,
-                GameName = gameModel.Name,
-                ExternalRoundId = roundModel.ExternalRoundId,
-                BetAmount = roundModel.BetAmount,
-                Turnover = roundModel.Turnover,
-                Winloss = roundModel.WinLoss,
-                GameResult = roundModel.ClientStatus.ToString(),
                 Data = new RoundDetailDataBase[]
                 {
                    new RoundDetailDataJson
@@ -104,23 +82,23 @@ namespace TGS.GameProviders.Core.IMESports.ApplicationServices
             => results.FirstOrDefault(r => r.BetId == transactionId);
 
         private async ValueTask<IMESportsHistoryResult> GetRoundResultAsync(
-                    IMESportsConfiguration configuration,
-            RoundModel roundModel,
-            PlayerModel playerModel,
+            IMESportsConfiguration configuration,
+            RoundInfo roundInfo,
+            PlayerInfo playerInfo,
             string cultureCode)
         {
-            var merchant = _merchantMapper.GetBrandMerchant(configuration.BrandMerchants, playerModel.BrandCode);
+            var merchant = _merchantMapper.GetBrandMerchant(configuration.BrandMerchants, playerInfo.BrandCode);
 
             var gameProviderCultureCode = await _service
-                .GetGameProviderLanguageCodeAsync(roundModel.GameProviderId, cultureCode)
+                .GetGameProviderLanguageCodeAsync(roundInfo.GameProviderId, cultureCode)
                 .ConfigureAwait(false);
 
-            var createdOn = new DateTimeOffset(roundModel.ExternalCreatedOn!.Value).ToOffset(TimeSpan.FromHours(8));
+            var createdOn = new DateTimeOffset(roundInfo.ExternalCreatedOn!.Value.UtcDateTime).ToOffset(TimeSpan.FromHours(8));
 
             var startDate = createdOn.AddMinutes(-1).ToString(_TimeFormat);
             var endDate = createdOn.AddMinutes(1).ToString(_TimeFormat);
 
-            var transactionId = roundModel.ExternalRoundId;
+            var transactionId = roundInfo.ExternalRoundId;
             var currentPage = 1;
 
             int totalPage;

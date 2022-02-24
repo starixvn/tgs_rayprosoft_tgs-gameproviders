@@ -4,44 +4,43 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 {
     public class BigGamingKickPlayerCommandService : ICommandService<BigGamingKickPlayerCommand>
     {
         private readonly IBigGamingApiClient _client;
-        private readonly IGameRepository _gameRepository;
+        private readonly IGameService _gameService;
         private readonly ILogger<BigGamingKickPlayerCommandService> _logger;
-        private readonly IPlayerRepository _playerRepository;
+        private readonly IPlayerService _playerService;
         private readonly IBigGamingService _service;
 
         public BigGamingKickPlayerCommandService(
             ILogger<BigGamingKickPlayerCommandService> logger,
             IBigGamingApiClient client,
             IBigGamingService service,
-            IPlayerRepository playerRepository,
-            IGameRepository gameRepository)
+            IPlayerService playerService,
+            IGameService gameService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
-            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
 
         public async ValueTask ExecuteAsync(BigGamingKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
-            if (playerModel == null)
+            var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerInfo == null)
             {
                 throw new Exception($"The player does not exist.{command.PlayerCode}");
             }
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
-            var games = await _gameRepository.GetGameList(gameProviderId, GameType.Fishing).ToArrayAsync();
-            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
+            var games = await _gameService.GetGameListAsync(gameProviderId, GameType.Fishing).ToArrayAsync();
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerInfo.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
             var tasks = new List<Task>();
 

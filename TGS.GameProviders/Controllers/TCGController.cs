@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.TCG.ApplicationServices;
@@ -18,14 +17,10 @@ namespace TGS.GameProviders.Controllers
         IKickPlayerHandler<TCGKickPlayerCommand>,
         IRoundDetailHandler<TCGRoundDetailQuery>
     {
-        private readonly ILogger<TCGController> _logger;
         private readonly IMapper _mapper;
 
-        public TCGController(
-            ILogger<TCGController> logger,
-            IMapper mapper)
+        public TCGController(IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -126,7 +121,7 @@ namespace TGS.GameProviders.Controllers
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-            [FromServices] IGetService<TCGRoundDetailQuery, RoundDetailResult> getService,
+            [FromServices] IGetService<TCGRoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
         {

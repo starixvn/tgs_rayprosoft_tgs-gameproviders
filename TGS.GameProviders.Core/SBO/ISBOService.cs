@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Core.Repositories.Models.GameProvider;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.SBO
 {
     public interface ISBOService
     {
-        ValueTask<GameModel> GetGameAsync(int value);
-
-        ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId);
+        ValueTask<GameInfo> GetGameAsync(int value);
 
         ValueTask<string> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode);
 

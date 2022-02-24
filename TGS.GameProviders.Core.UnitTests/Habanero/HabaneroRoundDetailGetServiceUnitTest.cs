@@ -3,14 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.Habanero;
 using TGS.GameProviders.Core.Habanero.ApplicationServices;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Core.Repositories.Models.GameProvider;
-using TGS.GameProviders.Core.Repositories.Models.Player;
-using TGS.GameProviders.Core.Repositories.Models.Rounds;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
@@ -23,7 +18,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
     public async ValueTask Normal_Process()
     {
         var fakeLogger = NullLogger<HabaneroRoundDetailGetService>.Instance;
-        var fakeRoundRepository = Substitute.For<IRoundRepository>();
+        var fakeRoundService = Substitute.For<IRoundService>();
         var fakeService = Substitute.For<IHabaneroService>();
 
         var externalRoundId = "1639679431950180036";
@@ -39,7 +34,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             BetHistoryUrl = new("https://app-test.insvr.com")
         };
 
-        var playerModel = new PlayerModel(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -52,7 +47,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             "CNY",
             PlayerStatus.Enabled);
 
-        var gameProviderModel = new GameProviderModel(
+        var gameProviderInfo = new GameProviderInfo(
             Guid.Parse("de301075-182b-453f-a316-28e3164b2d06"),
             GameProviderStatus.Active,
             null,
@@ -67,14 +62,14 @@ public class HabaneroRoundDetailGetServiceUnitTest
             "Habanero",
             null);
 
-        var gameModel = new GameModel(
+        var gameInfo = new GameInfo(
             200001,
             GameStatus.Active,
             "SGTotemTowers",
             null,
             "?brandId={BRANDID}&token={TOKEN}&locale={CULTURE}&mode=real",
             null,
-            gameProviderModel.GameProviderId,
+            gameProviderInfo.GameProviderId,
             GameType.Slot,
             GamePlatformType.Desktop,
             false,
@@ -87,20 +82,20 @@ public class HabaneroRoundDetailGetServiceUnitTest
             null,
             "HABA");
 
-        var roundModel = new RoundModel(
+        var roundInfo = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             externalRoundId,
-            gameProviderModel.GameProviderId,
-            playerModel.PlayerCode,
-            gameModel.GameId,
-            playerModel.DefaultWalletCurrencyCode,
-            RoundStatus.Closed,
+            gameProviderInfo.GameProviderId,
+            playerInfo.PlayerCode,
+            gameInfo.GameId,
+            playerInfo.DefaultWalletCurrencyCode,
+            Tgs.GameProviders.QueryServer.Models.RoundStatus.Closed,
             Guid.NewGuid(),
-            playerModel.DefaultWalletId,
+            playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerModel.BrandId,
+            playerInfo.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,
@@ -110,38 +105,31 @@ public class HabaneroRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            ClientRoundStatus.Win,
+            Tgs.GameProviders.QueryServer.Models.RoundClientStatus.Win,
             null,
             null,
             null,
             null);
 
-        var sut = new HabaneroRoundDetailGetService(fakeLogger, fakeService, fakeRoundRepository);
+        var sut = new HabaneroRoundDetailGetService(fakeLogger, fakeService, fakeRoundService);
 
         var query = new HabaneroRoundDetailQuery
         {
-            RoundId = roundModel.RoundId,
+            RoundId = roundInfo.RoundId,
             Language = "en-US"
         };
 
-        _ = fakeRoundRepository.GetAsync(query.RoundId).Returns(Task.FromResult(roundModel));
-        _ = fakeService.GetGameProviderAsync(roundModel.GameProviderId).Returns(ValueTask.FromResult(gameProviderModel));
-        _ = fakeService.GetGameAsync(roundModel.GameId).Returns(ValueTask.FromResult(gameModel));
-        _ = fakeService.GetPlayerAsync(roundModel.PlayerCode).Returns(ValueTask.FromResult(playerModel));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
+        _ = fakeService.GetGameProviderAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderInfo));
+        _ = fakeService.GetGameAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
+        _ = fakeService.GetPlayerAsync(roundInfo.PlayerCode).Returns(ValueTask.FromResult(playerInfo));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeService
-            .GetGameProviderLanguageCodeAsync(gameProviderModel.GameProviderId, query.Language)
+            .GetGameProviderLanguageCodeAsync(gameProviderInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         var expected = new RoundDetailResult
         {
-            GameProviderName = gameProviderModel.Name,
-            GameName = gameModel.Name,
-            ExternalRoundId = roundModel.ExternalRoundId,
-            BetAmount = roundModel.BetAmount,
-            Turnover = roundModel.Turnover,
-            Winloss = roundModel.WinLoss,
-            GameResult = roundModel.ClientStatus.ToString(),
             Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataUrl
@@ -154,13 +142,6 @@ public class HabaneroRoundDetailGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(expected.GameProviderName, actual.GameProviderName);
-        Assert.AreEqual(expected.GameName, actual.GameName);
-        Assert.AreEqual(expected.ExternalRoundId, actual.ExternalRoundId);
-        Assert.AreEqual(expected.BetAmount, actual.BetAmount);
-        Assert.AreEqual(expected.Turnover, actual.Turnover);
-        Assert.AreEqual(expected.Winloss, actual.Winloss);
-        Assert.AreEqual(expected.GameResult, actual.GameResult);
         CollectionAssert.AreEqual(expected.Data, actual.Data);
     }
 }

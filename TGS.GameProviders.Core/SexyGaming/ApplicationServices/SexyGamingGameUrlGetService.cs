@@ -7,7 +7,6 @@ using Tgs.Core.Infrastructures.Security;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Core.SexyGaming.Models;
-using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
 {
@@ -48,6 +47,8 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
 
             var data = new SexyGamingGameUrlRequest
             {
+                AgentId = configuration.AgentId,
+                Cert = configuration.Cert,
                 UserId = command.PlayerCode,
                 IsMobileLogin = command.PlatformType == PlatformType.Mobile,
                 Language = gameProviderCulture,

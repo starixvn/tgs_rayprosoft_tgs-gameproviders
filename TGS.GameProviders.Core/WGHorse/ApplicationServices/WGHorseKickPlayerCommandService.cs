@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
 
 namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
 {
@@ -11,19 +10,19 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
     {
         private readonly IWGHorseApiClient _client;
         private readonly ILogger<WGHorseKickPlayerCommandService> _logger;
-        private readonly IPlayerRepository _playerRepository;
+        private readonly IPlayerService _playerService;
         private readonly IWGHorseService _service;
 
         public WGHorseKickPlayerCommandService(
             ILogger<WGHorseKickPlayerCommandService> logger,
             IWGHorseApiClient client,
             IWGHorseService service,
-            IPlayerRepository playerRepository)
+            IPlayerService playerService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
-            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+            _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         }
 
         public async ValueTask ExecuteAsync(WGHorseKickPlayerCommand command, CancellationToken cancellationToken = default)

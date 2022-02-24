@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.Avia;
 using TGS.GameProviders.Core.Avia.ApplicationServices;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration.Avia;
 
 namespace TGS.GameProviders.Core.UnitTests.Avia
@@ -47,7 +47,7 @@ namespace TGS.GameProviders.Core.UnitTests.Avia
 
             var gameProviderCurrencyCode = "CNY";
             var gameProviderCultureCode = "CHN";
-            Uri? gameUrl = new("https://www.google.com/");
+            Uri gameUrl = new("https://www.google.com/");
             _ = fakeAviaService.GetBrandMerchantAsync(query.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
             _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
             _ = fakeAviaService.GetGameProviderCultureCodeAsync(query.Language).Returns(ValueTask.FromResult(gameProviderCultureCode));

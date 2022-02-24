@@ -104,7 +104,6 @@ pipeline {
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
                                 --set autoscaling.enabled=${tgs_autoscaling} \
-                                --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set nats.urls="$tgs_nats" \
                         '''
@@ -113,7 +112,6 @@ pipeline {
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
                                 --set autoscaling.enabled=${tgs_autoscaling} \
-                                --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.redis="$tgs_redis" \
                                 --set nats.urls="$tgs_nats" \
                                 | kubectl -n ${kube_ns} apply -f -

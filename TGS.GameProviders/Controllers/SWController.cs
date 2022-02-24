@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Skywind.ApplicationServices;
@@ -17,14 +16,10 @@ namespace TGS.GameProviders.Controllers
         IGameUrlHandler<SkywindGameUrlQuery>,
         IRoundDetailHandler<SkywindRoundDetailQuery>
     {
-        private readonly ILogger<SWController> _logger;
         private readonly IMapper _mapper;
 
-        public SWController(
-            ILogger<SWController> logger,
-            IMapper mapper)
+        public SWController(IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -90,7 +85,7 @@ namespace TGS.GameProviders.Controllers
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-            [FromServices] IGetService<SkywindRoundDetailQuery, RoundDetailResult> getService,
+            [FromServices] IGetService<SkywindRoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
         {
@@ -99,7 +94,7 @@ namespace TGS.GameProviders.Controllers
                 RoundId = roundId,
                 Language = language
             }).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
     }
 }

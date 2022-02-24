@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.SBO.ApplicationServices;
@@ -18,14 +17,10 @@ namespace TGS.GameProviders.Controllers
         IKickPlayerHandler<SBOKickPlayerCommand>,
         IRoundDetailHandler<SBORoundDetailQuery>
     {
-        private readonly ILogger<SBOController> _logger;
         private readonly IMapper _mapper;
 
-        public SBOController(
-            ILogger<SBOController> logger,
-            IMapper mapper)
+        public SBOController(IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -95,7 +90,7 @@ namespace TGS.GameProviders.Controllers
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-            [FromServices] IGetService<SBORoundDetailQuery, RoundDetailResult> getService,
+            [FromServices] IGetService<SBORoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
         {

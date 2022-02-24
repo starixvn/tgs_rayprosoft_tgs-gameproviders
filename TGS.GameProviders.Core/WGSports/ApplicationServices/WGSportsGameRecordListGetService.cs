@@ -4,9 +4,9 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.Extensions;
-using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.Core.WGSports.ApplicationServices
 {
@@ -61,7 +61,7 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
                     GameProviderId = gameProviderId,
                     PlayerCode = data.Username,
                     Status = data.InitData.Win.IgnoreCaseEquals("0") ? RoundStatus.Open : RoundStatus.Closed,
-                    ClientStatus = data.InitData.Win.IgnoreCaseEquals("0") ? ClientRoundStatus.Open : _service.GetClientRound(data.Result),
+                    ClientStatus = data.InitData.Win.IgnoreCaseEquals("0") ? RoundClientStatus.Open : _service.GetClientRound(data.Result),
                     ExternalRoundId = data.Reference,
                     ExternalGameId = "1",
                     ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(-4)),

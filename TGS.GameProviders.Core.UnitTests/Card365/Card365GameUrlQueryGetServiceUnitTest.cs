@@ -4,13 +4,10 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.Card365;
 using TGS.GameProviders.Core.Card365.ApplicationServices;
 using TGS.GameProviders.Core.Card365.Model;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Core.Repositories.Models.Player;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.Card365;
 
@@ -26,8 +23,8 @@ public class Card365GameUrlQueryGetServiceUnitTest
         var fakeService = Substitute.For<ICard365Service>();
         var fakeApiClient = Substitute.For<ICard365ApiClient>();
         var fakeAgentMapper = Substitute.For<ICard365AgentMapper>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakeGameService = Substitute.For<IGameService>();
+        var fakePlayerService = Substitute.For<IPlayerService>();
         var fakeTokenProvider = Substitute.For<ITokenProvider>();
 
         var token = "token";
@@ -53,7 +50,7 @@ public class Card365GameUrlQueryGetServiceUnitTest
             BrandAgents = new[] { agent }
         };
 
-        var gameModel = new GameModel(
+        var gameInfo = new GameInfo(
             1900001,
             GameStatus.Active,
             "384",
@@ -73,7 +70,7 @@ public class Card365GameUrlQueryGetServiceUnitTest
             null,
             "365");
 
-        var playerModel = new PlayerModel(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -88,10 +85,10 @@ public class Card365GameUrlQueryGetServiceUnitTest
 
         var query = new Card365GameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.GameType,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
-            PlayerCode = playerModel.PlayerCode,
+            PlayerCode = playerInfo.PlayerCode,
             CurrencyCode = "CNY",
             LoginRecordId = Guid.NewGuid(),
             PlatformType = PlatformType.Desktop,
@@ -103,16 +100,16 @@ public class Card365GameUrlQueryGetServiceUnitTest
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
 
         fakeService
-            .GetGameProviderCurrencyCodeAsync(gameModel.GameProviderId, playerModel.DefaultWalletCurrencyCode)
+            .GetGameProviderCurrencyCodeAsync(gameInfo.GameProviderId, playerInfo.DefaultWalletCurrencyCode)
             .Returns(ValueTask.FromResult(gameProviderCurrencyCode));
 
         fakeService
-            .GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
+            .GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-        fakePlayerRepository.GetAsync(query.PlayerCode).Returns(Task.FromResult(playerModel));
-        fakeGameRepository.GetAsync(query.GameId!.Value).Returns(Task.FromResult(gameModel));
-        fakeAgentMapper.GetAgent(configuration.BrandAgents, playerModel.BrandCode).Returns(agent);
+        fakePlayerService.GetCacheAsync(query.PlayerCode).Returns(Task.FromResult(playerInfo));
+        fakeGameService.GetCacheAsync(query.GameId!.Value).Returns(ValueTask.FromResult<GameInfo?>(gameInfo));
+        fakeAgentMapper.GetAgent(configuration.BrandAgents, playerInfo.BrandCode).Returns(agent);
         fakeTokenProvider.EncryptAsync(query.LoginRecordId).Returns(ValueTask.FromResult(token));
         fakeApiClient
             .GetAccessKeyAsync(
@@ -121,8 +118,8 @@ public class Card365GameUrlQueryGetServiceUnitTest
                 new Card365GetKeyRequest
                 {
                     Cert = configuration.Cert,
-                    PlayerCode = playerModel.PlayerCode,
-                    Username = playerModel.Username,
+                    PlayerCode = playerInfo.PlayerCode,
+                    Username = playerInfo.Username,
                     AgentId = agent.AgentId,
                     CurrencyCode = gameProviderCurrencyCode
                 })
@@ -135,8 +132,8 @@ public class Card365GameUrlQueryGetServiceUnitTest
 
         var sut = new Card365GameUrlQueryGetService(
             fakeLogger,
-            fakePlayerRepository,
-            fakeGameRepository,
+            fakePlayerService,
+            fakeGameService,
             fakeService,
             fakeAgentMapper,
             fakeApiClient,

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Habanero.ApplicationServices;
@@ -18,14 +17,10 @@ public class HABAController : ControllerBase,
     IRoundDetailHandler<HabaneroRoundDetailQuery>,
     IKickPlayerHandler<HabaneroKickPlayerCommand>
 {
-    private readonly ILogger<HABAController> _logger;
     private readonly IMapper _mapper;
 
-    public HABAController(
-        ILogger<HABAController> logger,
-        IMapper mapper)
+    public HABAController(IMapper mapper)
     {
-        _logger = logger ?? throw new System.ArgumentNullException(nameof(logger));
         _mapper = mapper ?? throw new System.ArgumentNullException(nameof(mapper));
     }
 
@@ -67,33 +62,6 @@ public class HABAController : ControllerBase,
     }
 
     /// <summary>
-    /// Rounds the detail asynchronous.
-    /// </summary>
-    /// <param name="getService">The get service.</param>
-    /// <param name="roundId">The round identifier.</param>
-    /// <param name="language">The language.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Get haba/rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
-    /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
-    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<HabaneroRoundDetailQuery, RoundDetailResult> getService,
-        Guid roundId,
-        [FromQuery] string language)
-    {
-        var result = await getService.GetAsync(new HabaneroRoundDetailQuery
-        {
-            RoundId = roundId,
-            Language = language
-        }).ConfigureAwait(false);
-
-        return result ?? null;
-    }
-
-    /// <summary>
     /// Kicks the player asynchronous.
     /// </summary>
     /// <param name="commandService">The command service.</param>
@@ -112,4 +80,31 @@ public class HABAController : ControllerBase,
         {
             PlayerCode = playerCode
         });
+
+    /// <summary>
+    /// Rounds the detail asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="roundId">The round identifier.</param>
+    /// <param name="language">The language.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Get haba/rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
+    /// </remarks>
+    [HttpGet("RoundDetail/{roundId}")]
+    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+        [FromServices] IGetService<HabaneroRoundDetailQuery, RoundDetailResult?> getService,
+        Guid roundId,
+        [FromQuery] string language)
+    {
+        var result = await getService.GetAsync(new HabaneroRoundDetailQuery
+        {
+            RoundId = roundId,
+            Language = language
+        }).ConfigureAwait(false);
+
+        return result ?? null;
+    }
 }

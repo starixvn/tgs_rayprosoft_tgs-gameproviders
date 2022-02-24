@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.KY.ApplicationServices;
@@ -22,14 +21,10 @@ namespace TGS.GameProviders.Controllers
         IPlayerFundHandler<KYPlayerFundInQuery, KYPlayerFundOutQuery>,
         IRoundDetailHandler<KYRoundDetailQuery>
     {
-        private readonly ILogger<KYController> _logger;
         private readonly IMapper _mapper;
 
-        public KYController(
-            ILogger<KYController> logger,
-            IMapper mapper)
+        public KYController(IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -56,7 +51,7 @@ namespace TGS.GameProviders.Controllers
             KYGameRecordListQuery request)
         {
             var result = await getService.GetAsync(request).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
 
         /// <summary>
@@ -239,7 +234,7 @@ namespace TGS.GameProviders.Controllers
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-            [FromServices] IGetService<KYRoundDetailQuery, RoundDetailResult> getService,
+            [FromServices] IGetService<KYRoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
         {
@@ -248,7 +243,7 @@ namespace TGS.GameProviders.Controllers
                 RoundId = roundId,
                 Language = language
             }).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
     }
 }

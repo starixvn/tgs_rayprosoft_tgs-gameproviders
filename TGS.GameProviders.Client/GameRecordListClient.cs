@@ -29,7 +29,7 @@ namespace TGS.GameProviders.Client
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public async ValueTask<GameRecordListResponse?> AviaGameRecordListAsync(string brandCode, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
+        public async ValueTask<GameRecordResponse?> AviaGameRecordListAsync(string brandCode, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
         {
             var source = new
             {
@@ -52,10 +52,10 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
+            return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
         }
 
-        public async ValueTask<GameRecordListResponse?> BigGamingFishingGameRecordListAsync(string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
+        public async ValueTask<GameRecordResponse?> BigGamingFishingGameRecordListAsync(string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
         {
             var source = new
             {
@@ -78,10 +78,10 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
+            return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
         }
 
-        public async ValueTask<GameRecordListResponse?> KYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime)
+        public async ValueTask<GameRecordResponse?> KYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime)
         {
             var source = new
             {
@@ -103,10 +103,10 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
+            return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
         }
 
-        public async ValueTask<GameRecordListResponse?> LYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime)
+        public async ValueTask<GameRecordResponse?> LYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime)
         {
             var source = new
             {
@@ -128,10 +128,10 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
+            return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
         }
 
-        public async ValueTask<GameRecordListResponse?> VRGameRecordListAsync(string brandCode, bool isUpdateTime, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
+        public async ValueTask<GameRecordResponse?> VRGameRecordListAsync(string brandCode, bool isUpdateTime, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
         {
             var source = new
             {
@@ -155,10 +155,10 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
+            return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
         }
 
-        public async ValueTask<GameRecordListResponse?> WGHorseGameRecordListAsync(DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
+        public async ValueTask<GameRecordResponse?> WGHorseGameRecordListAsync(DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
         {
             var source = new
             {
@@ -180,10 +180,10 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
+            return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
         }
 
-        public async ValueTask<GameRecordListResponse?> WGSportsGameRecordListAsync(bool isSettlement, DateTimeOffset startTime, DateTimeOffset endTime)
+        public async ValueTask<GameRecordResponse?> WGSportsGameRecordListAsync(bool isSettlement, DateTimeOffset startTime, DateTimeOffset endTime)
         {
             var source = new
             {
@@ -204,7 +204,7 @@ namespace TGS.GameProviders.Client
 
             var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-            return JsonSerializer.Deserialize<GameRecordListResponse>(contentJson, _SerializerOptions);
+            return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
         }
     }
 }

@@ -4,13 +4,10 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.JDB;
 using TGS.GameProviders.Core.JDB.ApplicationServices;
 using TGS.GameProviders.Core.JDB.Models;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Core.Repositories.Models.Player;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.JDB;
 
@@ -23,8 +20,8 @@ public class JDBGameUrlQueryGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<JDBGameUrlGetService>.Instance;
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakePlayerService = Substitute.For<IPlayerService>();
+        var fakeGameService = Substitute.For<IGameService>();
         var fakeService = Substitute.For<IJDBService>();
         var fakeAgentMapper = Substitute.For<IJDBAgentMapper>();
         var fakeApiClient = Substitute.For<IJDBApiClient>();
@@ -50,7 +47,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
             Agents = new[] { agent }
         };
 
-        var gameModel = new GameModel(
+        var gameInfo = new GameInfo(
             700010,
             GameStatus.Active,
             "0_14034",
@@ -70,7 +67,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
             null,
             "JDB");
 
-        var playerModel = new PlayerModel(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -85,10 +82,10 @@ public class JDBGameUrlQueryGetServiceUnitTest
 
         var query = new JDBGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.GameType,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
-            PlayerCode = playerModel.PlayerCode,
+            PlayerCode = playerInfo.PlayerCode,
             CurrencyCode = "CNY",
             LoginRecordId = Guid.NewGuid(),
             PlatformType = PlatformType.Desktop,
@@ -98,16 +95,16 @@ public class JDBGameUrlQueryGetServiceUnitTest
         };
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderLanguageAsync(gameModel.GameProviderId, query.Language)
+        fakeService.GetGameProviderLanguageAsync(gameInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-        fakeAgentMapper.GetAgent(configuration.Agents, playerModel.DefaultWalletCurrencyCode)
+        fakeAgentMapper.GetAgent(configuration.Agents, playerInfo.DefaultWalletCurrencyCode)
             .Returns(agent);
 
-        fakePlayerRepository.GetAsync(query.PlayerCode).Returns(Task.FromResult(playerModel));
-        fakeGameRepository.GetAsync(query.GameId.Value).Returns(Task.FromResult(gameModel));
+        fakePlayerService.GetCacheAsync(query.PlayerCode).Returns(Task.FromResult(playerInfo));
+        fakeGameService.GetCacheAsync(query.GameId.Value).Returns(ValueTask.FromResult<GameInfo?>(gameInfo));
 
-        var items = gameModel.GameExternalId.Split('_');
+        var items = gameInfo.GameExternalId.Split('_');
 
         fakeApiClient
             .GetTokenAsync(
@@ -117,7 +114,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
                 configuration.AESKey,
                 Arg.Is<JDBGetTokenRequest>(x
                     => x.Parent == agent.Id &&
-                       x.UserId == playerModel.PlayerCode &&
+                       x.UserId == playerInfo.PlayerCode &&
                        x.Language == gameProviderLanguageCode &&
                        x.GameType == items[0] &&
                        x.MachineType == items[1] &&
@@ -131,8 +128,8 @@ public class JDBGameUrlQueryGetServiceUnitTest
 
         var sut = new JDBGameUrlGetService(
             fakeLogger,
-            fakePlayerRepository,
-            fakeGameRepository,
+            fakePlayerService,
+            fakeGameService,
             fakeService,
             fakeAgentMapper,
             fakeApiClient);

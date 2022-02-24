@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using TGS.GameProviders.Domains.SettingConfiguration.Card365;
+﻿using TGS.GameProviders.Domains.SettingConfiguration.Card365;
 
 namespace TGS.GameProviders.Domains.SettingConfiguration
 {

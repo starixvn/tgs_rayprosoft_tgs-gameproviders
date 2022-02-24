@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Evolution.ApplicationServices;
@@ -17,14 +16,10 @@ namespace TGS.GameProviders.Controllers
         IGameUrlHandler<EvolutionGameUrlQuery>,
         IRoundDetailHandler<EvolutionRoundDetailQuery>
     {
-        private readonly ILogger<EVOController> _logger;
         private readonly IMapper _mapper;
 
-        public EVOController(
-            ILogger<EVOController> logger,
-            IMapper mapper)
+        public EVOController(IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -105,7 +100,7 @@ namespace TGS.GameProviders.Controllers
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-            [FromServices] IGetService<EvolutionRoundDetailQuery, RoundDetailResult> getService,
+            [FromServices] IGetService<EvolutionRoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
         {
@@ -114,7 +109,7 @@ namespace TGS.GameProviders.Controllers
                 RoundId = roundId,
                 Language = language
             }).ConfigureAwait(false);
-            return result == null ? null : result;
+            return result ?? null;
         }
     }
 }

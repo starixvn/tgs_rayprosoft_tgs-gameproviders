@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Tgs.GameProviders.QueryServer.Models;
+using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Extensions;
-using TGS.GameProviders.Core.Repositories;
 using TGS.GameProviders.Core.VR;
 using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
@@ -12,21 +13,21 @@ namespace TGS.GameProviders.Services.VR
 {
     internal class VRService : IVRService
     {
-        private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly ISettingRepository _settingRepository;
+        private readonly IGameProviderService _gameProviderService;
+        private readonly ISettingService _settingService;
 
         public VRService(
-            ISettingRepository settingRepository,
-            IGameProviderRepository gameProviderRepository
+            ISettingService settingService,
+            IGameProviderService gameProviderService
             )
         {
-            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
+            _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
         }
 
         public async ValueTask<VRBrandMerchant> GetBrandMerchantAsync(string brandCode)
         {
-            var configuration = await _settingRepository.GetConfigurationAsync<VRConfiguration>(GameProviderConfigurations.VR).ConfigureAwait(false);
+            var configuration = await _settingService.GetConfigurationAsync<VRConfiguration>(GameProviderConfigurations.VR).ConfigureAwait(false);
             var brandMerchant = configuration.BrandMerchants
                  .Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
             if (brandMerchant == null)
@@ -37,20 +38,20 @@ namespace TGS.GameProviders.Services.VR
             return brandMerchant;
         }
 
-        public ClientRoundStatus GetClientRound(int state) =>
+        public RoundClientStatus GetClientRound(int state) =>
            state switch
            {
-               1 => ClientRoundStatus.Void,
-               2 => ClientRoundStatus.Loss,
-               3 => ClientRoundStatus.Win,
-               _ => ClientRoundStatus.Open
+               1 => RoundClientStatus.Void,
+               2 => RoundClientStatus.Loss,
+               3 => RoundClientStatus.Win,
+               _ => RoundClientStatus.Open
            };
 
         public string GetGameProviderCode()
             => GameProviderType.VR;
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.VR);
+            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.VR);
 
         public RoundStatus GetRoundStatus(int state) =>
            state switch
@@ -61,7 +62,7 @@ namespace TGS.GameProviders.Services.VR
                _ => RoundStatus.Open
            };
 
-        public Task<VRConfiguration> GetSettingConfigurationAsync()
-            => _settingRepository.GetConfigurationAsync<VRConfiguration>(GameProviderConfigurations.VR);
+        public ValueTask<VRConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<VRConfiguration>(GameProviderConfigurations.VR);
     }
 }

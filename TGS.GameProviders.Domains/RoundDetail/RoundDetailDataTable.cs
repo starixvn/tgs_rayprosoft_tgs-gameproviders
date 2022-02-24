@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace TGS.GameProviders.Domains.RoundDetail
+﻿namespace TGS.GameProviders.Domains.RoundDetail
 {
     public record RoundDetailDataTable : RoundDetailDataBase
     {

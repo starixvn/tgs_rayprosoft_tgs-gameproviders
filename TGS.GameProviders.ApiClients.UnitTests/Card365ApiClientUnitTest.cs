@@ -14,12 +14,11 @@ namespace TGS.GameProviders.ApiClients.UnitTests;
 [TestFixture]
 public class Card365ApiClientUnitTest
 {
-    private readonly ICard365ApiClient _client;
-
-    private readonly Uri _apiUrl = new Uri("https://g5ky3i.365gaming.cc/api");
-    private readonly string _webSite = "card365pega";
     private readonly string _agentId = "card0201";
+    private readonly Uri _apiUrl = new Uri("https://g5ky3i.365gaming.cc/api");
     private readonly string _cert = "755C24B710D9F2B4B15DAB2B489CF471";
+    private readonly ICard365ApiClient _client;
+    private readonly string _webSite = "card365pega";
 
     public Card365ApiClientUnitTest()
     {

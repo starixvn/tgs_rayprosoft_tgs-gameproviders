@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.LY.ApplicationServices;
@@ -23,14 +22,10 @@ namespace TGS.GameProviders.Controllers
         IRoundDetailHandler<LYRoundDetailQuery>
 
     {
-        private readonly ILogger<LYController> _logger;
         private readonly IMapper _mapper;
 
-        public LYController(
-            ILogger<LYController> logger,
-            IMapper mapper)
+        public LYController(IMapper mapper)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -226,7 +221,7 @@ namespace TGS.GameProviders.Controllers
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-            [FromServices] IGetService<LYRoundDetailQuery, RoundDetailResult> getService,
+            [FromServices] IGetService<LYRoundDetailQuery, RoundDetailResult?> getService,
             Guid roundId,
             [FromQuery] string language)
         {

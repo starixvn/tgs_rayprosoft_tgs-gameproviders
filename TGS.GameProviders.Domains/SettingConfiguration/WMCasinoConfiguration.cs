@@ -1,6 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
 
-using System;
 using TGS.GameProviders.Domains.SettingConfiguration.WMCasino;
 
 namespace TGS.GameProviders.Domains.SettingConfiguration

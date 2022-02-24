@@ -119,7 +119,10 @@ namespace TGS.GameProviders
         {
             services
                 .AddRouting(options => options.LowercaseUrls = true)
-                .AddControllers()
+                .AddControllers(configure =>
+                {
+                    configure.Filters.Add<ExceptionFilter>();
+                })
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -138,34 +141,8 @@ namespace TGS.GameProviders
                     });
             });
 
-            services.AddDbTgsRepository((
-                sp,
-                dbBuilder) =>
-            {
-                var config = sp.GetRequiredService<IConfiguration>();
-
-                dbBuilder
-                    .UseLazyLoadingProxies();
-
-                dbBuilder.UseNpgsql(
-                    config.GetConnectionString("Tgs"));
-            });
-
             services
-                .AddDbBetRepository((
-                    sp,
-                    dbBuilder) =>
-                {
-                    var config = sp.GetRequiredService<IConfiguration>();
-
-                    dbBuilder
-                        .UseLazyLoadingProxies();
-
-                    dbBuilder.UseNpgsql(
-                        config.GetConnectionString("Tgs"));
-                });
-
-            services
+                .AddMessageQueue()
                 .AddNatsMessageQueue(natsConfig =>
                 {
                     natsConfig
@@ -175,7 +152,7 @@ namespace TGS.GameProviders
                         options.Url = configuration.GetConnectionString("NatsMQ");
                     });
                 })
-                .AddTgsLog();
+                .AddNatsGlobPatternExchange("*");
 
             services.AddOptions<ForwardedHeadersOptions>()
                 .Configure<IConfiguration>((options, config) =>
@@ -185,7 +162,6 @@ namespace TGS.GameProviders
 
                     var knownProxies = config.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
                     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-
 
                     // Replace with IP of your proxy/load balancer
                     foreach (var knownProxie in knownProxies)
@@ -213,7 +189,11 @@ namespace TGS.GameProviders
                     options.ConnectionString = configuration.GetConnectionString("RedisConfigurationString");
                 })
                 .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
-                .AddGameProvidersCore();
+                .AddGameProviders((options, sp) =>
+                {
+                    var configuration = sp.GetRequiredService<IConfiguration>();
+                    options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameProvidersQueryServerBaseUrl");
+                });
 
             services
                 .AddAutoMapper(config =>
@@ -226,8 +206,6 @@ namespace TGS.GameProviders
 
             services
                 .AddHealthChecks();
-            //.AddRedis(Configuration.GetConnectionString("RedisConfigurationString"), name: "Redis Default")
-            //.AddNpgSql(Configuration.GetConnectionString("Tgs"), name: "PostgreSQL Tgs");
         }
     }
 }

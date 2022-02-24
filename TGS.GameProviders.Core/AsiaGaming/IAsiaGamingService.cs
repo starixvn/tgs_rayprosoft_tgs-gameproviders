@@ -1,27 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
-namespace TGS.GameProviders.Core.AsiaGaming
+namespace TGS.GameProviders.Core.AsiaGaming;
+
+public interface IAsiaGamingService
 {
-    public interface IAsiaGamingService
-    {
-        ValueTask<Guid> GetBrandIdAsync(string brandCode);
+    ValueTask<Guid> GetBrandIdAsync(string brandCode);
 
-        ValueTask<GameModel> GetGameAsync(int gameId);
+    ValueTask<GameInfo> GetGameAsync(int gameId);
 
-        ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType);
+    ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType);
 
-        ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
+    ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
 
-        ValueTask<Guid> GetGameProviderIdAsync();
+    ValueTask<Guid> GetGameProviderIdAsync();
 
-        ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode);
+    ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode);
 
-        ValueTask<decimal?> GetPlayerBalanceAsync(string playerCode);
-
-        ValueTask<AsiaGamingConfiguration> GetSettingConfigurationAsync();
-    }
+    ValueTask<AsiaGamingConfiguration> GetSettingConfigurationAsync();
 }

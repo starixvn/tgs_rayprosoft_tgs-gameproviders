@@ -41,7 +41,7 @@ namespace TGS.GameProviders.Core.UnitTests.Avia
             };
 
             bool success = true;
-            AviaGameRecordData[]? datas = new AviaGameRecordData[1] {
+            AviaGameRecordData[] datas = new AviaGameRecordData[1] {
                     new AviaGameRecordData {
                         Type= "Combo",
                         ComboType= "Combo",

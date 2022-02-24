@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Client
 {
     public interface IGameProvidersClient
     {
-        ValueTask<Uri?> GameBetConstructUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl, string lobbyDomain);
+        ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl);
 
-        ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, PlatformType platformType, string language, string ipAddress, Uri? backUrl);
+        ValueTask<Uri?> GameUrlByAsiaGamingAsync(string gameProviderCode, GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, decimal playerBalance);
+
+        ValueTask<Uri?> GameUrlByBetConstructAsync(string gameProviderCode, GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, string lobbyDomain);
 
         ValueTask KickPlayerAsync(string gameProviderCode, string playerCode);
 

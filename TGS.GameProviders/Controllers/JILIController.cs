@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Jili.ApplicationServices;
@@ -18,14 +17,10 @@ public class JILIController : ControllerBase,
     IKickPlayerHandler<JiliKickPlayerCommand>,
     IRoundDetailHandler<JiliRoundDetailQuery>
 {
-    private readonly ILogger<JILIController> _logger;
     private readonly IMapper _mapper;
 
-    public JILIController(
-        ILogger<JILIController> logger,
-        IMapper mapper)
+    public JILIController(IMapper mapper)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
@@ -100,7 +95,7 @@ public class JILIController : ControllerBase,
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
     public ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<JiliRoundDetailQuery, RoundDetailResult> getService,
+        [FromServices] IGetService<JiliRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
         => getService

@@ -92,7 +92,7 @@ namespace TGS.GameProviders.ApiClients.Saba
         {
             var logPrefix = $"{nameof(SabaApiClient).ToLower()}.{action}";
 
-            var uriString = $"{apiUrl.AbsoluteUri}{path}";
+            var uriString = $"{apiUrl.AbsoluteUri.TrimEnd('/')}{path}";
 
             var sw = Stopwatch.StartNew();
 

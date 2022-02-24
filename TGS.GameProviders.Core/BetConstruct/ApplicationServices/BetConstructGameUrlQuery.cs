@@ -1,5 +1,5 @@
 ﻿using System;
-using TGS.GameProviders.Domains;
+using Tgs.GameProviders.QueryServer.Models;
 
 namespace TGS.GameProviders.Core.BetConstruct.ApplicationServices
 {

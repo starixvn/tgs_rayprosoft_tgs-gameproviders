@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.WMCasino.ApplicationServices;
@@ -18,14 +17,10 @@ public class WMController : ControllerBase,
     IKickPlayerHandler<WMCasinoKickPlayerCommand>,
     IRoundDetailHandler<WMCasinoRoundDetailQuery>
 {
-    private readonly ILogger<WMController> _logger;
     private readonly IMapper _mapper;
 
-    public WMController(
-        ILogger<WMController> logger,
-        IMapper mapper)
+    public WMController(IMapper mapper)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
@@ -96,7 +91,7 @@ public class WMController : ControllerBase,
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<WMCasinoRoundDetailQuery, RoundDetailResult> getService,
+        [FromServices] IGetService<WMCasinoRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
         => await getService.GetAsync(new WMCasinoRoundDetailQuery

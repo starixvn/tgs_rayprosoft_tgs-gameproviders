@@ -76,7 +76,7 @@ namespace TGS.GameProviders.ApiClients.SexyGaming
             var responseMessage = default(string);
             var response = default(TResult);
 
-            var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(JsonConvert.SerializeObject(source));
+            var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(System.Text.Json.JsonSerializer.Serialize(source));
 
             var url = new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{path}");
 

@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
-using TGS.GameProviders.Core.Repositories;
 
 namespace TGS.GameProviders.Core.Avia.ApplicationServices
 {
@@ -11,29 +10,29 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
     {
         private readonly IAviaApiClient _client;
         private readonly ILogger<AviaKickPlayerCommandService> _logger;
-        private readonly IPlayerRepository _playerRepository;
+        private readonly IPlayerService _playerService;
         private readonly IAviaService _service;
 
         public AviaKickPlayerCommandService(
             ILogger<AviaKickPlayerCommandService> logger,
             IAviaApiClient client,
             IAviaService service,
-            IPlayerRepository playerRepository)
+            IPlayerService playerService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
-            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+            _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         }
 
         public async ValueTask ExecuteAsync(AviaKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
-            if (playerModel == null)
+            var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
+            if (playerInfo == null)
             {
                 throw new Exception($"The player does not exist.{command.PlayerCode}");
             }
-            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode);
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerInfo.BrandCode);
 
             if (brandMerchant == null)
             {

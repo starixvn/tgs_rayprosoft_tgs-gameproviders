@@ -40,7 +40,7 @@ namespace TGS.GameProviders.Core.UnitTests.WGHorse
                 IV = "b888888888888888",
                 ServiceEndpointUrl = new("http://game-wgvia")
             };
-            _ = fakeWGHorseService.GetSettingConfigurationAsync().Returns(Task.FromResult(configuration));
+            _ = fakeWGHorseService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
 
             var gameRound = new WGHorseGameRecord[]
             {

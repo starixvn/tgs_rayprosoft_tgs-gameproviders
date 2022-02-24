@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.Card365.ApplicationServices;
@@ -18,14 +17,10 @@ public class Card365Controller :
     IKickPlayerHandler<Card365KickPlayerCommand>,
     IRoundDetailHandler<Card365RoundDetailQuery>
 {
-    private readonly ILogger<Card365Controller> _logger;
     private readonly IMapper _mapper;
 
-    public Card365Controller(
-        ILogger<Card365Controller> logger,
-        IMapper mapper)
+    public Card365Controller(IMapper mapper)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
@@ -100,8 +95,8 @@ public class Card365Controller :
     ///     Get ab/rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
-    public async ValueTask<RoundDetailResult> RoundDetailAsync(
-        [FromServices] IGetService<Card365RoundDetailQuery, RoundDetailResult> getService,
+    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+        [FromServices] IGetService<Card365RoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
     {

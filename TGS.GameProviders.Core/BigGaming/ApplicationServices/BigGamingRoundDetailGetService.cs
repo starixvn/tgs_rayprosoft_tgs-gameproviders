@@ -3,10 +3,9 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.BigGaming.Models;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.RoundDetail;
 
 namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
@@ -15,56 +14,48 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
     {
         private readonly IBigGamingRoundDetailAnalyzeService _bigGamingRoundDetailAnalyzeService;
         private readonly IBigGamingApiClient _client;
-        private readonly IGameProviderRepository _gameProviderRepository;
-        private readonly IGameRepository _gameRepository;
-        private readonly IRoundRepository _roundRepository;
+        private readonly IGameService _gameService;
+        private readonly IRoundService _roundService;
         private readonly IBigGamingService _service;
 
         public BigGamingRoundDetailGetService(
             IBigGamingRoundDetailAnalyzeService bigGamingRoundDetailAnalyzeService,
             IBigGamingApiClient client,
-            IGameProviderRepository gameProviderRepository,
-            IGameRepository gameRepository,
-            IRoundRepository roundRepository,
+            IGameService gameService,
+            IRoundService roundService,
             IBigGamingService service
             )
         {
             _bigGamingRoundDetailAnalyzeService = bigGamingRoundDetailAnalyzeService ?? throw new ArgumentNullException(nameof(bigGamingRoundDetailAnalyzeService));
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
-            _roundRepository = roundRepository ?? throw new ArgumentNullException(nameof(roundRepository));
+            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+            _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         public async ValueTask<RoundDetailResult> GetAsync(BigGamingRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
-            var roundModel = await _roundRepository.GetAsync(query.RoundId).ConfigureAwait(false);
-            if (roundModel == null)
+            var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+            if (roundInfo == null)
             {
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
-            var gameProviderModel = await _gameProviderRepository.GetAsync(roundModel.GameProviderId).ConfigureAwait(false);
-            if (gameProviderModel == null)
+
+            var gameInfo = await _gameService.GetCacheAsync(roundInfo.GameId).ConfigureAwait(false);
+            if (gameInfo == null)
             {
-                throw new Exception($"This game manufacturer does not exist.{roundModel.GameProviderId}");
+                throw new Exception($"This game Id could not be found..{gameInfo.GameId}");
             }
 
-            var gameModel = await _gameRepository.GetAsync(roundModel.GameId).ConfigureAwait(false);
-            if (gameModel == null)
-            {
-                throw new Exception($"This game Id could not be found..{gameModel.GameId}");
-            }
+            var brandMerchant = await _service.GetBrandMerchantAsync(roundInfo.CurrencyCode).ConfigureAwait(false);
 
-            var brandMerchant = await _service.GetBrandMerchantAsync(roundModel.CurrencyCode).ConfigureAwait(false);
-
-            if (gameModel.GameType == GameType.LiveDealer)
+            if (gameInfo.GameType == GameType.LiveDealer)
             {
                 var request = new BigGamingVideoRoundQueryRequest
                 {
                     Random = Guid.NewGuid().ToString(),
                     Sn = brandMerchant.SecretCode,
-                    Round = roundModel.ExternalRoundId
+                    Round = roundInfo.ExternalRoundId
                 };
 
                 var response = await _client.GetVideoRoundQueryAsync(brandMerchant.ApiUrl, brandMerchant.SecretKey, request).ConfigureAwait(false);
@@ -81,13 +72,6 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 
                 return new RoundDetailResult
                 {
-                    GameProviderName = gameProviderModel.Name,
-                    GameName = gameModel.Name,
-                    ExternalRoundId = roundModel.ExternalRoundId,
-                    BetAmount = roundModel.BetAmount,
-                    Turnover = roundModel.Turnover,
-                    Winloss = roundModel.WinLoss,
-                    GameResult = roundModel.ClientStatus.ToString(),
                     Data = new RoundDetailDataBase[]
                     {
                     new RoundDetailDataJson {Value = value}
@@ -97,13 +81,13 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
             else
             {
                 var culture = await _service.GetGameProviderCultureCodeAsync(query.Language).ConfigureAwait(false);
-                var record = JsonSerializer.Deserialize<BigGamingGameRecordFishingResponse>(roundModel.AdditionalData);
+                var record = JsonSerializer.Deserialize<BigGamingGameRecordFishingResponse>(roundInfo.AdditionalData);
                 var request = new BigGamingGameRecordFishingUrlRequest
                 {
                     Random = Guid.NewGuid().ToString(),
                     Sn = brandMerchant.SecretCode,
                     ExternalBetId = long.Parse(record.ExternalBetId),
-                    GameId = int.Parse(gameModel.GameExternalId),
+                    GameId = int.Parse(gameInfo.GameExternalId),
                     Locale = culture
                 };
 
@@ -111,13 +95,6 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
 
                 return new RoundDetailResult
                 {
-                    GameProviderName = gameProviderModel.Name,
-                    GameName = gameModel.Name,
-                    ExternalRoundId = roundModel.ExternalRoundId,
-                    BetAmount = roundModel.BetAmount,
-                    Turnover = roundModel.Turnover,
-                    Winloss = roundModel.WinLoss,
-                    GameResult = roundModel.ClientStatus.ToString(),
                     Data = new RoundDetailDataBase[]
                     {
                     new RoundDetailDataUrl {Url = JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(response.Result))}

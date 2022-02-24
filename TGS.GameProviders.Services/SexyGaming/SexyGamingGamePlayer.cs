@@ -34,6 +34,8 @@ namespace TGS.GameProviders.Services.SexyGaming
 
             var createMemberRequest = new SexyGamingCreateMemberRequest
             {
+                AgentId = configuration.AgentId,
+                Cert = configuration.Cert,
                 UserId = playerCode,
                 Currency = gameProviderCurrency,
                 BetLimit = JsonSerializer.Serialize(new

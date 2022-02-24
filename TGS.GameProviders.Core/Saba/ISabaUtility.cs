@@ -2,6 +2,6 @@
 {
     public interface ISabaUtility
     {
-        public string ToSabaPlayerId(string playerCode, bool isTestEnviroment);
+        public string ToSabaPlayerId(string playerCode, bool isTestEnvironment);
     }
 }

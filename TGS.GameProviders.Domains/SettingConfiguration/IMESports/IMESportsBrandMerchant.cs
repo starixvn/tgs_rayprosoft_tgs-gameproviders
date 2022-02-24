@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TGS.GameProviders.Domains.SettingConfiguration.IMESports
+﻿namespace TGS.GameProviders.Domains.SettingConfiguration.IMESports
 {
     public record IMESportsBrandMerchant
     {

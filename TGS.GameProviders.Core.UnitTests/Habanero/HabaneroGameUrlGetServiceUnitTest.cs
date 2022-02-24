@@ -4,11 +4,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.Habanero;
 using TGS.GameProviders.Core.Habanero.ApplicationServices;
-using TGS.GameProviders.Core.Repositories.Models.Game;
-using TGS.GameProviders.Core.Repositories.Models.Player;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.UnitTests.Habanero;
@@ -40,7 +38,7 @@ public class HabaneroGameUrlGetServiceUnitTest
             BetHistoryUrl = new("https://app-test.insvr.com")
         };
 
-        var game = new GameModel(
+        var game = new GameInfo(
             200001,
             GameStatus.Active,
             "SGTotemTowers",
@@ -60,7 +58,7 @@ public class HabaneroGameUrlGetServiceUnitTest
             null,
             "HABA");
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -132,8 +129,6 @@ namespace TGS.GameProviders.Client.IntegrationTests.GameRecordList
 
             var sut = new GameRecordListClient(httpClient);
 
-
-
             var actual = await sut.AviaGameRecordListAsync(
                 query.BrandCode,
                 query.StartTime,
@@ -142,10 +137,10 @@ namespace TGS.GameProviders.Client.IntegrationTests.GameRecordList
                 query.Rows).ConfigureAwait(false);
 
             Assert.IsNotNull(actual);
-            Assert.AreEqual(success, actual.Success);
-            Assert.AreEqual(gameProviderCode, actual.Datas[0].GameProviderCode);
-            Assert.AreEqual(gameProviderId, actual.Datas[0].GameProviderId);
-            Assert.AreEqual(datas[0].OrderID, actual.Datas[0].ExternalRoundId);
+            Assert.AreEqual(success, actual!.Success);
+            Assert.AreEqual(gameProviderCode, actual.Datas![0].GameProviderCode);
+            Assert.AreEqual(gameProviderId, actual.Datas![0].GameProviderId);
+            Assert.AreEqual(datas[0].OrderID, actual.Datas![0].ExternalRoundId);
         }
     }
 }

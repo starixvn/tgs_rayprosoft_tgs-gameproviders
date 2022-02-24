@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using TGS.GameProviders.Domains;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.VR;
 
@@ -10,7 +10,7 @@ namespace TGS.GameProviders.Core.VR
     {
         ValueTask<VRBrandMerchant> GetBrandMerchantAsync(string brandCode);
 
-        ClientRoundStatus GetClientRound(int state);
+        RoundClientStatus GetClientRound(int state);
 
         string GetGameProviderCode();
 
@@ -18,6 +18,6 @@ namespace TGS.GameProviders.Core.VR
 
         RoundStatus GetRoundStatus(int state);
 
-        Task<VRConfiguration> GetSettingConfigurationAsync();
+        ValueTask<VRConfiguration> GetSettingConfigurationAsync();
     }
 }

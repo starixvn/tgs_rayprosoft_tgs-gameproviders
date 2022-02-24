@@ -3,11 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.Jili;
 using TGS.GameProviders.Core.Jili.ApplicationServices;
-using TGS.GameProviders.Core.Repositories;
-using TGS.GameProviders.Core.Repositories.Models.Player;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.Jili;
 
@@ -23,14 +21,14 @@ internal class JiliKickPlayerCommandServiceUnitTest
         var fakeApiClient = Substitute.For<IJiliApiClient>();
         var fakeService = Substitute.For<IJiliService>();
         var fakeMerchantMapper = Substitute.For<IJiliMerchantMapper>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakePlayerService = Substitute.For<IPlayerService>();
 
         var command = new JiliKickPlayerCommand
         {
             PlayerCode = "4ucmqplxb029"
         };
 
-        var playerModel = new PlayerModel(
+        var playerInfo = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -63,21 +61,21 @@ internal class JiliKickPlayerCommandServiceUnitTest
 
         var sut = new JiliKickPlayerCommandService(
             faceLogger,
-            fakePlayerRepository,
+            fakePlayerService,
             fakeService,
             fakeMerchantMapper,
             fakeApiClient);
 
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, playerModel.BrandCode).Returns(merchant);
-        _ = fakePlayerRepository.GetAsync(command.PlayerCode).Returns(Task.FromResult(playerModel));
+        _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, playerInfo.BrandCode).Returns(merchant);
+        _ = fakePlayerService.GetCacheAsync(command.PlayerCode).Returns(Task.FromResult(playerInfo));
 
         await sut.ExecuteAsync(command).ConfigureAwait(false);
 
         _ = fakeApiClient.Received(1)
             .KickMemberAsync(
                 configuration.ApiUrl,
-                $"{playerModel.BrandCode}_{playerModel.PlayerCode}",
+                $"{playerInfo.BrandCode}_{playerInfo.PlayerCode}",
                 merchant.AgentId,
                 merchant.AgentKey);
     }
