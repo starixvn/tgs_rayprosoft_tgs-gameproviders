@@ -27,7 +27,7 @@ namespace TGS.GameProviders.ApiClients.UnitTests
             var faceLog = NullLogger<LYApiClient>.Instance;
             var faceTgsLog = Substitute.For<ITgsLog>();
             _client = Substitute.For<ILYApiClient>();
-            _client = new LYApiClient(client, faceLog, faceTgsLog);
+            //_client = new LYApiClient(client, faceLog, faceTgsLog);
         }
 
         [Test]
