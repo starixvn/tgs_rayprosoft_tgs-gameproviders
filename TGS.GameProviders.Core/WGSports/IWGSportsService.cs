@@ -7,7 +7,7 @@ namespace TGS.GameProviders.Core.WGSports
 {
     public interface IWGSportsService
     {
-        decimal? GetAmount(string amountString);
+        decimal GetAmount(string amountString);
 
         RoundClientStatus GetClientRound(string playerWinLoss);
 
