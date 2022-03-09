@@ -71,7 +71,7 @@ namespace TGS.GameProviders.Core.WGSports.ApplicationServices
                     PlayerWinLoss = data.InitData.Win.IgnoreCaseEquals("0") ? null : _service.GetAmount(data.Result),
                     Commission = 0,
                     Turnover = data.InitData.Win.IgnoreCaseEquals("0") ? null : decimal.Parse(data.InitData.BetAmount),
-                    SettleAmount = _service.GetAmount(data.InitData.BetAmount) ?? 0 + _service.GetAmount(data.Result) ?? 0,
+                    SettleAmount = data.InitData.Win.IgnoreCaseEquals("0") ? null : _service.GetAmount(data.InitData.BetAmount) ?? 0 + _service.GetAmount(data.Result) ?? 0,
                     TieBetAdjustment = null,
 
                     AdditionalData = JsonSerializer.Serialize(data),
