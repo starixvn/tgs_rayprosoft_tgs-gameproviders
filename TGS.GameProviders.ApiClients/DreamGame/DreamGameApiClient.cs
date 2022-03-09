@@ -65,7 +65,7 @@ namespace TGS.GameProviders.ApiClients.DreamGame
             var list = response.RootElement.GetProperty("list").Deserialize<string[]>();
 
             var url = platformType == PlatformType.Desktop ? list[0] : list[1];
-            url += $"{response.RootElement.GetProperty("token").GetString()}&&language={lang}";
+            url += $"{response.RootElement.GetProperty("token").GetString()}&language={lang}";
 
             return new(true, codeId, new(url));
         }
