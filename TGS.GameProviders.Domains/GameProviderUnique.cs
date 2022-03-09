@@ -26,6 +26,7 @@
         BetConstruct = 21,
         Jili = 22,
         Avia = 23,
-        TFGaming = 24
+        TFGaming = 24,
+        DreamGame = 25
     }
 }

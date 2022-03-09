@@ -10,6 +10,7 @@
         public static readonly string BetConstruct = string.Format(_template, GameProviderType.BetConstruct);
         public static readonly string BigGaming = string.Format(_template, GameProviderType.BigGaming);
         public static readonly string Card365 = string.Format(_template, GameProviderType.Card365);
+        public static readonly string DreamGame = string.Format(_template, GameProviderType.DreamGame);
         public static readonly string Evolution = string.Format(_template, GameProviderType.Evolution);
         public static readonly string Habanero = string.Format(_template, GameProviderType.Habanero);
         public static readonly string IMESports = string.Format(_template, GameProviderType.IMESports);

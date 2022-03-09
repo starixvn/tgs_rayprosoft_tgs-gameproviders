@@ -10,7 +10,6 @@ using Tgs.GameProviders.QueryServer.Models;
 using TGS.GameProviders.Core.SexyGaming;
 using TGS.GameProviders.Core.SexyGaming.ApplicationServices;
 using TGS.GameProviders.Core.SexyGaming.Models;
-using TGS.GameProviders.Domains;
 using TGS.GameProviders.Domains.SettingConfiguration;
 using TGS.GameProviders.Domains.SettingConfiguration.SexyGaming;
 

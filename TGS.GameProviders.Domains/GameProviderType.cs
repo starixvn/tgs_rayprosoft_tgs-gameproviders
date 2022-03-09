@@ -8,6 +8,7 @@
         public const string BetConstruct = "BC";
         public const string BigGaming = "BG";
         public const string Card365 = "365";
+        public const string DreamGame = "DG";
         public const string Evolution = "EVO";
         public const string Habanero = "HABA";
         public const string IMESports = "IMES";
