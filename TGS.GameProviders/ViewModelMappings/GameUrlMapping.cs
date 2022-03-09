@@ -5,6 +5,7 @@ using TGS.GameProviders.Core.AsiaGaming.ApplicationServices;
 using TGS.GameProviders.Core.Avia.ApplicationServices;
 using TGS.GameProviders.Core.BigGaming.ApplicationServices;
 using TGS.GameProviders.Core.Card365.ApplicationServices;
+using TGS.GameProviders.Core.DreamGame.ApplicationServices;
 using TGS.GameProviders.Core.Evolution.ApplicationServices;
 using TGS.GameProviders.Core.Habanero.ApplicationServices;
 using TGS.GameProviders.Core.IMESports.ApplicationServices;
@@ -30,51 +31,53 @@ namespace TGS.GameProviders.ViewModelMappings
     {
         public GameUrlMapping()
         {
-            CreateMap<GameUrlResult, GameUrlResponse>()
+            _ = CreateMap<GameUrlResult, GameUrlResponse>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, KYGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, KYGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, WGSportsGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, WGSportsGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, WGHorseGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, WGHorseGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, VRGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, VRGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, TCGGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, TCGGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, SkywindGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, SkywindGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, SexyGamingGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, SexyGamingGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, EvolutionGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, EvolutionGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, BigGamingGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, BigGamingGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, LYGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, LYGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, SBOGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, SBOGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, WMCasinoGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, WMCasinoGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, AsiaGamingGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, AsiaGamingGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, PragmaticPlayGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, PragmaticPlayGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, IMESportsGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, IMESportsGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, SabaGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, SabaGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, HabaneroGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, HabaneroGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, AllBetGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, AllBetGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, AviaGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, AviaGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, JiliGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, JiliGameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, Card365GameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, Card365GameUrlQuery>()
                 .ReverseMap();
-            CreateMap<GameUrlRequest, JDBGameUrlQuery>()
+            _ = CreateMap<GameUrlRequest, JDBGameUrlQuery>()
+                .ReverseMap();
+            _ = CreateMap<GameUrlRequest, DreamGameGameUrlQuery>()
                 .ReverseMap();
         }
     }
