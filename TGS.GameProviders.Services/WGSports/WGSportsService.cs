@@ -25,8 +25,8 @@ namespace TGS.GameProviders.Services.WGSports
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
 
-        public decimal? GetAmount(string amountString)
-            => decimal.TryParse(amountString, out decimal amount) ? amount : null;
+        public decimal GetAmount(string amountString)
+            => decimal.TryParse(amountString, out decimal amount) ? amount : 0;
 
         public RoundClientStatus GetClientRound(string playerWinLoss)
         {
