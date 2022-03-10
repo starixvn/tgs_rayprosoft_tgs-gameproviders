@@ -48,13 +48,20 @@ spec:
               readOnly: true
               subPath: rds-combined-ca-bundle.pem
             {{- end }}
+          env:
+            - name: OTEL_SERVICE_NAME
+              value: VipLevel-QueryServer({{ .Values.namespace }})
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
           livenessProbe:
             httpGet:
-              path: /health
+              path: /healthz
               port: http
           readinessProbe:
             httpGet:
-              path: /health
+              path: /healthz
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

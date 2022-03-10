@@ -45,7 +45,7 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
                 return null;
             }
 
-            var data = new SexyGamingGameUrlRequest
+            var data = new SexyGamingLoginGameRequest
             {
                 AgentId = configuration.AgentId,
                 Cert = configuration.Cert,
@@ -58,7 +58,7 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
                 })
             };
 
-            var responseGameUrl = await _client.GetGamingGameUrlAsync(configuration.ApiUrl, data).ConfigureAwait(false);
+            var responseGameUrl = await _client.GetGamingLoginGameAsync(configuration.ApiUrl, data).ConfigureAwait(false);
 
             if (responseGameUrl.Status.IgnoreCaseNotEquals(((int)SexyGamingGameApiError.Success).ToString("d4")))
             {
@@ -66,7 +66,7 @@ namespace TGS.GameProviders.Core.SexyGaming.ApplicationServices
                 {
                     if (await _gamingGamePlayerCreate.CreatePlayerAsync(configuration, command.PlayerCode, command.CurrencyCode, gameProviderCurrency, gameProviderCulture))
                     {
-                        responseGameUrl = await _client.GetGamingGameUrlAsync(configuration.ApiUrl, data).ConfigureAwait(false);
+                        responseGameUrl = await _client.GetGamingLoginGameAsync(configuration.ApiUrl, data).ConfigureAwait(false);
                     }
                 }
             }

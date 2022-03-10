@@ -63,8 +63,31 @@ namespace TGS.GameProviders.ApiClients.SexyGaming
                 => await PostAsync<SexyGamingGameUrlRequest, SexyGamingGameUrlResponse>(apiUrl, "/wallet/login", request, "GetGamingGameUrlAsync"));
         }
 
-        public ValueTask<SexyGamingGameUrlResponse> GetGamingLoginGameAsync(Uri apiUrl, SexyGamingLoginGameRequest request)
-            => PostAsync<SexyGamingLoginGameRequest, SexyGamingGameUrlResponse>(apiUrl, "/wallet/doLoginAndLaunchGame", request, "GetGamingLoginGameAsync");
+        public async ValueTask<SexyGamingGameUrlResponse> GetGamingLoginGameAsync(Uri apiUrl, SexyGamingLoginGameRequest request)
+        {
+            var tryCount = 3;
+            var seconds = 1;
+
+            var retryPolicy = Policy.HandleResult<SexyGamingGameUrlResponse>(r
+                 => r.Status == ((int)SexyGamingGameApiError.UnableToProceedPleaseTryAgainLater).ToString("d4"))
+             .WaitAndRetryAsync(tryCount,
+                 retryAttempt => TimeSpan.FromSeconds(seconds),
+                 (response, retryTime, context) =>
+                 {
+                     var data = new
+                     {
+                         GameProviderCode = GameProviderType.SexyGaming,
+                         Request = request,
+                         Response = response,
+                         Delay = retryTime,
+                         CreationTime = DateTimeOffset.UtcNow
+                     };
+                     _logger.LogWarning(System.Text.Json.JsonSerializer.Serialize(data));
+                 });
+
+            return await retryPolicy.ExecuteAsync(async ()
+                => await PostAsync<SexyGamingLoginGameRequest, SexyGamingGameUrlResponse>(apiUrl, "/wallet/doLoginAndLaunchGame", request, "GetGamingLoginGameAsync"));
+        }
 
         public ValueTask<SexyGamingLogoutResponse> LogoutAsync(Uri apiUrl, SexyGamingLogoutRequest request)
             => PostAsync<SexyGamingLogoutRequest, SexyGamingLogoutResponse>(apiUrl, "/wallet/logout", request, "LogOut");
