@@ -30,13 +30,13 @@ namespace TGS.GameProviders.Client.IntegrationTests
 
             await using var web = new TestGameProvidersApplication(builder =>
             {
-                builder.ConfigureServices(services =>
+                _ = builder.ConfigureServices(services =>
                 {
-                    services.AddTransient(_ => fakeService);
-                    services.AddTransient(_ => fakePlayerService);
-                    services.AddTransient(_ => fakeSessionService);
+                    _ = services.AddTransient(_ => fakeService);
+                    _ = services.AddTransient(_ => fakePlayerService);
+                    _ = services.AddTransient(_ => fakeSessionService);
 
-                    services.AddFakeNatsMessageQueue();
+                    _ = services.AddFakeNatsMessageQueue();
                 });
             });
 
@@ -200,30 +200,30 @@ namespace TGS.GameProviders.Client.IntegrationTests
                 PlayerBalance = 1000m
             };
 
-            fakeService
+            _ = fakeService
                 .GetSettingConfigurationAsync()
                 .Returns(ValueTask.FromResult(configuration));
 
-            fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-            fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
-            fakeService.GetGameAsync(gameInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
+            _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+            _ = fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
+            _ = fakeService.GetGameAsync(gameInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
 
-            fakeService
+            _ = fakeService
                 .GetGameProviderCurrencyCodeAsync(gameInfo.GameProviderId, query.CurrencyCode)
                 .Returns(ValueTask.FromResult(gameProviderCurrencyCode));
 
-            fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
+            _ = fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
                 .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-            fakeService.GetBrandIdAsync(playerInfo.BrandCode).Returns(ValueTask.FromResult(playerInfo.BrandId));
-            fakeService
+            _ = fakeService.GetBrandIdAsync(playerInfo.BrandCode).Returns(ValueTask.FromResult(playerInfo.BrandId));
+            _ = fakeService
                 .GetGameDomainAsync(playerInfo.BrandId, gameInfo.GameProviderId, query.PlatformType)
                 .Returns(ValueTask.FromResult(domain));
 
-            fakePlayerService.CheckOrCreateAccountAsync(configuration, playerInfo.PlayerCode, gameProviderCurrencyCode)
+            _ = fakePlayerService.CheckOrCreateAccountAsync(configuration, playerInfo.PlayerCode, gameProviderCurrencyCode)
                 .Returns(ValueTask.FromResult(true));
 
-            fakeSessionService
+            _ = fakeSessionService
                 .CreateGameSessionAsync(
                     configuration,
                     playerInfo.PlayerCode,
@@ -231,7 +231,7 @@ namespace TGS.GameProviders.Client.IntegrationTests
                     query.PlayerBalance)
                 .Returns(ValueTask.FromResult(true));
 
-            fakeUtility.GetQueryString(
+            _ = fakeUtility.GetQueryString(
                     Arg.Is<AsiaGamingGameUrlRequest>(x =>
                         x.AgentCode == configuration.AgentCode &&
                         x.PlayerCode == playerInfo.PlayerCode &&
@@ -241,8 +241,8 @@ namespace TGS.GameProviders.Client.IntegrationTests
                     Arg.Any<string>())
                 .Returns(queryString);
 
-            fakeUtility.DesEncrypt(queryString, configuration.DesKey).Returns(encodeParas);
-            fakeUtility.Md5Hash($"{encodeParas}{configuration.Md5Key}").Returns(key);
+            _ = fakeUtility.DesEncrypt(queryString, configuration.DesKey).Returns(encodeParas);
+            _ = fakeUtility.Md5Hash($"{encodeParas}{configuration.Md5Key}").Returns(key);
 
             var httpClient = web.CreateClient();
 
@@ -273,20 +273,20 @@ namespace TGS.GameProviders.Client.IntegrationTests
 
             await using var web = new TestGameProvidersApplication(builder =>
             {
-                builder.ConfigureServices(services =>
+                _ = builder.ConfigureServices(services =>
                 {
-                    services.AddSingleton(fakeTokenProvider);
-                    services.AddSingleton(fakeBetConstructService);
-                    services.AddFakeNatsMessageQueue();
+                    _ = services.AddSingleton(fakeTokenProvider);
+                    _ = services.AddSingleton(fakeBetConstructService);
+                    _ = services.AddFakeNatsMessageQueue();
                 });
             });
 
-            fakeBetConstructService
+            _ = fakeBetConstructService
                 .GetSettingConfigurationAsync()
                 .Returns(ValueTask.FromResult(new BetConstructConfiguration { PartnerId = "partnerId" }));
 
             var playerCode = "4ucmqplxb029";
-            fakeTokenProvider
+            _ = fakeTokenProvider
                 .EncryptAsync(playerCode)
                 .Returns("ZYE5oSH5I1hzmrgnQnh3R6");
 
