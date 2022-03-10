@@ -76,9 +76,9 @@ namespace TGS.GameProviders.Core.UnitTests.SexyGaming
             _ = fakeAviaService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
             _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
             _ = fakeAviaService.GetGameProviderCultureCodeAsync(query.Language).Returns(ValueTask.FromResult(gameProviderCultureCode));
-            _ = fakeAviaApiClient.GetGamingGameUrlAsync(
+            _ = fakeAviaApiClient.GetGamingLoginGameAsync(
                 configuration.ApiUrl,
-              new SexyGamingGameUrlRequest()
+              new SexyGamingLoginGameRequest()
               {
                   Cert = configuration.Cert,
                   AgentId = configuration.AgentId,
