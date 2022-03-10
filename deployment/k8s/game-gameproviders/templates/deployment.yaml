@@ -50,7 +50,7 @@ spec:
             {{- end }}
           env:
             - name: OTEL_SERVICE_NAME
-              value: VipLevel-QueryServer({{ .Values.namespace }})
+              value: Game-GameProviders({{ .Values.namespace }})
             - name: NODE_IP
               valueFrom:
                 fieldRef:
