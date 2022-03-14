@@ -16,7 +16,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "OTEL_SERVICE_NAME": "Game-GameProviders(local)",
-        "NODE_IP": "192.168.50.112"
+        "NODE_IP": "otel.rpgp.cc"
       }
     },
     "TGS.GameProviders": {
@@ -26,7 +26,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "OTEL_SERVICE_NAME": "Game-GameProviders(local)",
-        "NODE_IP": "192.168.50.112"
+        "NODE_IP": "otel.rpgp.cc"
       },
       "dotnetRunMessages": "true",
       "applicationUrl": "https://localhost:44336/"
@@ -40,7 +40,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "OTEL_SERVICE_NAME": "Game-GameProviders(local)",
-        "NODE_IP": "192.168.50.112"
+        "NODE_IP": "otel.rpgp.cc"
       }
     }
   }
