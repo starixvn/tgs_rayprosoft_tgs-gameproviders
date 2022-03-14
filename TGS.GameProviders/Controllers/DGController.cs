@@ -12,7 +12,8 @@ namespace TGS.GameProviders.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class DGController : ControllerBase,
-        IGameUrlHandler<DreamGameGameUrlQuery>
+        IGameUrlHandler<DreamGameGameUrlQuery>,
+        IKickPlayerHandler<DreamGameKickPlayerCommand>
     {
         private readonly IMapper _mapper;
 
@@ -58,5 +59,23 @@ namespace TGS.GameProviders.Controllers
                 null :
                 _mapper.Map<GameUrlResponse>(result);
         }
+
+        /// <summary>
+        /// Kicks the player asynchronous.
+        /// </summary>
+        /// <param name="commandService">The command service.</param>
+        /// <param name="playerCode">The player code.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Delete dg/kickplayer/4ucmqplxb029
+        /// </remarks>
+        [HttpDelete("kickplayer/{playerCode}")]
+        public ValueTask KickPlayerAsync([FromServices] ICommandService<DreamGameKickPlayerCommand> commandService, string playerCode)
+            => commandService.ExecuteAsync(new()
+            {
+                PlayerCode = playerCode
+            });
     }
 }

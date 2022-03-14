@@ -19,19 +19,20 @@ namespace TGS.GameProviders.Core.DreamGame.ApplicationServices
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async ValueTask<GameUrlResult> GetAsync(DreamGameGameUrlQuery command, CancellationToken cancellationToken = default)
+        public async ValueTask<GameUrlResult> GetAsync(DreamGameGameUrlQuery query, CancellationToken cancellationToken = default)
         {
-            var gameProviderCultureCode = await _service.GetGameProviderLanguageCodeAsync(command.Language).ConfigureAwait(false);
-            var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(command.CurrencyCode).ConfigureAwait(false);
-            var gameProviderConfiguration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+            var gameProviderCultureCode = await _service.GetGameProviderLanguageCodeAsync(query.Language).ConfigureAwait(false);
+            var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).ConfigureAwait(false);
+
 
             var loginResult = await _client.LoginAsync(
-                 gameProviderConfiguration.ApiUrl,
-                 gameProviderConfiguration.ApiKey,
-                 gameProviderConfiguration.AgentName,
-                 command.PlayerCode,
-                 gameProviderConfiguration.PlayerPassword,
-                 command.PlatformType,
+                 configuration.ApiUrl,
+                 configuration.ApiKey,
+                 configuration.AgentName,
+                 query.PlayerCode,
+                 configuration.PlayerPassword,
+                 query.PlatformType,
                  gameProviderCultureCode
                  ).ConfigureAwait(false);
 
@@ -40,20 +41,20 @@ namespace TGS.GameProviders.Core.DreamGame.ApplicationServices
                 if (loginResult.CodeId is 102)
                 {
                     var codeId = await _client.SignUpAsync(
-                        gameProviderConfiguration.ApiUrl,
-                        gameProviderConfiguration.ApiKey,
-                        gameProviderConfiguration.AgentName,
-                        command.PlayerCode,
-                        gameProviderConfiguration.PlayerPassword,
+                        configuration.ApiUrl,
+                        configuration.ApiKey,
+                        configuration.AgentName,
+                        query.PlayerCode,
+                        configuration.PlayerPassword,
                         gameProviderCurrencyCode).ConfigureAwait(false);
                     loginResult = codeId is 0 or 116
                         ? await _client.LoginAsync(
-                        gameProviderConfiguration.ApiUrl,
-                        gameProviderConfiguration.ApiKey,
-                        gameProviderConfiguration.AgentName,
-                        command.PlayerCode,
-                        gameProviderConfiguration.PlayerPassword,
-                        command.PlatformType,
+                        configuration.ApiUrl,
+                        configuration.ApiKey,
+                        configuration.AgentName,
+                        query.PlayerCode,
+                        configuration.PlayerPassword,
+                        query.PlatformType,
                         gameProviderCultureCode).ConfigureAwait(false)
                         : throw new Exception($"The manufacturer responded incorrectly.({codeId})");
                 }
