@@ -12,8 +12,8 @@ namespace TGS.GameProviders.Core.DreamGame.ApplicationServices
 {
     public class DreamGameKickPlayerCommandService : ICommandService<DreamGameKickPlayerCommand>
     {
-        private readonly IDreamGameApiClient _client;
         private readonly ILogger<DreamGameKickPlayerCommandService> _logger;
+        private readonly IDreamGameApiClient _client;
         private readonly IDreamGameService _service;
 
         public DreamGameKickPlayerCommandService(
@@ -28,16 +28,16 @@ namespace TGS.GameProviders.Core.DreamGame.ApplicationServices
 
         public async ValueTask ExecuteAsync(DreamGameKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var gameProviderConfiguration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+            var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            var onlineReportResults = await _client.OnlineReportAsync(gameProviderConfiguration.ApiUrl, gameProviderConfiguration.ApiKey, gameProviderConfiguration.AgentName).ConfigureAwait(false);
+            var onlineReportResults = await _client.OnlineReportAsync(configuration.ApiUrl, configuration.ApiKey, configuration.AgentName).ConfigureAwait(false);
 
             if (onlineReportResults != null)
             {
                 var memberId = onlineReportResults.Where(x => x.Username.Contains(command.PlayerCode, StringComparison.OrdinalIgnoreCase)).Select(x => (int?)x.MemberId).FirstOrDefault();
                 if (memberId.HasValue)
                 {
-                    await _client.OfflineAsync(gameProviderConfiguration.ApiUrl, gameProviderConfiguration.ApiKey, gameProviderConfiguration.AgentName, memberId.Value).ConfigureAwait(false);
+                    await _client.OfflineAsync(configuration.ApiUrl, configuration.ApiKey, configuration.AgentName, memberId.Value).ConfigureAwait(false);
                 }
             }
 
