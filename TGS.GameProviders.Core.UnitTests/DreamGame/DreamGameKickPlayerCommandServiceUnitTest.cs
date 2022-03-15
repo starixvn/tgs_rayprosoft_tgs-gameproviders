@@ -24,6 +24,7 @@ public class DreamGameKickPlayerCommandServiceUnitTest
         {
             ServiceEndpointUrl = new("http://game-dg"),
             ApiUrl = new("http://api.dg99web.com"),
+            VideoGameApiUrl = new("https://ag.dg66.info"),
             ApiKey = "974e8e9a072e4ad59a9e3f43a06ff9ae",
             AgentName = "DGTE0105CO",
             PlayerPassword = "TgsP@ssw0rd"
