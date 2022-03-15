@@ -15,6 +15,8 @@ namespace TGS.GameProviders.Core.DreamGame
 
         ValueTask<LoginResult> LoginAsync(Uri apiUrl, string apiKey, string agentName, string username, string password, PlatformType platformType = PlatformType.Desktop, string lang = "en");
 
+        ValueTask<bool> MarkReportAsync(Uri apiUrl, string apiKey, string agentName, IEnumerable<string> externalRoundIds);
+
         ValueTask<bool> OfflineAsync(Uri apiUrl, string apiKey, string agentName, long memberId);
 
         ValueTask<IEnumerable<OnlineReportResult>> OnlineReportAsync(Uri apiUrl, string apiKey, string agentName);

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
+using TGS.GameProviders.Core.DreamGame;
 using TGS.GameProviders.Core.DreamGame.ApplicationServices;
 using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
@@ -15,7 +17,7 @@ namespace TGS.GameProviders.Controllers
     public class DreamGameController : ControllerBase,
         IGameUrlHandler<DreamGameGameUrlQuery>,
         IKickPlayerHandler<DreamGameKickPlayerCommand>,
-         IRoundDetailHandler<DreamGameRoundDetailQuery>
+        IRoundDetailHandler<DreamGameRoundDetailQuery>
     {
         private readonly IMapper _mapper;
 
@@ -24,6 +26,39 @@ namespace TGS.GameProviders.Controllers
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
+
+
+        /// <summary>
+        /// Games the record list asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="request">The request.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get  api/dg/gamerecordlist
+        /// </remarks>
+        [HttpGet("gamerecordlist")]
+        public async ValueTask<GameRecordListResult?> GameRecordListAsync(
+            [FromServices] IGetService<DreamGameGameRecordListQuery, GameRecordListResult> getService)
+        {
+            var result = await getService.GetAsync(query: new()).ConfigureAwait(false);
+            return result ?? null;
+        }
+
+        /// <summary>
+        /// Marks the game record list asynchronous.
+        /// </summary>
+        /// <param name="service">The service.</param>
+        /// <param name="externalRoundIds">The external round ids.</param>
+        /// <returns></returns>
+        [HttpPost("markgamerecordlist")]
+        public ValueTask MarkGameRecordListAsync(
+            [FromServices] ICommandService<DreamGameMarkGameCommand> service,
+            IEnumerable<string> externalRoundIds)
+            => service.ExecuteAsync(new(externalRoundIds));
+
 
         /// <summary>
         /// Games the URL asynchronous.

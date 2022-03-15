@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -133,6 +134,45 @@ namespace TGS.GameProviders.ApiClients.DreamGame
             url += $"{response.RootElement.GetProperty("token").GetString()}&language={lang}";
 
             return new(true, codeId, new(url));
+        }
+
+        public async ValueTask<bool> MarkReportAsync(Uri apiUrl, string apiKey, string agentName, IEnumerable<string> externalRoundIds)
+        {
+            var tryCount = 1;
+            var seconds = 30;
+            var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var token = GetHashMD5($"{agentName}{apiKey }{random}");
+            var request = new
+            {
+                token,
+                random,
+                list = externalRoundIds.ToArray()
+            };
+
+            var retryPolicy = Policy.HandleResult<JsonDocument>(response
+                 => response.RootElement.GetProperty("codeId").GetInt32() == 405)
+                .WaitAndRetryAsync(tryCount,
+                 retryAttempt => TimeSpan.FromSeconds(seconds),
+                 (response, retryTime, context) =>
+                 {
+                     var data = new
+                     {
+                         GameProviderCode = GameProviderType.DreamGame,
+                         Response = response,
+                         Delay = retryTime,
+                         CreationTime = DateTimeOffset.UtcNow
+                     };
+                     _logger.LogWarning(JsonSerializer.Serialize(data));
+                 });
+
+            var response = await retryPolicy.ExecuteAsync(async ()
+                 => await PostAsync(
+                     apiUrl,
+                     $"/game/markReport/{agentName} ",
+                     JsonDocument.Parse(JsonSerializer.Serialize(request)),
+                     "MarkReport").ConfigureAwait(false)).ConfigureAwait(false);
+
+            return response.RootElement.GetProperty("codeId").GetInt32() == 0;
         }
 
         public async ValueTask<bool> OfflineAsync(Uri apiUrl, string apiKey, string agentName, long memberId)
