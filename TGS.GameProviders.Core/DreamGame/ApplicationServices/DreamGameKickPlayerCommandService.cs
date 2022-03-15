@@ -12,8 +12,8 @@ namespace TGS.GameProviders.Core.DreamGame.ApplicationServices
 {
     public class DreamGameKickPlayerCommandService : ICommandService<DreamGameKickPlayerCommand>
     {
-        private readonly ILogger<DreamGameKickPlayerCommandService> _logger;
         private readonly IDreamGameApiClient _client;
+        private readonly ILogger<DreamGameKickPlayerCommandService> _logger;
         private readonly IDreamGameService _service;
 
         public DreamGameKickPlayerCommandService(
@@ -37,23 +37,23 @@ namespace TGS.GameProviders.Core.DreamGame.ApplicationServices
                 var memberId = onlineReportResults.Where(x => x.Username.Contains(command.PlayerCode, StringComparison.OrdinalIgnoreCase)).Select(x => (int?)x.MemberId).FirstOrDefault();
                 if (memberId.HasValue)
                 {
-                    await _client.OfflineAsync(configuration.ApiUrl, configuration.ApiKey, configuration.AgentName, memberId.Value).ConfigureAwait(false);
+                    _ = await _client.OfflineAsync(configuration.ApiUrl, configuration.ApiKey, configuration.AgentName, memberId.Value).ConfigureAwait(false);
                 }
             }
 
             _logger.Log(
-                       LogLevel.Information,
-                       new EventId(
-                           GameProviderUnique.DreamGame.GetGameProviderUniqueEventId(),
-                           nameof(DreamGameKickPlayerCommandService)),
-                       new
-                       {
-                           GameProviderCode = GameProviderType.DreamGame,
-                           PlayerCode = command.PlayerCode,
-                           FinishOn = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(+8)).ToString("O")
-                       },
-                       null,
-                       (state, ex) => JsonSerializer.Serialize(state));
+                LogLevel.Information,
+                new EventId(
+                    GameProviderUnique.DreamGame.GetGameProviderUniqueEventId(),
+                    nameof(DreamGameKickPlayerCommandService)),
+                new
+                {
+                    GameProviderCode = GameProviderType.DreamGame,
+                    command.PlayerCode,
+                    FinishOn = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(+8)).ToString("O")
+                },
+                null,
+                (state, ex) => JsonSerializer.Serialize(state));
         }
     }
 }

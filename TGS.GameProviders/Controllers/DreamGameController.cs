@@ -5,19 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.DreamGame.ApplicationServices;
+using TGS.GameProviders.Domains.RoundDetail;
 using TGS.GameProviders.ViewModels;
 
 namespace TGS.GameProviders.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/dg")]
     [ApiController]
-    public class DGController : ControllerBase,
+    public class DreamGameController : ControllerBase,
         IGameUrlHandler<DreamGameGameUrlQuery>,
-        IKickPlayerHandler<DreamGameKickPlayerCommand>
+        IKickPlayerHandler<DreamGameKickPlayerCommand>,
+         IRoundDetailHandler<DreamGameRoundDetailQuery>
     {
         private readonly IMapper _mapper;
 
-        public DGController(
+        public DreamGameController(
             IMapper mapper)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -77,5 +79,27 @@ namespace TGS.GameProviders.Controllers
             {
                 PlayerCode = playerCode
             });
+        /// <summary>
+        /// Rounds the detail asynchronous.
+        /// </summary>
+        /// <param name="getService">The get service.</param>
+        /// <param name="roundId">The round identifier.</param>
+        /// <param name="language">The language.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Get dg/rounddetail/4455978d-1aa4-ec11-bfe6-8c554ae8ab6b?language=zh-CN
+        /// </remarks>
+        [HttpGet("RoundDetail/{roundId}")]
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync([FromServices] IGetService<DreamGameRoundDetailQuery, RoundDetailResult?> getService, Guid roundId, [FromQuery] string language)
+        {
+            var result = await getService.GetAsync(new()
+            {
+                RoundId = roundId,
+                Language = language
+            }).ConfigureAwait(false);
+            return result ?? null;
+        }
     }
 }

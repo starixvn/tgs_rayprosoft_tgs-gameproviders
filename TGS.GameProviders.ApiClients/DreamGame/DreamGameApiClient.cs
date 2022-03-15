@@ -35,6 +35,68 @@ namespace TGS.GameProviders.ApiClients.DreamGame
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         }
 
+        public async ValueTask<string> GetAgentFixAsync(Uri videoGameApiUrl, string agentName)
+        {
+            var httpResponseMessage = await _client.GetAsync($"{videoGameApiUrl?.ToString()}ag/result/getAgentFix.html?username={agentName}");
+
+            using var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result);
+            var agentFix = await sr.ReadToEndAsync() ?? string.Empty;
+            return JsonSerializer.Deserialize<string>(agentFix);
+        }
+
+        public string GetGameResultAsync(Uri videoGameApiUrl, string agentName, string language, string agentFix, string id)
+        {
+            return $"{videoGameApiUrl?.ToString()}ag/result/result.html?language={language}&agentFix={agentFix}&id={id}";
+        }
+
+        public async ValueTask<IEnumerable<GameReportResult>> GetReportAsync(Uri apiUrl, string apiKey, string agentName)
+        {
+            var tryCount = 1;
+            var seconds = 30;
+            var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var token = GetHashMD5($"{agentName}{apiKey }{random}");
+            var request = new
+            {
+                token,
+                random
+            };
+
+            var retryPolicy = Policy.HandleResult<JsonDocument>(response
+                 => response.RootElement.GetProperty("codeId").GetInt32() == 405)
+             .WaitAndRetryAsync(tryCount,
+                 retryAttempt => TimeSpan.FromSeconds(seconds),
+                 (response, retryTime, context) =>
+                 {
+                     var data = new
+                     {
+                         GameProviderCode = GameProviderType.DreamGame,
+                         Response = response,
+                         Delay = retryTime,
+                         CreationTime = DateTimeOffset.UtcNow
+                     };
+                     _logger.LogWarning(System.Text.Json.JsonSerializer.Serialize(data));
+                 });
+
+            var response = await retryPolicy.ExecuteAsync(async ()
+                => await PostAsync(
+                    apiUrl,
+                    $"/game/getReport/{agentName} ",
+                    JsonDocument.Parse(JsonSerializer.Serialize(request)),
+                    "GetReport").ConfigureAwait(false)).ConfigureAwait(false);
+
+            var codeId = response.RootElement.GetProperty("codeId").GetInt32();
+
+            if (codeId == 0)
+            {
+                if (response.RootElement.TryGetProperty(("list"), out JsonElement list))
+                {
+                    return list.Deserialize<IEnumerable<GameReportResult>>();
+                }
+            }
+
+            return null;
+        }
+
         public async ValueTask<LoginResult> LoginAsync(Uri apiUrl, string apiKey, string agentName, string username, string password, PlatformType platformType = PlatformType.Desktop, string lang = "en")
         {
             var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -73,9 +135,8 @@ namespace TGS.GameProviders.ApiClients.DreamGame
             return new(true, codeId, new(url));
         }
 
-        public async ValueTask<bool> OfflineAsync(Uri apiUrl, string apiKey, string agentName, int memberId)
+        public async ValueTask<bool> OfflineAsync(Uri apiUrl, string apiKey, string agentName, long memberId)
         {
-
             var tryCount = 1;
             var seconds = 30;
             var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -115,7 +176,6 @@ namespace TGS.GameProviders.ApiClients.DreamGame
 
         public async ValueTask<IEnumerable<OnlineReportResult>> OnlineReportAsync(Uri apiUrl, string apiKey, string agentName)
         {
-
             var tryCount = 1;
             var seconds = 30;
             var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -139,7 +199,7 @@ namespace TGS.GameProviders.ApiClients.DreamGame
                          Delay = retryTime,
                          CreationTime = DateTimeOffset.UtcNow
                      };
-                     _logger.LogWarning(System.Text.Json.JsonSerializer.Serialize(data));
+                     _logger.LogWarning(JsonSerializer.Serialize(data));
                  });
 
             var response = await retryPolicy.ExecuteAsync(async ()
@@ -148,7 +208,6 @@ namespace TGS.GameProviders.ApiClients.DreamGame
                     $"/user/onlineReport/{agentName} ",
                     JsonDocument.Parse(JsonSerializer.Serialize(request)),
                     "OnlineReport").ConfigureAwait(false)).ConfigureAwait(false);
-
 
             var codeId = response.RootElement.GetProperty("codeId").GetInt32();
 
@@ -195,7 +254,7 @@ namespace TGS.GameProviders.ApiClients.DreamGame
             using var md5 = MD5.Create();
             var dataByte = Encoding.UTF8.GetBytes(data);
             var hash = md5.ComputeHash(dataByte);
-            return hash.ToHexString().ToUpper();
+            return hash.ToHexString();
         }
 
         private async ValueTask<JsonDocument> PostAsync(Uri apiUrl, string paths, JsonDocument request, string logPrefix)

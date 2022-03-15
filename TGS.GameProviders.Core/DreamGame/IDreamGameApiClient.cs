@@ -7,12 +7,18 @@ namespace TGS.GameProviders.Core.DreamGame
 {
     public interface IDreamGameApiClient
     {
+        ValueTask<string> GetAgentFixAsync(Uri apiUrl, string agentName);
+
+        string GetGameResultAsync(Uri videoGameApiUrl, string agentName, string language, string agentFix, string id);
+
+        ValueTask<IEnumerable<GameReportResult>> GetReportAsync(Uri apiUrl, string apiKey, string agentName);
+
         ValueTask<LoginResult> LoginAsync(Uri apiUrl, string apiKey, string agentName, string username, string password, PlatformType platformType = PlatformType.Desktop, string lang = "en");
 
-        ValueTask<bool> OfflineAsync(Uri apiUrl, string apiKey, string agentName, int memberId);
+        ValueTask<bool> OfflineAsync(Uri apiUrl, string apiKey, string agentName, long memberId);
 
         ValueTask<IEnumerable<OnlineReportResult>> OnlineReportAsync(Uri apiUrl, string apiKey, string agentName);
 
-        ValueTask<int> SignUpAsync(Uri apiUrl, string apiKey, string agentName, string username, string password, string currencyNameint, string tableLimit = "A", int winLimit = 0);
+        ValueTask<int> SignUpAsync(Uri videoGameApiUrl, string apiKey, string agentName, string username, string password, string currencyNameint, string tableLimit = "A", int winLimit = 0);
     }
 }
