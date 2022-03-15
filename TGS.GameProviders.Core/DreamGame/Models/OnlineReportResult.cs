@@ -17,6 +17,6 @@ namespace TGS.GameProviders.Core.DreamGame.Models
         [JsonPropertyName("login")]
         public string Login { get; set; } = default!;
         [JsonPropertyName("memberId")]
-        public int MemberId { get; set; }
+        public long MemberId { get; set; }
     }
 }

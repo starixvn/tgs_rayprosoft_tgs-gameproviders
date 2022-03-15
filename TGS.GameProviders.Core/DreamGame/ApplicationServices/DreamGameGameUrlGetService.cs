@@ -25,7 +25,6 @@ namespace TGS.GameProviders.Core.DreamGame.ApplicationServices
             var gameProviderCultureCode = await _service.GetGameProviderLanguageCodeAsync(query.Language).ConfigureAwait(false);
             var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).ConfigureAwait(false);
 
-
             var loginResult = await _client.LoginAsync(
                  configuration.ApiUrl,
                  configuration.ApiKey,

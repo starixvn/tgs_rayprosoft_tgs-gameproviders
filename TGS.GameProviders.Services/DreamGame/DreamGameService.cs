@@ -45,7 +45,7 @@ namespace TGS.GameProviders.Services.DreamGame
                 .GetConfigurationAsync<DreamGameConfiguration>(GameProviderConfigurations.DreamGame)
                 .ConfigureAwait(false);
 
-        private ValueTask<Guid> GetGameProviderIdAsync()
+        public ValueTask<Guid> GetGameProviderIdAsync()
             => _gameProviderService.GetGameProviderIdAsync(GameProviderType.DreamGame);
     }
 }
