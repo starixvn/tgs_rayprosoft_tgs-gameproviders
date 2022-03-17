@@ -27,6 +27,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 var options = sp.GetRequiredService<IOptions<GameProvidersClientOptions>>().Value;
                 httpClient.BaseAddress = options.BaseUrl;
             })
+            .Services
+            .AddHttpClient<IDreamGameClient, DreamGameClient>()
+            .ConfigureHttpClient((sp, httpClient) =>
+            {
+                var options = sp.GetRequiredService<IOptions<GameProvidersClientOptions>>().Value;
+                httpClient.BaseAddress = options.BaseUrl;
+            })
             .Services;
     }
 }
