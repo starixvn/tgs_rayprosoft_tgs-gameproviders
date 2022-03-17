@@ -47,7 +47,7 @@ namespace TGS.GameProviders.Core.DreamGame.ApplicationServices
                 ExternalClosedOn = data.IsRevocation != 0 ? new DateTimeOffset(DateTime.Parse(data.CalTime), TimeSpan.FromHours(+8)) : null,
                 BetAmount = data.BetPoints,
                 ValidBetAmount = data.AvailableBet,
-                PlayerWinLoss = data.WinOrLoss - data.AvailableBet,
+                PlayerWinLoss = data.WinOrLoss - data.BetPoints,
                 Commission = 0,
                 Turnover = data.AvailableBet,
                 SettleAmount = data.WinOrLoss,
