@@ -17,9 +17,22 @@ namespace TGS.GameProviders
             {
                 webBuilder.UseStartup<Startup>();
             })
-            .ConfigureLogging((_, builder) =>
+            .ConfigureLogging((ctx, logging) =>
             {
-                builder.AddTgsLog();
+                logging
+                    .AddTgsLog()
+                    .AddOpenTelemetry(options =>
+                    {
+                        options.IncludeFormattedMessage = true;
+                        options.ParseStateValues = true;
+                        _ = options.AddFluentdForwardExporter(fluentOptions =>
+                        {
+                            var nodeIp = ctx.Configuration.GetValue<string>("NODE_IP");
+                            fluentOptions.Host = nodeIp;
+                            fluentOptions.Tag = ctx.Configuration.GetValue<string>("OTEL_SERVICE_NAME");
+                            fluentOptions.UseMessagePack();
+                        });
+                    });
             });
 
         public static void Main(string[] args)

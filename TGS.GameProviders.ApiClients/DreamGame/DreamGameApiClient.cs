@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -8,11 +10,13 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Polly;
 using Tgs.Logging;
 using TGS.GameProviders.Core;
 using TGS.GameProviders.Core.DreamGame;
 using TGS.GameProviders.Core.DreamGame.Models;
 using TGS.GameProviders.Core.Extensions;
+using TGS.GameProviders.Domains;
 
 namespace TGS.GameProviders.ApiClients.DreamGame
 {
@@ -30,6 +34,68 @@ namespace TGS.GameProviders.ApiClients.DreamGame
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
+        }
+
+        public async ValueTask<string> GetAgentFixAsync(Uri videoGameApiUrl, string agentName)
+        {
+            var httpResponseMessage = await _client.GetAsync($"{videoGameApiUrl?.ToString()}ag/result/getAgentFix.html?username={agentName}");
+
+            using var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result);
+            var agentFix = await sr.ReadToEndAsync() ?? string.Empty;
+            return JsonSerializer.Deserialize<string>(agentFix);
+        }
+
+        public string GetGameResultAsync(Uri videoGameApiUrl, string agentName, string language, string agentFix, string id)
+        {
+            return $"{videoGameApiUrl?.ToString()}ag/result/result.html?language={language}&agentFix={agentFix}&id={id}";
+        }
+
+        public async ValueTask<IEnumerable<GameReportResult>> GetReportAsync(Uri apiUrl, string apiKey, string agentName)
+        {
+            var tryCount = 1;
+            var seconds = 30;
+            var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var token = GetHashMD5($"{agentName}{apiKey }{random}");
+            var request = new
+            {
+                token,
+                random
+            };
+
+            var retryPolicy = Policy.HandleResult<JsonDocument>(response
+                 => response.RootElement.GetProperty("codeId").GetInt32() == 405)
+             .WaitAndRetryAsync(tryCount,
+                 retryAttempt => TimeSpan.FromSeconds(seconds),
+                 (response, retryTime, context) =>
+                 {
+                     var data = new
+                     {
+                         GameProviderCode = GameProviderType.DreamGame,
+                         Response = response,
+                         Delay = retryTime,
+                         CreationTime = DateTimeOffset.UtcNow
+                     };
+                     _logger.LogWarning(System.Text.Json.JsonSerializer.Serialize(data));
+                 });
+
+            var response = await retryPolicy.ExecuteAsync(async ()
+                => await PostAsync(
+                    apiUrl,
+                    $"/game/getReport/{agentName} ",
+                    JsonDocument.Parse(JsonSerializer.Serialize(request)),
+                    "GetReport").ConfigureAwait(false)).ConfigureAwait(false);
+
+            var codeId = response.RootElement.GetProperty("codeId").GetInt32();
+
+            if (codeId == 0)
+            {
+                if (response.RootElement.TryGetProperty(("list"), out JsonElement list))
+                {
+                    return list.Deserialize<IEnumerable<GameReportResult>>();
+                }
+            }
+
+            return null;
         }
 
         public async ValueTask<LoginResult> LoginAsync(Uri apiUrl, string apiKey, string agentName, string username, string password, PlatformType platformType = PlatformType.Desktop, string lang = "en")
@@ -70,9 +136,131 @@ namespace TGS.GameProviders.ApiClients.DreamGame
             return new(true, codeId, new(url));
         }
 
-        public ValueTask OfflineAsync(Uri apiUrl, string apiKey, string agentName, string username) => throw new NotImplementedException();
+        public async ValueTask<bool> MarkReportAsync(Uri apiUrl, string apiKey, string agentName, IEnumerable<string> externalRoundIds)
+        {
+            var tryCount = 1;
+            var seconds = 30;
+            var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var token = GetHashMD5($"{agentName}{apiKey }{random}");
+            var request = new
+            {
+                token,
+                random,
+                list = externalRoundIds.ToArray()
+            };
 
-        public ValueTask OnlineReportAsync(Uri apiUrl, string apiKey, string agentName) => throw new NotImplementedException();
+            var retryPolicy = Policy.HandleResult<JsonDocument>(response
+                 => response.RootElement.GetProperty("codeId").GetInt32() == 405)
+                .WaitAndRetryAsync(tryCount,
+                 retryAttempt => TimeSpan.FromSeconds(seconds),
+                 (response, retryTime, context) =>
+                 {
+                     var data = new
+                     {
+                         GameProviderCode = GameProviderType.DreamGame,
+                         Response = response,
+                         Delay = retryTime,
+                         CreationTime = DateTimeOffset.UtcNow
+                     };
+                     _logger.LogWarning(JsonSerializer.Serialize(data));
+                 });
+
+            var response = await retryPolicy.ExecuteAsync(async ()
+                 => await PostAsync(
+                     apiUrl,
+                     $"/game/markReport/{agentName} ",
+                     JsonDocument.Parse(JsonSerializer.Serialize(request)),
+                     "MarkReport").ConfigureAwait(false)).ConfigureAwait(false);
+
+            return response.RootElement.GetProperty("codeId").GetInt32() == 0;
+        }
+
+        public async ValueTask<bool> OfflineAsync(Uri apiUrl, string apiKey, string agentName, long memberId)
+        {
+            var tryCount = 1;
+            var seconds = 30;
+            var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var token = GetHashMD5($"{agentName}{apiKey }{random}");
+            var request = new
+            {
+                token,
+                random,
+                list = new[] { memberId }
+            };
+
+            var retryPolicy = Policy.HandleResult<JsonDocument>(response
+                 => response.RootElement.GetProperty("codeId").GetInt32() == 405)
+                .WaitAndRetryAsync(tryCount,
+                 retryAttempt => TimeSpan.FromSeconds(seconds),
+                 (response, retryTime, context) =>
+                 {
+                     var data = new
+                     {
+                         GameProviderCode = GameProviderType.DreamGame,
+                         Response = response,
+                         Delay = retryTime,
+                         CreationTime = DateTimeOffset.UtcNow
+                     };
+                     _logger.LogWarning(JsonSerializer.Serialize(data));
+                 });
+
+            var response = await retryPolicy.ExecuteAsync(async ()
+                 => await PostAsync(
+                     apiUrl,
+                     $"/user/offline/{agentName} ",
+                     JsonDocument.Parse(JsonSerializer.Serialize(request)),
+                     "Offline").ConfigureAwait(false)).ConfigureAwait(false);
+
+            return response.RootElement.GetProperty("codeId").GetInt32() == 0;
+        }
+
+        public async ValueTask<IEnumerable<OnlineReportResult>> OnlineReportAsync(Uri apiUrl, string apiKey, string agentName)
+        {
+            var tryCount = 1;
+            var seconds = 30;
+            var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var token = GetHashMD5($"{agentName}{apiKey }{random}");
+            var request = new
+            {
+                token,
+                random
+            };
+
+            var retryPolicy = Policy.HandleResult<JsonDocument>(response
+                 => response.RootElement.GetProperty("codeId").GetInt32() == 405)
+             .WaitAndRetryAsync(tryCount,
+                 retryAttempt => TimeSpan.FromSeconds(seconds),
+                 (response, retryTime, context) =>
+                 {
+                     var data = new
+                     {
+                         GameProviderCode = GameProviderType.DreamGame,
+                         Response = response,
+                         Delay = retryTime,
+                         CreationTime = DateTimeOffset.UtcNow
+                     };
+                     _logger.LogWarning(JsonSerializer.Serialize(data));
+                 });
+
+            var response = await retryPolicy.ExecuteAsync(async ()
+                => await PostAsync(
+                    apiUrl,
+                    $"/user/onlineReport/{agentName} ",
+                    JsonDocument.Parse(JsonSerializer.Serialize(request)),
+                    "OnlineReport").ConfigureAwait(false)).ConfigureAwait(false);
+
+            var codeId = response.RootElement.GetProperty("codeId").GetInt32();
+
+            if (codeId == 0)
+            {
+                if (response.RootElement.TryGetProperty(("list"), out JsonElement list))
+                {
+                    return list.Deserialize<IEnumerable<OnlineReportResult>>();
+                }
+            }
+
+            return null;
+        }
 
         public async ValueTask<int> SignUpAsync(Uri apiUrl, string apiKey, string agentName, string username, string password, string currencyName, string tableLimit = "A", int winLimit = 0)
         {
@@ -106,7 +294,7 @@ namespace TGS.GameProviders.ApiClients.DreamGame
             using var md5 = MD5.Create();
             var dataByte = Encoding.UTF8.GetBytes(data);
             var hash = md5.ComputeHash(dataByte);
-            return hash.ToHexString().ToUpper();
+            return hash.ToHexString();
         }
 
         private async ValueTask<JsonDocument> PostAsync(Uri apiUrl, string paths, JsonDocument request, string logPrefix)

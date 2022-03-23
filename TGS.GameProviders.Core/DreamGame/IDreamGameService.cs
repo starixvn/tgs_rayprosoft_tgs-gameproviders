@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using TGS.GameProviders.Domains.SettingConfiguration;
 
 namespace TGS.GameProviders.Core.DreamGame
@@ -6,6 +7,8 @@ namespace TGS.GameProviders.Core.DreamGame
     public interface IDreamGameService
     {
         ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
+
+        ValueTask<Guid> GetGameProviderIdAsync();
 
         ValueTask<string> GetGameProviderLanguageCodeAsync(string cultureCode);
 
