@@ -113,33 +113,26 @@ namespace TGS.GameProviders.ApiClients.Saba
 
             var apiLogEvent = new ApiLogEvent
             {
-                Ip = string.Empty,
                 Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
                 Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
                 Prefix = logPrefix,
                 ServerName = Environment.MachineName.NoLongerThan(128),
-                RequestHeaders =
-                    httpResponseMessage.RequestMessage?.Headers +
-                    httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
-                RequestContent = requestMessage,
+                RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
+                RequestContent = requestMessage.NoLongerThan(4096),
                 ResponseHeaders = httpResponseMessage.Headers.ToString(),
-                ResponseContent = responseMessage,
+                ResponseContent = responseMessage.NoLongerThan(4096),
                 ResponseCode = (short)httpResponseMessage.StatusCode,
                 ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
                 RecordedOn = DateTimeOffset.UtcNow
             };
-
             _tgsLog.LogApi(apiLogEvent);
+            _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
 
             if (!string.IsNullOrEmpty(responseMessage) &&
                 httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
-                _logger.LogInformation(responseMessage);
-
                 return JsonSerializer.Deserialize<TResponse>(responseMessage);
             }
-
-            _logger.LogError(JsonSerializer.Serialize(apiLogEvent));
 
             return default;
         }

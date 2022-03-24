@@ -124,6 +124,26 @@ namespace TGS.GameProviders.ApiClients.BigGaming
             return await GetAPIAsync(apiurl, request, "open.user.bg.logout", prefix).ConfigureAwait(false);
         }
 
+        private static string GetHashMD5(string data)
+        {
+            using (var md5 = MD5.Create())
+            {
+                var dataByte = Encoding.UTF8.GetBytes(data);
+                var hash = md5.ComputeHash(dataByte);
+                return hash.ToHexString().ToUpper();
+            }
+        }
+
+        private static string GetSecretCode(string agentLoginIdPassword)
+        {
+            using (var sHA1 = SHA1.Create())
+            {
+                var dataByte = Encoding.UTF8.GetBytes(agentLoginIdPassword);
+                var hash = sHA1.ComputeHash(dataByte);
+                return hash.ToBase64String();
+            }
+        }
+
         private async ValueTask<BigGamingResponse> GetAPIAsync<TSource>(Uri apiUrl, TSource source, string method, string logPrefix)
         {
             logPrefix = $"{nameof(BigGamingApiClient).ToLower() }.{logPrefix}";
@@ -136,78 +156,43 @@ namespace TGS.GameProviders.ApiClients.BigGaming
             };
 
             var sw = Stopwatch.StartNew();
-            var responseMessage = default(string);
-            var response = default(BigGamingResponse);
 
             HttpContent content = new StringContent(JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
 
             var httpResponseMessage = await _client.PostAsync(apiUrl, content);
+
             sw.Stop();
+
+            var responseMessage = default(string);
             using (var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result))
             {
                 responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
             }
 
-            _tgsLog.LogApi(new()
+            var apiLogEvent = new ApiLogEvent
             {
                 Ip = string.Empty,
-                Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
-                Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
+                Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
+                Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
                 Prefix = logPrefix,
                 ServerName = Environment.MachineName.NoLongerThan(128),
-                RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
-                RequestContent = JsonSerializer.Serialize(data),
-                ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
-                ResponseContent = responseMessage,
+                RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
+                RequestContent = JsonSerializer.Serialize(data).NoLongerThan(4096),
+                ResponseHeaders = httpResponseMessage.Headers.ToString(),
+                ResponseContent = responseMessage.NoLongerThan(4096),
                 ResponseCode = (short)httpResponseMessage.StatusCode,
                 ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
                 RecordedOn = DateTimeOffset.UtcNow
-            });
+            };
+            _tgsLog.LogApi(apiLogEvent);
+            _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
 
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
-                response = JsonSerializer.Deserialize<BigGamingResponse>(responseMessage);
-            }
-            else
-            {
-                _logger.LogError(JsonSerializer.Serialize(new
-                {
-                    Ip = string.Empty,
-                    Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
-                    Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
-                    Prefix = logPrefix,
-                    ServerName = Environment.MachineName.NoLongerThan(128),
-                    RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
-                    RequestContent = JsonSerializer.Serialize(data),
-                    ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
-                    ResponseContent = responseMessage,
-                    ResponseCode = (short)httpResponseMessage.StatusCode,
-                    ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                    RecordedOn = DateTimeOffset.UtcNow
-                }));
+                return JsonSerializer.Deserialize<BigGamingResponse>(responseMessage);
             }
 
-            return response;
-        }
-
-        private string GetHashMD5(string data)
-        {
-            using (var md5 = MD5.Create())
-            {
-                var dataByte = Encoding.UTF8.GetBytes(data);
-                var hash = md5.ComputeHash(dataByte);
-                return hash.ToHexString().ToUpper();
-            }
-        }
-
-        private string GetSecretCode(string agentLoginIdPassword)
-        {
-            using (var sHA1 = SHA1.Create())
-            {
-                var dataByte = Encoding.UTF8.GetBytes(agentLoginIdPassword);
-                var hash = sHA1.ComputeHash(dataByte);
-                return hash.ToBase64String();
-            }
+            return default;
         }
     }
 }

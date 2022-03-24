@@ -1,22 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Npgsql;
@@ -25,7 +16,6 @@ using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Prometheus;
-using TGS.GameProviders.Core.Extensions;
 using TGS.GameProviders.Microsoft.Extensions.DependencyInjection;
 using TGS.GameProviders.ViewModelMappings;
 
@@ -76,7 +66,6 @@ namespace TGS.GameProviders
                 httpLogging.RequestBodyLogLimit = 4096;
                 httpLogging.ResponseBodyLogLimit = 4096;
             });
-            _ = services.AddControllersWithViews();
 
             _ = services
                 .AddRouting(options => options.LowercaseUrls = true)
@@ -174,6 +163,7 @@ namespace TGS.GameProviders
                         || !httpContext.Request.Path.StartsWithSegments("/swagger")
                         && !httpContext.Request.Path.StartsWithSegments("/healthz")
                         && !httpContext.Request.Path.StartsWithSegments("/profiler/")
+                        && !httpContext.Request.Path.StartsWithSegments("/metrics")
                         && !new[] { "html", "ico", "png", "jpg", "js" }.Any(
                             ext => httpContext.Request.Path.Value.EndsWith($".{ext}"));
                 };
