@@ -192,7 +192,7 @@ namespace TGS.GameProviders.ApiClients.WGHorse
             await GetAsync<WGHorseResponse>(url, request, "Logout").ConfigureAwait(false);
         }
 
-        private string GetAesEncrypt(string data, string secretKey, string secretIV)
+        private static string GetAesEncrypt(string data, string secretKey, string secretIV)
         {
             byte[] keyBytes = Encoding.UTF8.GetBytes(secretKey);
             byte[] ivBytes = Encoding.UTF8.GetBytes(secretIV);
@@ -227,58 +227,42 @@ namespace TGS.GameProviders.ApiClients.WGHorse
         private async ValueTask<TResult> GetAsync<TResult>(Uri url, object request, string logPrefix)
         {
             logPrefix = $"{nameof(WGHorseApiClient).ToLower()}.{logPrefix}";
+
             var sw = Stopwatch.StartNew();
-            var responseMessage = default(string);
-            var response = default(TResult);
 
             var httpResponseMessage = await _client.GetAsync(url);
+
             sw.Stop();
 
+            var responseMessage = default(string);
             using (var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result))
             {
                 responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
             }
 
-            _tgsLog.LogApi(new()
+            var apiLogEvent = new ApiLogEvent
             {
-                Ip = string.Empty,
-                Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
-                Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
+                Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
+                Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
                 Prefix = logPrefix,
                 ServerName = Environment.MachineName.NoLongerThan(128),
-                RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
-                RequestContent = JsonSerializer.Serialize(request),
-                ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
-                ResponseContent = responseMessage,
+                RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
+                RequestContent = JsonSerializer.Serialize(request).NoLongerThan(4096),
+                ResponseHeaders = httpResponseMessage.Headers.ToString(),
+                ResponseContent = responseMessage.NoLongerThan(4096),
                 ResponseCode = (short)httpResponseMessage.StatusCode,
                 ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
                 RecordedOn = DateTimeOffset.UtcNow
-            });
+            };
+            _tgsLog.LogApi(apiLogEvent);
+            _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
 
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
-                response = JsonSerializer.Deserialize<TResult>(responseMessage);
-            }
-            else
-            {
-                _logger.LogError(JsonSerializer.Serialize(new
-                {
-                    Ip = string.Empty,
-                    Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
-                    Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
-                    Prefix = logPrefix,
-                    ServerName = Environment.MachineName.NoLongerThan(128),
-                    RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
-                    RequestContent = JsonSerializer.Serialize(request),
-                    ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
-                    ResponseContent = responseMessage,
-                    ResponseCode = (short)httpResponseMessage.StatusCode,
-                    ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                    RecordedOn = DateTimeOffset.UtcNow
-                }));
+                return JsonSerializer.Deserialize<TResult>(responseMessage);
             }
 
-            return response;
+            return default;
         }
     }
 }
