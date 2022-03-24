@@ -42,7 +42,6 @@
 		<PackageReference Include="prometheus-net.AspNetCore" Version="5.1.0-pre-000215-c81d12d" />
 		<PackageReference Include="prometheus-net.AspNetCore.HealthChecks" Version="5.1.0-pre-000215-c81d12d" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-		<PackageReference Include="Tgs.Logging" Version="0.0.15" />
 		<PackageReference Include="Tgs.MessageQueue" Version="2.0.0" />
 		<PackageReference Include="Tgs.MessageQueue.Nats" Version="2.0.3" />
 		<PackageReference Include="UAParser" Version="3.1.47" />
@@ -55,5 +54,7 @@
 		<ProjectReference Include="..\TGS.GameProviders.Domains\TGS.GameProviders.Domains.csproj" />
 		<ProjectReference Include="..\TGS.GameProviders.Services\TGS.GameProviders.Services.csproj" />
 	</ItemGroup>
+
+	<ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

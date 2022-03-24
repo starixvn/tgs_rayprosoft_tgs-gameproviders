@@ -32,13 +32,7 @@ namespace TGS.GameProviders.Controllers
         /// Games the record list asynchronous.
         /// </summary>
         /// <param name="getService">The get service.</param>
-        /// <param name="request">The request.</param>
         /// <returns></returns>
-        /// <remarks>
-        /// <b>Example</b><br />
-        ///
-        ///     Get  api/dg/gamerecordlist
-        /// </remarks>
         [HttpGet("gamerecordlist")]
         public async ValueTask<GameRecordListResult?> GameRecordListAsync(
             [FromServices] IGetService<DreamGameGameRecordListQuery, GameRecordListResult> getService)
