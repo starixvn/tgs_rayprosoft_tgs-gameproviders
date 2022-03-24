@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -34,8 +35,7 @@ namespace TGS.GameProviders
     {
         public IConfiguration Configuration { get; }
 
-        public Startup(
-                    IConfiguration configuration)
+        public Startup(IConfiguration configuration)
             => Configuration = configuration;
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,45 +45,51 @@ namespace TGS.GameProviders
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
             }
-            //使用IP解析需要使用
-            app.UseForwardedHeaders();
+            // 啟用 HTTP 記錄
+            _ = app.UseHttpLogging();
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TGS.GameProviders v1"));
+            _ = app.UseSwagger();
+            _ = app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TGS.GameProviders v1"));
 
-            app.UseHttpsRedirection();
+            _ = app.UseHttpsRedirection();
 
-            app.UseRouting();
+            _ = app.UseRouting();
 
-            app.UseAuthorization();
+            _ = app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
+            _ = app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
-                endpoints.MapHealthChecks("/healthz");
-                endpoints.MapMetrics();
+                _ = endpoints.MapControllers();
+                _ = endpoints.MapHealthChecks("/healthz");
+                _ = endpoints.MapMetrics();
                 endpoints.MapProfileViewer();
             });
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(
-            IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
-            services
+            _ = services.AddHttpLogging(httpLogging =>
+            {
+                httpLogging.LoggingFields = HttpLoggingFields.All;
+                httpLogging.RequestBodyLogLimit = 4096;
+                httpLogging.ResponseBodyLogLimit = 4096;
+            });
+            _ = services.AddControllersWithViews();
+
+            _ = services
                 .AddRouting(options => options.LowercaseUrls = true)
                 .AddControllers(configure =>
                 {
-                    configure.Filters.Add<ExceptionFilter>();
+                    _ = configure.Filters.Add<ExceptionFilter>();
                 })
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
-            services.AddSwaggerGen(c =>
+            _ = services.AddSwaggerGen(c =>
             {
                 var xmlFileNames = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml");
                 foreach (var xmlFileName in xmlFileNames) c.IncludeXmlComments(xmlFileName);
@@ -96,11 +102,11 @@ namespace TGS.GameProviders
                     });
             });
 
-            services
+            _ = services
                 .AddMessageQueue()
                 .AddNatsMessageQueue(natsConfig =>
                 {
-                    natsConfig
+                    _ = natsConfig
                     .ConfigQueueOptions((options, sp) =>
                     {
                         var configuration = sp.GetRequiredService<IConfiguration>();
@@ -109,34 +115,7 @@ namespace TGS.GameProviders
                 })
                 .AddNatsGlobPatternExchange("*");
 
-            services.AddOptions<ForwardedHeadersOptions>()
-                .Configure<IConfiguration>((options, config) =>
-                {
-                    options.ForwardedHeaders = ForwardedHeaders.All;
-                    options.ForwardLimit = config.GetValue<int>("ForwardedHeaders:ForwardLimit");
-
-                    var knownProxies = config.GetSection("ForwardedHeaders:KnownProxies").Get<string[]>();
-                    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-
-                    // Replace with IP of your proxy/load balancer
-                    foreach (var knownProxie in knownProxies)
-                        options.KnownProxies.Add(IPAddress.Parse(knownProxie));
-
-                    var knowNetworks = config.GetSection("ForwardedHeaders:KnowNetworks").Get<string[]>() ?? Array.Empty<string>();
-                    foreach (var cidr in knowNetworks)
-                    {
-                        (string ip, string range) = cidr.Split("/");
-
-                        options.KnownNetworks.Add(
-                            new IPNetwork(
-                                IPAddress.Parse(ip),
-                                string.IsNullOrEmpty(range)
-                                    ? 32
-                                    : int.Parse(range)));
-                    }
-                });
-
-            services
+            _ = services
                 .AddApiClients()
                 .UseRedis((options, sp) =>
                 {
@@ -150,7 +129,7 @@ namespace TGS.GameProviders
                     options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameProvidersQueryServerBaseUrl");
                 });
 
-            services
+            _ = services
                 .AddAutoMapper(config =>
                 {
                     config.AddProfile<GameUrlMapping>();
@@ -159,7 +138,7 @@ namespace TGS.GameProviders
                     config.AddProfile<RoundDetailMapping>();
                 });
 
-            services
+            _ = services
                 .AddOptions<OtlpExporterOptions>()
                 .Configure<IConfiguration>((options, conifg) =>
                 {
@@ -171,9 +150,9 @@ namespace TGS.GameProviders
                     conifg.GetSection("Opentelemetry:Tracing").Bind(options);
                 });
 
-            services.AddOpenTelemetryTracing(builder =>
+            _ = services.AddOpenTelemetryTracing(builder =>
             {
-                builder
+                _ = builder
                     .SetResourceBuilder(ResourceBuilder.CreateDefault()
                     .AddEnvironmentVariableDetector())
                     .AddSource("Tgs.*")
@@ -187,7 +166,7 @@ namespace TGS.GameProviders
                     .AddOtlpExporter();
             });
 
-            services.Configure<AspNetCoreInstrumentationOptions>(options =>
+            _ = services.Configure<AspNetCoreInstrumentationOptions>(options =>
             {
                 options.Filter = httpContext =>
                 {
@@ -200,13 +179,13 @@ namespace TGS.GameProviders
                 };
             });
 
-            services.AddProfileViewer();
+            _ = services.AddProfileViewer();
 
-            services
+            _ = services
                 .AddInterceptionService()
                 .AddServiceUtiltiyInterceptors();
 
-            services
+            _ = services
                 .AddHealthChecks()
                 .ForwardToPrometheus();
         }

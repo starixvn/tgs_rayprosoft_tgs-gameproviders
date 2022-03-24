@@ -326,50 +326,46 @@ namespace TGS.GameProviders.ApiClients.KY
 
             _tgsLog.LogApi(new()
             {
-                Ip = string.Empty,
                 Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
                 Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
                 Prefix = logPrefix,
                 ServerName = Environment.MachineName.NoLongerThan(128),
                 RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
-                RequestContent = JsonSerializer.Serialize(request),
+                RequestContent = JsonSerializer.Serialize(request).NoLongerThan(4096),
                 ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
-                ResponseContent = responseMessage,
+                ResponseContent = responseMessage.NoLongerThan(4096),
                 ResponseCode = (short)httpResponseMessage.StatusCode,
                 ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
                 RecordedOn = DateTimeOffset.UtcNow
             });
 
+            _logger.LogInformation(JsonSerializer.Serialize(new
+            {
+                Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
+                Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
+                Prefix = logPrefix,
+                ServerName = Environment.MachineName.NoLongerThan(128),
+                RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
+                RequestContent = JsonSerializer.Serialize(request).NoLongerThan(4096),
+                ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
+                ResponseContent = responseMessage.NoLongerThan(4096),
+                ResponseCode = (short)httpResponseMessage.StatusCode,
+                ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+                RecordedOn = DateTimeOffset.UtcNow
+            }));
+
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
                 response = JsonSerializer.Deserialize<KYApiResponse<TData>>(responseMessage);
-            }
-            else
-            {
-                _logger.LogError(JsonSerializer.Serialize(new
-                {
-                    Ip = string.Empty,
-                    Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
-                    Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
-                    Prefix = logPrefix,
-                    ServerName = Environment.MachineName.NoLongerThan(128),
-                    RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
-                    RequestContent = JsonSerializer.Serialize(request),
-                    ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
-                    ResponseContent = responseMessage,
-                    ResponseCode = (short)httpResponseMessage.StatusCode,
-                    ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                    RecordedOn = DateTimeOffset.UtcNow
-                }));
             }
 
             return response;
         }
 
-        private DateTimeOffset GetDateTimeOffsetNowTimeZone8()
+        private static DateTimeOffset GetDateTimeOffsetNowTimeZone8()
             => DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
 
-        private string GetHashMD5(string data)
+        private static string GetHashMD5(string data)
         {
             using (var md5 = MD5.Create())
             {
@@ -382,17 +378,17 @@ namespace TGS.GameProviders.ApiClients.KY
             }
         }
 
-        private string GetPath(Dictionary<string, object> request)
+        private static string GetPath(Dictionary<string, object> request)
                             => string.Join("&", request.Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value)));
 
-        private string GetPath(KYApiRequest request, JsonSerializerOptions options = null)
+        private static string GetPath(KYApiRequest request, JsonSerializerOptions options = null)
         {
             var value = JsonSerializer.Serialize(request, options);
             var items = JsonSerializer.Deserialize<Dictionary<string, object>>(value, options);
             return string.Join("&", items.Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value)));
         }
 
-        private long GetUnixTimeMilliseconds(DateTimeOffset dateTimeOffset)
+        private static long GetUnixTimeMilliseconds(DateTimeOffset dateTimeOffset)
             => dateTimeOffset.ToUnixTimeMilliseconds();
     }
 }

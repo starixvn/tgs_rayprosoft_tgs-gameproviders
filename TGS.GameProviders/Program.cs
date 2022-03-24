@@ -11,15 +11,15 @@ namespace TGS.GameProviders
             Host.CreateDefaultBuilder(args)
             .ConfigureAppConfiguration(builder =>
             {
-                builder.AddJsonFile("/config/appsettings.json", true);
+                _ = builder.AddJsonFile("/config/appsettings.json", true);
             })
             .ConfigureWebHostDefaults(webBuilder =>
             {
-                webBuilder.UseStartup<Startup>();
+                _ = webBuilder.UseStartup<Startup>();
             })
             .ConfigureLogging((ctx, logging) =>
             {
-                logging
+                _ = logging
                     .AddTgsLog()
                     .AddOpenTelemetry(options =>
                     {
