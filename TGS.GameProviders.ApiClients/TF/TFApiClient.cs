@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Net;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
@@ -55,42 +54,25 @@ namespace TGS.GameProviders.ApiClients.TF
                .ReadAsStringAsync()
                .ConfigureAwait(false);
 
-            _tgsLog.LogApi(new()
+            var apiLogEvent = new ApiLogEvent
             {
-                Ip = string.Empty,
-                Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
-                Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
+                Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
+                Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
                 Prefix = TFAction.GetGameUrl.ToString(),
                 ServerName = Environment.MachineName.NoLongerThan(128),
-                RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
-                RequestContent = JsonSerializer.Serialize(request),
-                ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
-                ResponseContent = responseMessage,
+                RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
+                RequestContent = JsonSerializer.Serialize(request).NoLongerThan(4096),
+                ResponseHeaders = httpResponseMessage.Headers.ToString(),
+                ResponseContent = responseMessage.NoLongerThan(4096),
                 ResponseCode = (short)httpResponseMessage.StatusCode,
                 ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
                 RecordedOn = DateTimeOffset.UtcNow
-            });
+            };
 
-            if (httpResponseMessage.StatusCode != HttpStatusCode.OK)
-            {
-                _logger.LogError(JsonSerializer.Serialize(new
-                {
-                    Ip = string.Empty,
-                    Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
-                    Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
-                    Prefix = TFAction.GetGameUrl.ToString(),
-                    ServerName = Environment.MachineName.NoLongerThan(128),
-                    RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
-                    RequestContent = JsonSerializer.Serialize(request),
-                    ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
-                    ResponseContent = responseMessage,
-                    ResponseCode = (short)httpResponseMessage.StatusCode,
-                    ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                    RecordedOn = DateTimeOffset.UtcNow
-                }));
-            }
+            _tgsLog.LogApi(apiLogEvent);
+            _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
 
-            httpResponseMessage.EnsureSuccessStatusCode();
+            _ = httpResponseMessage.EnsureSuccessStatusCode();
 
             var result = JsonSerializer.Deserialize<LaunchResponse>(responseMessage);
 
@@ -128,40 +110,23 @@ namespace TGS.GameProviders.ApiClients.TF
                .ReadAsStringAsync()
                .ConfigureAwait(false);
 
-            _tgsLog.LogApi(new()
+            var apiLogEvent = new ApiLogEvent
             {
-                Ip = string.Empty,
-                Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
-                Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
-                Prefix = TFAction.GetGameUrl.ToString(),
+                Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
+                Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
+                Prefix = TFAction.Kick.ToString(),
                 ServerName = Environment.MachineName.NoLongerThan(128),
-                RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
-                RequestContent = content,
-                ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
-                ResponseContent = responseMessage,
+                RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
+                RequestContent = JsonSerializer.Serialize(request).NoLongerThan(4096),
+                ResponseHeaders = httpResponseMessage.Headers.ToString(),
+                ResponseContent = responseMessage.NoLongerThan(4096),
                 ResponseCode = (short)httpResponseMessage.StatusCode,
                 ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
                 RecordedOn = DateTimeOffset.UtcNow
-            });
+            };
 
-            if (httpResponseMessage.StatusCode != HttpStatusCode.OK)
-            {
-                _logger.LogError(JsonSerializer.Serialize(new
-                {
-                    Ip = string.Empty,
-                    Path = httpResponseMessage.RequestMessage.RequestUri.AbsoluteUri.NoLongerThan(512),
-                    Method = httpResponseMessage.RequestMessage.Method.ToString().NoLongerThan(8),
-                    Prefix = TFAction.GetGameUrl.ToString(),
-                    ServerName = Environment.MachineName.NoLongerThan(128),
-                    RequestHeaders = httpResponseMessage.RequestMessage.Headers + httpResponseMessage.RequestMessage.Content?.Headers?.ToString(),
-                    RequestContent = content,
-                    ResponseHeaders = httpResponseMessage.RequestMessage.Headers.ToString(),
-                    ResponseContent = responseMessage,
-                    ResponseCode = (short)httpResponseMessage.StatusCode,
-                    ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                    RecordedOn = DateTimeOffset.UtcNow
-                }));
-            }
+            _tgsLog.LogApi(apiLogEvent);
+            _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
         }
     }
 }

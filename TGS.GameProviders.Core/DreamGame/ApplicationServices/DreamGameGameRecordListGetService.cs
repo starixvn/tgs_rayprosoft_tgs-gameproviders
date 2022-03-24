@@ -31,6 +31,14 @@ namespace TGS.GameProviders.Core.DreamGame.ApplicationServices
 
             var gameReports = await _client.GetReportAsync(configuration.ApiUrl, configuration.ApiKey, configuration.AgentName).ConfigureAwait(false);
 
+            if (gameReports == null || !gameReports.Any())
+            {
+                return new()
+                {
+                    Success = true
+                };
+            }
+
             var gameProviderCode = GameProviderType.DreamGame; ;
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
