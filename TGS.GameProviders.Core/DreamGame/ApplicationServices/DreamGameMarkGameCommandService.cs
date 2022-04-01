@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
@@ -21,10 +18,10 @@ namespace TGS.GameProviders.Core.DreamGame.ApplicationServices
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
+
         public async ValueTask ExecuteAsync(DreamGameMarkGameCommand command, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-
 
             await _client.MarkReportAsync(configuration.ApiUrl, configuration.ApiKey, configuration.AgentName, command.externalRoundIds).ConfigureAwait(false);
         }

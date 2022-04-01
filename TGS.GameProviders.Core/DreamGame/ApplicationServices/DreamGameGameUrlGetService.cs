@@ -8,15 +8,18 @@ namespace TGS.GameProviders.Core.DreamGame.ApplicationServices
     public class DreamGameGameUrlGetService : IGetService<DreamGameGameUrlQuery, GameUrlResult>
     {
         private readonly IDreamGameApiClient _client;
+        private readonly IGetService<DreamGameCreatePlayerQuery, int> _createPlayerService;
         private readonly IDreamGameService _service;
 
         public DreamGameGameUrlGetService(
             IDreamGameService service,
-            IDreamGameApiClient client
+            IDreamGameApiClient client,
+            IGetService<DreamGameCreatePlayerQuery, int> createPlayerService
             )
         {
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _client = client ?? throw new ArgumentNullException(nameof(client));
+            _createPlayerService = createPlayerService ?? throw new ArgumentNullException(nameof(createPlayerService));
         }
 
         public async ValueTask<GameUrlResult> GetAsync(DreamGameGameUrlQuery query, CancellationToken cancellationToken = default)
@@ -35,29 +38,32 @@ namespace TGS.GameProviders.Core.DreamGame.ApplicationServices
                  gameProviderCultureCode
                  ).ConfigureAwait(false);
 
-            if (!loginResult.Success)
+            if (!loginResult.Success && loginResult.CodeId is 102)
             {
-                if (loginResult.CodeId is 102)
-                {
-                    var codeId = await _client.SignUpAsync(
+                var codeId = await _createPlayerService.GetAsync(new DreamGameCreatePlayerQuery(
+                    configuration.ApiUrl,
+                    configuration.ApiKey,
+                    configuration.AgentName,
+                    query.PlayerCode,
+                    configuration.PlayerPassword,
+                    query.CurrencyCode,
+                    gameProviderCurrencyCode,
+                    configuration.BetLimits
+                    )).ConfigureAwait(false);
+                loginResult = codeId is 0 or 116
+                    ? await _client.LoginAsync(
                         configuration.ApiUrl,
-                        configuration.ApiKey,
-                        configuration.AgentName,
-                        query.PlayerCode,
-                        configuration.PlayerPassword,
-                        gameProviderCurrencyCode).ConfigureAwait(false);
-                    loginResult = codeId is 0 or 116
-                        ? await _client.LoginAsync(
-                        configuration.ApiUrl,
-                        configuration.ApiKey,
-                        configuration.AgentName,
-                        query.PlayerCode,
-                        configuration.PlayerPassword,
-                        query.PlatformType,
-                        gameProviderCultureCode).ConfigureAwait(false)
-                        : throw new Exception($"The manufacturer responded incorrectly.({codeId})");
-                }
-                else
+                       configuration.ApiKey,
+                       configuration.AgentName,
+                       query.PlayerCode,
+                       configuration.PlayerPassword,
+                       query.PlatformType,
+                       gameProviderCultureCode).ConfigureAwait(false)
+                    : throw new Exception($"The manufacturer responded incorrectly.({codeId})");
+            }
+            else
+            {
+                if (!loginResult.Success)
                 {
                     throw new Exception($"The manufacturer responded incorrectly.({loginResult.CodeId})");
                 }
