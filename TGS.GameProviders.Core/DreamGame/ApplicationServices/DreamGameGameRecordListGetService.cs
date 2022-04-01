@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 using TGS.GameProviders.Domains;
@@ -27,7 +26,6 @@ namespace TGS.GameProviders.Core.DreamGame.ApplicationServices
         public async ValueTask<GameRecordListResult> GetAsync(DreamGameGameRecordListQuery query, CancellationToken cancellationToken = default)
         {
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-
 
             var gameReports = await _client.GetReportAsync(configuration.ApiUrl, configuration.ApiKey, configuration.AgentName).ConfigureAwait(false);
 

@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.ServiceUtility;
 using TGS.GameProviders.Core.DreamGame;
 using TGS.GameProviders.Core.DreamGame.ApplicationServices;
 using TGS.GameProviders.Core.DreamGame.Models;
 using TGS.GameProviders.Domains.SettingConfiguration;
+using TGS.GameProviders.Domains.SettingConfiguration.DreamGame;
 
 namespace TGS.GameProviders.Core.UnitTests.DreamGame;
 
@@ -18,6 +20,7 @@ public class DreamGameGameUrlGetServiceUnitTest
     {
         var fakeService = Substitute.For<IDreamGameService>();
         var fakeApiClient = Substitute.For<IDreamGameApiClient>();
+        var fakeCreatePlayerService = Substitute.For<IGetService<DreamGameCreatePlayerQuery, int>>();
 
         var gameUrl = new Uri("http://www.google.com");
 
@@ -28,7 +31,69 @@ public class DreamGameGameUrlGetServiceUnitTest
             VideoGameApiUrl = new("https://ag.dg66.info"),
             ApiKey = "974e8e9a072e4ad59a9e3f43a06ff9ae",
             AgentName = "DGTE0105CO",
-            PlayerPassword = "TgsP@ssw0rd"
+            PlayerPassword = "TgsP@ssw0rd",
+            BetLimits = new[] {
+                new DreamGameBetLimit(){
+                    Currency="CNY",
+                    TableLimit="A"
+                },
+                new DreamGameBetLimit(){
+                    Currency="EUR",
+                    TableLimit="A"
+                },
+                new DreamGameBetLimit(){
+                    Currency="GBP",
+                    TableLimit="A"
+                },
+                new DreamGameBetLimit(){
+                    Currency="HKD",
+                    TableLimit="G"
+                },
+                new DreamGameBetLimit(){
+                    Currency="IDR_1000",
+                    TableLimit="A"
+                },
+                new DreamGameBetLimit(){
+                    Currency="INR",
+                    TableLimit="A"
+                },
+                new DreamGameBetLimit(){
+                    Currency="JPY",
+                    TableLimit="A"
+                },
+                new DreamGameBetLimit(){
+                    Currency="KRW",
+                    TableLimit="A"
+                },
+                new DreamGameBetLimit(){
+                    Currency="KRW",
+                    TableLimit="A"
+                },
+                new DreamGameBetLimit(){
+                    Currency="MYR",
+                    TableLimit="A"
+                },
+                new DreamGameBetLimit(){
+                    Currency="PHP",
+                    TableLimit="A"
+                },
+                new DreamGameBetLimit(){
+                    Currency="SGD",
+                    TableLimit="A"
+                },
+                new DreamGameBetLimit(){
+                    Currency="THB",
+                    TableLimit="A"
+                },
+                new DreamGameBetLimit(){
+                    Currency="USD",
+                    TableLimit="A"
+                },
+                new DreamGameBetLimit(){
+                    Currency="VND_1000",
+                    TableLimit="A"
+                },
+            }
         };
 
         var gameInfo = new GameInfo(
@@ -83,11 +148,13 @@ public class DreamGameGameUrlGetServiceUnitTest
 
         var sut = new DreamGameGameUrlGetService(
             fakeService,
-            fakeApiClient);
+            fakeApiClient,
+            fakeCreatePlayerService);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
         Assert.AreEqual(gameUrl, actual.Url);
     }
+
 }
