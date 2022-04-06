@@ -17,11 +17,10 @@ namespace TGS.GameProviders.Core.UnitTests.Avia
         [Test]
         public async Task Normal_Process()
         {
-            var faceLogger = NullLogger<AviaGameRecordListGetService>.Instance;
             var fakeAviaApiClient = Substitute.For<IAviaApiClient>();
             var fakeAviaService = Substitute.For<IAviaService>();
 
-            var fakeService = new AviaGameRecordListGetService(fakeAviaApiClient, faceLogger, fakeAviaService);
+            var fakeService = new AviaGameRecordListGetService(fakeAviaApiClient, fakeAviaService);
 
             var query = new AviaGameRecordListQuery()
             {

@@ -31,7 +31,7 @@ namespace TGS.GameProviders.Services.IMESports
             var dataKey = $"{_KeyPrefix}:{playerCode}_{gameExternalId}";
             var setValue = JsonSerializer.Serialize(tokenInfo, _jsonSerializerOptions);
 
-            await _database.StringSetAsync(dataKey, setValue, expiry, When.Always)
+            _ = await _database.StringSetAsync(dataKey, setValue, expiry, when: When.Always)
                 .ConfigureAwait(false);
         }
     }

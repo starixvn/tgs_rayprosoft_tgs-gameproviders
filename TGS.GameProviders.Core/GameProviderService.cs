@@ -21,7 +21,7 @@ namespace TGS.GameProviders.Core
 
         public async ValueTask<GameProviderInfo> GetAsync(Guid gameProviderId)
         {
-            var data = await _gameProvidersQueryServerClient.GameProviderGetAsync(gameProviderId).ConfigureAwait(false);
+            var data = await _gameProvidersQueryServerClient.GameProviderGetInfoAsync(gameProviderId).ConfigureAwait(false);
             return data == null
                 ? throw new Exception($"Game Provider does not exist.({gameProviderId})")
                 : new GameProviderInfo(
@@ -45,7 +45,7 @@ namespace TGS.GameProviders.Core
             if (!_memoryCache.TryGetValue(gameProviderCode, out Guid gameProviderId))
             {
                 gameProviderId = await GetGameProviderIdAsync(gameProviderCode).ConfigureAwait(false);
-                _memoryCache.Set(gameProviderCode, gameProviderId, TimeSpan.FromDays(1));
+                _ = _memoryCache.Set(gameProviderCode, gameProviderId, TimeSpan.FromDays(1));
             }
             return gameProviderId;
         }
@@ -67,7 +67,7 @@ namespace TGS.GameProviders.Core
         public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
         {
             var gameProviderId = await _gameProvidersQueryServerClient.GameProviderGetGameProviderIdAsync(gameProviderCode).ConfigureAwait(false);
-            return !gameProviderId.HasValue ? throw new Exception($"Game Provider does not exist.({gameProviderCode})") : gameProviderId.Value;
+            return gameProviderId ?? throw new Exception($"Game Provider does not exist.({gameProviderCode})");
         }
     }
 }
