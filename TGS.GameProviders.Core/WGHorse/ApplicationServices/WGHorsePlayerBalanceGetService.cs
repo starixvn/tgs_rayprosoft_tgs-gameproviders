@@ -9,20 +9,17 @@ namespace TGS.GameProviders.Core.WGHorse.ApplicationServices
     public class WGHorsePlayerBalanceGetService : IGetService<WGHorsePlayerBalanceQuery, decimal?>
     {
         private readonly IWGHorseApiClient _client;
-        private readonly ILogger<WGHorsePlayerBalanceGetService> _logger;
         private readonly IWGHorseGamePlayer _playerCreate;
         private readonly IPlayerService _playerService;
         private readonly IWGHorseService _service;
 
         public WGHorsePlayerBalanceGetService(
             IWGHorseApiClient client,
-            ILogger<WGHorsePlayerBalanceGetService> logger,
             IWGHorseGamePlayer playerCreate,
             IPlayerService playerService,
             IWGHorseService service
             )
         {
-            if (logger is null) throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _playerCreate = playerCreate ?? throw new ArgumentNullException(nameof(playerCreate));
             _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));

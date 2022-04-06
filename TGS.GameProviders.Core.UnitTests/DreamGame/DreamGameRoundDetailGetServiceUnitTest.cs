@@ -64,9 +64,7 @@ public class DreamGameRoundDetailGetServiceUnitTest
             null,
             "{}");
 
-        var externalRoundIds = new string[] { "123456" };
-
-        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult(roundInfo));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
         _ = fakeService.GetGameProviderLanguageCodeAsync(query.Language).Returns(ValueTask.FromResult("cn"));
         _ = fakeClient.GetAgentFixAsync(configuration.VideoGameApiUrl, configuration.AgentName).Returns(ValueTask.FromResult("123"));

@@ -12,19 +12,16 @@ namespace TGS.GameProviders.Core.BigGaming.ApplicationServices
         private readonly IGameService _gameService;
         private readonly IBigGamingGameUrl _gameUrl;
         private readonly IBigGamingGamePlayer _gamingGamePlayerCreate;
-        private readonly ILogger<BigGamingGameUrlGetService> _logger;
         private readonly IBigGamingService _service;
 
         public BigGamingGameUrlGetService(
             IGameService gameService,
-            ILogger<BigGamingGameUrlGetService> logger,
             IBigGamingService service,
             IBigGamingGamePlayer gamingGamePlayerCreate,
             IBigGamingGameUrl gameUrl
             )
         {
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _gamingGamePlayerCreate = gamingGamePlayerCreate ?? throw new ArgumentNullException(nameof(gamingGamePlayerCreate));
             _gameUrl = gameUrl ?? throw new ArgumentNullException(nameof(gameUrl));

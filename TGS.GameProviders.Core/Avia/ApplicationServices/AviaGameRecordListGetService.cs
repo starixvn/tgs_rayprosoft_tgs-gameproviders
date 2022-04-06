@@ -12,17 +12,14 @@ namespace TGS.GameProviders.Core.Avia.ApplicationServices
     public class AviaGameRecordListGetService : IGetService<AviaGameRecordListQuery, GameRecordListResult>
     {
         private readonly IAviaApiClient _client;
-        private readonly ILogger<AviaGameRecordListGetService> _logger;
         private readonly IAviaService _service;
 
         public AviaGameRecordListGetService(
             IAviaApiClient client,
-            ILogger<AviaGameRecordListGetService> logger,
             IAviaService service
             )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
