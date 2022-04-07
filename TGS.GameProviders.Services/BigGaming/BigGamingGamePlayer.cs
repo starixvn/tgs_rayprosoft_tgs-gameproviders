@@ -38,7 +38,33 @@ namespace TGS.GameProviders.Services.BigGaming
             };
 
             var response = await _client.CreatePlayerAsync(brandMerchant.ApiUrl, brandMerchant.SecretCode, brandMerchant.AgentLoginIdPassword, createPlayerRequest).ConfigureAwait(false);
-
+            if (response.Error != null)
+            {
+                if (response.Error.Code == "2610")
+                {
+                    var createAgentRequest = new BigGamingCreateAgentRequest()
+                    {
+                        Random = GuidExtensions.NewSequentialGuid().ToString(),
+                        Sn = brandMerchant.SecretCode,
+                        LoginId = brandCode,
+                        Password = brandMerchant.AgentLoginIdPassword
+                    };
+                    var responseCreateAgent = await _client.CreateAgentAsync(brandMerchant.ApiUrl, brandMerchant.SecretCode, brandMerchant.SecretKey, createAgentRequest).ConfigureAwait(false);
+                    if (responseCreateAgent.Error != null)
+                    {
+                        return false;
+                    }
+                    createPlayerRequest = new BigGamingCreatePlayerRequest()
+                    {
+                        Random = GuidExtensions.NewSequentialGuid().ToString(),
+                        Sn = brandMerchant.SecretCode,
+                        LoginId = playerCode,
+                        Nickname = playerCode,
+                        AgentLoginId = brandCode
+                    };
+                    response = await _client.CreatePlayerAsync(brandMerchant.ApiUrl, brandMerchant.SecretCode, brandMerchant.AgentLoginIdPassword, createPlayerRequest).ConfigureAwait(false);
+                }
+            }
             return (response.Error == null);
         }
     }
