@@ -18,8 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TGS.GameProviders.Client\Tgs.GameProviders.Client.csproj" />
-    <ProjectReference Include="..\TGS.GameProviders\Tgs.GameProviders.csproj" />
+    <ProjectReference Include="..\Tgs.GameProviders.Client\Tgs.GameProviders.Client.csproj" />
+    <ProjectReference Include="..\Tgs.GameProviders.Core\Tgs.GameProviders.Core.csproj" />
+    <ProjectReference Include="..\Tgs.GameProviders.Domains\Tgs.GameProviders.Domains.csproj" />
+    <ProjectReference Include="..\Tgs.GameProviders\Tgs.GameProviders.csproj" />
   </ItemGroup>
 
 </Project>

@@ -39,7 +39,7 @@ namespace Tgs.GameProviders
             _ = app.UseHttpLogging();
 
             _ = app.UseSwagger();
-            _ = app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TGS.GameProviders v1"));
+            _ = app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tgs.GameProviders v1"));
 
             _ = app.UseHttpsRedirection();
 
@@ -85,7 +85,7 @@ namespace Tgs.GameProviders
                 c.SwaggerDoc("v1",
                     new OpenApiInfo
                     {
-                        Title = "TGS.GameProviders",
+                        Title = "Tgs.GameProviders",
                         Version = "v1"
                     });
             });
