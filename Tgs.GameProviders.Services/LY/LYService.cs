@@ -1,0 +1,67 @@
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.Extensions;
+using Tgs.GameProviders.Core.LY;
+using Tgs.GameProviders.Domains;
+using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.GameProviders.Domains.SettingConfiguration.LY;
+using Tgs.GameProviders.QueryServer.Models;
+
+namespace Tgs.GameProviders.Services.LY
+{
+    internal class LYService : ILYService
+    {
+        private readonly IGameProviderService _gameProviderService;
+        private readonly ISettingService _settingService;
+
+        public LYService(
+            ISettingService settingService,
+            IGameProviderService gameProviderService
+            )
+        {
+            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
+            _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
+        }
+
+        public async Task<string> GetAgentIdAsync(string brandCode, string currencyCode)
+        {
+            var configuration = await GetSettingConfigurationAsync().ConfigureAwait(false);
+            var brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
+            if (brandMerchant == null)
+            {
+                brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals("Default") && x.Status).FirstOrDefault();
+            }
+            return brandMerchant.AgentMappers.Where(x => x.CurrencyCode.IgnoreCaseEquals(currencyCode) && x.Status).FirstOrDefault()?.AgentId;
+        }
+
+        public async Task<LYBrandMerchant> GetBrandMerchantAsync(string brandCode)
+        {
+            var configuration = await _settingService.GetConfigurationAsync<LYConfiguration>(GameProviderConfigurations.LY).ConfigureAwait(false);
+            var brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
+            if (brandMerchant == null)
+            {
+                brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals("Default") && x.Status).FirstOrDefault();
+            }
+            return brandMerchant;
+        }
+
+        public RoundClientStatus GetClientRound(decimal playerWinLoss)
+            => playerWinLoss switch
+            {
+                > 0 => RoundClientStatus.Win,
+                < 0 => RoundClientStatus.Loss,
+                0 => RoundClientStatus.Draw
+            };
+
+        public string GetGameProviderCode()
+            => GameProviderType.LY;
+
+        public ValueTask<Guid> GetGameProviderIdAsync()
+            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.LY);
+
+        public ValueTask<LYConfiguration> GetSettingConfigurationAsync()
+            => _settingService.GetConfigurationAsync<LYConfiguration>(GameProviderConfigurations.LY);
+    }
+}
