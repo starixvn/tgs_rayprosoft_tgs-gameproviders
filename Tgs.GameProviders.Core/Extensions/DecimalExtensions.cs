@@ -1,0 +1,15 @@
+﻿using System;
+
+namespace Tgs.GameProviders.Core.Extensions
+{
+    public static class DecimalExtensions
+    {
+        public static decimal Negate(this decimal d) => decimal.Negate(d);
+
+        public static decimal Truncate(this decimal d, int digits)
+        {
+            var step = (decimal)Math.Pow(10, digits);
+            return decimal.Truncate(d * step) / step;
+        }
+    }
+}
