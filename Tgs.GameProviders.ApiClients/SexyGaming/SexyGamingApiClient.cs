@@ -103,8 +103,10 @@ namespace Tgs.GameProviders.ApiClients.SexyGaming
             var url = new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{path}");
 
             HttpContent content = new FormUrlEncodedContent(data);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
-            content.Headers.ContentType.CharSet = "UTF-8";
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded")
+            {
+                CharSet = "UTF-8"
+            };
 
             var httpResponseMessage = await _client.PostAsync(url, content);
 
@@ -131,7 +133,7 @@ namespace Tgs.GameProviders.ApiClients.SexyGaming
                 RecordedOn = DateTimeOffset.UtcNow
             };
             _tgsLog.LogApi(apiLogEvent);
-            _logger.LogInformation(System.Text.Json.JsonSerializer.Serialize(apiLogEvent));
+            _logger.LogInformation("{System.Text.Json.JsonSerializer.Serialize(apiLogEvent)}", System.Text.Json.JsonSerializer.Serialize(apiLogEvent));
 
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {

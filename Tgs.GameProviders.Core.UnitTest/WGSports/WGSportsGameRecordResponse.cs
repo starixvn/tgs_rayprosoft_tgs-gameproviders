@@ -4,7 +4,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGSports
 {
     internal class WGSportsGameRecordResponse
     {
-        public WGSportsBetInfo[] BetInfo { get; set; }
+        public WGSportsBetInfo[] BetInfo { get; set; } = default!;
 
         public int ReturnCode { get; set; }
 

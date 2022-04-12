@@ -102,7 +102,7 @@ internal class Card365ApiClient : ICard365ApiClient
             RecordedOn = DateTimeOffset.UtcNow
         };
         _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
+        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) &&
             httpResponseMessage.StatusCode == HttpStatusCode.OK)

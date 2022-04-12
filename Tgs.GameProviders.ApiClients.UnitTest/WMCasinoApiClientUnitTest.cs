@@ -1,35 +1,20 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using Tgs.GameProviders.ApiClients.WMCasino;
 using Tgs.GameProviders.Core.WMCasino;
 using Tgs.GameProviders.Core.WMCasino.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest
 {
     [TestFixture]
     public class WMCasinoApiClientUnitTest
     {
-        private readonly string _agentId = "hpgtwapi";
-        private readonly string _agentPrefix = "pg";
-        private readonly string _agentSuffix = "cny";
+        private const string AgentId = "hpgtwapi";
+        private const string AgentPrefix = "pg";
+        private const string AgentSuffix = "cny";
+        private const string Signature = "97ffc7ab86c2f54be533e90da6f6ab9f";
         private readonly Uri _apiUrl = new("https://api.a45.me/api/wallet/Gateway.php");
-        private readonly IWMCasinoApiClient _client;
-        private readonly string _signature = "97ffc7ab86c2f54be533e90da6f6ab9f";
-
-        public WMCasinoApiClientUnitTest()
-        {
-            var httpClient = new HttpClient();
-            var logger = NullLogger<WMCasinoApiClient>.Instance;
-            var tgsLog = Substitute.For<ITgsLog>();
-
-            _client = Substitute.For<IWMCasinoApiClient>();
-            //_client = new WMCasinoApiClient(httpClient, logger, tgsLog);
-        }
 
         [Test]
         public async Task CreatePlayerAsync()
@@ -39,13 +24,15 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
 
             var request = new WMCasinoMemberRegisterRequest
             {
-                Signature = _signature,
-                VendorId = _agentId,
+                Signature = Signature,
+                VendorId = AgentId,
                 User = playerId,
                 Username = playerCode
             };
 
-            var response = await _client.MemberRegisterAsync(_apiUrl, request).ConfigureAwait(false);
+            var client = Substitute.For<IWMCasinoApiClient>();
+
+            _ = await client.MemberRegisterAsync(_apiUrl, request).ConfigureAwait(false);
         }
 
         [Test]
@@ -56,12 +43,14 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
 
             var request = new WMCasinoLoginGameRequest
             {
-                Signature = _signature,
-                VendorId = _agentId,
+                Signature = Signature,
+                VendorId = AgentId,
                 User = playerId
             };
 
-            var response = await _client.LoginGameAsync(_apiUrl, request).ConfigureAwait(false);
+            var client = Substitute.For<IWMCasinoApiClient>();
+
+            _ = await client.LoginGameAsync(_apiUrl, request).ConfigureAwait(false);
         }
 
         [Test]
@@ -72,15 +61,17 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
 
             var request = new WMCasinoLogoutGameRequest
             {
-                Signature = _signature,
-                VendorId = _agentId,
+                Signature = Signature,
+                VendorId = AgentId,
                 User = playerId
             };
 
-            var response = await _client.LogoutGameAsync(_apiUrl, request).ConfigureAwait(false);
+            var client = Substitute.For<IWMCasinoApiClient>();
+
+            _ = await client.LogoutGameAsync(_apiUrl, request).ConfigureAwait(false);
         }
 
-        private string ToWMCasinoPlayerId(string playerCode)
-            => $"{_agentPrefix}_{playerCode}_{_agentSuffix}";
+        private static string ToWMCasinoPlayerId(string playerCode)
+            => $"{AgentPrefix}_{playerCode}_{AgentSuffix}";
     }
 }

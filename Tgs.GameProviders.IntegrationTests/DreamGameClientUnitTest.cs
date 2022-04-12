@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameProviders.Client;
@@ -56,7 +57,7 @@ namespace Tgs.GameProviders.IntegrationTests
                     Roadid= 0,
                     Pluginid= 0 }};
 
-            await using var web = new TestGameProvidersApplication(builder =>
+            var web = new TestGameProvidersApplication(builder =>
             {
                 _ = builder.ConfigureServices(services =>
                 {
@@ -73,7 +74,9 @@ namespace Tgs.GameProviders.IntegrationTests
                 });
             });
 
-            var httpClient = web.CreateClient();
+            var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+
+            var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
 
             var sut = new DreamGameClient(httpClient);
 
@@ -98,7 +101,7 @@ namespace Tgs.GameProviders.IntegrationTests
                 PlayerPassword = "TgsP@ssw0rd"
             };
 
-            await using var web = new TestGameProvidersApplication(builder =>
+            var web = new TestGameProvidersApplication(builder =>
             {
                 _ = builder.ConfigureServices(services =>
                 {
@@ -114,7 +117,9 @@ namespace Tgs.GameProviders.IntegrationTests
                 });
             });
 
-            var httpClient = web.CreateClient();
+            var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+
+            var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
 
             var sut = new DreamGameClient(httpClient);
 

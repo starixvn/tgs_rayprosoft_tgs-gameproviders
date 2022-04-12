@@ -70,7 +70,7 @@ namespace Tgs.GameProviders.ApiClients.TF
             };
 
             _tgsLog.LogApi(apiLogEvent);
-            _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
+            _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
             _ = httpResponseMessage.EnsureSuccessStatusCode();
 
@@ -126,7 +126,7 @@ namespace Tgs.GameProviders.ApiClients.TF
             };
 
             _tgsLog.LogApi(apiLogEvent);
-            _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
+            _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
         }
     }
 }

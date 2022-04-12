@@ -75,7 +75,7 @@ namespace Tgs.GameProviders.ApiClients.DreamGame
                          Delay = retryTime,
                          CreationTime = DateTimeOffset.UtcNow
                      };
-                     _logger.LogWarning(JsonSerializer.Serialize(data));
+                     _logger.LogWarning("{JsonSerializer.Serialize(data)}", JsonSerializer.Serialize(data));
                  });
 
             var response = await retryPolicy.ExecuteAsync(async ()
@@ -162,7 +162,7 @@ namespace Tgs.GameProviders.ApiClients.DreamGame
                          Delay = retryTime,
                          CreationTime = DateTimeOffset.UtcNow
                      };
-                     _logger.LogWarning(JsonSerializer.Serialize(data));
+                     _logger.LogWarning("{JsonSerializer.Serialize(data)}", JsonSerializer.Serialize(data));
                  });
 
             var response = await retryPolicy.ExecuteAsync(async ()
@@ -201,7 +201,7 @@ namespace Tgs.GameProviders.ApiClients.DreamGame
                          Delay = retryTime,
                          CreationTime = DateTimeOffset.UtcNow
                      };
-                     _logger.LogWarning(JsonSerializer.Serialize(data));
+                     _logger.LogWarning("{JsonSerializer.Serialize(data)}", JsonSerializer.Serialize(data));
                  });
 
             var response = await retryPolicy.ExecuteAsync(async ()
@@ -239,7 +239,7 @@ namespace Tgs.GameProviders.ApiClients.DreamGame
                          Delay = retryTime,
                          CreationTime = DateTimeOffset.UtcNow
                      };
-                     _logger.LogWarning(JsonSerializer.Serialize(data));
+                     _logger.LogWarning("{JsonSerializer.Serialize(data)}", JsonSerializer.Serialize(data));
                  });
 
             var response = await retryPolicy.ExecuteAsync(async ()
@@ -333,14 +333,11 @@ namespace Tgs.GameProviders.ApiClients.DreamGame
                 RecordedOn = DateTimeOffset.UtcNow
             };
             _tgsLog.LogApi(apiLogEvent);
-            _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
+            _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
-            if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
-            {
-                return JsonDocument.Parse(responseMessage);
-            }
-
-            return null;
+            return !string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK
+                ? JsonDocument.Parse(responseMessage)
+                : null;
         }
     }
 }

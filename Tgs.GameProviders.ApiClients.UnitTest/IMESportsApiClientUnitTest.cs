@@ -1,35 +1,19 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using Tgs.GameProviders.ApiClients.IMESports;
 using Tgs.GameProviders.Core.IMESports;
 using Tgs.GameProviders.Core.IMESports.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest
 {
     [TestFixture]
     public class IMESportsApiClientUnitTest
     {
-        private readonly Uri _apiUrl = new Uri("http://operatorapi.staging.imaegisapi.com");
-        private readonly IIMESportsApiClient _client;
-
-        private readonly string _merchantCode = "Ogt3HBRFebTqJczcN28CliP3BHqDWIYo";
-        private readonly string _prefix = "IM1CP";
-        private readonly int _productWallet = 401;
-
-        public IMESportsApiClientUnitTest()
-        {
-            var httpClient = new HttpClient();
-            var logger = NullLogger<IMESportsApiClient>.Instance;
-            var tgsLog = Substitute.For<ITgsLog>();
-
-            _client = Substitute.For<IIMESportsApiClient>();
-            //_client = new IMESportsApiClient(logger, httpClient, tgsLog);
-        }
+        private const string MerchantCode = "Ogt3HBRFebTqJczcN28CliP3BHqDWIYo";
+        private const string Prefix = "IM1CP";
+        private const int ProductWallet = 401;
+        private readonly Uri _apiUrl = new("http://operatorapi.staging.imaegisapi.com");
 
         [Test]
         public async Task GetDesktopGameGameUrlAsync()
@@ -39,15 +23,17 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
 
             var request = new IMESportsLaunchGameRequest
             {
-                MerchantCode = _merchantCode,
+                MerchantCode = MerchantCode,
                 IMESPlayerId = playerId,
                 GameId = "ESPORTSBULL",
                 Language = "EN",
                 Http = "1",
-                ProductWallet = _productWallet
+                ProductWallet = ProductWallet
             };
 
-            var response = await _client.LaunchDesktopGameAsync(_apiUrl, request).ConfigureAwait(false);
+            var client = Substitute.For<IIMESportsApiClient>();
+
+            _ = await client.LaunchDesktopGameAsync(_apiUrl, request).ConfigureAwait(false);
         }
 
         [Test]
@@ -58,15 +44,17 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
 
             var request = new IMESportsLaunchGameRequest
             {
-                MerchantCode = _merchantCode,
+                MerchantCode = MerchantCode,
                 IMESPlayerId = playerId,
                 GameId = "ESPORTSBULL",
                 Language = "EN",
                 Http = "1",
-                ProductWallet = _productWallet
+                ProductWallet = ProductWallet
             };
 
-            var response = await _client.LaunchMobileGameAsync(_apiUrl, request).ConfigureAwait(false);
+            var client = Substitute.For<IIMESportsApiClient>();
+
+            _ = await client.LaunchMobileGameAsync(_apiUrl, request).ConfigureAwait(false);
         }
 
         [Test]
@@ -74,15 +62,17 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
         {
             var request = new IMESportsGetRoundHistoryRequest
             {
-                MerchantCode = _merchantCode,
-                ProductWallet = _productWallet,
+                MerchantCode = MerchantCode,
+                ProductWallet = ProductWallet,
                 StartDate = "2021-11-26 18.46.44",
                 EndDate = "2021-11-26 18.49.44",
                 Page = 1,
                 Language = "EN"
             };
 
-            var response = await _client.GetRoundHistoryAsync(_apiUrl, request);
+            var client = Substitute.For<IIMESportsApiClient>();
+
+            _ = await client.GetRoundHistoryAsync(_apiUrl, request);
         }
 
         [Test]
@@ -93,16 +83,18 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
 
             var request = new IMESportsRegisterPlayerRequest
             {
-                MerchantCode = _merchantCode,
+                MerchantCode = MerchantCode,
                 IMESPlayerId = playerId,
                 CurrencyCode = "CNY"
             };
 
-            var response = await _client.RegisterPlayerAsync(_apiUrl, request)
+            var client = Substitute.For<IIMESportsApiClient>();
+
+            _ = await client.RegisterPlayerAsync(_apiUrl, request)
                 .ConfigureAwait(false);
         }
 
-        private string ToIMESportsPlayerId(string playerCode)
-            => $"{_prefix}_{playerCode}";
+        private static string ToIMESportsPlayerId(string playerCode)
+            => $"{Prefix}_{playerCode}";
     }
 }
