@@ -161,13 +161,13 @@ internal class AllBetApiClient : IAllBetApiClient
 
         foreach (var (key, value) in headers)
         {
-            httpRequestMessage.Headers.Remove(key);
+            _ = httpRequestMessage.Headers.Remove(key);
             httpRequestMessage.Headers.Add(key, value);
         }
 
         foreach (var (key, value) in contentHeaders)
         {
-            httpRequestMessage.Content.Headers.Remove(key);
+            _ = httpRequestMessage.Content.Headers.Remove(key);
             httpRequestMessage.Content.Headers.Add(key, value);
         }
 
@@ -198,7 +198,7 @@ internal class AllBetApiClient : IAllBetApiClient
             RecordedOn = DateTimeOffset.UtcNow
         };
         _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
+        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) &&
             httpResponseMessage.StatusCode == HttpStatusCode.OK)

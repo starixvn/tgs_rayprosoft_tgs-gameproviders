@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
@@ -29,7 +30,7 @@ namespace Tgs.GameProviders.IntegrationTests
             var fakeSessionService = Substitute.For<IAsiaGamingGameSession>();
             var fakeUtility = Substitute.For<IAsiaGamingUtility>();
 
-            await using var web = new TestGameProvidersApplication(builder =>
+            var web = new TestGameProvidersApplication(builder =>
             {
                 _ = builder.ConfigureServices(services =>
                 {
@@ -245,7 +246,9 @@ namespace Tgs.GameProviders.IntegrationTests
             _ = fakeUtility.DesEncrypt(queryString, configuration.DesKey).Returns(encodeParas);
             _ = fakeUtility.Md5Hash($"{encodeParas}{configuration.Md5Key}").Returns(key);
 
-            var httpClient = web.CreateClient();
+            var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+
+            var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
 
             var sut = new GameProvidersClient(httpClient);
 
@@ -272,7 +275,7 @@ namespace Tgs.GameProviders.IntegrationTests
             var fakeTokenProvider = Substitute.For<ITokenProvider>();
             var fakeBetConstructService = Substitute.For<IBetConstructService>();
 
-            await using var web = new TestGameProvidersApplication(builder =>
+            var web = new TestGameProvidersApplication(builder =>
             {
                 _ = builder.ConfigureServices(services =>
                 {
@@ -291,7 +294,9 @@ namespace Tgs.GameProviders.IntegrationTests
                 .EncryptAsync(playerCode)
                 .Returns("ZYE5oSH5I1hzmrgnQnh3R6");
 
-            var httpClient = web.CreateClient();
+            var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+
+            var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
 
             var sut = new GameProvidersClient(httpClient);
 

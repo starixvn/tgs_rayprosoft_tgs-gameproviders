@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
@@ -23,14 +24,14 @@ namespace Tgs.GameProviders.IntegrationTests.GameRecordList
             var fakeService = Substitute.For<IAviaService>();
             var faceLogger = NullLogger<AviaGameRecordListGetService>.Instance;
 
-            await using var web = new TestGameProvidersApplication(builder =>
+            var web = new TestGameProvidersApplication(builder =>
             {
-                builder.ConfigureServices(services =>
-                {
-                    services.AddSingleton(fakeClient);
-                    services.AddSingleton(fakeService);
-                    services.AddFakeNatsMessageQueue();
-                });
+                _ = builder.ConfigureServices(services =>
+                  {
+                      _ = services.AddSingleton(fakeClient);
+                      _ = services.AddSingleton(fakeService);
+                      _ = services.AddFakeNatsMessageQueue();
+                  });
             });
             var query = new AviaGameRecordListQuery()
             {
@@ -126,7 +127,9 @@ namespace Tgs.GameProviders.IntegrationTests.GameRecordList
                 query.Page,
                 query.Rows).Returns(ValueTask.FromResult<(bool Success, AviaGameRecordData[]? GameRecords)>((success, datas)));
 
-            var httpClient = web.CreateClient();
+            var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+
+            var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
 
             var sut = new GameRecordListClient(httpClient);
 

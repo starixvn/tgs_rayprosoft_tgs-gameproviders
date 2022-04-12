@@ -14,18 +14,10 @@ namespace Tgs.GameProviders.Services.BigGaming
     internal class BigGamingGameUrl : IBigGamingGameUrl
     {
         private readonly IBigGamingApiClient _client;
-        private readonly ILogger<BigGamingGameUrl> _logger;
-        private readonly IBigGamingService _service;
 
-        public BigGamingGameUrl(
-                     IBigGamingApiClient client,
-                     ILogger<BigGamingGameUrl> logger,
-                     IBigGamingService service
-            )
+        public BigGamingGameUrl(IBigGamingApiClient client)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         public async ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, string playerCode, GameInfo game, string cultureCode)

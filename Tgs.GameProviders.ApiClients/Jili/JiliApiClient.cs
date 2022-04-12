@@ -151,7 +151,7 @@ internal class JiliApiClient : IJiliApiClient
             RecordedOn = DateTimeOffset.UtcNow
         };
         _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
+        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) &&
             httpResponseMessage.StatusCode == HttpStatusCode.OK)
@@ -191,7 +191,7 @@ internal class JiliApiClient : IJiliApiClient
 
         foreach (var t in hash)
         {
-            sb.Append(t.ToString("x2"));
+            _ = sb.Append(t.ToString("x2"));
         }
 
         return sb.ToString();
@@ -235,7 +235,7 @@ internal class JiliApiClient : IJiliApiClient
             RecordedOn = DateTimeOffset.UtcNow
         };
         _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
+        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) &&
             httpResponseMessage.StatusCode == HttpStatusCode.OK)

@@ -126,22 +126,18 @@ namespace Tgs.GameProviders.ApiClients.BigGaming
 
         private static string GetHashMD5(string data)
         {
-            using (var md5 = MD5.Create())
-            {
-                var dataByte = Encoding.UTF8.GetBytes(data);
-                var hash = md5.ComputeHash(dataByte);
-                return hash.ToHexString().ToUpper();
-            }
+            using var md5 = MD5.Create();
+            var dataByte = Encoding.UTF8.GetBytes(data);
+            var hash = md5.ComputeHash(dataByte);
+            return hash.ToHexString().ToUpper();
         }
 
         private static string GetSecretCode(string agentLoginIdPassword)
         {
-            using (var sHA1 = SHA1.Create())
-            {
-                var dataByte = Encoding.UTF8.GetBytes(agentLoginIdPassword);
-                var hash = sHA1.ComputeHash(dataByte);
-                return hash.ToBase64String();
-            }
+            using var sHA1 = SHA1.Create();
+            var dataByte = Encoding.UTF8.GetBytes(agentLoginIdPassword);
+            var hash = sHA1.ComputeHash(dataByte);
+            return hash.ToBase64String();
         }
 
         private async ValueTask<BigGamingResponse> GetAPIAsync<TSource>(Uri apiUrl, TSource source, string method, string logPrefix)
@@ -185,14 +181,11 @@ namespace Tgs.GameProviders.ApiClients.BigGaming
                 RecordedOn = DateTimeOffset.UtcNow
             };
             _tgsLog.LogApi(apiLogEvent);
-            _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
+            _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
-            if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
-            {
-                return JsonSerializer.Deserialize<BigGamingResponse>(responseMessage);
-            }
-
-            return default;
+            return !string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK
+                ? JsonSerializer.Deserialize<BigGamingResponse>(responseMessage)
+                : default;
         }
     }
 }

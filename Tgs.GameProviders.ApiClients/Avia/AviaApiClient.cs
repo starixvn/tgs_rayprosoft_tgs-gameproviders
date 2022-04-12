@@ -209,7 +209,7 @@ namespace Tgs.GameProviders.ApiClients.Avia
                 return false;
             }
 
-            AviaMapper.AviaTransferInfoStatusMapper.TryGetValue(response.Info.Status, out AviaTransferInfoStatus transferInfoStatus);
+            _ = AviaMapper.AviaTransferInfoStatusMapper.TryGetValue(response.Info.Status, out AviaTransferInfoStatus transferInfoStatus);
 
             return response.Success == 1 && transferInfoStatus == AviaTransferInfoStatus.Finish;
         }
@@ -226,9 +226,11 @@ namespace Tgs.GameProviders.ApiClients.Avia
             var content = new FormUrlEncodedContent(parameters);
             content.Headers.ContentType.CharSet = "utf-8";
             content.Headers.Add("Content-Language", contentLanguage);
-            HttpRequestMessage requestMessage = new HttpRequestMessage();
-            requestMessage.Method = HttpMethod.Post;
-            requestMessage.RequestUri = new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{requestUri}");
+            var requestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{requestUri}")
+            };
             requestMessage.Headers.Authorization = new AuthenticationHeaderValue(authorization);
 
             requestMessage.Content = content;
@@ -257,7 +259,7 @@ namespace Tgs.GameProviders.ApiClients.Avia
                 RecordedOn = DateTimeOffset.UtcNow
             };
             _tgsLog.LogApi(apiLogEvent);
-            _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
+            _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {
@@ -267,11 +269,10 @@ namespace Tgs.GameProviders.ApiClients.Avia
             return default;
         }
 
-        private Dictionary<string, string> ToFormData<TData>(TData request)
+        private static Dictionary<string, string> ToFormData<TData>(TData request)
         {
             var value = JsonSerializer.Serialize(request);
             return JsonSerializer.Deserialize<Dictionary<string, string>>(value);
-            // return string.Join("&", items.Where(x => x.Value != null).Select(kvp => string.Format("{0}={1}", kvp.Key, kvp.Value)));
         }
     }
 }

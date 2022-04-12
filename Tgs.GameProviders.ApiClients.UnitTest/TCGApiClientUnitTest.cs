@@ -1,44 +1,25 @@
 ﻿using System;
-using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using Tgs.GameProviders.ApiClients.TCG;
 using Tgs.GameProviders.Core.TCG;
 using Tgs.GameProviders.Core.TCG.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest
 {
     [TestFixture]
     public class TCGApiClientUnitTest
     {
-        private const string _currencyCode = "CNY";
-        private const string _desKey = "EuWEfLac";
-        private const string _merchantCode = "pegacnys";
-        private const string _playerPassword = "TgsPassw0rd";
-        private const string _sha256Key = "h2f69FzdSmMZzrdE";
-        private const string _vnd_currencyCode = "CNY";
-        private const string _vnd_desKey = "EuWEfLac";
-        private const string _vnd_merchantCode = "pegacnys";
-        private const string _vnd_playerPassword = "TgsPassw0rd";
-        private const string _vnd_sha256Key = "h2f69FzdSmMZzrdE";
+        private const string DesKey = "EuWEfLac";
+        private const string MerchantCode = "pegacnys";
+        private const string Sha256Key = "h2f69FzdSmMZzrdE";
+        private const string Vnd_DesKey = "EuWEfLac";
+        private const string Vnd_MerchantCode = "pegacnys";
+        private const string Vnd_Sha256Key = "h2f69FzdSmMZzrdE";
         private readonly Uri _apiUrl = new("http://www.connect6play.com/doBusiness.do");
-        private readonly ITCGApiClient _client;
-        private readonly Uri _gameUrl = new("https://tcg-cny.srvttt.com");
-
-        public TCGApiClientUnitTest()
-        {
-            var client = new HttpClient();
-            var faceLog = NullLogger<TCGApiClient>.Instance;
-            var faceTgsLog = Substitute.For<ITgsLog>();
-            _client = Substitute.For<ITCGApiClient>();
-            //_client = new TCGApiClient(client, faceLog, faceTgsLog);
-        }
 
         [Test]
         public void Confirm_Reserve_API_圈存确认接口()
@@ -71,7 +52,10 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
                 LotteryBetMode = "Elott_Traditional",
                 View = "Lobby"
             };
-            _ = await _client.LaunchGameAsync(_apiUrl, _merchantCode, _desKey, _sha256Key, data).ConfigureAwait(false);
+
+            var client = Substitute.For<ITCGApiClient>();
+
+            _ = await client.LaunchGameAsync(_apiUrl, MerchantCode, DesKey, Sha256Key, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -87,7 +71,10 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
                 LotteryBetMode = "Elott",
                 View = "lobby"
             };
-            _ = await _client.LaunchGameAsync(_apiUrl, _vnd_merchantCode, _vnd_desKey, _vnd_sha256Key, data).ConfigureAwait(false);
+
+            var client = Substitute.For<ITCGApiClient>();
+
+            _ = await client.LaunchGameAsync(_apiUrl, Vnd_MerchantCode, Vnd_DesKey, Vnd_Sha256Key, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -103,7 +90,10 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
                 LotteryBetMode = "SEA_Tradition",
                 View = "Lobby"
             };
-            _ = await _client.LaunchGameAsync(_apiUrl, _merchantCode, _desKey, _sha256Key, data).ConfigureAwait(false);
+
+            var client = Substitute.For<ITCGApiClient>();
+
+            _ = await client.LaunchGameAsync(_apiUrl, MerchantCode, DesKey, Sha256Key, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -113,25 +103,26 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             {
                 UserName = "4ucmqplxb029"
             };
-            _ = await _client.KickOutLottoPlayerAsync(_apiUrl, _merchantCode, _desKey, _sha256Key, data).ConfigureAwait(false);
+
+            var client = Substitute.For<ITCGApiClient>();
+
+            _ = await client.KickOutLottoPlayerAsync(_apiUrl, MerchantCode, DesKey, Sha256Key, data).ConfigureAwait(false);
         }
 
-        private string DESCDecrypt(string data, string key)
+        private static string? DESCDecrypt(string data, string key)
         {
             if (string.IsNullOrEmpty(data))
                 return null;
 
-            Byte[] toEncryptArray = Convert.FromBase64String(data);
+            var toEncryptArray = Convert.FromBase64String(data);
 
-            using (var dESCrypto = DES.Create())
-            {
-                dESCrypto.Key = Encoding.UTF8.GetBytes(key);
-                dESCrypto.Mode = CipherMode.ECB;
-                dESCrypto.Padding = PaddingMode.PKCS7;
-                ICryptoTransform cTransform = dESCrypto.CreateDecryptor();
-                var resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
-                return Encoding.UTF8.GetString(resultArray);
-            }
+            using var dESCrypto = DES.Create();
+            dESCrypto.Key = Encoding.UTF8.GetBytes(key);
+            dESCrypto.Mode = CipherMode.ECB;
+            dESCrypto.Padding = PaddingMode.PKCS7;
+            ICryptoTransform cTransform = dESCrypto.CreateDecryptor();
+            var resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+            return Encoding.UTF8.GetString(resultArray);
         }
     }
 }

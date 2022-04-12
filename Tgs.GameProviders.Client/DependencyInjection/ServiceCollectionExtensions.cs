@@ -20,6 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var options = sp.GetRequiredService<IOptions<GameProvidersClientOptions>>().Value;
                 httpClient.BaseAddress = options.BaseUrl;
             })
+            .AddHttpMessageHandler<LoggingHandler>()
             .Services
             .AddHttpClient<IGameRecordListClient, GameRecordListClient>()
             .ConfigureHttpClient((sp, httpClient) =>
@@ -27,6 +28,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 var options = sp.GetRequiredService<IOptions<GameProvidersClientOptions>>().Value;
                 httpClient.BaseAddress = options.BaseUrl;
             })
+            .AddHttpMessageHandler<LoggingHandler>()
             .Services
             .AddHttpClient<IDreamGameClient, DreamGameClient>()
             .ConfigureHttpClient((sp, httpClient) =>
@@ -34,6 +36,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 var options = sp.GetRequiredService<IOptions<GameProvidersClientOptions>>().Value;
                 httpClient.BaseAddress = options.BaseUrl;
             })
-            .Services;
+            .AddHttpMessageHandler<LoggingHandler>()
+            .Services
+            .AddTransient<LoggingHandler>();
     }
 }

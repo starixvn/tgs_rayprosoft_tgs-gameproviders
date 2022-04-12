@@ -1,31 +1,17 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using Tgs.GameProviders.ApiClients.Avia;
 using Tgs.GameProviders.Core.Avia;
 using Tgs.GameProviders.Core.Avia.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest
 {
     [TestFixture]
     public class AviaApiClientUnitTest
     {
-        private const string _authorization = "81e2d1a24c684a76a710a70f4900a353";
-        private readonly Uri _apiUrl = new Uri("https://api.aviaapi.vip");
-        private readonly IAviaApiClient _client;
-
-        public AviaApiClientUnitTest()
-        {
-            var client = new HttpClient();
-            var faceLog = NullLogger<AviaApiClient>.Instance;
-            var faceTgsLog = Substitute.For<ITgsLog>();
-            _client = Substitute.For<IAviaApiClient>();
-            //_client = new AviaApiClient(client, faceLog, faceTgsLog);
-        }
+        private const string Authorization = "81e2d1a24c684a76a710a70f4900a353";
+        private readonly Uri _apiUrl = new("https://api.aviaapi.vip");
 
         [Test]
         public async Task CreatePlayerAsync()
@@ -34,16 +20,18 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             var password = "TgsP@ssw0rd";
             var currency = "CNY";
 
-            _ = _client.RegisterAsync(
+            var client = Substitute.For<IAviaApiClient>();
+
+            _ = client.RegisterAsync(
                 _apiUrl,
-                _authorization,
+                Authorization,
                 playerCode,
                 password,
                 currency).Returns(ValueTask.FromResult(true));
 
-            var actual = await _client.RegisterAsync(
+            var actual = await client.RegisterAsync(
                  _apiUrl,
-                _authorization,
+                Authorization,
                 playerCode,
                 password,
                 currency).ConfigureAwait(false);
@@ -59,14 +47,16 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             var isPlayer = true;
             decimal? balance = 100m;
 
-            _ = _client.BalanceAsync(
+            var client = Substitute.For<IAviaApiClient>();
+
+            _ = client.BalanceAsync(
                  _apiUrl,
-                 _authorization,
+                 Authorization,
                  playerCode).Returns(ValueTask.FromResult((isPlayer, balance)));
 
-            var actual = await _client.BalanceAsync(
+            var actual = await client.BalanceAsync(
                 _apiUrl,
-                _authorization,
+                Authorization,
                 playerCode).ConfigureAwait(false);
 
             Assert.NotNull(actual);
@@ -140,17 +130,19 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
                         }
                     }};
 
-            _ = _client.GetGameRecordAsync(
+            var client = Substitute.For<IAviaApiClient>();
+
+            _ = client.GetGameRecordAsync(
                 _apiUrl,
-                _authorization,
+                Authorization,
                 startTime,
                 endTime,
                 pageIndex,
                 pageSize).Returns(ValueTask.FromResult<(bool Success, AviaGameRecordData[]? GameRecords)>((success, datas)));
 
-            var actual = await _client.GetGameRecordAsync(
+            var actual = await client.GetGameRecordAsync(
                  _apiUrl,
-                _authorization,
+                Authorization,
                 startTime,
                 endTime,
                 pageIndex,
@@ -169,19 +161,21 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             var cateId = default(int?);
             var matchId = default(int?);
             var isPlayer = true;
-            var url = new Uri("https://www.google.com/");
+            Uri gameUrl = new Uri("https://www.google.com/");
 
-            _ = _client.GetGameUrlAsync(
+            var client = Substitute.For<IAviaApiClient>();
+
+            _ = client.GetGameUrlAsync(
                 _apiUrl,
-                _authorization,
+                Authorization,
                 playerCode,
                 lang,
                 cateId,
-                matchId).Returns(ValueTask.FromResult((isPlayer, url)));
+                matchId).Returns(ValueTask.FromResult((isPlayer, (Uri?)gameUrl)));
 
-            var actual = await _client.GetGameUrlAsync(
+            var actual = await client.GetGameUrlAsync(
                 _apiUrl,
-                _authorization,
+                Authorization,
                 playerCode,
                 lang,
                 cateId,
@@ -189,7 +183,7 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
 
             Assert.NotNull(actual);
             Assert.AreEqual(isPlayer, actual.IsPlayer);
-            Assert.AreEqual(url, actual.GameUrl);
+            Assert.AreEqual(gameUrl, actual.GameUrl);
         }
 
         [Test]
@@ -200,16 +194,18 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             var orderId = $"{DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)):yyyyMMddHHmmssfff}{playerCode}";
             var amount = 100;
 
-            _ = _client.TransferInAsync(
+            var client = Substitute.For<IAviaApiClient>();
+
+            _ = client.TransferInAsync(
                 _apiUrl,
-                _authorization,
+                Authorization,
                 playerCode,
                 currency,
                 amount).Returns(ValueTask.FromResult((true, orderId)));
 
-            var actual = await _client.TransferInAsync(
+            var actual = await client.TransferInAsync(
                 _apiUrl,
-                _authorization,
+                Authorization,
                 playerCode,
                 currency,
                 amount).ConfigureAwait(false);
@@ -227,16 +223,18 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             var orderId = $"{DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)):yyyyMMddHHmmssfff}{playerCode}";
             var amount = 100;
 
-            _ = _client.TransferOutAsync(
+            var client = Substitute.For<IAviaApiClient>();
+
+            _ = client.TransferOutAsync(
                 _apiUrl,
-                _authorization,
+                Authorization,
                 playerCode,
                 currency,
                 amount).Returns(ValueTask.FromResult((true, orderId)));
 
-            var actual = await _client.TransferOutAsync(
+            var actual = await client.TransferOutAsync(
                 _apiUrl,
-                _authorization,
+                Authorization,
                 playerCode,
                 currency,
                 amount).ConfigureAwait(false);
