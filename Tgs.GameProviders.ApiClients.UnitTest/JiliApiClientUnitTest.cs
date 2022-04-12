@@ -1,33 +1,18 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using Tgs.GameProviders.ApiClients.Jili;
 using Tgs.GameProviders.Core.Jili;
 using Tgs.GameProviders.Core.Jili.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
 [TestFixture]
 public class JiliApiClientUnitTest
 {
-    private readonly string _agentId = "PG_Seamless";
-    private readonly string _agentKey = "0d90dda822b6df548460da8f551c1a76c01b6a9e";
-    private readonly Uri _apiUrl = new Uri("https://uat-wb-api.jlfafafa2.com");
-    private readonly IJiliApiClient _client;
-
-    public JiliApiClientUnitTest()
-    {
-        var httpClient = new HttpClient();
-        var logger = NullLogger<JiliApiClient>.Instance;
-        var tgsLog = Substitute.For<ITgsLog>();
-
-        //_client = new JiliApiClient(logger, httpClient, tgsLog);
-        _client = Substitute.For<IJiliApiClient>();
-    }
+    private const string AgentId = "PG_Seamless";
+    private const string AgentKey = "0d90dda822b6df548460da8f551c1a76c01b6a9e";
+    private readonly Uri _apiUrl = new("https://uat-wb-api.jlfafafa2.com");
 
     [Test]
     public async Task GetGameDetailUrlAsync()
@@ -35,8 +20,10 @@ public class JiliApiClientUnitTest
         var language = "en-US";
         var externalRoundId = "1639679431950180036";
 
-        var response = await _client
-            .GetGameDetailUrlAsync(_apiUrl, _agentId, _agentKey, language, externalRoundId)
+        var client = Substitute.For<IJiliApiClient>();
+
+        _ = await client
+            .GetGameDetailUrlAsync(_apiUrl, AgentId, AgentKey, language, externalRoundId)
             .ConfigureAwait(false);
     }
 
@@ -45,8 +32,10 @@ public class JiliApiClientUnitTest
     {
         var jiliPlayerId = "GPI_4ucmqplxb029";
 
-        var response = await _client
-            .KickMemberAsync(_apiUrl, jiliPlayerId, _agentId, _agentKey)
+        var client = Substitute.For<IJiliApiClient>();
+
+        _ = await client
+            .KickMemberAsync(_apiUrl, jiliPlayerId, AgentId, AgentKey)
             .ConfigureAwait(false);
     }
 
@@ -60,8 +49,10 @@ public class JiliApiClientUnitTest
             Language = "en-US"
         };
 
-        var response = await _client
-            .LoginWithoutRedirectAsync(_apiUrl, _agentId, _agentKey, request)
+        var client = Substitute.For<IJiliApiClient>();
+
+        _ = await client
+            .LoginWithoutRedirectAsync(_apiUrl, AgentId, AgentKey, request)
             .ConfigureAwait(false);
     }
 }

@@ -102,16 +102,16 @@ public class AllBetGameUrlGetServiceUnitTest
             BackUrl = new("https://dev-t1.rpgp.cc/")
         };
 
-        fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.ToAllBetPlayerId(playerInfo.PlayerCode, agent.Suffix).Returns(allBetPlayerId);
+        _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+        _ = fakeService.ToAllBetPlayerId(playerInfo.PlayerCode, agent.Suffix).Returns(allBetPlayerId);
 
-        fakeAgentMapper.GetAgent(configuration.BrandMerchants, query.BrandCode, query.CurrencyCode)
+        _ = fakeAgentMapper.GetAgent(configuration.BrandMerchants, query.BrandCode, query.CurrencyCode)
             .Returns(agent);
 
-        fakeService.GetGameProviderLanguageAsync(query.Language)
+        _ = fakeService.GetGameProviderLanguageAsync(query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-        fakeApiClient
+        _ = fakeApiClient
             .LoginAsync(
                 configuration.ApiUrl,
                 agent.PropertyId,

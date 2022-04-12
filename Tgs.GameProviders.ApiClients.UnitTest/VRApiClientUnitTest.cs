@@ -1,33 +1,19 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using Tgs.GameProviders.ApiClients.VR;
 using Tgs.GameProviders.Core.VR;
 using Tgs.GameProviders.Core.VR.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest
 {
     [TestFixture]
     public class VRApiClientUnitTest
     {
-        private const string _deskey = "PLFNNVZ68DF4V88XZ8B0688660Z2LBP2";
-        private const string _merchantid = "WGWG";
-        private const string _version = "1.0";
+        private const string Deskey = "PLFNNVZ68DF4V88XZ8B0688660Z2LBP2";
+        private const string MerchantId = "WGWG";
+        private const string Version = "1.0";
         private readonly Uri _apiUrl = new("https://pmws.vrbetapi.com/");
-        private readonly IVRApiClient _client;
-
-        public VRApiClientUnitTest()
-        {
-            var client = new HttpClient();
-            var faceLog = NullLogger<VRApiClient>.Instance;
-            var faceTgsLog = Substitute.For<ITgsLog>();
-            _client = Substitute.For<IVRApiClient>();
-            //_client = new VRApiClient(client, faceLog, faceTgsLog);
-        }
 
         [Test()]
         [TestCase("4ucmqplxb029", "397FE4DF0A2FF0E2820367F0E29CFCAC8F86", 1)]
@@ -43,8 +29,11 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
                 RecordPage = 0,
                 RecordCountPerPage = 1
             };
-            _ = _client.FundCheckingAsync(_apiUrl, _merchantid, _version, _deskey, data).Returns(ValueTask.FromResult<VRFundCheckingResponse>(new() { TotalRecords = totalRecords }));
-            var response = await _client.FundCheckingAsync(_apiUrl, _merchantid, _version, _deskey, data).ConfigureAwait(false);
+
+            var client = Substitute.For<IVRApiClient>();
+
+            _ = client.FundCheckingAsync(_apiUrl, MerchantId, Version, Deskey, data).Returns(ValueTask.FromResult<VRFundCheckingResponse>(new() { TotalRecords = totalRecords }));
+            var response = await client.FundCheckingAsync(_apiUrl, MerchantId, Version, Deskey, data).ConfigureAwait(false);
             Assert.AreEqual(totalRecords, response.TotalRecords);
         }
 
@@ -63,7 +52,10 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
                 Amount = 1,
                 CreateTime = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
             };
-            _ = await _client.FundAsync(_apiUrl, _merchantid, _version, _deskey, VRAction.FundIn, data).ConfigureAwait(false);
+
+            var client = Substitute.For<IVRApiClient>();
+
+            _ = await client.FundAsync(_apiUrl, MerchantId, Version, Deskey, VRAction.FundIn, data).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -81,7 +73,10 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
                 Amount = 1,
                 CreateTime = DateTimeOffset.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")
             };
-            _ = await _client.FundAsync(_apiUrl, _merchantid, _version, _deskey, VRAction.FundOut, data).ConfigureAwait(false);
+
+            var client = Substitute.For<IVRApiClient>();
+
+            _ = await client.FundAsync(_apiUrl, MerchantId, Version, Deskey, VRAction.FundOut, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -91,7 +86,10 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             {
                 PlayerCode = "4ucmqplxb029"
             };
-            _ = await _client.GetBalanceAsync(_apiUrl, _merchantid, _version, _deskey, data).ConfigureAwait(false);
+
+            var client = Substitute.For<IVRApiClient>();
+
+            _ = await client.GetBalanceAsync(_apiUrl, MerchantId, Version, Deskey, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -107,7 +105,10 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
                 Page = 0,
                 Rows = 500
             };
-            _ = await _client.GetGameRecordAsync(_apiUrl, _merchantid, _version, _deskey, data).ConfigureAwait(false);
+
+            var client = Substitute.For<IVRApiClient>();
+
+            _ = await client.GetGameRecordAsync(_apiUrl, MerchantId, Version, Deskey, data).ConfigureAwait(false);
         }
 
         [Test]
@@ -121,7 +122,10 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
                 ChannelId = 0,
                 ChannelType = 0
             };
-            _ = _client.GetGameURL(_apiUrl, _merchantid, _version, _deskey, data);
+
+            var client = Substitute.For<IVRApiClient>();
+
+            _ = client.GetGameURL(_apiUrl, MerchantId, Version, Deskey, data);
         }
 
         [Test]
@@ -131,7 +135,10 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             {
                 PlayerCode = "4ucmqplxb029"
             };
-            _ = await _client.KickAsync(_apiUrl, _merchantid, _version, _deskey, data).ConfigureAwait(false);
+
+            var client = Substitute.For<IVRApiClient>();
+
+            _ = await client.KickAsync(_apiUrl, MerchantId, Version, Deskey, data).ConfigureAwait(false);
         }
     }
 }

@@ -15,17 +15,14 @@ namespace Tgs.GameProviders.Core.BigGaming.ApplicationServices
     public class BigGamingFishingGameRecordListGetService : IGetService<BigGamingFishingGameRecordListQuery, GameRecordListResult>
     {
         private readonly IBigGamingApiClient _client;
-        private readonly ILogger<BigGamingFishingGameRecordListGetService> _logger;
         private readonly IBigGamingService _service;
 
         public BigGamingFishingGameRecordListGetService(
             IBigGamingApiClient client,
-            ILogger<BigGamingFishingGameRecordListGetService> logger,
             IBigGamingService service
             )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 

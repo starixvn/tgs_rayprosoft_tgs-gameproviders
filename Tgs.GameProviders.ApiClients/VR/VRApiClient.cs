@@ -58,7 +58,7 @@ namespace Tgs.GameProviders.ApiClients.VR
 
             var data = new
             {
-                version = version,
+                version,
                 id = merchantid,
                 data = dataEncrypt,
             };
@@ -165,7 +165,7 @@ namespace Tgs.GameProviders.ApiClients.VR
 
             var data = new
             {
-                version = version,
+                version,
                 id = merchantid,
                 data = dataEncrypt,
             };
@@ -199,7 +199,7 @@ namespace Tgs.GameProviders.ApiClients.VR
                 RecordedOn = DateTimeOffset.UtcNow
             };
             _tgsLog.LogApi(apiLogEvent);
-            _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
+            _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {

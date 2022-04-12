@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameProviders.Core.DreamGame;
@@ -15,8 +14,6 @@ namespace Tgs.GameProviders.Core.UnitTest.DreamGame
         public async Task HKD_TableLimit_Is_G()
         {
             var fakeApiClient = Substitute.For<IDreamGameApiClient>();
-
-            var gameUrl = new Uri("http://www.google.com");
 
             var betLimits = new[] {
                 new DreamGameBetLimit(){
@@ -111,8 +108,6 @@ namespace Tgs.GameProviders.Core.UnitTest.DreamGame
         public async Task Normal_Process()
         {
             var fakeApiClient = Substitute.For<IDreamGameApiClient>();
-
-            var gameUrl = new Uri("http://www.google.com");
 
             var betLimits = new[] {
                 new DreamGameBetLimit(){

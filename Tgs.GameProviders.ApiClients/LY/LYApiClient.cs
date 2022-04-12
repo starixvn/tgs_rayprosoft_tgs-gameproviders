@@ -266,7 +266,7 @@ namespace Tgs.GameProviders.ApiClients.LY
                 Key = key
             };
 
-            await GetAPIAsync<LYBaseDataResponse>(
+            _ = await GetAPIAsync<LYBaseDataResponse>(
                 apiUrl,
                 apiKYRequest,
                 LYAction.Kick.ToString()).ConfigureAwait(false);
@@ -368,7 +368,7 @@ namespace Tgs.GameProviders.ApiClients.LY
                 RecordedOn = DateTimeOffset.UtcNow
             };
             _tgsLog.LogApi(apiLogEvent);
-            _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
+            _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {

@@ -1,34 +1,19 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using Tgs.GameProviders.ApiClients.Card365;
 using Tgs.GameProviders.Core.Card365;
 using Tgs.GameProviders.Core.Card365.Model;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
 [TestFixture]
 public class Card365ApiClientUnitTest
 {
-    private readonly string _agentId = "card0201";
-    private readonly Uri _apiUrl = new Uri("https://g5ky3i.365gaming.cc/api");
-    private readonly string _cert = "755C24B710D9F2B4B15DAB2B489CF471";
-    private readonly ICard365ApiClient _client;
-    private readonly string _webSite = "card365pega";
-
-    public Card365ApiClientUnitTest()
-    {
-        var httpClient = new HttpClient();
-        var logger = NullLogger<Card365ApiClient>.Instance;
-        var tgsLog = Substitute.For<ITgsLog>();
-
-        _client = Substitute.For<ICard365ApiClient>();
-        //_client = new Card365ApiClient(logger, httpClient, tgsLog);
-    }
+    private const string AgentId = "card0201";
+    private const string Cert = "755C24B710D9F2B4B15DAB2B489CF471";
+    private const string WebSite = "card365pega";
+    private readonly Uri _apiUrl = new("https://g5ky3i.365gaming.cc/api");
 
     [Test]
     public async Task GetAccessKeyAsync()
@@ -38,19 +23,21 @@ public class Card365ApiClientUnitTest
 
         var request = new Card365GetKeyRequest
         {
-            Cert = _cert,
+            Cert = Cert,
             PlayerCode = playerCode,
             Username = playerCode,
-            AgentId = _agentId,
+            AgentId = AgentId,
             CurrencyCode = currencyCode
         };
 
-        var response = await _client
-            .GetAccessKeyAsync(
-                _apiUrl,
-                _webSite,
-                request)
-            .ConfigureAwait(false);
+        var client = Substitute.For<ICard365ApiClient>();
+
+        _ = await client
+             .GetAccessKeyAsync(
+                 _apiUrl,
+                 WebSite,
+                 request)
+             .ConfigureAwait(false);
     }
 
     [Test]
@@ -60,15 +47,17 @@ public class Card365ApiClientUnitTest
 
         var request = new Card365LogoutRequest
         {
-            Cert = _cert,
+            Cert = Cert,
             PlayerCode = playerCode,
-            AgentId = _agentId
+            AgentId = AgentId
         };
 
-        var response = await _client
+        var client = Substitute.For<ICard365ApiClient>();
+
+        _ = await client
             .LogoutAsync(
                 _apiUrl,
-                _webSite,
+                WebSite,
                 request)
             .ConfigureAwait(false);
     }

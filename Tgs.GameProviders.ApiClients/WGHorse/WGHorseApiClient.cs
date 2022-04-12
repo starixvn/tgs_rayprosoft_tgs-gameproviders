@@ -189,7 +189,7 @@ namespace Tgs.GameProviders.ApiClients.WGHorse
             var dataEncrypt = GetAesEncrypt(data, partnerKey, partnerIV);
             var url = new Uri($"{apiUrl}?m=api&c=index&a=Logout&Hash={dataEncrypt}&PartnerCode={partnerCode}");
 
-            await GetAsync<WGHorseResponse>(url, request, "Logout").ConfigureAwait(false);
+            _ = await GetAsync<WGHorseResponse>(url, request, "Logout").ConfigureAwait(false);
         }
 
         private static string GetAesEncrypt(string data, string secretKey, string secretIV)
@@ -255,7 +255,7 @@ namespace Tgs.GameProviders.ApiClients.WGHorse
                 RecordedOn = DateTimeOffset.UtcNow
             };
             _tgsLog.LogApi(apiLogEvent);
-            _logger.LogInformation(JsonSerializer.Serialize(apiLogEvent));
+            _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
             if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
             {

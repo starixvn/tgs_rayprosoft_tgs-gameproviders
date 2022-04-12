@@ -1,42 +1,29 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using Tgs.GameProviders.ApiClients.WGHorse;
-using Tgs.GameProviders.ApiClients.WGHorse.Models.Commons;
 using Tgs.GameProviders.Core.WGHorse;
 using Tgs.GameProviders.Core.WGHorse.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest
 {
     [TestFixture]
     public class WGHorseApiClientUnitTest
     {
-        private const string _partnerCode = "PT";
-        private const string _partnerIV = "b888888888888888";
-        private const string _partnerKey = "a888888888888888";
-        private readonly Uri _apiUrl = new Uri("http://61.56.84.139/via6");
-        private readonly IWGHorseApiClient _client;
-
-        public WGHorseApiClientUnitTest()
-        {
-            var client = new HttpClient();
-            var faceLog = NullLogger<WGHorseApiClient>.Instance;
-            var faceTgsLog = Substitute.For<ITgsLog>();
-            _client = Substitute.For<IWGHorseApiClient>();
-            //_client = new WGHorseApiClient(client, faceLog, faceTgsLog);
-        }
+        private const string PartnerCode = "PT";
+        private const string PartnerIV = "b888888888888888";
+        private const string PartnerKey = "a888888888888888";
+        private readonly Uri _apiUrl = new("http://61.56.84.139/via6");
 
         [Test]
         public async Task AccessMoneyQueryAsync()
         {
             var orderId = "5671e95562f34674a4491bfc3e6aefb1";
 
-            _ = _client.AccessMoneyQueryAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, orderId).Returns(ValueTask.FromResult(true));
-            var actual = await _client.AccessMoneyQueryAsync(_apiUrl, _partnerCode, _partnerKey, _partnerIV, orderId).ConfigureAwait(false);
+            var client = Substitute.For<IWGHorseApiClient>();
+
+            _ = client.AccessMoneyQueryAsync(_apiUrl, PartnerCode, PartnerKey, PartnerIV, orderId).Returns(ValueTask.FromResult(true));
+            var actual = await client.AccessMoneyQueryAsync(_apiUrl, PartnerCode, PartnerKey, PartnerIV, orderId).ConfigureAwait(false);
             Assert.NotNull(actual);
             Assert.AreEqual(true, actual);
         }
@@ -48,20 +35,22 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             var orderId = Guid.NewGuid().ToString("N");
             var amount = 1m;
 
-            _ = _client.AccessMoneyFundInAsync(
+            var client = Substitute.For<IWGHorseApiClient>();
+
+            _ = client.AccessMoneyFundInAsync(
                 _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
+                PartnerCode,
+                PartnerKey,
+                PartnerIV,
                 playerCode,
                 orderId,
                 amount).Returns(ValueTask.FromResult(true));
 
-            var actual = await _client.AccessMoneyFundInAsync(
+            var actual = await client.AccessMoneyFundInAsync(
                 _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
+                PartnerCode,
+                PartnerKey,
+                PartnerIV,
                 playerCode,
                 orderId,
                 amount).ConfigureAwait(false);
@@ -77,20 +66,22 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             var orderId = Guid.NewGuid().ToString("N");
             var amount = 1m;
 
-            _ = _client.AccessMoneyFundOutAsync(
+            var client = Substitute.For<IWGHorseApiClient>();
+
+            _ = client.AccessMoneyFundOutAsync(
                 _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
+                PartnerCode,
+                PartnerKey,
+                PartnerIV,
                 playerCode,
                 orderId,
                 amount).Returns(ValueTask.FromResult(true));
 
-            var actual = await _client.AccessMoneyFundOutAsync(
+            var actual = await client.AccessMoneyFundOutAsync(
                 _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
+                PartnerCode,
+                PartnerKey,
+                PartnerIV,
                 playerCode,
                 orderId,
                 amount).ConfigureAwait(false);
@@ -105,18 +96,20 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             var playerCode = "4ucmqplxb029";
             (bool IsPlayer, decimal? Balance) = (true, 1);
 
-            _ = _client.GetBalanceAsync(
+            var client = Substitute.For<IWGHorseApiClient>();
+
+            _ = client.GetBalanceAsync(
                 _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
+                PartnerCode,
+                PartnerKey,
+                PartnerIV,
                 playerCode).Returns(ValueTask.FromResult((IsPlayer, Balance)));
 
-            var actual = await _client.GetBalanceAsync(
+            var actual = await client.GetBalanceAsync(
                 _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
+                PartnerCode,
+                PartnerKey,
+                PartnerIV,
                 playerCode).ConfigureAwait(false);
 
             Assert.NotNull(actual);
@@ -133,21 +126,23 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             int pageSize = 1000;
             (bool Success, WGHorseGameRecord[]? GameRecord) = (true, null);
 
-            _ = _client.GetGameRecordAsync(
+            var client = Substitute.For<IWGHorseApiClient>();
+
+            _ = client.GetGameRecordAsync(
                 _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
+                PartnerCode,
+                PartnerKey,
+                PartnerIV,
                 startTime,
                 endTime,
                 pageIndex,
                 pageSize).Returns(ValueTask.FromResult((Success, GameRecord)));
 
-            var actual = await _client.GetGameRecordAsync(
+            var actual = await client.GetGameRecordAsync(
                 _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
+                PartnerCode,
+                PartnerKey,
+                PartnerIV,
                 startTime,
                 endTime,
                 pageIndex,
@@ -167,25 +162,27 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             var token = Guid.NewGuid().ToString();
             var gameUrl = new Uri("https://www.google.com/");
 
-            _ = _client.GetPrepareLoginAsync(
+            var client = Substitute.For<IWGHorseApiClient>();
+
+            _ = client.GetPrepareLoginAsync(
                 _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
+                PartnerCode,
+                PartnerKey,
+                PartnerIV,
                 timestamp,
                 playerCode,
                 playerCode,
-                currencyCode).Returns(ValueTask.FromResult(token));
+                currencyCode).Returns(ValueTask.FromResult<string?>(token));
 
-            _ = _client.GetLoginAsync(
+            _ = client.GetLoginAsync(
                 _apiUrl,
-                _partnerCode,
+                PartnerCode,
                 token,
-                lang).Returns(ValueTask.FromResult(gameUrl));
+                lang).Returns(ValueTask.FromResult<Uri?>(gameUrl));
 
-            var actual = await _client.GetLoginAsync(
+            var actual = await client.GetLoginAsync(
                 _apiUrl,
-                _partnerCode,
+                PartnerCode,
                 token,
                 lang).ConfigureAwait(false);
 
@@ -201,21 +198,23 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
             var currencyCode = "RMB";
             var token = Guid.NewGuid().ToString();
 
-            _ = _client.GetPrepareLoginAsync(
+            var client = Substitute.For<IWGHorseApiClient>();
+
+            _ = client.GetPrepareLoginAsync(
                 _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
+                PartnerCode,
+                PartnerKey,
+                PartnerIV,
                 timestamp,
                 playerCode,
                 playerCode,
-                currencyCode).Returns(ValueTask.FromResult(token));
+                currencyCode).Returns(ValueTask.FromResult<string?>(token));
 
-            var actual = await _client.GetPrepareLoginAsync(
+            var actual = await client.GetPrepareLoginAsync(
                 _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
+                PartnerCode,
+                PartnerKey,
+                PartnerIV,
                 timestamp,
                 playerCode,
                 playerCode,
@@ -230,23 +229,13 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
         {
             var playerCode = "4ucmqplxb029";
 
-            var response = new WGHorseResponse()
-            {
-                ReturnCode = 1
-            };
+            var client = Substitute.For<IWGHorseApiClient>();
 
-            _ = _client.LogoutAsync(
-                _apiUrl,
-                _partnerCode,
-                _partnerKey,
-                _partnerIV,
-                playerCode);
-
-            await _client.LogoutAsync(
+            await client.LogoutAsync(
                _apiUrl,
-               _partnerCode,
-               _partnerKey,
-               _partnerIV,
+               PartnerCode,
+               PartnerKey,
+               PartnerIV,
                playerCode).ConfigureAwait(false);
         }
     }

@@ -1,39 +1,21 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using Tgs.GameProviders.ApiClients.Evolution;
 using Tgs.GameProviders.Core.Evolution;
 using Tgs.GameProviders.Core.Evolution.Models;
 using Tgs.GameProviders.Core.Evolution.Models.Commons.EvolutionGameUrl;
 using Tgs.GameProviders.Core.Extensions;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest
 {
     [TestFixture]
     public class EvolutionGameRecordUnitTest
     {
-        private readonly Uri _apiUrl = new Uri("https://babylonqm.uat1.evo-test.com/");
+        private readonly Uri _apiUrl = new("https://babylonqm.uat1.evo-test.com/");
         private readonly string _casinoID = "babylonqm0000001";
-        private readonly IEvolutionApiClient _client;
-        private readonly string _externalLobbyApiToken = "test123";
         private readonly string _gameHistoryApiToken = "test123";
-        private readonly string _owAuthToken = "I2gcyH6kRTiHYAzLxy1RfH";
-        private readonly Uri _serviceEndpointUrl = new Uri("http://game-evo");
-        private readonly Uri _ua2AuthenticationUrl = new Uri("https://babylonqm.uat1.evo-test.com/ua/v1/babylonqm0000001/test123");
-        private readonly string _ua2Token = "test123";
-
-        public EvolutionGameRecordUnitTest()
-        {
-            var client = new HttpClient();
-            var faceLog = NullLogger<EvolutionApiClient>.Instance;
-            var faceTgsLog = Substitute.For<ITgsLog>();
-            _client = Substitute.For<IEvolutionApiClient>();
-            //_client = new EvolutionApiClient(client, faceLog, faceTgsLog);
-        }
+        private readonly Uri _ua2AuthenticationUrl = new("https://babylonqm.uat1.evo-test.com/ua/v1/babylonqm0000001/test123");
 
         [Test]
         public async Task GetGameUrlAsync()
@@ -56,7 +38,7 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
                         Id = "rDLIWMPV7dgRstCYBzSY6EidJQh51TWgg8b7XgefrRt5QkjiCB5pwwNvRKSdGDPsc",
                         Ip = "127.0.0.1"
                     },
-                    Group = default(EvolutionGameUrlPlayerGroup)
+                    Group = default
                 },
                 Config = new EvolutionGameUrlConfig()
                 {
@@ -73,7 +55,9 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
                 }
             };
 
-            _ = await _client.GetGameUrlAsync(_ua2AuthenticationUrl, request);
+            IEvolutionApiClient client = Substitute.For<IEvolutionApiClient>();
+
+            _ = await client.GetGameUrlAsync(_ua2AuthenticationUrl, request);
         }
 
         [Test]
@@ -85,7 +69,9 @@ namespace Tgs.GameProviders.ApiClients.UnitTest
                 RoundId = "3563277-56"
             };
 
-            _ = await _client.GetGamHistoryRoundAsync(_apiUrl, _casinoID, _gameHistoryApiToken, request);
+            IEvolutionApiClient client = Substitute.For<IEvolutionApiClient>();
+
+            _ = await client.GetGamHistoryRoundAsync(_apiUrl, _casinoID, _gameHistoryApiToken, request);
         }
     }
 }
