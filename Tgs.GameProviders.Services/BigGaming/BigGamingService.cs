@@ -44,7 +44,7 @@ namespace Tgs.GameProviders.Services.BigGaming
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
-            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.Skywind).ConfigureAwait(false);
+            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.BigGaming).ConfigureAwait(false);
             var gameProviderCultureCode = await _gameProviderService.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
             return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "en_US";
         }
