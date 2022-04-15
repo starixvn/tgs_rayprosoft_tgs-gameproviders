@@ -46,7 +46,7 @@ namespace Tgs.GameProviders.Core.DreamGame.ApplicationServices
                 GameProviderId = gameProviderId,
                 PlayerCode = data.UserName.ToLower(),
                 Status = data.IsRevocation == 0 ? RoundStatus.Open : RoundStatus.Closed,
-                ClientStatus = data.IsRevocation == 0 ? RoundClientStatus.Open : data.IsRevocation == 2 ? RoundClientStatus.Void : data.WinOrLoss == 0 ? RoundClientStatus.Draw : data.WinOrLoss > 0 ? RoundClientStatus.Win : RoundClientStatus.Loss,
+                ClientStatus = data.IsRevocation == 0 ? RoundClientStatus.Open : data.IsRevocation == 2 ? RoundClientStatus.Void : (data.WinOrLoss - data.BetPoints) == 0 ? RoundClientStatus.Draw : (data.WinOrLoss - data.BetPoints) > 0 ? RoundClientStatus.Win : RoundClientStatus.Loss,
                 ExternalRoundId = data.Id.ToString(),
                 ExternalGameId = data.TableId.ToString(),
                 ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.BetTime), TimeSpan.FromHours(+8)),
