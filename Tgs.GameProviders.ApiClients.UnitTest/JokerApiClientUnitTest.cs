@@ -60,4 +60,38 @@ public class JokerApiClientUnitTest
         _ = await sut.GetGameTokenAsync(_apiUrl, playerCode, _AppId, _SecretKey)
             .ConfigureAwait(false);
     }
+
+    [Test]
+    public async Task GetFundInAsync()
+    {
+        var playerCode = "4uf6k014jp5x";
+        var amount = 996m;
+        var orderId = Guid.NewGuid().ToString();
+
+        var httpClient = new HttpClient();
+        var tgsLog = Substitute.For<ITgsLog>();
+
+        var sut = new JokerApiClient(httpClient, tgsLog, NullLogger<JokerApiClient>.Instance);
+        //var sut = Substitute.For<IJokerApiClient>();
+
+        _ = await sut.FundInAsync(_apiUrl, playerCode, orderId, amount, _AppId, _SecretKey)
+            .ConfigureAwait(false);
+    }
+
+    [Test]
+    public async Task GetFundOutAsync()
+    {
+        var playerCode = "4uf6k014jp5x";
+        var amount = 500m;
+        var orderId = Guid.NewGuid().ToString();
+
+        var httpClient = new HttpClient();
+        var tgsLog = Substitute.For<ITgsLog>();
+
+        var sut = new JokerApiClient(httpClient, tgsLog, NullLogger<JokerApiClient>.Instance);
+        //var sut = Substitute.For<IJokerApiClient>();
+
+        _ = await sut.FundOutAsync(_apiUrl, playerCode, orderId, amount, _AppId, _SecretKey)
+            .ConfigureAwait(false);
+    }
 }

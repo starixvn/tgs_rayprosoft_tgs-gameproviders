@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -48,6 +49,56 @@ internal class JokerApiClient : IJokerApiClient
         var response = await PostAsync(apiUrl, appId, signature, document, "GameToken");
 
         return response?.RootElement.GetProperty("Token").GetString();
+    }
+
+    public async ValueTask<bool> FundInAsync(
+        Uri apiUrl,
+        string playerCode,
+        string orderId,
+        [Range(0, int.MaxValue)] decimal amount,
+        string appId,
+        string secretKey)
+    {
+        var request = new
+        {
+            Method = "TC",
+            Username = playerCode,
+            RequestId = orderId,
+            Amount = -amount,
+            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+        };
+
+        var document = JsonSerializer.SerializeToDocument(request);
+        var signature = GenerateSignature(document, secretKey);
+
+        var response = await PostAsync(apiUrl, appId, signature, document, "FundIn");
+
+        return response is not null;
+    }
+
+    public async ValueTask<bool> FundOutAsync(
+        Uri apiUrl,
+        string playerCode,
+        string orderId,
+        [Range(0, int.MaxValue)] decimal amount,
+        string appId,
+        string secretKey)
+    {
+        var request = new
+        {
+            Method = "TC",
+            Username = playerCode,
+            RequestId = orderId,
+            Amount = amount,
+            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+        };
+
+        var document = JsonSerializer.SerializeToDocument(request);
+        var signature = GenerateSignature(document, secretKey);
+
+        var response = await PostAsync(apiUrl, appId, signature, document, "FundOut");
+
+        return response is not null;
     }
 
     public async ValueTask<bool> CreateUserAsync(Uri apiUrl, string playerCode, string appId, string secretKey)

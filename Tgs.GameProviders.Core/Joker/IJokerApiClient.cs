@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Tgs.GameProviders.Core.Joker;
@@ -12,4 +13,26 @@ public interface IJokerApiClient
     ValueTask<decimal?> GetBalanceAsync(Uri apiUrl, string playerCode, string appId, string secretKey);
 
     ValueTask<string?> GetGameTokenAsync(Uri apiUrl, string playerCode, string appId, string secretKey);
+
+    /// <summary>
+    /// FundIn (Gp -> Tgs)
+    /// </summary>
+    ValueTask<bool> FundInAsync(
+        Uri apiUrl,
+        string playerCode,
+        string orderId,
+        decimal amount,
+        string appId,
+        string secretKey);
+
+    /// <summary>
+    /// FundOut (Tgs -> Gp)
+    /// </summary>
+    ValueTask<bool> FundOutAsync(
+        Uri apiUrl,
+        string playerCode,
+        string orderId,
+        decimal amount,
+        string appId,
+        string secretKey);
 }
