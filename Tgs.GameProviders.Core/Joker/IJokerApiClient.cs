@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace Tgs.GameProviders.Core.Joker;
@@ -35,4 +34,6 @@ public interface IJokerApiClient
         decimal amount,
         string appId,
         string secretKey);
+
+    ValueTask KickPlayerAsync(Uri apiUrl, string playerCode, string appId, string secretKey);
 }

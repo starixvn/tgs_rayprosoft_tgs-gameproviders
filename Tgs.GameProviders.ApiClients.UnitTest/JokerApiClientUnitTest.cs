@@ -94,4 +94,19 @@ public class JokerApiClientUnitTest
         _ = await sut.FundOutAsync(_apiUrl, playerCode, orderId, amount, _AppId, _SecretKey)
             .ConfigureAwait(false);
     }
+
+    [Test]
+    public async Task KickPlayerAsync()
+    {
+        var playerCode = "4uf6k014jp5x";
+
+        var httpClient = new HttpClient();
+        var tgsLog = Substitute.For<ITgsLog>();
+
+        var sut = new JokerApiClient(httpClient, tgsLog, NullLogger<JokerApiClient>.Instance);
+        //var sut = Substitute.For<IJokerApiClient>();
+
+        await sut.KickPlayerAsync(_apiUrl, playerCode, _AppId, _SecretKey)
+            .ConfigureAwait(false);
+    }
 }
