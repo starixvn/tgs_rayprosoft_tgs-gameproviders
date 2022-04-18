@@ -9,6 +9,7 @@ using Tgs.GameProviders.ApiClients.Habanero;
 using Tgs.GameProviders.ApiClients.IMESports;
 using Tgs.GameProviders.ApiClients.JDB;
 using Tgs.GameProviders.ApiClients.Jili;
+using Tgs.GameProviders.ApiClients.Joker;
 using Tgs.GameProviders.ApiClients.KY;
 using Tgs.GameProviders.ApiClients.LY;
 using Tgs.GameProviders.ApiClients.PragmaticPlay;
@@ -33,6 +34,7 @@ using Tgs.GameProviders.Core.Habanero;
 using Tgs.GameProviders.Core.IMESports;
 using Tgs.GameProviders.Core.JDB;
 using Tgs.GameProviders.Core.Jili;
+using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Core.KY;
 using Tgs.GameProviders.Core.LY;
 using Tgs.GameProviders.Core.PragmaticPlay;
@@ -90,6 +92,7 @@ public static class ServiceCollectionExtensions
         _ = services.AddHttpClient<ICard365ApiClient, Card365ApiClient>();
         _ = services.AddHttpClient<IJDBApiClient, JDBApiClient>();
         _ = services.AddHttpClient<IDreamGameApiClient, DreamGameApiClient>();
+        _ = services.AddHttpClient<IJokerApiClient, JokerApiClient>();
 
         return services;
     }

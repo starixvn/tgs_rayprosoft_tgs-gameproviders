@@ -11,6 +11,7 @@ using Tgs.GameProviders.Core.Habanero.ApplicationServices;
 using Tgs.GameProviders.Core.IMESports.ApplicationServices;
 using Tgs.GameProviders.Core.JDB.ApplicationServices;
 using Tgs.GameProviders.Core.Jili.ApplicationServices;
+using Tgs.GameProviders.Core.Joker.ApplicationServices;
 using Tgs.GameProviders.Core.KY.ApplicationServices;
 using Tgs.GameProviders.Core.LY.ApplicationServices;
 using Tgs.GameProviders.Core.PragmaticPlay.ApplicationServices;
@@ -78,6 +79,8 @@ namespace Tgs.GameProviders.ViewModelMappings
             _ = CreateMap<GameUrlRequest, JDBGameUrlQuery>()
                 .ReverseMap();
             _ = CreateMap<GameUrlRequest, DreamGameGameUrlQuery>()
+                .ReverseMap();
+            _ = CreateMap<GameUrlRequest, JokerGameUrlQuery>()
                 .ReverseMap();
         }
     }
