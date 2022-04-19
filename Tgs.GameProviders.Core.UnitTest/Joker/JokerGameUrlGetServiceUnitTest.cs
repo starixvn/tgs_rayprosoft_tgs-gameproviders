@@ -17,7 +17,7 @@ public class JokerGameUrlGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeService = Substitute.For<IJokerService>();
-        var fakeMerchantMapper = Substitute.For<IJokerAgentMapper>();
+        var fakeAgentMapper = Substitute.For<IJokerAgentMapper>();
         var fakeApiClient = Substitute.For<IJokerApiClient>();
 
         var gameUrl = new Uri("http://www.gwp6868.net?token=game_token&game=t656f48j75z6a&mobile=false&lang=en");
@@ -83,11 +83,11 @@ public class JokerGameUrlGetServiceUnitTest
 
         var sut = new JokerGameUrlGetService(
             fakeApiClient,
-            fakeMerchantMapper,
+            fakeAgentMapper,
             fakeService);
 
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
-        _ = fakeMerchantMapper.GetAgent(configuration.BrandMerchants, query.BrandCode, query.CurrencyCode).Returns(agent);
+        _ = fakeAgentMapper.GetAgent(configuration.BrandMerchants, query.BrandCode, query.CurrencyCode).Returns(agent);
         _ = fakeService.GetGameAsync(game.GameId).Returns((GameInfo?)game);
         _ = fakeService
              .GetGameProviderLanguageCodeAsync(query.Language)

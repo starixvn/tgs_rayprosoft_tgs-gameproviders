@@ -15,7 +15,8 @@ public class JOKERController : ControllerBase,
     IGameUrlHandler<JokerGameUrlQuery>,
     IKickPlayerHandler<JokerKickPlayerCommand>,
     IPlayerBalanceHandler<JokerPlayerBalanceQuery>,
-    IPlayerFundHandler<JokerPlayerFundInQuery, JokerPlayerFundOutQuery>
+    IPlayerFundHandler<JokerPlayerFundInQuery, JokerPlayerFundOutQuery>,
+    IPlayerFundCheckingHandler<JokerPlayerFundCheckingQuery, PlayerFundCheckingRequest>
 {
     private readonly IMapper _mapper;
 
@@ -152,5 +153,31 @@ public class JOKERController : ControllerBase,
     {
         var result = await getService.GetAsync(_mapper.Map<JokerPlayerFundOutQuery>(request)).ConfigureAwait(false);
         return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+    }
+
+    /// <summary>
+    /// Players the fund checking asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "GPI>HKD",
+    ///             "playerCode": "4uf6k014jp5x",
+    ///             "currencyCode": "HKD",
+    ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86"
+    ///         }
+    /// </remarks>
+    [HttpPost("PlayerFundChecking")]
+    public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
+        [FromServices] IGetService<JokerPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        PlayerFundCheckingRequest request)
+    {
+        var result = await getService.GetAsync(_mapper.Map<JokerPlayerFundCheckingQuery>(request)).ConfigureAwait(false);
+        return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
     }
 }
