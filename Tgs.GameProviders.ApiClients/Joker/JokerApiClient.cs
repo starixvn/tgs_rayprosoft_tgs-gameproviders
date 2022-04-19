@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.Joker;
@@ -162,17 +163,20 @@ internal class JokerApiClient : IJokerApiClient
 
         var sw = Stopwatch.StartNew();
 
-        var uriBuilder = new UriBuilder(apiUrl)
+        var parameters = new Dictionary<string, string?>
         {
-            Query = $"appid={appId}&signature={signature}"
+            ["appid"] = appId,
+            ["signature"] = signature
         };
+
+        var uri = QueryHelpers.AddQueryString(apiUrl.OriginalString, parameters);
 
         var requestMessage = JsonSerializer.Serialize(request);
         var content = new StringContent(requestMessage,
             Encoding.UTF8,
             "application/json");
 
-        var httpResponseMessage = await _client.PostAsync(uriBuilder.ToString(), content).ConfigureAwait(false);
+        var httpResponseMessage = await _client.PostAsync(uri, content).ConfigureAwait(false);
 
         sw.Stop();
 
@@ -222,6 +226,6 @@ internal class JokerApiClient : IJokerApiClient
 
         using var sha = new HMACSHA1(Encoding.UTF8.GetBytes(secretKey));
         var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(original));
-        return Uri.EscapeDataString(Convert.ToBase64String(hash));
+        return Convert.ToBase64String(hash);
     }
 }
