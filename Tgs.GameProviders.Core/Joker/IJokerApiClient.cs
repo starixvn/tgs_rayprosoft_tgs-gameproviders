@@ -9,7 +9,7 @@ public interface IJokerApiClient
 {
     ValueTask<bool> CreateUserAsync(Uri apiUrl, string playerCode, string appId, string secretKey);
 
-    ValueTask<decimal?> GetBalanceAsync(Uri apiUrl, string playerCode, string appId, string secretKey);
+    ValueTask<(bool? IsPlayerExist, decimal? Balance)> GetBalanceAsync(Uri apiUrl, string playerCode, string appId, string secretKey);
 
     ValueTask<string?> GetGameTokenAsync(Uri apiUrl, string playerCode, string appId, string secretKey);
 

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -46,9 +47,17 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(request);
         var signature = GenerateSignature(document, secretKey);
 
-        var response = await PostAsync(apiUrl, appId, signature, document, "GameToken");
+        var (isSuccessStatusCode, _, content) = await PostAsync(
+                apiUrl,
+                appId,
+                signature,
+                document,
+                "GameToken")
+            .ConfigureAwait(false);
 
-        return response?.RootElement.GetProperty("Token").GetString();
+        return isSuccessStatusCode
+            ? content?.RootElement.GetProperty("Token").GetString()
+            : null;
     }
 
     public async ValueTask<bool> FundInAsync(
@@ -71,9 +80,15 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(parameters);
         var signature = GenerateSignature(document, secretKey);
 
-        var response = await PostAsync(apiUrl, appId, signature, document, "FundIn");
+        var (isSuccessStatusCode, _, _) = await PostAsync(
+                apiUrl,
+                appId,
+                signature,
+                document,
+                "FundIn")
+            .ConfigureAwait(false);
 
-        return response is not null;
+        return isSuccessStatusCode;
     }
 
     public async ValueTask<bool> FundOutAsync(
@@ -96,9 +111,15 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(parameters);
         var signature = GenerateSignature(document, secretKey);
 
-        var response = await PostAsync(apiUrl, appId, signature, document, "FundOut");
+        var (isSuccessStatusCode, _, _) = await PostAsync(
+            apiUrl,
+            appId,
+            signature,
+            document,
+            "FundOut")
+            .ConfigureAwait(false); ;
 
-        return response is not null;
+        return isSuccessStatusCode;
     }
 
     public async ValueTask KickPlayerAsync(Uri apiUrl, string playerCode, string appId, string secretKey)
@@ -113,7 +134,8 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(request);
         var signature = GenerateSignature(document, secretKey);
 
-        _ = await PostAsync(apiUrl, appId, signature, document, "KickPlayer");
+        _ = await PostAsync(apiUrl, appId, signature, document, "KickPlayer")
+            .ConfigureAwait(false); ;
     }
 
     public async ValueTask<bool> CreateUserAsync(Uri apiUrl, string playerCode, string appId, string secretKey)
@@ -128,14 +150,24 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(request);
         var signature = GenerateSignature(document, secretKey);
 
-        var response = await PostAsync(apiUrl, appId, signature, document, "CreateUser");
+        var (isSuccessStatusCode, _, content) = await PostAsync(
+            apiUrl,
+            appId,
+            signature,
+            document,
+            "CreateUser")
+            .ConfigureAwait(false); ;
 
-        var status = response?.RootElement.GetProperty("Status").GetString();
+        if (!isSuccessStatusCode)
+        {
+            return false;
+        }
 
+        var status = content?.RootElement.GetProperty("Status").GetString();
         return status is "OK" or "Created";
     }
 
-    public async ValueTask<decimal?> GetBalanceAsync(Uri apiUrl, string playerCode, string appId, string secretKey)
+    public async ValueTask<(bool? IsPlayerExist, decimal? Balance)> GetBalanceAsync(Uri apiUrl, string playerCode, string appId, string secretKey)
     {
         var request = new
         {
@@ -147,12 +179,26 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(request);
         var signature = GenerateSignature(document, secretKey);
 
-        var response = await PostAsync(apiUrl, appId, signature, document, "GetBalance");
+        var (isSuccessStatusCode, statusCode, content) = await PostAsync(
+            apiUrl,
+            appId,
+            signature,
+            document,
+            "GetBalance")
+            .ConfigureAwait(false);
 
-        return response?.RootElement.GetProperty("Credit").GetDecimal();
+        if (!isSuccessStatusCode)
+        {
+            return statusCode == HttpStatusCode.NotFound
+                ? (false, null)
+                : (null, null);
+        }
+
+        var balance = content?.RootElement.GetProperty("Credit").GetDecimal();
+        return (true, balance);
     }
 
-    private async ValueTask<JsonDocument?> PostAsync(
+    private async ValueTask<(bool IsSuccessStatusCode, HttpStatusCode HttpStatusCode, JsonDocument? Content)> PostAsync(
         Uri apiUrl,
         string appId,
         string signature,
@@ -211,10 +257,12 @@ internal class JokerApiClient : IJokerApiClient
         Console.WriteLine("Response Status Code: {0}", httpResponseMessage.StatusCode);
         Console.WriteLine("Response Message: {0}", responseMessage);
 
-        return !string.IsNullOrEmpty(responseMessage) &&
+        var responseDocument = !string.IsNullOrEmpty(responseMessage) &&
                httpResponseMessage.IsSuccessStatusCode
             ? JsonDocument.Parse(responseMessage)
             : null;
+
+        return (httpResponseMessage.IsSuccessStatusCode, httpResponseMessage.StatusCode, responseDocument);
     }
 
     private static string GenerateSignature(JsonDocument document, string secretKey)

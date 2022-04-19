@@ -170,7 +170,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             _ = services
                 .AddTransient<IJokerAgentMapper, JokerAgentMapper>()
-                .AddTransient<IJokerService, JokerService>();
+                .AddTransient<IJokerService, JokerService>()
+                .AddTransient<IJokerGamePlayer, JokerGamePlayer>();
 
             return services;
         }
