@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+
+using System.Collections.Generic;
 using System.Linq;
 using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Domains.SettingConfiguration.Joker;
@@ -9,9 +11,9 @@ internal class JokerAgentMapper : IJokerAgentMapper
 {
     private static readonly string _DefaultCode = "Default";
 
-    public JokerAgent GetAgent(IEnumerable<JokerBrandMerchant> merchants, string brandCode, string currencyCode)
+    public JokerAgent? GetAgent(IEnumerable<JokerBrandMerchant> merchants, string brandCode, string currencyCode)
     {
-        if (merchants == null || !merchants.Any())
+        if (!merchants.Any())
         {
             return null;
         }

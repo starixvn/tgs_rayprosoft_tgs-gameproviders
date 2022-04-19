@@ -8,5 +8,5 @@ public record JokerConfiguration : PluggableConfigurationBase
 
     public Uri GameLaunchUrl { get; init; } = default!;
 
-    public IEnumerable<JokerBrandMerchant> BrandMerchants { get; init; } = default!;
+    public IEnumerable<JokerBrandMerchant> BrandMerchants { get; init; } = Array.Empty<JokerBrandMerchant>();
 }

@@ -12,7 +12,8 @@ namespace Tgs.GameProviders.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class JOKERController : ControllerBase,
-        IGameUrlHandler<JokerGameUrlQuery>
+        IGameUrlHandler<JokerGameUrlQuery>,
+        IKickPlayerHandler<JokerKickPlayerCommand>
     {
         private readonly IMapper _mapper;
 
@@ -35,9 +36,9 @@ namespace Tgs.GameProviders.Controllers
         ///         {
         ///             "gameType": 15,
         ///             "gameId": 2600001,
-        ///             "brandCode": "GPI",
-        ///             "playerCode": "4ucmqplxb029",
-        ///             "currencyCode": "CNY",
+        ///             "brandCode": "GPI_HKD",
+        ///             "playerCode": "4uf6k014jp5x",
+        ///             "currencyCode": "HKD",
         ///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         ///             "platformType": 0,
         ///             "language": "zh-CN",
@@ -56,5 +57,25 @@ namespace Tgs.GameProviders.Controllers
 
             return result == null ? null : _mapper.Map<GameUrlResponse>(result);
         }
+
+        /// <summary>
+        /// Kicks the player asynchronous.
+        /// </summary>
+        /// <param name="commandService">The command service.</param>
+        /// <param name="playerCode">The player code.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <b>Example</b><br />
+        ///
+        ///     Delete joker/kickplayer/4uf6k014jp5x
+        /// </remarks>
+        [HttpDelete("kickplayer/{playerCode}")]
+        public ValueTask KickPlayerAsync(
+            [FromServices] ICommandService<JokerKickPlayerCommand> commandService,
+            string playerCode)
+            => commandService.ExecuteAsync(new JokerKickPlayerCommand
+            {
+                PlayerCode = playerCode
+            });
     }
 }

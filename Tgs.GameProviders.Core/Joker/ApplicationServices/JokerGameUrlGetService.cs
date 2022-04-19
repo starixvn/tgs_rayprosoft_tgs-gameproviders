@@ -31,6 +31,11 @@ internal class JokerGameUrlGetService : IGetService<JokerGameUrlQuery, GameUrlRe
 
         var agent = _agentMapper.GetAgent(configuration!.BrandMerchants, query.BrandCode, query.CurrencyCode);
 
+        if (agent == null)
+        {
+            throw new Exception($"The agent does not exist of brand '{query.BrandCode}' and currency '{query.CurrencyCode}'");
+        }
+
         var gameToken = await _client.GetGameTokenAsync(
                 configuration.ApiUrl,
                 query.PlayerCode,
