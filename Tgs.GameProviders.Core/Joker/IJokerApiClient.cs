@@ -36,4 +36,6 @@ public interface IJokerApiClient
         string secretKey);
 
     ValueTask KickPlayerAsync(Uri apiUrl, string playerCode, string appId, string secretKey);
+
+    ValueTask<bool> FundOrderCheckingAsync(Uri apiUrl, string orderId, string appId, string secretKey);
 }

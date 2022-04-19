@@ -138,6 +138,29 @@ internal class JokerApiClient : IJokerApiClient
             .ConfigureAwait(false); ;
     }
 
+    public async ValueTask<bool> FundOrderCheckingAsync(Uri apiUrl, string orderId, string appId, string secretKey)
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            ["Method"] = "TCH",
+            ["RequestID"] = orderId,
+            ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+        };
+
+        var document = JsonSerializer.SerializeToDocument(parameters);
+        var signature = GenerateSignature(document, secretKey);
+
+        var (isSuccessStatusCode, _, _) = await PostAsync(
+                apiUrl,
+                appId,
+                signature,
+                document,
+                "FundOrderChecking")
+            .ConfigureAwait(false); ;
+
+        return isSuccessStatusCode;
+    }
+
     public async ValueTask<bool> CreateUserAsync(Uri apiUrl, string playerCode, string appId, string secretKey)
     {
         var request = new
