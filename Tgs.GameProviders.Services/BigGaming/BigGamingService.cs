@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.BigGaming;
-using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.BigGaming;
@@ -28,7 +27,7 @@ namespace Tgs.GameProviders.Services.BigGaming
         public async ValueTask<BigGamingBrandMerchant> GetBrandMerchantAsync(string currencyCode)
         {
             var configuration = await _settingService.GetConfigurationAsync<BigGamingConfiguration>(GameProviderConfigurations.BigGaming).ConfigureAwait(false);
-            return configuration.BrandMerchants.Where(x => x.CurrencyCode.IgnoreCaseEquals(currencyCode) && x.Status).FirstOrDefault();
+            return configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.CurrencyCode, currencyCode) && x.Status).FirstOrDefault();
         }
 
         public RoundClientStatus GetClientRound(decimal winLoss)
@@ -54,5 +53,8 @@ namespace Tgs.GameProviders.Services.BigGaming
 
         public ValueTask<BigGamingConfiguration> GetSettingConfigurationAsync()
             => _settingService.GetConfigurationAsync<BigGamingConfiguration>(GameProviderConfigurations.BigGaming);
+
+        private static bool IgnoreCaseEquals(string source, string trigger)
+                                                    => string.Equals(source, trigger, StringComparison.OrdinalIgnoreCase);
     }
 }

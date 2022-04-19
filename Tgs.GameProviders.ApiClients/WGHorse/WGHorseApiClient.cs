@@ -138,7 +138,7 @@ namespace Tgs.GameProviders.ApiClients.WGHorse
                 }
             }
 
-            if (pageIndex.ToString().IgnoreCaseNotEquals(response.Page)
+            if (IsPage(pageIndex.ToString(), response.Page)
                || response.ArrayInvoice == null || response.ArrayInvoice.Length == 0)
             {
                 return (true, null);
@@ -223,6 +223,9 @@ namespace Tgs.GameProviders.ApiClients.WGHorse
                 }
             }
         }
+
+        private static bool IsPage(string pageIndex, string page)
+        => !string.Equals(pageIndex, page, StringComparison.OrdinalIgnoreCase);
 
         private async ValueTask<TResult> GetAsync<TResult>(Uri url, object request, string logPrefix)
         {

@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Tgs.GameProviders.Core.Card365;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration.Card365;
 
 namespace Tgs.GameProviders.Services.Card365;
 
 internal class Card365AgentMapper : ICard365AgentMapper
 {
-    private static readonly string _DefaultCode = "Default";
-
     public Card365BrandAgent GetAgent(IEnumerable<Card365BrandAgent> brandAgents, string brandCode)
     {
         var agents = brandAgents?.ToArray() ?? Array.Empty<Card365BrandAgent>();
@@ -20,6 +19,6 @@ internal class Card365AgentMapper : ICard365AgentMapper
         }
 
         return agents.FirstOrDefault(ag => ag.BrandCode == brandCode) ??
-               agents.FirstOrDefault(ag => ag.BrandCode == _DefaultCode);
+               agents.FirstOrDefault(ag => ag.BrandCode == CustomConst.BrandCodeDefault);
     }
 }

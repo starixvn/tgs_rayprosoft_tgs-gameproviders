@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.VR;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
@@ -28,12 +27,10 @@ namespace Tgs.GameProviders.Services.VR
         public async ValueTask<VRBrandMerchant> GetBrandMerchantAsync(string brandCode)
         {
             var configuration = await _settingService.GetConfigurationAsync<VRConfiguration>(GameProviderConfigurations.VR).ConfigureAwait(false);
-            var brandMerchant = configuration.BrandMerchants
-                 .Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
+            var brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, brandCode) && x.Status).FirstOrDefault();
             if (brandMerchant == null)
             {
-                brandMerchant = configuration.BrandMerchants
-                    .Where(x => x.BrandCode.IgnoreCaseEquals("Default") && x.Status).FirstOrDefault();
+                brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, CustomConst.BrandCodeDefault) && x.Status).FirstOrDefault();
             }
             return brandMerchant;
         }
@@ -64,5 +61,8 @@ namespace Tgs.GameProviders.Services.VR
 
         public ValueTask<VRConfiguration> GetSettingConfigurationAsync()
             => _settingService.GetConfigurationAsync<VRConfiguration>(GameProviderConfigurations.VR);
+
+        private static bool IgnoreCaseEquals(string source, string trigger)
+                                                    => string.Equals(source, trigger, StringComparison.OrdinalIgnoreCase);
     }
 }

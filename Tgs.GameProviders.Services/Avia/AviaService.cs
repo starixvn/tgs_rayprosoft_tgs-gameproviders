@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Avia;
-using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.Avia;
@@ -28,10 +27,10 @@ namespace Tgs.GameProviders.Services.Avia
         public async ValueTask<AviaBrandMerchant> GetBrandMerchantAsync(string brandCode)
         {
             var configuration = await GetSettingConfigurationAsync().ConfigureAwait(false);
-            var brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
+            var brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, brandCode) && x.Status).FirstOrDefault();
             if (brandMerchant == null)
             {
-                brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals("Default") && x.Status).FirstOrDefault();
+                brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, CustomConst.BrandCodeDefault) && x.Status).FirstOrDefault();
             }
             return brandMerchant;
         }
@@ -75,5 +74,8 @@ namespace Tgs.GameProviders.Services.Avia
 
         public ValueTask<AviaConfiguration> GetSettingConfigurationAsync()
             => _settingService.GetConfigurationAsync<AviaConfiguration>(GameProviderConfigurations.Avia);
+
+        private static bool IgnoreCaseEquals(string source, string trigger)
+                                                                    => string.Equals(source, trigger, StringComparison.OrdinalIgnoreCase);
     }
 }

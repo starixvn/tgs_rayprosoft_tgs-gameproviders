@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.KY;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
@@ -28,21 +27,21 @@ namespace Tgs.GameProviders.Services.KY
         public async Task<string> GetAgentIdAsync(string brandCode, string currencyCode)
         {
             var configuration = await GetSettingConfigurationAsync().ConfigureAwait(false);
-            var brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
+            var brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, brandCode) && x.Status).FirstOrDefault();
             if (brandMerchant == null)
             {
-                brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals("Default") && x.Status).FirstOrDefault();
+                brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, CustomConst.BrandCodeDefault) && x.Status).FirstOrDefault();
             }
-            return brandMerchant.AgentMappers.Where(x => x.CurrencyCode.IgnoreCaseEquals(currencyCode) && x.Status).FirstOrDefault()?.AgentId;
+            return brandMerchant.AgentMappers.Where(x => IgnoreCaseEquals(x.CurrencyCode, currencyCode) && x.Status).FirstOrDefault()?.AgentId;
         }
 
         public async Task<KYBrandMerchant> GetBrandMerchantAsync(string brandCode)
         {
             var configuration = await _settingService.GetConfigurationAsync<KYConfiguration>(GameProviderConfigurations.KY).ConfigureAwait(false);
-            var brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
+            var brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, brandCode) && x.Status).FirstOrDefault();
             if (brandMerchant == null)
             {
-                brandMerchant = configuration.BrandMerchants.Where(x => x.BrandCode.IgnoreCaseEquals("Default") && x.Status).FirstOrDefault();
+                brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, CustomConst.BrandCodeDefault) && x.Status).FirstOrDefault();
             }
             return brandMerchant;
         }
@@ -66,5 +65,8 @@ namespace Tgs.GameProviders.Services.KY
 
         public ValueTask<KYConfiguration> GetSettingConfigurationAsync()
             => _settingService.GetConfigurationAsync<KYConfiguration>(GameProviderConfigurations.KY);
+
+        private static bool IgnoreCaseEquals(string source, string trigger)
+                                                            => string.Equals(source, trigger, StringComparison.OrdinalIgnoreCase);
     }
 }

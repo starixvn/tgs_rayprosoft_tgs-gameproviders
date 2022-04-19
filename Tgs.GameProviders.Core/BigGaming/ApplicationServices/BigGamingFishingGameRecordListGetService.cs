@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.BigGaming.Models;
 using Tgs.GameProviders.Core.BigGaming.Models.Commons;
 using Tgs.GameProviders.Core.Extensions;

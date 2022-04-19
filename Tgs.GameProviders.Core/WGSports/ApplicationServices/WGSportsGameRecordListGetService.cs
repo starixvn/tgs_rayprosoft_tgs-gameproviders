@@ -3,8 +3,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
@@ -13,17 +11,14 @@ namespace Tgs.GameProviders.Core.WGSports.ApplicationServices
     public class WGSportsGameRecordListGetService : IGetService<WGSportsGameRecordListQuery, GameRecordListResult>
     {
         private readonly IWGSportsApiClient _client;
-        private readonly ILogger<WGSportsGameRecordListGetService> _logger;
         private readonly IWGSportsService _service;
 
         public WGSportsGameRecordListGetService(
             IWGSportsApiClient client,
-            ILogger<WGSportsGameRecordListGetService> logger,
             IWGSportsService service
             )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
@@ -54,24 +49,24 @@ namespace Tgs.GameProviders.Core.WGSports.ApplicationServices
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
             var datas = BetInfos
-                .Where(data => data.Reference.IgnoreCaseNotContains("不接受"))
+                .Where(data => IgnoreCaseNotContains(data.Reference, "不接受") && IgnoreCaseNotContains(data.Reference, "等待确认"))
                 .Select(data => new GameRecordListModel()
                 {
                     GameProviderCode = gameProviderCode,
                     GameProviderId = gameProviderId,
                     PlayerCode = data.Username,
-                    Status = data.InitData.Win.IgnoreCaseEquals("0") ? RoundStatus.Open : RoundStatus.Closed,
-                    ClientStatus = data.InitData.Win.IgnoreCaseEquals("0") ? RoundClientStatus.Open : _service.GetClientRound(data.Result),
+                    Status = IgnoreCaseEquals(data.InitData.Win) ? RoundStatus.Open : RoundStatus.Closed,
+                    ClientStatus = IgnoreCaseEquals(data.InitData.Win) ? RoundClientStatus.Open : _service.GetClientRound(data.Result),
                     ExternalRoundId = data.Reference,
                     ExternalGameId = "1",
                     ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(-4)),
-                    ExternalClosedOn = data.InitData.Win.IgnoreCaseEquals("0") ? null : new DateTimeOffset(DateTime.Parse(data.SettleDate), TimeSpan.FromHours(-4)),
+                    ExternalClosedOn = IgnoreCaseEquals(data.InitData.Win) ? null : new DateTimeOffset(DateTime.Parse(data.SettleDate), TimeSpan.FromHours(-4)),
                     BetAmount = _service.GetAmount(data.InitData.BetAmount),
                     ValidBetAmount = _service.GetAmount(data.InitData.BetAmount),
-                    PlayerWinLoss = data.InitData.Win.IgnoreCaseEquals("0") ? null : _service.GetAmount(data.Result),
+                    PlayerWinLoss = IgnoreCaseEquals(data.InitData.Win) ? null : _service.GetAmount(data.Result),
                     Commission = 0,
-                    Turnover = data.InitData.Win.IgnoreCaseEquals("0") ? null : decimal.Parse(data.InitData.BetAmount),
-                    SettleAmount = data.InitData.Win.IgnoreCaseEquals("0") ? null : _service.GetAmount(data.InitData.BetAmount) + _service.GetAmount(data.Result),
+                    Turnover = IgnoreCaseEquals(data.InitData.Win) ? null : decimal.Parse(data.InitData.BetAmount),
+                    SettleAmount = IgnoreCaseEquals(data.InitData.Win) ? null : _service.GetAmount(data.InitData.BetAmount) + _service.GetAmount(data.Result),
                     TieBetAdjustment = null,
 
                     AdditionalData = JsonSerializer.Serialize(data),
@@ -79,5 +74,11 @@ namespace Tgs.GameProviders.Core.WGSports.ApplicationServices
                 .ToArray();
             return new() { Success = true, Datas = datas };
         }
+
+        private bool IgnoreCaseEquals(string value)
+             => string.Equals(value, "0", StringComparison.OrdinalIgnoreCase);
+
+        private bool IgnoreCaseNotContains(string source, string trigger)
+            => !source.Contains(trigger, StringComparison.OrdinalIgnoreCase);
     }
 }

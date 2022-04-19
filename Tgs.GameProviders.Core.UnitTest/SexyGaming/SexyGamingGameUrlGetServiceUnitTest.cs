@@ -22,12 +22,12 @@ namespace Tgs.GameProviders.Core.UnitTest.SexyGaming
         public async Task Normal_Process()
         {
             var faceLogger = NullLogger<SexyGamingGameUrlGetService>.Instance;
-            var fakeAviaApiClient = Substitute.For<ISexyGamingApiClient>();
-            var fakeAviaService = Substitute.For<ISexyGamingService>();
-            var fakeGamePlayerService = Substitute.For<ISexyGamingGamePlayer>();
+            var fakeApiClient = Substitute.For<ISexyGamingApiClient>();
+            var fakeSexyGamingService = Substitute.For<ISexyGamingService>();
+            var fakeGamePlayer = Substitute.For<ISexyGamingGamePlayer>();
             var fakeTokenProvider = Substitute.For<ITokenProvider>();
 
-            var fakeService = new SexyGamingGameUrlGetService(fakeAviaApiClient, faceLogger, fakeAviaService, fakeTokenProvider, fakeGamePlayerService);
+            var fakeService = new SexyGamingGameUrlGetService(fakeApiClient, faceLogger, fakeSexyGamingService, fakeTokenProvider, fakeGamePlayer);
 
             var query = new SexyGamingGameUrlQuery()
             {
@@ -73,10 +73,11 @@ namespace Tgs.GameProviders.Core.UnitTest.SexyGaming
 
             var encryptedToken = Guid.NewGuid().ToString("N");
             _ = fakeTokenProvider.EncryptAsync(query.LoginRecordId).Returns(ValueTask.FromResult(encryptedToken));
-            _ = fakeAviaService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-            _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
-            _ = fakeAviaService.GetGameProviderCultureCodeAsync(query.Language).Returns(ValueTask.FromResult(gameProviderCultureCode));
-            _ = fakeAviaApiClient.GetGamingLoginGameAsync(
+            _ = fakeSexyGamingService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+            _ = fakeSexyGamingService.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
+            _ = fakeSexyGamingService.GetGameProviderCultureCodeAsync(query.Language).Returns(ValueTask.FromResult(gameProviderCultureCode));
+            _ = fakeSexyGamingService.IsSuccess("0000").Returns(true);
+            _ = fakeApiClient.GetGamingLoginGameAsync(
                 configuration.ApiUrl,
               new SexyGamingLoginGameRequest()
               {

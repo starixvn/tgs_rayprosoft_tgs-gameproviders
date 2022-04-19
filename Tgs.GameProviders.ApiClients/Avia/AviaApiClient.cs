@@ -214,8 +214,14 @@ namespace Tgs.GameProviders.ApiClients.Avia
             return response.Success == 1 && transferInfoStatus == AviaTransferInfoStatus.Finish;
         }
 
+        private static Dictionary<string, string> ToFormData<TData>(TData request)
+        {
+            var value = JsonSerializer.Serialize(request);
+            return JsonSerializer.Deserialize<Dictionary<string, string>>(value);
+        }
+
         private DateTimeOffset GetDateTimeOffsetNowTimeZone8()
-            => DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
+                    => DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
 
         private async Task<TResponse> PostAsync<TResponse>(Uri apiUrl, string authorization, Dictionary<string, string> parameters, AviaAction action, string contentLanguage = "CHN")
         {
@@ -267,12 +273,6 @@ namespace Tgs.GameProviders.ApiClients.Avia
             }
 
             return default;
-        }
-
-        private static Dictionary<string, string> ToFormData<TData>(TData request)
-        {
-            var value = JsonSerializer.Serialize(request);
-            return JsonSerializer.Deserialize<Dictionary<string, string>>(value);
         }
     }
 }
