@@ -14,7 +14,8 @@ namespace Tgs.GameProviders.Controllers;
 public class JOKERController : ControllerBase,
     IGameUrlHandler<JokerGameUrlQuery>,
     IKickPlayerHandler<JokerKickPlayerCommand>,
-    IPlayerBalanceHandler<JokerPlayerBalanceQuery>
+    IPlayerBalanceHandler<JokerPlayerBalanceQuery>,
+    IPlayerFundHandler<JokerPlayerFundInQuery, JokerPlayerFundOutQuery>
 {
     private readonly IMapper _mapper;
 
@@ -98,4 +99,58 @@ public class JOKERController : ControllerBase,
         {
             PlayerCode = playerCode
         });
+
+    /// <summary>
+    /// Players the fund in asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "GPI_HKD",
+    ///             "playerCode": "4uf6k014jp5x",
+    ///             "currencyCode": "HKD",
+    ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
+    ///             "amount": 1
+    ///         }
+    /// </remarks>
+    [HttpPost("PlayerFundIn")]
+    public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
+        [FromServices] IGetService<JokerPlayerFundInQuery, PlayerFundResult> getService,
+        PlayerFundRequest request)
+    {
+        var result = await getService.GetAsync(_mapper.Map<JokerPlayerFundInQuery>(request)).ConfigureAwait(false);
+        return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+    }
+
+    /// <summary>
+    /// Players the fund out asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "GPI_HKD",
+    ///             "playerCode": "4uf6k014jp5x",
+    ///             "currencyCode": "HKD",
+    ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
+    ///             "amount": 1
+    ///         }
+    /// </remarks>
+    [HttpPost("PlayerFundOut")]
+    public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
+        [FromServices] IGetService<JokerPlayerFundOutQuery, PlayerFundResult> getService,
+        PlayerFundRequest request)
+    {
+        var result = await getService.GetAsync(_mapper.Map<JokerPlayerFundOutQuery>(request)).ConfigureAwait(false);
+        return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+    }
 }
