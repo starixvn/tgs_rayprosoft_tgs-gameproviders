@@ -57,8 +57,8 @@ public class JokerPlayerFundOutGetServiceUnitTest
             PlayerStatus.Enabled);
 
         var success = true;
-        var orderId = Guid.NewGuid().ToString();
-        var fundInAmount = 10m;
+        var orderId = Guid.NewGuid().ToString("N");
+        var fundOutAmount = 10m;
 
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
 
@@ -73,14 +73,14 @@ public class JokerPlayerFundOutGetServiceUnitTest
             .FundOutAsync(
                 configuration.ApiUrl,
                 playerInfo.PlayerCode,
-                orderId, fundInAmount,
+                orderId, fundOutAmount,
                 agent.AgentId,
                 agent.SecretKey)
             .Returns(success);
 
         var query = new JokerPlayerFundOutQuery
         {
-            Amount = fundInAmount,
+            Amount = fundOutAmount,
             BrandCode = playerInfo.BrandCode,
             CurrencyCode = playerInfo.DefaultWalletCurrencyCode,
             OrderId = orderId,

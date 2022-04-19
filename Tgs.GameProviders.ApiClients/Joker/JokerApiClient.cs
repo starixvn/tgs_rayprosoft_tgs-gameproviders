@@ -59,16 +59,16 @@ internal class JokerApiClient : IJokerApiClient
         string appId,
         string secretKey)
     {
-        var request = new
+        var parameters = new Dictionary<string, object>
         {
-            Method = "TC",
-            Username = playerCode,
-            RequestId = orderId,
-            Amount = -amount,
-            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+            ["Method"] = "TC",
+            ["Username"] = playerCode,
+            ["RequestID"] = orderId,
+            ["Amount"] = -amount,
+            ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
         };
 
-        var document = JsonSerializer.SerializeToDocument(request);
+        var document = JsonSerializer.SerializeToDocument(parameters);
         var signature = GenerateSignature(document, secretKey);
 
         var response = await PostAsync(apiUrl, appId, signature, document, "FundIn");
@@ -84,16 +84,16 @@ internal class JokerApiClient : IJokerApiClient
         string appId,
         string secretKey)
     {
-        var request = new
+        var parameters = new Dictionary<string, object>
         {
-            Method = "TC",
-            Username = playerCode,
-            RequestId = orderId,
-            Amount = amount,
-            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+            ["Method"] = "TC",
+            ["Username"] = playerCode,
+            ["RequestID"] = orderId,
+            ["Amount"] = amount,
+            ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
         };
 
-        var document = JsonSerializer.SerializeToDocument(request);
+        var document = JsonSerializer.SerializeToDocument(parameters);
         var signature = GenerateSignature(document, secretKey);
 
         var response = await PostAsync(apiUrl, appId, signature, document, "FundOut");

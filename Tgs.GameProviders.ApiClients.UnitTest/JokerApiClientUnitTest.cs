@@ -62,10 +62,10 @@ public class JokerApiClientUnitTest
     }
 
     [Test]
-    public async Task GetFundInAsync()
+    public async Task FundInAsync()
     {
         var playerCode = "4uf6k014jp5x";
-        var amount = 996m;
+        var amount = 500m;
         var orderId = Guid.NewGuid().ToString();
 
         var httpClient = new HttpClient();
@@ -79,7 +79,7 @@ public class JokerApiClientUnitTest
     }
 
     [Test]
-    public async Task GetFundOutAsync()
+    public async Task FundOutAsync()
     {
         var playerCode = "4uf6k014jp5x";
         var amount = 500m;
