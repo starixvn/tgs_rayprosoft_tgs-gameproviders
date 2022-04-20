@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Tgs.GameProviders.Core.Jili;
 using Tgs.GameProviders.Core.Jili.ApplicationServices;
 using Tgs.GameProviders.Core.Jili.Models;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.Jili;
@@ -31,7 +32,7 @@ public class JiliRoundDetailGetServiceUnitTest
 
         var merchant = new JiliMerchant
         {
-            BrandCode = "Default",
+            BrandCode = DefConst.BrandCodeDefault,
             AgentId = "PG_Seamless",
             AgentKey = "0d90dda822b6df548460da8f551c1a76c01b6a9e"
         };

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.SexyGaming;
 using Tgs.GameProviders.Core.SexyGaming.Models;
 using Tgs.GameProviders.Domains.SettingConfiguration;
@@ -52,7 +51,7 @@ namespace Tgs.GameProviders.Services.SexyGaming
             };
             var response = await _client.CreatePlayerAsync(configuration.ApiUrl, createMemberRequest).ConfigureAwait(false);
 
-            return response.Status.IgnoreCaseEquals(((int)SexyGamingGameApiError.Success).ToString("d4"));
+            return _service.IsSuccess(response.Status);
         }
     }
 }

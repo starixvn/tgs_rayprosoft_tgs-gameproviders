@@ -37,5 +37,11 @@ namespace Tgs.GameProviders.Services.SexyGaming
 
         public ValueTask<SexyGamingConfiguration> GetSettingConfigurationAsync()
             => _settingService.GetConfigurationAsync<SexyGamingConfiguration>(GameProviderConfigurations.SexyGaming);
+
+        public bool IsAccountIsNotExists(string status)
+            => string.Equals(status, ((int)SexyGamingGameApiError.AccountIsNotExists).ToString("d4"), StringComparison.OrdinalIgnoreCase);
+
+        public bool IsSuccess(string status)
+                    => string.Equals(status, ((int)SexyGamingGameApiError.AccountIsNotExists).ToString("d4"), StringComparison.OrdinalIgnoreCase);
     }
 }

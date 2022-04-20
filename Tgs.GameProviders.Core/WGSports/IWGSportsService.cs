@@ -11,10 +11,6 @@ namespace Tgs.GameProviders.Core.WGSports
 
         RoundClientStatus GetClientRound(string playerWinLoss);
 
-        ValueTask<GameInfo> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
-
-        string GetGameProviderCode();
-
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 
         ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);

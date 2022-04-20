@@ -46,12 +46,6 @@ namespace Tgs.GameProviders.Services.WGSports
             }
         }
 
-        public async ValueTask<GameInfo> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
-            => await _gameService.GetAsync(gameProviderId, externalGameId).ConfigureAwait(false);
-
-        public string GetGameProviderCode()
-            => GameProviderType.WGSports;
-
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
             var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);

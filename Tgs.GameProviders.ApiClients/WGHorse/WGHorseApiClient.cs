@@ -138,12 +138,10 @@ namespace Tgs.GameProviders.ApiClients.WGHorse
                 }
             }
 
-            if (pageIndex.ToString().IgnoreCaseNotEquals(response.Page)
-               || response.ArrayInvoice == null || response.ArrayInvoice.Length == 0)
-            {
-                return (true, null);
-            }
-            return (true, response.ArrayInvoice);
+            return pageIndex.ToString() != response.Page
+               || response.ArrayInvoice == null || response.ArrayInvoice.Length == 0
+                ? ((bool Success, WGHorseGameRecord[] GameRecord))(true, null)
+                : ((bool Success, WGHorseGameRecord[] GameRecord))(true, response.ArrayInvoice);
         }
 
         public async ValueTask<Uri?> GetLoginAsync(Uri apiUrl, string partnerCode, string token, string lang)

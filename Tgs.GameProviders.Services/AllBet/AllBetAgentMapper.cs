@@ -1,13 +1,12 @@
 ﻿using System.Linq;
 using Tgs.GameProviders.Core.AllBet;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration.AllBet;
 
 namespace Tgs.GameProviders.Services.AllBet;
 
 internal class AllBetAgentMapper : IAllBetAgentMapper
 {
-    private static readonly string _DefaultCode = "Default";
-
     public AllBetAgent GetAgent(AllBetBrandMerchant[] merchants, string brandCode, string currencyCode)
     {
         if (merchants == null || merchants.Length == 0)
@@ -16,7 +15,7 @@ internal class AllBetAgentMapper : IAllBetAgentMapper
         }
 
         var merchant = merchants.FirstOrDefault(m => m.BrandCode == brandCode) ??
-                       merchants.FirstOrDefault(m => m.BrandCode == _DefaultCode);
+                       merchants.FirstOrDefault(m => m.BrandCode == DefConst.BrandCodeDefault);
 
         return merchant?.Agents.FirstOrDefault(a => a.CurrencyCode == currencyCode);
     }

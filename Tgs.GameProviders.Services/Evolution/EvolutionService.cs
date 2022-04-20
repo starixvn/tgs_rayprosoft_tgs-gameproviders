@@ -21,9 +21,6 @@ namespace Tgs.GameProviders.Services.Evolution
             _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
         }
 
-        public string GetGameProviderCode()
-            => GameProviderType.Evolution;
-
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
             var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.Evolution).ConfigureAwait(false);

@@ -23,6 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IGameProviderService, GameProviderService>()
                 .AddTransient<IPlayerService, PlayerService>()
                 .AddTransient<IRoundService, RoundService>()
-                .AddTransient<ISettingService, SettingService>();
+                .AddTransient<ISettingService, SettingService>()
+                .AddTransient<ISystemClock, SystemClock>();
     }
 }

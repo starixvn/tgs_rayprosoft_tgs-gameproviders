@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.VR;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
@@ -28,14 +27,9 @@ namespace Tgs.GameProviders.Services.VR
         public async ValueTask<VRBrandMerchant> GetBrandMerchantAsync(string brandCode)
         {
             var configuration = await _settingService.GetConfigurationAsync<VRConfiguration>(GameProviderConfigurations.VR).ConfigureAwait(false);
-            var brandMerchant = configuration.BrandMerchants
-                 .Where(x => x.BrandCode.IgnoreCaseEquals(brandCode) && x.Status).FirstOrDefault();
-            if (brandMerchant == null)
-            {
-                brandMerchant = configuration.BrandMerchants
-                    .Where(x => x.BrandCode.IgnoreCaseEquals("Default") && x.Status).FirstOrDefault();
-            }
-            return brandMerchant;
+
+            return configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, brandCode) && x.Status).FirstOrDefault() ??
+                configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, DefConst.BrandCodeDefault) && x.Status).FirstOrDefault();
         }
 
         public RoundClientStatus GetClientRound(int state) =>
@@ -46,9 +40,6 @@ namespace Tgs.GameProviders.Services.VR
                3 => RoundClientStatus.Win,
                _ => RoundClientStatus.Open
            };
-
-        public string GetGameProviderCode()
-            => GameProviderType.VR;
 
         public ValueTask<Guid> GetGameProviderIdAsync()
             => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.VR);
@@ -62,7 +53,7 @@ namespace Tgs.GameProviders.Services.VR
                _ => RoundStatus.Open
            };
 
-        public ValueTask<VRConfiguration> GetSettingConfigurationAsync()
-            => _settingService.GetConfigurationAsync<VRConfiguration>(GameProviderConfigurations.VR);
+        private static bool IgnoreCaseEquals(string source, string trigger)
+            => string.Equals(source, trigger, StringComparison.OrdinalIgnoreCase);
     }
 }

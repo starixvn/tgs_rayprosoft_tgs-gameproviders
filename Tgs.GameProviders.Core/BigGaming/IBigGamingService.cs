@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.BigGaming;
 using Tgs.GameProviders.QueryServer.Models;
 
@@ -12,12 +11,8 @@ namespace Tgs.GameProviders.Core.BigGaming
 
         RoundClientStatus GetClientRound(decimal winLoss);
 
-        string GetGameProviderCode();
-
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 
         ValueTask<Guid> GetGameProviderIdAsync();
-
-        ValueTask<BigGamingConfiguration> GetSettingConfigurationAsync();
     }
 }
