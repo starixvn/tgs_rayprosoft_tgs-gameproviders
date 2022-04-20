@@ -91,7 +91,7 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
         private RoundStatus GetRoundStatus(string showType, DateTimeOffset externalClosedOn)
         {
             var tomorrowDateUTC = GetTomorrowDateUTC(externalClosedOn);
-            return showType.Contains("過關", StringComparison.OrdinalIgnoreCase) ? externalClosedOn.UtcDateTime < tomorrowDateUTC && tomorrowDateUTC <= _systemClock.CurrentTime ? RoundStatus.Closed : RoundStatus.Open : RoundStatus.Closed;
+            return showType.Contains("過關", StringComparison.OrdinalIgnoreCase) || showType.Contains("过关", StringComparison.OrdinalIgnoreCase) ? externalClosedOn.UtcDateTime < tomorrowDateUTC && tomorrowDateUTC <= _systemClock.CurrentTime ? RoundStatus.Closed : RoundStatus.Open : RoundStatus.Closed;
         }
 
         private bool IsClosed(string showType, DateTimeOffset externalClosedOn)
