@@ -15,7 +15,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
     public class WGHorseGameRecordListGetServiceUnitTest
     {
         [Test]
-        public async Task WGHorse_GameRecord_Multiples_Is_Close()
+        public async Task WGHorse_GameRecord_Multiples_過關_Is_Close()
         {
             var fakeWGHorseApiClient = Substitute.For<IWGHorseApiClient>();
             var fakeWGHorseService = Substitute.For<IWGHorseService>();
@@ -87,7 +87,79 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
         }
 
         [Test]
-        public async Task WGHorse_GameRecord_Multiples_Is_Open()
+        public async Task WGHorse_GameRecord_Multiples_过关_Is_Close()
+        {
+            var fakeWGHorseApiClient = Substitute.For<IWGHorseApiClient>();
+            var fakeWGHorseService = Substitute.For<IWGHorseService>();
+            var fakeSystemClock = Substitute.For<ISystemClock>();
+
+            var query = new WGHorseGameRecordListQuery()
+            {
+                StartTime = DateTimeOffset.UtcNow.AddDays(-1),
+                EndTime = DateTimeOffset.UtcNow,
+                Page = 1,
+                Rows = 1000
+            };
+
+            var configuration = new WGHorseConfiguration()
+            {
+                AmountMaximum = 999999999999,
+                AmountFormat = "12,2",
+                ApiUrl = new("http://61.56.84.139/via6/index.php"),
+                PartnerCode = "PT",
+                PartnerKey = "a888888888888888",
+                IV = "b888888888888888",
+                ServiceEndpointUrl = new("http://game-wgvia")
+            };
+            _ = fakeWGHorseService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+
+            var gameRound = new WGHorseGameRecord[]
+            {
+                new(){
+                    MemberCode ="4ued5l50heuf",
+                    RecordDate ="2022-04-20 14:11:54",
+                    BatchNo ="819776544",
+                    ShowType= "过关<br><font color='red'>2x1</font>",
+                    ShowDiscount ="冇单头@0.8200",
+                    ShowContent="&nbsp;HK  1场&nbsp;@&nbsp;2022-03-30 18:43:00<br>&nbsp;@&nbsp;<font color='FireBrick'><b>WIN</b></font>&nbsp;&nbsp;<font color='FireBrick'><b>1+2+3</b></font>&nbsp;&nbsp;<br>&nbsp;HK  3场&nbsp;@&nbsp;2022-03-30 18:43:00<br>&nbsp;@&nbsp;<font color='FireBrick'><b>WIN</b></font>&nbsp;&nbsp;<font color='FireBrick'><b>1+2</b></font>&nbsp;&nbsp;<br>&nbsp;每注金额:10<Br>",
+                    ShowResult="<font font-family: Arial,Verdana;>1,5,7</font><br><font font-family: Arial,Verdana;>4,3,8</font><br>",
+                    ShowAmount="60",
+                    ShowWin="-49.20",
+                    ShowOddsWin ="0",
+                    ShowDivideDate= "2022-04-20 14:23:29",
+                    ShowRaceDate="2022-03-30 18:43:00",
+                }
+            };
+
+            _ = fakeWGHorseApiClient.GetGameRecordAsync(
+                configuration.ApiUrl,
+                configuration.PartnerCode,
+                configuration.PartnerKey,
+                configuration.IV,
+                query.StartTime,
+                query.EndTime,
+                query.Page,
+                query.Rows).Returns(ValueTask.FromResult<(bool Success, WGHorseGameRecord[]? GameRecord)>((true, gameRound)));
+
+            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-21"), TimeSpan.FromHours(+0)));
+
+            _ = fakeWGHorseService.GetClientRound(decimal.Parse("-49.20")).Returns(RoundClientStatus.Loss);
+
+            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
+
+            var actual = await fakeService.GetAsync(query).ConfigureAwait(false);
+
+            Assert.NotNull(actual);
+            Assert.AreEqual(true, actual.Success);
+            Assert.AreEqual(true, actual.Datas.Any());
+            Assert.AreEqual(RoundStatus.Closed, actual.Datas.First().Status);
+            Assert.AreEqual(RoundClientStatus.Loss, actual.Datas.First().ClientStatus);
+            Assert.AreEqual(-49.20m, actual.Datas.First().PlayerWinLoss);
+            Assert.AreEqual(10.8m, actual.Datas.First().SettleAmount);
+        }
+
+        [Test]
+        public async Task WGHorse_GameRecord_Multiples_過關_Is_Open()
         {
             var fakeWGHorseApiClient = Substitute.For<IWGHorseApiClient>();
             var fakeWGHorseService = Substitute.For<IWGHorseService>();
@@ -144,6 +216,76 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
             _ = fakeWGHorseService.GetClientRound(decimal.Parse("129.00")).Returns(RoundClientStatus.Win);
 
             _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16"), TimeSpan.FromHours(+0)));
+
+            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
+
+            var actual = await fakeService.GetAsync(query).ConfigureAwait(false);
+
+            Assert.NotNull(actual);
+            Assert.AreEqual(true, actual.Success);
+            Assert.AreEqual(true, actual.Datas.Any());
+            Assert.AreEqual(RoundStatus.Open, actual.Datas.First().Status);
+            Assert.AreEqual(RoundClientStatus.Open, actual.Datas.First().ClientStatus);
+            Assert.AreEqual(0m, actual.Datas.First().PlayerWinLoss);
+            Assert.AreEqual(0m, actual.Datas.First().SettleAmount);
+        }
+
+        [Test]
+        public async Task WGHorse_GameRecord_Multiples_过关_Is_Open()
+        {
+            var fakeWGHorseApiClient = Substitute.For<IWGHorseApiClient>();
+            var fakeWGHorseService = Substitute.For<IWGHorseService>();
+            var fakeSystemClock = Substitute.For<ISystemClock>();
+
+            var query = new WGHorseGameRecordListQuery()
+            {
+                StartTime = DateTimeOffset.UtcNow.AddDays(-1),
+                EndTime = DateTimeOffset.UtcNow,
+                Page = 1,
+                Rows = 1000
+            };
+
+            var configuration = new WGHorseConfiguration()
+            {
+                AmountMaximum = 999999999999,
+                AmountFormat = "12,2",
+                ApiUrl = new("http://61.56.84.139/via6/index.php"),
+                PartnerCode = "PT",
+                PartnerKey = "a888888888888888",
+                IV = "b888888888888888",
+                ServiceEndpointUrl = new("http://game-wgvia")
+            };
+            _ = fakeWGHorseService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+
+            var gameRound = new WGHorseGameRecord[]
+            {
+                new(){
+                    MemberCode ="4ued5l50heuf",
+                    RecordDate ="2022-04-20 14:11:54",
+                    BatchNo ="819776544",
+                    ShowType= "过关<br><font color='red'>2x1</font>",
+                    ShowDiscount ="冇单头@0.8200",
+                    ShowContent="&nbsp;HK  1场&nbsp;@&nbsp;2022-03-30 18:43:00<br>&nbsp;@&nbsp;<font color='FireBrick'><b>WIN</b></font>&nbsp;&nbsp;<font color='FireBrick'><b>1+2+3</b></font>&nbsp;&nbsp;<br>&nbsp;HK  3场&nbsp;@&nbsp;2022-03-30 18:43:00<br>&nbsp;@&nbsp;<font color='FireBrick'><b>WIN</b></font>&nbsp;&nbsp;<font color='FireBrick'><b>1+2</b></font>&nbsp;&nbsp;<br>&nbsp;每注金额:10<Br>",
+                    ShowResult="<font font-family: Arial,Verdana;>1,5,7</font><br><font font-family: Arial,Verdana;>4,3,8</font><br>",
+                    ShowAmount="60",
+                    ShowWin="-49.20",
+                    ShowOddsWin ="0",
+                    ShowDivideDate= "2022-04-20 14:23:29",
+                    ShowRaceDate="2022-03-30 18:43:00",
+                }
+            };
+
+            _ = fakeWGHorseApiClient.GetGameRecordAsync(
+                configuration.ApiUrl,
+                configuration.PartnerCode,
+                configuration.PartnerKey,
+                configuration.IV,
+                query.StartTime,
+                query.EndTime,
+                query.Page,
+                query.Rows).Returns(ValueTask.FromResult<(bool Success, WGHorseGameRecord[]? GameRecord)>((true, gameRound)));
+
+            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-20"), TimeSpan.FromHours(+0)));
 
             var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
 
