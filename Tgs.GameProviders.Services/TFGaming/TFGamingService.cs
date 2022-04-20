@@ -20,16 +20,9 @@ namespace Tgs.GameProviders.Services.TFGaming
         public async ValueTask<TFBrandMerchant> GetBrandMerchantAsync(string brandCode, string currencyCode)
         {
             var configuration = await _settingService.GetConfigurationAsync<TFGamingConfiguration>(GameProviderConfigurations.TFGaming).ConfigureAwait(false);
-            var brandMerchant = configuration.BrandMerchants.Where(brand => brand.BrandCode == brandCode && brand.BrandCurrency == currencyCode).FirstOrDefault();
 
-            if (brandMerchant == null)
-            {
-                brandMerchant = configuration.BrandMerchants.Where(brand => brand.BrandCode == DefConst.BrandCodeDefault && brand.BrandCurrency == currencyCode).FirstOrDefault();
-            }
-            return brandMerchant;
+            return configuration.BrandMerchants.Where(brand => brand.BrandCode == brandCode && brand.BrandCurrency == currencyCode).FirstOrDefault() ??
+                configuration.BrandMerchants.Where(brand => brand.BrandCode == DefConst.BrandCodeDefault && brand.BrandCurrency == currencyCode).FirstOrDefault();
         }
-
-        public ValueTask<TFGamingConfiguration> GetSettingConfigurationAsync()
-            => _settingService.GetConfigurationAsync<TFGamingConfiguration>(GameProviderConfigurations.TFGaming);
     }
 }

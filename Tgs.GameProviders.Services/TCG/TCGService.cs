@@ -35,7 +35,7 @@ namespace Tgs.GameProviders.Services.TCG
 
         public async ValueTask<TCGMerchant> GetMerchantAsync(string currencyCode)
         {
-            var configuration = await _settingService.GetConfigurationAsync<TCGConfiguration>(GameProviderConfigurations.TCG).ConfigureAwait(false);
+            var configuration = await GetSettingConfigurationAsync().ConfigureAwait(false);
             return configuration.Merchants.Where(x => x.CurrencyCode == currencyCode).FirstOrDefault();
         }
 
