@@ -77,7 +77,7 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
         }
 
         private static RoundStatus GetRoundStatus(string showType, DateTimeOffset externalClosedOn)
-            => showType.Contains("過關", StringComparison.OrdinalIgnoreCase) ? DateTime.UtcNow.ToLongDateString() == externalClosedOn.UtcDateTime.ToLongDateString() ? RoundStatus.Open : RoundStatus.Closed : RoundStatus.Closed;
+            => showType.Contains("過關", StringComparison.OrdinalIgnoreCase) ? DateTime.Parse(DateTimeOffset.Now.LocalDateTime.ToLongDateString()) <= DateTime.Parse(externalClosedOn.LocalDateTime.ToLongDateString()) ? RoundStatus.Open : RoundStatus.Closed : RoundStatus.Closed;
 
         private static bool IsDraw(string source)
             => source.Contains("和局", StringComparison.OrdinalIgnoreCase);
