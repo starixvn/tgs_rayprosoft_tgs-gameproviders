@@ -221,7 +221,7 @@ namespace Tgs.GameProviders.ApiClients.Avia
         }
 
         private DateTimeOffset GetDateTimeOffsetNowTimeZone8()
-                    => DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
+            => DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
 
         private async Task<TResponse> PostAsync<TResponse>(Uri apiUrl, string authorization, Dictionary<string, string> parameters, AviaAction action, string contentLanguage = "CHN")
         {
