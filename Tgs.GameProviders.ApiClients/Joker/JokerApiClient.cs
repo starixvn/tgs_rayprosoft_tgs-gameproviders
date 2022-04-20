@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.Joker;
+using Tgs.GameProviders.Core.Joker.Models;
 using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.Joker;
@@ -156,9 +157,40 @@ internal class JokerApiClient : IJokerApiClient
                 signature,
                 document,
                 "FundOrderChecking")
-            .ConfigureAwait(false); ;
+            .ConfigureAwait(false);
 
         return isSuccessStatusCode;
+    }
+
+    public async ValueTask<(bool Success, JokerGameRecordInfoResponse? Response)> GetGameRecordAsync(
+        Uri apiUrl,
+        DateTimeOffset startTime,
+        DateTimeOffset endTime,
+        string? nextId,
+        string appId,
+        string secretKey)
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            ["Method"] = "TSM",
+            ["StartDate"] = startTime.ToString("yyyy-MM-dd HH: mm"),
+            ["EndDate"] = endTime.ToString("yyyy-MM-dd HH: mm"),
+            ["NextId"] = nextId ?? string.Empty,
+            ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+        };
+
+        var document = JsonSerializer.SerializeToDocument(parameters);
+        var signature = GenerateSignature(document, secretKey);
+
+        var (isSuccessStatusCode, _, content) = await PostAsync(
+                apiUrl,
+                appId,
+                signature,
+                document,
+                "GetGameRecord")
+            .ConfigureAwait(false); ;
+
+        return (isSuccessStatusCode, content?.Deserialize<JokerGameRecordInfoResponse>());
     }
 
     public async ValueTask<bool> CreateUserAsync(Uri apiUrl, string playerCode, string appId, string secretKey)

@@ -1,7 +1,9 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Tgs.GameProviders.Core.Joker.Models;
 
 namespace Tgs.GameProviders.Core.Joker;
 
@@ -38,4 +40,12 @@ public interface IJokerApiClient
     ValueTask KickPlayerAsync(Uri apiUrl, string playerCode, string appId, string secretKey);
 
     ValueTask<bool> FundOrderCheckingAsync(Uri apiUrl, string orderId, string appId, string secretKey);
+
+    ValueTask<(bool Success, JokerGameRecordInfoResponse? Response)> GetGameRecordAsync(
+        Uri apiUrl,
+        DateTimeOffset startTime,
+        DateTimeOffset endTime,
+        string? nextId,
+        string appId,
+        string secretKey);
 }

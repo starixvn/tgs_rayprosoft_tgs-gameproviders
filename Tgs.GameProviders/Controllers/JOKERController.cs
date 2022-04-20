@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
+using Tgs.GameProviders.Core.Joker.Models;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
 
@@ -179,5 +180,41 @@ public class JOKERController : ControllerBase,
     {
         var result = await getService.GetAsync(_mapper.Map<JokerPlayerFundCheckingQuery>(request)).ConfigureAwait(false);
         return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
+    }
+
+    /// <summary>
+    /// Games the record list asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "Default",
+    ///             "currencyCode": "HKD",
+    ///             "startTime": "2021-12-01T00:00:00+00:00",
+    ///             "endTime": "2021-12-13T00:00:00+00:00",
+    ///             "nextId": null
+    ///         }
+    /// </remarks>
+    [HttpPost("GameRecordList")]
+    public async ValueTask<JokerGameRecordResult?> GameRecordListAsync(
+        [FromServices] IGetService<JokerGameRecordListQuery, JokerGameRecordResult> getService,
+        JokerGameRecordListRequest request)
+    {
+        var result = await getService
+            .GetAsync(
+                new JokerGameRecordListQuery(
+                    request.BrandCode,
+                    request.CurrencyCode,
+                    request.StartTime,
+                    request.EndTime,
+                    request.NextId))
+            .ConfigureAwait(false);
+
+        return result ?? null;
     }
 }
