@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
 using Tgs.GameProviders.Core.Joker.Models;
+using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
 
@@ -17,7 +18,8 @@ public class JOKERController : ControllerBase,
     IKickPlayerHandler<JokerKickPlayerCommand>,
     IPlayerBalanceHandler<JokerPlayerBalanceQuery>,
     IPlayerFundHandler<JokerPlayerFundInQuery, JokerPlayerFundOutQuery>,
-    IPlayerFundCheckingHandler<JokerPlayerFundCheckingQuery, PlayerFundCheckingRequest>
+    IPlayerFundCheckingHandler<JokerPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
+    IRoundDetailHandler<JokerRoundDetailQuery>
 {
     private readonly IMapper _mapper;
 
@@ -25,6 +27,42 @@ public class JOKERController : ControllerBase,
         IMapper mapper)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+    }
+
+    /// <summary>
+    /// Games the record list asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "Default",
+    ///             "currencyCode": "HKD",
+    ///             "startTime": "2021-12-01T00:00:00+00:00",
+    ///             "endTime": "2021-12-13T00:00:00+00:00",
+    ///             "nextId": null
+    ///         }
+    /// </remarks>
+    [HttpPost("GameRecordList")]
+    public async ValueTask<JokerGameRecordResult?> GameRecordListAsync(
+        [FromServices] IGetService<JokerGameRecordListQuery, JokerGameRecordResult> getService,
+        JokerGameRecordListRequest request)
+    {
+        var result = await getService
+            .GetAsync(
+                new JokerGameRecordListQuery(
+                    request.BrandCode,
+                    request.CurrencyCode,
+                    request.StartTime,
+                    request.EndTime,
+                    request.NextId))
+            .ConfigureAwait(false);
+
+        return result ?? null;
     }
 
     /// <summary>
@@ -103,6 +141,32 @@ public class JOKERController : ControllerBase,
         });
 
     /// <summary>
+    /// Players the fund checking asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "GPI>HKD",
+    ///             "playerCode": "4uf6k014jp5x",
+    ///             "currencyCode": "HKD",
+    ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86"
+    ///         }
+    /// </remarks>
+    [HttpPost("PlayerFundChecking")]
+    public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
+        [FromServices] IGetService<JokerPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        PlayerFundCheckingRequest request)
+    {
+        var result = await getService.GetAsync(_mapper.Map<JokerPlayerFundCheckingQuery>(request)).ConfigureAwait(false);
+        return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
+    }
+
+    /// <summary>
     /// Players the fund in asynchronous.
     /// </summary>
     /// <param name="getService">The get service.</param>
@@ -157,64 +221,27 @@ public class JOKERController : ControllerBase,
     }
 
     /// <summary>
-    /// Players the fund checking asynchronous.
+    /// Rounds the detail asynchronous.
     /// </summary>
     /// <param name="getService">The get service.</param>
-    /// <param name="request">The request.</param>
+    /// <param name="roundId">The round identifier.</param>
+    /// <param name="language">The language.</param>
     /// <returns></returns>
     /// <remarks>
     /// <b>Example</b><br />
     ///
-    ///     Post
-    ///         {
-    ///             "brandCode": "GPI>HKD",
-    ///             "playerCode": "4uf6k014jp5x",
-    ///             "currencyCode": "HKD",
-    ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86"
-    ///         }
+    ///     Get joker/rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
     /// </remarks>
-    [HttpPost("PlayerFundChecking")]
-    public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<JokerPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
-        PlayerFundCheckingRequest request)
-    {
-        var result = await getService.GetAsync(_mapper.Map<JokerPlayerFundCheckingQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
-    }
-
-    /// <summary>
-    /// Games the record list asynchronous.
-    /// </summary>
-    /// <param name="getService">The get service.</param>
-    /// <param name="request">The request.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Post
-    ///         {
-    ///             "brandCode": "Default",
-    ///             "currencyCode": "HKD",
-    ///             "startTime": "2021-12-01T00:00:00+00:00",
-    ///             "endTime": "2021-12-13T00:00:00+00:00",
-    ///             "nextId": null
-    ///         }
-    /// </remarks>
-    [HttpPost("GameRecordList")]
-    public async ValueTask<JokerGameRecordResult?> GameRecordListAsync(
-        [FromServices] IGetService<JokerGameRecordListQuery, JokerGameRecordResult> getService,
-        JokerGameRecordListRequest request)
-    {
-        var result = await getService
+    [HttpGet("RoundDetail/{roundId}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
+        [FromServices] IGetService<JokerRoundDetailQuery, RoundDetailResult?> getService,
+        Guid roundId,
+        string language)
+        => getService
             .GetAsync(
-                new JokerGameRecordListQuery(
-                    request.BrandCode,
-                    request.CurrencyCode,
-                    request.StartTime,
-                    request.EndTime,
-                    request.NextId))
-            .ConfigureAwait(false);
-
-        return result ?? null;
-    }
+                new JokerRoundDetailQuery
+                {
+                    RoundId = roundId,
+                    Language = language
+                });
 }

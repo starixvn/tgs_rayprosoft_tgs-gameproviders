@@ -23,8 +23,8 @@ namespace Tgs.GameProviders.ApiClients.Joker;
 internal class JokerApiClient : IJokerApiClient
 {
     private readonly HttpClient _client;
-    private readonly ITgsLog _tgsLog;
     private readonly ILogger<JokerApiClient> _logger;
+    private readonly ITgsLog _tgsLog;
 
     public JokerApiClient(
         HttpClient client,
@@ -36,11 +36,11 @@ internal class JokerApiClient : IJokerApiClient
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async ValueTask<string?> GetGameTokenAsync(Uri apiUrl, string playerCode, string appId, string secretKey)
+    public async ValueTask<bool> CreateUserAsync(Uri apiUrl, string playerCode, string appId, string secretKey)
     {
         var request = new
         {
-            Method = "PLAY",
+            Method = "CU",
             Username = playerCode,
             Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
         };
@@ -49,16 +49,20 @@ internal class JokerApiClient : IJokerApiClient
         var signature = GenerateSignature(document, secretKey);
 
         var (isSuccessStatusCode, _, content) = await PostAsync(
-                apiUrl,
-                appId,
-                signature,
-                document,
-                "GameToken")
+            apiUrl,
+            appId,
+            signature,
+            document,
+            "CreateUser")
             .ConfigureAwait(false);
 
-        return isSuccessStatusCode
-            ? content?.RootElement.GetProperty("Token").GetString()
-            : null;
+        if (!isSuccessStatusCode)
+        {
+            return false;
+        }
+
+        var status = content?.RootElement.GetProperty("Status").GetString();
+        return status is "OK" or "Created";
     }
 
     public async ValueTask<bool> FundInAsync(
@@ -92,6 +96,29 @@ internal class JokerApiClient : IJokerApiClient
         return isSuccessStatusCode;
     }
 
+    public async ValueTask<bool> FundOrderCheckingAsync(Uri apiUrl, string orderId, string appId, string secretKey)
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            ["Method"] = "TCH",
+            ["RequestID"] = orderId,
+            ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+        };
+
+        var document = JsonSerializer.SerializeToDocument(parameters);
+        var signature = GenerateSignature(document, secretKey);
+
+        var (isSuccessStatusCode, _, _) = await PostAsync(
+                apiUrl,
+                appId,
+                signature,
+                document,
+                "FundOrderChecking")
+            .ConfigureAwait(false);
+
+        return isSuccessStatusCode;
+    }
+
     public async ValueTask<bool> FundOutAsync(
         Uri apiUrl,
         string playerCode,
@@ -118,108 +145,9 @@ internal class JokerApiClient : IJokerApiClient
             signature,
             document,
             "FundOut")
-            .ConfigureAwait(false); ;
-
-        return isSuccessStatusCode;
-    }
-
-    public async ValueTask KickPlayerAsync(Uri apiUrl, string playerCode, string appId, string secretKey)
-    {
-        var request = new
-        {
-            Method = "SO",
-            Username = playerCode,
-            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
-        };
-
-        var document = JsonSerializer.SerializeToDocument(request);
-        var signature = GenerateSignature(document, secretKey);
-
-        _ = await PostAsync(apiUrl, appId, signature, document, "KickPlayer")
-            .ConfigureAwait(false); ;
-    }
-
-    public async ValueTask<bool> FundOrderCheckingAsync(Uri apiUrl, string orderId, string appId, string secretKey)
-    {
-        var parameters = new Dictionary<string, object>
-        {
-            ["Method"] = "TCH",
-            ["RequestID"] = orderId,
-            ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
-        };
-
-        var document = JsonSerializer.SerializeToDocument(parameters);
-        var signature = GenerateSignature(document, secretKey);
-
-        var (isSuccessStatusCode, _, _) = await PostAsync(
-                apiUrl,
-                appId,
-                signature,
-                document,
-                "FundOrderChecking")
             .ConfigureAwait(false);
 
         return isSuccessStatusCode;
-    }
-
-    public async ValueTask<(bool Success, JokerGameRecordInfoResponse? Response)> GetGameRecordAsync(
-        Uri apiUrl,
-        DateTimeOffset startTime,
-        DateTimeOffset endTime,
-        string? nextId,
-        string appId,
-        string secretKey)
-    {
-        var parameters = new Dictionary<string, object>
-        {
-            ["Method"] = "TSM",
-            ["StartDate"] = startTime.ToString("yyyy-MM-dd HH: mm"),
-            ["EndDate"] = endTime.ToString("yyyy-MM-dd HH: mm"),
-            ["NextId"] = nextId ?? string.Empty,
-            ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
-        };
-
-        var document = JsonSerializer.SerializeToDocument(parameters);
-        var signature = GenerateSignature(document, secretKey);
-
-        var (isSuccessStatusCode, _, content) = await PostAsync(
-                apiUrl,
-                appId,
-                signature,
-                document,
-                "GetGameRecord")
-            .ConfigureAwait(false); ;
-
-        return (isSuccessStatusCode, content?.Deserialize<JokerGameRecordInfoResponse>());
-    }
-
-    public async ValueTask<bool> CreateUserAsync(Uri apiUrl, string playerCode, string appId, string secretKey)
-    {
-        var request = new
-        {
-            Method = "CU",
-            Username = playerCode,
-            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
-        };
-
-        var document = JsonSerializer.SerializeToDocument(request);
-        var signature = GenerateSignature(document, secretKey);
-
-        var (isSuccessStatusCode, _, content) = await PostAsync(
-            apiUrl,
-            appId,
-            signature,
-            document,
-            "CreateUser")
-            .ConfigureAwait(false); ;
-
-        if (!isSuccessStatusCode)
-        {
-            return false;
-        }
-
-        var status = content?.RootElement.GetProperty("Status").GetString();
-        return status is "OK" or "Created";
     }
 
     public async ValueTask<(bool? IsPlayerExist, decimal? Balance)> GetBalanceAsync(Uri apiUrl, string playerCode, string appId, string secretKey)
@@ -253,8 +181,123 @@ internal class JokerApiClient : IJokerApiClient
         return (true, balance);
     }
 
-    private async ValueTask<(bool IsSuccessStatusCode, HttpStatusCode HttpStatusCode, JsonDocument? Content)> PostAsync(
+    public async ValueTask<string?> GetGameDetailUrlAsync(
         Uri apiUrl,
+        string language,
+        string externalRoundId,
+        JokerDataType dataType,
+        string appId,
+        string secretKey)
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            ["Method"] = "History",
+            ["OCode"] = externalRoundId,
+            ["Language"] = language,
+            ["Type"] = dataType.ToString(),
+            ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+        };
+
+        var document = JsonSerializer.SerializeToDocument(parameters);
+        var signature = GenerateSignature(document, secretKey);
+
+        var (isSuccessStatusCode, _, content) = await PostAsync(
+                apiUrl,
+                appId,
+                signature,
+                document,
+                "GetGameDetailUrl")
+            .ConfigureAwait(false); ;
+
+        return !isSuccessStatusCode ? null : content?.RootElement.GetProperty("Url").GetString();
+    }
+
+    public async ValueTask<(bool Success, JokerGameRecordInfoResponse? Response)> GetGameRecordAsync(
+        Uri apiUrl,
+        DateTimeOffset startTime,
+        DateTimeOffset endTime,
+        string? nextId,
+        string appId,
+        string secretKey)
+    {
+        var parameters = new Dictionary<string, object>
+        {
+            ["Method"] = "TSM",
+            ["StartDate"] = startTime.ToString("yyyy-MM-dd HH: mm"),
+            ["EndDate"] = endTime.ToString("yyyy-MM-dd HH: mm"),
+            ["NextId"] = nextId ?? string.Empty,
+            ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+        };
+
+        var document = JsonSerializer.SerializeToDocument(parameters);
+        var signature = GenerateSignature(document, secretKey);
+
+        var (isSuccessStatusCode, _, content) = await PostAsync(
+                apiUrl,
+                appId,
+                signature,
+                document,
+                "GetGameRecord")
+            .ConfigureAwait(false); ;
+
+        return (isSuccessStatusCode, content?.Deserialize<JokerGameRecordInfoResponse>());
+    }
+
+    public async ValueTask<string?> GetGameTokenAsync(Uri apiUrl, string playerCode, string appId, string secretKey)
+    {
+        var request = new
+        {
+            Method = "PLAY",
+            Username = playerCode,
+            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+        };
+
+        var document = JsonSerializer.SerializeToDocument(request);
+        var signature = GenerateSignature(document, secretKey);
+
+        var (isSuccessStatusCode, _, content) = await PostAsync(
+                apiUrl,
+                appId,
+                signature,
+                document,
+                "GameToken")
+            .ConfigureAwait(false);
+
+        return isSuccessStatusCode
+            ? content?.RootElement.GetProperty("Token").GetString()
+            : null;
+    }
+
+    public async ValueTask KickPlayerAsync(Uri apiUrl, string playerCode, string appId, string secretKey)
+    {
+        var request = new
+        {
+            Method = "SO",
+            Username = playerCode,
+            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+        };
+
+        var document = JsonSerializer.SerializeToDocument(request);
+        var signature = GenerateSignature(document, secretKey);
+
+        _ = await PostAsync(apiUrl, appId, signature, document, "KickPlayer")
+            .ConfigureAwait(false); ;
+    }
+
+    private static string GenerateSignature(JsonDocument document, string secretKey)
+    {
+        var parameters = document.Deserialize<SortedDictionary<string, object>>()!;
+
+        var values = parameters.Select(p => $"{p.Key}={p.Value}");
+        var original = string.Join("&", values);
+
+        using var sha = new HMACSHA1(Encoding.UTF8.GetBytes(secretKey));
+        var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(original));
+        return Convert.ToBase64String(hash);
+    }
+
+    private async ValueTask<(bool IsSuccessStatusCode, HttpStatusCode HttpStatusCode, JsonDocument? Content)> PostAsync(
+            Uri apiUrl,
         string appId,
         string signature,
         JsonDocument request,
@@ -318,17 +361,5 @@ internal class JokerApiClient : IJokerApiClient
             : null;
 
         return (httpResponseMessage.IsSuccessStatusCode, httpResponseMessage.StatusCode, responseDocument);
-    }
-
-    private static string GenerateSignature(JsonDocument document, string secretKey)
-    {
-        var parameters = document.Deserialize<SortedDictionary<string, object>>()!;
-
-        var values = parameters.Select(p => $"{p.Key}={p.Value}");
-        var original = string.Join("&", values);
-
-        using var sha = new HMACSHA1(Encoding.UTF8.GetBytes(secretKey));
-        var hash = sha.ComputeHash(Encoding.UTF8.GetBytes(original));
-        return Convert.ToBase64String(hash);
     }
 }
