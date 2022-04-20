@@ -83,6 +83,6 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
             => source.Contains("和局", StringComparison.OrdinalIgnoreCase);
 
         private DateTimeOffset GetDateTimeOffsetUTC8(string dateTime)
-                            => new DateTimeOffset(DateTime.Parse(dateTime), TimeSpan.FromHours(+8));
+            => new DateTimeOffset(DateTime.Parse(dateTime), TimeSpan.FromHours(+8));
     }
 }

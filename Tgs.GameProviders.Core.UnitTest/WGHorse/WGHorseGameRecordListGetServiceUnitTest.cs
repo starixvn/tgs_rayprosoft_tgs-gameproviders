@@ -115,7 +115,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
             {
                 new(){
                     MemberCode ="4ugl1wyedic5",
-                    RecordDate =DateTimeOffset.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                    RecordDate =DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                     BatchNo ="123499081",
                     ShowType= "過關<br><font color='red'>2x3</font>",
                     ShowDiscount ="有單頭@0.9000",
@@ -124,8 +124,8 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
                     ShowAmount="50",
                     ShowWin="129.00",
                     ShowOddsWin ="0",
-                    ShowDivideDate= DateTimeOffset.UtcNow.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss"),
-                    ShowRaceDate=DateTimeOffset.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
+                    ShowDivideDate= DateTimeOffset.Now.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss"),
+                    ShowRaceDate=DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                 }
             };
 
