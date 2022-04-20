@@ -4,6 +4,7 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameProviders.Core.Avia;
 using Tgs.GameProviders.Core.Avia.ApplicationServices;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration.Avia;
 
 namespace Tgs.GameProviders.Core.UnitTest.Avia
@@ -30,7 +31,7 @@ namespace Tgs.GameProviders.Core.UnitTest.Avia
 
             var brandMerchant = new AviaBrandMerchant()
             {
-                BrandCode = "Default",
+                BrandCode = DefConst.BrandCodeDefault,
                 ApiUrl = new("https://api.aviaapi.vip"),
                 Authorization = "81e2d1a24c684a76a710a70f4900a353",
                 PlayerPassword = "TgsP@ssw0rd"

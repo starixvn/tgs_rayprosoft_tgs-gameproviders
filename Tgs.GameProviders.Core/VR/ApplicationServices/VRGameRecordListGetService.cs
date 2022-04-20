@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.VR.Models;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
@@ -65,7 +66,7 @@ namespace Tgs.GameProviders.Core.VR.ApplicationServices
                 return new() { Success = true };
             }
 
-            var gameProviderCode = _service.GetGameProviderCode();
+            var gameProviderCode = GameProviderType.VR;
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
             var datas = response.Records.Select(data => new GameRecordListModel()

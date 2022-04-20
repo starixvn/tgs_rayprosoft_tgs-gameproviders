@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Core.Infrastructures.Security;
-using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.SexyGaming.Models;
 using Tgs.ServiceUtility;
 
@@ -60,9 +59,9 @@ namespace Tgs.GameProviders.Core.SexyGaming.ApplicationServices
 
             var responseGameUrl = await _client.GetGamingLoginGameAsync(configuration.ApiUrl, data).ConfigureAwait(false);
 
-            if (responseGameUrl.Status.IgnoreCaseNotEquals(((int)SexyGamingGameApiError.Success).ToString("d4")))
+            if (!_service.IsSuccess(responseGameUrl.Status))
             {
-                if (responseGameUrl.Status.IgnoreCaseEquals(((int)SexyGamingGameApiError.AccountIsNotExists).ToString("d4")))
+                if (_service.IsAccountIsNotExists(responseGameUrl.Status))
                 {
                     if (await _gamingGamePlayerCreate.CreatePlayerAsync(configuration, command.PlayerCode, command.CurrencyCode, gameProviderCurrency, gameProviderCulture))
                     {
@@ -70,8 +69,7 @@ namespace Tgs.GameProviders.Core.SexyGaming.ApplicationServices
                     }
                 }
             }
-
-            return responseGameUrl.Status.IgnoreCaseEquals(((int)SexyGamingGameApiError.Success).ToString("d4")) ? new() { Url = new Uri(responseGameUrl.Url) } : null;
+            return _service.IsSuccess(responseGameUrl.Status) ? new() { Url = new Uri(responseGameUrl.Url) } : null;
         }
     }
 }

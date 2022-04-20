@@ -214,6 +214,12 @@ namespace Tgs.GameProviders.ApiClients.Avia
             return response.Success == 1 && transferInfoStatus == AviaTransferInfoStatus.Finish;
         }
 
+        private static Dictionary<string, string> ToFormData<TData>(TData request)
+        {
+            var value = JsonSerializer.Serialize(request);
+            return JsonSerializer.Deserialize<Dictionary<string, string>>(value);
+        }
+
         private DateTimeOffset GetDateTimeOffsetNowTimeZone8()
             => DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
 
@@ -267,12 +273,6 @@ namespace Tgs.GameProviders.ApiClients.Avia
             }
 
             return default;
-        }
-
-        private static Dictionary<string, string> ToFormData<TData>(TData request)
-        {
-            var value = JsonSerializer.Serialize(request);
-            return JsonSerializer.Deserialize<Dictionary<string, string>>(value);
         }
     }
 }

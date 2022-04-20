@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Tgs.GameProviders.Core.Card365;
 using Tgs.GameProviders.Core.Card365.ApplicationServices;
 using Tgs.GameProviders.Core.Card365.Model;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.Card365;
 using Tgs.GameProviders.QueryServer.Models;
@@ -26,7 +27,7 @@ public class Card365KickPlayerCommandServiceUnitTest
 
         var agent = new Card365BrandAgent
         {
-            BrandCode = "Default",
+            BrandCode = DefConst.BrandCodeDefault,
             AgentId = "card0201"
         };
 

@@ -10,5 +10,9 @@ namespace Tgs.GameProviders.Core.SexyGaming
         ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
 
         ValueTask<SexyGamingConfiguration> GetSettingConfigurationAsync();
+
+        bool IsAccountIsNotExists(string status);
+
+        bool IsSuccess(string status);
     }
 }

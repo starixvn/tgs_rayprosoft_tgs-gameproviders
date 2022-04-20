@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.VR;
 using Tgs.GameProviders.QueryServer.Models;
 
@@ -12,12 +11,8 @@ namespace Tgs.GameProviders.Core.VR
 
         RoundClientStatus GetClientRound(int state);
 
-        string GetGameProviderCode();
-
         ValueTask<Guid> GetGameProviderIdAsync();
 
         RoundStatus GetRoundStatus(int state);
-
-        ValueTask<VRConfiguration> GetSettingConfigurationAsync();
     }
 }

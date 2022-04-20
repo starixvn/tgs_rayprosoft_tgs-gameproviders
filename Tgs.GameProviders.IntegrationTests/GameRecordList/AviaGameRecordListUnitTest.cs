@@ -35,7 +35,7 @@ namespace Tgs.GameProviders.IntegrationTests.GameRecordList
             });
             var query = new AviaGameRecordListQuery()
             {
-                BrandCode = "Default",
+                BrandCode = DefConst.BrandCodeDefault,
                 StartTime = DateTimeOffset.Parse("2021-12-01T00:00:00+00:00"),
                 EndTime = DateTimeOffset.Parse("2021-12-13T00:00:00+00:00"),
                 Page = 1,
@@ -44,7 +44,7 @@ namespace Tgs.GameProviders.IntegrationTests.GameRecordList
 
             var brandMerchant = new AviaBrandMerchant()
             {
-                BrandCode = "Default",
+                BrandCode = DefConst.BrandCodeDefault,
                 ApiUrl = new("https://api.aviaapi.vip"),
                 Authorization = "81e2d1a24c684a76a710a70f4900a353",
                 PlayerPassword = "TgsP@ssw0rd"

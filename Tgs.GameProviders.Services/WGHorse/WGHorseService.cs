@@ -33,12 +33,6 @@ namespace Tgs.GameProviders.Services.WGHorse
                 < 0 => RoundClientStatus.Loss,
             };
 
-        public async ValueTask<GameInfo> GetGameByExternalGameId(Guid gameProviderId, string externalGameId)
-            => await _gameService.GetAsync(gameProviderId, externalGameId).ConfigureAwait(false);
-
-        public string GetGameProviderCode()
-            => GameProviderType.WGHorse;
-
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
             var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.WGHorse).ConfigureAwait(false);

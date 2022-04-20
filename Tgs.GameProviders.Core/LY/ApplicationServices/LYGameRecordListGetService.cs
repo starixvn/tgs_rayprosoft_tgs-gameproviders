@@ -4,8 +4,8 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.LY.Models;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
@@ -31,7 +31,7 @@ namespace Tgs.GameProviders.Core.LY.ApplicationServices
         public async ValueTask<GameRecordListResult> GetAsync(LYGameRecordListQuery command, CancellationToken cancellationToken = default)
         {
             var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode);
-            var agentId = brandMerchant.AgentMappers.Where(x => x.CurrencyCode.IgnoreCaseEquals(command.CurrencyCode) && x.Status).FirstOrDefault()?.AgentId;
+            var agentId = brandMerchant.AgentMappers.Where(x => _service.IgnoreCaseEquals(x.CurrencyCode, command.CurrencyCode) && x.Status).FirstOrDefault()?.AgentId;
 
             if (string.IsNullOrEmpty(agentId))
             {
@@ -58,7 +58,7 @@ namespace Tgs.GameProviders.Core.LY.ApplicationServices
                 return new() { Success = true };
             }
 
-            var gameProviderCode = _service.GetGameProviderCode();
+            var gameProviderCode = GameProviderType.LY;
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
             var datas = GameRecordList.GameID.Select((gameId, index) => new GameRecordListModel()

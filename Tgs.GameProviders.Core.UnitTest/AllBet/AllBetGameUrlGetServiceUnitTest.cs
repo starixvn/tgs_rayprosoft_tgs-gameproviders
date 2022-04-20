@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Tgs.GameProviders.Core.AllBet;
 using Tgs.GameProviders.Core.AllBet.ApplicationServices;
 using Tgs.GameProviders.Core.AllBet.Models;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.AllBet;
 using Tgs.GameProviders.QueryServer.Models;
@@ -47,7 +48,7 @@ public class AllBetGameUrlGetServiceUnitTest
             {
                 new()
                 {
-                    BrandCode = "Default",
+                    BrandCode =  DefConst.BrandCodeDefault,
                     Agents = new[] { agent }
                 }
             }
