@@ -24,26 +24,19 @@ namespace Tgs.GameProviders.Services.LY
             _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
         }
 
-        public async Task<string> GetAgentIdAsync(string brandCode, string currencyCode)
+        public async ValueTask<string> GetAgentIdAsync(string brandCode, string currencyCode)
         {
-            var configuration = await GetSettingConfigurationAsync().ConfigureAwait(false);
-            var brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, brandCode) && x.Status).FirstOrDefault();
-            if (brandMerchant == null)
-            {
-                brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, CustomConst.BrandCodeDefault) && x.Status).FirstOrDefault();
-            }
+            var brandMerchant = await GetBrandMerchantAsync(brandCode).ConfigureAwait(false);
+
             return brandMerchant.AgentMappers.Where(x => IgnoreCaseEquals(x.CurrencyCode, currencyCode) && x.Status).FirstOrDefault()?.AgentId;
         }
 
-        public async Task<LYBrandMerchant> GetBrandMerchantAsync(string brandCode)
+        public async ValueTask<LYBrandMerchant> GetBrandMerchantAsync(string brandCode)
         {
             var configuration = await _settingService.GetConfigurationAsync<LYConfiguration>(GameProviderConfigurations.LY).ConfigureAwait(false);
-            var brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, brandCode) && x.Status).FirstOrDefault();
-            if (brandMerchant == null)
-            {
-                brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, CustomConst.BrandCodeDefault) && x.Status).FirstOrDefault();
-            }
-            return brandMerchant;
+
+            return configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, brandCode) && x.Status).FirstOrDefault() ??
+                configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, DefConst.BrandCodeDefault) && x.Status).FirstOrDefault();
         }
 
         public RoundClientStatus GetClientRound(decimal playerWinLoss)
@@ -54,16 +47,10 @@ namespace Tgs.GameProviders.Services.LY
                 0 => RoundClientStatus.Draw
             };
 
-        public string GetGameProviderCode()
-            => GameProviderType.LY;
-
         public ValueTask<Guid> GetGameProviderIdAsync()
             => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.LY);
 
-        public ValueTask<LYConfiguration> GetSettingConfigurationAsync()
-            => _settingService.GetConfigurationAsync<LYConfiguration>(GameProviderConfigurations.LY);
-
-        private static bool IgnoreCaseEquals(string source, string trigger)
-                                                    => string.Equals(source, trigger, StringComparison.OrdinalIgnoreCase);
+        public bool IgnoreCaseEquals(string source, string trigger)
+            => string.Equals(source, trigger, StringComparison.OrdinalIgnoreCase);
     }
 }

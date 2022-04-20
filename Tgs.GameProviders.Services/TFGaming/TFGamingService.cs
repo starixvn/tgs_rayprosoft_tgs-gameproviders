@@ -24,7 +24,7 @@ namespace Tgs.GameProviders.Services.TFGaming
 
             if (brandMerchant == null)
             {
-                brandMerchant = configuration.BrandMerchants.Where(brand => brand.BrandCode == CustomConst.BrandCodeDefault && brand.BrandCurrency == currencyCode).FirstOrDefault();
+                brandMerchant = configuration.BrandMerchants.Where(brand => brand.BrandCode == DefConst.BrandCodeDefault && brand.BrandCurrency == currencyCode).FirstOrDefault();
             }
             return brandMerchant;
         }

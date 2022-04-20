@@ -3,8 +3,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.WGHorse.Models;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
@@ -48,7 +48,7 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
                 return new() { Success = true };
             }
 
-            var gameProviderCode = _service.GetGameProviderCode();
+            var gameProviderCode = GameProviderType.WGHorse;
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
             var datas = GameRecord

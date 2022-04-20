@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
@@ -45,7 +46,7 @@ namespace Tgs.GameProviders.Core.WGSports.ApplicationServices
                 return new() { Success = true };
             }
 
-            var gameProviderCode = _service.GetGameProviderCode();
+            var gameProviderCode = GameProviderType.WGSports;
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
             var datas = BetInfos

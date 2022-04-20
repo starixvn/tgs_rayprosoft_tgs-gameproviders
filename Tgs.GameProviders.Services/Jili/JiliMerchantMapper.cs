@@ -18,6 +18,6 @@ internal class JiliMerchantMapper : IJiliMerchantMapper
         var jiliMerchants = merchants.ToArray();
 
         return jiliMerchants.FirstOrDefault(m => m.BrandCode == brandCode) ??
-               jiliMerchants.FirstOrDefault(m => m.BrandCode == CustomConst.BrandCodeDefault);
+               jiliMerchants.FirstOrDefault(m => m.BrandCode == DefConst.BrandCodeDefault);
     }
 }

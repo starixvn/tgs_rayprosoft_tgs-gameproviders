@@ -33,7 +33,7 @@ public class JiliGameUrlGetServiceUnitTest
 
         var merchant = new JiliMerchant
         {
-            BrandCode = CustomConst.BrandCodeDefault,
+            BrandCode = DefConst.BrandCodeDefault,
             AgentId = "PG_Seamless",
             AgentKey = "0d90dda822b6df548460da8f551c1a76c01b6a9e"
         };

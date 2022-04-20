@@ -12,7 +12,7 @@ namespace Tgs.GameProviders.Services.IMESports
         {
             var merchant = merchants.FirstOrDefault(b => b.BrandCode == brandCode);
 
-            return merchant ?? merchants.FirstOrDefault(b => b.BrandCode == CustomConst.BrandCodeDefault);
+            return merchant ?? merchants.FirstOrDefault(b => b.BrandCode == DefConst.BrandCodeDefault);
         }
     }
 }

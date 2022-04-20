@@ -45,7 +45,7 @@ public class AllBetKickPlayerCommandServiceUnitTest
             {
                 new()
                 {
-                    BrandCode = CustomConst.BrandCodeDefault,
+                    BrandCode = DefConst.BrandCodeDefault,
                     Agents = new[] { agent }
                 }
             }

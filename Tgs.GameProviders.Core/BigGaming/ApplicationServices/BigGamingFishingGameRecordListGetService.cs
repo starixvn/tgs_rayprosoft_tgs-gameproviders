@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Tgs.GameProviders.Core.BigGaming.Models;
 using Tgs.GameProviders.Core.BigGaming.Models.Commons;
 using Tgs.GameProviders.Core.Extensions;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
@@ -61,7 +62,7 @@ namespace Tgs.GameProviders.Core.BigGaming.ApplicationServices
                 };
             }
 
-            var gameProviderCode = _service.GetGameProviderCode();
+            var gameProviderCode = GameProviderType.BigGaming;
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
             var datas = gameRecords.Items.Select(data => new GameRecordListModel()

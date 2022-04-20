@@ -38,7 +38,7 @@ public class Card365GameUrlQueryGetServiceUnitTest
 
         var agent = new Card365BrandAgent
         {
-            BrandCode = CustomConst.BrandCodeDefault,
+            BrandCode = DefConst.BrandCodeDefault,
             AgentId = "card0201"
         };
 

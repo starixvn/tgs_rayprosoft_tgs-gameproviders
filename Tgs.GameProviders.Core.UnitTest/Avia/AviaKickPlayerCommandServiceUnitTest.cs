@@ -48,7 +48,7 @@ namespace Tgs.GameProviders.Core.UnitTest.Avia
 
             var brandMerchant = new AviaBrandMerchant()
             {
-                BrandCode = CustomConst.BrandCodeDefault,
+                BrandCode = DefConst.BrandCodeDefault,
                 ApiUrl = new("https://api.aviaapi.vip"),
                 Authorization = "81e2d1a24c684a76a710a70f4900a353",
                 PlayerPassword = "TgsP@ssw0rd"

@@ -9,10 +9,6 @@ namespace Tgs.GameProviders.Core.WGHorse
     {
         RoundClientStatus GetClientRound(decimal playerWinLoss);
 
-        ValueTask<GameInfo> GetGameByExternalGameId(Guid gameProviderId, string externalGameId);
-
-        string GetGameProviderCode();
-
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 
         ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);

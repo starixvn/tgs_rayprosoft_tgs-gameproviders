@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameProviders.Domains
 {
-    public class CustomConst
+    public class DefConst
     {
         public const string BrandCodeDefault = "Default";
     }

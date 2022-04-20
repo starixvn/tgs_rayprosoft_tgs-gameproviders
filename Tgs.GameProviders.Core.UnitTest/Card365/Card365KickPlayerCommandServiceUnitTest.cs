@@ -27,7 +27,7 @@ public class Card365KickPlayerCommandServiceUnitTest
 
         var agent = new Card365BrandAgent
         {
-            BrandCode = CustomConst.BrandCodeDefault,
+            BrandCode = DefConst.BrandCodeDefault,
             AgentId = "card0201"
         };
 

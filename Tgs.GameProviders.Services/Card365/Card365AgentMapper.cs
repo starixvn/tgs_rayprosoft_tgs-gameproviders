@@ -19,6 +19,6 @@ internal class Card365AgentMapper : ICard365AgentMapper
         }
 
         return agents.FirstOrDefault(ag => ag.BrandCode == brandCode) ??
-               agents.FirstOrDefault(ag => ag.BrandCode == CustomConst.BrandCodeDefault);
+               agents.FirstOrDefault(ag => ag.BrandCode == DefConst.BrandCodeDefault);
     }
 }

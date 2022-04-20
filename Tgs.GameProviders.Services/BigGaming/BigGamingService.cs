@@ -38,9 +38,6 @@ namespace Tgs.GameProviders.Services.BigGaming
                 0 => RoundClientStatus.Draw
             };
 
-        public string GetGameProviderCode()
-            => GameProviderType.BigGaming;
-
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
             var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.BigGaming).ConfigureAwait(false);
@@ -51,10 +48,7 @@ namespace Tgs.GameProviders.Services.BigGaming
         public ValueTask<Guid> GetGameProviderIdAsync()
             => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.BigGaming);
 
-        public ValueTask<BigGamingConfiguration> GetSettingConfigurationAsync()
-            => _settingService.GetConfigurationAsync<BigGamingConfiguration>(GameProviderConfigurations.BigGaming);
-
         private static bool IgnoreCaseEquals(string source, string trigger)
-                                                    => string.Equals(source, trigger, StringComparison.OrdinalIgnoreCase);
+            => string.Equals(source, trigger, StringComparison.OrdinalIgnoreCase);
     }
 }

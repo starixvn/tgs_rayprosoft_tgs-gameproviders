@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.Avia;
 using Tgs.GameProviders.QueryServer.Models;
 
@@ -21,7 +20,5 @@ namespace Tgs.GameProviders.Core.Avia
         ValueTask<Guid> GetGameProviderIdAsync();
 
         RoundStatus GetRoundStatus(string state);
-
-        ValueTask<AviaConfiguration> GetSettingConfigurationAsync();
     }
 }

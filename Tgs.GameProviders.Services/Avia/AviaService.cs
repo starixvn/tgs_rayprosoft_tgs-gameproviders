@@ -26,13 +26,10 @@ namespace Tgs.GameProviders.Services.Avia
 
         public async ValueTask<AviaBrandMerchant> GetBrandMerchantAsync(string brandCode)
         {
-            var configuration = await GetSettingConfigurationAsync().ConfigureAwait(false);
-            var brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, brandCode) && x.Status).FirstOrDefault();
-            if (brandMerchant == null)
-            {
-                brandMerchant = configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, CustomConst.BrandCodeDefault) && x.Status).FirstOrDefault();
-            }
-            return brandMerchant;
+            var configuration = await _settingService.GetConfigurationAsync<AviaConfiguration>(GameProviderConfigurations.Avia).ConfigureAwait(false);
+
+            return configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, brandCode) && x.Status).FirstOrDefault() ??
+                configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, DefConst.BrandCodeDefault) && x.Status).FirstOrDefault();
         }
 
         public RoundClientStatus GetClientRound(string state)
@@ -72,10 +69,7 @@ namespace Tgs.GameProviders.Services.Avia
                 _ => RoundStatus.Closed
             };
 
-        public ValueTask<AviaConfiguration> GetSettingConfigurationAsync()
-            => _settingService.GetConfigurationAsync<AviaConfiguration>(GameProviderConfigurations.Avia);
-
         private static bool IgnoreCaseEquals(string source, string trigger)
-                                                                    => string.Equals(source, trigger, StringComparison.OrdinalIgnoreCase);
+            => string.Equals(source, trigger, StringComparison.OrdinalIgnoreCase);
     }
 }

@@ -15,7 +15,7 @@ internal class AllBetAgentMapper : IAllBetAgentMapper
         }
 
         var merchant = merchants.FirstOrDefault(m => m.BrandCode == brandCode) ??
-                       merchants.FirstOrDefault(m => m.BrandCode == CustomConst.BrandCodeDefault);
+                       merchants.FirstOrDefault(m => m.BrandCode == DefConst.BrandCodeDefault);
 
         return merchant?.Agents.FirstOrDefault(a => a.CurrencyCode == currencyCode);
     }

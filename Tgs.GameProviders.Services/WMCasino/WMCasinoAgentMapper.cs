@@ -15,7 +15,7 @@ namespace Tgs.GameProviders.Services.WMCasino
             }
 
             var merchant = merchants.FirstOrDefault(m => m.BrandCode == brandCode) ??
-                merchants.FirstOrDefault(m => m.BrandCode == CustomConst.BrandCodeDefault);
+                merchants.FirstOrDefault(m => m.BrandCode == DefConst.BrandCodeDefault);
 
             return merchant?.Agents.FirstOrDefault(ag => ag.CurrencyCode == currencyCode && ag.Status);
         }
