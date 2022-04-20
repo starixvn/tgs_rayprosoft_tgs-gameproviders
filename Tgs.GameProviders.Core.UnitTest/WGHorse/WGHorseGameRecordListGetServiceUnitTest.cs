@@ -117,7 +117,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
             {
                 new(){
                     MemberCode ="4ugl1wyedic5",
-                    RecordDate =DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    RecordDate ="2022-04-16 17:00:04",
                     BatchNo ="123499081",
                     ShowType= "過關<br><font color='red'>2x3</font>",
                     ShowDiscount ="有單頭@0.9000",
@@ -126,8 +126,8 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
                     ShowAmount="50",
                     ShowWin="129.00",
                     ShowOddsWin ="0",
-                    ShowDivideDate= DateTimeOffset.Now.AddHours(1).ToString("yyyy-MM-dd HH:mm:ss"),
-                    ShowRaceDate=DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                    ShowDivideDate= "2022-04-16 17:39:34",
+                    ShowRaceDate="2022-04-16 17:10:00",
                 }
             };
 
@@ -143,7 +143,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
 
             _ = fakeWGHorseService.GetClientRound(decimal.Parse("129.00")).Returns(RoundClientStatus.Win);
 
-            _ = fakeSystemClock.CurrentTime.Returns(DateTimeOffset.UtcNow);
+            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16"), TimeSpan.FromHours(+0)));
 
             var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
 
@@ -215,7 +215,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
 
             _ = fakeWGHorseService.GetClientRound(decimal.Parse("0.00")).Returns(RoundClientStatus.Draw);
 
-            _ = fakeSystemClock.CurrentTime.Returns(DateTimeOffset.UtcNow);
+            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2021-10-31 13:30:00"), TimeSpan.FromHours(+0)));
 
             var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
 
@@ -287,7 +287,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
 
             _ = fakeWGHorseService.GetClientRound(decimal.Parse("-45.50")).Returns(RoundClientStatus.Loss);
 
-            _ = fakeSystemClock.CurrentTime.Returns(DateTimeOffset.UtcNow);
+            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16 15:00:10"), TimeSpan.FromHours(+0)));
 
             var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
 
@@ -359,7 +359,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
 
             _ = fakeWGHorseService.GetClientRound(decimal.Parse("-45.50")).Returns(RoundClientStatus.Loss);
 
-            _ = fakeSystemClock.CurrentTime.Returns(DateTimeOffset.UtcNow);
+            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16 15:00:10"), TimeSpan.FromHours(+0)));
 
             var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
 
