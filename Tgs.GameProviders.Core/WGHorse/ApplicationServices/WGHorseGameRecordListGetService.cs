@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.WGHorse.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
@@ -14,14 +15,17 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
     {
         private readonly IWGHorseApiClient _client;
         private readonly IWGHorseService _service;
+        private readonly ILogger<WGHorseGameRecordListGetService> _logger;
 
         public WGHorseGameRecordListGetService(
             IWGHorseApiClient client,
-            IWGHorseService service
+            IWGHorseService service,
+            ILogger<WGHorseGameRecordListGetService> logger
             )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async ValueTask<GameRecordListResult> GetAsync(WGHorseGameRecordListQuery command, CancellationToken cancellationToken = default)
@@ -76,8 +80,11 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
             return new() { Success = true, Datas = datas };
         }
 
-        private static RoundStatus GetRoundStatus(string showType, DateTimeOffset externalClosedOn)
-            => showType.Contains("過關", StringComparison.OrdinalIgnoreCase) ? DateTime.Parse(DateTimeOffset.Now.LocalDateTime.ToLongDateString()) <= DateTime.Parse(externalClosedOn.LocalDateTime.ToLongDateString()) ? RoundStatus.Open : RoundStatus.Closed : RoundStatus.Closed;
+        private RoundStatus GetRoundStatus(string showType, DateTimeOffset externalClosedOn)
+        {
+            _logger.LogInformation("LogOn:{DateTime.Now.ToString(\"o\")} NowOn:{DateTime.Parse(DateTimeOffset.Now.LocalDateTime.ToLongDateString())} externalClosedOn: { DateTime.Parse(externalClosedOn.LocalDateTime.ToLongDateString())}", DateTime.Now.ToString("o"), DateTime.Parse(DateTimeOffset.Now.LocalDateTime.ToLongDateString()), DateTime.Parse(externalClosedOn.LocalDateTime.ToLongDateString()));
+            return showType.Contains("過關", StringComparison.OrdinalIgnoreCase) ? DateTime.Parse(DateTimeOffset.Now.LocalDateTime.ToLongDateString()) <= DateTime.Parse(externalClosedOn.LocalDateTime.ToLongDateString()) ? RoundStatus.Open : RoundStatus.Closed : RoundStatus.Closed;
+        }
 
         private static bool IsDraw(string source)
             => source.Contains("和局", StringComparison.OrdinalIgnoreCase);

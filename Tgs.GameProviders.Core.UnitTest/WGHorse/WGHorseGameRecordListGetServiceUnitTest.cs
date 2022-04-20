@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameProviders.Core.WGHorse;
@@ -17,10 +18,11 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
         [Test]
         public async Task WGHorse_GameRecord_Multiples_Is_Close()
         {
+            var faceLogger = NullLogger<WGHorseGameRecordListGetService>.Instance;
             var fakeWGHorseApiClient = Substitute.For<IWGHorseApiClient>();
             var fakeWGHorseService = Substitute.For<IWGHorseService>();
 
-            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService);
+            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, faceLogger);
 
             var query = new WGHorseGameRecordListQuery()
             {
@@ -86,10 +88,11 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
         [Test]
         public async Task WGHorse_GameRecord_Multiples_Is_Open()
         {
+            var faceLogger = NullLogger<WGHorseGameRecordListGetService>.Instance;
             var fakeWGHorseApiClient = Substitute.For<IWGHorseApiClient>();
             var fakeWGHorseService = Substitute.For<IWGHorseService>();
 
-            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService);
+            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, faceLogger);
 
             var query = new WGHorseGameRecordListQuery()
             {
@@ -155,10 +158,11 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
         [Test]
         public async Task WGHorse_GameRecord_Multiples_EndTime_Greater_Than_Current_Is_Open()
         {
+            var faceLogger = NullLogger<WGHorseGameRecordListGetService>.Instance;
             var fakeWGHorseApiClient = Substitute.For<IWGHorseApiClient>();
             var fakeWGHorseService = Substitute.For<IWGHorseService>();
 
-            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService);
+            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, faceLogger);
 
             var query = new WGHorseGameRecordListQuery()
             {
@@ -224,10 +228,11 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
         [Test]
         public async Task WGHorse_GameRecord_Push()
         {
+            var faceLogger = NullLogger<WGHorseGameRecordListGetService>.Instance;
             var fakeWGHorseApiClient = Substitute.For<IWGHorseApiClient>();
             var fakeWGHorseService = Substitute.For<IWGHorseService>();
 
-            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService);
+            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, faceLogger);
 
             var query = new WGHorseGameRecordListQuery()
             {
@@ -289,10 +294,11 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
         [Test]
         public async Task WGHorse_GameRecord_Single_位置Q_Is_Close()
         {
+            var faceLogger = NullLogger<WGHorseGameRecordListGetService>.Instance;
             var fakeWGHorseApiClient = Substitute.For<IWGHorseApiClient>();
             var fakeWGHorseService = Substitute.For<IWGHorseService>();
 
-            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService);
+            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, faceLogger);
 
             var query = new WGHorseGameRecordListQuery()
             {
@@ -358,10 +364,11 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
         [Test]
         public async Task WGHorse_GameRecord_Single_獨贏_Is_Close()
         {
+            var faceLogger = NullLogger<WGHorseGameRecordListGetService>.Instance;
             var fakeWGHorseApiClient = Substitute.For<IWGHorseApiClient>();
             var fakeWGHorseService = Substitute.For<IWGHorseService>();
 
-            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService);
+            var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, faceLogger);
 
             var query = new WGHorseGameRecordListQuery()
             {
