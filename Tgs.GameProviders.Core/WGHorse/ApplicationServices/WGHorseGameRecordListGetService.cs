@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.WGHorse.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
@@ -15,17 +14,17 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
     {
         private readonly IWGHorseApiClient _client;
         private readonly IWGHorseService _service;
-        private readonly ILogger<WGHorseGameRecordListGetService> _logger;
+        private readonly ISystemClock _systemClock;
 
         public WGHorseGameRecordListGetService(
             IWGHorseApiClient client,
             IWGHorseService service,
-            ILogger<WGHorseGameRecordListGetService> logger
+            ISystemClock systemClock
             )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
         }
 
         public async ValueTask<GameRecordListResult> GetAsync(WGHorseGameRecordListQuery command, CancellationToken cancellationToken = default)
@@ -62,17 +61,17 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
                     GameProviderId = gameProviderId,
                     PlayerCode = data.MemberCode,
                     Status = GetRoundStatus(data.ShowType, GetDateTimeOffsetUTC8(data.ShowDivideDate)),
-                    ClientStatus = (GetRoundStatus(data.ShowType, GetDateTimeOffsetUTC8(data.ShowDivideDate)) == RoundStatus.Closed) ? _service.GetClientRound(IsDraw(data.ShowWin) ? 0m : decimal.Parse(data.ShowWin)) : RoundClientStatus.Open,
+                    ClientStatus = IsClosed(data.ShowType, GetDateTimeOffsetUTC8(data.ShowDivideDate)) ? _service.GetClientRound(IsDraw(data.ShowWin) ? 0m : decimal.Parse(data.ShowWin)) : RoundClientStatus.Open,
                     ExternalRoundId = data.BatchNo,
                     ExternalGameId = "1",
                     ExternalCreatedOn = GetDateTimeOffsetUTC8(data.RecordDate),
                     ExternalClosedOn = GetDateTimeOffsetUTC8(data.ShowDivideDate),
                     BetAmount = decimal.Parse(data.ShowAmount),
                     ValidBetAmount = decimal.Parse(data.ShowAmount),
-                    PlayerWinLoss = (GetRoundStatus(data.ShowType, GetDateTimeOffsetUTC8(data.ShowDivideDate)) == RoundStatus.Closed) ? IsDraw(data.ShowWin) ? 0 : decimal.Parse(data.ShowWin) : 0,
+                    PlayerWinLoss = IsClosed(data.ShowType, GetDateTimeOffsetUTC8(data.ShowDivideDate)) ? IsDraw(data.ShowWin) ? 0 : decimal.Parse(data.ShowWin) : 0,
                     Commission = 0,
                     Turnover = decimal.Parse(data.ShowAmount),
-                    SettleAmount = (GetRoundStatus(data.ShowType, GetDateTimeOffsetUTC8(data.ShowDivideDate)) == RoundStatus.Closed) ? decimal.Parse(data.ShowAmount) + (IsDraw(data.ShowWin) ? 0m : decimal.Parse(data.ShowWin)) : 0,
+                    SettleAmount = IsClosed(data.ShowType, GetDateTimeOffsetUTC8(data.ShowDivideDate)) ? decimal.Parse(data.ShowAmount) + (IsDraw(data.ShowWin) ? 0m : decimal.Parse(data.ShowWin)) : 0,
                     TieBetAdjustment = null,
                     AdditionalData = JsonSerializer.Serialize(data),
                 })
@@ -80,16 +79,22 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
             return new() { Success = true, Datas = datas };
         }
 
-        private RoundStatus GetRoundStatus(string showType, DateTimeOffset externalClosedOn)
-        {
-            _logger.LogInformation("LogOn:{DateTime.Now.ToString(\"o\")} NowOn:{DateTime.Parse(DateTimeOffset.Now.LocalDateTime.ToLongDateString())} externalClosedOn: { DateTime.Parse(externalClosedOn.LocalDateTime.ToLongDateString())}", DateTime.Now.ToString("o"), DateTime.Parse(DateTimeOffset.Now.LocalDateTime.ToLongDateString()), DateTime.Parse(externalClosedOn.LocalDateTime.ToLongDateString()));
-            return showType.Contains("過關", StringComparison.OrdinalIgnoreCase) ? DateTime.Parse(DateTimeOffset.Now.LocalDateTime.ToLongDateString()) <= DateTime.Parse(externalClosedOn.LocalDateTime.ToLongDateString()) ? RoundStatus.Open : RoundStatus.Closed : RoundStatus.Closed;
-        }
+        private static DateTimeOffset GetDateTimeOffsetUTC8(string dateTime)
+            => new DateTimeOffset(DateTime.Parse(dateTime), TimeSpan.FromHours(+8));
+
+        private static DateTimeOffset GetTomorrowDateUTC(DateTimeOffset dateTime)
+            => new DateTimeOffset(DateTime.Parse(dateTime.AddDays(1).UtcDateTime.ToLongDateString()), TimeSpan.FromHours(+0));
 
         private static bool IsDraw(string source)
-            => source.Contains("和局", StringComparison.OrdinalIgnoreCase);
+                            => source.Contains("和局", StringComparison.OrdinalIgnoreCase);
 
-        private DateTimeOffset GetDateTimeOffsetUTC8(string dateTime)
-            => new DateTimeOffset(DateTime.Parse(dateTime), TimeSpan.FromHours(+8));
+        private RoundStatus GetRoundStatus(string showType, DateTimeOffset externalClosedOn)
+        {
+            var tomorrowDateUTC = GetTomorrowDateUTC(externalClosedOn);
+            return showType.Contains("過關", StringComparison.OrdinalIgnoreCase) ? externalClosedOn.UtcDateTime < tomorrowDateUTC && tomorrowDateUTC <= _systemClock.CurrentTime ? RoundStatus.Closed : RoundStatus.Open : RoundStatus.Closed;
+        }
+
+        private bool IsClosed(string showType, DateTimeOffset externalClosedOn)
+                    => GetRoundStatus(showType, externalClosedOn) == RoundStatus.Closed;
     }
 }
