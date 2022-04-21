@@ -48,7 +48,7 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(request);
         var signature = GenerateSignature(document, secretKey);
 
-        var (isSuccessStatusCode, _, content) = await PostAsync(
+        var (_, statusCode, _) = await PostAsync(
             apiUrl,
             appId,
             signature,
@@ -56,13 +56,12 @@ internal class JokerApiClient : IJokerApiClient
             "CreateUser")
             .ConfigureAwait(false);
 
-        if (!isSuccessStatusCode)
+        return statusCode switch
         {
-            return false;
-        }
-
-        var status = content?.RootElement.GetProperty("Status").GetString();
-        return status is "OK" or "Created";
+            HttpStatusCode.OK or HttpStatusCode.Created => true,
+            HttpStatusCode.NotFound => false,
+            _ => throw new Exception($"Joker returns status code: {(int)statusCode}")
+        };
     }
 
     public async ValueTask<bool> FundInAsync(
@@ -108,7 +107,7 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(parameters);
         var signature = GenerateSignature(document, secretKey);
 
-        var (isSuccessStatusCode, _, _) = await PostAsync(
+        var (_, statusCode, _) = await PostAsync(
                 apiUrl,
                 appId,
                 signature,
@@ -116,7 +115,12 @@ internal class JokerApiClient : IJokerApiClient
                 "FundOrderChecking")
             .ConfigureAwait(false);
 
-        return isSuccessStatusCode;
+        return statusCode switch
+        {
+            HttpStatusCode.OK => true,
+            HttpStatusCode.NotFound => false,
+            _ => throw new Exception($"Joker returns status code: {(int)statusCode}")
+        };
     }
 
     public async ValueTask<bool> FundOutAsync(
