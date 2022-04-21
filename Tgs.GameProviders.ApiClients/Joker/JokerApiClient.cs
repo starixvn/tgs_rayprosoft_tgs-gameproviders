@@ -59,7 +59,6 @@ internal class JokerApiClient : IJokerApiClient
         return statusCode switch
         {
             HttpStatusCode.OK or HttpStatusCode.Created => true,
-            HttpStatusCode.NotFound => false,
             _ => throw new Exception($"Joker returns status code: {(int)statusCode}")
         };
     }
@@ -118,7 +117,6 @@ internal class JokerApiClient : IJokerApiClient
         return statusCode switch
         {
             HttpStatusCode.OK => true,
-            HttpStatusCode.NotFound => false,
             _ => throw new Exception($"Joker returns status code: {(int)statusCode}")
         };
     }
