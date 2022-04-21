@@ -223,8 +223,8 @@ internal class JokerApiClient : IJokerApiClient
         var parameters = new Dictionary<string, object>
         {
             ["Method"] = "TSM",
-            ["StartDate"] = startTime.ToString("yyyy-MM-dd HH: mm"),
-            ["EndDate"] = endTime.ToString("yyyy-MM-dd HH: mm"),
+            ["StartDate"] = startTime.ToString("yyyy-MM-dd HH:mm"),
+            ["EndDate"] = endTime.ToString("yyyy-MM-dd HH:mm"),
             ["NextId"] = nextId ?? string.Empty,
             ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
         };
