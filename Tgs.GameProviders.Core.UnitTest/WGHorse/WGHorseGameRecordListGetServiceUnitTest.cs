@@ -71,7 +71,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
 
             _ = fakeWGHorseService.GetClientRound(decimal.Parse("129.00")).Returns(RoundClientStatus.Win);
 
-            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-17"), TimeSpan.FromHours(+0)));
+            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-17 00:00:00"), TimeSpan.FromHours(+8)));
 
             var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
 
@@ -141,7 +141,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
                 query.Page,
                 query.Rows).Returns(ValueTask.FromResult<(bool Success, WGHorseGameRecord[]? GameRecord)>((true, gameRound)));
 
-            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-21"), TimeSpan.FromHours(+0)));
+            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-21  00:00:00"), TimeSpan.FromHours(+8)));
 
             _ = fakeWGHorseService.GetClientRound(decimal.Parse("-49.20")).Returns(RoundClientStatus.Loss);
 
@@ -215,7 +215,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
 
             _ = fakeWGHorseService.GetClientRound(decimal.Parse("129.00")).Returns(RoundClientStatus.Win);
 
-            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16"), TimeSpan.FromHours(+0)));
+            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16 17:39:34"), TimeSpan.FromHours(+8)));
 
             var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
 
@@ -285,7 +285,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
                 query.Page,
                 query.Rows).Returns(ValueTask.FromResult<(bool Success, WGHorseGameRecord[]? GameRecord)>((true, gameRound)));
 
-            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-20"), TimeSpan.FromHours(+0)));
+            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16 17:39:34"), TimeSpan.FromHours(+8)));
 
             var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
 
@@ -357,7 +357,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
 
             _ = fakeWGHorseService.GetClientRound(decimal.Parse("0.00")).Returns(RoundClientStatus.Draw);
 
-            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2021-10-31 13:30:00"), TimeSpan.FromHours(+0)));
+            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2021-10-31 13:22:25"), TimeSpan.FromHours(+8)));
 
             var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
 
@@ -429,7 +429,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
 
             _ = fakeWGHorseService.GetClientRound(decimal.Parse("-45.50")).Returns(RoundClientStatus.Loss);
 
-            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16 15:00:10"), TimeSpan.FromHours(+0)));
+            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16 15:11:29"), TimeSpan.FromHours(+8)));
 
             var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
 
@@ -501,7 +501,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
 
             _ = fakeWGHorseService.GetClientRound(decimal.Parse("-45.50")).Returns(RoundClientStatus.Loss);
 
-            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16 15:00:10"), TimeSpan.FromHours(+0)));
+            _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16 15:11:29"), TimeSpan.FromHours(+8)));
 
             var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
 

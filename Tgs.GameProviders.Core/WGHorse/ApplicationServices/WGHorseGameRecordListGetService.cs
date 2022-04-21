@@ -82,16 +82,16 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
         private static DateTimeOffset GetDateTimeOffsetUTC8(string dateTime)
             => new DateTimeOffset(DateTime.Parse(dateTime), TimeSpan.FromHours(+8));
 
-        private static DateTimeOffset GetTomorrowDateUTC(DateTimeOffset dateTime)
-            => new DateTimeOffset(DateTime.Parse(dateTime.AddDays(1).UtcDateTime.ToLongDateString()), TimeSpan.FromHours(+0));
+        private static DateTimeOffset GetTomorrowDateUTC8(DateTimeOffset dateTime)
+            => new DateTimeOffset(DateTime.Parse(dateTime.AddDays(1).Date.ToLongDateString()), TimeSpan.FromHours(+8));
 
         private static bool IsDraw(string source)
-                            => source.Contains("和局", StringComparison.OrdinalIgnoreCase);
+            => source.Contains("和局", StringComparison.OrdinalIgnoreCase);
 
         private RoundStatus GetRoundStatus(string showType, DateTimeOffset externalClosedOn)
         {
-            var tomorrowDateUTC = GetTomorrowDateUTC(externalClosedOn);
-            return showType.Contains("過關", StringComparison.OrdinalIgnoreCase) || showType.Contains("过关", StringComparison.OrdinalIgnoreCase) ? externalClosedOn.UtcDateTime < tomorrowDateUTC && tomorrowDateUTC <= _systemClock.CurrentTime ? RoundStatus.Closed : RoundStatus.Open : RoundStatus.Closed;
+            var tomorrowDateUTC8 = GetTomorrowDateUTC8(externalClosedOn);
+            return showType.Contains("過關", StringComparison.OrdinalIgnoreCase) || showType.Contains("过关", StringComparison.OrdinalIgnoreCase) ? externalClosedOn.UtcDateTime < tomorrowDateUTC8.UtcDateTime && tomorrowDateUTC8.UtcDateTime <= _systemClock.CurrentTime.UtcDateTime ? RoundStatus.Closed : RoundStatus.Open : RoundStatus.Closed;
         }
 
         private bool IsClosed(string showType, DateTimeOffset externalClosedOn)
