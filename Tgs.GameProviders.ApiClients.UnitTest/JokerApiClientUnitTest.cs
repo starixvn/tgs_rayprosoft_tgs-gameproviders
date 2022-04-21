@@ -22,11 +22,7 @@ public class JokerApiClientUnitTest
     {
         var playerCode = "4uf6k014jp5x";
 
-        var httpClient = new HttpClient();
-        var tgsLog = Substitute.For<ITgsLog>();
-
-        var sut = new JokerApiClient(httpClient, tgsLog, NullLogger<JokerApiClient>.Instance);
-        //var sut = Substitute.For<IJokerApiClient>();
+        var sut = Substitute.For<IJokerApiClient>();
 
         _ = await sut.CreateUserAsync(_apiUrl, playerCode, _AppId, _SecretKey)
             .ConfigureAwait(false);
@@ -39,11 +35,7 @@ public class JokerApiClientUnitTest
         var amount = 500m;
         var orderId = Guid.NewGuid().ToString();
 
-        var httpClient = new HttpClient();
-        var tgsLog = Substitute.For<ITgsLog>();
-
-        var sut = new JokerApiClient(httpClient, tgsLog, NullLogger<JokerApiClient>.Instance);
-        //var sut = Substitute.For<IJokerApiClient>();
+        var sut = Substitute.For<IJokerApiClient>();
 
         _ = await sut.FundInAsync(_apiUrl, playerCode, orderId, amount, _AppId, _SecretKey)
             .ConfigureAwait(false);
@@ -54,11 +46,7 @@ public class JokerApiClientUnitTest
     {
         var orderId = "00acb462-4301-4f83-82e2-9983a5705403";
 
-        var httpClient = new HttpClient();
-        var tgsLog = Substitute.For<ITgsLog>();
-
-        var sut = new JokerApiClient(httpClient, tgsLog, NullLogger<JokerApiClient>.Instance);
-        //var sut = Substitute.For<IJokerApiClient>();
+        var sut = Substitute.For<IJokerApiClient>();
 
         _ = await sut.FundOrderCheckingAsync(_apiUrl, orderId, _AppId, _SecretKey)
             .ConfigureAwait(false);
@@ -71,11 +59,7 @@ public class JokerApiClientUnitTest
         var amount = 500m;
         var orderId = Guid.NewGuid().ToString();
 
-        var httpClient = new HttpClient();
-        var tgsLog = Substitute.For<ITgsLog>();
-
-        var sut = new JokerApiClient(httpClient, tgsLog, NullLogger<JokerApiClient>.Instance);
-        //var sut = Substitute.For<IJokerApiClient>();
+        var sut = Substitute.For<IJokerApiClient>();
 
         _ = await sut.FundOutAsync(_apiUrl, playerCode, orderId, amount, _AppId, _SecretKey)
             .ConfigureAwait(false);
@@ -86,11 +70,7 @@ public class JokerApiClientUnitTest
     {
         var playerCode = "4uf6k014jp5x";
 
-        var httpClient = new HttpClient();
-        var tgsLog = Substitute.For<ITgsLog>();
-
-        var sut = new JokerApiClient(httpClient, tgsLog, NullLogger<JokerApiClient>.Instance);
-        //var sut = Substitute.For<IJokerApiClient>();
+        var sut = Substitute.For<IJokerApiClient>();
 
         _ = await sut.GetBalanceAsync(_apiUrl, playerCode, _AppId, _SecretKey)
             .ConfigureAwait(false);
@@ -99,24 +79,15 @@ public class JokerApiClientUnitTest
     [Test]
     public async Task GetGameRecordAsync()
     {
-        //var startTime = DateTimeOffset.UtcNow.AddMinutes(-10).ToOffset(TimeSpan.FromHours(8));
-        //var endTime = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
-
         var startTime = new DateTimeOffset(2022, 4, 20, 0, 0, 0, TimeSpan.FromHours(8));
         var endTime = new DateTimeOffset(2022, 4, 21, 0, 0, 0, TimeSpan.FromHours(8));
 
         string? nextId = null;
 
-        //nextId = "eyIyMDIyMDQyMDA5NTgiOnsiQ3JlYXRlZFRpbWUiOiI1NTdmOGNjMC1jMDRkLTExZWMtYmVlYy1kZjk4OWNhYjE5MGMifX0=";
+        var sut = Substitute.For<IJokerApiClient>();
 
-        var httpClient = new HttpClient();
-        var tgsLog = Substitute.For<ITgsLog>();
-
-        var sut = new JokerApiClient(httpClient, tgsLog, NullLogger<JokerApiClient>.Instance);
-        //var sut = Substitute.For<IJokerApiClient>();
-
-        var (success, response) = await sut.GetGameRecordAsync(_apiUrl, startTime, endTime, nextId, _AppId, _SecretKey)
-            .ConfigureAwait(false);
+        _ = await sut.GetGameRecordAsync(_apiUrl, startTime, endTime, nextId, _AppId, _SecretKey)
+             .ConfigureAwait(false);
     }
 
     [Test]
@@ -124,11 +95,7 @@ public class JokerApiClientUnitTest
     {
         var playerCode = "4uf6k014jp5x";
 
-        var httpClient = new HttpClient();
-        var tgsLog = Substitute.For<ITgsLog>();
-
-        var sut = new JokerApiClient(httpClient, tgsLog, NullLogger<JokerApiClient>.Instance);
-        //var sut = Substitute.For<IJokerApiClient>();
+        var sut = Substitute.For<IJokerApiClient>();
 
         _ = await sut.GetGameTokenAsync(_apiUrl, playerCode, _AppId, _SecretKey)
             .ConfigureAwait(false);
@@ -141,11 +108,7 @@ public class JokerApiClientUnitTest
         var dataType = JokerDataType.Game;
         var language = "en";
 
-        var httpClient = new HttpClient();
-        var tgsLog = Substitute.For<ITgsLog>();
-
-        var sut = new JokerApiClient(httpClient, tgsLog, NullLogger<JokerApiClient>.Instance);
-        //var sut = Substitute.For<IJokerApiClient>();
+        var sut = Substitute.For<IJokerApiClient>();
 
         _ = await sut.GetGameDetailUrlAsync(_apiUrl, language, externalRoundId, dataType, _AppId, _SecretKey)
             .ConfigureAwait(false);
@@ -156,11 +119,7 @@ public class JokerApiClientUnitTest
     {
         var playerCode = "4uf6k014jp5x";
 
-        var httpClient = new HttpClient();
-        var tgsLog = Substitute.For<ITgsLog>();
-
-        var sut = new JokerApiClient(httpClient, tgsLog, NullLogger<JokerApiClient>.Instance);
-        //var sut = Substitute.For<IJokerApiClient>();
+        var sut = Substitute.For<IJokerApiClient>();
 
         await sut.KickPlayerAsync(_apiUrl, playerCode, _AppId, _SecretKey)
             .ConfigureAwait(false);

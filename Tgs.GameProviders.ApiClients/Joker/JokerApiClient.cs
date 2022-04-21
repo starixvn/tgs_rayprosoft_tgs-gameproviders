@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.WebUtilities;
+using System.Web;
 using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.Joker;
@@ -150,7 +150,11 @@ internal class JokerApiClient : IJokerApiClient
         return isSuccessStatusCode;
     }
 
-    public async ValueTask<(bool? IsPlayerExist, decimal? Balance)> GetBalanceAsync(Uri apiUrl, string playerCode, string appId, string secretKey)
+    public async ValueTask<(bool? IsPlayerExist, decimal? Balance)> GetBalanceAsync(
+        Uri apiUrl,
+        string playerCode,
+        string appId,
+        string secretKey)
     {
         var request = new
         {
@@ -297,7 +301,7 @@ internal class JokerApiClient : IJokerApiClient
     }
 
     private async ValueTask<(bool IsSuccessStatusCode, HttpStatusCode HttpStatusCode, JsonDocument? Content)> PostAsync(
-            Uri apiUrl,
+        Uri apiUrl,
         string appId,
         string signature,
         JsonDocument request,
@@ -307,13 +311,11 @@ internal class JokerApiClient : IJokerApiClient
 
         var sw = Stopwatch.StartNew();
 
-        var parameters = new Dictionary<string, string?>
-        {
-            ["appid"] = appId,
-            ["signature"] = signature
-        };
+        var queryStrings = HttpUtility.ParseQueryString(string.Empty);
+        queryStrings.Add("appid", appId);
+        queryStrings.Add("signature", signature);
 
-        var uri = QueryHelpers.AddQueryString(apiUrl.OriginalString, parameters);
+        var uri = $"{apiUrl.OriginalString}?{queryStrings}";
 
         var requestMessage = JsonSerializer.Serialize(request);
         var content = new StringContent(requestMessage,
@@ -349,11 +351,6 @@ internal class JokerApiClient : IJokerApiClient
 
         _tgsLog.LogApi(apiLogEvent);
         _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
-
-        Console.WriteLine("Signature: {0}", signature);
-        Console.WriteLine("Request Message: {0}", requestMessage);
-        Console.WriteLine("Response Status Code: {0}", httpResponseMessage.StatusCode);
-        Console.WriteLine("Response Message: {0}", responseMessage);
 
         var responseDocument = !string.IsNullOrEmpty(responseMessage) &&
                httpResponseMessage.IsSuccessStatusCode

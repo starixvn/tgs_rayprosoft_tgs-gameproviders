@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.WebUtilities;
+using System.Web;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
@@ -52,15 +51,13 @@ internal class JokerGameUrlGetService : IGetService<JokerGameUrlQuery, GameUrlRe
 
         var cultureCode = await _service.GetGameProviderLanguageCodeAsync(query.Language).ConfigureAwait(false);
 
-        var queryString = new Dictionary<string, string>
-        {
-            ["token"] = gameToken,
-            ["game"] = game.GameExternalId,
-            ["mobile"] = (query.PlatformType == PlatformType.Mobile).ToString().ToLower(),
-            ["lang"] = cultureCode
-        };
+        var queryStrings = HttpUtility.ParseQueryString(string.Empty);
+        queryStrings.Add("token", gameToken);
+        queryStrings.Add("game", game.GameExternalId);
+        queryStrings.Add("mobile", (query.PlatformType == PlatformType.Mobile).ToString().ToLower());
+        queryStrings.Add("lang", cultureCode);
 
-        var url = QueryHelpers.AddQueryString(configuration.GameLaunchUrl.OriginalString, queryString);
+        var url = $"{configuration.GameLaunchUrl.OriginalString}?{queryStrings}";
 
         return new GameUrlResult
         {
