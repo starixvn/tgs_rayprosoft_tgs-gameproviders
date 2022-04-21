@@ -27,6 +27,7 @@
         Jili = 22,
         Avia = 23,
         TFGaming = 24,
-        DreamGame = 25
+        DreamGame = 25,
+        Joker = 26
     }
 }

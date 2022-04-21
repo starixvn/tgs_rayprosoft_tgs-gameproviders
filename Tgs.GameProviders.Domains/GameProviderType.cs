@@ -14,6 +14,7 @@
         public const string IMESports = "IMES";
         public const string JDB = "JDB";
         public const string Jili = "JILI";
+        public const string Joker = "JOKER";
         public const string KY = "KY";
         public const string LY = "LY";
         public const string MainWallet = "DEFAULT";

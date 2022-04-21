@@ -14,6 +14,10 @@ namespace Tgs.GameProviders.IntegrationTests
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
-            => _webHostConfigure?.Invoke(builder);
+        {
+            _ = builder.ConfigureAppConfiguration(c => c.Sources.Clear());
+
+            _webHostConfigure?.Invoke(builder);
+        }
     }
 }

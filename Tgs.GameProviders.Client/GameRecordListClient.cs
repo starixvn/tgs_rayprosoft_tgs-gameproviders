@@ -81,6 +81,33 @@ namespace Tgs.GameProviders.Client
             return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
         }
 
+        public async ValueTask<JokerGameRecordResponse?> JokerGameRecordListAsync(string brandCode, string currencyCode,
+            DateTimeOffset startTime, DateTimeOffset endTime, string? nextId)
+        {
+            var source = new
+            {
+                BrandCode = brandCode,
+                CurrencyCode = currencyCode,
+                StartTime = startTime,
+                EndTime = endTime,
+                NextId = nextId
+            };
+            var requestContent = new StringContent(JsonSerializer.Serialize(source, _SerializerOptions));
+            requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+            var response = await _httpClient
+                .PostAsync(
+                    string.Format(_GameRecordListPath, GameProviderType.Joker),
+                    requestContent)
+                .ConfigureAwait(false);
+
+            _ = response.EnsureSuccessStatusCode();
+
+            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            return JsonSerializer.Deserialize<JokerGameRecordResponse>(contentJson, _SerializerOptions);
+        }
+
         public async ValueTask<GameRecordResponse?> KYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime)
         {
             var source = new
