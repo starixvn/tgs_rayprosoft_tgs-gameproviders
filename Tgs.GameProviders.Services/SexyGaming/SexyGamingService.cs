@@ -42,6 +42,6 @@ namespace Tgs.GameProviders.Services.SexyGaming
             => string.Equals(status, ((int)SexyGamingGameApiError.AccountIsNotExists).ToString("d4"), StringComparison.OrdinalIgnoreCase);
 
         public bool IsSuccess(string status)
-                    => string.Equals(status, ((int)SexyGamingGameApiError.AccountIsNotExists).ToString("d4"), StringComparison.OrdinalIgnoreCase);
+                    => string.Equals(status, ((int)SexyGamingGameApiError.Success).ToString("d4"), StringComparison.OrdinalIgnoreCase);
     }
 }
