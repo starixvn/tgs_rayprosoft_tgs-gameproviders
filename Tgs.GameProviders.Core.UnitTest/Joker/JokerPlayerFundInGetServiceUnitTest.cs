@@ -64,18 +64,19 @@ public class JokerPlayerFundInGetServiceUnitTest
 
         _ = fakeAgentMapper
             .GetAgent(
-                configuration.BrandMerchants,
-                playerInfo.BrandCode,
-                playerInfo.DefaultWalletCurrencyCode)
+                Arg.Is(configuration.BrandMerchants),
+                    Arg.Is(playerInfo.BrandCode),
+                        Arg.Is(playerInfo.DefaultWalletCurrencyCode))
             .Returns(agent);
 
         _ = fakeApiClient
             .FundInAsync(
-                configuration.ApiUrl,
-                playerInfo.PlayerCode,
-                orderId, fundInAmount,
-                agent.AgentId,
-                agent.SecretKey)
+                Arg.Is(configuration.ApiUrl),
+                    Arg.Is(playerInfo.PlayerCode),
+                        Arg.Is(orderId),
+                Arg.Is(fundInAmount),
+                            Arg.Is(agent.AgentId),
+                                Arg.Is(agent.SecretKey))
             .Returns(success);
 
         var query = new JokerPlayerFundInQuery

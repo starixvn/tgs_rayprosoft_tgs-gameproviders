@@ -87,18 +87,23 @@ public class JokerGameUrlGetServiceUnitTest
             fakeService);
 
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
-        _ = fakeAgentMapper.GetAgent(configuration.BrandMerchants, query.BrandCode, query.CurrencyCode).Returns(agent);
-        _ = fakeService.GetGameAsync(game.GameId).Returns((GameInfo?)game);
+        _ = fakeAgentMapper.GetAgent(
+            Arg.Is(configuration.BrandMerchants),
+            Arg.Is(query.BrandCode),
+            Arg.Is(query.CurrencyCode)).Returns(agent);
+
+        _ = fakeService.GetGameAsync(Arg.Is(game.GameId)).Returns((GameInfo?)game);
+
         _ = fakeService
-             .GetGameProviderLanguageCodeAsync(query.Language)
+             .GetGameProviderLanguageCodeAsync(Arg.Is(query.Language))
              .Returns(gameProviderLanguageCode);
 
         _ = fakeApiClient
              .GetGameTokenAsync(
-                 configuration.ApiUrl,
-                 query.PlayerCode,
-                 agent.AgentId,
-                 agent.SecretKey)
+                 Arg.Is(configuration.ApiUrl),
+                     Arg.Is(query.PlayerCode),
+                         Arg.Is(agent.AgentId),
+                             Arg.Is(agent.SecretKey))
              .Returns(gameToken);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);

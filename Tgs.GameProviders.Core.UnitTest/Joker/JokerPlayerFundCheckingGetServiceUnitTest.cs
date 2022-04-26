@@ -55,19 +55,20 @@ public class JokerPlayerFundCheckingGetServiceUnitTest
         var expected = true;
 
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
+
         _ = fakeAgentMapper
             .GetAgent(
-                configuration.BrandMerchants,
-                query.BrandCode,
-                query.CurrencyCode)
+                Arg.Is(configuration.BrandMerchants),
+                Arg.Is(query.BrandCode),
+                    Arg.Is(query.CurrencyCode))
             .Returns(agent);
 
         _ = fakeApiClient
             .FundOrderCheckingAsync(
-                configuration.ApiUrl,
-                query.OrderId,
-                agent.AgentId,
-                agent.SecretKey)
+                Arg.Is(configuration.ApiUrl),
+                Arg.Is(query.OrderId),
+                Arg.Is(agent.AgentId),
+                Arg.Is(agent.SecretKey))
             .Returns(expected);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);

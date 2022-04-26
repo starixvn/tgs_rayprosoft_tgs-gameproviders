@@ -82,21 +82,21 @@ public class JokerGameRecordListGetServiceUnitTest
 
         _ = fakeAgentMapper
             .GetAgent(
-                configuration.BrandMerchants,
-                query.BrandCode,
-                query.CurrencyCode)
+                Arg.Is(configuration.BrandMerchants),
+                Arg.Is(query.BrandCode),
+                    Arg.Is(query.CurrencyCode))
             .Returns(agent);
 
         _ = fakeService.GetGameProviderIdAsync().Returns(gameProviderId);
 
         _ = fakeApiClient
             .GetGameRecordAsync(
-                configuration.ApiUrl,
-                query.StartTime,
-                query.EndTime,
-                query.NextId,
-                agent.AgentId,
-                agent.SecretKey)
+                Arg.Is(configuration.ApiUrl),
+                Arg.Is(query.StartTime),
+                        Arg.Is(query.EndTime),
+                            Arg.Is(query.NextId),
+                                Arg.Is(agent.AgentId),
+                                    Arg.Is(agent.SecretKey))
             .Returns((success, response));
 
         var sut = new JokerGameRecordListGetService(fakeApiClient, fakeService, fakeAgentMapper);
