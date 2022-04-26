@@ -84,8 +84,7 @@ public class JokerGameRecordListUnitTest
 
         var query = new JokerGameRecordListRequest
         {
-            BrandCode = "Default",
-            CurrencyCode = "HKD",
+            AgentId = agent.AgentId,
             StartTime = DateTimeOffset.Parse("2021-04-20T00:00:00+00:00"),
             EndTime = DateTimeOffset.Parse("2021-04-21T00:00:00+00:00"),
             NextId = null
@@ -98,21 +97,20 @@ public class JokerGameRecordListUnitTest
 
         _ = fakeAgentMapper
             .GetAgent(
-                configuration.BrandMerchants,
-                query.BrandCode,
-                query.CurrencyCode)
+                Arg.Is(configuration.BrandMerchants),
+                Arg.Is(query.AgentId))
             .Returns(agent);
 
         _ = fakeService.GetGameProviderIdAsync().Returns(gameProviderId);
 
         _ = fakeApiClient
             .GetGameRecordAsync(
-                configuration.ApiUrl,
-                query.StartTime,
-                query.EndTime,
-                query.NextId,
-                agent.AgentId,
-                agent.SecretKey)
+                Arg.Is(configuration.ApiUrl),
+                Arg.Is(query.StartTime),
+                    Arg.Is(query.EndTime),
+                        Arg.Is(query.NextId),
+                            Arg.Is(agent.AgentId),
+                                Arg.Is(agent.SecretKey))
             .Returns((success, response));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
@@ -121,12 +119,13 @@ public class JokerGameRecordListUnitTest
 
         var sut = new GameRecordListClient(httpClient);
 
-        var actual = await sut.JokerGameRecordListAsync(
-            query.BrandCode,
-            query.CurrencyCode,
-            query.StartTime,
-            query.EndTime,
-            query.NextId).ConfigureAwait(false);
+        var actual = await sut
+            .JokerGameRecordListAsync(
+                query.AgentId,
+                    query.StartTime,
+                        query.EndTime,
+                            query.NextId)
+            .ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual(success, actual!.Success);

@@ -72,8 +72,7 @@ public class JokerGameRecordListGetServiceUnitTest
         var gameProviderId = Guid.Parse("2ebfe118-b36b-40fa-85b5-78363470addc");
 
         var query = new JokerGameRecordListQuery(
-            "Default",
-            "HKD",
+            "TGVY",
             DateTimeOffset.Parse("2022-04-20T00:00:00+00:00"),
             DateTimeOffset.Parse("2022-04-21T00:00:00+00:00"),
             null);
@@ -83,8 +82,7 @@ public class JokerGameRecordListGetServiceUnitTest
         _ = fakeAgentMapper
             .GetAgent(
                 Arg.Is(configuration.BrandMerchants),
-                Arg.Is(query.BrandCode),
-                    Arg.Is(query.CurrencyCode))
+                Arg.Is(query.AgentId))
             .Returns(agent);
 
         _ = fakeService.GetGameProviderIdAsync().Returns(gameProviderId);

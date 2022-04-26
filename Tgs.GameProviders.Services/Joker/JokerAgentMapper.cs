@@ -24,4 +24,13 @@ internal class JokerAgentMapper : IJokerAgentMapper
             => a.CurrencyCode == currencyCode
                && a.Status);
     }
+
+    public JokerAgent? GetAgent(IEnumerable<JokerBrandMerchant> merchants, string agentId)
+    {
+        return merchants.Any()
+            ? merchants
+                .SelectMany(m => m.Agents)
+                .FirstOrDefault(a => a.AgentId == agentId && a.Status)
+            : null;
+    }
 }
