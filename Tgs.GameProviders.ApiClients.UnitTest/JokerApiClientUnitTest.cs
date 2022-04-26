@@ -79,8 +79,8 @@ public class JokerApiClientUnitTest
     [Test]
     public async Task GetGameRecordAsync()
     {
-        var startTime = new DateTimeOffset(2022, 4, 20, 0, 0, 0, TimeSpan.FromHours(8));
-        var endTime = new DateTimeOffset(2022, 4, 21, 0, 0, 0, TimeSpan.FromHours(8));
+        var startTime = new DateTimeOffset(2022, 4, 20, 1, 30, 0, TimeSpan.FromHours(0));
+        var endTime = new DateTimeOffset(2022, 4, 20, 2, 0, 0, TimeSpan.FromHours(0));
 
         string? nextId = null;
 
