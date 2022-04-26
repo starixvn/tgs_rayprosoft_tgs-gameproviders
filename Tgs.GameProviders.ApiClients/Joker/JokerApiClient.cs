@@ -226,11 +226,13 @@ internal class JokerApiClient : IJokerApiClient
         string appId,
         string secretKey)
     {
+        var eightHourOffset = TimeSpan.FromHours(8);
+
         var parameters = new Dictionary<string, object>
         {
             ["Method"] = "TSM",
-            ["StartDate"] = startTime.ToString("yyyy-MM-dd HH:mm"),
-            ["EndDate"] = endTime.ToString("yyyy-MM-dd HH:mm"),
+            ["StartDate"] = startTime.ToOffset(eightHourOffset).ToString("yyyy-MM-dd HH:mm"),
+            ["EndDate"] = endTime.ToOffset(eightHourOffset).ToString("yyyy-MM-dd HH:mm"),
             ["NextId"] = nextId ?? string.Empty,
             ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
         };

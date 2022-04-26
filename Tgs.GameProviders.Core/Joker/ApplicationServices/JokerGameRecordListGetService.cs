@@ -42,8 +42,8 @@ internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQu
         var (success, response) = await _client
             .GetGameRecordAsync(
                 configuration.ApiUrl,
-                query.StartTime.ToOffset(TimeSpan.FromHours(8)),
-                query.EndTime.ToOffset(TimeSpan.FromHours(8)),
+                query.StartTime,
+                query.EndTime,
                 query.NextId,
                 agent.AgentId,
                 agent.SecretKey)
