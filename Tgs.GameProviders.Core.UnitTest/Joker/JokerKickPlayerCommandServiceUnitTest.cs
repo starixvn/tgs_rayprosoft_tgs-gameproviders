@@ -69,7 +69,7 @@ public class JokerKickPlayerCommandServiceUnitTest
             .GetAgentByCurrencyCode(
                 Arg.Is(configuration.BrandMerchants),
                 Arg.Is(playerInfo.BrandCode),
-                    Arg.Is(playerInfo.DefaultWalletCurrencyCode))
+                Arg.Is(playerInfo.DefaultWalletCurrencyCode))
             .Returns(agent);
 
         var sut = new JokerKickPlayerCommandService(
