@@ -57,7 +57,7 @@ public class JokerPlayerFundCheckingGetServiceUnitTest
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
 
         _ = fakeAgentMapper
-            .GetAgent(
+            .GetAgentByCurrencyCode(
                 Arg.Is(configuration.BrandMerchants),
                 Arg.Is(query.BrandCode),
                     Arg.Is(query.CurrencyCode))

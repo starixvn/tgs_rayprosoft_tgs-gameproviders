@@ -27,7 +27,7 @@ internal class JokerPlayerFundCheckingGetService : IGetService<JokerPlayerFundCh
     {
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-        var agent = _agentMapper.GetAgent(
+        var agent = _agentMapper.GetAgentByCurrencyCode(
             configuration.BrandMerchants,
             query.BrandCode,
             query.CurrencyCode);

@@ -72,6 +72,7 @@ public class JokerGameRecordListGetServiceUnitTest
         var gameProviderId = Guid.Parse("2ebfe118-b36b-40fa-85b5-78363470addc");
 
         var query = new JokerGameRecordListQuery(
+            "Default",
             "TGVY",
             DateTimeOffset.Parse("2022-04-20T00:00:00+00:00"),
             DateTimeOffset.Parse("2022-04-21T00:00:00+00:00"),
@@ -80,8 +81,9 @@ public class JokerGameRecordListGetServiceUnitTest
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
 
         _ = fakeAgentMapper
-            .GetAgent(
+            .GetAgentById(
                 Arg.Is(configuration.BrandMerchants),
+                Arg.Is(query.BrandCode),
                 Arg.Is(query.AgentId))
             .Returns(agent);
 
@@ -91,10 +93,10 @@ public class JokerGameRecordListGetServiceUnitTest
             .GetGameRecordAsync(
                 Arg.Is(configuration.ApiUrl),
                 Arg.Is(query.StartTime),
-                        Arg.Is(query.EndTime),
-                            Arg.Is(query.NextId),
-                                Arg.Is(agent.AgentId),
-                                    Arg.Is(agent.SecretKey))
+                Arg.Is(query.EndTime),
+                Arg.Is(query.NextId),
+                Arg.Is(agent.AgentId),
+                Arg.Is(agent.SecretKey))
             .Returns((success, response));
 
         var sut = new JokerGameRecordListGetService(fakeApiClient, fakeService, fakeAgentMapper);

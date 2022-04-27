@@ -28,7 +28,7 @@ internal class JokerGameUrlGetService : IGetService<JokerGameUrlQuery, GameUrlRe
     {
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-        var agent = _agentMapper.GetAgent(configuration!.BrandMerchants, query.BrandCode, query.CurrencyCode);
+        var agent = _agentMapper.GetAgentByCurrencyCode(configuration!.BrandMerchants, query.BrandCode, query.CurrencyCode);
 
         if (agent == null)
         {

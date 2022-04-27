@@ -82,6 +82,7 @@ internal class GameRecordListClient : IGameRecordListClient
     }
 
     public async ValueTask<JokerGameRecordResponse?> JokerGameRecordListAsync(
+        string brandCode,
         string agentId,
         DateTimeOffset startTime,
         DateTimeOffset endTime,
@@ -89,6 +90,7 @@ internal class GameRecordListClient : IGameRecordListClient
     {
         var source = new
         {
+            BrandCode = brandCode,
             AgentId = agentId,
             StartTime = startTime,
             EndTime = endTime,

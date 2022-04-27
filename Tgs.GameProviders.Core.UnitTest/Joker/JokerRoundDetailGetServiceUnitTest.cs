@@ -109,20 +109,20 @@ public class JokerRoundDetailGetServiceUnitTest
             .Returns(gameProviderLanguage);
 
         _ = fakeAgentMapper
-            .GetAgent(
+            .GetAgentByCurrencyCode(
                 Arg.Is(configuration.BrandMerchants),
-                    Arg.Is(playerInfo.BrandCode),
-                        Arg.Is(roundInfo.CurrencyCode))
+                Arg.Is(playerInfo.BrandCode),
+                Arg.Is(roundInfo.CurrencyCode))
             .Returns(agent);
 
         _ = fakeApiClient
             .GetGameDetailUrlAsync(
                 Arg.Is(configuration.ApiUrl),
-                    Arg.Is(gameProviderLanguage),
-                        Arg.Is(roundInfo.ExternalRoundId),
+                Arg.Is(gameProviderLanguage),
+                Arg.Is(roundInfo.ExternalRoundId),
                 Arg.Any<JokerDataType>(),
                 Arg.Is(agent.AgentId),
-                    Arg.Is(agent.SecretKey))
+                Arg.Is(agent.SecretKey))
             .Returns(historyUrl);
 
         var expected = new RoundDetailResult

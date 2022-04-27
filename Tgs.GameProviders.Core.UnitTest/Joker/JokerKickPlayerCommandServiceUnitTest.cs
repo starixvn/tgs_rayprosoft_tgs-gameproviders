@@ -66,7 +66,7 @@ public class JokerKickPlayerCommandServiceUnitTest
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
 
         _ = fakeAgentMapper
-            .GetAgent(
+            .GetAgentByCurrencyCode(
                 Arg.Is(configuration.BrandMerchants),
                 Arg.Is(playerInfo.BrandCode),
                     Arg.Is(playerInfo.DefaultWalletCurrencyCode))

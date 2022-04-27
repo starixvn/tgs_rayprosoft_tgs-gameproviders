@@ -40,6 +40,7 @@ public class JOKERController : ControllerBase,
     ///
     ///     Post
     ///         {
+    ///             "brandCode": "Default",
     ///             "agentId": "TGVY",
     ///             "startTime": "2021-12-01T00:00:00+00:00",
     ///             "endTime": "2021-12-13T00:00:00+00:00",
@@ -54,6 +55,7 @@ public class JOKERController : ControllerBase,
         var result = await getService
             .GetAsync(
                 new JokerGameRecordListQuery(
+                    request.BrandCode,
                     request.AgentId,
                     request.StartTime,
                     request.EndTime,

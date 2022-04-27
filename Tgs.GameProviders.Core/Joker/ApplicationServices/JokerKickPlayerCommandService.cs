@@ -37,7 +37,7 @@ internal class JokerKickPlayerCommandService : ICommandService<JokerKickPlayerCo
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-        var agent = _agentMapper.GetAgent(
+        var agent = _agentMapper.GetAgentByCurrencyCode(
             configuration.BrandMerchants,
             playerInfo.BrandCode,
             playerInfo.DefaultWalletCurrencyCode);

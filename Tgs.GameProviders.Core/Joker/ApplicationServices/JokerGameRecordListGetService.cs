@@ -32,11 +32,11 @@ internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQu
     {
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-        var agent = _agentMapper.GetAgent(configuration!.BrandMerchants, query.AgentId);
+        var agent = _agentMapper.GetAgentById(configuration!.BrandMerchants, query.BrandCode, query.AgentId);
 
         if (agent == null)
         {
-            throw new Exception($"The agent does not exist of agent id '{query.AgentId}'");
+            throw new Exception($"The agent does not exist of brand '{query.BrandCode}' and agent id '{query.AgentId}'");
         }
 
         var (success, response) = await _client

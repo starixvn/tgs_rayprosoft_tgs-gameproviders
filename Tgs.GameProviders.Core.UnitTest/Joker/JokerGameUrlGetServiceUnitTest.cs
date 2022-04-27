@@ -87,7 +87,7 @@ public class JokerGameUrlGetServiceUnitTest
             fakeService);
 
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
-        _ = fakeAgentMapper.GetAgent(
+        _ = fakeAgentMapper.GetAgentByCurrencyCode(
             Arg.Is(configuration.BrandMerchants),
             Arg.Is(query.BrandCode),
             Arg.Is(query.CurrencyCode)).Returns(agent);

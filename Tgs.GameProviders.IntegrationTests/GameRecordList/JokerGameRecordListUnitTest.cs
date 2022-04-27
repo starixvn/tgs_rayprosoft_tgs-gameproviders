@@ -34,19 +34,18 @@ public class JokerGameRecordListUnitTest
             Status = true
         };
 
+        var brandMerchant = new JokerBrandMerchant()
+        {
+            BrandCode = "Default",
+            Agents = new[] { agent }
+        };
+
         var configuration = new JokerConfiguration
         {
             ServiceEndpointUrl = new("http://game-joker"),
             ApiUrl = new("https://w.api788.net"),
             GameLaunchUrl = new Uri("http://www.gwp6868.net/"),
-            BrandMerchants = new JokerBrandMerchant[]
-            {
-                new()
-                {
-                    BrandCode = "Default",
-                    Agents = new[] { agent }
-                }
-            }
+            BrandMerchants = new[] { brandMerchant }
         };
 
         var success = true;
@@ -84,6 +83,7 @@ public class JokerGameRecordListUnitTest
 
         var query = new JokerGameRecordListRequest
         {
+            BrandCode = brandMerchant.BrandCode,
             AgentId = agent.AgentId,
             StartTime = DateTimeOffset.Parse("2021-04-20T00:00:00+00:00"),
             EndTime = DateTimeOffset.Parse("2021-04-21T00:00:00+00:00"),
@@ -96,8 +96,9 @@ public class JokerGameRecordListUnitTest
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
 
         _ = fakeAgentMapper
-            .GetAgent(
+            .GetAgentById(
                 Arg.Is(configuration.BrandMerchants),
+                Arg.Is(query.BrandCode),
                 Arg.Is(query.AgentId))
             .Returns(agent);
 
@@ -107,10 +108,10 @@ public class JokerGameRecordListUnitTest
             .GetGameRecordAsync(
                 Arg.Is(configuration.ApiUrl),
                 Arg.Is(query.StartTime),
-                    Arg.Is(query.EndTime),
-                        Arg.Is(query.NextId),
-                            Arg.Is(agent.AgentId),
-                                Arg.Is(agent.SecretKey))
+                Arg.Is(query.EndTime),
+                Arg.Is(query.NextId),
+                Arg.Is(agent.AgentId),
+                Arg.Is(agent.SecretKey))
             .Returns((success, response));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
@@ -121,10 +122,11 @@ public class JokerGameRecordListUnitTest
 
         var actual = await sut
             .JokerGameRecordListAsync(
+                query.BrandCode,
                 query.AgentId,
-                    query.StartTime,
-                        query.EndTime,
-                            query.NextId)
+                query.StartTime,
+                query.EndTime,
+                query.NextId)
             .ConfigureAwait(false);
 
         Assert.IsNotNull(actual);

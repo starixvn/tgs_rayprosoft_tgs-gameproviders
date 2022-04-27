@@ -71,7 +71,7 @@ public class JokerPlayerBalanceGetServiceUnitTest
         _ = fakePlayerService.GetCacheAsync(Arg.Is(playerInfo.PlayerCode)).Returns(playerInfo);
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
         _ = fakeAgentMapper
-            .GetAgent(
+            .GetAgentByCurrencyCode(
                 Arg.Is(configuration.BrandMerchants),
                     Arg.Is(playerInfo.BrandCode),
                         Arg.Is(playerInfo.DefaultWalletCurrencyCode))
@@ -159,7 +159,7 @@ public class JokerPlayerBalanceGetServiceUnitTest
         _ = fakePlayerService.GetCacheAsync(playerInfo.PlayerCode).Returns(playerInfo);
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
         _ = fakeAgentMapper
-            .GetAgent(
+            .GetAgentByCurrencyCode(
                 configuration.BrandMerchants,
                 playerInfo.BrandCode,
                 playerInfo.DefaultWalletCurrencyCode)

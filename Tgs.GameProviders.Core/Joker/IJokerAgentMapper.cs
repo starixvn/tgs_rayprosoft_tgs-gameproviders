@@ -7,7 +7,7 @@ namespace Tgs.GameProviders.Core.Joker;
 
 public interface IJokerAgentMapper
 {
-    JokerAgent? GetAgent(IEnumerable<JokerBrandMerchant> merchants, string brandCode, string currencyCode);
+    JokerAgent? GetAgentByCurrencyCode(IEnumerable<JokerBrandMerchant> merchants, string brandCode, string currencyCode);
 
-    JokerAgent? GetAgent(IEnumerable<JokerBrandMerchant> merchants, string agentId);
+    JokerAgent? GetAgentById(IEnumerable<JokerBrandMerchant> merchants, string brandCode, string agentId);
 }
