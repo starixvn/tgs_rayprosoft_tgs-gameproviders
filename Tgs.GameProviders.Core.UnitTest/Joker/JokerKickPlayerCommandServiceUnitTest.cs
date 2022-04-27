@@ -62,14 +62,14 @@ public class JokerKickPlayerCommandServiceUnitTest
             PlayerCode = playerInfo.PlayerCode
         };
 
-        _ = fakePlayerService.GetCacheAsync(playerInfo.PlayerCode).Returns(playerInfo);
+        _ = fakePlayerService.GetCacheAsync(Arg.Is(playerInfo.PlayerCode)).Returns(playerInfo);
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
 
         _ = fakeAgentMapper
-            .GetAgent(
-                configuration.BrandMerchants,
-                playerInfo.BrandCode,
-                playerInfo.DefaultWalletCurrencyCode)
+            .GetAgentByCurrencyCode(
+                Arg.Is(configuration.BrandMerchants),
+                Arg.Is(playerInfo.BrandCode),
+                Arg.Is(playerInfo.DefaultWalletCurrencyCode))
             .Returns(agent);
 
         var sut = new JokerKickPlayerCommandService(
@@ -83,9 +83,9 @@ public class JokerKickPlayerCommandServiceUnitTest
         _ = fakeApiClient
             .Received(1)
             .KickPlayerAsync(
-                configuration.ApiUrl,
-                playerInfo.PlayerCode,
-                agent.AgentId,
-                agent.SecretKey);
+                Arg.Is(configuration.ApiUrl),
+                Arg.Is(playerInfo.PlayerCode),
+                Arg.Is(agent.AgentId),
+                Arg.Is(agent.SecretKey));
     }
 }

@@ -6,7 +6,7 @@ public class JokerGameRecordListRequest
 {
     public string BrandCode { get; init; } = default!;
 
-    public string CurrencyCode { get; init; } = default!;
+    public string AgentId { get; init; } = default!;
 
     public DateTimeOffset StartTime { get; init; }
 

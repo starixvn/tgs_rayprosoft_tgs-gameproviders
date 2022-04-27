@@ -6,7 +6,7 @@ namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
 public record JokerGameRecordListQuery(
     string BrandCode,
-    string CurrencyCode,
+    string AgentId,
     DateTimeOffset StartTime,
     DateTimeOffset EndTime,
     string? NextId);

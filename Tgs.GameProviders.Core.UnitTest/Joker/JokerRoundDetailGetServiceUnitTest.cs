@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
@@ -104,28 +101,28 @@ public class JokerRoundDetailGetServiceUnitTest
             Language = "en-US"
         };
 
-        _ = fakeRoundService.GetAsync(query.RoundId).Returns(roundInfo);
-        _ = fakePlayerService.GetAsync(roundInfo.PlayerCode).Returns(playerInfo);
+        _ = fakeRoundService.GetAsync(Arg.Is(query.RoundId)).Returns(roundInfo);
+        _ = fakePlayerService.GetAsync(Arg.Is(roundInfo.PlayerCode)).Returns(playerInfo);
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
         _ = fakeService
-            .GetGameProviderLanguageCodeAsync(query.Language)
+            .GetGameProviderLanguageCodeAsync(Arg.Is(query.Language))
             .Returns(gameProviderLanguage);
 
         _ = fakeAgentMapper
-            .GetAgent(
-                configuration.BrandMerchants,
-                playerInfo.BrandCode,
-                roundInfo.CurrencyCode)
+            .GetAgentByCurrencyCode(
+                Arg.Is(configuration.BrandMerchants),
+                Arg.Is(playerInfo.BrandCode),
+                Arg.Is(roundInfo.CurrencyCode))
             .Returns(agent);
 
         _ = fakeApiClient
             .GetGameDetailUrlAsync(
-                configuration.ApiUrl,
-                gameProviderLanguage,
-                roundInfo.ExternalRoundId,
+                Arg.Is(configuration.ApiUrl),
+                Arg.Is(gameProviderLanguage),
+                Arg.Is(roundInfo.ExternalRoundId),
                 Arg.Any<JokerDataType>(),
-                agent.AgentId,
-                agent.SecretKey)
+                Arg.Is(agent.AgentId),
+                Arg.Is(agent.SecretKey))
             .Returns(historyUrl);
 
         var expected = new RoundDetailResult

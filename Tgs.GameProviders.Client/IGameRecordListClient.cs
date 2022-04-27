@@ -9,13 +9,14 @@ namespace Tgs.GameProviders.Client
 
         ValueTask<GameRecordResponse?> BigGamingFishingGameRecordListAsync(string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows);
 
-        ValueTask<JokerGameRecordResponse?> JokerGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime, string? nextId);
+        ValueTask<JokerGameRecordResponse?> JokerGameRecordListAsync(string brandCode, string agentId, DateTimeOffset startTime, DateTimeOffset endTime, string? nextId);
 
         ValueTask<GameRecordResponse?> KYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime);
 
         ValueTask<GameRecordResponse?> LYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime);
 
-        ValueTask<GameRecordResponse?> VRGameRecordListAsync(string brandCode, bool isUpdateTime, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows);
+        ValueTask<GameRecordResponse?> VRGameRecordListAsync(string brandCode, bool isUpdateTime, DateTimeOffset startTime,
+            DateTimeOffset endTime, int page, int rows);
 
         ValueTask<GameRecordResponse?> WGHorseGameRecordListAsync(DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows);
 

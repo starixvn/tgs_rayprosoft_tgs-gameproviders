@@ -63,19 +63,20 @@ public class JokerPlayerFundOutGetServiceUnitTest
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
 
         _ = fakeAgentMapper
-            .GetAgent(
-                configuration.BrandMerchants,
-                playerInfo.BrandCode,
-                playerInfo.DefaultWalletCurrencyCode)
+            .GetAgentByCurrencyCode(
+                Arg.Is(configuration.BrandMerchants),
+                Arg.Is(playerInfo.BrandCode),
+                Arg.Is(playerInfo.DefaultWalletCurrencyCode))
             .Returns(agent);
 
         _ = fakeApiClient
             .FundOutAsync(
-                configuration.ApiUrl,
-                playerInfo.PlayerCode,
-                orderId, fundOutAmount,
-                agent.AgentId,
-                agent.SecretKey)
+                Arg.Is(configuration.ApiUrl),
+                Arg.Is(playerInfo.PlayerCode),
+                Arg.Is(orderId),
+                Arg.Is(fundOutAmount),
+                Arg.Is(agent.AgentId),
+                Arg.Is(agent.SecretKey))
             .Returns(success);
 
         var query = new JokerPlayerFundOutQuery

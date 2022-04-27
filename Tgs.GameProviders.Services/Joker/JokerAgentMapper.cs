@@ -10,7 +10,7 @@ namespace Tgs.GameProviders.Services.Joker;
 
 internal class JokerAgentMapper : IJokerAgentMapper
 {
-    public JokerAgent? GetAgent(IEnumerable<JokerBrandMerchant> merchants, string brandCode, string currencyCode)
+    public JokerAgent? GetAgentByCurrencyCode(IEnumerable<JokerBrandMerchant> merchants, string brandCode, string currencyCode)
     {
         if (!merchants.Any())
         {
@@ -22,6 +22,21 @@ internal class JokerAgentMapper : IJokerAgentMapper
 
         return merchant?.Agents.FirstOrDefault(a
             => a.CurrencyCode == currencyCode
+               && a.Status);
+    }
+
+    public JokerAgent? GetAgentById(IEnumerable<JokerBrandMerchant> merchants, string brandCode, string agentId)
+    {
+        if (!merchants.Any())
+        {
+            return null;
+        }
+
+        var merchant = merchants.FirstOrDefault(m => m.BrandCode == brandCode) ??
+                       merchants.FirstOrDefault(m => m.BrandCode == DefConst.BrandCodeDefault);
+
+        return merchant?.Agents.FirstOrDefault(a
+            => a.AgentId == agentId
                && a.Status);
     }
 }

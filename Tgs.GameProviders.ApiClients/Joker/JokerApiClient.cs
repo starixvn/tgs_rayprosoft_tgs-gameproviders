@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -48,10 +49,13 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(request);
         var signature = GenerateSignature(document, secretKey);
 
+        var queryStrings = HttpUtility.ParseQueryString(string.Empty);
+        queryStrings.Add("appid", appId);
+        queryStrings.Add("signature", signature);
+
         var (_, statusCode, _) = await PostAsync(
             apiUrl,
-            appId,
-            signature,
+            queryStrings,
             document,
             "CreateUser")
             .ConfigureAwait(false);
@@ -83,10 +87,13 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(parameters);
         var signature = GenerateSignature(document, secretKey);
 
+        var queryStrings = HttpUtility.ParseQueryString(string.Empty);
+        queryStrings.Add("appid", appId);
+        queryStrings.Add("signature", signature);
+
         var (isSuccessStatusCode, _, _) = await PostAsync(
                 apiUrl,
-                appId,
-                signature,
+                queryStrings,
                 document,
                 "FundIn")
             .ConfigureAwait(false);
@@ -106,10 +113,13 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(parameters);
         var signature = GenerateSignature(document, secretKey);
 
+        var queryStrings = HttpUtility.ParseQueryString(string.Empty);
+        queryStrings.Add("appid", appId);
+        queryStrings.Add("signature", signature);
+
         var (_, statusCode, _) = await PostAsync(
                 apiUrl,
-                appId,
-                signature,
+                queryStrings,
                 document,
                 "FundOrderChecking")
             .ConfigureAwait(false);
@@ -141,10 +151,13 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(parameters);
         var signature = GenerateSignature(document, secretKey);
 
+        var queryStrings = HttpUtility.ParseQueryString(string.Empty);
+        queryStrings.Add("appid", appId);
+        queryStrings.Add("signature", signature);
+
         var (isSuccessStatusCode, _, _) = await PostAsync(
             apiUrl,
-            appId,
-            signature,
+            queryStrings,
             document,
             "FundOut")
             .ConfigureAwait(false);
@@ -168,10 +181,13 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(request);
         var signature = GenerateSignature(document, secretKey);
 
+        var queryStrings = HttpUtility.ParseQueryString(string.Empty);
+        queryStrings.Add("appid", appId);
+        queryStrings.Add("signature", signature);
+
         var (isSuccessStatusCode, statusCode, content) = await PostAsync(
             apiUrl,
-            appId,
-            signature,
+            queryStrings,
             document,
             "GetBalance")
             .ConfigureAwait(false);
@@ -207,10 +223,13 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(parameters);
         var signature = GenerateSignature(document, secretKey);
 
+        var queryStrings = HttpUtility.ParseQueryString(string.Empty);
+        queryStrings.Add("appid", appId);
+        queryStrings.Add("signature", signature);
+
         var (isSuccessStatusCode, _, content) = await PostAsync(
                 apiUrl,
-                appId,
-                signature,
+                queryStrings,
                 document,
                 "GetGameDetailUrl")
             .ConfigureAwait(false); ;
@@ -229,8 +248,8 @@ internal class JokerApiClient : IJokerApiClient
         var parameters = new Dictionary<string, object>
         {
             ["Method"] = "TSM",
-            ["StartDate"] = startTime.ToString("yyyy-MM-dd HH:mm"),
-            ["EndDate"] = endTime.ToString("yyyy-MM-dd HH:mm"),
+            ["StartDate"] = startTime.UtcDateTime.ToString("yyyy-MM-dd HH:mm"),
+            ["EndDate"] = endTime.UtcDateTime.ToString("yyyy-MM-dd HH:mm"),
             ["NextId"] = nextId ?? string.Empty,
             ["Timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
         };
@@ -238,10 +257,14 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(parameters);
         var signature = GenerateSignature(document, secretKey);
 
+        var queryStrings = HttpUtility.ParseQueryString(string.Empty);
+        queryStrings.Add("appid", appId);
+        queryStrings.Add("signature", signature);
+        queryStrings.Add("timeZone", "Greenwich Standard Time");
+
         var (isSuccessStatusCode, _, content) = await PostAsync(
                 apiUrl,
-                appId,
-                signature,
+                queryStrings,
                 document,
                 "GetGameRecord")
             .ConfigureAwait(false); ;
@@ -261,10 +284,13 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(request);
         var signature = GenerateSignature(document, secretKey);
 
+        var queryStrings = HttpUtility.ParseQueryString(string.Empty);
+        queryStrings.Add("appid", appId);
+        queryStrings.Add("signature", signature);
+
         var (isSuccessStatusCode, _, content) = await PostAsync(
                 apiUrl,
-                appId,
-                signature,
+                queryStrings,
                 document,
                 "GameToken")
             .ConfigureAwait(false);
@@ -286,7 +312,11 @@ internal class JokerApiClient : IJokerApiClient
         var document = JsonSerializer.SerializeToDocument(request);
         var signature = GenerateSignature(document, secretKey);
 
-        _ = await PostAsync(apiUrl, appId, signature, document, "KickPlayer")
+        var queryStrings = HttpUtility.ParseQueryString(string.Empty);
+        queryStrings.Add("appid", appId);
+        queryStrings.Add("signature", signature);
+
+        _ = await PostAsync(apiUrl, queryStrings, document, "KickPlayer")
             .ConfigureAwait(false); ;
     }
 
@@ -303,19 +333,14 @@ internal class JokerApiClient : IJokerApiClient
     }
 
     private async ValueTask<(bool IsSuccessStatusCode, HttpStatusCode HttpStatusCode, JsonDocument? Content)> PostAsync(
-        Uri apiUrl,
-        string appId,
-        string signature,
-        JsonDocument request,
-        string action)
+       Uri apiUrl,
+       NameValueCollection queryStrings,
+       JsonDocument request,
+       string action)
     {
         var logPrefix = $"{nameof(JokerApiClient).ToLower()}.{action}";
 
         var sw = Stopwatch.StartNew();
-
-        var queryStrings = HttpUtility.ParseQueryString(string.Empty);
-        queryStrings.Add("appid", appId);
-        queryStrings.Add("signature", signature);
 
         var uri = $"{apiUrl.OriginalString}?{queryStrings}";
 

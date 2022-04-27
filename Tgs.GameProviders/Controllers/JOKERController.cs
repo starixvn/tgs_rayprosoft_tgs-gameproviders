@@ -41,7 +41,7 @@ public class JOKERController : ControllerBase,
     ///     Post
     ///         {
     ///             "brandCode": "Default",
-    ///             "currencyCode": "HKD",
+    ///             "agentId": "TGVY",
     ///             "startTime": "2021-12-01T00:00:00+00:00",
     ///             "endTime": "2021-12-13T00:00:00+00:00",
     ///             "nextId": null
@@ -56,7 +56,7 @@ public class JOKERController : ControllerBase,
             .GetAsync(
                 new JokerGameRecordListQuery(
                     request.BrandCode,
-                    request.CurrencyCode,
+                    request.AgentId,
                     request.StartTime,
                     request.EndTime,
                     request.NextId))
