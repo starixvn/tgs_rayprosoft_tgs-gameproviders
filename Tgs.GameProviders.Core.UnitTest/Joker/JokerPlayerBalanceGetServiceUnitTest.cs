@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
@@ -73,16 +70,16 @@ public class JokerPlayerBalanceGetServiceUnitTest
         _ = fakeAgentMapper
             .GetAgentByCurrencyCode(
                 Arg.Is(configuration.BrandMerchants),
-                    Arg.Is(playerInfo.BrandCode),
-                        Arg.Is(playerInfo.DefaultWalletCurrencyCode))
+                Arg.Is(playerInfo.BrandCode),
+                Arg.Is(playerInfo.DefaultWalletCurrencyCode))
             .Returns(agent);
 
         _ = fakeApiClient
             .GetBalanceAsync(
                 Arg.Is(configuration.ApiUrl),
-                    Arg.Is(playerInfo.PlayerCode),
-                        Arg.Is(agent.AgentId),
-                            Arg.Is(agent.SecretKey))
+                Arg.Is(playerInfo.PlayerCode),
+                Arg.Is(agent.AgentId),
+                Arg.Is(agent.SecretKey))
             .Returns((true, balance));
 
         var sut = new JokerPlayerBalanceGetService(
@@ -100,8 +97,8 @@ public class JokerPlayerBalanceGetServiceUnitTest
             .DidNotReceive()
             .CreatePlayerAsync(
                 Arg.Is(playerInfo.PlayerCode),
-                    Arg.Is(configuration.ApiUrl),
-                        Arg.Is(agent));
+                Arg.Is(configuration.ApiUrl),
+                Arg.Is(agent));
     }
 
     [Test]
@@ -160,26 +157,26 @@ public class JokerPlayerBalanceGetServiceUnitTest
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
         _ = fakeAgentMapper
             .GetAgentByCurrencyCode(
-                configuration.BrandMerchants,
-                playerInfo.BrandCode,
-                playerInfo.DefaultWalletCurrencyCode)
+                Arg.Is(configuration.BrandMerchants),
+                Arg.Is(playerInfo.BrandCode),
+                Arg.Is(playerInfo.DefaultWalletCurrencyCode))
             .Returns(agent);
 
         _ = fakeApiClient
             .GetBalanceAsync(
-                configuration.ApiUrl,
-                playerInfo.PlayerCode,
-                agent.AgentId,
-                agent.SecretKey)
+                Arg.Is(configuration.ApiUrl),
+                Arg.Is(playerInfo.PlayerCode),
+                Arg.Is(agent.AgentId),
+                Arg.Is(agent.SecretKey))
             .Returns(
                 x => (false, null),
                 x => (true, 100m));
 
         _ = fakeGamePlayer
             .CreatePlayerAsync(
-                playerInfo.PlayerCode,
-                configuration.ApiUrl,
-                agent)
+                Arg.Is(playerInfo.PlayerCode),
+                Arg.Is(configuration.ApiUrl),
+                Arg.Is(agent))
             .Returns(true);
 
         var sut = new JokerPlayerBalanceGetService(
@@ -196,16 +193,16 @@ public class JokerPlayerBalanceGetServiceUnitTest
         _ = fakeGamePlayer
             .Received(1)
             .CreatePlayerAsync(
-                playerInfo.PlayerCode,
-                configuration.ApiUrl,
-                agent);
+                Arg.Is(playerInfo.PlayerCode),
+                Arg.Is(configuration.ApiUrl),
+                Arg.Is(agent));
 
         _ = fakeApiClient
             .Received(2)
             .GetBalanceAsync(
-                configuration.ApiUrl,
-                playerInfo.PlayerCode,
-                agent.AgentId,
-                agent.SecretKey);
+                Arg.Is(configuration.ApiUrl),
+                Arg.Is(playerInfo.PlayerCode),
+                Arg.Is(agent.AgentId),
+                Arg.Is(agent.SecretKey));
     }
 }

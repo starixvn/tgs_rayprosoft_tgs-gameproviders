@@ -85,7 +85,7 @@ public class JokerKickPlayerCommandServiceUnitTest
             .KickPlayerAsync(
                 Arg.Is(configuration.ApiUrl),
                 Arg.Is(playerInfo.PlayerCode),
-                    Arg.Is(agent.AgentId),
-                        Arg.Is(agent.SecretKey));
+                Arg.Is(agent.AgentId),
+                Arg.Is(agent.SecretKey));
     }
 }

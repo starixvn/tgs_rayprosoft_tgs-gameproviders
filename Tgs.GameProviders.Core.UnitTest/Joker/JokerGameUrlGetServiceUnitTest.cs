@@ -101,9 +101,9 @@ public class JokerGameUrlGetServiceUnitTest
         _ = fakeApiClient
              .GetGameTokenAsync(
                  Arg.Is(configuration.ApiUrl),
-                     Arg.Is(query.PlayerCode),
-                         Arg.Is(agent.AgentId),
-                             Arg.Is(agent.SecretKey))
+                 Arg.Is(query.PlayerCode),
+                 Arg.Is(agent.AgentId),
+                 Arg.Is(agent.SecretKey))
              .Returns(gameToken);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);

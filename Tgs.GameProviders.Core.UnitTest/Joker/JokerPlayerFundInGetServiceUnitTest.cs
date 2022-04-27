@@ -65,8 +65,8 @@ public class JokerPlayerFundInGetServiceUnitTest
         _ = fakeAgentMapper
             .GetAgentByCurrencyCode(
                 Arg.Is(configuration.BrandMerchants),
-                    Arg.Is(playerInfo.BrandCode),
-                        Arg.Is(playerInfo.DefaultWalletCurrencyCode))
+                Arg.Is(playerInfo.BrandCode),
+                Arg.Is(playerInfo.DefaultWalletCurrencyCode))
             .Returns(agent);
 
         _ = fakeApiClient

@@ -60,7 +60,7 @@ public class JokerPlayerFundCheckingGetServiceUnitTest
             .GetAgentByCurrencyCode(
                 Arg.Is(configuration.BrandMerchants),
                 Arg.Is(query.BrandCode),
-                    Arg.Is(query.CurrencyCode))
+                Arg.Is(query.CurrencyCode))
             .Returns(agent);
 
         _ = fakeApiClient
