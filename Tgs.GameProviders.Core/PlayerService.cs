@@ -45,14 +45,12 @@ namespace Tgs.GameProviders.Core
 
         public async Task<PlayerInfo> GetCacheAsync(string playerCode)
         {
-            if (!_memoryCache.TryGetValue(playerCode, out PlayerInfo playerInfo))
-            {
-                playerInfo = await GetAsync(playerCode).ConfigureAwait(false);
+            if (_memoryCache.TryGetValue(playerCode, out PlayerInfo playerInfo)) return playerInfo;
+            playerInfo = await GetAsync(playerCode).ConfigureAwait(false);
 
-                if (playerInfo != null)
-                {
-                    _memoryCache.Set(playerCode, playerInfo, TimeSpan.FromHours(1));
-                }
+            if (playerInfo != null)
+            {
+                _ = _memoryCache.Set(playerCode, playerInfo, TimeSpan.FromHours(1));
             }
             return playerInfo;
         }
