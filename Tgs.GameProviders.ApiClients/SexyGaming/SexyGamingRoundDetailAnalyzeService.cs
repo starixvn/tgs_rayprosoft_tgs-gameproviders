@@ -27,6 +27,7 @@ namespace Tgs.GameProviders.ApiClients.SexyGaming
               "MX-LIVE-010" => GetRedBlueDuelGameHistory(source), //Red Blue Duel
               "MX-LIVE-011" => JsonSerializer.Serialize(source.Result),  //Twenty
               "MX-LIVE-012" => JsonSerializer.Serialize(source.Result),  //AndarBahar
+              "MX-LIVE-014" => GetThaiHiLoGameHistory(source),  //Thai Hi Lo
               _ => GetBaccaratGameHistory(source)     //百家樂相關
           };
 
@@ -86,6 +87,19 @@ namespace Tgs.GameProviders.ApiClients.SexyGaming
         }
 
         private string GetSicboGameHistory(SexyGamingGameRecord source)
+        {
+            var split = source.Result[0].Split(',');
+            return JsonSerializer.Serialize(
+                new Dictionary<string, string>
+                {
+                    {"dice1", split[0]},
+                    {"dice2", split[1]},
+                    {"dice3", split[2]},
+                    {"outcome",source.Winner}
+                });
+        }
+
+        private string GetThaiHiLoGameHistory(SexyGamingGameRecord source)
         {
             var split = source.Result[0].Split(',');
             return JsonSerializer.Serialize(
