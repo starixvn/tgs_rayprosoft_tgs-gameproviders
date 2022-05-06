@@ -146,7 +146,7 @@ namespace Tgs.GameProviders.Core.TCG.ApplicationServices
                 GameMode = ((int)TCGPlayerGameMode.RealPlayer).ToString(),
                 GameCode = "lobby",
                 Language = source.Language,
-                LotteryBetMode = "SEA_Tradition",
+                LotteryBetMode = (IsMobile) ? "SEA_Tradition_Mobile" : "SEA_Tradition",
                 View = "lobby"
             };
             return _client.LaunchGameAsync(
