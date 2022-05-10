@@ -12,6 +12,7 @@ using Tgs.GameProviders.Core.Habanero;
 using Tgs.GameProviders.Core.IMESports;
 using Tgs.GameProviders.Core.JDB;
 using Tgs.GameProviders.Core.Jili;
+using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Core.KY;
 using Tgs.GameProviders.Core.LY;
 using Tgs.GameProviders.Core.PragmaticPlay;
@@ -37,6 +38,7 @@ using Tgs.GameProviders.Services.Habanero;
 using Tgs.GameProviders.Services.IMESports;
 using Tgs.GameProviders.Services.JDB;
 using Tgs.GameProviders.Services.Jili;
+using Tgs.GameProviders.Services.Joker;
 using Tgs.GameProviders.Services.KY;
 using Tgs.GameProviders.Services.LY;
 using Tgs.GameProviders.Services.PragmaticPlay;
@@ -53,7 +55,7 @@ using Tgs.GameProviders.Services.WMCasino;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class ServiceCollecitonExtensions
+    public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddGameProvidersServices(
             this IServiceCollection services,
@@ -165,6 +167,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
             _ = services
                 .AddTransient<IDreamGameService, DreamGameService>();
+
+            _ = services
+                .AddTransient<IJokerAgentMapper, JokerAgentMapper>()
+                .AddTransient<IJokerService, JokerService>()
+                .AddTransient<IJokerGamePlayer, JokerGamePlayer>();
 
             return services;
         }
