@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Globalization;
-using System.IO;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameProviders.ApiClients.PragmaticPlay;
-using Tgs.GameProviders.Core.PragmaticPlay;
-using Tgs.GameProviders.Core.PragmaticPlay.Models;
 using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;

@@ -16,6 +16,7 @@ using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Core.KY;
 using Tgs.GameProviders.Core.LY;
 using Tgs.GameProviders.Core.PragmaticPlay;
+using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 using Tgs.GameProviders.Core.Saba;
 using Tgs.GameProviders.Core.SBO;
 using Tgs.GameProviders.Core.SexyGaming;
@@ -42,6 +43,7 @@ using Tgs.GameProviders.Services.Joker;
 using Tgs.GameProviders.Services.KY;
 using Tgs.GameProviders.Services.LY;
 using Tgs.GameProviders.Services.PragmaticPlay;
+using Tgs.GameProviders.Services.PragmaticPlayerTransfer;
 using Tgs.GameProviders.Services.Saba;
 using Tgs.GameProviders.Services.SBO;
 using Tgs.GameProviders.Services.SexyGaming;
@@ -172,6 +174,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IJokerAgentMapper, JokerAgentMapper>()
                 .AddTransient<IJokerService, JokerService>()
                 .AddTransient<IJokerGamePlayer, JokerGamePlayer>();
+
+            _ = services
+                .AddTransient<IPragmaticPlayTransferService, PragmaticPlayTransferService>();
 
             return services;
         }

@@ -15,6 +15,7 @@ using Tgs.GameProviders.Core.Joker.ApplicationServices;
 using Tgs.GameProviders.Core.KY.ApplicationServices;
 using Tgs.GameProviders.Core.LY.ApplicationServices;
 using Tgs.GameProviders.Core.PragmaticPlay.ApplicationServices;
+using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 using Tgs.GameProviders.Core.Saba.ApplicationServices;
 using Tgs.GameProviders.Core.SBO.ApplicationServices;
 using Tgs.GameProviders.Core.SexyGaming.ApplicationServices;
@@ -82,6 +83,8 @@ namespace Tgs.GameProviders.ViewModelMappings
                 .ReverseMap();
             _ = CreateMap<GameUrlRequest, JokerGameUrlQuery>()
                 .ReverseMap();
+            _ = CreateMap<GameUrlRequest, PragmaticPlayTransferGameUrlQuery>()
+            .ReverseMap();
         }
     }
 }

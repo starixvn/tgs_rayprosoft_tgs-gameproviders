@@ -35,7 +35,7 @@ public class PPTFController : ControllerBase,
     ///  Post
     ///         {
     ///             "gameType": 15,
-    ///             "gameId": 300001,
+    ///             "gameId": 2700001,
     ///             "brandCode": "GPI",
     ///             "playerCode": "4ucmqplxb029",
     ///             "currencyCode": "CNY",
