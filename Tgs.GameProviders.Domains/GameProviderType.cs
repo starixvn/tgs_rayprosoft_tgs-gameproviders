@@ -19,6 +19,7 @@
         public const string LY = "LY";
         public const string MainWallet = "DEFAULT";
         public const string PragmaticPlay = "PP";
+        public const string PragmaticPlayTransfer = "PPTF";
         public const string RedTiger = "RT";
         public const string Saba = "SABA";
         public const string SBOBET = "SBO";
