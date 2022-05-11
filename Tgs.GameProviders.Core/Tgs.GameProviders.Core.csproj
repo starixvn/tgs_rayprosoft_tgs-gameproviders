@@ -20,8 +20,4 @@
 	  <ProjectReference Include="..\Tgs.GameProviders.Domains\Tgs.GameProviders.Domains.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="PragmaticPlayTransfer\ApplicationServices\" />
-	</ItemGroup>
-
 </Project>
