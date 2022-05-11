@@ -13,8 +13,8 @@ namespace Tgs.GameProviders.Controllers;
 [Route("api/[controller]")]
 public class PPTFController : ControllerBase,
     IGameUrlHandler<PragmaticPlayTransferGameUrlQuery>,
-    IKickPlayerHandler<PragmaticPlayTransferKickPlayerCommand>
-//IRoundDetailHandler<PragmaticPlayRoundDetailQuery>
+    IKickPlayerHandler<PragmaticPlayTransferKickPlayerCommand>,
+    IPlayerBalanceHandler<PragmaticPlayTransferPlayerBalanceQuery>
 {
     private readonly IMapper _mapper;
 
@@ -74,6 +74,26 @@ public class PPTFController : ControllerBase,
         [FromServices] ICommandService<PragmaticPlayTransferKickPlayerCommand> commandService,
         string playerCode)
         => commandService.ExecuteAsync(new()
+        {
+            PlayerCode = playerCode
+        });
+
+    /// <summary>
+    /// Players the balance asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    ///   <b>Example</b><br />
+    ///
+    ///   Get pptf/balance/4uf6k014jp5x
+    /// </remarks>
+    [HttpGet("Balance/{playerCode}")]
+    public ValueTask<decimal?> PlayerBalanceAsync(
+        [FromServices] IGetService<PragmaticPlayTransferPlayerBalanceQuery, decimal?> getService,
+        string playerCode)
+        => getService.GetAsync(new PragmaticPlayTransferPlayerBalanceQuery
         {
             PlayerCode = playerCode
         });

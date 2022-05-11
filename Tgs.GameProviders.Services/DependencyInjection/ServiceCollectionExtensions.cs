@@ -176,7 +176,8 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IJokerGamePlayer, JokerGamePlayer>();
 
             _ = services
-                .AddTransient<IPragmaticPlayTransferService, PragmaticPlayTransferService>();
+                .AddTransient<IPragmaticPlayTransferService, PragmaticPlayTransferService>()
+                .AddTransient<IPragmaticPlayTransferGamePlayer, PragmaticPlayTransferGamePlayer>();
 
             return services;
         }
