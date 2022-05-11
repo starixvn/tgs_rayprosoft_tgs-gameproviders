@@ -12,8 +12,8 @@ namespace Tgs.GameProviders.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 public class PPTFController : ControllerBase,
-    IGameUrlHandler<PragmaticPlayTransferGameUrlQuery>
-//IKickPlayerHandler<PragmaticPlayKickPlayerCommand>,
+    IGameUrlHandler<PragmaticPlayTransferGameUrlQuery>,
+    IKickPlayerHandler<PragmaticPlayTransferKickPlayerCommand>
 //IRoundDetailHandler<PragmaticPlayRoundDetailQuery>
 {
     private readonly IMapper _mapper;
@@ -57,4 +57,24 @@ public class PPTFController : ControllerBase,
 
         return result == null ? null : _mapper.Map<GameUrlResponse>(result);
     }
+
+    /// <summary>
+    /// Kicks the player asynchronous.
+    /// </summary>
+    /// <param name="commandService">The command service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Delete pptf/kickplayer/4ucmqplxb029
+    /// </remarks>
+    [HttpDelete("kickplayer/{playerCode}")]
+    public ValueTask KickPlayerAsync(
+        [FromServices] ICommandService<PragmaticPlayTransferKickPlayerCommand> commandService,
+        string playerCode)
+        => commandService.ExecuteAsync(new()
+        {
+            PlayerCode = playerCode
+        });
 }
