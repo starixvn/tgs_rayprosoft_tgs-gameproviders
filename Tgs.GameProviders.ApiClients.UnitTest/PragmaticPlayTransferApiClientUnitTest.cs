@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameProviders.ApiClients.PragmaticPlay;
+using Tgs.GameProviders.ApiClients.PragmaticPlayTransfer;
 using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;

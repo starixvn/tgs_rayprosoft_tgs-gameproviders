@@ -14,11 +14,12 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Extensions.Logging;
+using Tgs.GameProviders.ApiClients.PragmaticPlay;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 using Tgs.Logging;
 
-namespace Tgs.GameProviders.ApiClients.PragmaticPlay;
+namespace Tgs.GameProviders.ApiClients.PragmaticPlayTransfer;
 
 internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
 {
