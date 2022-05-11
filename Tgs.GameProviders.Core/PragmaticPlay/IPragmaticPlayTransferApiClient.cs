@@ -1,0 +1,81 @@
+﻿#nullable enable
+
+using System;
+using System.Threading.Tasks;
+
+namespace Tgs.GameProviders.Core.PragmaticPlay;
+
+public interface IPragmaticPlayTransferApiClient
+{
+    ValueTask<bool> CreatePlayerAsync(
+        Uri apiUrl,
+        string secureLogin,
+        string secretKey,
+        string playerCode,
+        string currencyCode);
+
+    /// <summary>
+    /// FundIn (Gp -> Tgs)
+    /// </summary>
+    ValueTask<(bool Success, string TransactionId)> FundInAsync(
+        Uri apiUrl,
+        string secureLogin,
+        string secretKey,
+        string playerCode,
+        string orderId,
+        decimal amount);
+
+    ValueTask<bool> FundOrderCheckingAsync(
+            Uri apiUrl,
+            string secureLogin,
+            string secretKey,
+            string orderId);
+
+    /// <summary>
+    /// FundOut (Tgs -> Gp)
+    /// </summary>
+    ValueTask<(bool Success, string TransactionId)> FundOutAsync(
+        Uri apiUrl,
+        string secureLogin,
+        string secretKey,
+        string playerCode,
+        string orderId,
+        decimal amount);
+
+    ValueTask<(bool IsPlayerExist, decimal? Balance)> GetBalanceAsync(
+        Uri apiUrl,
+        string secureLogin,
+        string secretKey,
+        string playerCode);
+
+    ValueTask<string> GetGameRoundRecordsAsync(
+            Uri apiUrl,
+        string secureLogin,
+        string secretKey,
+        string dataType,
+        DateTimeOffset startTime);
+
+    ValueTask<string?> GetRoundHistoryAsync(
+        Uri apiUrl,
+        string secureLogin,
+        string secretKey,
+        string playerCode,
+        string roundId,
+        string language);
+
+    ValueTask LogoutAsync(
+        Uri apiUrl,
+        string secureLogin,
+        string secretKey,
+        string playerCode);
+
+    ValueTask<string?> GetGameUrlAsync(
+        Uri apiUrl,
+        string secureLogin,
+        string secretKey,
+        string playerCode,
+        string externalGameId,
+        string language,
+        string platform,
+        string? lobbyUrl);
+}
