@@ -61,7 +61,7 @@ internal class PragmaticPlayTransferApiClientUnitTest
 
         var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
 
-        var response = await client.FundInAsync(
+        var success = await client.FundInAsync(
             _apiUrl,
             securityLogin,
             secretKey,
@@ -69,7 +69,7 @@ internal class PragmaticPlayTransferApiClientUnitTest
             orderId,
             amount).ConfigureAwait(false);
 
-        await TestContext.Progress.WriteLineAsync(JsonSerializer.Serialize(response));
+        await TestContext.Progress.WriteLineAsync(success.ToString());
     }
 
     [Test]
@@ -87,13 +87,13 @@ internal class PragmaticPlayTransferApiClientUnitTest
 
         var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
 
-        var response = await client.FundOrderCheckingAsync(
+        var exist = await client.FundOrderCheckingAsync(
             _apiUrl,
             securityLogin,
             secretKey,
             orderId).ConfigureAwait(false);
 
-        await TestContext.Progress.WriteLineAsync(JsonSerializer.Serialize(response));
+        await TestContext.Progress.WriteLineAsync(exist.ToString());
     }
 
     [Test]
@@ -106,15 +106,15 @@ internal class PragmaticPlayTransferApiClientUnitTest
         var securityLogin = "tgs_tgstfw";
         var secretKey = "testKey";
         var playerCode = "4ucmqplxb029";
-        //var orderId = Guid.NewGuid().ToString("N");
-        var orderId = "4c3415e7138942e1b9b48a5fd10e1d47";
+        var orderId = Guid.NewGuid().ToString("N");
+        //var orderId = "4c3415e7138942e1b9b48a5fd10e1d47";
         var amount = 500m;
 
         //var client = Substitute.For<IPragmaticPlayTransferApiClient>();
 
         var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
 
-        var response = await client.FundOutAsync(
+        var success = await client.FundOutAsync(
             _apiUrl,
             securityLogin,
             secretKey,
@@ -122,7 +122,7 @@ internal class PragmaticPlayTransferApiClientUnitTest
             orderId,
             amount).ConfigureAwait(false);
 
-        await TestContext.Progress.WriteLineAsync(JsonSerializer.Serialize(response));
+        await TestContext.Progress.WriteLineAsync(success.ToString());
     }
 
     [Test]
@@ -146,7 +146,10 @@ internal class PragmaticPlayTransferApiClientUnitTest
             secretKey,
             playerCode).ConfigureAwait(false);
 
-        await TestContext.Progress.WriteLineAsync(balance.GetValueOrDefault().ToString());
+        var amount = !balance.HasValue ? "null" : $"{balance.Value}";
+
+        await TestContext.Progress.WriteLineAsync($"exist: {exist}");
+        await TestContext.Progress.WriteLineAsync($"balance: {amount}");
     }
 
     [Test]
@@ -174,27 +177,7 @@ internal class PragmaticPlayTransferApiClientUnitTest
             "RNG",
             time).ConfigureAwait(false);
 
-        //Console.WriteLine(data);
-
-        //using var stringReader = new StringReader(data);
-        //var timepoint = await stringReader.ReadLineAsync();
-
-        //var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
-        //{
-        //    HasHeaderRecord = true
-        //    //HasHeaderRecord = false
-        //};
-
-        //using var csvReader = new CsvReader(stringReader, configuration);
-
-        //var records = csvReader.GetRecords<RoundRecord>();
-
-        //while (csvReader.Read())
-        //{
-        //    var playerId = csvReader.GetField<string>("playerID");
-        //    var extPlayerID = csvReader.GetField<string>("extPlayerID");
-        //    var gameId = csvReader.GetField<string>("gameID");
-        //}
+        await TestContext.Progress.WriteLineAsync(data);
     }
 
     [Test]
@@ -207,7 +190,7 @@ internal class PragmaticPlayTransferApiClientUnitTest
         var securityLogin = "tgs_tgstfw";
         var secretKey = "testKey";
         var playerCode = "4ucmqplxb029";
-        var externalGameId = "vs20olympgate";
+        var externalGameId = "vs25bkofkngdm";
         var language = "en";
         var platform = "WEB";
 
@@ -239,21 +222,25 @@ internal class PragmaticPlayTransferApiClientUnitTest
         var secretKey = "testKey";
         var playerCode = "4ucmqplxb029";
         var roundId = "2759382176";
+        var gameId = "vs20kraken";
         var language = "en";
 
         //var client = Substitute.For<IPragmaticPlayTransferApiClient>();
 
         var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
 
-        _ = await client
+        var url = await client
             .GetRoundHistoryAsync(
                 _apiUrl,
                 securityLogin,
                 secretKey,
                 playerCode,
                 roundId,
+                gameId,
                 language)
             .ConfigureAwait(false);
+
+        await TestContext.Progress.WriteLineAsync(url);
     }
 
     [Test]

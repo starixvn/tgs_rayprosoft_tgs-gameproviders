@@ -3,7 +3,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Tgs.GameProviders.Core.PragmaticPlay;
+namespace Tgs.GameProviders.Core.PragmaticPlayTransfer;
 
 public interface IPragmaticPlayTransferApiClient
 {
@@ -17,7 +17,7 @@ public interface IPragmaticPlayTransferApiClient
     /// <summary>
     /// FundIn (Gp -> Tgs)
     /// </summary>
-    ValueTask<(bool Success, string TransactionId)> FundInAsync(
+    ValueTask<bool> FundInAsync(
         Uri apiUrl,
         string secureLogin,
         string secretKey,
@@ -26,15 +26,15 @@ public interface IPragmaticPlayTransferApiClient
         decimal amount);
 
     ValueTask<bool> FundOrderCheckingAsync(
-            Uri apiUrl,
-            string secureLogin,
-            string secretKey,
-            string orderId);
+        Uri apiUrl,
+        string secureLogin,
+        string secretKey,
+        string orderId);
 
     /// <summary>
     /// FundOut (Tgs -> Gp)
     /// </summary>
-    ValueTask<(bool Success, string TransactionId)> FundOutAsync(
+    ValueTask<bool> FundOutAsync(
         Uri apiUrl,
         string secureLogin,
         string secretKey,
@@ -42,32 +42,18 @@ public interface IPragmaticPlayTransferApiClient
         string orderId,
         decimal amount);
 
-    ValueTask<(bool IsPlayerExist, decimal? Balance)> GetBalanceAsync(
+    ValueTask<(bool? IsPlayerExist, decimal? Balance)> GetBalanceAsync(
         Uri apiUrl,
         string secureLogin,
         string secretKey,
         string playerCode);
 
-    ValueTask<string> GetGameRoundRecordsAsync(
-            Uri apiUrl,
+    ValueTask<string?> GetGameRoundRecordsAsync(
+        Uri apiUrl,
         string secureLogin,
         string secretKey,
         string dataType,
         DateTimeOffset startTime);
-
-    ValueTask<string?> GetRoundHistoryAsync(
-        Uri apiUrl,
-        string secureLogin,
-        string secretKey,
-        string playerCode,
-        string roundId,
-        string language);
-
-    ValueTask LogoutAsync(
-        Uri apiUrl,
-        string secureLogin,
-        string secretKey,
-        string playerCode);
 
     ValueTask<string?> GetGameUrlAsync(
         Uri apiUrl,
@@ -78,4 +64,19 @@ public interface IPragmaticPlayTransferApiClient
         string language,
         string platform,
         string? lobbyUrl);
+
+    ValueTask<string?> GetRoundHistoryAsync(
+        Uri apiUrl,
+        string secureLogin,
+        string secretKey,
+        string playerCode,
+        string externalRoundId,
+        string externalGameId,
+        string language);
+
+    ValueTask LogoutAsync(
+        Uri apiUrl,
+        string secureLogin,
+        string secretKey,
+        string playerCode);
 }
