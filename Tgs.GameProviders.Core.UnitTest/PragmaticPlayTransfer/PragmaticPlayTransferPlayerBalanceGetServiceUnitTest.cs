@@ -20,7 +20,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
         var fakeGamePlayer = Substitute.For<IPragmaticPlayTransferGamePlayer>();
         var fakePlayerService = Substitute.For<IPlayerService>();
 
-        var configuration = new PragmaticPlayTransferConfiguration()
+        var configuration = new PragmaticPlayTransferConfiguration
         {
             ServiceEndpointUrl = new("http://game-pp"),
             ApiUrl = new("https://api.prerelease-env.biz"),
@@ -29,7 +29,6 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
             ProviderId = "PragmaticPlay"
         };
 
-        var gameProviderId = Guid.Parse("e4ecfa98-b373-4123-87e0-cb9e883d0691");
         var gameProviderCurrencyCode = "CNY";
 
         var playerInfo = new PlayerInfo(

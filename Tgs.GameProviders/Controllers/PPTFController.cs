@@ -15,7 +15,8 @@ public class PPTFController : ControllerBase,
     IGameUrlHandler<PragmaticPlayTransferGameUrlQuery>,
     IKickPlayerHandler<PragmaticPlayTransferKickPlayerCommand>,
     IPlayerBalanceHandler<PragmaticPlayTransferPlayerBalanceQuery>,
-    IPlayerFundCheckingHandler<PragmaticPlayTransferPlayerFundCheckingQuery, PlayerFundCheckingRequest>
+    IPlayerFundCheckingHandler<PragmaticPlayTransferPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
+    IPlayerFundHandler<PragmaticPlayTransferPlayerFundInQuery, PragmaticPlayTransferPlayerFundOutQuery>
 
 {
     private readonly IMapper _mapper;
@@ -127,5 +128,65 @@ public class PPTFController : ControllerBase,
             .ConfigureAwait(false);
 
         return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
+    }
+
+    /// <summary>
+    /// Players the fund in asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "GPI",
+    ///             "playerCode": "4ucmqplxb029",
+    ///             "currencyCode": "CNY",
+    ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
+    ///             "amount": 1
+    ///         }
+    /// </remarks>
+    [HttpPost("PlayerFundIn")]
+    public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
+        [FromServices] IGetService<PragmaticPlayTransferPlayerFundInQuery, PlayerFundResult> getService,
+        PlayerFundRequest request)
+    {
+        var result = await getService
+            .GetAsync(_mapper.Map<PragmaticPlayTransferPlayerFundInQuery>(request))
+            .ConfigureAwait(false);
+
+        return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+    }
+
+    /// <summary>
+    /// Players the fund out asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "GPI",
+    ///             "playerCode": "4ucmqplxb029",
+    ///             "currencyCode": "CNY",
+    ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
+    ///             "amount": 1
+    ///         }
+    /// </remarks>
+    [HttpPost("PlayerFundOut")]
+    public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
+        [FromServices] IGetService<PragmaticPlayTransferPlayerFundOutQuery, PlayerFundResult> getService,
+        PlayerFundRequest request)
+    {
+        var result = await getService
+            .GetAsync(_mapper.Map<PragmaticPlayTransferPlayerFundOutQuery>(request))
+            .ConfigureAwait(false);
+
+        return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
     }
 }
