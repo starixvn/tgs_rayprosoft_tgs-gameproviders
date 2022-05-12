@@ -14,7 +14,9 @@ namespace Tgs.GameProviders.Controllers;
 public class PPTFController : ControllerBase,
     IGameUrlHandler<PragmaticPlayTransferGameUrlQuery>,
     IKickPlayerHandler<PragmaticPlayTransferKickPlayerCommand>,
-    IPlayerBalanceHandler<PragmaticPlayTransferPlayerBalanceQuery>
+    IPlayerBalanceHandler<PragmaticPlayTransferPlayerBalanceQuery>,
+    IPlayerFundCheckingHandler<PragmaticPlayTransferPlayerFundCheckingQuery, PlayerFundCheckingRequest>
+
 {
     private readonly IMapper _mapper;
 
@@ -87,7 +89,7 @@ public class PPTFController : ControllerBase,
     /// <remarks>
     ///   <b>Example</b><br />
     ///
-    ///   Get pptf/balance/4uf6k014jp5x
+    ///   Get pptf/balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("Balance/{playerCode}")]
     public ValueTask<decimal?> PlayerBalanceAsync(
@@ -97,4 +99,33 @@ public class PPTFController : ControllerBase,
         {
             PlayerCode = playerCode
         });
+
+    /// <summary>
+    /// Players the fund checking asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "GPI",
+    ///             "playerCode": "4ucmqplxb029",
+    ///             "currencyCode": "CNY",
+    ///             "orderId":"4c3415e7138942e1b9b48a5fd10e1d47"
+    ///         }
+    /// </remarks>
+    [HttpPost("PlayerFundChecking")]
+    public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
+        [FromServices] IGetService<PragmaticPlayTransferPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        PlayerFundCheckingRequest request)
+    {
+        var result = await getService
+            .GetAsync(_mapper.Map<PragmaticPlayTransferPlayerFundCheckingQuery>(request))
+            .ConfigureAwait(false);
+
+        return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
+    }
 }

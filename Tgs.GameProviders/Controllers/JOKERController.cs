@@ -151,7 +151,7 @@ public class JOKERController : ControllerBase,
     ///
     ///     Post
     ///         {
-    ///             "brandCode": "GPI>HKD",
+    ///             "brandCode": "GPI_HKD",
     ///             "playerCode": "4uf6k014jp5x",
     ///             "currencyCode": "HKD",
     ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86"
