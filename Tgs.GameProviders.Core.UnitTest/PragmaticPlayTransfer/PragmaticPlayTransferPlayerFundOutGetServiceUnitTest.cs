@@ -16,7 +16,7 @@ internal class PragmaticPlayTransferPlayerFundOutGetServiceUnitTest
         var fakeService = Substitute.For<IPragmaticPlayTransferService>();
         var fakeApiClient = Substitute.For<IPragmaticPlayTransferApiClient>();
 
-        var configuration = new PragmaticPlayTransferConfiguration()
+        var configuration = new PragmaticPlayTransferConfiguration
         {
             ServiceEndpointUrl = new("http://game-pp"),
             ApiUrl = new("https://api.prerelease-env.biz"),

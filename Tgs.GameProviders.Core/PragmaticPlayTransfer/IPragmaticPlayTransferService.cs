@@ -10,6 +10,8 @@ public interface IPragmaticPlayTransferService
 {
     ValueTask<GameInfo?> GetGameAsync(int gameId);
 
+    ValueTask<GameProviderInfo> GetGameProviderAsync(Guid gameProviderId);
+
     ValueTask<string?> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
 
     ValueTask<Guid> GetGameProviderIdAsync();

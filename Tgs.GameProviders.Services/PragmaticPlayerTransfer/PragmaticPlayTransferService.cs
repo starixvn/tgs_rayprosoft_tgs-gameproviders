@@ -28,6 +28,9 @@ internal class PragmaticPlayTransferService : IPragmaticPlayTransferService
     public ValueTask<GameInfo?> GetGameAsync(int gameId)
         => _gameService.GetAsync(gameId);
 
+    public ValueTask<GameProviderInfo> GetGameProviderAsync(Guid gameProviderId)
+        => _gameProviderService.GetAsync(gameProviderId);
+
     public async ValueTask<string?> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
     {
         var gameProviderCurrencyCode = await _gameProviderService

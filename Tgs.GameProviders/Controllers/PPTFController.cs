@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
+using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
 
@@ -16,8 +17,8 @@ public class PPTFController : ControllerBase,
     IKickPlayerHandler<PragmaticPlayTransferKickPlayerCommand>,
     IPlayerBalanceHandler<PragmaticPlayTransferPlayerBalanceQuery>,
     IPlayerFundCheckingHandler<PragmaticPlayTransferPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-    IPlayerFundHandler<PragmaticPlayTransferPlayerFundInQuery, PragmaticPlayTransferPlayerFundOutQuery>
-
+    IPlayerFundHandler<PragmaticPlayTransferPlayerFundInQuery, PragmaticPlayTransferPlayerFundOutQuery>,
+    IRoundDetailHandler<PragmaticPlayTransferRoundDetailQuery>
 {
     private readonly IMapper _mapper;
 
@@ -189,4 +190,27 @@ public class PPTFController : ControllerBase,
 
         return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
     }
+
+    /// <summary>
+    /// Rounds the detail asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="roundId">The round identifier.</param>
+    /// <param name="language">The language.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Get pptf/rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
+    /// </remarks>
+    [HttpGet("RoundDetail/{roundId}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
+        [FromServices] IGetService<PragmaticPlayTransferRoundDetailQuery, RoundDetailResult?> getService,
+        Guid roundId,
+        string language)
+        => getService.GetAsync(new PragmaticPlayTransferRoundDetailQuery
+        {
+            RoundId = roundId,
+            Language = language
+        });
 }
