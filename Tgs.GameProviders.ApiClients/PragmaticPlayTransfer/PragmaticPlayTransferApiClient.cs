@@ -256,7 +256,7 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
         return gameUrl;
     }
 
-    public async ValueTask<string?> GetRoundHistoryAsync(
+    public async ValueTask<string?> GetGameDetailUrlAsync(
         Uri apiUrl,
         string secureLogin,
         string secretKey,
@@ -281,7 +281,7 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
             apiUrl,
             "/IntegrationService/v3/http/HistoryAPI/OpenHistoryExtended/",
             parameters,
-            "RoundHistory");
+            "GameDetailUrl");
 
         var errorCode = document?.RootElement.GetProperty("error").GetString();
         if (errorCode is not "0")
@@ -372,8 +372,6 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
 
         _tgsLog.LogApi(apiLogEvent);
         _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
-
-        Console.WriteLine(JsonSerializer.Serialize(apiLogEvent));
 
         return !string.IsNullOrEmpty(responseMessage) &&
                httpResponseMessage.StatusCode == HttpStatusCode.OK

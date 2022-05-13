@@ -65,7 +65,7 @@ public interface IPragmaticPlayTransferApiClient
         string platform,
         string? lobbyUrl);
 
-    ValueTask<string?> GetRoundHistoryAsync(
+    ValueTask<string?> GetGameDetailUrlAsync(
         Uri apiUrl,
         string secureLogin,
         string secretKey,

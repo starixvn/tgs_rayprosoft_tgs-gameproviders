@@ -164,8 +164,6 @@ internal class PragmaticPlayTransferApiClientUnitTest
 
         var time = DateTimeOffset.UtcNow.AddMinutes(-10);
 
-        Console.WriteLine("timepoint: {0}", time.ToUnixTimeMilliseconds());
-
         var data = await client.GetGameRoundRecordsAsync(
             _apiUrl,
             securityLogin,
@@ -208,7 +206,7 @@ internal class PragmaticPlayTransferApiClientUnitTest
     }
 
     [Test]
-    public async Task GetRoundHistoryAsync()
+    public async Task GetGameDetailUrlAsync()
     {
         var httpClient = new HttpClient();
         var logger = NullLogger<PragmaticPlayTransferApiClient>.Instance;
@@ -226,7 +224,7 @@ internal class PragmaticPlayTransferApiClientUnitTest
         var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
 
         var url = await client
-            .GetRoundHistoryAsync(
+            .GetGameDetailUrlAsync(
                 _apiUrl,
                 securityLogin,
                 secretKey,
