@@ -48,7 +48,7 @@ public interface IPragmaticPlayTransferApiClient
         string secretKey,
         string playerCode);
 
-    ValueTask<string?> GetGameRoundRecordsAsync(
+    ValueTask<(bool Success, string Data)> GetGameRoundRecordsAsync(
         Uri apiUrl,
         string secureLogin,
         string secretKey,

@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
+using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
@@ -213,4 +214,29 @@ public class PPTFController : ControllerBase,
             RoundId = roundId,
             Language = language
         });
+
+    /// <summary>
+    /// Games the record list asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "startTime": "2021-12-01T00:00:00+00:00",
+    ///             "dataType": "RNG"
+    ///         }
+    /// </remarks>
+    [HttpPost("GameRecordList")]
+    public ValueTask<PragmaticPlayTransferGameRecordResult> GameRecordListAsync(
+        [FromServices]
+        IGetService<PragmaticPlayTransferGameRecordListQuery, PragmaticPlayTransferGameRecordResult> getService,
+        PragmaticPlayTransferGameRecordListRequest request)
+        => getService.GetAsync(
+            new PragmaticPlayTransferGameRecordListQuery(
+                request.DataType,
+                request.StartTime));
 }

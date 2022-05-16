@@ -158,17 +158,36 @@ internal class PragmaticPlayTransferApiClientUnitTest
     {
         var securityLogin = "tgs_tgstfw";
         var secretKey = "testKey";
+        var dataType = "RNG";
 
         var client = Substitute.For<IPragmaticPlayTransferApiClient>();
 
-        var time = DateTimeOffset.UtcNow.AddMinutes(-10);
+        var startTime = new DateTimeOffset(2022, 5, 13, 16, 0, 0, TimeSpan.FromHours(8));
 
-        var data = await client.GetGameRoundRecordsAsync(
+        var timepoint = 1652429638085L;
+        var csvData =
+        @$"timepoint={timepoint}
+        playerID,extPlayerID,gameID,playSessionID,parentSessionID,startDate,endDate,status,type,bet,win,currency,jackpot
+        2953411,4ucmqplxb029,vs25bkofkngdm,2806980613,null,2022-05-13 08:04:41,2022-05-13 08:04:41,C,R,2.50,0.00,CNY,0.00";
+
+        _ = client.GetGameRoundRecordsAsync(
+            Arg.Is(_apiUrl),
+            Arg.Is(securityLogin),
+            Arg.Is(secretKey),
+            Arg.Is(dataType),
+            Arg.Is(startTime))
+            .Returns((true, csvData));
+
+        var actual = await client.GetGameRoundRecordsAsync(
             _apiUrl,
             securityLogin,
             secretKey,
-            "RNG",
-            time).ConfigureAwait(false);
+            dataType,
+            startTime).ConfigureAwait(false);
+
+        Assert.NotNull(actual);
+        Assert.AreEqual(true, actual.Success);
+        Assert.AreEqual(csvData, actual.Data);
     }
 
     [Test]

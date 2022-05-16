@@ -197,8 +197,9 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
         }
     }
 
-    public ValueTask<string?> GetGameRoundRecordsAsync(
-        Uri apiUrl, string secureLogin,
+    public async ValueTask<(bool Success, string Data)> GetGameRoundRecordsAsync(
+        Uri apiUrl,
+        string secureLogin,
         string secretKey,
         string dataType,
         DateTimeOffset startTime)
@@ -209,11 +210,15 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
         queryStrings.Add("dataType", dataType);
         queryStrings.Add("timepoint", startTime.ToUnixTimeMilliseconds().ToString());
 
-        return GetCsvAsync(
+        var data = await GetCsvAsync(
             apiUrl,
             "/IntegrationService/v3/DataFeeds/gamerounds/",
             queryStrings,
-            "GameRounds");
+            "GameRounds").ConfigureAwait(false);
+
+        return !string.IsNullOrEmpty(data) && data.StartsWith("timepoint")
+            ? (true, data)
+            : (false, string.Empty);
     }
 
     public async ValueTask<string?> GetGameUrlAsync(
@@ -372,6 +377,8 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
 
         _tgsLog.LogApi(apiLogEvent);
         _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        Console.WriteLine(JsonSerializer.Serialize(apiLogEvent));
 
         return !string.IsNullOrEmpty(responseMessage) &&
                httpResponseMessage.StatusCode == HttpStatusCode.OK
