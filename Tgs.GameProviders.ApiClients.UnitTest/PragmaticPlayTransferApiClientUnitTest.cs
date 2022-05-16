@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
-using Tgs.GameProviders.ApiClients.PragmaticPlay;
-using Tgs.GameProviders.ApiClients.PragmaticPlayTransfer;
-using Tgs.Logging;
+using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
@@ -17,47 +13,52 @@ internal class PragmaticPlayTransferApiClientUnitTest
     [Test]
     public async Task CreatePlayerAsync()
     {
-        var httpClient = new HttpClient();
-        var logger = NullLogger<PragmaticPlayTransferApiClient>.Instance;
-        var tgsLog = Substitute.For<ITgsLog>();
-
         var securityLogin = "tgs_tgstfw";
         var secretKey = "testKey";
         var playerCode = "4ucmqplxb029";
         var currencyCode = "CNY";
 
-        //var client = Substitute.For<IPragmaticPlayTransferApiClient>();
+        var client = Substitute.For<IPragmaticPlayTransferApiClient>();
 
-        var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
+        _ = client.CreatePlayerAsync(
+             Arg.Is(_apiUrl),
+             Arg.Is(securityLogin),
+             Arg.Is(secretKey),
+             Arg.Is(playerCode),
+             Arg.Is(currencyCode))
+            .Returns(true);
 
-        var created = await client.CreatePlayerAsync(
+        var actual = await client.CreatePlayerAsync(
             _apiUrl,
             securityLogin,
             secretKey,
             playerCode,
             currencyCode).ConfigureAwait(false);
 
-        await TestContext.Progress.WriteLineAsync(created.ToString());
+        Assert.AreEqual(true, actual);
     }
 
     [Test]
     public async Task FundInAsync()
     {
-        var httpClient = new HttpClient();
-        var logger = NullLogger<PragmaticPlayTransferApiClient>.Instance;
-        var tgsLog = Substitute.For<ITgsLog>();
-
         var securityLogin = "tgs_tgstfw";
         var secretKey = "testKey";
         var playerCode = "4ucmqplxb029";
         var orderId = Guid.NewGuid().ToString("N");
         var amount = 200m;
 
-        //var client = Substitute.For<IPragmaticPlayTransferApiClient>();
+        var client = Substitute.For<IPragmaticPlayTransferApiClient>();
 
-        var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
+        _ = client.FundInAsync(
+            Arg.Is(_apiUrl),
+            Arg.Is(securityLogin),
+            Arg.Is(secretKey),
+            Arg.Is(playerCode),
+            Arg.Is(orderId),
+            Arg.Is(amount))
+            .Returns(true);
 
-        var success = await client.FundInAsync(
+        var actual = await client.FundInAsync(
             _apiUrl,
             securityLogin,
             secretKey,
@@ -65,52 +66,55 @@ internal class PragmaticPlayTransferApiClientUnitTest
             orderId,
             amount).ConfigureAwait(false);
 
-        await TestContext.Progress.WriteLineAsync(success.ToString());
+        Assert.AreEqual(true, actual);
     }
 
     [Test]
     public async Task FundOrderCheckingAsync()
     {
-        var httpClient = new HttpClient();
-        var logger = NullLogger<PragmaticPlayTransferApiClient>.Instance;
-        var tgsLog = Substitute.For<ITgsLog>();
-
         var securityLogin = "tgs_tgstfw";
         var secretKey = "testKey";
         var orderId = "4c3415e7138942e1b9b48a5fd10e1d47";
 
-        //var client = Substitute.For<IPragmaticPlayTransferApiClient>();
+        var client = Substitute.For<IPragmaticPlayTransferApiClient>();
 
-        var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
+        _ = client.FundOrderCheckingAsync(
+                Arg.Is(_apiUrl),
+                Arg.Is(securityLogin),
+                Arg.Is(secretKey),
+                Arg.Is(orderId))
+            .Returns(true);
 
-        var exist = await client.FundOrderCheckingAsync(
+        var actual = await client.FundOrderCheckingAsync(
             _apiUrl,
             securityLogin,
             secretKey,
             orderId).ConfigureAwait(false);
 
-        await TestContext.Progress.WriteLineAsync(exist.ToString());
+        Assert.AreEqual(true, actual);
     }
 
     [Test]
     public async Task FundOutAsync()
     {
-        var httpClient = new HttpClient();
-        var logger = NullLogger<PragmaticPlayTransferApiClient>.Instance;
-        var tgsLog = Substitute.For<ITgsLog>();
-
         var securityLogin = "tgs_tgstfw";
         var secretKey = "testKey";
         var playerCode = "4ucmqplxb029";
         var orderId = Guid.NewGuid().ToString("N");
-        //var orderId = "4c3415e7138942e1b9b48a5fd10e1d47";
         var amount = 500m;
 
-        //var client = Substitute.For<IPragmaticPlayTransferApiClient>();
+        var client = Substitute.For<IPragmaticPlayTransferApiClient>();
 
-        var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
+        _ = client.FundOutAsync(
+                Arg.Is(_apiUrl),
+                Arg.Is(securityLogin),
+                Arg.Is(secretKey),
+                Arg.Is(playerCode),
+                Arg.Is(orderId),
+                Arg.Is(amount))
+            .Returns(true);
 
-        var success = await client.FundOutAsync(
+        var actual = await client.FundOutAsync(
             _apiUrl,
             securityLogin,
             secretKey,
@@ -118,49 +122,44 @@ internal class PragmaticPlayTransferApiClientUnitTest
             orderId,
             amount).ConfigureAwait(false);
 
-        await TestContext.Progress.WriteLineAsync(success.ToString());
+        Assert.AreEqual(true, actual);
     }
 
     [Test]
     public async Task GetBalanceAsync()
     {
-        var httpClient = new HttpClient();
-        var logger = NullLogger<PragmaticPlayTransferApiClient>.Instance;
-        var tgsLog = Substitute.For<ITgsLog>();
-
         var securityLogin = "tgs_tgstfw";
         var secretKey = "testKey";
         var playerCode = "4ucmqplxb029";
+        var balance = 1000m;
 
-        //var client = Substitute.For<IPragmaticPlayTransferApiClient>();
+        var client = Substitute.For<IPragmaticPlayTransferApiClient>();
 
-        var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
+        _ = client.GetBalanceAsync(
+            Arg.Is(_apiUrl),
+            Arg.Is(securityLogin),
+            Arg.Is(secretKey),
+            Arg.Is(playerCode))
+            .Returns((true, balance));
 
-        var (exist, balance) = await client.GetBalanceAsync(
+        var actual = await client.GetBalanceAsync(
             _apiUrl,
             securityLogin,
             secretKey,
             playerCode).ConfigureAwait(false);
 
-        var amount = !balance.HasValue ? "null" : $"{balance.Value}";
-
-        await TestContext.Progress.WriteLineAsync($"exist: {exist}");
-        await TestContext.Progress.WriteLineAsync($"balance: {amount}");
+        Assert.NotNull(actual);
+        Assert.AreEqual(true, actual.IsPlayerExist);
+        Assert.AreEqual(balance, actual.Balance);
     }
 
     [Test]
     public async Task GetGameRoundRecordsAsync()
     {
-        var httpClient = new HttpClient();
-        var logger = NullLogger<PragmaticPlayTransferApiClient>.Instance;
-        var tgsLog = Substitute.For<ITgsLog>();
-
         var securityLogin = "tgs_tgstfw";
         var secretKey = "testKey";
 
-        //var client = Substitute.For<IPragmaticPlayTransferApiClient>();
-
-        var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
+        var client = Substitute.For<IPragmaticPlayTransferApiClient>();
 
         var time = DateTimeOffset.UtcNow.AddMinutes(-10);
 
@@ -170,17 +169,11 @@ internal class PragmaticPlayTransferApiClientUnitTest
             secretKey,
             "RNG",
             time).ConfigureAwait(false);
-
-        await TestContext.Progress.WriteLineAsync(data);
     }
 
     [Test]
     public async Task GetGameUrlAsync()
     {
-        var httpClient = new HttpClient();
-        var logger = NullLogger<PragmaticPlayTransferApiClient>.Instance;
-        var tgsLog = Substitute.For<ITgsLog>();
-
         var securityLogin = "tgs_tgstfw";
         var secretKey = "testKey";
         var playerCode = "4ucmqplxb029";
@@ -188,11 +181,22 @@ internal class PragmaticPlayTransferApiClientUnitTest
         var language = "en";
         var platform = "WEB";
 
-        //var client = Substitute.For<IPragmaticPlayTransferApiClient>();
+        var gameUrl = "https://tgs.prerelease-env.biz/gs2c/openGame.do?tc=97YBxmEGn5PCQv1zxvHGDlfRWeqGsKxLc2K1HsdyJKiIDck46D5azpqgW0Be3PrO&stylename=tgs_tgstfw&dummy=";
 
-        var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
+        var client = Substitute.For<IPragmaticPlayTransferApiClient>();
 
-        var url = await client.GetGameUrlAsync(
+        _ = client.GetGameUrlAsync(
+            Arg.Is(_apiUrl),
+            Arg.Is(securityLogin),
+            Arg.Is(secretKey),
+            Arg.Is(playerCode),
+            Arg.Is(externalGameId),
+            Arg.Is(language),
+            Arg.Is(platform),
+            Arg.Is((string?)null))
+            .Returns(gameUrl);
+
+        var actual = await client.GetGameUrlAsync(
             _apiUrl,
             securityLogin,
             secretKey,
@@ -202,16 +206,13 @@ internal class PragmaticPlayTransferApiClientUnitTest
             platform,
             null).ConfigureAwait(false);
 
-        await TestContext.Progress.WriteLineAsync(url);
+        Assert.NotNull(actual);
+        Assert.AreEqual(gameUrl, actual);
     }
 
     [Test]
     public async Task GetGameDetailUrlAsync()
     {
-        var httpClient = new HttpClient();
-        var logger = NullLogger<PragmaticPlayTransferApiClient>.Instance;
-        var tgsLog = Substitute.For<ITgsLog>();
-
         var securityLogin = "tgs_tgstfw";
         var secretKey = "testKey";
         var playerCode = "4ucmqplxb029";
@@ -219,11 +220,22 @@ internal class PragmaticPlayTransferApiClientUnitTest
         var gameId = "vs20kraken";
         var language = "en";
 
-        //var client = Substitute.For<IPragmaticPlayTransferApiClient>();
+        var historyUrl = "https://tgs.prerelease-env.biz/gs2c/parentRoundHistoryDetails.do?playSessionId=2806662804&stylename=tgs_tgstfw&hash=2213f4013b94f67808ff131af8110f7d&language=en";
 
-        var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
+        var client = Substitute.For<IPragmaticPlayTransferApiClient>();
 
-        var url = await client
+        _ = client
+            .GetGameDetailUrlAsync(
+                Arg.Is(_apiUrl),
+                Arg.Is(securityLogin),
+                Arg.Is(secretKey),
+                Arg.Is(playerCode),
+                Arg.Is(roundId),
+                Arg.Is(gameId),
+                Arg.Is(language))
+            .Returns(historyUrl);
+
+        var actual = await client
             .GetGameDetailUrlAsync(
                 _apiUrl,
                 securityLogin,
@@ -234,26 +246,22 @@ internal class PragmaticPlayTransferApiClientUnitTest
                 language)
             .ConfigureAwait(false);
 
-        await TestContext.Progress.WriteLineAsync(url);
+        Assert.NotNull(actual);
+        Assert.AreEqual(historyUrl, actual);
     }
 
     [Test]
     public async Task KickPlayerAsync()
     {
-        var httpClient = new HttpClient();
-        var logger = NullLogger<PragmaticPlayTransferApiClient>.Instance;
-        var tgsLog = Substitute.For<ITgsLog>();
-
         var securityLogin = "tgs_tgstfw";
         var secretKey = "testKey";
         var playerCode = "4ucmqplxb029";
 
-        //var client = Substitute.For<IPragmaticPlayTransferApiClient>();
-
-        var client = new PragmaticPlayTransferApiClient(httpClient, logger, tgsLog);
+        var client = Substitute.For<IPragmaticPlayTransferApiClient>();
 
         await client
-            .LogoutAsync(_apiUrl, securityLogin, secretKey, playerCode)
+            .LogoutAsync(
+                _apiUrl, securityLogin, secretKey, playerCode)
             .ConfigureAwait(false);
     }
 }
