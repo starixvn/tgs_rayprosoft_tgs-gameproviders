@@ -232,13 +232,13 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
 
         using var csvReader = new CsvReader(stringReader, new CsvConfiguration(CultureInfo.InvariantCulture)
         {
-            HasHeaderRecord = true
+            HasHeaderRecord = true,
         });
 
         csvReader.Context.TypeConverterOptionsCache.GetOptions<string>().NullValues.Add("null");
 
         var gameRecords = csvReader
-            .GetRecords<PragmaticPlayTransferGameRecordData>();
+            .GetRecords<PragmaticPlayTransferGameRecordData>().ToArray();
 
         var response = new PragmaticPlayTransferGameRecordInfoResponse(nextTime, gameRecords);
 
@@ -401,8 +401,6 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
 
         _tgsLog.LogApi(apiLogEvent);
         _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
-
-        Console.WriteLine(JsonSerializer.Serialize(apiLogEvent));
 
         return !string.IsNullOrEmpty(responseMessage) &&
                httpResponseMessage.StatusCode == HttpStatusCode.OK
