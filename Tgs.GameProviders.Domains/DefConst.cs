@@ -2,6 +2,6 @@
 {
     public class DefConst
     {
-        public const string BrandCodeDefault = "Default";
+        public static readonly string BrandCodeDefault = "Default";
     }
 }
