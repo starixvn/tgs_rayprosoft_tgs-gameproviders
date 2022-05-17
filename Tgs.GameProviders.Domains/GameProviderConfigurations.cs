@@ -20,6 +20,7 @@
         public static readonly string KY = string.Format(_template, GameProviderType.KY);
         public static readonly string LY = string.Format(_template, GameProviderType.LY);
         public static readonly string PragmaticPlay = string.Format(_template, GameProviderType.PragmaticPlay);
+        public static readonly string PragmaticPlayTransfer = string.Format(_template, GameProviderType.PragmaticPlayTransfer);
         public static readonly string Saba = string.Format(_template, GameProviderType.Saba);
         public static readonly string SBOBET = string.Format(_template, GameProviderType.SBOBET);
         public static readonly string SexyGaming = string.Format(_template, GameProviderType.SexyGaming);
