@@ -2,7 +2,7 @@
 
 namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 
-internal class PragmaticPlayTransferGameRecordData
+public class PragmaticPlayTransferGameRecordData
 {
     [Name("extPlayerID")]
     public string PlayerCode { get; init; }

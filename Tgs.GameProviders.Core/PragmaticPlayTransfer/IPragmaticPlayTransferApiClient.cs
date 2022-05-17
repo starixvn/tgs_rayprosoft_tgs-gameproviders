@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 
 namespace Tgs.GameProviders.Core.PragmaticPlayTransfer;
 
@@ -48,7 +49,7 @@ public interface IPragmaticPlayTransferApiClient
         string secretKey,
         string playerCode);
 
-    ValueTask<(bool Success, string Data)> GetGameRoundRecordsAsync(
+    ValueTask<(bool Success, PragmaticPlayTransferGameRecordInfoResponse? Response)> GetGameRoundRecordsAsync(
         Uri apiUrl,
         string secureLogin,
         string secretKey,

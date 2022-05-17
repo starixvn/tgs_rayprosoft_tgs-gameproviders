@@ -41,7 +41,7 @@ internal class PragmaticPlayTransferGameRecordListGetService :
 
         var dataType = GetDataType(query.DataType);
 
-        var (success, data) = await _client.GetGameRoundRecordsAsync(
+        var (success, response) = await _client.GetGameRoundRecordsAsync(
             configuration.ApiUrl,
             configuration.SecureLogin,
             configuration.SecretKey,
@@ -56,22 +56,12 @@ internal class PragmaticPlayTransferGameRecordListGetService :
             };
         }
 
-        using var stringReader = new StringReader(data);
-        var firstLine = await stringReader.ReadLineAsync().ConfigureAwait(false);
-        var timepoint = firstLine!.Split('=')[1];
-        var nextTime = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(timepoint));
-
-        using var csvReader = new CsvReader(stringReader, new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            HasHeaderRecord = true
-        });
-
         var gameProviderCode = GameProviderType.PragmaticPlayTransfer;
         var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
         var gameRecords = new List<GameRecordListModel>();
 
-        await foreach (var recordData in csvReader.GetRecordsAsync<PragmaticPlayTransferGameRecordData>(cancellationToken))
+        foreach (var recordData in response!.GameRecords)
         {
             var isRoundComplete = recordData.Status is "C";
             var playerWinLoss = recordData.WinAmount - recordData.BetAmount;
@@ -145,7 +135,7 @@ internal class PragmaticPlayTransferGameRecordListGetService :
         return new PragmaticPlayTransferGameRecordResult
         {
             Success = true,
-            NextTime = nextTime,
+            NextTime = response.NextTime,
             Datas = gameRecords
         };
     }

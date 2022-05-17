@@ -37,10 +37,26 @@ internal class PragmaticPlayTransferGameRecordListUnitTest
         };
 
         var timepoint = 1652429638085L;
-        var csvData =
-            @$"timepoint={timepoint}
-        playerID,extPlayerID,gameID,playSessionID,parentSessionID,startDate,endDate,status,type,bet,win,currency,jackpot
-        2953411,4ucmqplxb029,vs25bkofkngdm,2806980613,null,2022-05-13 08:04:41,2022-05-13 08:04:41,C,R,2.50,0.00,CNY,0.00";
+        var gameRecordInfoResponse = new PragmaticPlayTransferGameRecordInfoResponse(
+            DateTimeOffset.FromUnixTimeMilliseconds(timepoint),
+            new PragmaticPlayTransferGameRecordData[]
+            {
+                new PragmaticPlayTransferGameRecordData
+                {
+                    PlayerCode = "4ucmqplxb029",
+                    ExternalGameId = "vs25bkofkngdm",
+                    ExternalRoundId = "2806980613",
+                    ParentExternalRoundId = null,
+                    StartDate = "2022-05-13 08:04:41",
+                    EndDate = "2022-05-13 08:04:41",
+                    Status = "C",
+                    PlayType = "R",
+                    CurrencyCode = "CNY",
+                    BetAmount = 2.50m,
+                    WinAmount = 0.00m,
+                    Jackpot = 0.00m
+                }
+            });
 
         var gameProviderCode = GameProviderType.PragmaticPlayTransfer;
         var gameProviderId = Guid.Parse("e4ecfa98-b373-4123-87e0-cb9e883d0691");
@@ -49,7 +65,7 @@ internal class PragmaticPlayTransferGameRecordListUnitTest
         var additionalData = new
         {
             ExternalRoundId = "2806980613",
-            ParentExternalRoundId = "null",
+            ParentExternalRoundId = (string?)null,
             PlayType = "Round"
         };
 
@@ -109,7 +125,7 @@ internal class PragmaticPlayTransferGameRecordListUnitTest
                 Arg.Is(configuration.SecretKey),
                 Arg.Any<string>(),
                 Arg.Is(query.StartTime))
-            .Returns((success, csvData));
+            .Returns((success, gameRecordInfoResponse));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 

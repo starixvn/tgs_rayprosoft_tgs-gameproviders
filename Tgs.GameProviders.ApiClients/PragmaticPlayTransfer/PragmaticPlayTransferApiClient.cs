@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,10 +14,13 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
+using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.ApiClients.PragmaticPlay;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer;
+using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.PragmaticPlayTransfer;
@@ -197,7 +201,7 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
         }
     }
 
-    public async ValueTask<(bool Success, string Data)> GetGameRoundRecordsAsync(
+    public async ValueTask<(bool Success, PragmaticPlayTransferGameRecordInfoResponse? Response)> GetGameRoundRecordsAsync(
         Uri apiUrl,
         string secureLogin,
         string secretKey,
@@ -216,9 +220,29 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
             queryStrings,
             "GameRounds").ConfigureAwait(false);
 
-        return !string.IsNullOrEmpty(data) && data.StartsWith("timepoint")
-            ? (true, data)
-            : (false, string.Empty);
+        if (string.IsNullOrEmpty(data) || !data.StartsWith("timepoint"))
+        {
+            return (false, null);
+        }
+
+        using var stringReader = new StringReader(data);
+        var firstLine = await stringReader.ReadLineAsync().ConfigureAwait(false);
+        var timepoint = firstLine!.Split('=')[1];
+        var nextTime = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(timepoint));
+
+        using var csvReader = new CsvReader(stringReader, new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = true
+        });
+
+        csvReader.Context.TypeConverterOptionsCache.GetOptions<string>().NullValues.Add("null");
+
+        var gameRecords = csvReader
+            .GetRecords<PragmaticPlayTransferGameRecordData>();
+
+        var response = new PragmaticPlayTransferGameRecordInfoResponse(nextTime, gameRecords);
+
+        return (true, response);
     }
 
     public async ValueTask<string?> GetGameUrlAsync(

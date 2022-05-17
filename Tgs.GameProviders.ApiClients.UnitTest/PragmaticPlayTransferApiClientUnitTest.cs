@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameProviders.ApiClients.PragmaticPlayTransfer;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer;
+using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
+using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
@@ -165,10 +170,27 @@ internal class PragmaticPlayTransferApiClientUnitTest
         var startTime = new DateTimeOffset(2022, 5, 13, 16, 0, 0, TimeSpan.FromHours(8));
 
         var timepoint = 1652429638085L;
-        var csvData =
-        @$"timepoint={timepoint}
-        playerID,extPlayerID,gameID,playSessionID,parentSessionID,startDate,endDate,status,type,bet,win,currency,jackpot
-        2953411,4ucmqplxb029,vs25bkofkngdm,2806980613,null,2022-05-13 08:04:41,2022-05-13 08:04:41,C,R,2.50,0.00,CNY,0.00";
+
+        var response = new PragmaticPlayTransferGameRecordInfoResponse(
+            DateTimeOffset.FromUnixTimeMilliseconds(timepoint),
+            new PragmaticPlayTransferGameRecordData[]
+            {
+                new PragmaticPlayTransferGameRecordData
+                {
+                    PlayerCode = "4ucmqplxb029",
+                    ExternalGameId = "vs25bkofkngdm",
+                    ExternalRoundId = "2806980613",
+                    ParentExternalRoundId = null,
+                    StartDate = "2022-05-13 08:04:41",
+                    EndDate = "2022-05-13 08:04:41",
+                    Status = "C",
+                    PlayType = "R",
+                    CurrencyCode = "CNY",
+                    BetAmount = 2.50m,
+                    WinAmount = 0.00m,
+                    Jackpot = 0.00m
+                }
+            });
 
         _ = client.GetGameRoundRecordsAsync(
             Arg.Is(_apiUrl),
@@ -176,7 +198,7 @@ internal class PragmaticPlayTransferApiClientUnitTest
             Arg.Is(secretKey),
             Arg.Is(dataType),
             Arg.Is(startTime))
-            .Returns((true, csvData));
+            .Returns((true, response));
 
         var actual = await client.GetGameRoundRecordsAsync(
             _apiUrl,
@@ -187,7 +209,7 @@ internal class PragmaticPlayTransferApiClientUnitTest
 
         Assert.NotNull(actual);
         Assert.AreEqual(true, actual.Success);
-        Assert.AreEqual(csvData, actual.Data);
+        Assert.AreEqual(response, actual.Response);
     }
 
     [Test]
