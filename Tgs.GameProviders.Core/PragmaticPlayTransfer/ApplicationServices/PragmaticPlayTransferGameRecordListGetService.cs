@@ -3,12 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using CsvHelper;
-using CsvHelper.Configuration;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
@@ -74,7 +71,7 @@ internal class PragmaticPlayTransferGameRecordListGetService :
                 GameProviderId = gameProviderId,
                 PlayerCode = recordData.PlayerCode,
                 Status = isRoundComplete ? RoundStatus.Closed : RoundStatus.Open,
-                ClientStatus = GetClientStatus(playerWinLoss),
+                ClientStatus = isRoundComplete ? GetClientStatus(playerWinLoss) : RoundClientStatus.Open,
                 ExternalRoundId = recordData.ExternalRoundId,
                 ExternalGameId = recordData.ExternalGameId,
                 ExternalCreatedOn = DateTimeOffset.Parse(recordData.StartDate, null, DateTimeStyles.AssumeUniversal),
@@ -83,10 +80,10 @@ internal class PragmaticPlayTransferGameRecordListGetService :
                     : null,
                 BetAmount = recordData.BetAmount,
                 ValidBetAmount = recordData.BetAmount,
-                PlayerWinLoss = playerWinLoss,
+                PlayerWinLoss = isRoundComplete ? playerWinLoss : null,
                 Commission = 0,
-                Turnover = recordData.BetAmount,
-                SettleAmount = recordData.WinAmount,
+                Turnover = isRoundComplete ? recordData.BetAmount : null,
+                SettleAmount = isRoundComplete ? recordData.WinAmount : null,
                 TieBetAdjustment = null,
                 AdditionalData = JsonSerializer.Serialize(new
                 {
@@ -107,7 +104,7 @@ internal class PragmaticPlayTransferGameRecordListGetService :
                 GameProviderId = gameProviderId,
                 PlayerCode = recordData.PlayerCode,
                 Status = isRoundComplete ? RoundStatus.Closed : RoundStatus.Open,
-                ClientStatus = RoundClientStatus.Win,
+                ClientStatus = isRoundComplete ? RoundClientStatus.Open : RoundClientStatus.Win,
                 ExternalRoundId = $"{recordData.ExternalRoundId}_jackpot",
                 ExternalGameId = recordData.ExternalGameId,
                 ExternalCreatedOn = DateTimeOffset.Parse(recordData.StartDate, null, DateTimeStyles.AssumeUniversal),
@@ -116,10 +113,10 @@ internal class PragmaticPlayTransferGameRecordListGetService :
                     : null,
                 BetAmount = 0,
                 ValidBetAmount = 0,
-                PlayerWinLoss = recordData.Jackpot,
+                PlayerWinLoss = isRoundComplete ? recordData.Jackpot : null,
                 Commission = 0,
                 Turnover = 0,
-                SettleAmount = recordData.Jackpot,
+                SettleAmount = isRoundComplete ? recordData.Jackpot : null,
                 TieBetAdjustment = null,
                 AdditionalData = JsonSerializer.Serialize(new
                 {
