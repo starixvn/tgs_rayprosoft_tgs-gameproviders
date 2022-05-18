@@ -28,6 +28,7 @@
         Avia = 23,
         TFGaming = 24,
         DreamGame = 25,
-        Joker = 26
+        Joker = 26,
+        PragmaticPlayTransfer = 27,
     }
 }

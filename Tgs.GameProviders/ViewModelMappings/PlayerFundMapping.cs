@@ -4,6 +4,7 @@ using Tgs.GameProviders.Core.Avia.ApplicationServices;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
 using Tgs.GameProviders.Core.KY.ApplicationServices;
 using Tgs.GameProviders.Core.LY.ApplicationServices;
+using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 using Tgs.GameProviders.Core.VR.ApplicationServices;
 using Tgs.GameProviders.Core.WGHorse.ApplicationServices;
 using Tgs.GameProviders.Core.WGSports.ApplicationServices;
@@ -50,6 +51,11 @@ namespace Tgs.GameProviders.ViewModelMappings
             _ = CreateMap<PlayerFundRequest, JokerPlayerFundOutQuery>()
                 .ReverseMap();
             _ = CreateMap<PlayerFundRequest, JokerPlayerFundInQuery>()
+                .ReverseMap();
+
+            _ = CreateMap<PlayerFundRequest, PragmaticPlayTransferPlayerFundOutQuery>()
+                .ReverseMap();
+            _ = CreateMap<PlayerFundRequest, PragmaticPlayTransferPlayerFundInQuery>()
                 .ReverseMap();
         }
     }
