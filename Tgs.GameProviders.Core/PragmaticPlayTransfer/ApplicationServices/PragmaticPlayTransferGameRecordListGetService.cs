@@ -62,8 +62,9 @@ internal class PragmaticPlayTransferGameRecordListGetService :
         {
             var isRoundComplete = recordData.Status is "C";
             var playerWinLoss = recordData.WinAmount - recordData.BetAmount;
-
-            var playType = recordData.PlayType == "F" ? "FreeSpin" : "Round";
+            
+            if (recordData.PlayType == "F")
+                continue;
 
             var record = new GameRecordListModel
             {
@@ -85,12 +86,7 @@ internal class PragmaticPlayTransferGameRecordListGetService :
                 Turnover = isRoundComplete ? recordData.BetAmount : null,
                 SettleAmount = isRoundComplete ? recordData.WinAmount : null,
                 TieBetAdjustment = null,
-                AdditionalData = JsonSerializer.Serialize(new
-                {
-                    recordData.ExternalRoundId,
-                    recordData.ParentExternalRoundId,
-                    PlayType = playType
-                })
+                AdditionalData = null
             };
 
             gameRecords.Add(record);
@@ -118,12 +114,7 @@ internal class PragmaticPlayTransferGameRecordListGetService :
                 Turnover = 0,
                 SettleAmount = isRoundComplete ? recordData.Jackpot : null,
                 TieBetAdjustment = null,
-                AdditionalData = JsonSerializer.Serialize(new
-                {
-                    recordData.ExternalRoundId,
-                    recordData.ParentExternalRoundId,
-                    PlayType = playType
-                })
+                AdditionalData = null
             };
 
             gameRecords.Add(jackpotRecord);
