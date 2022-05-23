@@ -1,7 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 
-#nullable enable
-
 namespace Tgs.GameProviders.Core.BetConstruct.Models
 {
     public record BetConstructGameRecord
