@@ -12,8 +12,10 @@ namespace Tgs.GameProviders.Core.BetConstruct.Models
         [JsonPropertyName("State")]
         public BetSelectionState? State { get; init; }
 
+        [JsonPropertyName("Bet")]
         public BetConstructBetPlacedSelection[]? Bet { get; init; }
 
+        [JsonPropertyName("Settle")]
         public BetConstructBetResultedSelection[]? Settle { get; init; }
     }
 }
