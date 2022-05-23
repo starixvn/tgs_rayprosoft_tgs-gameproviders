@@ -10,4 +10,4 @@ namespace Tgs.GameProviders.Core.BetConstruct.Models
         [JsonPropertyName("State")]
         public int State { get; set; }
     }
-}
+} 
