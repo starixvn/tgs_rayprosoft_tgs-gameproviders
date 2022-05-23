@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -27,7 +26,7 @@ namespace Tgs.GameProviders.Core.BetConstruct.ApplicationServices
 
             var gameRecord = roundInfo.AdditionalData;
 
-            return gameRecord == null
+            return string.IsNullOrWhiteSpace(gameRecord)
                 ? (new RoundDetailResult()
                 {
                     Data = new RoundDetailDataBase[]
@@ -39,7 +38,7 @@ namespace Tgs.GameProviders.Core.BetConstruct.ApplicationServices
                 {
                     Data = new RoundDetailDataBase[]
                 {
-                    new RoundDetailDataJson {Value = JsonSerializer.Serialize(gameRecord)}
+                    new RoundDetailDataJson {Value = gameRecord}
                 }
                 });
         }
