@@ -21,4 +21,8 @@
 	  <ProjectReference Include="..\Tgs.GameProviders.Domains\Tgs.GameProviders.Domains.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="BetConstruct\Models\" />
+	</ItemGroup>
+
 </Project>
