@@ -213,6 +213,7 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
         queryStrings.Add("password", secretKey);
         queryStrings.Add("dataType", dataType);
         queryStrings.Add("timepoint", startTime.ToUnixTimeMilliseconds().ToString());
+        queryStrings.Add("options", "addRoundDetails");
 
         var data = await GetCsvAsync(
             apiUrl,

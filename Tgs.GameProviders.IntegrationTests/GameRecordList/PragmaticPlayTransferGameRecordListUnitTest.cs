@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -62,12 +61,6 @@ internal class PragmaticPlayTransferGameRecordListUnitTest
         var gameProviderId = Guid.Parse("e4ecfa98-b373-4123-87e0-cb9e883d0691");
 
         var success = true;
-        var additionalData = new
-        {
-            ExternalRoundId = "2806980613",
-            ParentExternalRoundId = (string?)null,
-            PlayType = "Round"
-        };
 
         var result = new PragmaticPlayTransferGameRecordResult
         {
@@ -93,7 +86,7 @@ internal class PragmaticPlayTransferGameRecordListUnitTest
                     Turnover = 2.50m,
                     SettleAmount = 0.00m,
                     TieBetAdjustment = null,
-                    AdditionalData = JsonSerializer.Serialize(additionalData)
+                    AdditionalData = null
                 }
             }
         };

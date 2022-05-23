@@ -1,4 +1,6 @@
-﻿using CsvHelper.Configuration.Attributes;
+﻿#nullable enable
+
+using CsvHelper.Configuration.Attributes;
 
 namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 
@@ -39,4 +41,8 @@ public class PragmaticPlayTransferGameRecordData
 
     [Name("jackpot")]
     public decimal Jackpot { get; init; }
+
+    [Name("roundDetails")]
+    [Optional]
+    public string? RoundDetails { get; init; }
 }

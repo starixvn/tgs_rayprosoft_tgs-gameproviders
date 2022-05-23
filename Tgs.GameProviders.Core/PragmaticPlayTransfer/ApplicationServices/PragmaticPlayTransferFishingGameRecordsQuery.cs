@@ -2,6 +2,5 @@
 
 namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 
-public record PragmaticPlayTransferGameRecordListQuery(
-    PragmaticPlayTransferGameDataType DataType,
+public record PragmaticPlayTransferFishingGameRecordsQuery(
     DateTimeOffset StartTime);
