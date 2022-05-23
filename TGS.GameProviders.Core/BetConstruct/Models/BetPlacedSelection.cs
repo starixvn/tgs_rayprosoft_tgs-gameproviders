@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Tgs.GameProviders.Core.BetConstruct.Models
 {
-    public record BetConstructBetPlacedSelection
+    public record BetPlacedSelection
     {
         /// <summary>
         /// Unique ID of the team/player. 
