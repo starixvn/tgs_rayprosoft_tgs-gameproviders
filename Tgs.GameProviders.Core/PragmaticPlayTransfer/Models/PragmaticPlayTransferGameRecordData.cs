@@ -7,31 +7,31 @@ namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 public class PragmaticPlayTransferGameRecordData
 {
     [Name("extPlayerID")]
-    public string PlayerCode { get; init; }
+    public string PlayerCode { get; init; } = default!;
 
     [Name("gameID")]
-    public string ExternalGameId { get; init; }
+    public string ExternalGameId { get; init; } = default!;
 
     [Name("playSessionID")]
-    public string ExternalRoundId { get; init; }
+    public string ExternalRoundId { get; init; } = default!;
 
     [Name("parentSessionID")]
-    public string ParentExternalRoundId { get; init; }
+    public string ParentExternalRoundId { get; init; } = default!;
 
     [Name("startDate")]
-    public string StartDate { get; init; }
+    public string StartDate { get; init; } = default!;
 
     [Name("endDate")]
-    public string EndDate { get; init; }
+    public string EndDate { get; init; } = default!;
 
     [Name("status")]
-    public string Status { get; init; }
+    public string Status { get; init; } = default!;
 
     [Name("type")]
-    public string PlayType { get; init; }
+    public string PlayType { get; init; } = default!;
 
     [Name("currency")]
-    public string CurrencyCode { get; init; }
+    public string CurrencyCode { get; init; } = default!;
 
     [Name("bet")]
     public decimal BetAmount { get; init; }

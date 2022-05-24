@@ -1,8 +1,10 @@
 ﻿#nullable enable
 
 using System;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
@@ -69,13 +71,26 @@ internal class PragmaticPlayTransferRoundDetailGetService
                 gameProviderCultureCode)
             .ConfigureAwait(false);
 
+        var jackpot = 0m;
+        if (!string.IsNullOrEmpty(roundInfo.AdditionalData))
+        {
+            var record = JsonSerializer.Deserialize<PragmaticPlayTransferGameRecordData>(roundInfo.AdditionalData);
+            jackpot = record?.Jackpot ?? 0m;
+        }
+
+        var result = new
+        {
+            Url = url ?? string.Empty,
+            Jackpot = jackpot
+        };
+
         return new RoundDetailResult
         {
             Data = new RoundDetailDataBase[]
             {
-                new RoundDetailDataUrl
+                new RoundDetailDataJson
                 {
-                    Url = url ?? string.Empty
+                    Value = JsonSerializer.Serialize(result)
                 }
             }
         };
