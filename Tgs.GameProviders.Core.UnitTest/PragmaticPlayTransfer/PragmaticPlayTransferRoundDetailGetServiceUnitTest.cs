@@ -19,6 +19,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
     public async ValueTask Normal_Process()
     {
         var fakeRoundService = Substitute.For<IRoundService>();
+        var fakeGameService = Substitute.For<IGameService>();
         var fakeService = Substitute.For<IPragmaticPlayTransferService>();
         var fakeApiClient = Substitute.For<IPragmaticPlayTransferApiClient>();
 
@@ -131,7 +132,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             JsonSerializer.Serialize(data));
 
         var sut = new PragmaticPlayTransferRoundDetailGetService(
-            fakeRoundService, fakeService, fakeApiClient);
+            fakeRoundService, fakeGameService, fakeService, fakeApiClient);
 
         var query = new PragmaticPlayTransferRoundDetailQuery
         {
@@ -140,8 +141,8 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
         };
 
         _ = fakeRoundService.GetAsync(Arg.Is(query.RoundId)).Returns(roundInfo);
+        _ = fakeGameService.GetCacheAsync(Arg.Is(roundInfo.GameId)).Returns(gameInfo);
         _ = fakeService.GetGameProviderAsync(Arg.Is(roundInfo.GameProviderId)).Returns(gameProviderInfo);
-        _ = fakeService.GetGameAsync(Arg.Is(roundInfo.GameId)).Returns(gameInfo);
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
         _ = fakeService
             .GetGameProviderLanguageCodeAsync(
