@@ -163,6 +163,30 @@ internal class GameRecordListClient : IGameRecordListClient
         return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
     }
 
+    public async ValueTask<PragmaticPlayTransferGameRecordResponse?> PragmaticPlayTransferGameRecordListAsync(PragmaticPlayTransferGameDataType dataType, DateTimeOffset startTime)
+    {
+        var source = new
+        {
+            DataType = dataType,
+            StartTime = startTime
+        };
+
+        var requestContent = new StringContent(JsonSerializer.Serialize(source, _SerializerOptions));
+        requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+        var response = await _httpClient
+            .PostAsync(
+                string.Format(_GameRecordListPath, GameProviderType.PragmaticPlayTransfer),
+                requestContent)
+            .ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+        return JsonSerializer.Deserialize<PragmaticPlayTransferGameRecordResponse>(contentJson, _SerializerOptions);
+    }
+
     public async ValueTask<GameRecordResponse?> VRGameRecordListAsync(string brandCode, bool isUpdateTime, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
     {
         var source = new

@@ -2,33 +2,34 @@
 {
     public static class GameProviderType
     {
-        public const string AllBet = "AB";
-        public const string AsiaGaming = "AG";
-        public const string Avia = "AVIA";
-        public const string BetConstruct = "BC";
-        public const string BigGaming = "BG";
-        public const string Card365 = "365";
-        public const string DreamGame = "DG";
-        public const string Evolution = "EVO";
-        public const string Habanero = "HABA";
-        public const string IMESports = "IMES";
-        public const string JDB = "JDB";
-        public const string Jili = "JILI";
-        public const string Joker = "JOKER";
-        public const string KY = "KY";
-        public const string LY = "LY";
-        public const string MainWallet = "DEFAULT";
-        public const string PragmaticPlay = "PP";
-        public const string RedTiger = "RT";
-        public const string Saba = "SABA";
-        public const string SBOBET = "SBO";
-        public const string SexyGaming = "SG";
-        public const string Skywind = "SW";
-        public const string TCG = "TCG";
-        public const string TFGaming = "TF";
-        public const string VR = "VR";
-        public const string WGHorse = "WGVIA";
-        public const string WGSports = "WGFM";
-        public const string WMCasino = "WM";
+        public static readonly string AllBet = "AB";
+        public static readonly string AsiaGaming = "AG";
+        public static readonly string Avia = "AVIA";
+        public static readonly string BetConstruct = "BC";
+        public static readonly string BigGaming = "BG";
+        public static readonly string Card365 = "365";
+        public static readonly string DreamGame = "DG";
+        public static readonly string Evolution = "EVO";
+        public static readonly string Habanero = "HABA";
+        public static readonly string IMESports = "IMES";
+        public static readonly string JDB = "JDB";
+        public static readonly string Jili = "JILI";
+        public static readonly string Joker = "JOKER";
+        public static readonly string KY = "KY";
+        public static readonly string LY = "LY";
+        public static readonly string MainWallet = "DEFAULT";
+        public static readonly string PragmaticPlay = "PP";
+        public static readonly string PragmaticPlayTransfer = "PPTF";
+        public static readonly string RedTiger = "RT";
+        public static readonly string Saba = "SABA";
+        public static readonly string SBOBET = "SBO";
+        public static readonly string SexyGaming = "SG";
+        public static readonly string Skywind = "SW";
+        public static readonly string TCG = "TCG";
+        public static readonly string TFGaming = "TF";
+        public static readonly string VR = "VR";
+        public static readonly string WGHorse = "WGVIA";
+        public static readonly string WGSports = "WGFM";
+        public static readonly string WMCasino = "WM";
     }
 }

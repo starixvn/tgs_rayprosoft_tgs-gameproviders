@@ -2,12 +2,12 @@
 
 namespace Tgs.GameProviders.Core.BetConstruct.Models
 {
-    public record BetConstructGameRecord
+    public record BetResultedSelection
     {
         [JsonPropertyName("SelectionId")]
-        public long SelectionId { get; init; }
+        public long SelectionId { get; set; }
 
         [JsonPropertyName("State")]
-        public BetSelectionState State { get; init; }
+        public int State { get; set; }
     }
-}
+} 

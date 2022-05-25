@@ -15,8 +15,10 @@ namespace Tgs.GameProviders.Client
 
         ValueTask<GameRecordResponse?> LYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime);
 
+        ValueTask<PragmaticPlayTransferGameRecordResponse?> PragmaticPlayTransferGameRecordListAsync(PragmaticPlayTransferGameDataType dataType, DateTimeOffset startTime);
+
         ValueTask<GameRecordResponse?> VRGameRecordListAsync(string brandCode, bool isUpdateTime, DateTimeOffset startTime,
-            DateTimeOffset endTime, int page, int rows);
+                    DateTimeOffset endTime, int page, int rows);
 
         ValueTask<GameRecordResponse?> WGHorseGameRecordListAsync(DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows);
 

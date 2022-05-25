@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Tgs.GameProviders.Core.BetConstruct.Models;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
 
@@ -26,9 +24,9 @@ namespace Tgs.GameProviders.Core.BetConstruct.ApplicationServices
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
 
-            var gameRecord = JsonSerializer.Deserialize<BetConstructGameRecord[]>(roundInfo.AdditionalData);
+            var gameRecord = roundInfo.AdditionalData;
 
-            return gameRecord == null
+            return string.IsNullOrWhiteSpace(gameRecord)
                 ? (new RoundDetailResult()
                 {
                     Data = new RoundDetailDataBase[]
@@ -40,7 +38,7 @@ namespace Tgs.GameProviders.Core.BetConstruct.ApplicationServices
                 {
                     Data = new RoundDetailDataBase[]
                 {
-                    new RoundDetailDataJson {Value = JsonSerializer.Serialize(gameRecord)}
+                    new RoundDetailDataJson {Value = gameRecord}
                 }
                 });
         }
