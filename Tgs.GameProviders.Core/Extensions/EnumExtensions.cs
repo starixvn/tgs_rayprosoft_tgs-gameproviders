@@ -16,8 +16,5 @@ namespace Tgs.GameProviders.Core.Extensions
                 ? defaultValue
                 : ((DescriptionAttribute)attributes[0]).Description;
         }
-
-        public static int GetGameProviderUniqueEventId(this GameProviderUnique gameProviderUnique)
-            => (int)gameProviderUnique * 100000;
     }
 }
