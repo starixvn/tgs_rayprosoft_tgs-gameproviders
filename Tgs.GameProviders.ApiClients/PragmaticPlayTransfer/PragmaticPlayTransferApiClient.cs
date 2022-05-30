@@ -17,7 +17,6 @@ using System.Web;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
-using Tgs.GameProviders.ApiClients.PragmaticPlay;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
@@ -219,7 +218,7 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
             apiUrl,
             "/IntegrationService/v3/DataFeeds/gamerounds/",
             queryStrings,
-            "GameRounds").ConfigureAwait(false);
+            $"GameRounds.{dataType}").ConfigureAwait(false);
 
         if (string.IsNullOrEmpty(data) || !data.StartsWith("timepoint"))
         {
@@ -415,7 +414,7 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
         NameValueCollection parameters,
         string action)
     {
-        var logPrefix = $"{nameof(PragmaticPlayApiClient).ToLower()}.{action}";
+        var logPrefix = $"{nameof(PragmaticPlayTransferApiClient).ToLower()}.{action}";
         var uriString = $"{apiUrl.OriginalString.TrimEnd('/')}{path}?{parameters}";
 
         var sw = Stopwatch.StartNew();
