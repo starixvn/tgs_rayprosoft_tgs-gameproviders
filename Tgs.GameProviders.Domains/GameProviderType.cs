@@ -31,5 +31,17 @@
         public static readonly string WGHorse = "WGVIA";
         public static readonly string WGSports = "WGFM";
         public static readonly string WMCasino = "WM";
+        public static readonly string AWC_AELOTTO = "AWC_AELOTTO";
+        public static readonly string AWC_AWS = "AWC_AWS";
+        public static readonly string AWC_COCKFIGHT = "AWC_COCKFIGHT";
+        public static readonly string AWC_FACAI = "AWC_FACAI";
+        public static readonly string AWC_FS = "AWC_FS";
+        public static readonly string AWC_KM = "AWC_KM";
+        public static readonly string AWC_LUDO = "AWC_LUDO";
+        public static readonly string AWC_PGS = "AWC_PGS";
+        public static readonly string AWC_RCB = "AWC_RCB";
+        public static readonly string AWC_SPADE = "AWC_SPADE";
+        public static readonly string AWC_VENUS = "AWC_VENUS";
+        public static readonly string AWC_YL = "AWC_YL";
     }
 }
