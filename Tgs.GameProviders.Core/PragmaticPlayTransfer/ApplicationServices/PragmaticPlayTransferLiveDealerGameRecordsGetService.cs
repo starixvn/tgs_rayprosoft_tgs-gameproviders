@@ -1,0 +1,107 @@
+﻿using System;
+using System.Globalization;
+using System.Linq;
+using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
+using Tgs.GameProviders.Domains;
+using Tgs.GameProviders.QueryServer.Models;
+using Tgs.ServiceUtility;
+
+namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
+
+internal class PragmaticPlayTransferLiveDealerGameRecordsGetService
+    : IGetService<PragmaticPlayTransferLiveDealerGameRecordsQuery, PragmaticPlayTransferGameRecordResult>
+{
+    private readonly IPragmaticPlayTransferService _service;
+    private readonly IPragmaticPlayTransferApiClient _client;
+
+    public PragmaticPlayTransferLiveDealerGameRecordsGetService(
+        IPragmaticPlayTransferService service,
+        IPragmaticPlayTransferApiClient client)
+    {
+        _service = service ?? throw new ArgumentNullException(nameof(service));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+    }
+
+    public async ValueTask<PragmaticPlayTransferGameRecordResult> GetAsync(
+        PragmaticPlayTransferLiveDealerGameRecordsQuery query,
+        CancellationToken cancellationToken = default)
+    {
+        var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+        if (configuration == null)
+        {
+            throw new Exception($"The {GameProviderType.PragmaticPlayTransfer} configuration does not exist.");
+        }
+
+        var (success, response) = await _client.GetGameRoundRecordsAsync(
+           configuration.ApiUrl,
+           configuration.SecureLogin,
+           configuration.SecretKey,
+           "LC",
+           query.StartTime).ConfigureAwait(false);
+
+        if (!success)
+        {
+            return new PragmaticPlayTransferGameRecordResult
+            {
+                Success = false
+            };
+        }
+
+        var gameProviderCode = GameProviderType.PragmaticPlayTransfer;
+        var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
+
+        var gameRecords = response!.GameRecords
+            .Select(recordData =>
+            {
+                var isRoundComplete = recordData.Status is "C";
+                var playerWinLoss = recordData.WinAmount - recordData.BetAmount;
+
+                var isCancelled = !string.IsNullOrEmpty(recordData.RoundDetails)
+                                  && recordData.RoundDetails.Contains(
+                                      "Gamecancelled", StringComparison.OrdinalIgnoreCase);
+
+                return new GameRecordListModel
+                {
+                    GameProviderCode = gameProviderCode,
+                    GameProviderId = gameProviderId,
+                    PlayerCode = recordData.PlayerCode,
+                    Status = isRoundComplete ? RoundStatus.Closed : RoundStatus.Open,
+                    ClientStatus = isRoundComplete ? GetClientStatus(isCancelled, playerWinLoss) : RoundClientStatus.Open,
+                    ExternalRoundId = recordData.ExternalRoundId,
+                    ExternalGameId = recordData.ExternalGameId,
+                    ExternalCreatedOn =
+                        DateTimeOffset.Parse(recordData.StartDate, null, DateTimeStyles.AssumeUniversal),
+                    ExternalClosedOn = isRoundComplete
+                        ? DateTimeOffset.Parse(recordData.EndDate, null, DateTimeStyles.AssumeUniversal)
+                        : null,
+                    BetAmount = recordData.BetAmount,
+                    ValidBetAmount = recordData.BetAmount,
+                    PlayerWinLoss = isRoundComplete ? playerWinLoss : null,
+                    Commission = 0,
+                    Turnover = isRoundComplete ? recordData.BetAmount : null,
+                    SettleAmount = isRoundComplete ? recordData.WinAmount : null,
+                    TieBetAdjustment = null,
+                    AdditionalData = JsonSerializer.Serialize(recordData)
+                };
+            }).ToArray();
+
+        return new PragmaticPlayTransferGameRecordResult
+        {
+            Success = true,
+            NextTime = response.NextTime,
+            Datas = gameRecords
+        };
+    }
+
+    private static RoundClientStatus GetClientStatus(bool isCancelled, decimal playerWinLoss)
+        => isCancelled
+            ? RoundClientStatus.Void
+            : playerWinLoss switch
+            {
+                > 0 => RoundClientStatus.Win,
+                _ => RoundClientStatus.Loss
+            };
+}

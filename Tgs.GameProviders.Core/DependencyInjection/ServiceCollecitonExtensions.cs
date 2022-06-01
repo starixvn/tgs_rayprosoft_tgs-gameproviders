@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.QueryServer.Client;
 
@@ -9,12 +10,14 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddGameProviders(
             this IServiceCollection services,
-            Action<GameProvidersQueryServerClientOptions, IServiceProvider> gameProvidersQueryServerClientOptions)
+            Action<GameProvidersQueryServerClientOptions, IServiceProvider> gameProvidersQueryServerClientOptions,
+            Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions)
             => services
                 .RegisterAllServiceUtilityTypes(
                     Assembly.GetExecutingAssembly(),
                     ServiceLifetime.Transient)
                 .AddGameProvidersQueryServerClient(gameProvidersQueryServerClientOptions)
+                .AddGameInterfaceAwcServiceClient(gameInterfaceAwcServiceClientOptions)
                 .AddSecurity()//Tgs.Core.Infrastructures.Security
                 .AddMemoryCache()
                 .AddTransient<IBrandService, BrandService>()

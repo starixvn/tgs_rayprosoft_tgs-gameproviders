@@ -41,19 +41,7 @@ namespace Tgs.GameProviders.Core.DreamGame.ApplicationServices
                 }
             }
 
-            _logger.Log(
-                LogLevel.Information,
-                new EventId(
-                    GameProviderUnique.DreamGame.GetGameProviderUniqueEventId(),
-                    nameof(DreamGameKickPlayerCommandService)),
-                new
-                {
-                    GameProviderCode = GameProviderType.DreamGame,
-                    command.PlayerCode,
-                    FinishOn = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(+8)).ToString("O")
-                },
-                null,
-                (state, ex) => JsonSerializer.Serialize(state));
+            _logger.LogInformation("LogOn:{logOn}  playerCode:{playerCode}", DateTime.Now.ToString("o"), command.PlayerCode);
         }
     }
 }

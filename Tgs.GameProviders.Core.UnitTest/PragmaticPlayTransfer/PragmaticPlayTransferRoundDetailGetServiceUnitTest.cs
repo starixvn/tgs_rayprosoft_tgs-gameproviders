@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Globalization;
+using System.Text.Json;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
+using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
@@ -16,6 +19,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
     public async ValueTask Normal_Process()
     {
         var fakeRoundService = Substitute.For<IRoundService>();
+        var fakeGameService = Substitute.For<IGameService>();
         var fakeService = Substitute.For<IPragmaticPlayTransferService>();
         var fakeApiClient = Substitute.For<IPragmaticPlayTransferApiClient>();
 
@@ -79,9 +83,28 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             null,
             "PPTF");
 
+        var data = new PragmaticPlayTransferGameRecordData
+        {
+            PlayerCode = "4ucmqplxb029",
+            ExternalGameId = "vs25bkofkngdm",
+            ExternalRoundId = "2806662804",
+            ParentExternalRoundId = null,
+            StartDate = "2022-05-13 08:04:41",
+            EndDate = "2022-05-13 08:04:41",
+            Status = "C",
+            PlayType = "R",
+            CurrencyCode = "CNY",
+            BetAmount = 2.50m,
+            WinAmount = 0.00m,
+            Jackpot = 0.00m
+        };
+
+        var createdOn = DateTimeOffset.Parse(data.StartDate, null, DateTimeStyles.AssumeUniversal);
+        var closedOn = DateTimeOffset.Parse(data.EndDate, null, DateTimeStyles.AssumeUniversal);
+
         var roundInfo = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
-            "2806662804",
+            data.ExternalRoundId,
             gameProviderInfo.GameProviderId,
             playerInfo.PlayerCode,
             gameInfo.GameId,
@@ -89,27 +112,27 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             RoundStatus.Closed,
             Guid.NewGuid(),
             playerInfo.DefaultWalletId,
-            DateTime.Now.AddMinutes(-1),
+            DateTime.Now,
             DateTime.Now,
             DateTime.Now,
             playerInfo.BrandId,
-            DateTime.Now.AddMinutes(-1),
-            DateTime.Now,
-            20m,
-            20m,
-            45m,
+            createdOn,
+            closedOn,
+            data.BetAmount,
+            data.BetAmount,
+            data.WinAmount,
             null,
-            20m,
-            -25m,
+            data.BetAmount,
+            data.BetAmount - data.WinAmount,
             null,
-            RoundClientStatus.Win,
+            RoundClientStatus.Loss,
             null,
             null,
             null,
-            null);
+            JsonSerializer.Serialize(data));
 
         var sut = new PragmaticPlayTransferRoundDetailGetService(
-            fakeRoundService, fakeService, fakeApiClient);
+            fakeRoundService, fakeGameService, fakeService, fakeApiClient);
 
         var query = new PragmaticPlayTransferRoundDetailQuery
         {
@@ -118,8 +141,8 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
         };
 
         _ = fakeRoundService.GetAsync(Arg.Is(query.RoundId)).Returns(roundInfo);
+        _ = fakeGameService.GetCacheAsync(Arg.Is(roundInfo.GameId)).Returns(gameInfo);
         _ = fakeService.GetGameProviderAsync(Arg.Is(roundInfo.GameProviderId)).Returns(gameProviderInfo);
-        _ = fakeService.GetGameAsync(Arg.Is(roundInfo.GameId)).Returns(gameInfo);
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
         _ = fakeService
             .GetGameProviderLanguageCodeAsync(
@@ -142,9 +165,13 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
         {
             Data = new RoundDetailDataBase[]
             {
-                new RoundDetailDataUrl
+                new RoundDetailDataJson
                 {
-                    Url = historyUrl
+                    Value = JsonSerializer.Serialize(new
+                    {
+                        Url = historyUrl,
+                        Jackpot = data.Jackpot
+                    })
                 }
             }
         };

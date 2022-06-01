@@ -17,7 +17,6 @@ using System.Web;
 using CsvHelper;
 using CsvHelper.Configuration;
 using Microsoft.Extensions.Logging;
-using Tgs.GameProviders.ApiClients.PragmaticPlay;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
@@ -213,12 +212,13 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
         queryStrings.Add("password", secretKey);
         queryStrings.Add("dataType", dataType);
         queryStrings.Add("timepoint", startTime.ToUnixTimeMilliseconds().ToString());
+        queryStrings.Add("options", "addRoundDetails");
 
         var data = await GetCsvAsync(
             apiUrl,
             "/IntegrationService/v3/DataFeeds/gamerounds/",
             queryStrings,
-            "GameRounds").ConfigureAwait(false);
+            $"GameRounds.{dataType}").ConfigureAwait(false);
 
         if (string.IsNullOrEmpty(data) || !data.StartsWith("timepoint"))
         {
@@ -232,13 +232,13 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
 
         using var csvReader = new CsvReader(stringReader, new CsvConfiguration(CultureInfo.InvariantCulture)
         {
-            HasHeaderRecord = true
+            HasHeaderRecord = true,
         });
 
         csvReader.Context.TypeConverterOptionsCache.GetOptions<string>().NullValues.Add("null");
 
         var gameRecords = csvReader
-            .GetRecords<PragmaticPlayTransferGameRecordData>();
+            .GetRecords<PragmaticPlayTransferGameRecordData>().ToArray();
 
         var response = new PragmaticPlayTransferGameRecordInfoResponse(nextTime, gameRecords);
 
@@ -402,8 +402,6 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
         _tgsLog.LogApi(apiLogEvent);
         _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
-        Console.WriteLine(JsonSerializer.Serialize(apiLogEvent));
-
         return !string.IsNullOrEmpty(responseMessage) &&
                httpResponseMessage.StatusCode == HttpStatusCode.OK
             ? JsonDocument.Parse(responseMessage)
@@ -416,7 +414,7 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
         NameValueCollection parameters,
         string action)
     {
-        var logPrefix = $"{nameof(PragmaticPlayApiClient).ToLower()}.{action}";
+        var logPrefix = $"{nameof(PragmaticPlayTransferApiClient).ToLower()}.{action}";
         var uriString = $"{apiUrl.OriginalString.TrimEnd('/')}{path}?{parameters}";
 
         var sw = Stopwatch.StartNew();
