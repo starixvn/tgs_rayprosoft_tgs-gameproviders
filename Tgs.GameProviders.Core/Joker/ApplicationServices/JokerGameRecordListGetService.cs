@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core.Joker.Models;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
@@ -13,9 +12,9 @@ namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
 internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQuery, JokerGameRecordResult>
 {
+    private readonly IJokerAgentMapper _agentMapper;
     private readonly IJokerApiClient _client;
     private readonly IJokerService _service;
-    private readonly IJokerAgentMapper _agentMapper;
 
     public JokerGameRecordListGetService(
         IJokerApiClient client,

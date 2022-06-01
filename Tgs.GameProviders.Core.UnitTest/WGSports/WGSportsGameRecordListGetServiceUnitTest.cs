@@ -7,7 +7,6 @@ using Tgs.GameProviders.Core.WGSports;
 using Tgs.GameProviders.Core.WGSports.ApplicationServices;
 using Tgs.GameProviders.Core.WGSports.Models;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.WGSports

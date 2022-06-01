@@ -200,8 +200,43 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
         }
     }
 
-    public async ValueTask<(bool Success, PragmaticPlayTransferGameRecordInfoResponse? Response)> GetGameRoundRecordsAsync(
+    public async ValueTask<string?> GetGameDetailUrlAsync(
         Uri apiUrl,
+        string secureLogin,
+        string secretKey,
+        string playerCode,
+        string externalRoundId,
+        string externalGameId,
+        string language)
+    {
+        var parameters = new Dictionary<string, string>
+        {
+            ["secureLogin"] = secureLogin,
+            ["playerId"] = playerCode,
+            ["gameId"] = externalGameId,
+            ["roundId"] = externalRoundId,
+            ["language"] = language
+        };
+
+        var hash = GenerateHash(parameters, secretKey);
+        parameters["hash"] = hash;
+
+        var document = await PostAsync(
+            apiUrl,
+            "/IntegrationService/v3/http/HistoryAPI/OpenHistoryExtended/",
+            parameters,
+            "GameDetailUrl");
+
+        var errorCode = document?.RootElement.GetProperty("error").GetString();
+        if (errorCode is not "0")
+            return null;
+
+        var url = document!.RootElement.GetProperty("url").GetString();
+        return url;
+    }
+
+    public async ValueTask<(bool Success, PragmaticPlayTransferGameRecordInfoResponse? Response)> GetGameRoundRecordsAsync(
+            Uri apiUrl,
         string secureLogin,
         string secretKey,
         string dataType,
@@ -285,41 +320,6 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
         return gameUrl;
     }
 
-    public async ValueTask<string?> GetGameDetailUrlAsync(
-        Uri apiUrl,
-        string secureLogin,
-        string secretKey,
-        string playerCode,
-        string externalRoundId,
-        string externalGameId,
-        string language)
-    {
-        var parameters = new Dictionary<string, string>
-        {
-            ["secureLogin"] = secureLogin,
-            ["playerId"] = playerCode,
-            ["gameId"] = externalGameId,
-            ["roundId"] = externalRoundId,
-            ["language"] = language
-        };
-
-        var hash = GenerateHash(parameters, secretKey);
-        parameters["hash"] = hash;
-
-        var document = await PostAsync(
-            apiUrl,
-            "/IntegrationService/v3/http/HistoryAPI/OpenHistoryExtended/",
-            parameters,
-            "GameDetailUrl");
-
-        var errorCode = document?.RootElement.GetProperty("error").GetString();
-        if (errorCode is not "0")
-            return null;
-
-        var url = document!.RootElement.GetProperty("url").GetString();
-        return url;
-    }
-
     public async ValueTask LogoutAsync(
         Uri apiUrl,
         string secureLogin,
@@ -355,57 +355,6 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
 
         var hash = hasher.ComputeHash(data);
         return hash.ToHexString();
-    }
-
-    private async ValueTask<JsonDocument?> PostAsync(
-        Uri apiUrl,
-        string path,
-        IEnumerable<KeyValuePair<string, string>> parameters,
-        string action)
-    {
-        var logPrefix = $"{nameof(PragmaticPlayTransferApiClient).ToLower()}.{action}";
-        var uriString = $"{apiUrl.OriginalString.TrimEnd('/')}{path}";
-
-        var sw = Stopwatch.StartNew();
-
-        var content = new FormUrlEncodedContent(parameters);
-        var httpResponseMessage = await _client.PostAsync(uriString, content).ConfigureAwait(false);
-
-        sw.Stop();
-
-        string responseMessage;
-
-        var requestMessage = await content.ReadAsStringAsync().ConfigureAwait(false);
-
-        var stream = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
-        using (var sr = new StreamReader(stream))
-        {
-            responseMessage = await sr.ReadToEndAsync().ConfigureAwait(false);
-        }
-
-        var apiLogEvent = new ApiLogEvent
-        {
-            Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
-            Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
-            Prefix = logPrefix,
-            ServerName = Environment.MachineName.NoLongerThan(128),
-            RequestHeaders = httpResponseMessage.RequestMessage?.Headers
-                             + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
-            RequestContent = requestMessage.NoLongerThan(4096),
-            ResponseHeaders = httpResponseMessage.Headers.ToString(),
-            ResponseContent = responseMessage.NoLongerThan(4096),
-            ResponseCode = (short)httpResponseMessage.StatusCode,
-            ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-            RecordedOn = DateTimeOffset.UtcNow
-        };
-
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
-
-        return !string.IsNullOrEmpty(responseMessage) &&
-               httpResponseMessage.StatusCode == HttpStatusCode.OK
-            ? JsonDocument.Parse(responseMessage)
-            : default;
     }
 
     private async ValueTask<string?> GetCsvAsync(
@@ -453,6 +402,57 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
         return !string.IsNullOrEmpty(responseMessage) &&
                httpResponseMessage.StatusCode == HttpStatusCode.OK
             ? responseMessage
+            : default;
+    }
+
+    private async ValueTask<JsonDocument?> PostAsync(
+            Uri apiUrl,
+        string path,
+        IEnumerable<KeyValuePair<string, string>> parameters,
+        string action)
+    {
+        var logPrefix = $"{nameof(PragmaticPlayTransferApiClient).ToLower()}.{action}";
+        var uriString = $"{apiUrl.OriginalString.TrimEnd('/')}{path}";
+
+        var sw = Stopwatch.StartNew();
+
+        var content = new FormUrlEncodedContent(parameters);
+        var httpResponseMessage = await _client.PostAsync(uriString, content).ConfigureAwait(false);
+
+        sw.Stop();
+
+        string responseMessage;
+
+        var requestMessage = await content.ReadAsStringAsync().ConfigureAwait(false);
+
+        var stream = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+        using (var sr = new StreamReader(stream))
+        {
+            responseMessage = await sr.ReadToEndAsync().ConfigureAwait(false);
+        }
+
+        var apiLogEvent = new ApiLogEvent
+        {
+            Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
+            Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
+            Prefix = logPrefix,
+            ServerName = Environment.MachineName.NoLongerThan(128),
+            RequestHeaders = httpResponseMessage.RequestMessage?.Headers
+                             + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
+            RequestContent = requestMessage.NoLongerThan(4096),
+            ResponseHeaders = httpResponseMessage.Headers.ToString(),
+            ResponseContent = responseMessage.NoLongerThan(4096),
+            ResponseCode = (short)httpResponseMessage.StatusCode,
+            ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+            RecordedOn = DateTimeOffset.UtcNow
+        };
+
+        _tgsLog.LogApi(apiLogEvent);
+        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        return !string.IsNullOrEmpty(responseMessage) &&
+               httpResponseMessage.StatusCode == HttpStatusCode.OK
+            ? JsonDocument.Parse(responseMessage)
             : default;
     }
 }

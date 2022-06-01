@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
@@ -15,8 +14,8 @@ namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 internal class PragmaticPlayTransferRngGameRecordsGetService :
     IGetService<PragmaticPlayTransferRngGameRecordsQuery, PragmaticPlayTransferGameRecordResult>
 {
-    private readonly IPragmaticPlayTransferService _service;
     private readonly IPragmaticPlayTransferApiClient _client;
+    private readonly IPragmaticPlayTransferService _service;
 
     public PragmaticPlayTransferRngGameRecordsGetService(
         IPragmaticPlayTransferService service,

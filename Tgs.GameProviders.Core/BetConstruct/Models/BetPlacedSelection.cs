@@ -6,7 +6,7 @@ namespace Tgs.GameProviders.Core.BetConstruct.Models
     public record BetPlacedSelection
     {
         /// <summary>
-        /// Unique ID of the team/player. 
+        /// Unique ID of the team/player.
         /// </summary>
         [JsonPropertyName("AwayTeamId")]
         public int? AwayTeamId { get; init; }

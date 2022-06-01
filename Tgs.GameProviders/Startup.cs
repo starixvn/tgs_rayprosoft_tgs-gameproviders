@@ -123,8 +123,8 @@ namespace Tgs.GameProviders
                 },
                 (options, sp) =>
                 {
-                var configuration = sp.GetRequiredService<IConfiguration>();
-                options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameRoundsServiceBaseUrl");
+                    var configuration = sp.GetRequiredService<IConfiguration>();
+                    options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameRoundsServiceBaseUrl");
                 });
 
             _ = services

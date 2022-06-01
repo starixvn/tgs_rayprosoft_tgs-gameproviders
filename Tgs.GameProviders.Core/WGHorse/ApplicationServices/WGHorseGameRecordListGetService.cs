@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core.WGHorse.Models;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
