@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.KY.Models;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 

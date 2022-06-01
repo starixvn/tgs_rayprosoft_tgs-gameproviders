@@ -7,7 +7,6 @@ using Tgs.GameProviders.Core.BigGaming.Models;
 using Tgs.GameProviders.Core.BigGaming.Models.Commons;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 

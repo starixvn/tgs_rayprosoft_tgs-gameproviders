@@ -49,8 +49,17 @@ public interface IPragmaticPlayTransferApiClient
         string secretKey,
         string playerCode);
 
-    ValueTask<(bool Success, PragmaticPlayTransferGameRecordInfoResponse? Response)> GetGameRoundRecordsAsync(
+    ValueTask<string?> GetGameDetailUrlAsync(
         Uri apiUrl,
+        string secureLogin,
+        string secretKey,
+        string playerCode,
+        string externalRoundId,
+        string externalGameId,
+        string language);
+
+    ValueTask<(bool Success, PragmaticPlayTransferGameRecordInfoResponse? Response)> GetGameRoundRecordsAsync(
+            Uri apiUrl,
         string secureLogin,
         string secretKey,
         string dataType,
@@ -65,15 +74,6 @@ public interface IPragmaticPlayTransferApiClient
         string language,
         string platform,
         string? lobbyUrl);
-
-    ValueTask<string?> GetGameDetailUrlAsync(
-        Uri apiUrl,
-        string secureLogin,
-        string secretKey,
-        string playerCode,
-        string externalRoundId,
-        string externalGameId,
-        string language);
 
     ValueTask LogoutAsync(
         Uri apiUrl,

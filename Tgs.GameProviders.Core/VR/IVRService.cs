@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration.VR;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.VR

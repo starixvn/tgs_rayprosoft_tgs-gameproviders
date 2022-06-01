@@ -8,10 +8,10 @@ namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 
 internal class PragmaticPlayTransferPlayerBalanceGetService : IGetService<PragmaticPlayTransferPlayerBalanceQuery, decimal?>
 {
+    private readonly IPragmaticPlayTransferApiClient _client;
+    private readonly IPragmaticPlayTransferGamePlayer _gamePlayer;
     private readonly IPlayerService _playerService;
     private readonly IPragmaticPlayTransferService _service;
-    private readonly IPragmaticPlayTransferGamePlayer _gamePlayer;
-    private readonly IPragmaticPlayTransferApiClient _client;
 
     public PragmaticPlayTransferPlayerBalanceGetService(
         IPlayerService playerService,

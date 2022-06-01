@@ -5,7 +5,6 @@ using NUnit.Framework;
 using Tgs.GameProviders.Core.DreamGame;
 using Tgs.GameProviders.Core.DreamGame.ApplicationServices;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.DreamGame;

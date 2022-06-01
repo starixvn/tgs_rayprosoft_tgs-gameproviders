@@ -14,10 +14,10 @@ namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 internal class PragmaticPlayTransferRoundDetailGetService
     : IGetService<PragmaticPlayTransferRoundDetailQuery, RoundDetailResult?>
 {
-    private readonly IRoundService _roundService;
-    private readonly IGameService _gameService;
-    private readonly IPragmaticPlayTransferService _service;
     private readonly IPragmaticPlayTransferApiClient _client;
+    private readonly IGameService _gameService;
+    private readonly IRoundService _roundService;
+    private readonly IPragmaticPlayTransferService _service;
 
     public PragmaticPlayTransferRoundDetailGetService(
         IRoundService roundService,

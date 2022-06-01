@@ -13,74 +13,6 @@ namespace Tgs.GameProviders.Core.UnitTest.PragmaticPlayTransfer;
 public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
 {
     [Test]
-    public async Task Normal_Process()
-    {
-        var fakeService = Substitute.For<IPragmaticPlayTransferService>();
-        var fakeApiClient = Substitute.For<IPragmaticPlayTransferApiClient>();
-        var fakeGamePlayer = Substitute.For<IPragmaticPlayTransferGamePlayer>();
-        var fakePlayerService = Substitute.For<IPlayerService>();
-
-        var configuration = new PragmaticPlayTransferConfiguration
-        {
-            ServiceEndpointUrl = new("http://game-pp"),
-            ApiUrl = new("https://api.prerelease-env.biz"),
-            SecureLogin = "tgs_tgstfw",
-            SecretKey = "testKey",
-            ProviderId = "PragmaticPlay"
-        };
-
-        var gameProviderCurrencyCode = "CNY";
-
-        var playerInfo = new PlayerInfo(
-            Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
-            "TGS",
-            Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
-            "TGS",
-            Guid.Parse("4e86719f-243f-46f6-b010-5c758b7285af"),
-            "GPI",
-            "4ucmqplxb029",
-            "4ucmqplxb029",
-            Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY",
-            PlayerStatus.Enabled);
-
-        var balance = 100m;
-
-        var query = new PragmaticPlayTransferPlayerBalanceQuery
-        {
-            PlayerCode = playerInfo.PlayerCode
-        };
-
-        _ = fakePlayerService.GetCacheAsync(Arg.Is(playerInfo.PlayerCode)).Returns(playerInfo);
-        _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
-
-        _ = fakeApiClient
-            .GetBalanceAsync(
-                Arg.Is(configuration.ApiUrl),
-                Arg.Is(configuration.SecureLogin),
-                Arg.Is(configuration.SecretKey),
-                Arg.Is(playerInfo.PlayerCode))
-            .Returns((true, balance));
-
-        var sut = new PragmaticPlayTransferPlayerBalanceGetService(
-            fakePlayerService,
-            fakeService,
-            fakeGamePlayer,
-            fakeApiClient);
-
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
-
-        Assert.AreEqual(balance, actual);
-
-        _ = fakeGamePlayer
-            .DidNotReceive()
-            .CreatePlayerAsync(
-                Arg.Is(playerInfo.PlayerCode),
-                Arg.Is(gameProviderCurrencyCode),
-                Arg.Is(configuration));
-    }
-
-    [Test]
     public async Task GetBalance_When_Player_Not_Exist()
     {
         var fakeService = Substitute.For<IPragmaticPlayTransferService>();
@@ -172,5 +104,73 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
                 Arg.Is(configuration.SecureLogin),
                 Arg.Is(configuration.SecretKey),
                 Arg.Is(playerInfo.PlayerCode));
+    }
+
+    [Test]
+    public async Task Normal_Process()
+    {
+        var fakeService = Substitute.For<IPragmaticPlayTransferService>();
+        var fakeApiClient = Substitute.For<IPragmaticPlayTransferApiClient>();
+        var fakeGamePlayer = Substitute.For<IPragmaticPlayTransferGamePlayer>();
+        var fakePlayerService = Substitute.For<IPlayerService>();
+
+        var configuration = new PragmaticPlayTransferConfiguration
+        {
+            ServiceEndpointUrl = new("http://game-pp"),
+            ApiUrl = new("https://api.prerelease-env.biz"),
+            SecureLogin = "tgs_tgstfw",
+            SecretKey = "testKey",
+            ProviderId = "PragmaticPlay"
+        };
+
+        var gameProviderCurrencyCode = "CNY";
+
+        var playerInfo = new PlayerInfo(
+            Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
+            "TGS",
+            Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
+            "TGS",
+            Guid.Parse("4e86719f-243f-46f6-b010-5c758b7285af"),
+            "GPI",
+            "4ucmqplxb029",
+            "4ucmqplxb029",
+            Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
+            "CNY",
+            PlayerStatus.Enabled);
+
+        var balance = 100m;
+
+        var query = new PragmaticPlayTransferPlayerBalanceQuery
+        {
+            PlayerCode = playerInfo.PlayerCode
+        };
+
+        _ = fakePlayerService.GetCacheAsync(Arg.Is(playerInfo.PlayerCode)).Returns(playerInfo);
+        _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
+
+        _ = fakeApiClient
+            .GetBalanceAsync(
+                Arg.Is(configuration.ApiUrl),
+                Arg.Is(configuration.SecureLogin),
+                Arg.Is(configuration.SecretKey),
+                Arg.Is(playerInfo.PlayerCode))
+            .Returns((true, balance));
+
+        var sut = new PragmaticPlayTransferPlayerBalanceGetService(
+            fakePlayerService,
+            fakeService,
+            fakeGamePlayer,
+            fakeApiClient);
+
+        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+
+        Assert.AreEqual(balance, actual);
+
+        _ = fakeGamePlayer
+            .DidNotReceive()
+            .CreatePlayerAsync(
+                Arg.Is(playerInfo.PlayerCode),
+                Arg.Is(gameProviderCurrencyCode),
+                Arg.Is(configuration));
     }
 }

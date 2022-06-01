@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Tgs.GameProviders.QueryServer.Client;
 using Tgs.GameRounds.Client;
 
 namespace Tgs.GameProviders.Core

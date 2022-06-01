@@ -8,8 +8,8 @@ namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
 internal class JokerGameUrlGetService : IGetService<JokerGameUrlQuery, GameUrlResult>
 {
-    private readonly IJokerApiClient _client;
     private readonly IJokerAgentMapper _agentMapper;
+    private readonly IJokerApiClient _client;
     private readonly IJokerService _service;
 
     public JokerGameUrlGetService(

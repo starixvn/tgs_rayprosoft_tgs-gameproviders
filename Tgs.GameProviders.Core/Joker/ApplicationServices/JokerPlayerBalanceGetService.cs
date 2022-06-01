@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
@@ -10,11 +7,11 @@ namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
 internal class JokerPlayerBalanceGetService : IGetService<JokerPlayerBalanceQuery, decimal?>
 {
-    private readonly IJokerApiClient _client;
     private readonly IJokerAgentMapper _agentMapper;
-    private readonly IJokerService _service;
+    private readonly IJokerApiClient _client;
     private readonly IJokerGamePlayer _gamePlayer;
     private readonly IPlayerService _playerService;
+    private readonly IJokerService _service;
 
     public JokerPlayerBalanceGetService(
         IJokerApiClient client,

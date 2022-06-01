@@ -30,6 +30,42 @@ public class PPTFController : ControllerBase,
     }
 
     /// <summary>
+    /// Games the record list asynchronous.
+    /// </summary>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "startTime": "2021-12-01T00:00:00+00:00",
+    ///             "dataType": "RNG"
+    ///         }
+    /// </remarks>
+    [HttpPost("GameRecordList")]
+    public ValueTask<PragmaticPlayTransferGameRecordResult> GameRecordListAsync(
+        [FromServices]
+        IGetService<PragmaticPlayTransferRngGameRecordsQuery, PragmaticPlayTransferGameRecordResult> rngService,
+        [FromServices]
+        IGetService<PragmaticPlayTransferLiveDealerGameRecordsQuery, PragmaticPlayTransferGameRecordResult> liveDealerService,
+        [FromServices]
+        IGetService<PragmaticPlayTransferFishingGameRecordsQuery, PragmaticPlayTransferGameRecordResult> fishingService,
+        [FromServices]
+        IGetService<PragmaticPlayTransferVirtualSportsGameRecordsQuery, PragmaticPlayTransferGameRecordResult> sportsService,
+        PragmaticPlayTransferGameRecordListRequest request)
+        => request.DataType switch
+        {
+            PragmaticPlayTransferGameDataType.RNG => rngService.GetAsync(new PragmaticPlayTransferRngGameRecordsQuery(request.StartTime)),
+            var o when o == PragmaticPlayTransferGameDataType.LiveDealer
+                => liveDealerService.GetAsync(new PragmaticPlayTransferLiveDealerGameRecordsQuery(request.StartTime)),
+            var o when o == PragmaticPlayTransferGameDataType.Fishing
+                => fishingService.GetAsync(new PragmaticPlayTransferFishingGameRecordsQuery(request.StartTime)),
+            var o when o == PragmaticPlayTransferGameDataType.VirtualSports
+                => sportsService.GetAsync(new PragmaticPlayTransferVirtualSportsGameRecordsQuery(request.StartTime)),
+            _ => throw new ArgumentException($"Invalid data type: {request.DataType}")
+        };
+
+    /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
     /// <param name="getService">The get service.</param>
@@ -215,40 +251,4 @@ public class PPTFController : ControllerBase,
             RoundId = roundId,
             Language = language
         });
-
-    /// <summary>
-    /// Games the record list asynchronous.
-    /// </summary>
-    /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Post
-    ///         {
-    ///             "startTime": "2021-12-01T00:00:00+00:00",
-    ///             "dataType": "RNG"
-    ///         }
-    /// </remarks>
-    [HttpPost("GameRecordList")]
-    public ValueTask<PragmaticPlayTransferGameRecordResult> GameRecordListAsync(
-        [FromServices]
-        IGetService<PragmaticPlayTransferRngGameRecordsQuery, PragmaticPlayTransferGameRecordResult> rngService,
-        [FromServices]
-        IGetService<PragmaticPlayTransferLiveDealerGameRecordsQuery, PragmaticPlayTransferGameRecordResult> liveDealerService,
-        [FromServices]
-        IGetService<PragmaticPlayTransferFishingGameRecordsQuery, PragmaticPlayTransferGameRecordResult> fishingService,
-        [FromServices]
-        IGetService<PragmaticPlayTransferVirtualSportsGameRecordsQuery, PragmaticPlayTransferGameRecordResult> sportsService,
-        PragmaticPlayTransferGameRecordListRequest request)
-        => request.DataType switch
-        {
-            PragmaticPlayTransferGameDataType.RNG => rngService.GetAsync(new PragmaticPlayTransferRngGameRecordsQuery(request.StartTime)),
-            var o when o == PragmaticPlayTransferGameDataType.LiveDealer
-                => liveDealerService.GetAsync(new PragmaticPlayTransferLiveDealerGameRecordsQuery(request.StartTime)),
-            var o when o == PragmaticPlayTransferGameDataType.Fishing
-                => fishingService.GetAsync(new PragmaticPlayTransferFishingGameRecordsQuery(request.StartTime)),
-            var o when o == PragmaticPlayTransferGameDataType.VirtualSports
-                => sportsService.GetAsync(new PragmaticPlayTransferVirtualSportsGameRecordsQuery(request.StartTime)),
-            _ => throw new ArgumentException($"Invalid data type: {request.DataType}")
-        };
 }
