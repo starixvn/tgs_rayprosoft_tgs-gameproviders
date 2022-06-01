@@ -8,6 +8,7 @@ using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.Joker;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.Joker;
 
@@ -71,7 +72,7 @@ public class JokerRoundDetailGetServiceUnitTest
             playerInfo.PlayerCode,
             2600025,
             playerInfo.DefaultWalletCurrencyCode,
-            RoundStatus.Closed,
+            GameRoundStatus.Closed,
             Guid.NewGuid(),
             playerInfo.DefaultWalletId,
             DateTime.Now,
@@ -87,7 +88,7 @@ public class JokerRoundDetailGetServiceUnitTest
             1.2m,
             -0.9m,
             null,
-            RoundClientStatus.Win,
+            GameRoundClientStatus.Win,
             null,
             null,
             null,

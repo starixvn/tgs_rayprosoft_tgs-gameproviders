@@ -5,6 +5,7 @@ using Tgs.GameProviders.Core.WGSports;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Services.WGSports
 {
@@ -28,7 +29,7 @@ namespace Tgs.GameProviders.Services.WGSports
         public decimal GetAmount(string amountString)
             => decimal.TryParse(amountString, out decimal amount) ? amount : 0;
 
-        public RoundClientStatus GetClientRound(string playerWinLoss)
+        public GameRoundClientStatus GetClientRound(string playerWinLoss)
         {
             try
             {
@@ -36,13 +37,13 @@ namespace Tgs.GameProviders.Services.WGSports
 
                 return winLoss switch
                 {
-                    > 0 => RoundClientStatus.Win,
-                    <= 0 => RoundClientStatus.Loss,
+                    > 0 => GameRoundClientStatus.Win,
+                    <= 0 => GameRoundClientStatus.Loss,
                 };
             }
             catch
             {
-                return RoundClientStatus.Void;
+                return GameRoundClientStatus.Void;
             }
         }
 

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Tgs.GameProviders.Core.Joker.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
@@ -69,7 +70,7 @@ internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQu
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,
                 PlayerCode = data.Username.ToLower(),
-                Status = RoundStatus.Closed,
+                Status = GameRoundStatus.Closed,
                 ClientStatus = GetClientStatus(playerWinLoss),
                 ExternalRoundId = data.TransactionId,
                 ExternalGameId = data.GameExternalId,
@@ -95,7 +96,7 @@ internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQu
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,
                 PlayerCode = data.Username,
-                Status = RoundStatus.Closed,
+                Status = GameRoundStatus.Closed,
                 ClientStatus = GetClientStatus(playerWinLoss),
                 ExternalRoundId = data.TransactionId,
                 ExternalGameId = data.GameExternalId,
@@ -121,7 +122,7 @@ internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQu
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,
                 PlayerCode = data.Username,
-                Status = RoundStatus.Closed,
+                Status = GameRoundStatus.Closed,
                 ClientStatus = GetClientStatus(playerWinLoss),
                 ExternalRoundId = data.TransactionId,
                 ExternalGameId = data.GameExternalId,
@@ -148,10 +149,10 @@ internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQu
         };
     }
 
-    private static RoundClientStatus GetClientStatus(decimal playerWinLoss)
+    private static GameRoundClientStatus GetClientStatus(decimal playerWinLoss)
         => playerWinLoss switch
         {
-            > 0 => RoundClientStatus.Win,
-            _ => RoundClientStatus.Loss
+            > 0 => GameRoundClientStatus.Win,
+            _ => GameRoundClientStatus.Loss
         };
 }

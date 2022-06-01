@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration.BigGaming;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.BigGaming
 {
@@ -9,7 +10,7 @@ namespace Tgs.GameProviders.Core.BigGaming
     {
         ValueTask<BigGamingBrandMerchant> GetBrandMerchantAsync(string currencyCode);
 
-        RoundClientStatus GetClientRound(decimal winLoss);
+        GameRoundClientStatus GetClientRound(decimal winLoss);
 
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 

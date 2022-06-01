@@ -7,6 +7,7 @@ using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.LY;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Services.LY
 {
@@ -39,12 +40,12 @@ namespace Tgs.GameProviders.Services.LY
                 configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, DefConst.BrandCodeDefault) && x.Status).FirstOrDefault();
         }
 
-        public RoundClientStatus GetClientRound(decimal playerWinLoss)
+        public GameRoundClientStatus GetClientRound(decimal playerWinLoss)
             => playerWinLoss switch
             {
-                > 0 => RoundClientStatus.Win,
-                < 0 => RoundClientStatus.Loss,
-                0 => RoundClientStatus.Draw
+                > 0 => GameRoundClientStatus.Win,
+                < 0 => GameRoundClientStatus.Loss,
+                0 => GameRoundClientStatus.Draw
             };
 
         public ValueTask<Guid> GetGameProviderIdAsync()

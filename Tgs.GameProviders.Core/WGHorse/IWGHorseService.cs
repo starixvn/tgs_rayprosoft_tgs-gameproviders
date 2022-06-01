@@ -2,12 +2,13 @@
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.WGHorse
 {
     public interface IWGHorseService
     {
-        RoundClientStatus GetClientRound(decimal playerWinLoss);
+        GameRoundClientStatus GetClientRound(decimal playerWinLoss);
 
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 

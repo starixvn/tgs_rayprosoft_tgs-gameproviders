@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
@@ -68,8 +69,8 @@ internal class PragmaticPlayTransferLiveDealerGameRecordsGetService
                     GameProviderCode = gameProviderCode,
                     GameProviderId = gameProviderId,
                     PlayerCode = recordData.PlayerCode,
-                    Status = isRoundComplete ? RoundStatus.Closed : RoundStatus.Open,
-                    ClientStatus = isRoundComplete ? GetClientStatus(isCancelled, playerWinLoss) : RoundClientStatus.Open,
+                    Status = isRoundComplete ? GameRoundStatus.Closed : GameRoundStatus.Open,
+                    ClientStatus = isRoundComplete ? GetClientStatus(isCancelled, playerWinLoss) : GameRoundClientStatus.Open,
                     ExternalRoundId = recordData.ExternalRoundId,
                     ExternalGameId = recordData.ExternalGameId,
                     ExternalCreatedOn =
@@ -96,12 +97,12 @@ internal class PragmaticPlayTransferLiveDealerGameRecordsGetService
         };
     }
 
-    private static RoundClientStatus GetClientStatus(bool isCancelled, decimal playerWinLoss)
+    private static GameRoundClientStatus GetClientStatus(bool isCancelled, decimal playerWinLoss)
         => isCancelled
-            ? RoundClientStatus.Void
+            ? GameRoundClientStatus.Void
             : playerWinLoss switch
             {
-                > 0 => RoundClientStatus.Win,
-                _ => RoundClientStatus.Loss
+                > 0 => GameRoundClientStatus.Win,
+                _ => GameRoundClientStatus.Loss
             };
 }

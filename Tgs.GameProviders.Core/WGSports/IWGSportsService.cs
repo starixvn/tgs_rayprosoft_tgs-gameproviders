@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.WGSports
 {
@@ -9,7 +10,7 @@ namespace Tgs.GameProviders.Core.WGSports
     {
         decimal GetAmount(string amountString);
 
-        RoundClientStatus GetClientRound(string playerWinLoss);
+        GameRoundClientStatus GetClientRound(string playerWinLoss);
 
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 

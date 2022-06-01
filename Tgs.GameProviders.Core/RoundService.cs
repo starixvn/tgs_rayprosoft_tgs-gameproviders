@@ -1,58 +1,57 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Tgs.GameProviders.QueryServer.Client;
+using Tgs.GameRounds.Client;
 
 namespace Tgs.GameProviders.Core
 {
     internal class RoundService : IRoundService
     {
-        private readonly IGameProvidersQueryServerClient _gameProvidersQueryServerClient;
+        private readonly IGameRoundsClient _client;
 
-        public RoundService(
-            IGameProvidersQueryServerClient gameProvidersQueryServerClient
-            )
+        public RoundService(IGameRoundsClient client)
         {
-            _gameProvidersQueryServerClient = gameProvidersQueryServerClient ?? throw new ArgumentNullException(nameof(gameProvidersQueryServerClient));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
         public async ValueTask<RoundInfo> GetAsync(Guid roundId)
         {
-            var roundInfo = default(RoundInfo);
-            var data = await _gameProvidersQueryServerClient.RoundGetAsync(roundId).ConfigureAwait(false);
+            var response = await _client.GetGameRoundAsync(roundId).ConfigureAwait(false);
 
-            if (data != null)
+            if (!response.Success)
             {
-                roundInfo = new RoundInfo(
-                    data.RoundId,
-                    data.ExternalRoundId,
-                    data.GameProviderId,
-                    data.PlayerCode,
-                    data.GameId,
-                    data.CurrencyCode,
-                    data.Status,
-                    data.GameProviderConfigurationId,
-                    data.WalletId,
-                    data.CreatedOn,
-                    data.ClosedOn,
-                    data.UpdatedOn,
-                    data.BrandId,
-                    data.ExternalCreatedOn,
-                    data.ExternalClosedOn,
-                    data.BetAmount,
-                    data.ValidBetAmount,
-                    data.SettleAmount,
-                    data.Commission,
-                    data.Turnover,
-                    data.WinLoss,
-                    data.TieBetAdjustment,
-                    data.ClientStatus,
-                    data.ReopenTurnoverAdjustment,
-                    data.ReopenedOn,
-                    data.EffectiveBettingPercentage,
-                    data.AdditionalData
-                     );
+                return null;
             }
-            return roundInfo;
+
+            return new RoundInfo(
+                    response.Data.RoundId,
+                    response.Data.ExternalRoundId,
+                    response.Data.GameProviderId,
+                    response.Data.PlayerCode,
+                    response.Data.GameId,
+                    response.Data.CurrencyCode,
+                    response.Data.Status,
+                    response.Data.GameProviderConfigurationId,
+                    response.Data.WalletId,
+                    response.Data.CreatedOn,
+                    response.Data.ClosedOn,
+                    response.Data.UpdatedOn,
+                    response.Data.BrandId,
+                    response.Data.ExternalCreatedOn,
+                    response.Data.ExternalClosedOn,
+                    response.Data.BetAmount,
+                    response.Data.ValidBetAmount,
+                    response.Data.SettleAmount,
+                    response.Data.Commission,
+                    response.Data.Turnover,
+                    response.Data.CompanyWinLoss,
+                    response.Data.TieBetAdjustment,
+                    response.Data.ClientStatus,
+                    response.Data.ReopenTurnoverAdjustment,
+                    response.Data.ReopenedOn,
+                    response.Data.EffectiveBettingPercentage,
+                    response.Data.AdditionalData
+                     );
         }
     }
 }
