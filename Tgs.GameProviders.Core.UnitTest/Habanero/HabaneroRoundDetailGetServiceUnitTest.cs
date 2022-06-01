@@ -8,6 +8,7 @@ using Tgs.GameProviders.Core.Habanero.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.Habanero;
 
@@ -89,7 +90,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             playerInfo.PlayerCode,
             gameInfo.GameId,
             playerInfo.DefaultWalletCurrencyCode,
-            Tgs.GameProviders.QueryServer.Models.RoundStatus.Closed,
+            GameRoundStatus.Closed,
             Guid.NewGuid(),
             playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -105,7 +106,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            Tgs.GameProviders.QueryServer.Models.RoundClientStatus.Win,
+            GameRoundClientStatus.Win,
             null,
             null,
             null,

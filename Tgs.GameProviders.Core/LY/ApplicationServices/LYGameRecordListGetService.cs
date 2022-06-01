@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.LY.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.LY.ApplicationServices
@@ -66,7 +67,7 @@ namespace Tgs.GameProviders.Core.LY.ApplicationServices
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,
                 PlayerCode = GameRecordList.Accounts[index].Split('_')[1],
-                Status = RoundStatus.Closed,
+                Status = GameRoundStatus.Closed,
                 ClientStatus = _service.GetClientRound(Convert.ToDecimal(GameRecordList.Profit[index])),
                 ExternalGameId = GameRecordList.KindID[index].ToString(),
                 ExternalRoundId = GameRecordList.GameID[index],

@@ -3,6 +3,7 @@ using System.Reflection;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.QueryServer.Client;
+using Tgs.GameRounds.Client;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -11,13 +12,15 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddGameProviders(
             this IServiceCollection services,
             Action<GameProvidersQueryServerClientOptions, IServiceProvider> gameProvidersQueryServerClientOptions,
-            Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions)
+            Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions,
+            Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions)
             => services
                 .RegisterAllServiceUtilityTypes(
                     Assembly.GetExecutingAssembly(),
                     ServiceLifetime.Transient)
                 .AddGameProvidersQueryServerClient(gameProvidersQueryServerClientOptions)
                 .AddGameInterfaceAwcServiceClient(gameInterfaceAwcServiceClientOptions)
+                .AddGameRoundsClient(gameRoundsClientOptions)
                 .AddSecurity()//Tgs.Core.Infrastructures.Security
                 .AddMemoryCache()
                 .AddTransient<IBrandService, BrandService>()

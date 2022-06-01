@@ -8,6 +8,7 @@ using Tgs.GameProviders.Core.WGHorse.ApplicationServices;
 using Tgs.GameProviders.Core.WGHorse.Models;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.WGHorse
 {
@@ -69,7 +70,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
                 query.Page,
                 query.Rows).Returns(ValueTask.FromResult<(bool Success, WGHorseGameRecord[]? GameRecord)>((true, gameRound)));
 
-            _ = fakeWGHorseService.GetClientRound(decimal.Parse("129.00")).Returns(RoundClientStatus.Win);
+            _ = fakeWGHorseService.GetClientRound(decimal.Parse("129.00")).Returns(GameRoundClientStatus.Win);
 
             _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-17 00:00:00"), TimeSpan.FromHours(+8)));
 
@@ -80,8 +81,8 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
             Assert.NotNull(actual);
             Assert.AreEqual(true, actual.Success);
             Assert.AreEqual(true, actual.Datas.Any());
-            Assert.AreEqual(RoundStatus.Closed, actual.Datas.First().Status);
-            Assert.AreEqual(RoundClientStatus.Win, actual.Datas.First().ClientStatus);
+            Assert.AreEqual(GameRoundStatus.Closed, actual.Datas.First().Status);
+            Assert.AreEqual(GameRoundClientStatus.Win, actual.Datas.First().ClientStatus);
             Assert.AreEqual(129.00m, actual.Datas.First().PlayerWinLoss);
             Assert.AreEqual(179, actual.Datas.First().SettleAmount);
         }
@@ -143,7 +144,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
 
             _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-21  00:00:00"), TimeSpan.FromHours(+8)));
 
-            _ = fakeWGHorseService.GetClientRound(decimal.Parse("-49.20")).Returns(RoundClientStatus.Loss);
+            _ = fakeWGHorseService.GetClientRound(decimal.Parse("-49.20")).Returns(GameRoundClientStatus.Loss);
 
             var fakeService = new WGHorseGameRecordListGetService(fakeWGHorseApiClient, fakeWGHorseService, fakeSystemClock);
 
@@ -152,8 +153,8 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
             Assert.NotNull(actual);
             Assert.AreEqual(true, actual.Success);
             Assert.AreEqual(true, actual.Datas.Any());
-            Assert.AreEqual(RoundStatus.Closed, actual.Datas.First().Status);
-            Assert.AreEqual(RoundClientStatus.Loss, actual.Datas.First().ClientStatus);
+            Assert.AreEqual(GameRoundStatus.Closed, actual.Datas.First().Status);
+            Assert.AreEqual(GameRoundClientStatus.Loss, actual.Datas.First().ClientStatus);
             Assert.AreEqual(-49.20m, actual.Datas.First().PlayerWinLoss);
             Assert.AreEqual(10.8m, actual.Datas.First().SettleAmount);
         }
@@ -213,7 +214,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
                 query.Page,
                 query.Rows).Returns(ValueTask.FromResult<(bool Success, WGHorseGameRecord[]? GameRecord)>((true, gameRound)));
 
-            _ = fakeWGHorseService.GetClientRound(decimal.Parse("129.00")).Returns(RoundClientStatus.Win);
+            _ = fakeWGHorseService.GetClientRound(decimal.Parse("129.00")).Returns(GameRoundClientStatus.Win);
 
             _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16 17:39:34"), TimeSpan.FromHours(+8)));
 
@@ -224,8 +225,8 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
             Assert.NotNull(actual);
             Assert.AreEqual(true, actual.Success);
             Assert.AreEqual(true, actual.Datas.Any());
-            Assert.AreEqual(RoundStatus.Open, actual.Datas.First().Status);
-            Assert.AreEqual(RoundClientStatus.Open, actual.Datas.First().ClientStatus);
+            Assert.AreEqual(GameRoundStatus.Open, actual.Datas.First().Status);
+            Assert.AreEqual(GameRoundClientStatus.Open, actual.Datas.First().ClientStatus);
             Assert.AreEqual(0m, actual.Datas.First().PlayerWinLoss);
             Assert.AreEqual(0m, actual.Datas.First().SettleAmount);
         }
@@ -294,8 +295,8 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
             Assert.NotNull(actual);
             Assert.AreEqual(true, actual.Success);
             Assert.AreEqual(true, actual.Datas.Any());
-            Assert.AreEqual(RoundStatus.Open, actual.Datas.First().Status);
-            Assert.AreEqual(RoundClientStatus.Open, actual.Datas.First().ClientStatus);
+            Assert.AreEqual(GameRoundStatus.Open, actual.Datas.First().Status);
+            Assert.AreEqual(GameRoundClientStatus.Open, actual.Datas.First().ClientStatus);
             Assert.AreEqual(0m, actual.Datas.First().PlayerWinLoss);
             Assert.AreEqual(0m, actual.Datas.First().SettleAmount);
         }
@@ -355,7 +356,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
                 query.Page,
                 query.Rows).Returns(ValueTask.FromResult<(bool Success, WGHorseGameRecord[]? GameRecord)>((true, gameRound)));
 
-            _ = fakeWGHorseService.GetClientRound(decimal.Parse("0.00")).Returns(RoundClientStatus.Draw);
+            _ = fakeWGHorseService.GetClientRound(decimal.Parse("0.00")).Returns(GameRoundClientStatus.Draw);
 
             _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2021-10-31 13:22:25"), TimeSpan.FromHours(+8)));
 
@@ -366,8 +367,8 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
             Assert.NotNull(actual);
             Assert.AreEqual(true, actual.Success);
             Assert.AreEqual(true, actual.Datas.Any());
-            Assert.AreEqual(RoundStatus.Closed, actual.Datas.First().Status);
-            Assert.AreEqual(RoundClientStatus.Draw, actual.Datas.First().ClientStatus);
+            Assert.AreEqual(GameRoundStatus.Closed, actual.Datas.First().Status);
+            Assert.AreEqual(GameRoundClientStatus.Draw, actual.Datas.First().ClientStatus);
             Assert.AreEqual(0m, actual.Datas.First().PlayerWinLoss);
             Assert.AreEqual(400m, actual.Datas.First().SettleAmount);
         }
@@ -427,7 +428,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
                 query.Page,
                 query.Rows).Returns(ValueTask.FromResult<(bool Success, WGHorseGameRecord[]? GameRecord)>((true, gameRound)));
 
-            _ = fakeWGHorseService.GetClientRound(decimal.Parse("-45.50")).Returns(RoundClientStatus.Loss);
+            _ = fakeWGHorseService.GetClientRound(decimal.Parse("-45.50")).Returns(GameRoundClientStatus.Loss);
 
             _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16 15:11:29"), TimeSpan.FromHours(+8)));
 
@@ -438,8 +439,8 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
             Assert.NotNull(actual);
             Assert.AreEqual(true, actual.Success);
             Assert.AreEqual(true, actual.Datas.Any());
-            Assert.AreEqual(RoundStatus.Closed, actual.Datas.First().Status);
-            Assert.AreEqual(RoundClientStatus.Loss, actual.Datas.First().ClientStatus);
+            Assert.AreEqual(GameRoundStatus.Closed, actual.Datas.First().Status);
+            Assert.AreEqual(GameRoundClientStatus.Loss, actual.Datas.First().ClientStatus);
             Assert.AreEqual(-45.50m, actual.Datas.First().PlayerWinLoss);
             Assert.AreEqual(4.5m, actual.Datas.First().SettleAmount);
         }
@@ -499,7 +500,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
                 query.Page,
                 query.Rows).Returns(ValueTask.FromResult<(bool Success, WGHorseGameRecord[]? GameRecord)>((true, gameRound)));
 
-            _ = fakeWGHorseService.GetClientRound(decimal.Parse("-45.50")).Returns(RoundClientStatus.Loss);
+            _ = fakeWGHorseService.GetClientRound(decimal.Parse("-45.50")).Returns(GameRoundClientStatus.Loss);
 
             _ = fakeSystemClock.CurrentTime.Returns(new DateTimeOffset(DateTime.Parse("2022-04-16 15:11:29"), TimeSpan.FromHours(+8)));
 
@@ -510,8 +511,8 @@ namespace Tgs.GameProviders.Core.UnitTest.WGHorse
             Assert.NotNull(actual);
             Assert.AreEqual(true, actual.Success);
             Assert.AreEqual(true, actual.Datas.Any());
-            Assert.AreEqual(RoundStatus.Closed, actual.Datas.First().Status);
-            Assert.AreEqual(RoundClientStatus.Loss, actual.Datas.First().ClientStatus);
+            Assert.AreEqual(GameRoundStatus.Closed, actual.Datas.First().Status);
+            Assert.AreEqual(GameRoundClientStatus.Loss, actual.Datas.First().ClientStatus);
             Assert.AreEqual(-45.50m, actual.Datas.First().PlayerWinLoss);
             Assert.AreEqual(4.5m, actual.Datas.First().SettleAmount);
         }
