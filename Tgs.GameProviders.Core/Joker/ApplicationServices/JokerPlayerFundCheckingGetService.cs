@@ -7,9 +7,9 @@ namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
 internal class JokerPlayerFundCheckingGetService : IGetService<JokerPlayerFundCheckingQuery, PlayerFundCheckingResult>
 {
+    private readonly IJokerAgentMapper _agentMapper;
     private readonly IJokerApiClient _client;
     private readonly IJokerService _service;
-    private readonly IJokerAgentMapper _agentMapper;
 
     public JokerPlayerFundCheckingGetService(
         IJokerApiClient client,

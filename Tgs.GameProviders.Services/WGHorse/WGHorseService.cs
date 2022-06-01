@@ -4,7 +4,6 @@ using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.WGHorse;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Services.WGHorse

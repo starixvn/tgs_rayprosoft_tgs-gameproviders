@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using Tgs.GameProviders.Domains;
 
 namespace Tgs.GameProviders.Core.Extensions
 {

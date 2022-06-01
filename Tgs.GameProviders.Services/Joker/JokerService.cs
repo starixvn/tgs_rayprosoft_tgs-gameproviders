@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Joker;
@@ -26,10 +23,11 @@ internal class JokerService : IJokerService
         _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
     }
 
-    public async ValueTask<JokerConfiguration> GetSettingConfigurationAsync()
-        => await _settingService
-            .GetConfigurationAsync<JokerConfiguration>(GameProviderConfigurations.Joker)
-            .ConfigureAwait(false);
+    public ValueTask<GameInfo> GetGameAsync(int gameId)
+        => _gameService.GetAsync(gameId);
+
+    public ValueTask<Guid> GetGameProviderIdAsync()
+        => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.Joker);
 
     public async ValueTask<string> GetGameProviderLanguageCodeAsync(string cultureCode)
     {
@@ -41,9 +39,8 @@ internal class JokerService : IJokerService
         return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "en";
     }
 
-    public ValueTask<GameInfo> GetGameAsync(int gameId)
-        => _gameService.GetAsync(gameId);
-
-    public ValueTask<Guid> GetGameProviderIdAsync()
-        => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.Joker);
+    public async ValueTask<JokerConfiguration> GetSettingConfigurationAsync()
+                    => await _settingService
+            .GetConfigurationAsync<JokerConfiguration>(GameProviderConfigurations.Joker)
+            .ConfigureAwait(false);
 }

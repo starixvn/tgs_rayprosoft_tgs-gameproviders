@@ -155,6 +155,46 @@ internal class PragmaticPlayTransferApiClientUnitTest
     }
 
     [Test]
+    public async Task GetGameDetailUrlAsync()
+    {
+        var securityLogin = "tgs_tgstfw";
+        var secretKey = "testKey";
+        var playerCode = "4ucmqplxb029";
+        var roundId = "2759382176";
+        var gameId = "vs20kraken";
+        var language = "en";
+
+        var historyUrl = "https://tgs.prerelease-env.biz/gs2c/parentRoundHistoryDetails.do?playSessionId=2806662804&stylename=tgs_tgstfw&hash=2213f4013b94f67808ff131af8110f7d&language=en";
+
+        var client = Substitute.For<IPragmaticPlayTransferApiClient>();
+
+        _ = client
+            .GetGameDetailUrlAsync(
+                Arg.Is(_apiUrl),
+                Arg.Is(securityLogin),
+                Arg.Is(secretKey),
+                Arg.Is(playerCode),
+                Arg.Is(roundId),
+                Arg.Is(gameId),
+                Arg.Is(language))
+            .Returns(historyUrl);
+
+        var actual = await client
+            .GetGameDetailUrlAsync(
+                _apiUrl,
+                securityLogin,
+                secretKey,
+                playerCode,
+                roundId,
+                gameId,
+                language)
+            .ConfigureAwait(false);
+
+        Assert.NotNull(actual);
+        Assert.AreEqual(historyUrl, actual);
+    }
+
+    [Test]
     public async Task GetGameRoundRecordsAsync()
     {
         var securityLogin = "tgs_tgstfw";
@@ -245,46 +285,6 @@ internal class PragmaticPlayTransferApiClientUnitTest
 
         Assert.NotNull(actual);
         Assert.AreEqual(gameUrl, actual);
-    }
-
-    [Test]
-    public async Task GetGameDetailUrlAsync()
-    {
-        var securityLogin = "tgs_tgstfw";
-        var secretKey = "testKey";
-        var playerCode = "4ucmqplxb029";
-        var roundId = "2759382176";
-        var gameId = "vs20kraken";
-        var language = "en";
-
-        var historyUrl = "https://tgs.prerelease-env.biz/gs2c/parentRoundHistoryDetails.do?playSessionId=2806662804&stylename=tgs_tgstfw&hash=2213f4013b94f67808ff131af8110f7d&language=en";
-
-        var client = Substitute.For<IPragmaticPlayTransferApiClient>();
-
-        _ = client
-            .GetGameDetailUrlAsync(
-                Arg.Is(_apiUrl),
-                Arg.Is(securityLogin),
-                Arg.Is(secretKey),
-                Arg.Is(playerCode),
-                Arg.Is(roundId),
-                Arg.Is(gameId),
-                Arg.Is(language))
-            .Returns(historyUrl);
-
-        var actual = await client
-            .GetGameDetailUrlAsync(
-                _apiUrl,
-                securityLogin,
-                secretKey,
-                playerCode,
-                roundId,
-                gameId,
-                language)
-            .ConfigureAwait(false);
-
-        Assert.NotNull(actual);
-        Assert.AreEqual(historyUrl, actual);
     }
 
     [Test]

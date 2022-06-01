@@ -6,7 +6,6 @@ using Tgs.GameProviders.Core.KY;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.KY;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Services.KY
