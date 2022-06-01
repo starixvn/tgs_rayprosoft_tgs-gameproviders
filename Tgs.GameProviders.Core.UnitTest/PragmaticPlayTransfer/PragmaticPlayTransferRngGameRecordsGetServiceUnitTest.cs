@@ -11,6 +11,7 @@ using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.PragmaticPlayTransfer;
 
@@ -70,8 +71,8 @@ internal class PragmaticPlayTransferRngGameRecordsGetServiceUnitTest
                      GameProviderCode = gameProviderCode,
                      GameProviderId = gameProviderId,
                      PlayerCode = "4ucmqplxb029",
-                     Status = RoundStatus.Closed,
-                     ClientStatus = RoundClientStatus.Loss,
+                     Status = GameRoundStatus.Closed,
+                     ClientStatus = GameRoundClientStatus.Loss,
                      ExternalRoundId = "2806980613",
                      ExternalGameId = "vs25bkofkngdm",
                      ExternalCreatedOn = DateTimeOffset.Parse("2022-05-13 08:04:41", null, DateTimeStyles.AssumeUniversal),
@@ -183,8 +184,8 @@ internal class PragmaticPlayTransferRngGameRecordsGetServiceUnitTest
                      GameProviderCode = gameProviderCode,
                      GameProviderId = gameProviderId,
                      PlayerCode = "4ucmqplxb029",
-                     Status = RoundStatus.Closed,
-                     ClientStatus = RoundClientStatus.Loss,
+                     Status = GameRoundStatus.Closed,
+                     ClientStatus = GameRoundClientStatus.Loss,
                      ExternalRoundId = "2806980613",
                      ExternalGameId = "vs25bkofkngdm",
                      ExternalCreatedOn = DateTimeOffset.Parse("2022-05-13 08:04:41", null, DateTimeStyles.AssumeUniversal),

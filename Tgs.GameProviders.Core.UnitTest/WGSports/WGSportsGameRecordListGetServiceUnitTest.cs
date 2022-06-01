@@ -8,6 +8,7 @@ using Tgs.GameProviders.Core.WGSports.ApplicationServices;
 using Tgs.GameProviders.Core.WGSports.Models;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.WGSports
 {
@@ -84,7 +85,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGSports
                     }
             };
             _ = fakeWGHorseService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-            _ = fakeWGHorseService.GetClientRound(gameRecordResponse.BetInfo[0].Result).Returns(RoundClientStatus.Void);
+            _ = fakeWGHorseService.GetClientRound(gameRecordResponse.BetInfo[0].Result).Returns(GameRoundClientStatus.Void);
 
             _ = fakeWGHorseApiClient.GetGameRecordAsync(
                  configuration.ApiUrl,
@@ -99,7 +100,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGSports
             var actual = await fakeService.GetAsync(query).ConfigureAwait(false);
             Assert.NotNull(actual);
             Assert.AreEqual(true, actual.Success);
-            Assert.AreEqual(RoundClientStatus.Void, actual.Datas[0].ClientStatus);
+            Assert.AreEqual(GameRoundClientStatus.Void, actual.Datas[0].ClientStatus);
         }
 
         [Test]
@@ -172,7 +173,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGSports
                     }
             };
             _ = fakeWGHorseService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-            _ = fakeWGHorseService.GetClientRound(gameRecordResponse.BetInfo[0].Result).Returns(RoundClientStatus.Void);
+            _ = fakeWGHorseService.GetClientRound(gameRecordResponse.BetInfo[0].Result).Returns(GameRoundClientStatus.Void);
 
             _ = fakeWGHorseApiClient.GetGameRecordAsync(
                  configuration.ApiUrl,
@@ -260,7 +261,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGSports
                     }
             };
             _ = fakeWGHorseService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-            _ = fakeWGHorseService.GetClientRound(gameRecordResponse.BetInfo[0].Result).Returns(RoundClientStatus.Void);
+            _ = fakeWGHorseService.GetClientRound(gameRecordResponse.BetInfo[0].Result).Returns(GameRoundClientStatus.Void);
 
             _ = fakeWGHorseApiClient.GetGameRecordAsync(
                  configuration.ApiUrl,

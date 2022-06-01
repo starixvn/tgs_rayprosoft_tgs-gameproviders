@@ -13,6 +13,7 @@ using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.AsiaGaming;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.AsiaGaming;
 
@@ -171,7 +172,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             playerInfo.PlayerCode,
             gameInfo.GameId,
             playerInfo.DefaultWalletCurrencyCode,
-            RoundStatus.Closed,
+            GameRoundStatus.Closed,
             Guid.NewGuid(),
             playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -187,7 +188,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            RoundClientStatus.Win,
+            GameRoundClientStatus.Win,
             null,
             null,
             null,

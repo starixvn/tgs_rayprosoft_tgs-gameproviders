@@ -8,6 +8,7 @@ using Tgs.GameProviders.Core.BigGaming.Models.Commons;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.BigGaming.ApplicationServices
@@ -70,7 +71,7 @@ namespace Tgs.GameProviders.Core.BigGaming.ApplicationServices
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,
                 PlayerCode = data.LoginId,
-                Status = RoundStatus.Closed,
+                Status = GameRoundStatus.Closed,
                 ClientStatus = _service.GetClientRound(data.Payout),
                 ExternalRoundId = data.ExternalBetId.ToString(),
                 ExternalGameId = data.GameType.ToString(),

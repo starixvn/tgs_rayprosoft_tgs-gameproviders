@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.WGSports.ApplicationServices
@@ -56,8 +57,8 @@ namespace Tgs.GameProviders.Core.WGSports.ApplicationServices
                     GameProviderCode = gameProviderCode,
                     GameProviderId = gameProviderId,
                     PlayerCode = data.Username,
-                    Status = IgnoreCaseEquals(data.InitData.Win) ? RoundStatus.Open : RoundStatus.Closed,
-                    ClientStatus = IgnoreCaseEquals(data.InitData.Win) ? RoundClientStatus.Open : _service.GetClientRound(data.Result),
+                    Status = IgnoreCaseEquals(data.InitData.Win) ? GameRoundStatus.Open : GameRoundStatus.Closed,
+                    ClientStatus = IgnoreCaseEquals(data.InitData.Win) ? GameRoundClientStatus.Open : _service.GetClientRound(data.Result),
                     ExternalRoundId = data.Reference,
                     ExternalGameId = "1",
                     ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.RecordDate), TimeSpan.FromHours(-4)),

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.VR.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.VR.ApplicationServices
@@ -85,7 +86,7 @@ namespace Tgs.GameProviders.Core.VR.ApplicationServices
                 PlayerWinLoss = data.State == 1
                                ? 0
                                :
-                               _service.GetRoundStatus(data.State) == RoundStatus.Closed
+                               _service.GetRoundStatus(data.State) == GameRoundStatus.Closed
                                    ?
                                    data.PlayerPrize - data.Cost
                                    : null,

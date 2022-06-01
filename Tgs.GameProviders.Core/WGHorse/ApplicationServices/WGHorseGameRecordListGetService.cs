@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Tgs.GameProviders.Core.WGHorse.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
@@ -61,7 +62,7 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
                     GameProviderId = gameProviderId,
                     PlayerCode = data.MemberCode,
                     Status = GetRoundStatus(data.ShowType, GetDateTimeOffsetUTC8(data.ShowDivideDate)),
-                    ClientStatus = IsClosed(data.ShowType, GetDateTimeOffsetUTC8(data.ShowDivideDate)) ? _service.GetClientRound(IsDraw(data.ShowWin) ? 0m : decimal.Parse(data.ShowWin)) : RoundClientStatus.Open,
+                    ClientStatus = IsClosed(data.ShowType, GetDateTimeOffsetUTC8(data.ShowDivideDate)) ? _service.GetClientRound(IsDraw(data.ShowWin) ? 0m : decimal.Parse(data.ShowWin)) : GameRoundClientStatus.Open,
                     ExternalRoundId = data.BatchNo,
                     ExternalGameId = "1",
                     ExternalCreatedOn = GetDateTimeOffsetUTC8(data.RecordDate),
@@ -88,13 +89,13 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
         private static bool IsDraw(string source)
             => source.Contains("和局", StringComparison.OrdinalIgnoreCase);
 
-        private RoundStatus GetRoundStatus(string showType, DateTimeOffset externalClosedOn)
+        private GameRoundStatus GetRoundStatus(string showType, DateTimeOffset externalClosedOn)
         {
             var tomorrowDateUTC8 = GetTomorrowDateUTC8(externalClosedOn);
-            return showType.Contains("過關", StringComparison.OrdinalIgnoreCase) || showType.Contains("过关", StringComparison.OrdinalIgnoreCase) ? externalClosedOn.UtcDateTime < tomorrowDateUTC8.UtcDateTime && tomorrowDateUTC8.UtcDateTime <= _systemClock.CurrentTime.UtcDateTime ? RoundStatus.Closed : RoundStatus.Open : RoundStatus.Closed;
+            return showType.Contains("過關", StringComparison.OrdinalIgnoreCase) || showType.Contains("过关", StringComparison.OrdinalIgnoreCase) ? externalClosedOn.UtcDateTime < tomorrowDateUTC8.UtcDateTime && tomorrowDateUTC8.UtcDateTime <= _systemClock.CurrentTime.UtcDateTime ? GameRoundStatus.Closed : GameRoundStatus.Open : GameRoundStatus.Closed;
         }
 
         private bool IsClosed(string showType, DateTimeOffset externalClosedOn)
-                    => GetRoundStatus(showType, externalClosedOn) == RoundStatus.Closed;
+                    => GetRoundStatus(showType, externalClosedOn) == GameRoundStatus.Closed;
     }
 }

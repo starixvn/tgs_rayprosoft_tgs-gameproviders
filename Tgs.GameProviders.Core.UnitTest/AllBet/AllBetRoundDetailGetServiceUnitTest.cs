@@ -9,6 +9,7 @@ using Tgs.GameProviders.Core.AllBet.ApplicationServices;
 using Tgs.GameProviders.Core.AllBet.Models;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.AllBet;
 
@@ -41,7 +42,7 @@ public class AllBetRoundDetailGetServiceUnitTest
             playerInfo.PlayerCode,
             1300002,
             playerInfo.DefaultWalletCurrencyCode,
-            Tgs.GameProviders.QueryServer.Models.RoundStatus.Closed,
+            GameRoundStatus.Closed,
             Guid.NewGuid(),
             playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -57,7 +58,7 @@ public class AllBetRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            RoundClientStatus.Win,
+            GameRoundClientStatus.Win,
             null,
             null,
             null,

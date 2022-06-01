@@ -10,6 +10,7 @@ using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.PragmaticPlayTransfer;
 
@@ -109,7 +110,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             playerInfo.PlayerCode,
             gameInfo.GameId,
             playerInfo.DefaultWalletCurrencyCode,
-            RoundStatus.Closed,
+            GameRoundStatus.Closed,
             Guid.NewGuid(),
             playerInfo.DefaultWalletId,
             DateTime.Now,
@@ -125,7 +126,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             data.BetAmount,
             data.BetAmount - data.WinAmount,
             null,
-            RoundClientStatus.Loss,
+            GameRoundClientStatus.Loss,
             null,
             null,
             null,
