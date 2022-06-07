@@ -12,12 +12,12 @@ internal class JDBKickPlayerCommandService : ICommandService<JDBKickPlayerComman
     private readonly IJDBAgentMapper _agentMapper;
     private readonly IJDBApiClient _client;
     private readonly ILogger<JDBKickPlayerCommandService> _logger;
-    private readonly IPlayerService _playerService;
+    private readonly IPlayerRepository _playerService;
     private readonly IJDBService _service;
 
     public JDBKickPlayerCommandService(
         ILogger<JDBKickPlayerCommandService> logger,
-        IPlayerService playerService,
+        IPlayerRepository playerService,
         IJDBService service,
         IJDBAgentMapper agentMapper,
         IJDBApiClient client)
@@ -33,20 +33,15 @@ internal class JDBKickPlayerCommandService : ICommandService<JDBKickPlayerComman
         JDBKickPlayerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-        if (playerInfo == null)
-        {
-            throw new Exception($"The player does not exist.{command.PlayerCode}");
-        }
-
+        var playerModel = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-        var agent = _agentMapper.GetAgent(configuration.Agents, playerInfo.DefaultWalletCurrencyCode);
+        var agent = _agentMapper.GetAgent(configuration.Agents, playerModel.DefaultWalletCurrencyCode);
 
         var request = new JDBLogoutRequest
         {
             Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
             Parent = agent.Id,
-            UserId = playerInfo.PlayerCode,
+            UserId = playerModel.PlayerCode,
         };
 
         _ = await _client.LogoutAsync(

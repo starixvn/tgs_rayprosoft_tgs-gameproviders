@@ -14,14 +14,14 @@ namespace Tgs.GameProviders.Core.BigGaming.ApplicationServices
         private readonly IBigGamingApiClient _client;
         private readonly IGameService _gameService;
         private readonly ILogger<BigGamingKickPlayerCommandService> _logger;
-        private readonly IPlayerService _playerService;
+        private readonly IPlayerRepository _playerService;
         private readonly IBigGamingService _service;
 
         public BigGamingKickPlayerCommandService(
             ILogger<BigGamingKickPlayerCommandService> logger,
             IBigGamingApiClient client,
             IBigGamingService service,
-            IPlayerService playerService,
+            IPlayerRepository playerService,
             IGameService gameService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -33,14 +33,10 @@ namespace Tgs.GameProviders.Core.BigGaming.ApplicationServices
 
         public async ValueTask ExecuteAsync(BigGamingKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-            if (playerInfo == null)
-            {
-                throw new Exception($"The player does not exist.{command.PlayerCode}");
-            }
+            var playerModel = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
             var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
             var games = await _gameService.GetGameListAsync(gameProviderId, GameType.Fishing).ToArrayAsync();
-            var brandMerchant = await _service.GetBrandMerchantAsync(playerInfo.DefaultWalletCurrencyCode).ConfigureAwait(false);
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
             var tasks = new List<Task>();
 

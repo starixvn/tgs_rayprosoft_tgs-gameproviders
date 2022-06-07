@@ -8,13 +8,13 @@ namespace Tgs.GameProviders.Core.TFGaming.ApplicationServices
     public class TFGamingGameUrlGetService : IGetService<TFGamingGameUrlQuery, GameUrlResult>
     {
         private readonly ITFApiClient _client;
-        private readonly IPlayerService _playerService;
+        private readonly IPlayerRepository _playerService;
         private readonly ITFGamingService _service;
 
         public TFGamingGameUrlGetService(
             ITFApiClient client,
             ITFGamingService service,
-            IPlayerService playerService)
+            IPlayerRepository playerService)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -23,7 +23,7 @@ namespace Tgs.GameProviders.Core.TFGaming.ApplicationServices
 
         public async ValueTask<GameUrlResult> GetAsync(TFGamingGameUrlQuery query, CancellationToken cancellationToken = default)
         {
-            var player = await _playerService.GetCacheAsync(query.PlayerCode).ConfigureAwait(false);
+            var player = await _playerService.GetAsync(query.PlayerCode).ConfigureAwait(false);
 
             var brandCode = player.BrandCode;
             var currencyCode = player.DefaultWalletCurrencyCode;

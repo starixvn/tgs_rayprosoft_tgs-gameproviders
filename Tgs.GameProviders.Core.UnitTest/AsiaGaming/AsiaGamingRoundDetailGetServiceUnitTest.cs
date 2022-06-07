@@ -132,7 +132,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             OppositeBets = Array.Empty<OppositeBetSetting>()
         };
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
          "TGS",
          Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -169,16 +169,16 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "GN0022160907S",
             Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
-            playerInfo.PlayerCode,
+            player.PlayerCode,
             gameInfo.GameId,
-            playerInfo.DefaultWalletCurrencyCode,
+            player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
-            playerInfo.DefaultWalletId,
+            player.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerInfo.BrandId,
+            player.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,

@@ -10,13 +10,13 @@ namespace Tgs.GameProviders.Services.WGHorse
 {
     internal class WGHorseService : IWGHorseService
     {
-        private readonly IGameProviderService _gameProviderService;
+        private readonly IGameProviderRepository _gameProviderService;
         private readonly IGameService _gameService;
-        private readonly ISettingService _settingService;
+        private readonly ISettingRepository _settingService;
 
         public WGHorseService(
-            ISettingService settingService,
-            IGameProviderService gameProviderService,
+            ISettingRepository settingService,
+            IGameProviderRepository gameProviderService,
             IGameService gameService
             )
         {
@@ -35,20 +35,20 @@ namespace Tgs.GameProviders.Services.WGHorse
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
-            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.WGHorse).ConfigureAwait(false);
+            var gameProviderId = await _gameProviderService.GetGameProviderIdAsync(GameProviderType.WGHorse).ConfigureAwait(false);
             var gameProviderCultureCode = await _gameProviderService.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
             return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "2";
         }
 
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
         {
-            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.WGHorse).ConfigureAwait(false);
+            var gameProviderId = await _gameProviderService.GetGameProviderIdAsync(GameProviderType.WGHorse).ConfigureAwait(false);
             var gameProviderCurrencyCode = await _gameProviderService.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
             return !string.IsNullOrEmpty(gameProviderCurrencyCode) ? gameProviderCurrencyCode : null;
         }
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.WGHorse);
+            => _gameProviderService.GetGameProviderIdAsync(GameProviderType.WGHorse);
 
         public ValueTask<WGHorseConfiguration> GetSettingConfigurationAsync()
             => _settingService.GetConfigurationAsync<WGHorseConfiguration>(GameProviderConfigurations.WGHorse);

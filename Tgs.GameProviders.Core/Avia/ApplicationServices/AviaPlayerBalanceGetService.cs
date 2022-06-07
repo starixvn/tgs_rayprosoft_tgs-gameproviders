@@ -11,14 +11,14 @@ namespace Tgs.GameProviders.Core.Avia.ApplicationServices
         private readonly IAviaApiClient _client;
         private readonly IAviaGamePlayerService _gamePlayer;
         private readonly ILogger<AviaPlayerBalanceGetService> _logger;
-        private readonly IPlayerService _playerService;
+        private readonly IPlayerRepository _playerService;
         private readonly IAviaService _service;
 
         public AviaPlayerBalanceGetService(
             ILogger<AviaPlayerBalanceGetService> logger,
             IAviaApiClient client,
             IAviaService service,
-            IPlayerService playerService,
+            IPlayerRepository playerService,
             IAviaGamePlayerService gamePlayer)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -30,15 +30,10 @@ namespace Tgs.GameProviders.Core.Avia.ApplicationServices
 
         public async ValueTask<decimal?> GetAsync(AviaPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
-            var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
+            var playerModel = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
-            if (playerInfo == null)
-            {
-                throw new Exception($"The player does not exist.{command.PlayerCode}");
-            }
-            var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(playerInfo.DefaultWalletCurrencyCode).ConfigureAwait(false);
-
-            var brandMerchant = await _service.GetBrandMerchantAsync(playerInfo.BrandCode);
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode);
 
             if (brandMerchant == null)
             {
@@ -48,7 +43,7 @@ namespace Tgs.GameProviders.Core.Avia.ApplicationServices
             (bool IsPlayer, decimal? Balance) = await _client.BalanceAsync(
                 brandMerchant.ApiUrl,
                 brandMerchant.Authorization,
-                playerInfo.PlayerCode).ConfigureAwait(false);
+                playerModel.PlayerCode).ConfigureAwait(false);
             if (!IsPlayer)
             {
                 var createPlayerResult = await _gamePlayer.CreatePlayerAsync(
@@ -60,7 +55,7 @@ namespace Tgs.GameProviders.Core.Avia.ApplicationServices
                     (IsPlayer, Balance) = await _client.BalanceAsync(
                         brandMerchant.ApiUrl,
                         brandMerchant.Authorization,
-                        playerInfo.PlayerCode).ConfigureAwait(false);
+                        playerModel.PlayerCode).ConfigureAwait(false);
                 }
             }
             return Balance;

@@ -9,12 +9,12 @@ namespace Tgs.GameProviders.Services.Skywind
 {
     internal class SkywindService : ISkywindService
     {
-        private readonly IGameProviderService _gameProviderService;
-        private readonly ISettingService _settingService;
+        private readonly IGameProviderRepository _gameProviderService;
+        private readonly ISettingRepository _settingService;
 
         public SkywindService(
-            ISettingService settingService,
-            IGameProviderService gameProviderService
+            ISettingRepository settingService,
+            IGameProviderRepository gameProviderService
             )
         {
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
@@ -23,7 +23,7 @@ namespace Tgs.GameProviders.Services.Skywind
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
-            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.Skywind).ConfigureAwait(false);
+            var gameProviderId = await _gameProviderService.GetGameProviderIdAsync(GameProviderType.Skywind).ConfigureAwait(false);
             var gameProviderCultureCode = await _gameProviderService.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
             return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "en";
         }

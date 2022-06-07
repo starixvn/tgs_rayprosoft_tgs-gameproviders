@@ -9,12 +9,12 @@ namespace Tgs.GameProviders.Services.DreamGame
 {
     internal class DreamGameService : IDreamGameService
     {
-        private readonly IGameProviderService _gameProviderService;
-        private readonly ISettingService _settingService;
+        private readonly IGameProviderRepository _gameProviderService;
+        private readonly ISettingRepository _settingService;
 
         public DreamGameService(
-        IGameProviderService gameProviderService,
-        ISettingService settingService)
+        IGameProviderRepository gameProviderService,
+        ISettingRepository settingService)
         {
             _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));

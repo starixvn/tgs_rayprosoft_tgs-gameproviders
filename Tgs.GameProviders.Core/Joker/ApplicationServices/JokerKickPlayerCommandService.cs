@@ -9,14 +9,14 @@ internal class JokerKickPlayerCommandService : ICommandService<JokerKickPlayerCo
 {
     private readonly IJokerAgentMapper _agentMapper;
     private readonly IJokerApiClient _client;
-    private readonly IPlayerService _playerService;
+    private readonly IPlayerRepository _playerService;
     private readonly IJokerService _service;
 
     public JokerKickPlayerCommandService(
         IJokerApiClient client,
         IJokerService service,
         IJokerAgentMapper agentMapper,
-        IPlayerService playerService)
+        IPlayerRepository playerService)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -28,26 +28,21 @@ internal class JokerKickPlayerCommandService : ICommandService<JokerKickPlayerCo
         JokerKickPlayerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-
-        if (playerInfo == null)
-        {
-            throw new Exception($"The player does not exist.{command.PlayerCode}");
-        }
+        var player = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
         var agent = _agentMapper.GetAgentByCurrencyCode(
             configuration.BrandMerchants,
-            playerInfo.BrandCode,
-            playerInfo.DefaultWalletCurrencyCode);
+            player.BrandCode,
+            player.DefaultWalletCurrencyCode);
 
         if (agent == null)
         {
-            throw new Exception($"The agent does not exist of brand '{playerInfo.BrandCode}' and currency '{playerInfo.DefaultWalletCurrencyCode}'");
+            throw new Exception($"The agent does not exist of brand '{player.BrandCode}' and currency '{player.DefaultWalletCurrencyCode}'");
         }
 
-        await _client.KickPlayerAsync(configuration.ApiUrl, playerInfo.PlayerCode, agent.AgentId, agent.SecretKey)
+        await _client.KickPlayerAsync(configuration.ApiUrl, player.PlayerCode, agent.AgentId, agent.SecretKey)
             .ConfigureAwait(false);
     }
 }

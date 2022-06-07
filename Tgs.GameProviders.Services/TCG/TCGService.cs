@@ -11,13 +11,13 @@ namespace Tgs.GameProviders.Services.TCG
 {
     internal class TCGService : ITCGService
     {
-        private readonly IGameProviderService _gameProviderService;
+        private readonly IGameProviderRepository _gameProviderService;
         private readonly IGameService _gameService;
-        private readonly ISettingService _settingService;
+        private readonly ISettingRepository _settingService;
 
         public TCGService(
-            ISettingService settingService,
-            IGameProviderService gameProviderService,
+            ISettingRepository settingService,
+            IGameProviderRepository gameProviderService,
             IGameService gameService
             )
         {
@@ -28,7 +28,7 @@ namespace Tgs.GameProviders.Services.TCG
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
-            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.TCG).ConfigureAwait(false);
+            var gameProviderId = await _gameProviderService.GetGameProviderIdAsync(GameProviderType.TCG).ConfigureAwait(false);
             var gameProviderCultureCode = await _gameProviderService.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
             return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "EN";
         }

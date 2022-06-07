@@ -12,12 +12,12 @@ namespace Tgs.GameProviders.Services.KY
 {
     internal class KYService : IKYService
     {
-        private readonly IGameProviderService _gameProviderService;
-        private readonly ISettingService _settingService;
+        private readonly IGameProviderRepository _gameProviderService;
+        private readonly ISettingRepository _settingService;
 
         public KYService(
-            ISettingService settingService,
-            IGameProviderService gameProviderService
+            ISettingRepository settingService,
+            IGameProviderRepository gameProviderService
             )
         {
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
@@ -48,7 +48,7 @@ namespace Tgs.GameProviders.Services.KY
             };
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.KY);
+            => _gameProviderService.GetGameProviderIdAsync(GameProviderType.KY);
 
         public bool IgnoreCaseEquals(string source, string trigger)
             => string.Equals(source, trigger, StringComparison.OrdinalIgnoreCase);

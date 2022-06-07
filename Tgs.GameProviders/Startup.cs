@@ -16,6 +16,7 @@ using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Prometheus;
+using Tgs.GameProviders.Repositories.DependencyInjection;
 using Tgs.GameProviders.ViewModelMappings;
 
 namespace Tgs.GameProviders
@@ -110,6 +111,7 @@ namespace Tgs.GameProviders
                     var configuration = sp.GetRequiredService<IConfiguration>();
                     options.ConnectionString = configuration.GetConnectionString("RedisConfigurationString");
                 })
+                .AddGameProvidersRepositories()
                 .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
                 .AddGameProviders((options, sp) =>
                 {

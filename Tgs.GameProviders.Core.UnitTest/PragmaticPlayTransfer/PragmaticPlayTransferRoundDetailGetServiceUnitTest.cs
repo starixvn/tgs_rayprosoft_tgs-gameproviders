@@ -36,7 +36,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
         var gameProviderLanguage = "en";
         var historyUrl = "https://tgs.prerelease-env.biz/gs2c/parentRoundHistoryDetails.do?playSessionId=2806662804&stylename=tgs_tgstfw&hash=2213f4013b94f67808ff131af8110f7d&language=en";
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -49,7 +49,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             "CNY",
             PlayerStatus.Enabled);
 
-        var gameProviderInfo = new GameProviderInfo(
+        var gameProviderInfo = new GameProviderModel(
             Guid.Parse("e4ecfa98-b373-4123-87e0-cb9e883d0691"),
             GameProviderStatus.Active,
             null,
@@ -107,16 +107,16 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             data.ExternalRoundId,
             gameProviderInfo.GameProviderId,
-            playerInfo.PlayerCode,
+            player.PlayerCode,
             gameInfo.GameId,
-            playerInfo.DefaultWalletCurrencyCode,
+            player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
-            playerInfo.DefaultWalletId,
+            player.DefaultWalletId,
             DateTime.Now,
             DateTime.Now,
             DateTime.Now,
-            playerInfo.BrandId,
+            player.BrandId,
             createdOn,
             closedOn,
             data.BetAmount,

@@ -23,7 +23,7 @@ public class JiliRoundDetailGetServiceUnitTest
     {
         var fakeLogger = NullLogger<JiliRoundDetailGetService>.Instance;
         var fakeRoundService = Substitute.For<IRoundService>();
-        var fakePlayerService = Substitute.For<IPlayerService>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
         var fakeService = Substitute.For<IJiliService>();
         var fakeMerchantMapper = Substitute.For<IJiliMerchantMapper>();
         var fakeApiClient = Substitute.For<IJiliApiClient>();
@@ -49,7 +49,7 @@ public class JiliRoundDetailGetServiceUnitTest
             SecretKey = "SecretKey"
         };
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -66,16 +66,16 @@ public class JiliRoundDetailGetServiceUnitTest
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "1639679431950180036",
             Guid.Parse("b957e28c-0e94-40af-9d37-ab48cdeb5d29"),
-            playerInfo.PlayerCode,
+            player.PlayerCode,
             2200001,
-            playerInfo.DefaultWalletCurrencyCode,
+            player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
-            playerInfo.DefaultWalletId,
+            player.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerInfo.BrandId,
+            player.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,
@@ -98,9 +98,9 @@ public class JiliRoundDetailGetServiceUnitTest
         };
 
         _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
-        _ = fakePlayerService.GetAsync(roundInfo.PlayerCode).Returns(Task.FromResult(playerInfo));
+        _ = fakePlayer.GetAsync(roundInfo.PlayerCode).Returns(Task.FromResult(player));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, playerInfo.BrandCode).Returns(merchant);
+        _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, player.BrandCode).Returns(merchant);
         _ = fakeService
             .GetGameProviderLanguageCodeAsync(Guid.Parse("b957e28c-0e94-40af-9d37-ab48cdeb5d29"), query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
@@ -136,7 +136,7 @@ public class JiliRoundDetailGetServiceUnitTest
         var sut = new JiliRoundDetailGetService(
             fakeLogger,
             fakeRoundService,
-            fakePlayerService,
+            fakePlayer,
             fakeService,
             fakeMerchantMapper,
             fakeApiClient);

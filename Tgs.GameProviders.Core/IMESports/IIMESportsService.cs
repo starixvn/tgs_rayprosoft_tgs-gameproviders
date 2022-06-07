@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.IMESports
 {
@@ -14,7 +15,7 @@ namespace Tgs.GameProviders.Core.IMESports
 
         ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode);
 
-        ValueTask<PlayerInfo> GetPlayerAsync(string playerCode);
+        ValueTask<PlayerModel> GetPlayerAsync(string playerCode);
 
         ValueTask<IMESportsConfiguration> GetSettingConfigurationAsync();
     }

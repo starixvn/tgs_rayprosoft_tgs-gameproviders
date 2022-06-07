@@ -160,7 +160,7 @@ public class AsiaGamingGameUrlGetServiceUnitTest
             null,
             "AG");
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -178,7 +178,7 @@ public class AsiaGamingGameUrlGetServiceUnitTest
             GameType = gameInfo.GameType,
             GameId = gameInfo.GameId,
             BrandCode = "GPI",
-            PlayerCode = playerInfo.PlayerCode,
+            PlayerCode = player.PlayerCode,
             CurrencyCode = "CNY",
             LoginRecordId = Guid.NewGuid(),
             PlatformType = PlatformType.Desktop,
@@ -199,8 +199,8 @@ public class AsiaGamingGameUrlGetServiceUnitTest
         fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-        fakeService.GetBrandIdAsync(query.BrandCode).Returns(ValueTask.FromResult(playerInfo.BrandId));
-        fakeService.GetGameDomainAsync(playerInfo.BrandId, gameInfo.GameProviderId, query.PlatformType)
+        fakeService.GetBrandIdAsync(query.BrandCode).Returns(ValueTask.FromResult(player.BrandId));
+        fakeService.GetGameDomainAsync(player.BrandId, gameInfo.GameProviderId, query.PlatformType)
             .Returns(ValueTask.FromResult(domain));
 
         fakePlayerService.CheckOrCreateAccountAsync(configuration, query.PlayerCode, gameProviderCurrencyCode)

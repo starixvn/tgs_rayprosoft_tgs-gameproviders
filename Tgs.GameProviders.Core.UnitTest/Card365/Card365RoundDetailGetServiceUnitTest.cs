@@ -20,7 +20,7 @@ internal class Card365RoundDetailGetServiceUnitTest
         var fakeLogger = NullLogger<Card365RoundDetailGetService>.Instance;
         var fakeRoundService = Substitute.For<IRoundService>();
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -37,16 +37,16 @@ internal class Card365RoundDetailGetServiceUnitTest
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "1639679431950180036",
             Guid.Parse("630e822b-2635-4314-a7e4-5c7057c1a920"),
-            playerInfo.PlayerCode,
+            player.PlayerCode,
             1900008,
-            playerInfo.DefaultWalletCurrencyCode,
+            player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
-            playerInfo.DefaultWalletId,
+            player.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerInfo.BrandId,
+            player.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,

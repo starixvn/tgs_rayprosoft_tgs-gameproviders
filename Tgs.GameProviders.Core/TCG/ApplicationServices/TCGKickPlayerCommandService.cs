@@ -10,14 +10,14 @@ namespace Tgs.GameProviders.Core.TCG.ApplicationServices
     {
         private readonly ITCGApiClient _client;
         private readonly ILogger<TCGKickPlayerCommandService> _logger;
-        private readonly IPlayerService _playerService;
+        private readonly IPlayerRepository _playerService;
         private readonly ITCGService _service;
 
         public TCGKickPlayerCommandService(
             ILogger<TCGKickPlayerCommandService> logger,
             ITCGApiClient client,
             ITCGService service,
-            IPlayerService playerService)
+            IPlayerRepository playerService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -27,13 +27,9 @@ namespace Tgs.GameProviders.Core.TCG.ApplicationServices
 
         public async ValueTask ExecuteAsync(TCGKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-            if (playerInfo == null)
-            {
-                throw new Exception($"The player does not exist.{command.PlayerCode}");
-            }
+            var playerModel = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-            var brandMerchant = await _service.GetMerchantAsync(playerInfo.DefaultWalletCurrencyCode).ConfigureAwait(false);
+            var brandMerchant = await _service.GetMerchantAsync(playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
             await _client.KickOutLottoPlayerAsync(
                 configuration.ApiUrl,

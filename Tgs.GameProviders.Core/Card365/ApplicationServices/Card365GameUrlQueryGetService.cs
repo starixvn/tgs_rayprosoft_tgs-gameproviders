@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.GameProviders.Core.Card365.Model;
+using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Card365.ApplicationServices;
@@ -17,13 +18,13 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
     private readonly ICard365ApiClient _client;
     private readonly IGameService _gameService;
     private readonly ILogger<Card365GameUrlQueryGetService> _logger;
-    private readonly IPlayerService _playerService;
+    private readonly IPlayerRepository _playerService;
     private readonly ICard365Service _service;
     private readonly ITokenProvider _tokenProvider;
 
     public Card365GameUrlQueryGetService(
         ILogger<Card365GameUrlQueryGetService> logger,
-        IPlayerService playerService,
+        IPlayerRepository playerService,
         IGameService gameService,
         ICard365Service service,
         ICard365AgentMapper agentMapper,
@@ -43,7 +44,7 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
         Card365GameUrlQuery query,
         CancellationToken cancellationToken = default)
     {
-        var player = await _playerService.GetCacheAsync(query.PlayerCode).ConfigureAwait(false);
+        var player = await _playerService.GetAsync(query.PlayerCode).ConfigureAwait(false);
 
         var game = await _gameService.GetCacheAsync(query.GameId!.Value).ConfigureAwait(false);
 
@@ -91,7 +92,7 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
         string website,
         string agentId,
         string accessKey,
-        PlayerInfo player,
+        PlayerModel player,
         string gameProviderLanguageCode,
         Guid loginRecordId)
     {
@@ -140,7 +141,7 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
         string website,
         string agentId,
         Guid gameProviderId,
-        PlayerInfo playerModel)
+        PlayerModel playerModel)
     {
         var gameProviderCurrencyCode = await _service
             .GetGameProviderCurrencyCodeAsync(gameProviderId, playerModel.DefaultWalletCurrencyCode)

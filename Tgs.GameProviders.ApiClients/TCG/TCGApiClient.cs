@@ -108,7 +108,7 @@ namespace Tgs.GameProviders.ApiClients.TCG
 
         private async ValueTask<TResponse> PostAsync<TRequest, TResponse>(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TRequest request, string logPrefix) where TResponse : TCGBaseResponse
         {
-            logPrefix = $"{nameof(TCGApiClient).ToLower() }.{logPrefix}";
+            logPrefix = $"{nameof(TCGApiClient).ToLower()}.{logPrefix}";
             var sw = Stopwatch.StartNew();
 
             var jsonString = JsonSerializer.Serialize(request);

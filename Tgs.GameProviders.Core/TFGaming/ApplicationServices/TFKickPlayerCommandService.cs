@@ -8,13 +8,13 @@ namespace Tgs.GameProviders.Core.TFGaming.ApplicationServices
     public class TFKickPlayerCommandService : ICommandService<TFKickPlayerCommand>
     {
         private readonly ITFApiClient _client;
-        private readonly IPlayerService _playerService;
+        private readonly IPlayerRepository _playerService;
         private readonly ITFGamingService _service;
 
         public TFKickPlayerCommandService(
             ITFApiClient client,
             ITFGamingService service,
-            IPlayerService playerService)
+            IPlayerRepository playerService)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -23,16 +23,10 @@ namespace Tgs.GameProviders.Core.TFGaming.ApplicationServices
 
         public async ValueTask ExecuteAsync(TFKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var playerInfo = await _playerService
-                .GetCacheAsync(command.PlayerCode)
+            var playerModel = await _playerService
+                .GetAsync(command.PlayerCode)
                 .ConfigureAwait(false);
-
-            if (playerInfo == null)
-            {
-                throw new Exception($"The player does not exist.{command.PlayerCode}");
-            }
-
-            var brandMerchant = await _service.GetBrandMerchantAsync(playerInfo.BrandCode, playerInfo.DefaultWalletCurrencyCode).ConfigureAwait(false);
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode, playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
             await _client
                 .KickAsync(brandMerchant.ApiUrl, brandMerchant.PrivateToken, brandMerchant.PartnerId, command.PlayerCode)

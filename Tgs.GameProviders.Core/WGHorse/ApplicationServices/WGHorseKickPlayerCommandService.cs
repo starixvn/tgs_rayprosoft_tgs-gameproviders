@@ -10,14 +10,14 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
     {
         private readonly IWGHorseApiClient _client;
         private readonly ILogger<WGHorseKickPlayerCommandService> _logger;
-        private readonly IPlayerService _playerService;
+        private readonly IPlayerRepository _playerService;
         private readonly IWGHorseService _service;
 
         public WGHorseKickPlayerCommandService(
             ILogger<WGHorseKickPlayerCommandService> logger,
             IWGHorseApiClient client,
             IWGHorseService service,
-            IPlayerService playerService)
+            IPlayerRepository playerService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));

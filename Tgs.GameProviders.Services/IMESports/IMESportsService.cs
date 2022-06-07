@@ -5,23 +5,24 @@ using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.IMESports;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.IMESports
 {
     internal class IMESportsService : IIMESportsService
     {
-        private readonly IGameProviderService _gameProviderService;
+        private readonly IGameProviderRepository _gameProviderService;
         private readonly IGameService _gameService;
         private readonly ILogger<IMESportsService> _logger;
-        private readonly IPlayerService _playerService;
-        private readonly ISettingService _settingService;
+        private readonly IPlayerRepository _playerService;
+        private readonly ISettingRepository _settingService;
 
         public IMESportsService(
             ILogger<IMESportsService> logger,
-            ISettingService settingService,
-            IGameProviderService gameProviderService,
+            ISettingRepository settingService,
+            IGameProviderRepository gameProviderService,
             IGameService gameService,
-            IPlayerService playerService)
+            IPlayerRepository playerService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
@@ -43,7 +44,7 @@ namespace Tgs.GameProviders.Services.IMESports
         }
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.IMESports);
+            => _gameProviderService.GetGameProviderIdAsync(GameProviderType.IMESports);
 
         public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
         {
@@ -54,7 +55,7 @@ namespace Tgs.GameProviders.Services.IMESports
             return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "EN";
         }
 
-        public async ValueTask<PlayerInfo> GetPlayerAsync(string playerCode)
+        public async ValueTask<PlayerModel> GetPlayerAsync(string playerCode)
             => await _playerService.GetAsync(playerCode).ConfigureAwait(false);
 
         public async ValueTask<IMESportsConfiguration> GetSettingConfigurationAsync()

@@ -23,7 +23,7 @@ public class AllBetKickPlayerCommandServiceUnitTest
         var fakeService = Substitute.For<IAllBetService>();
         var fakeApiClient = Substitute.For<IAllBetApiClient>();
         var fakeAgentMapper = Substitute.For<IAllBetAgentMapper>();
-        var fakePlayerService = Substitute.For<IPlayerService>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
 
         var agent = new AllBetAgent
         {
@@ -51,7 +51,7 @@ public class AllBetKickPlayerCommandServiceUnitTest
             }
         };
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -64,27 +64,27 @@ public class AllBetKickPlayerCommandServiceUnitTest
             "CNY",
             PlayerStatus.Enabled);
 
-        var allBetPlayerId = $"{playerInfo.PlayerCode}_{agent.Suffix}";
+        var allBetPlayerId = $"{player.PlayerCode}_{agent.Suffix}";
 
         var command = new AllBetKickPlayerCommand
         {
-            PlayerCode = playerInfo.PlayerCode
+            PlayerCode = player.PlayerCode
         };
 
-        fakePlayerService.GetCacheAsync(playerInfo.PlayerCode).Returns(Task.FromResult(playerInfo));
-        fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.ToAllBetPlayerId(playerInfo.PlayerCode, agent.Suffix).Returns(allBetPlayerId);
+        _ = fakePlayer.GetAsync(player.PlayerCode).Returns(Task.FromResult(player));
+        _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+        _ = fakeService.ToAllBetPlayerId(player.PlayerCode, agent.Suffix).Returns(allBetPlayerId);
 
-        fakeAgentMapper
-            .GetAgent(
-                configuration.BrandMerchants,
-                playerInfo.BrandCode,
-                playerInfo.DefaultWalletCurrencyCode)
-            .Returns(agent);
+        _ = fakeAgentMapper
+             .GetAgent(
+                 configuration.BrandMerchants,
+                 player.BrandCode,
+                 player.DefaultWalletCurrencyCode)
+             .Returns(agent);
 
         var sut = new AllBetKickPlayerCommandService(
             fakeLogger,
-            fakePlayerService,
+            fakePlayer,
             fakeService,
             fakeAgentMapper,
             fakeApiClient);

@@ -9,9 +9,9 @@ namespace Tgs.GameProviders.Services.BetConstruct
 {
     internal class BetConstructService : IBetConstructService
     {
-        private readonly ISettingService _settingService;
+        private readonly ISettingRepository _settingService;
 
-        public BetConstructService(ISettingService settingService)
+        public BetConstructService(ISettingRepository settingService)
         {
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
         }

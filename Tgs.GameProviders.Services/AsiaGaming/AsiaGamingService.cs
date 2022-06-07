@@ -10,15 +10,15 @@ namespace Tgs.GameProviders.Services.AsiaGaming;
 internal class AsiaGamingService : IAsiaGamingService
 {
     private readonly IBrandService _brandService;
-    private readonly IGameProviderService _gameProviderService;
+    private readonly IGameProviderRepository _gameProviderService;
     private readonly IGameService _gameService;
     private readonly ILogger<AsiaGamingService> _logger;
-    private readonly ISettingService _settingService;
+    private readonly ISettingRepository _settingService;
 
     public AsiaGamingService(
         ILogger<AsiaGamingService> logger,
-        ISettingService settingService,
-        IGameProviderService gameProviderService,
+        ISettingRepository settingService,
+        IGameProviderRepository gameProviderService,
         IGameService gameService,
         IBrandService brandService)
     {
@@ -54,7 +54,7 @@ internal class AsiaGamingService : IAsiaGamingService
     }
 
     public async ValueTask<Guid> GetGameProviderIdAsync()
-        => await _gameProviderService.GetCacheGameProviderIdAsync(Domains.GameProviderType.AsiaGaming)
+        => await _gameProviderService.GetGameProviderIdAsync(Domains.GameProviderType.AsiaGaming)
             .ConfigureAwait(false);
 
     public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)

@@ -19,7 +19,7 @@ public class JokerKickPlayerCommandServiceUnitTest
         var fakeService = Substitute.For<IJokerService>();
         var fakeAgentMapper = Substitute.For<IJokerAgentMapper>();
         var fakeApiClient = Substitute.For<IJokerApiClient>();
-        var fakePlayerService = Substitute.For<IPlayerService>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
 
         var agent = new JokerAgent
         {
@@ -44,7 +44,7 @@ public class JokerKickPlayerCommandServiceUnitTest
             }
         };
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -59,24 +59,24 @@ public class JokerKickPlayerCommandServiceUnitTest
 
         var command = new JokerKickPlayerCommand
         {
-            PlayerCode = playerInfo.PlayerCode
+            PlayerCode = player.PlayerCode
         };
 
-        _ = fakePlayerService.GetCacheAsync(Arg.Is(playerInfo.PlayerCode)).Returns(playerInfo);
+        _ = fakePlayer.GetAsync(Arg.Is(player.PlayerCode)).Returns(player);
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
 
         _ = fakeAgentMapper
             .GetAgentByCurrencyCode(
                 Arg.Is(configuration.BrandMerchants),
-                Arg.Is(playerInfo.BrandCode),
-                Arg.Is(playerInfo.DefaultWalletCurrencyCode))
+                Arg.Is(player.BrandCode),
+                Arg.Is(player.DefaultWalletCurrencyCode))
             .Returns(agent);
 
         var sut = new JokerKickPlayerCommandService(
             fakeApiClient,
             fakeService,
             fakeAgentMapper,
-            fakePlayerService);
+            fakePlayer);
 
         await sut.ExecuteAsync(command).ConfigureAwait(false);
 
@@ -84,7 +84,7 @@ public class JokerKickPlayerCommandServiceUnitTest
             .Received(1)
             .KickPlayerAsync(
                 Arg.Is(configuration.ApiUrl),
-                Arg.Is(playerInfo.PlayerCode),
+                Arg.Is(player.PlayerCode),
                 Arg.Is(agent.AgentId),
                 Arg.Is(agent.SecretKey));
     }

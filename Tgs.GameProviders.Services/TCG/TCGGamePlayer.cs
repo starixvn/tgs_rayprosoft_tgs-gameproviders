@@ -46,9 +46,9 @@ namespace Tgs.GameProviders.Services.TCG
              data,
              null,
              (state, ex) =>
-              $"【{nameof(data)}】->{JsonSerializer.Serialize(state)}.{ Environment.NewLine}" +
-              $"【DateTime】->{DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(+8))}.{ Environment.NewLine}" +
-              $"【{nameof(response)}】->{JsonSerializer.Serialize(response)}.{ Environment.NewLine}" +
+              $"【{nameof(data)}】->{JsonSerializer.Serialize(state)}.{Environment.NewLine}" +
+              $"【DateTime】->{DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(+8))}.{Environment.NewLine}" +
+              $"【{nameof(response)}】->{JsonSerializer.Serialize(response)}.{Environment.NewLine}" +
               $"【Message】->創建會員失敗"
               );
             return false;
