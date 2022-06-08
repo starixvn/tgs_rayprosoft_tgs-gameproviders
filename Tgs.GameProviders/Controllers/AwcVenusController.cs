@@ -30,8 +30,8 @@ namespace Tgs.GameProviders.Controllers
         ///
         ///     Post
         ///         {
-        ///             "gameType": 4,
-        ///             "gameId": 2300001,
+        ///             "gameType": 5,
+        ///             "gameId": 3800001,
         ///             "brandCode": "GPI",
         ///             "playerCode": "4ucmqplxb029",
         ///             "currencyCode": "CNY",

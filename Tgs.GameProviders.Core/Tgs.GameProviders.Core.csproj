@@ -34,7 +34,6 @@
 	  <Folder Include="AwcKm\" />
 	  <Folder Include="AwcLudo\" />
 	  <Folder Include="AwcPgs\" />
-	  <Folder Include="AwcRcb\" />
 	</ItemGroup>
 
 </Project>

@@ -21,6 +21,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 .RegisterAllServiceUtilityTypes(
                     Assembly.GetExecutingAssembly(),
                     ServiceLifetime.Transient)
+                .Scan(scan =>
+                {
+                    _ = scan.FromCallingAssembly()
+                    .AddClasses(classes => classes.Where(t => t.Name.EndsWith("gameplayer", StringComparison.OrdinalIgnoreCase)))
+                    .AsImplementedInterfaces()
+                    .WithTransientLifetime();
+                })
                 .AddGameProvidersQueryServerClient(gameProvidersQueryServerClientOptions)
                 .AddGameInterfaceAwcServiceClient(gameInterfaceAwcServiceClientOptions)
                 .AddGameRoundsClient(gameRoundsClientOptions)
@@ -30,9 +37,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IGameActionService, GameActionService>()
                 .AddTransient<IGameService, GameService>()
                 .AddTransient<IRoundService, RoundService>()
-                .AddTransient<ISystemClock, SystemClock>()
-                .AddScoped<IAwcSpadeGamePlayer, AwcSpadeGamePlayer>()
-                .AddScoped<IAwcVenusGamePlayer, AwcVenusGamePlayer>()
-                .AddScoped<IAwcYlGamePlayer, AwcYlGamePlayer>();
+                .AddTransient<ISystemClock, SystemClock>();
     }
 }
