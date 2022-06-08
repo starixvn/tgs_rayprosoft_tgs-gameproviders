@@ -28,7 +28,6 @@
 	  <Folder Include="BetConstruct\Models\" />
 	  <Folder Include="AwcAelotto\" />
 	  <Folder Include="AwcAws\" />
-	  <Folder Include="AwcCockfight\" />
 	</ItemGroup>
 
 </Project>

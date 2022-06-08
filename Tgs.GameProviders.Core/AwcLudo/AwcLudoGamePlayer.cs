@@ -27,14 +27,13 @@ namespace Tgs.GameProviders.Core.AwcLudo
             var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, language).ConfigureAwait(false) ?? "en";
             var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false)
                 ?? throw new Exception($"This game product currency does not exist.({currencyCode})");
-            await _grpc.CreatePlayerByBetLimitAsync(
+            await _grpc.CreatePlayerAsync(
                  configuration.ApiUrl,
                  configurationData.AgentId,
                  configurationData.Cert,
                  playerCode,
                  playerCode,
                  currency,
-                 JsonSerializer.Serialize(configurationData.BetLimit),
                  cultureCode,
                  cancellationToken: cancellationToken).ConfigureAwait(false);
         }
