@@ -20,20 +20,20 @@ namespace Tgs.GameProviders.Core.UnitTest.Avia
             var faceLogger = NullLogger<AviaKickPlayerCommandService>.Instance;
             var fakeAviaApiClient = Substitute.For<IAviaApiClient>();
             var fakeAviaService = Substitute.For<IAviaService>();
-            var fakePlayerService = Substitute.For<IPlayerService>();
+            var fakePlayer = Substitute.For<IPlayerRepository>();
 
             var fakeService = new AviaKickPlayerCommandService(
                 faceLogger,
                 fakeAviaApiClient,
                 fakeAviaService,
-                fakePlayerService);
+                fakePlayer);
 
             var command = new AviaKickPlayerCommand()
             {
                 PlayerCode = "4ucmqplxb029"
             };
 
-            var playerInfo = new PlayerInfo(
+            var player = new PlayerModel(
                 Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
                 "TGS",
                 Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -54,8 +54,8 @@ namespace Tgs.GameProviders.Core.UnitTest.Avia
                 PlayerPassword = "TgsP@ssw0rd"
             };
 
-            _ = fakeAviaService.GetBrandMerchantAsync(playerInfo.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
-            _ = fakePlayerService.GetCacheAsync(command.PlayerCode).Returns(Task.FromResult(playerInfo));
+            _ = fakeAviaService.GetBrandMerchantAsync(player.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
+            _ = fakePlayer.GetAsync(command.PlayerCode).Returns(Task.FromResult(player));
 
             _ = fakeAviaApiClient.KickAsync(
                 brandMerchant.ApiUrl,

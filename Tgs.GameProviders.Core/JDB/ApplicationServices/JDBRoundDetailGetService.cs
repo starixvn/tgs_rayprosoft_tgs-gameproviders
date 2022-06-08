@@ -13,18 +13,18 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
 {
     private readonly IJDBAgentMapper _agentMapper;
     private readonly IJDBApiClient _client;
-    private readonly IGameProviderService _gameProviderService;
+    private readonly IGameProviderRepository _gameProviderService;
     private readonly IGameService _gameService;
     private readonly ILogger<JDBRoundDetailGetService> _logger;
-    private readonly IPlayerService _playerService;
+    private readonly IPlayerRepository _playerService;
     private readonly IRoundService _roundService;
     private readonly IJDBService _service;
 
     public JDBRoundDetailGetService(
         ILogger<JDBRoundDetailGetService> logger,
         IRoundService roundService,
-        IPlayerService playerService,
-        IGameProviderService gameProviderService,
+        IPlayerRepository playerService,
+        IGameProviderRepository gameProviderService,
         IGameService gameService,
         IJDBService service,
         IJDBAgentMapper agentMapper,
@@ -50,11 +50,7 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
             throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        var playerInfo = await _playerService.GetCacheAsync(roundInfo.PlayerCode).ConfigureAwait(false);
-        if (playerInfo == null)
-        {
-            throw new Exception($"The player does not exist.{roundInfo.PlayerCode}");
-        }
+        var playerModel = await _playerService.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
 
         var gameProviderInfo = await _gameProviderService.GetAsync(roundInfo.GameProviderId).ConfigureAwait(false);
         if (gameProviderInfo == null)
@@ -73,7 +69,7 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
             .ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-        var agent = _agentMapper.GetAgent(configuration.Agents, playerInfo.DefaultWalletCurrencyCode);
+        var agent = _agentMapper.GetAgent(configuration.Agents, playerModel.DefaultWalletCurrencyCode);
 
         var items = gameInfo.GameExternalId.Split("_");
         if (items.Length != 2 || !int.TryParse(items[0], out var gtype))
@@ -90,7 +86,7 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
         {
             Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
             Parent = agent.Id,
-            UserId = playerInfo.PlayerCode,
+            UserId = playerModel.PlayerCode,
             Language = gameProviderLanguageCode,
             GameType = gtype,
             SequenceNo = externalRoundId

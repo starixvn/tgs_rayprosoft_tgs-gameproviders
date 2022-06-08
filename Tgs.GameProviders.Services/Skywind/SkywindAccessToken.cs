@@ -53,9 +53,9 @@ namespace Tgs.GameProviders.Services.Skywind
                     request,
              null,
              (state, ex) =>
-             $"【{nameof(request)}】->{JsonSerializer.Serialize(state)}.{ Environment.NewLine}" +
-             $"【DateTime】->{DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(+8))}.{ Environment.NewLine}" +
-             $"【{nameof(response)}】->{JsonSerializer.Serialize(response)}.{ Environment.NewLine}" +
+             $"【{nameof(request)}】->{JsonSerializer.Serialize(state)}.{Environment.NewLine}" +
+             $"【DateTime】->{DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(+8))}.{Environment.NewLine}" +
+             $"【{nameof(response)}】->{JsonSerializer.Serialize(response)}.{Environment.NewLine}" +
              $"【Message】->取得AccessToken失敗"
              );
 

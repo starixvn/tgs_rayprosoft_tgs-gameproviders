@@ -40,7 +40,7 @@ namespace Tgs.GameProviders.Core.UnitTest.Avia
             };
 
             var success = true;
-            var orderId = $"{ DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)):yyyyMMddHHmmssfff}{query.PlayerCode}";
+            var orderId = $"{DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)):yyyyMMddHHmmssfff}{query.PlayerCode}";
             var gameProviderCurrencyCode = "CNY";
 
             _ = fakeAviaService.GetBrandMerchantAsync(query.BrandCode).Returns(ValueTask.FromResult(brandMerchant));

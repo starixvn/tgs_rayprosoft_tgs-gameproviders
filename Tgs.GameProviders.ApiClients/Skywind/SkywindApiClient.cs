@@ -56,7 +56,7 @@ namespace Tgs.GameProviders.ApiClients.Skywind
 
         private async ValueTask<TResult> GetAsync<TResult>(Uri apiUrl, string getaccessToken, string logPrefix)
         {
-            logPrefix = $"{nameof(SkywindApiClient).ToLower() }.{logPrefix}";
+            logPrefix = $"{nameof(SkywindApiClient).ToLower()}.{logPrefix}";
 
             var sw = Stopwatch.StartNew();
             var responseMessage = default(string);
@@ -97,7 +97,7 @@ namespace Tgs.GameProviders.ApiClients.Skywind
 
         private async ValueTask<TResult> PostAsync<TSource, TResult>(Uri apiUrl, TSource source, string logPrefix)
         {
-            logPrefix = $"{nameof(SkywindApiClient).ToLower() }.{logPrefix}";
+            logPrefix = $"{nameof(SkywindApiClient).ToLower()}.{logPrefix}";
 
             var sw = Stopwatch.StartNew();
 

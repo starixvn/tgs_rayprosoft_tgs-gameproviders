@@ -9,14 +9,14 @@ namespace Tgs.GameProviders.Services.Joker;
 
 internal class JokerService : IJokerService
 {
-    private readonly IGameProviderService _gameProviderService;
+    private readonly IGameProviderRepository _gameProviderService;
     private readonly IGameService _gameService;
-    private readonly ISettingService _settingService;
+    private readonly ISettingRepository _settingService;
 
     public JokerService(
-        IGameProviderService gameProviderService,
+        IGameProviderRepository gameProviderService,
         IGameService gameService,
-        ISettingService settingService)
+        ISettingRepository settingService)
     {
         _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
         _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
@@ -27,7 +27,7 @@ internal class JokerService : IJokerService
         => _gameService.GetAsync(gameId);
 
     public ValueTask<Guid> GetGameProviderIdAsync()
-        => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.Joker);
+        => _gameProviderService.GetGameProviderIdAsync(GameProviderType.Joker);
 
     public async ValueTask<string> GetGameProviderLanguageCodeAsync(string cultureCode)
     {

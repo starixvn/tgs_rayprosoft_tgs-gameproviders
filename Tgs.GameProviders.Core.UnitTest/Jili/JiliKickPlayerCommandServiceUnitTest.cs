@@ -22,14 +22,14 @@ internal class JiliKickPlayerCommandServiceUnitTest
         var fakeApiClient = Substitute.For<IJiliApiClient>();
         var fakeService = Substitute.For<IJiliService>();
         var fakeMerchantMapper = Substitute.For<IJiliMerchantMapper>();
-        var fakePlayerService = Substitute.For<IPlayerService>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
 
         var command = new JiliKickPlayerCommand
         {
             PlayerCode = "4ucmqplxb029"
         };
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -62,21 +62,21 @@ internal class JiliKickPlayerCommandServiceUnitTest
 
         var sut = new JiliKickPlayerCommandService(
             faceLogger,
-            fakePlayerService,
+            fakePlayer,
             fakeService,
             fakeMerchantMapper,
             fakeApiClient);
 
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, playerInfo.BrandCode).Returns(merchant);
-        _ = fakePlayerService.GetCacheAsync(command.PlayerCode).Returns(Task.FromResult(playerInfo));
+        _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, player.BrandCode).Returns(merchant);
+        _ = fakePlayer.GetAsync(command.PlayerCode).Returns(Task.FromResult(player));
 
         await sut.ExecuteAsync(command).ConfigureAwait(false);
 
         _ = fakeApiClient.Received(1)
             .KickMemberAsync(
                 configuration.ApiUrl,
-                $"{playerInfo.BrandCode}_{playerInfo.PlayerCode}",
+                $"{player.BrandCode}_{player.PlayerCode}",
                 merchant.AgentId,
                 merchant.AgentKey);
     }

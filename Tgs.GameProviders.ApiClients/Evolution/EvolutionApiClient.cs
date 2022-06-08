@@ -42,7 +42,7 @@ namespace Tgs.GameProviders.ApiClients.Evolution
 
         private async ValueTask<TResult> GetAsync<TResult>(Uri apiUrl, string casinoID, string gameHistoryApiToken, string logPrefix)
         {
-            logPrefix = $"{nameof(EvolutionApiClient).ToLower() }.{logPrefix}";
+            logPrefix = $"{nameof(EvolutionApiClient).ToLower()}.{logPrefix}";
 
             var sw = Stopwatch.StartNew();
 
@@ -86,7 +86,7 @@ namespace Tgs.GameProviders.ApiClients.Evolution
 
         private async ValueTask<TResult> PostAsync<TSource, TResult>(Uri apiUrl, TSource source, string logPrefix)
         {
-            logPrefix = $"{nameof(EvolutionApiClient).ToLower() }.{logPrefix}";
+            logPrefix = $"{nameof(EvolutionApiClient).ToLower()}.{logPrefix}";
 
             var sw = Stopwatch.StartNew();
 

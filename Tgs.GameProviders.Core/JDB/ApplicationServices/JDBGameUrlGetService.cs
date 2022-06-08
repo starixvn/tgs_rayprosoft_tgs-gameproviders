@@ -13,12 +13,12 @@ internal class JDBGameUrlGetService : IGetService<JDBGameUrlQuery, GameUrlResult
     private readonly IJDBApiClient _client;
     private readonly IGameService _gameService;
     private readonly ILogger<JDBGameUrlGetService> _logger;
-    private readonly IPlayerService _playerService;
+    private readonly IPlayerRepository _playerService;
     private readonly IJDBService _service;
 
     public JDBGameUrlGetService(
         ILogger<JDBGameUrlGetService> logger,
-        IPlayerService playerService,
+        IPlayerRepository playerService,
         IGameService gameService,
         IJDBService service,
         IJDBAgentMapper agentMapper,
@@ -36,7 +36,7 @@ internal class JDBGameUrlGetService : IGetService<JDBGameUrlQuery, GameUrlResult
         JDBGameUrlQuery query,
         CancellationToken cancellationToken = default)
     {
-        var playerInfo = await _playerService.GetCacheAsync(query.PlayerCode).ConfigureAwait(false);
+        var playerInfo = await _playerService.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameInfo = await _gameService.GetCacheAsync(query.GameId!.Value).ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);

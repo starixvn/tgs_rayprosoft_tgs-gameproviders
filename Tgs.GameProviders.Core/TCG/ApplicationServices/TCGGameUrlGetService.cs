@@ -87,7 +87,7 @@ namespace Tgs.GameProviders.Core.TCG.ApplicationServices
                         data).ConfigureAwait(false);
                 }
             }
-            return (response.Status == 0) ? new() { Url = new($"{ merchant.GameUrl}{response.GameUrl}") } : null;
+            return (response.Status == 0) ? new() { Url = new($"{merchant.GameUrl}{response.GameUrl}") } : null;
         }
 
         private ValueTask<TCGLaunchGameResponse> ELOTTOAsync(Uri apiUrl, string merchantCode, string desKey, string sha256Key, bool IsMobile, TCGLaunchGameRequest source)

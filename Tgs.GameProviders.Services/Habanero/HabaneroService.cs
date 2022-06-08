@@ -5,25 +5,26 @@ using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Habanero;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.Habanero
 {
     internal class HabaneroService : IHabaneroService
     {
         private readonly IBrandService _brandService;
-        private readonly IGameProviderService _gameProviderService;
+        private readonly IGameProviderRepository _gameProviderService;
         private readonly IGameService _gameService;
         private readonly ILogger<HabaneroService> _logger;
-        private readonly IPlayerService _playerService;
-        private readonly ISettingService _settingService;
+        private readonly IPlayerRepository _playerService;
+        private readonly ISettingRepository _settingService;
 
         public HabaneroService(
             ILogger<HabaneroService> logger,
             IBrandService brandService,
-            IGameProviderService gameProviderService,
+            IGameProviderRepository gameProviderService,
             IGameService gameService,
-            IPlayerService playerService,
-            ISettingService settingService)
+            IPlayerRepository playerService,
+            ISettingRepository settingService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _brandService = brandService ?? throw new ArgumentNullException(nameof(brandService));
@@ -49,7 +50,7 @@ namespace Tgs.GameProviders.Services.Habanero
             return platformType == Core.PlatformType.Mobile ? mobileEndpoint : desktopEndpoint;
         }
 
-        public ValueTask<GameProviderInfo> GetGameProviderAsync(Guid gameProviderId)
+        public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
             => _gameProviderService.GetAsync(gameProviderId);
 
         public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
@@ -61,7 +62,7 @@ namespace Tgs.GameProviders.Services.Habanero
             return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "en";
         }
 
-        public async ValueTask<PlayerInfo> GetPlayerAsync(string playerCode)
+        public async ValueTask<PlayerModel> GetPlayerAsync(string playerCode)
             => await _playerService.GetAsync(playerCode).ConfigureAwait(false);
 
         public async ValueTask<HabaneroConfiguration> GetSettingConfigurationAsync()

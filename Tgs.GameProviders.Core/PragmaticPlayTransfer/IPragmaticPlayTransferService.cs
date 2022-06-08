@@ -3,12 +3,13 @@
 using System;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.PragmaticPlayTransfer;
 
 public interface IPragmaticPlayTransferService
 {
-    ValueTask<GameProviderInfo> GetGameProviderAsync(Guid gameProviderId);
+    ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId);
 
     ValueTask<string?> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
 

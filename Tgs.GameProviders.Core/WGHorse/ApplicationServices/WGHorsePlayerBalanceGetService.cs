@@ -9,13 +9,13 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
     {
         private readonly IWGHorseApiClient _client;
         private readonly IWGHorseGamePlayer _playerCreate;
-        private readonly IPlayerService _playerService;
+        private readonly IPlayerRepository _playerService;
         private readonly IWGHorseService _service;
 
         public WGHorsePlayerBalanceGetService(
             IWGHorseApiClient client,
             IWGHorseGamePlayer playerCreate,
-            IPlayerService playerService,
+            IPlayerRepository playerService,
             IWGHorseService service
             )
         {
@@ -27,12 +27,7 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
 
         public async ValueTask<decimal?> GetAsync(WGHorsePlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
-            var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-            if (playerInfo == null)
-            {
-                throw new Exception($"The player does not exist.{command.PlayerCode}");
-            }
-
+            var playerModel = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
             (bool IsPlayer, decimal? Balance) = await _client.GetBalanceAsync(
@@ -40,18 +35,18 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
                 configuration.PartnerCode,
                 configuration.PartnerKey,
                 configuration.IV,
-                playerInfo.PlayerCode).ConfigureAwait(false);
+                playerModel.PlayerCode).ConfigureAwait(false);
 
             if (!IsPlayer)
             {
-                if (await _playerCreate.CreatePlayerAsync(configuration, playerInfo.PlayerCode, playerInfo.DefaultWalletCurrencyCode).ConfigureAwait(false))
+                if (await _playerCreate.CreatePlayerAsync(configuration, playerModel.PlayerCode, playerModel.DefaultWalletCurrencyCode).ConfigureAwait(false))
                 {
                     (IsPlayer, Balance) = await _client.GetBalanceAsync(
                         configuration.ApiUrl,
                         configuration.PartnerCode,
                         configuration.PartnerKey,
                         configuration.IV,
-                        playerInfo.PlayerCode).ConfigureAwait(false);
+                        playerModel.PlayerCode).ConfigureAwait(false);
                 }
             }
 

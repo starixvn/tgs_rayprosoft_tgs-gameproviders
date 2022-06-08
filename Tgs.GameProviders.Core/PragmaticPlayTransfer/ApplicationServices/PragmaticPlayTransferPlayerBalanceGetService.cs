@@ -10,11 +10,11 @@ internal class PragmaticPlayTransferPlayerBalanceGetService : IGetService<Pragma
 {
     private readonly IPragmaticPlayTransferApiClient _client;
     private readonly IPragmaticPlayTransferGamePlayer _gamePlayer;
-    private readonly IPlayerService _playerService;
+    private readonly IPlayerRepository _playerService;
     private readonly IPragmaticPlayTransferService _service;
 
     public PragmaticPlayTransferPlayerBalanceGetService(
-        IPlayerService playerService,
+        IPlayerRepository playerService,
         IPragmaticPlayTransferService service,
         IPragmaticPlayTransferGamePlayer gamePlayer,
         IPragmaticPlayTransferApiClient client)
@@ -29,7 +29,7 @@ internal class PragmaticPlayTransferPlayerBalanceGetService : IGetService<Pragma
         PragmaticPlayTransferPlayerBalanceQuery query,
         CancellationToken cancellationToken = default)
     {
-        var playerInfo = await _playerService.GetCacheAsync(query.PlayerCode).ConfigureAwait(false);
+        var playerInfo = await _playerService.GetAsync(query.PlayerCode).ConfigureAwait(false);
         if (playerInfo is null)
         {
             throw new Exception($"The player does not exist.{query.PlayerCode}");

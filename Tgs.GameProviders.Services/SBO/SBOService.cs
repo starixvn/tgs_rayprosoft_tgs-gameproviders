@@ -10,15 +10,15 @@ namespace Tgs.GameProviders.Services.SBO
 {
     internal class SBOService : ISBOService
     {
-        private readonly IGameProviderService _gameProviderService;
+        private readonly IGameProviderRepository _gameProviderService;
         private readonly IGameService _gameService;
         private readonly ILogger<SBOService> _logger;
-        private readonly ISettingService _settingService;
+        private readonly ISettingRepository _settingService;
 
         public SBOService(
             ILogger<SBOService> logger,
-            ISettingService settingService,
-            IGameProviderService gameProviderService,
+            ISettingRepository settingService,
+            IGameProviderRepository gameProviderService,
             IGameService gameService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -49,7 +49,7 @@ namespace Tgs.GameProviders.Services.SBO
         }
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.SBOBET);
+            => _gameProviderService.GetGameProviderIdAsync(GameProviderType.SBOBET);
 
         public async ValueTask<SBOConfiguration> GetSettingConfigurationAsync()
             => await _settingService.GetConfigurationAsync<SBOConfiguration>(GameProviderConfigurations.SBOBET)

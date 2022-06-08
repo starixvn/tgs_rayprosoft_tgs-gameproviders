@@ -58,7 +58,7 @@ public class HabaneroGameUrlGetServiceUnitTest
             null,
             "HABA");
 
-        var player = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),

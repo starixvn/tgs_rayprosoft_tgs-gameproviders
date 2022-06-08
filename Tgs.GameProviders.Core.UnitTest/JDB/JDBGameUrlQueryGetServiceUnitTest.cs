@@ -20,7 +20,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<JDBGameUrlGetService>.Instance;
-        var fakePlayerService = Substitute.For<IPlayerService>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
         var fakeGameService = Substitute.For<IGameService>();
         var fakeService = Substitute.For<IJDBService>();
         var fakeAgentMapper = Substitute.For<IJDBAgentMapper>();
@@ -67,7 +67,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
             null,
             "JDB");
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -85,7 +85,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
             GameType = gameInfo.GameType,
             GameId = gameInfo.GameId,
             BrandCode = "GPI",
-            PlayerCode = playerInfo.PlayerCode,
+            PlayerCode = player.PlayerCode,
             CurrencyCode = "CNY",
             LoginRecordId = Guid.NewGuid(),
             PlatformType = PlatformType.Desktop,
@@ -98,10 +98,10 @@ public class JDBGameUrlQueryGetServiceUnitTest
         fakeService.GetGameProviderLanguageAsync(gameInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-        fakeAgentMapper.GetAgent(configuration.Agents, playerInfo.DefaultWalletCurrencyCode)
+        fakeAgentMapper.GetAgent(configuration.Agents, player.DefaultWalletCurrencyCode)
             .Returns(agent);
 
-        fakePlayerService.GetCacheAsync(query.PlayerCode).Returns(Task.FromResult(playerInfo));
+        fakePlayer.GetAsync(query.PlayerCode).Returns(Task.FromResult(player));
         fakeGameService.GetCacheAsync(query.GameId.Value).Returns(ValueTask.FromResult<GameInfo?>(gameInfo));
 
         var items = gameInfo.GameExternalId.Split('_');
@@ -114,7 +114,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
                 configuration.AESKey,
                 Arg.Is<JDBGetTokenRequest>(x
                     => x.Parent == agent.Id &&
-                       x.UserId == playerInfo.PlayerCode &&
+                       x.UserId == player.PlayerCode &&
                        x.Language == gameProviderLanguageCode &&
                        x.GameType == items[0] &&
                        x.MachineType == items[1] &&
@@ -128,7 +128,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
 
         var sut = new JDBGameUrlGetService(
             fakeLogger,
-            fakePlayerService,
+            fakePlayer,
             fakeGameService,
             fakeService,
             fakeAgentMapper,

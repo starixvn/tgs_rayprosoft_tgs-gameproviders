@@ -23,7 +23,7 @@ public class Card365KickPlayerCommandServiceUnitTest
         var fakeService = Substitute.For<ICard365Service>();
         var fakeApiClient = Substitute.For<ICard365ApiClient>();
         var fakeAgentMapper = Substitute.For<ICard365AgentMapper>();
-        var fakePlayerService = Substitute.For<IPlayerService>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
 
         var agent = new Card365BrandAgent
         {
@@ -40,7 +40,7 @@ public class Card365KickPlayerCommandServiceUnitTest
             BrandAgents = new[] { agent }
         };
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -55,16 +55,16 @@ public class Card365KickPlayerCommandServiceUnitTest
 
         var command = new Card365KickPlayerCommand
         {
-            PlayerCode = playerInfo.PlayerCode
+            PlayerCode = player.PlayerCode
         };
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakePlayerService.GetCacheAsync(command.PlayerCode).Returns(Task.FromResult(playerInfo));
-        fakeAgentMapper.GetAgent(configuration.BrandAgents, playerInfo.BrandCode).Returns(agent);
+        fakePlayer.GetAsync(command.PlayerCode).Returns(Task.FromResult(player));
+        fakeAgentMapper.GetAgent(configuration.BrandAgents, player.BrandCode).Returns(agent);
 
         var sut = new Card365KickPlayerCommandService(
             fakeLogger,
-            fakePlayerService,
+            fakePlayer,
             fakeService,
             fakeAgentMapper,
             fakeApiClient);
@@ -78,7 +78,7 @@ public class Card365KickPlayerCommandServiceUnitTest
                  configuration.Website,
                  new Card365LogoutRequest
                  {
-                     PlayerCode = playerInfo.PlayerCode,
+                     PlayerCode = player.PlayerCode,
                      Cert = configuration.Cert,
                      AgentId = agent.AgentId
                  });

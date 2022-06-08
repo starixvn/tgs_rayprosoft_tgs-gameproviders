@@ -11,7 +11,7 @@ internal class JokerRoundDetailGetService : IGetService<JokerRoundDetailQuery, R
 {
     private readonly IJokerAgentMapper _agentMapper;
     private readonly IJokerApiClient _client;
-    private readonly IPlayerService _playerService;
+    private readonly IPlayerRepository _playerService;
     private readonly IRoundService _roundService;
     private readonly IJokerService _service;
 
@@ -19,7 +19,7 @@ internal class JokerRoundDetailGetService : IGetService<JokerRoundDetailQuery, R
         IJokerApiClient client,
         IJokerService service,
         IJokerAgentMapper agentMapper,
-        IPlayerService playerService,
+        IPlayerRepository playerService,
         IRoundService roundService)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -39,22 +39,17 @@ internal class JokerRoundDetailGetService : IGetService<JokerRoundDetailQuery, R
             throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        var playerInfo = await _playerService.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
-        if (playerInfo == null)
-        {
-            throw new Exception($"This player could not be found.{roundInfo.PlayerCode}");
-        }
-
+        var playerModel = await _playerService.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
         var agent = _agentMapper.GetAgentByCurrencyCode(
             configuration!.BrandMerchants,
-            playerInfo.BrandCode,
+            playerModel.BrandCode,
             roundInfo.CurrencyCode);
 
         if (agent == null)
         {
-            throw new Exception($"The agent does not exist of brand '{playerInfo.BrandCode}' and currency '{roundInfo.CurrencyCode}'");
+            throw new Exception($"The agent does not exist of brand '{playerModel.BrandCode}' and currency '{roundInfo.CurrencyCode}'");
         }
 
         var gameProviderCultureCode = await _service

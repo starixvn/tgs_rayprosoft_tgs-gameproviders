@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.WMCasino
 {
@@ -7,7 +8,7 @@ namespace Tgs.GameProviders.Core.WMCasino
     {
         ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 
-        ValueTask<PlayerInfo> GetPlayerAsync(string playerCode);
+        ValueTask<PlayerModel> GetPlayerAsync(string playerCode);
 
         ValueTask<WMCasinoConfiguration> GetSettingConfigurationAsync();
     }

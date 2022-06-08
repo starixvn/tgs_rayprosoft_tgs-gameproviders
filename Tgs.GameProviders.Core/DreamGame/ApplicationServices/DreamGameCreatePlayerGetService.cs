@@ -20,7 +20,7 @@ namespace Tgs.GameProviders.Core.DreamGame.ApplicationServices
             var tableLimit = query.BetLimits.Where(x => string.Equals(x.Currency, query.CurrencyCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().TableLimit;
             if (string.IsNullOrEmpty(tableLimit))
             {
-                throw new Exception($"Currency limit red does not exist.({ query.CurrencyCode})");
+                throw new Exception($"Currency limit red does not exist.({query.CurrencyCode})");
             }
             return _client.SignUpAsync(
                     query.ApiUrl,

@@ -37,7 +37,7 @@ public class SabaRoundDetailGetServiceUnitTest
             IsTestEnvironment = false
         };
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
          "TGS",
          Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -53,7 +53,7 @@ public class SabaRoundDetailGetServiceUnitTest
         var gameActionInfo = new GameActionInfo(
             Guid.NewGuid(),
             Guid.NewGuid(),
-            playerInfo.PlayerCode,
+            player.PlayerCode,
             "1639679431950180036",
             GameActionType.PlaceBet,
             20m,
@@ -83,7 +83,7 @@ public class SabaRoundDetailGetServiceUnitTest
                 new()
                 {
                     ExternalTransactionId = 1639679431950180036,
-                    PlayerCode = playerInfo.PlayerCode,
+                    PlayerCode = player.PlayerCode,
                     LeagueId = 1,
                     LeagueName = new SabaName[]
                     {
@@ -124,16 +124,16 @@ public class SabaRoundDetailGetServiceUnitTest
             gameActionInfo.RoundId,
             "1639679431950180036",
             Guid.Parse("09d8d244-206b-4030-8110-b2ea90dc9d2f"),
-            playerInfo.PlayerCode,
+            player.PlayerCode,
             600001,
-            playerInfo.DefaultWalletCurrencyCode,
+            player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
-            playerInfo.DefaultWalletId,
+            player.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerInfo.BrandId,
+            player.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,
