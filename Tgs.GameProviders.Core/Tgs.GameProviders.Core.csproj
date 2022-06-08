@@ -27,7 +27,6 @@
 	<ItemGroup>
 	  <Folder Include="BetConstruct\Models\" />
 	  <Folder Include="AwcAelotto\" />
-	  <Folder Include="AwcAws\" />
 	</ItemGroup>
 
 </Project>

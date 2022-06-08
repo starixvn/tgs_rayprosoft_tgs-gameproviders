@@ -42,7 +42,7 @@ namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
             var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en";
-            var request = new GameInterfaceAwcServiceGameUrlByLiveLobbyRequest()
+            var request = new GameInterfaceAwcServiceGameUrlRequest()
             {
                 ApiUrl = configuration.ApiUrl.ToString(),
                 AgentId = configurationData.AgentId,
@@ -50,11 +50,10 @@ namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
                 PlayerCode = command.PlayerCode,
                 BackUrl = command.BackUrl.ToString(),
                 IsMobileLogin = command.PlatformType == PlatformType.Mobile,
-                BetLimit = JsonSerializer.Serialize(configurationData.BetLimit),
                 Language = cultureCode
             };
 
-            var response = await _grpc.GameUrlByLiveLobbyByAwcRcbAsync(
+            var response = await _grpc.GameUrlByAwcPgsAsync(
                 request: request,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -68,7 +67,7 @@ namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
                       command.Language,
                       cancellationToken).ConfigureAwait(false);
 
-                response = await _grpc.GameUrlByLiveLobbyByAwcRcbAsync(
+                response = await _grpc.GameUrlByAwcPgsAsync(
                     request: request,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
             }

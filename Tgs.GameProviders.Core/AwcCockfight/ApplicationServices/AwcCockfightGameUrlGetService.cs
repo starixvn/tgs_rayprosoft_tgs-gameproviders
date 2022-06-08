@@ -54,7 +54,7 @@ namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices
                 Language = cultureCode
             };
 
-            var response = await _grpc.GameUrlByLiveLobbyByAwcRcbAsync(
+            var response = await _grpc.GameUrlByLiveLobbyByAwcCockfightAsync(
                 request: request,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -68,7 +68,7 @@ namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices
                       command.Language,
                       cancellationToken).ConfigureAwait(false);
 
-                response = await _grpc.GameUrlByLiveLobbyByAwcRcbAsync(
+                response = await _grpc.GameUrlByLiveLobbyByAwcCockfightAsync(
                     request: request,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
             }
