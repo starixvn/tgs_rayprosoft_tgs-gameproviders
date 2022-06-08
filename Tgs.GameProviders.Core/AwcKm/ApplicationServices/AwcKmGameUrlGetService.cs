@@ -11,6 +11,7 @@ namespace Tgs.GameProviders.Core.AwcKm.ApplicationServices
     public class AwcKmGameUrlGetService : IGetService<AwcKmGameUrlQuery, GameUrlResult>
     {
         private readonly IBrandService _brand;
+        private readonly IGameRepository _game;
         private readonly IAwcKmGamePlayer _gamePlayer;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
@@ -19,6 +20,7 @@ namespace Tgs.GameProviders.Core.AwcKm.ApplicationServices
 
         public AwcKmGameUrlGetService(
             IBrandService brand,
+            IGameRepository game,
             IAwcKmGamePlayer gamePlayer,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
@@ -26,6 +28,7 @@ namespace Tgs.GameProviders.Core.AwcKm.ApplicationServices
             ISettingRepository setting)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+            _game = game ?? throw new ArgumentNullException(nameof(game));
             _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
@@ -41,6 +44,9 @@ namespace Tgs.GameProviders.Core.AwcKm.ApplicationServices
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
             var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en";
+            var game = await _game.GetAsync(command.GameId.Value).ConfigureAwait(false)
+                 ?? throw new Exception($"The game for this game product does not exist.({command.GameId})");
+
             var request = new GameInterfaceAwcServiceGameUrlRequest()
             {
                 ApiUrl = configuration.ApiUrl.ToString(),
@@ -49,6 +55,7 @@ namespace Tgs.GameProviders.Core.AwcKm.ApplicationServices
                 PlayerCode = command.PlayerCode,
                 BackUrl = command.BackUrl.ToString(),
                 IsMobileLogin = command.PlatformType == PlatformType.Mobile,
+                ExternalGameId = game.GameExternalId,
                 Language = cultureCode
             };
 

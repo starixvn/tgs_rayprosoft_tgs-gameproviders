@@ -20,11 +20,10 @@ public class Card365GameUrlQueryGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<Card365GameUrlQueryGetService>.Instance;
         var fakeService = Substitute.For<ICard365Service>();
         var fakeApiClient = Substitute.For<ICard365ApiClient>();
         var fakeAgentMapper = Substitute.For<ICard365AgentMapper>();
-        var fakeGameService = Substitute.For<IGameService>();
+        var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakePlayer = Substitute.For<IPlayerRepository>();
         var fakeTokenProvider = Substitute.For<ITokenProvider>();
 
@@ -51,7 +50,7 @@ public class Card365GameUrlQueryGetServiceUnitTest
             BrandAgents = new[] { agent }
         };
 
-        var gameInfo = new GameInfo(
+        var gameModel = new GameModel(
             1900001,
             GameStatus.Active,
             "384",
@@ -86,8 +85,8 @@ public class Card365GameUrlQueryGetServiceUnitTest
 
         var query = new Card365GameUrlQuery
         {
-            GameType = gameInfo.GameType,
-            GameId = gameInfo.GameId,
+            GameType = gameModel.GameType,
+            GameId = gameModel.GameId,
             BrandCode = "GPI",
             PlayerCode = player.PlayerCode,
             CurrencyCode = "CNY",
@@ -101,15 +100,15 @@ public class Card365GameUrlQueryGetServiceUnitTest
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
 
         _ = fakeService
-             .GetGameProviderCurrencyCodeAsync(gameInfo.GameProviderId, player.DefaultWalletCurrencyCode)
+             .GetGameProviderCurrencyCodeAsync(gameModel.GameProviderId, player.DefaultWalletCurrencyCode)
              .Returns(ValueTask.FromResult(gameProviderCurrencyCode));
 
         _ = fakeService
-             .GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
+             .GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
              .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         _ = fakePlayer.GetAsync(query.PlayerCode).Returns(Task.FromResult(player));
-        _ = fakeGameService.GetCacheAsync(query.GameId!.Value).Returns(ValueTask.FromResult<GameInfo?>(gameInfo));
+        _ = fakeGameRepository.GetAsync(query.GameId!.Value).Returns(ValueTask.FromResult<GameModel?>(gameModel));
         _ = fakeAgentMapper.GetAgent(configuration.BrandAgents, player.BrandCode).Returns(agent);
         _ = fakeTokenProvider.EncryptAsync(query.LoginRecordId).Returns(ValueTask.FromResult(token));
         _ = fakeApiClient
@@ -132,9 +131,8 @@ public class Card365GameUrlQueryGetServiceUnitTest
                   }));
 
         var sut = new Card365GameUrlQueryGetService(
-            fakeLogger,
             fakePlayer,
-            fakeGameService,
+            fakeGameRepository,
             fakeService,
             fakeAgentMapper,
             fakeApiClient,

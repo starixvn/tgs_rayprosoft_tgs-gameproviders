@@ -140,7 +140,7 @@ public class AsiaGamingGameUrlGetServiceUnitTest
             OppositeBets = Array.Empty<OppositeBetSetting>()
         };
 
-        var gameInfo = new GameInfo(
+        var gameModel = new GameModel(
             400001,
             GameStatus.Active,
             "asiagaminglobby",
@@ -175,8 +175,8 @@ public class AsiaGamingGameUrlGetServiceUnitTest
 
         var query = new AsiaGamingGameUrlQuery
         {
-            GameType = gameInfo.GameType,
-            GameId = gameInfo.GameId,
+            GameType = gameModel.GameType,
+            GameId = gameModel.GameId,
             BrandCode = "GPI",
             PlayerCode = player.PlayerCode,
             CurrencyCode = "CNY",
@@ -189,18 +189,18 @@ public class AsiaGamingGameUrlGetServiceUnitTest
         };
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
-        fakeService.GetGameAsync(query.GameId.Value).Returns(ValueTask.FromResult(gameInfo));
+        fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameModel.GameProviderId));
+        fakeService.GetGameAsync(query.GameId.Value).Returns(ValueTask.FromResult(gameModel));
 
         fakeService
-            .GetGameProviderCurrencyCodeAsync(gameInfo.GameProviderId, query.CurrencyCode)
+            .GetGameProviderCurrencyCodeAsync(gameModel.GameProviderId, query.CurrencyCode)
             .Returns(ValueTask.FromResult(gameProviderCurrencyCode));
 
-        fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
+        fakeService.GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         fakeService.GetBrandIdAsync(query.BrandCode).Returns(ValueTask.FromResult(player.BrandId));
-        fakeService.GetGameDomainAsync(player.BrandId, gameInfo.GameProviderId, query.PlatformType)
+        fakeService.GetGameDomainAsync(player.BrandId, gameModel.GameProviderId, query.PlatformType)
             .Returns(ValueTask.FromResult(domain));
 
         fakePlayerService.CheckOrCreateAccountAsync(configuration, query.PlayerCode, gameProviderCurrencyCode)
@@ -219,7 +219,7 @@ public class AsiaGamingGameUrlGetServiceUnitTest
                     x.AgentCode == configuration.AgentCode &&
                     x.PlayerCode == query.PlayerCode &&
                     x.Lang == gameProviderLanguageCode &&
-                    x.GameId == gameInfo.GameExternalId &&
+                    x.GameId == gameModel.GameExternalId &&
                     x.ReturnUrl == query.BackUrl.AbsoluteUri &&
                     x.Currency == gameProviderCurrencyCode),
                 Arg.Any<string>())

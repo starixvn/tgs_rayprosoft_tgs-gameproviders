@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.AwcService.Client;
@@ -12,6 +11,7 @@ namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices
     public class AwcAwsGameUrlGetService : IGetService<AwcAwsGameUrlQuery, GameUrlResult>
     {
         private readonly IBrandService _brand;
+        private readonly IGameRepository _game;
         private readonly IAwcAwsGamePlayer _gamePlayer;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
@@ -20,6 +20,7 @@ namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices
 
         public AwcAwsGameUrlGetService(
             IBrandService brand,
+            IGameRepository game,
             IAwcAwsGamePlayer gamePlayer,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
@@ -27,6 +28,7 @@ namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices
             ISettingRepository setting)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+            _game = game ?? throw new ArgumentNullException(nameof(game));
             _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
@@ -42,7 +44,10 @@ namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
             var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en";
-            var request = new GameInterfaceAwcServiceGameUrlByLiveLobbyRequest()
+            var game = await _game.GetAsync(command.GameId.Value).ConfigureAwait(false)
+                 ?? throw new Exception($"The game for this game product does not exist.({command.GameId})");
+
+            var request = new GameInterfaceAwcServiceGameUrlRequest()
             {
                 ApiUrl = configuration.ApiUrl.ToString(),
                 AgentId = configurationData.AgentId,
@@ -50,11 +55,11 @@ namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices
                 PlayerCode = command.PlayerCode,
                 BackUrl = command.BackUrl.ToString(),
                 IsMobileLogin = command.PlatformType == PlatformType.Mobile,
-                BetLimit = JsonSerializer.Serialize(configurationData.BetLimit),
+                ExternalGameId = game.GameExternalId,
                 Language = cultureCode
             };
 
-            var response = await _grpc.GameUrlByLiveLobbyByAwcRcbAsync(
+            var response = await _grpc.GameUrlByAwcAwsAsync(
                 request: request,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -68,7 +73,7 @@ namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices
                       command.Language,
                       cancellationToken).ConfigureAwait(false);
 
-                response = await _grpc.GameUrlByLiveLobbyByAwcRcbAsync(
+                response = await _grpc.GameUrlByAwcAwsAsync(
                     request: request,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
             }

@@ -19,9 +19,8 @@ public class JDBGameUrlQueryGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<JDBGameUrlGetService>.Instance;
-        var fakePlayer = Substitute.For<IPlayerRepository>();
-        var fakeGameService = Substitute.For<IGameService>();
+        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeService = Substitute.For<IJDBService>();
         var fakeAgentMapper = Substitute.For<IJDBAgentMapper>();
         var fakeApiClient = Substitute.For<IJDBApiClient>();
@@ -47,7 +46,7 @@ public class JDBGameUrlQueryGetServiceUnitTest
             Agents = new[] { agent }
         };
 
-        var gameInfo = new GameInfo(
+        var gameModel = new GameModel(
             700010,
             GameStatus.Active,
             "0_14034",
@@ -82,8 +81,8 @@ public class JDBGameUrlQueryGetServiceUnitTest
 
         var query = new JDBGameUrlQuery
         {
-            GameType = gameInfo.GameType,
-            GameId = gameInfo.GameId,
+            GameType = gameModel.GameType,
+            GameId = gameModel.GameId,
             BrandCode = "GPI",
             PlayerCode = player.PlayerCode,
             CurrencyCode = "CNY",
@@ -95,16 +94,16 @@ public class JDBGameUrlQueryGetServiceUnitTest
         };
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderLanguageAsync(gameInfo.GameProviderId, query.Language)
+        fakeService.GetGameProviderLanguageAsync(gameModel.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         fakeAgentMapper.GetAgent(configuration.Agents, player.DefaultWalletCurrencyCode)
             .Returns(agent);
 
-        fakePlayer.GetAsync(query.PlayerCode).Returns(Task.FromResult(player));
-        fakeGameService.GetCacheAsync(query.GameId.Value).Returns(ValueTask.FromResult<GameInfo?>(gameInfo));
+        fakePlayerRepository.GetAsync(query.PlayerCode).Returns(Task.FromResult(player));
+        fakeGameRepository.GetAsync(query.GameId.Value).Returns(ValueTask.FromResult<GameModel?>(gameModel));
 
-        var items = gameInfo.GameExternalId.Split('_');
+        var items = gameModel.GameExternalId.Split('_');
 
         fakeApiClient
             .GetTokenAsync(
@@ -127,9 +126,8 @@ public class JDBGameUrlQueryGetServiceUnitTest
                 }));
 
         var sut = new JDBGameUrlGetService(
-            fakeLogger,
-            fakePlayer,
-            fakeGameService,
+            fakePlayerRepository,
+            fakeGameRepository,
             fakeService,
             fakeAgentMapper,
             fakeApiClient);

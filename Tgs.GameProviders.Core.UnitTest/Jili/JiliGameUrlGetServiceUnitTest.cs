@@ -20,8 +20,7 @@ public class JiliGameUrlGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<JiliGameUrlGetService>.Instance;
-        var fakeGameService = Substitute.For<IGameService>();
+        var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeTokenProvider = Substitute.For<ITokenProvider>();
         var fakeService = Substitute.For<IJiliService>();
         var fakeMerchantMapper = Substitute.For<IJiliMerchantMapper>();
@@ -49,7 +48,7 @@ public class JiliGameUrlGetServiceUnitTest
             SecretKey = "SecretKey"
         };
 
-        var game = new GameInfo(
+        var game = new GameModel(
             2200001,
             GameStatus.Active,
             "10",
@@ -84,8 +83,7 @@ public class JiliGameUrlGetServiceUnitTest
         };
 
         var sut = new JiliGameUrlGetService(
-            fakeLogger,
-            fakeGameService,
+            fakeGameRepository,
             fakeTokenProvider,
             fakeService,
             fakeMerchantMapper,
@@ -94,7 +92,7 @@ public class JiliGameUrlGetServiceUnitTest
         _ = fakeTokenProvider.EncryptAsync(Arg.Any<string>()).Returns(ValueTask.FromResult(token));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, query.BrandCode).Returns(merchant);
-        _ = fakeGameService.GetCacheAsync(game.GameId).Returns(ValueTask.FromResult<GameInfo?>(game));
+        _ = fakeGameRepository.GetAsync(game.GameId).Returns(ValueTask.FromResult<GameModel?>(game));
         _ = fakeService
             .GetGameProviderLanguageCodeAsync(game.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));

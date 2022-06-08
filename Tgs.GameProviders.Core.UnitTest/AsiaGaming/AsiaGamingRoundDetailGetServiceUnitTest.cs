@@ -25,7 +25,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
     {
         var fakeLogger = NullLogger<AsiaGamingRoundDetailGetService>.Instance;
         var fakeRoundService = Substitute.For<IRoundService>();
-        var fakeGameService = Substitute.For<IGameService>();
+        var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeService = Substitute.For<IAsiaGamingService>();
 
         var configuration = new AsiaGamingConfiguration
@@ -145,7 +145,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
          "CNY",
          PlayerStatus.Enabled);
 
-        var gameInfo = new GameInfo(
+        var gameModel = new GameModel(
             400013,
             GameStatus.Active,
             "AGIN_AGQ_BAC",
@@ -170,7 +170,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             "GN0022160907S",
             Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
             player.PlayerCode,
-            gameInfo.GameId,
+            gameModel.GameId,
             player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
@@ -216,13 +216,13 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
         };
 
         _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
-        _ = fakeGameService.GetCacheAsync(roundInfo.GameId).Returns(ValueTask.FromResult<GameInfo?>(gameInfo));
+        _ = fakeGameRepository.GetAsync(roundInfo.GameId).Returns(ValueTask.FromResult<GameModel?>(gameModel));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
 
         var sut = new AsiaGamingRoundDetailGetService(
             fakeLogger,
             fakeRoundService,
-            fakeGameService,
+            fakeGameRepository,
             fakeService);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);

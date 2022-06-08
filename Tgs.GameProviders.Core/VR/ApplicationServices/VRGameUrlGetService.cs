@@ -9,20 +9,16 @@ namespace Tgs.GameProviders.Core.VR.ApplicationServices
     public class VRGameUrlGetService : IGetService<VRGameUrlQuery, GameUrlResult>
     {
         private readonly IVRApiClient _client;
-        private readonly IGameService _gameService;
-        private readonly ILogger<VRGameUrlGetService> _logger;
+        private readonly IGameRepository _gameRepository;
         private readonly IVRService _service;
 
         public VRGameUrlGetService(
             IVRApiClient client,
-            IGameService gameService,
-            ILogger<VRGameUrlGetService> logger,
-            IVRService service
-            )
+            IGameRepository gameRepository,
+            IVRService service)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
@@ -54,7 +50,7 @@ namespace Tgs.GameProviders.Core.VR.ApplicationServices
             var externalID = 0;
             if (command.GameId > 0)
             {
-                var getGame = await _gameService.GetCacheAsync(command.GameId.Value).ConfigureAwait(false);
+                var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
                 if (getGame != null)
                 {

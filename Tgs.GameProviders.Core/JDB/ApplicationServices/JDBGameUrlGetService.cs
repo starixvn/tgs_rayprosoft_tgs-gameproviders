@@ -11,22 +11,19 @@ internal class JDBGameUrlGetService : IGetService<JDBGameUrlQuery, GameUrlResult
 {
     private readonly IJDBAgentMapper _agentMapper;
     private readonly IJDBApiClient _client;
-    private readonly IGameService _gameService;
-    private readonly ILogger<JDBGameUrlGetService> _logger;
-    private readonly IPlayerRepository _playerService;
+    private readonly IGameRepository _gameRepository;
+    private readonly IPlayerRepository _playerRepository;
     private readonly IJDBService _service;
 
     public JDBGameUrlGetService(
-        ILogger<JDBGameUrlGetService> logger,
-        IPlayerRepository playerService,
-        IGameService gameService,
+        IPlayerRepository playerRepository,
+        IGameRepository gameRepository,
         IJDBService service,
         IJDBAgentMapper agentMapper,
         IJDBApiClient client)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
-        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+        _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _agentMapper = agentMapper ?? throw new ArgumentNullException(nameof(agentMapper));
         _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -36,8 +33,8 @@ internal class JDBGameUrlGetService : IGetService<JDBGameUrlQuery, GameUrlResult
         JDBGameUrlQuery query,
         CancellationToken cancellationToken = default)
     {
-        var playerInfo = await _playerService.GetAsync(query.PlayerCode).ConfigureAwait(false);
-        var gameInfo = await _gameService.GetCacheAsync(query.GameId!.Value).ConfigureAwait(false);
+        var playerInfo = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
+        var gameInfo = await _gameRepository.GetAsync(query.GameId!.Value).ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
         var agent = _agentMapper.GetAgent(configuration.Agents, playerInfo!.DefaultWalletCurrencyCode);

@@ -7,7 +7,7 @@ namespace Tgs.GameProviders.Core.IMESports
 {
     public interface IIMESportsService
     {
-        ValueTask<GameInfo> GetGameAsync(int gameId);
+        ValueTask<GameModel> GetGameAsync(int gameId);
 
         ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
 

@@ -14,22 +14,18 @@ namespace Tgs.GameProviders.Core.Evolution.ApplicationServices
     public class EvolutionGameUrlGetService : IGetService<EvolutionGameUrlQuery, GameUrlResult>
     {
         private readonly IEvolutionApiClient _client;
-        private readonly IGameService _gameService;
-        private readonly ILogger<EvolutionGameUrlGetService> _logger;
+        private readonly IGameRepository _gameRepository;
         private readonly IEvolutionService _service;
         private readonly ITokenProvider _tokenProvider;
 
         public EvolutionGameUrlGetService(
             IEvolutionApiClient client,
-            IGameService gameService,
-            ILogger<EvolutionGameUrlGetService> logger,
+            IGameRepository gameRepository,
             IEvolutionService service,
-            ITokenProvider tokenProvider
-            )
+            ITokenProvider tokenProvider)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _tokenProvider = tokenProvider ?? throw new ArgumentNullException(nameof(tokenProvider));
         }
@@ -40,7 +36,7 @@ namespace Tgs.GameProviders.Core.Evolution.ApplicationServices
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
             var gameProviderCulture = await _service.GetGameProviderCultureCodeAsync(command.Language).ConfigureAwait(false);
             var gameProviderCurrency = await _service.GetGameProviderCurrencyCodeAsync(command.CurrencyCode).ConfigureAwait(false);
-            var getGame = await _gameService.GetCacheAsync(command.GameId.Value).ConfigureAwait(false);
+            var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
             var ip = command.IPAddress;
 
             var category = "slots";

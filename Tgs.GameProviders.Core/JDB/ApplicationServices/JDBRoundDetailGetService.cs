@@ -13,28 +13,25 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
 {
     private readonly IJDBAgentMapper _agentMapper;
     private readonly IJDBApiClient _client;
-    private readonly IGameProviderRepository _gameProviderService;
-    private readonly IGameService _gameService;
-    private readonly ILogger<JDBRoundDetailGetService> _logger;
-    private readonly IPlayerRepository _playerService;
+    private readonly IGameProviderRepository _gameProviderRepository;
+    private readonly IGameRepository _gameRepository;
+    private readonly IPlayerRepository _playerRepository;
     private readonly IRoundService _roundService;
     private readonly IJDBService _service;
 
     public JDBRoundDetailGetService(
-        ILogger<JDBRoundDetailGetService> logger,
         IRoundService roundService,
-        IPlayerRepository playerService,
-        IGameProviderRepository gameProviderService,
-        IGameService gameService,
+        IPlayerRepository playerRepository,
+        IGameProviderRepository gameProviderRepository,
+        IGameRepository gameRepository,
         IJDBService service,
         IJDBAgentMapper agentMapper,
         IJDBApiClient client)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
-        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
-        _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
-        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+        _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+        _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _agentMapper = agentMapper ?? throw new ArgumentNullException(nameof(agentMapper));
         _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -50,15 +47,15 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
             throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        var playerModel = await _playerService.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
+        var playerModel = await _playerRepository.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
 
-        var gameProviderInfo = await _gameProviderService.GetAsync(roundInfo.GameProviderId).ConfigureAwait(false);
+        var gameProviderInfo = await _gameProviderRepository.GetAsync(roundInfo.GameProviderId).ConfigureAwait(false);
         if (gameProviderInfo == null)
         {
             throw new Exception($"This game manufacturer does not exist.{roundInfo.GameProviderId}");
         }
 
-        var gameInfo = await _gameService.GetCacheAsync(roundInfo.GameId).ConfigureAwait(false);
+        var gameInfo = await _gameRepository.GetAsync(roundInfo.GameId).ConfigureAwait(false);
         if (gameInfo == null)
         {
             throw new Exception($"This game Id could not be found.{roundInfo.GameId}");

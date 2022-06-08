@@ -42,6 +42,7 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
             var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en";
+
             var request = new GameInterfaceAwcServiceGameUrlByLiveLobbyRequest()
             {
                 ApiUrl = configuration.ApiUrl.ToString(),

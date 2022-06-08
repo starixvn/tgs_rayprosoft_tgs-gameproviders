@@ -11,39 +11,36 @@ namespace Tgs.GameProviders.Services.PragmaticPlay;
 
 internal class PragmaticPlayService : IPragmaticPlayService
 {
-    private readonly IGameProviderRepository _gameProviderService;
-    private readonly IGameService _gameService;
-    private readonly ILogger<PragmaticPlayService> _logger;
-    private readonly ISettingRepository _settingService;
+    private readonly IGameProviderRepository _gameProviderRepository;
+    private readonly IGameRepository _gameRepository;
+    private readonly ISettingRepository _settingRepository;
 
     public PragmaticPlayService(
-        ILogger<PragmaticPlayService> logger,
-        IGameProviderRepository gameProviderService,
-        IGameService gameService,
-        ISettingRepository settingService)
+        IGameProviderRepository gameProviderRepository,
+        IGameRepository gameRepository,
+        ISettingRepository settingRepository)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
-        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-        _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
+        _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+        _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
     }
 
-    public async ValueTask<GameInfo> GetGameAsync(int gameId)
-        => await _gameService.GetAsync(gameId).ConfigureAwait(false);
+    public async ValueTask<GameModel> GetGameAsync(int gameId)
+        => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
     public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
-        => _gameProviderService.GetAsync(gameProviderId);
+        => _gameProviderRepository.GetAsync(gameProviderId);
 
     public async ValueTask<string> GetGameProviderLanguageAsync(Guid gameProviderId, string cultureCode)
     {
-        var gameProviderCultureCode = await _gameProviderService
+        var gameProviderCultureCode = await _gameProviderRepository
             .GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
 
         return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "en";
     }
 
     public async ValueTask<PragmaticPlayConfiguration> GetSettingConfigurationAsync()
-        => await _settingService
+        => await _settingRepository
             .GetConfigurationAsync<PragmaticPlayConfiguration>(GameProviderConfigurations.PragmaticPlay)
             .ConfigureAwait(false);
 }

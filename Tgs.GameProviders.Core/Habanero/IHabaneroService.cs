@@ -7,7 +7,7 @@ namespace Tgs.GameProviders.Core.Habanero;
 
 public interface IHabaneroService
 {
-    ValueTask<GameInfo> GetGameAsync(int gameId);
+    ValueTask<GameModel> GetGameAsync(int gameId);
 
     ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType);
 

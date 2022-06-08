@@ -19,6 +19,8 @@ namespace Tgs.GameProviders.Repositories.DependencyInjection
             .AddTransient<IGameProviderRepository, GameProviderRepository>()
             .Decorate<IGameProviderRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameProviderCacheRepository>(sp, innerRepository))
             .AddTransient<IPlayerRepository, PlayerRepository>()
-            .Decorate<IPlayerRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<PlayerCacheRepository>(sp, innerRepository));
+            .Decorate<IPlayerRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<PlayerCacheRepository>(sp, innerRepository))
+            .AddTransient<IGameRepository, GameRepository>()
+            .Decorate<IGameRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<GameCacheRepository>(sp, innerRepository));
     }
 }

@@ -19,7 +19,7 @@ namespace Tgs.GameProviders.Services.BigGaming
             _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
-        public async ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, string playerCode, GameInfo game, string cultureCode)
+        public async ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, string playerCode, GameModel game,string cultureCode)
             => game.GameType
             switch
             {

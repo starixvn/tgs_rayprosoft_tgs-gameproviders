@@ -20,7 +20,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
     public async ValueTask Normal_Process()
     {
         var fakeRoundService = Substitute.For<IRoundService>();
-        var fakeGameService = Substitute.For<IGameService>();
+        var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeService = Substitute.For<IPragmaticPlayTransferService>();
         var fakeApiClient = Substitute.For<IPragmaticPlayTransferApiClient>();
 
@@ -64,7 +64,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             "PragmaticPlay",
             null);
 
-        var gameInfo = new GameInfo(
+        var gameModel = new GameModel(
             2700027,
             GameStatus.Active,
             "vs25bkofkngdm",
@@ -108,7 +108,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             data.ExternalRoundId,
             gameProviderInfo.GameProviderId,
             player.PlayerCode,
-            gameInfo.GameId,
+            gameModel.GameId,
             player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
@@ -133,7 +133,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             JsonSerializer.Serialize(data));
 
         var sut = new PragmaticPlayTransferRoundDetailGetService(
-            fakeRoundService, fakeGameService, fakeService, fakeApiClient);
+            fakeRoundService, fakeGameRepository, fakeService, fakeApiClient);
 
         var query = new PragmaticPlayTransferRoundDetailQuery
         {
@@ -142,7 +142,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
         };
 
         _ = fakeRoundService.GetAsync(Arg.Is(query.RoundId)).Returns(roundInfo);
-        _ = fakeGameService.GetCacheAsync(Arg.Is(roundInfo.GameId)).Returns(gameInfo);
+        _ = fakeGameRepository.GetAsync(Arg.Is(roundInfo.GameId)).Returns(gameModel);
         _ = fakeService.GetGameProviderAsync(Arg.Is(roundInfo.GameProviderId)).Returns(gameProviderInfo);
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
         _ = fakeService
@@ -158,7 +158,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
                 Arg.Is(configuration.SecretKey),
                 Arg.Is(roundInfo.PlayerCode),
                 Arg.Is(roundInfo.ExternalRoundId),
-                Arg.Is(gameInfo.GameExternalId),
+                Arg.Is(gameModel.GameExternalId),
                 Arg.Is(gameProviderLanguage))
             .Returns(historyUrl);
 
