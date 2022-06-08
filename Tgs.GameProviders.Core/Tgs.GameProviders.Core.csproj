@@ -33,7 +33,6 @@
 	  <Folder Include="AwcFs\" />
 	  <Folder Include="AwcKm\" />
 	  <Folder Include="AwcLudo\" />
-	  <Folder Include="AwcPgs\" />
 	</ItemGroup>
 
 </Project>
