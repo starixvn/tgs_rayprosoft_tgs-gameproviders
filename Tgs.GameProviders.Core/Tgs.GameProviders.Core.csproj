@@ -30,8 +30,6 @@
 	  <Folder Include="AwcAws\" />
 	  <Folder Include="AwcCockfight\" />
 	  <Folder Include="AwcFacai\" />
-	  <Folder Include="AwcFs\" />
-	  <Folder Include="AwcKm\" />
 	</ItemGroup>
 
 </Project>
