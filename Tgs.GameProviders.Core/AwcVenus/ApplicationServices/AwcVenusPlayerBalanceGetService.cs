@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
@@ -11,6 +10,7 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
     public class AwcVenusPlayerBalanceGetService : IGetService<AwcVenusPlayerBalanceQuery, decimal?>
     {
         private readonly IBrandService _brand;
+        private readonly IAwcVenusGamePlayer _gamePlayer;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
         private readonly IPlayerRepository _player;
@@ -18,12 +18,14 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
 
         public AwcVenusPlayerBalanceGetService(
             IBrandService brand,
+            IAwcVenusGamePlayer gamePlayer,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
             IPlayerRepository player,
             ISettingRepository setting)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+            _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
             _player = player ?? throw new ArgumentNullException(nameof(player));
@@ -37,46 +39,39 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
             var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+
             var apiUrl = configuration.ApiUrl;
             string agentId = configurationData.AgentId;
             string cert = configurationData.Cert;
             string playerCode = command.PlayerCode;
 
-            var balanceReply = await _grpc.GetBalanceAsync(
+            var response = await _grpc.GetBalanceAsync(
                 apiUrl,
                 agentId,
                 cert,
                 playerCode,
                 cancellationToken).ConfigureAwait(false);
 
-            if (!balanceReply.Success)
+            if (response.Success && !response.IsPlayerExist)
             {
-                throw new Exception($"The player does not exist.{command.PlayerCode}");
+                await _gamePlayer.CreatePlayerAsync(
+                      configuration,
+                      configurationData,
+                      player.PlayerCode,
+                      player.DefaultWalletCurrencyCode,
+                      cancellationToken: cancellationToken).ConfigureAwait(false);
+
+                response = await _grpc.GetBalanceAsync(
+                    apiUrl,
+                    agentId,
+                    cert,
+                    playerCode,
+                    cancellationToken).ConfigureAwait(false);
             }
 
-            if (!balanceReply.IsPlayerExist)
-            {
-                string currency = string.Empty;
-                string betLimit = string.Empty;
-                await _grpc.CreatePlayerByBetLimitAsync(
-                     apiUrl,
-                     agentId,
-                     cert,
-                     player.PlayerCode,
-                     player.PlayerCode,
-                     currency,
-                     betLimit,
-                     cancellationToken: cancellationToken).ConfigureAwait(false);
-
-                balanceReply = await _grpc.GetBalanceAsync(
-                                apiUrl,
-                                agentId,
-                                cert,
-                                playerCode,
-                                cancellationToken).ConfigureAwait(false);
-            }
-
-            return balanceReply.Balance;
+            return !response.Success
+                ? throw new Exception($"This game product has failed to withdraw the balance..{response.Message}")
+                : response.Balance;
         }
     }
 }

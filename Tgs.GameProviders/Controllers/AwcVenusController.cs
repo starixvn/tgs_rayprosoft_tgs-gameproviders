@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.AwcVenus.ApplicationServices;

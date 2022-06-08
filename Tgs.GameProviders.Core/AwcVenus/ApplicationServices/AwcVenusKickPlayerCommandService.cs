@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;

@@ -11,6 +11,7 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
     public class AwcVenusGameUrlGetService : IGetService<AwcVenusGameUrlQuery, GameUrlResult>
     {
         private readonly IBrandService _brand;
+        private readonly IAwcVenusGamePlayer _gamePlayer;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
         private readonly IPlayerRepository _player;
@@ -18,12 +19,14 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
 
         public AwcVenusGameUrlGetService(
             IBrandService brand,
+            IAwcVenusGamePlayer gamePlayer,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
             IPlayerRepository player,
             ISettingRepository setting)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+            _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
             _player = player ?? throw new ArgumentNullException(nameof(player));
@@ -37,6 +40,7 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
             var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+            var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en";
             var request = new GameInterfaceAwcServiceGameUrlByLiveLobbyRequest()
             {
                 ApiUrl = configuration.ApiUrl.ToString(),
@@ -46,12 +50,27 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
                 BackUrl = command.BackUrl.ToString(),
                 IsMobileLogin = command.PlatformType == PlatformType.Mobile,
                 BetLimit = configurationData.BetLimit,
-                Language = "en"
+                Language = cultureCode
             };
 
             var response = await _grpc.GameUrlByLiveLobbyByAwcVenusAsync(
                 request: request,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
+
+            if (response.Success && !response.IsPlayerExist)
+            {
+                await _gamePlayer.CreatePlayerAsync(
+                      configuration,
+                      configurationData,
+                      player.PlayerCode,
+                      player.DefaultWalletCurrencyCode,
+                      command.Language,
+                      cancellationToken).ConfigureAwait(false);
+
+                response = await _grpc.GameUrlByLiveLobbyByAwcVenusAsync(
+                    request: request,
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
 
             return (response != null) ? new() { Url = new(response.GameUrl) } : null;
         }
