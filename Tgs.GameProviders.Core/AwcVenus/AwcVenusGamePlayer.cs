@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.AwcService.Client;
@@ -33,7 +34,7 @@ namespace Tgs.GameProviders.Core.AwcVenus
                  playerCode,
                  playerCode,
                  currency,
-                 configurationData.BetLimit,
+                 JsonSerializer.Serialize(configurationData.BetLimit),
                  cultureCode,
                  cancellationToken: cancellationToken).ConfigureAwait(false);
         }

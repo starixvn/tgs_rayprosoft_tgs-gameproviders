@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using NATS.Client.JetStream;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.AwcService.Protos;
 using Tgs.GameProviders.Domains;
@@ -49,7 +51,7 @@ namespace Tgs.GameProviders.Core.AwcRcb.ApplicationServices
                 PlayerCode = command.PlayerCode,
                 BackUrl = command.BackUrl.ToString(),
                 IsMobileLogin = command.PlatformType == PlatformType.Mobile,
-                BetLimit = configurationData.BetLimit,
+                BetLimit = JsonSerializer.Serialize(configurationData.BetLimit),
                 Language = cultureCode
             };
 

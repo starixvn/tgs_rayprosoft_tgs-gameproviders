@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.AwcService.Client;
@@ -49,7 +50,7 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
                 PlayerCode = command.PlayerCode,
                 BackUrl = command.BackUrl.ToString(),
                 IsMobileLogin = command.PlatformType == PlatformType.Mobile,
-                BetLimit = configurationData.BetLimit,
+                BetLimit = JsonSerializer.Serialize(configurationData.BetLimit),
                 Language = cultureCode
             };
 
