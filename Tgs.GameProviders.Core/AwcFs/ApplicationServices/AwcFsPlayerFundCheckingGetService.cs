@@ -31,8 +31,8 @@ namespace Tgs.GameProviders.Core.AwcFs.ApplicationServices
 
         public async ValueTask<PlayerFundCheckingResult> GetAsync(AwcFsPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
         {
-            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_LUDO).ConfigureAwait(false);
-            var configuration = await _setting.GetAwcLudoConfigurationAsync().ConfigureAwait(false);
+            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_FS).ConfigureAwait(false);
+            var configuration = await _setting.GetAwcFsConfigurationAsync().ConfigureAwait(false);
             var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);

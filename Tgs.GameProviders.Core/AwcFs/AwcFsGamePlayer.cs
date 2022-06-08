@@ -21,9 +21,9 @@ namespace Tgs.GameProviders.Core.AwcFs
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
         }
 
-        public async ValueTask CreatePlayerAsync(AwcLudoConfiguration configuration, AwcConfigurationData configurationData, string playerCode, string currencyCode, string language = "en-US", CancellationToken cancellationToken = default)
+        public async ValueTask CreatePlayerAsync(AwcFsConfiguration configuration, AwcConfigurationData configurationData, string playerCode, string currencyCode, string language = "en-US", CancellationToken cancellationToken = default)
         {
-            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_LUDO).ConfigureAwait(false);
+            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_FS).ConfigureAwait(false);
             var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, language).ConfigureAwait(false) ?? "en";
             var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false)
                 ?? throw new Exception($"This game product currency does not exist.({currencyCode})");
