@@ -32,7 +32,6 @@
 	  <Folder Include="AwcFacai\" />
 	  <Folder Include="AwcFs\" />
 	  <Folder Include="AwcKm\" />
-	  <Folder Include="AwcLudo\" />
 	</ItemGroup>
 
 </Project>
