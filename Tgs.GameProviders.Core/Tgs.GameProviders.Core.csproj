@@ -29,7 +29,6 @@
 	  <Folder Include="AwcAelotto\" />
 	  <Folder Include="AwcAws\" />
 	  <Folder Include="AwcCockfight\" />
-	  <Folder Include="AwcFacai\" />
 	</ItemGroup>
 
 </Project>
