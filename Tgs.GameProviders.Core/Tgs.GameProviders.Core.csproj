@@ -35,8 +35,6 @@
 	  <Folder Include="AwcLudo\" />
 	  <Folder Include="AwcPgs\" />
 	  <Folder Include="AwcRcb\" />
-	  <Folder Include="AwcSpade\" />
-	  <Folder Include="AwcYl\" />
 	</ItemGroup>
 
 </Project>
