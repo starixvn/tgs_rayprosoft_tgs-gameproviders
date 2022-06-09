@@ -6,6 +6,6 @@ namespace Tgs.GameProviders.Core.AwcKm
 {
     public interface IAwcKmGamePlayer
     {
-        ValueTask CreatePlayerAsync(AwcLudoConfiguration configuration, AwcConfigurationData configurationData, string playerCode, string currencyCode, string language = "en-US", CancellationToken cancellationToken = default);
+        ValueTask CreatePlayerAsync(AwcKmConfiguration configuration, AwcConfigurationData configurationData, string playerCode, string currencyCode, string language = "en-US", CancellationToken cancellationToken = default);
     }
 }
