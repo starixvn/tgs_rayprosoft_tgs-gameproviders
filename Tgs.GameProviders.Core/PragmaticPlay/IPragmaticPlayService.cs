@@ -7,7 +7,7 @@ namespace Tgs.GameProviders.Core.PragmaticPlay
 {
     public interface IPragmaticPlayService
     {
-        ValueTask<GameInfo> GetGameAsync(int gameId);
+        ValueTask<GameModel> GetGameAsync(int gameId);
 
         ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId);
 

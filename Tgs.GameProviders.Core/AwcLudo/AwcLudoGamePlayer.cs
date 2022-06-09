@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
-namespace Tgs.GameProviders.Core.AwcPgs
+namespace Tgs.GameProviders.Core.AwcLudo
 {
-    internal class AwcRcbGamePlayer : IAwcRcbGamePlayer
+    internal class AwcLudoGamePlayer : IAwcLudoGamePlayer
     {
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
 
-        public AwcRcbGamePlayer(
+        public AwcLudoGamePlayer(
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc)
         {
@@ -21,20 +20,19 @@ namespace Tgs.GameProviders.Core.AwcPgs
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
         }
 
-        public async ValueTask CreatePlayerAsync(AwcRcbConfiguration configuration, AwcConfigurationData configurationData, string playerCode, string currencyCode, string language = "en-US", CancellationToken cancellationToken = default)
+        public async ValueTask CreatePlayerAsync(AwcLudoConfiguration configuration, AwcConfigurationData configurationData, string playerCode, string currencyCode, string language = "en-US", CancellationToken cancellationToken = default)
         {
-            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_RCB).ConfigureAwait(false);
+            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_LUDO).ConfigureAwait(false);
             var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, language).ConfigureAwait(false) ?? "en";
             var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false)
                 ?? throw new Exception($"This game product currency does not exist.({currencyCode})");
-            await _grpc.CreatePlayerByBetLimitAsync(
+            await _grpc.CreatePlayerAsync(
                  configuration.ApiUrl,
                  configurationData.AgentId,
                  configurationData.Cert,
                  playerCode,
                  playerCode,
                  currency,
-                 JsonSerializer.Serialize(configurationData.BetLimit),
                  cultureCode,
                  cancellationToken: cancellationToken).ConfigureAwait(false);
         }

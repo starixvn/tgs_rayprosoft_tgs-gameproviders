@@ -14,7 +14,7 @@ internal class PragmaticPlayTransferGameUrlGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeGameService = Substitute.For<IGameService>();
+        var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeService = Substitute.For<IPragmaticPlayTransferService>();
         var fakeApiClient = Substitute.For<IPragmaticPlayTransferApiClient>();
 
@@ -31,7 +31,7 @@ internal class PragmaticPlayTransferGameUrlGetServiceUnitTest
             ProviderId = "PragmaticPlay"
         };
 
-        var game = new GameInfo(
+        var game = new GameModel(
             2700001,
             GameStatus.Active,
             "vs20kraken",
@@ -66,11 +66,11 @@ internal class PragmaticPlayTransferGameUrlGetServiceUnitTest
         };
 
         var sut = new PragmaticPlayTransferGameUrlGetService(
-            fakeGameService,
+            fakeGameRepository,
             fakeService,
             fakeApiClient);
 
-        _ = fakeGameService.GetCacheAsync(Arg.Is(game.GameId)).Returns((GameInfo?)game);
+        _ = fakeGameRepository.GetAsync(Arg.Is(game.GameId)).Returns((GameModel?)game);
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
         _ = fakeService
              .GetGameProviderLanguageCodeAsync(Arg.Is(game.GameProviderId), Arg.Is(query.Language))

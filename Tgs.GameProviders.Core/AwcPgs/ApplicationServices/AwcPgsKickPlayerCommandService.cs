@@ -31,8 +31,8 @@ namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
 
         public async ValueTask ExecuteAsync(AwcPgsKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_RCB).ConfigureAwait(false);
-            var configuration = await _setting.GetAwcRcbConfigurationAsync().ConfigureAwait(false);
+            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_PGS).ConfigureAwait(false);
+            var configuration = await _setting.GetAwcPgsConfigurationAsync().ConfigureAwait(false);
             var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);

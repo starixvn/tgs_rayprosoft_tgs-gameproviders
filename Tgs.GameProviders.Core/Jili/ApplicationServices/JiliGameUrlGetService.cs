@@ -11,22 +11,19 @@ namespace Tgs.GameProviders.Core.Jili.ApplicationServices;
 internal class JiliGameUrlGetService : IGetService<JiliGameUrlQuery, GameUrlResult>
 {
     private readonly IJiliApiClient _client;
-    private readonly IGameService _gameService;
-    private readonly ILogger<JiliGameUrlGetService> _logger;
+    private readonly IGameRepository _gameRepository;
     private readonly IJiliMerchantMapper _merchantMapper;
     private readonly IJiliService _service;
     private readonly ITokenProvider _tokenProvider;
 
     public JiliGameUrlGetService(
-        ILogger<JiliGameUrlGetService> logger,
-        IGameService gameService,
+        IGameRepository gameRepository,
         ITokenProvider tokenProvider,
         IJiliService service,
         IJiliMerchantMapper merchantMapper,
         IJiliApiClient client)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         _tokenProvider = tokenProvider ?? throw new ArgumentNullException(nameof(tokenProvider));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _merchantMapper = merchantMapper ?? throw new ArgumentNullException(nameof(merchantMapper));
@@ -41,7 +38,7 @@ internal class JiliGameUrlGetService : IGetService<JiliGameUrlQuery, GameUrlResu
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
         var merchant = _merchantMapper.GetMerchant(configuration.Merchants, query.BrandCode);
 
-        var game = await _gameService.GetCacheAsync(query.GameId!.Value).ConfigureAwait(false);
+        var game = await _gameRepository.GetAsync(query.GameId!.Value).ConfigureAwait(false);
         var gameProviderCultureCode =
             await _service.GetGameProviderLanguageCodeAsync(game!.GameProviderId, query.Language);
 

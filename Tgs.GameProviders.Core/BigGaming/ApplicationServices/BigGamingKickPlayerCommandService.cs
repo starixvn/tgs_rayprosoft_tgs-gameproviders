@@ -12,7 +12,7 @@ namespace Tgs.GameProviders.Core.BigGaming.ApplicationServices
     public class BigGamingKickPlayerCommandService : ICommandService<BigGamingKickPlayerCommand>
     {
         private readonly IBigGamingApiClient _client;
-        private readonly IGameService _gameService;
+        private readonly IGameRepository _gameService;
         private readonly ILogger<BigGamingKickPlayerCommandService> _logger;
         private readonly IPlayerRepository _playerService;
         private readonly IBigGamingService _service;
@@ -22,7 +22,7 @@ namespace Tgs.GameProviders.Core.BigGaming.ApplicationServices
             IBigGamingApiClient client,
             IBigGamingService service,
             IPlayerRepository playerService,
-            IGameService gameService)
+            IGameRepository gameService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));

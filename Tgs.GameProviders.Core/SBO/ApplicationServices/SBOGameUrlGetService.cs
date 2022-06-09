@@ -74,7 +74,7 @@ namespace Tgs.GameProviders.Core.SBO.ApplicationServices
         private async ValueTask<SBOLoginResponse> PlayerLoginAsync(
             SBOConfiguration configuration,
             SBOGameUrlQuery query,
-            GameInfo game)
+            GameModel game)
         {
             var portfolio = _utility.GetPortfolio(game.GameType);
             var playerCode = query.PlayerCode;

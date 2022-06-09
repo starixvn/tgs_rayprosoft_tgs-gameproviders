@@ -63,7 +63,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             "Habanero",
             null);
 
-        var gameInfo = new GameInfo(
+        var gameModel = new GameModel(
             200001,
             GameStatus.Active,
             "SGTotemTowers",
@@ -88,7 +88,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             externalRoundId,
             gameProviderInfo.GameProviderId,
             player.PlayerCode,
-            gameInfo.GameId,
+            gameModel.GameId,
             player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
@@ -122,7 +122,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
 
         _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
         _ = fakeService.GetGameProviderAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderInfo));
-        _ = fakeService.GetGameAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
+        _ = fakeService.GetGameAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameModel));
         _ = fakeService.GetPlayerAsync(roundInfo.PlayerCode).Returns(ValueTask.FromResult(player));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeService

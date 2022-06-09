@@ -11,25 +11,21 @@ namespace Tgs.GameProviders.Core.TCG.ApplicationServices
     public class TCGGameUrlGetService : IGetService<TCGGameUrlQuery, GameUrlResult>
     {
         private readonly ITCGApiClient _client;
-        private readonly ITCGGamePlayer _gamePlayerCreate;
-        private readonly IGameService _gameService;
-        private readonly ILogger<TCGGameUrlGetService> _logger;
+        private readonly ITCGGamePlayer _gameRepository;
+        private readonly IGameRepository _gameService;
         private readonly IReadOnlyDictionary<string, Func<Uri, string, string, string, bool, TCGLaunchGameRequest, ValueTask<TCGLaunchGameResponse>>> _methodMapper;
         private readonly ITCGService _service;
 
         public TCGGameUrlGetService(
             ITCGApiClient client,
-            IGameService gameService,
-            ILogger<TCGGameUrlGetService> logger,
+            IGameRepository gameRepository,
             ITCGService service,
-            ITCGGamePlayer gamePlayerCreate
-            )
+            ITCGGamePlayer gamePlayerCreate)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+            _gameService = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _service = service ?? throw new ArgumentNullException(nameof(service));
-            _gamePlayerCreate = gamePlayerCreate ?? throw new ArgumentNullException(nameof(gamePlayerCreate));
+            _gameRepository = gamePlayerCreate ?? throw new ArgumentNullException(nameof(gamePlayerCreate));
             _methodMapper = new Dictionary<string, Func<Uri, string, string, string, bool, TCGLaunchGameRequest, ValueTask<TCGLaunchGameResponse>>>
             {
                 { "384",SEAAsync },
@@ -47,7 +43,7 @@ namespace Tgs.GameProviders.Core.TCG.ApplicationServices
             {
                 return null;
             }
-            var getGame = await _gameService.GetCacheAsync(command.GameId.Value).ConfigureAwait(false);
+            var getGame = await _gameService.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
             if (getGame == null)
             {
@@ -76,7 +72,7 @@ namespace Tgs.GameProviders.Core.TCG.ApplicationServices
 
             if (response.Status == 15)
             {
-                if (await _gamePlayerCreate.CreatePlayerAsync(configuration.ApiUrl, merchant.MerchantCode, merchant.DESKey, merchant.SHA256Key, merchant.PlayerPassword, command.PlayerCode))
+                if (await _gameRepository.CreatePlayerAsync(configuration.ApiUrl, merchant.MerchantCode, merchant.DESKey, merchant.SHA256Key, merchant.PlayerPassword, command.PlayerCode))
                 {
                     response = await execute(
                         configuration.ApiUrl,

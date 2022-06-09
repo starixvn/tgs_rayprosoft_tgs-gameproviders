@@ -12,24 +12,21 @@ namespace Tgs.GameProviders.Core.Skywind.ApplicationServices
     public class SkywindGameUrlGetService : IGetService<SkywindGameUrlQuery, GameUrlResult>
     {
         private readonly ISkywindApiClient _client;
-        private readonly IGameService _gameService;
-        private readonly ILogger<SkywindGameUrlGetService> _logger;
+        private readonly IGameRepository _gameRepository;
         private readonly ISkywindService _service;
         private readonly ISkywindAccessToken _skywindAccessToken;
         private readonly ITokenProvider _tokenProvider;
 
         public SkywindGameUrlGetService(
             ISkywindApiClient client,
-            IGameService gameService,
-            ILogger<SkywindGameUrlGetService> logger,
+            IGameRepository gameRepository,
             ISkywindService service,
             ITokenProvider tokenProvider,
             ISkywindAccessToken skywindAccessToken
             )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _tokenProvider = tokenProvider ?? throw new ArgumentNullException(nameof(tokenProvider));
             _skywindAccessToken = skywindAccessToken ?? throw new ArgumentNullException(nameof(skywindAccessToken));
@@ -40,7 +37,7 @@ namespace Tgs.GameProviders.Core.Skywind.ApplicationServices
             var encryptedToken = await _tokenProvider.EncryptAsync(command.LoginRecordId).ConfigureAwait(false);
             var gameProviderCultureCode = await _service.GetGameProviderCultureCodeAsync(command.Language).ConfigureAwait(false);
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-            var getGame = await _gameService.GetCacheAsync(command.GameId.Value).ConfigureAwait(false);
+            var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
             if (getGame == null)
             {

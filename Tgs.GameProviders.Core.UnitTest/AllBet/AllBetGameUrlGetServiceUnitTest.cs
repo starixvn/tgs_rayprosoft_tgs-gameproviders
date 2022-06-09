@@ -54,7 +54,7 @@ public class AllBetGameUrlGetServiceUnitTest
             }
         };
 
-        var gameInfo = new GameInfo(
+        var gameModel = new GameModel(
             1300001,
             GameStatus.Active,
             "AllBetLobby",
@@ -91,8 +91,8 @@ public class AllBetGameUrlGetServiceUnitTest
 
         var query = new AllBetGameUrlQuery
         {
-            GameType = gameInfo.GameType,
-            GameId = gameInfo.GameId,
+            GameType = gameModel.GameType,
+            GameId = gameModel.GameId,
             BrandCode = "GPI",
             PlayerCode = player.PlayerCode,
             CurrencyCode = "CNY",

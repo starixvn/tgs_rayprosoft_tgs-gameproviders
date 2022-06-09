@@ -16,24 +16,21 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
 {
     private readonly ICard365AgentMapper _agentMapper;
     private readonly ICard365ApiClient _client;
-    private readonly IGameService _gameService;
-    private readonly ILogger<Card365GameUrlQueryGetService> _logger;
-    private readonly IPlayerRepository _playerService;
+    private readonly IGameRepository _gameRepository;
+    private readonly IPlayerRepository _playerRepository;
     private readonly ICard365Service _service;
     private readonly ITokenProvider _tokenProvider;
 
     public Card365GameUrlQueryGetService(
-        ILogger<Card365GameUrlQueryGetService> logger,
-        IPlayerRepository playerService,
-        IGameService gameService,
+        IPlayerRepository playerRepository,
+        IGameRepository gameRepository,
         ICard365Service service,
         ICard365AgentMapper agentMapper,
         ICard365ApiClient client,
         ITokenProvider tokenProvider)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
-        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+        _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _agentMapper = agentMapper ?? throw new ArgumentNullException(nameof(agentMapper));
         _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -44,9 +41,9 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
         Card365GameUrlQuery query,
         CancellationToken cancellationToken = default)
     {
-        var player = await _playerService.GetAsync(query.PlayerCode).ConfigureAwait(false);
+        var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
 
-        var game = await _gameService.GetCacheAsync(query.GameId!.Value).ConfigureAwait(false);
+        var game = await _gameRepository.GetAsync(query.GameId!.Value).ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
         var agent = _agentMapper.GetAgent(configuration.BrandAgents, player!.BrandCode);

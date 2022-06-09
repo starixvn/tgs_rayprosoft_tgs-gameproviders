@@ -12,30 +12,27 @@ namespace Tgs.GameProviders.Services.Habanero
     internal class HabaneroService : IHabaneroService
     {
         private readonly IBrandService _brandService;
-        private readonly IGameProviderRepository _gameProviderService;
-        private readonly IGameService _gameService;
-        private readonly ILogger<HabaneroService> _logger;
-        private readonly IPlayerRepository _playerService;
-        private readonly ISettingRepository _settingService;
+        private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly IGameRepository _gameRepository;
+        private readonly IPlayerRepository _playerRepository;
+        private readonly ISettingRepository _settingRepository;
 
         public HabaneroService(
-            ILogger<HabaneroService> logger,
             IBrandService brandService,
-            IGameProviderRepository gameProviderService,
-            IGameService gameService,
-            IPlayerRepository playerService,
-            ISettingRepository settingService)
+            IGameProviderRepository gameProviderRepository,
+            IGameRepository gameRepository,
+            IPlayerRepository playerRepository,
+            ISettingRepository settingRepository)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _brandService = brandService ?? throw new ArgumentNullException(nameof(brandService));
-            _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-            _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
-            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
+            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+            _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
         }
 
-        public async ValueTask<GameInfo> GetGameAsync(int gameId)
-            => await _gameService.GetAsync(gameId).ConfigureAwait(false);
+        public async ValueTask<GameModel> GetGameAsync(int gameId)
+            => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
         public async ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, Core.PlatformType platformType)
         {
@@ -43,7 +40,7 @@ namespace Tgs.GameProviders.Services.Habanero
                 .GetBrandGameProviderConfigurationIdAsync(gameProviderId, brandId)
                 .ConfigureAwait(false);
 
-            var (desktopEndpoint, mobileEndpoint) = await _gameProviderService
+            var (desktopEndpoint, mobileEndpoint) = await _gameProviderRepository
                 .GetGameEndpointsAsync(configurationId)
                 .ConfigureAwait(false);
 
@@ -51,11 +48,11 @@ namespace Tgs.GameProviders.Services.Habanero
         }
 
         public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
-            => _gameProviderService.GetAsync(gameProviderId);
+            => _gameProviderRepository.GetAsync(gameProviderId);
 
         public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
         {
-            var gameProviderCultureCode = await _gameProviderService
+            var gameProviderCultureCode = await _gameProviderRepository
                 .GetGameProviderCultureCodeAsync(gameProviderId, cultureCode)
                 .ConfigureAwait(false);
 
@@ -63,10 +60,10 @@ namespace Tgs.GameProviders.Services.Habanero
         }
 
         public async ValueTask<PlayerModel> GetPlayerAsync(string playerCode)
-            => await _playerService.GetAsync(playerCode).ConfigureAwait(false);
+            => await _playerRepository.GetAsync(playerCode).ConfigureAwait(false);
 
         public async ValueTask<HabaneroConfiguration> GetSettingConfigurationAsync()
-            => await _settingService
+            => await _settingRepository
                 .GetConfigurationAsync<HabaneroConfiguration>(GameProviderConfigurations.Habanero)
                 .ConfigureAwait(false);
     }

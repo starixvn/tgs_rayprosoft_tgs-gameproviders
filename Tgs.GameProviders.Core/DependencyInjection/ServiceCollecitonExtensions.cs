@@ -35,7 +35,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddMemoryCache()
                 .AddTransient<IBrandService, BrandService>()
                 .AddTransient<IGameActionService, GameActionService>()
-                .AddTransient<IGameService, GameService>()
                 .AddTransient<IRoundService, RoundService>()
                 .AddTransient<ISystemClock, SystemClock>();
     }

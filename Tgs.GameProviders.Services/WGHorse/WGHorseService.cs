@@ -10,19 +10,15 @@ namespace Tgs.GameProviders.Services.WGHorse
 {
     internal class WGHorseService : IWGHorseService
     {
-        private readonly IGameProviderRepository _gameProviderService;
-        private readonly IGameService _gameService;
-        private readonly ISettingRepository _settingService;
+        private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly ISettingRepository _settingRepository;
 
         public WGHorseService(
-            ISettingRepository settingService,
-            IGameProviderRepository gameProviderService,
-            IGameService gameService
-            )
+            ISettingRepository settingRepository,
+            IGameProviderRepository gameProviderRepository)
         {
-            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
-            _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         }
 
         public GameRoundClientStatus GetClientRound(decimal playerWinLoss)
@@ -35,22 +31,22 @@ namespace Tgs.GameProviders.Services.WGHorse
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
-            var gameProviderId = await _gameProviderService.GetGameProviderIdAsync(GameProviderType.WGHorse).ConfigureAwait(false);
-            var gameProviderCultureCode = await _gameProviderService.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
+            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGHorse).ConfigureAwait(false);
+            var gameProviderCultureCode = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
             return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "2";
         }
 
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
         {
-            var gameProviderId = await _gameProviderService.GetGameProviderIdAsync(GameProviderType.WGHorse).ConfigureAwait(false);
-            var gameProviderCurrencyCode = await _gameProviderService.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
+            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGHorse).ConfigureAwait(false);
+            var gameProviderCurrencyCode = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
             return !string.IsNullOrEmpty(gameProviderCurrencyCode) ? gameProviderCurrencyCode : null;
         }
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderService.GetGameProviderIdAsync(GameProviderType.WGHorse);
+            => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGHorse);
 
         public ValueTask<WGHorseConfiguration> GetSettingConfigurationAsync()
-            => _settingService.GetConfigurationAsync<WGHorseConfiguration>(GameProviderConfigurations.WGHorse);
+            => _settingRepository.GetConfigurationAsync<WGHorseConfiguration>(GameProviderConfigurations.WGHorse);
     }
 }

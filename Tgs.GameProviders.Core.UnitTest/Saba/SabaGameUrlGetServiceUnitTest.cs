@@ -36,7 +36,7 @@ public class SabaGameUrlGetServiceUnitTest
             IsTestEnvironment = false
         };
 
-        var gameInfo = new GameInfo(
+        var gameModel = new GameModel(
             600001,
             GameStatus.Active,
             "1",
@@ -71,8 +71,8 @@ public class SabaGameUrlGetServiceUnitTest
 
         var query = new SabaGameUrlQuery
         {
-            GameType = gameInfo.GameType,
-            GameId = gameInfo.GameId,
+            GameType = gameModel.GameType,
+            GameId = gameModel.GameId,
             BrandCode = "GPI",
             PlayerCode = player.PlayerCode,
             CurrencyCode = "CNY",
@@ -83,23 +83,23 @@ public class SabaGameUrlGetServiceUnitTest
             BackUrl = new("https://dev-t1.rpgp.cc/")
         };
 
-        fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
-        fakeUtility.ToSabaPlayerId(player.PlayerCode, configuration.IsTestEnvironment).Returns(player.PlayerCode);
-        fakeApiClient
-            .GetGameUrlAsync(
-                configuration.ApiUrl,
-                Arg.Is<SabaGameUrlRequest>(x =>
-                    x.VendorId == configuration.VendorId &&
-                    x.PlayerId == player.PlayerCode)
-            ).Returns(ValueTask.FromResult(new SabaGameUrlResponse
-            {
-                ErrorCode = SabaGetGameUrlApiError.Ok,
-                Url = returnUrl.AbsoluteUri
-            }));
+        _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+        _ = fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameModel.GameProviderId));
+        _ = fakeUtility.ToSabaPlayerId(player.PlayerCode, configuration.IsTestEnvironment).Returns(player.PlayerCode);
+        _ = fakeApiClient
+             .GetGameUrlAsync(
+                 configuration.ApiUrl,
+                 Arg.Is<SabaGameUrlRequest>(x =>
+                     x.VendorId == configuration.VendorId &&
+                     x.PlayerId == player.PlayerCode)
+             ).Returns(ValueTask.FromResult(new SabaGameUrlResponse
+             {
+                 ErrorCode = SabaGetGameUrlApiError.Ok,
+                 Url = returnUrl.AbsoluteUri
+             }));
 
-        fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
-            .Returns(ValueTask.FromResult(gameProviderLanguageCode));
+        _ = fakeService.GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
+             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         var gameUrl = new Uri($"{returnUrl.AbsoluteUri}?tsId={query.LoginRecordId}&lang={gameProviderLanguageCode}");
 
@@ -133,7 +133,7 @@ public class SabaGameUrlGetServiceUnitTest
             IsTestEnvironment = true
         };
 
-        var gameInfo = new GameInfo(
+        var gameModel = new GameModel(
             600001,
             GameStatus.Active,
             "1",
@@ -168,8 +168,8 @@ public class SabaGameUrlGetServiceUnitTest
 
         var query = new SabaGameUrlQuery
         {
-            GameType = gameInfo.GameType,
-            GameId = gameInfo.GameId,
+            GameType = gameModel.GameType,
+            GameId = gameModel.GameId,
             BrandCode = "GPI",
             PlayerCode = player.PlayerCode,
             CurrencyCode = "CNY",
@@ -182,10 +182,10 @@ public class SabaGameUrlGetServiceUnitTest
 
         var playerId = $"{player.PlayerCode}_test";
 
-        fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
-        fakeUtility.ToSabaPlayerId(player.PlayerCode, configuration.IsTestEnvironment).Returns(playerId);
-        fakeApiClient
+        _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+        _ = fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameModel.GameProviderId));
+        _ = fakeUtility.ToSabaPlayerId(player.PlayerCode, configuration.IsTestEnvironment).Returns(playerId);
+        _ = fakeApiClient
             .GetGameUrlAsync(
                 configuration.ApiUrl,
                 Arg.Is<SabaGameUrlRequest>(x =>
@@ -197,7 +197,7 @@ public class SabaGameUrlGetServiceUnitTest
                 Url = returnUrl.AbsoluteUri
             }));
 
-        fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
+        _ = fakeService.GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         var gameUrl = new Uri($"{returnUrl.AbsoluteUri}?tsId={query.LoginRecordId}&lang={gameProviderLanguageCode}");

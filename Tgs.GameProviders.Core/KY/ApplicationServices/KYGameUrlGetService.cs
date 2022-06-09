@@ -10,20 +10,17 @@ namespace Tgs.GameProviders.Core.KY.ApplicationServices
     public class KYGameUrlGetService : IGetService<KYGameUrlQuery, GameUrlResult>
     {
         private readonly IKYApiClient _client;
-        private readonly IGameService _gameService;
-        private readonly ILogger<KYGameUrlGetService> _logger;
+        private readonly IGameRepository _gameRepository;
         private readonly IKYService _service;
 
         public KYGameUrlGetService(
             IKYApiClient client,
-            IGameService gameService,
-            ILogger<KYGameUrlGetService> logger,
+            IGameRepository gameRepository,
             IKYService service
             )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
@@ -37,7 +34,7 @@ namespace Tgs.GameProviders.Core.KY.ApplicationServices
 
             if (command.GameType != GameType.CardGameLobby)
             {
-                var getGame = await _gameService.GetCacheAsync(command.GameId.Value).ConfigureAwait(false);
+                var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
                 if (getGame != null)
                 {
