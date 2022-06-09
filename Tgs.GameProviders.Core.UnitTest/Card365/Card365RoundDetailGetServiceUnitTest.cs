@@ -7,6 +7,7 @@ using NUnit.Framework;
 using Tgs.GameProviders.Core.Card365.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.Card365;
 
@@ -39,7 +40,7 @@ internal class Card365RoundDetailGetServiceUnitTest
             playerInfo.PlayerCode,
             1900008,
             playerInfo.DefaultWalletCurrencyCode,
-            Tgs.GameProviders.QueryServer.Models.RoundStatus.Closed,
+            GameRoundStatus.Closed,
             Guid.NewGuid(),
             playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -55,7 +56,7 @@ internal class Card365RoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            Tgs.GameProviders.QueryServer.Models.RoundClientStatus.Win,
+            GameRoundClientStatus.Win,
             null,
             null,
             null,

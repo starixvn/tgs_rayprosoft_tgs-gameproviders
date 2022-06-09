@@ -125,6 +125,33 @@ public class JokerApiClientUnitTest
     }
 
     [Test]
+    public async Task GetGameDetailUrlAsync()
+    {
+        var externalRoundId = "xmkeajuna89ne";
+        var dataType = JokerDataType.Game;
+        var language = "en";
+
+        var sut = Substitute.For<IJokerApiClient>();
+
+        var historyUrl = "//www.google.com";
+
+        _ = sut.GetGameDetailUrlAsync(
+                Arg.Is(_apiUrl),
+                Arg.Is(language),
+                Arg.Is(externalRoundId),
+                Arg.Is(dataType),
+                Arg.Is(_AppId),
+                Arg.Is(_SecretKey))
+            .Returns(historyUrl);
+
+        var actual = await sut
+            .GetGameDetailUrlAsync(_apiUrl, language, externalRoundId, dataType, _AppId, _SecretKey)
+            .ConfigureAwait(false);
+
+        Assert.AreEqual(historyUrl, actual);
+    }
+
+    [Test]
     public async Task GetGameRecordAsync()
     {
         var startTime = new DateTimeOffset(2022, 4, 20, 1, 30, 0, TimeSpan.FromHours(0));
@@ -198,33 +225,6 @@ public class JokerApiClientUnitTest
             .ConfigureAwait(false);
 
         Assert.AreEqual(token, actual);
-    }
-
-    [Test]
-    public async Task GetGameDetailUrlAsync()
-    {
-        var externalRoundId = "xmkeajuna89ne";
-        var dataType = JokerDataType.Game;
-        var language = "en";
-
-        var sut = Substitute.For<IJokerApiClient>();
-
-        var historyUrl = "//www.google.com";
-
-        _ = sut.GetGameDetailUrlAsync(
-                Arg.Is(_apiUrl),
-                Arg.Is(language),
-                Arg.Is(externalRoundId),
-                Arg.Is(dataType),
-                Arg.Is(_AppId),
-                Arg.Is(_SecretKey))
-            .Returns(historyUrl);
-
-        var actual = await sut
-            .GetGameDetailUrlAsync(_apiUrl, language, externalRoundId, dataType, _AppId, _SecretKey)
-            .ConfigureAwait(false);
-
-        Assert.AreEqual(historyUrl, actual);
     }
 
     [Test]

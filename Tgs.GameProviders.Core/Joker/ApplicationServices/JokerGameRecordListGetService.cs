@@ -5,16 +5,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core.Joker.Models;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
 internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQuery, JokerGameRecordResult>
 {
+    private readonly IJokerAgentMapper _agentMapper;
     private readonly IJokerApiClient _client;
     private readonly IJokerService _service;
-    private readonly IJokerAgentMapper _agentMapper;
 
     public JokerGameRecordListGetService(
         IJokerApiClient client,
@@ -69,7 +69,7 @@ internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQu
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,
                 PlayerCode = data.Username.ToLower(),
-                Status = RoundStatus.Closed,
+                Status = GameRoundStatus.Closed,
                 ClientStatus = GetClientStatus(playerWinLoss),
                 ExternalRoundId = data.TransactionId,
                 ExternalGameId = data.GameExternalId,
@@ -95,7 +95,7 @@ internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQu
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,
                 PlayerCode = data.Username,
-                Status = RoundStatus.Closed,
+                Status = GameRoundStatus.Closed,
                 ClientStatus = GetClientStatus(playerWinLoss),
                 ExternalRoundId = data.TransactionId,
                 ExternalGameId = data.GameExternalId,
@@ -121,7 +121,7 @@ internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQu
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,
                 PlayerCode = data.Username,
-                Status = RoundStatus.Closed,
+                Status = GameRoundStatus.Closed,
                 ClientStatus = GetClientStatus(playerWinLoss),
                 ExternalRoundId = data.TransactionId,
                 ExternalGameId = data.GameExternalId,
@@ -148,10 +148,10 @@ internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQu
         };
     }
 
-    private static RoundClientStatus GetClientStatus(decimal playerWinLoss)
+    private static GameRoundClientStatus GetClientStatus(decimal playerWinLoss)
         => playerWinLoss switch
         {
-            > 0 => RoundClientStatus.Win,
-            _ => RoundClientStatus.Loss
+            > 0 => GameRoundClientStatus.Win,
+            _ => GameRoundClientStatus.Loss
         };
 }

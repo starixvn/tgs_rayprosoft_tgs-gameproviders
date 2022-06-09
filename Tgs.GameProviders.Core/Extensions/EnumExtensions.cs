@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using Tgs.GameProviders.Domains;
 
 namespace Tgs.GameProviders.Core.Extensions
 {
@@ -16,8 +15,5 @@ namespace Tgs.GameProviders.Core.Extensions
                 ? defaultValue
                 : ((DescriptionAttribute)attributes[0]).Description;
         }
-
-        public static int GetGameProviderUniqueEventId(this GameProviderUnique gameProviderUnique)
-            => (int)gameProviderUnique * 100000;
     }
 }

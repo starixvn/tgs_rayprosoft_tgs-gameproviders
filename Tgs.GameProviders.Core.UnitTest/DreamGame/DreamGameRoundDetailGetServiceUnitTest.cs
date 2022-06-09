@@ -5,7 +5,7 @@ using NUnit.Framework;
 using Tgs.GameProviders.Core.DreamGame;
 using Tgs.GameProviders.Core.DreamGame.ApplicationServices;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.DreamGame;
 
@@ -42,7 +42,7 @@ public class DreamGameRoundDetailGetServiceUnitTest
             "test",
             1,
             "CNY",
-            RoundStatus.Closed,
+            GameRoundStatus.Closed,
             Guid.NewGuid(),
             Guid.NewGuid(),
             DateTimeOffset.Now,
@@ -58,7 +58,7 @@ public class DreamGameRoundDetailGetServiceUnitTest
             10m,
             -10m,
             null,
-            RoundClientStatus.Win,
+            GameRoundClientStatus.Win,
             null,
             null,
             null,

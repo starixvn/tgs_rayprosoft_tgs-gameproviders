@@ -115,6 +115,16 @@ namespace Tgs.GameProviders
                 {
                     var configuration = sp.GetRequiredService<IConfiguration>();
                     options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameProvidersQueryServerBaseUrl");
+                },
+                (options, sp) =>
+                {
+                    var configuration = sp.GetRequiredService<IConfiguration>();
+                    options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceAwcServiceBaseUrl");
+                },
+                (options, sp) =>
+                {
+                    var configuration = sp.GetRequiredService<IConfiguration>();
+                    options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameRoundsServiceBaseUrl");
                 });
 
             _ = services

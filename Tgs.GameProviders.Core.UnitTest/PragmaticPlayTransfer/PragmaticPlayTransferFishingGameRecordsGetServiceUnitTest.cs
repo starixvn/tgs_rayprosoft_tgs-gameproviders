@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using NSubstitute;
@@ -10,11 +9,11 @@ using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.PragmaticPlayTransfer;
 
-internal class PragmaticPlayTransferGameRecordListGetServiceUnitTest
+internal class PragmaticPlayTransferFishingGameRecordsGetServiceUnitTest
 {
     [Test]
     public async Task Normal_Process()
@@ -34,36 +33,30 @@ internal class PragmaticPlayTransferGameRecordListGetServiceUnitTest
         var success = true;
         var timepoint = 1652429638085L;
 
+        var data = new PragmaticPlayTransferGameRecordData
+        {
+            PlayerCode = "4ucmqplxb029",
+            ExternalGameId = "pp5fish",
+            ExternalRoundId = "2806980613",
+            ParentExternalRoundId = null,
+            StartDate = "2022-05-13 08:04:41",
+            EndDate = "2022-05-13 08:04:41",
+            Status = "C",
+            PlayType = "R",
+            CurrencyCode = "CNY",
+            BetAmount = 2.50m,
+            WinAmount = 0.00m,
+            Jackpot = 0.00m
+        };
+
         var gameRecordInfoResponse = new PragmaticPlayTransferGameRecordInfoResponse(
             DateTimeOffset.FromUnixTimeMilliseconds(timepoint),
-            new PragmaticPlayTransferGameRecordData[]
-            {
-                new PragmaticPlayTransferGameRecordData
-                {
-                    PlayerCode = "4ucmqplxb029",
-                    ExternalGameId = "vs25bkofkngdm",
-                    ExternalRoundId = "2806980613",
-                    ParentExternalRoundId = null,
-                    StartDate = "2022-05-13 08:04:41",
-                    EndDate = "2022-05-13 08:04:41",
-                    Status = "C",
-                    PlayType = "R",
-                    CurrencyCode = "CNY",
-                    BetAmount = 2.50m,
-                    WinAmount = 0.00m,
-                    Jackpot = 0.00m
-                }
-            });
+            new PragmaticPlayTransferGameRecordData[] { data });
 
         var gameProviderCode = GameProviderType.PragmaticPlayTransfer;
         var gameProviderId = Guid.Parse("e4ecfa98-b373-4123-87e0-cb9e883d0691");
 
-        var additionalData = new
-        {
-            ExternalRoundId = "2806980613",
-            ParentExternalRoundId = (string?)null,
-            PlayType = "Round"
-        };
+        var additionalData = JsonSerializer.Serialize(data);
 
         var expected = new PragmaticPlayTransferGameRecordResult
         {
@@ -76,10 +69,10 @@ internal class PragmaticPlayTransferGameRecordListGetServiceUnitTest
                      GameProviderCode = gameProviderCode,
                      GameProviderId = gameProviderId,
                      PlayerCode = "4ucmqplxb029",
-                     Status = RoundStatus.Closed,
-                     ClientStatus = RoundClientStatus.Loss,
+                     Status = GameRoundStatus.Closed,
+                     ClientStatus = GameRoundClientStatus.Loss,
                      ExternalRoundId = "2806980613",
-                     ExternalGameId = "vs25bkofkngdm",
+                     ExternalGameId = "pp5fish",
                      ExternalCreatedOn = DateTimeOffset.Parse("2022-05-13 08:04:41", null, DateTimeStyles.AssumeUniversal),
                      ExternalClosedOn = DateTimeOffset.Parse("2022-05-13 08:04:41", null, DateTimeStyles.AssumeUniversal),
                      BetAmount = 2.50m,
@@ -89,13 +82,12 @@ internal class PragmaticPlayTransferGameRecordListGetServiceUnitTest
                      Turnover = 2.50m,
                      SettleAmount = 0.00m,
                      TieBetAdjustment = null,
-                     AdditionalData = JsonSerializer.Serialize(additionalData)
+                     AdditionalData = additionalData
                  }
              }
         };
 
-        var query = new PragmaticPlayTransferGameRecordListQuery(
-            PragmaticPlayTransferGameDataType.RNG,
+        var query = new PragmaticPlayTransferFishingGameRecordsQuery(
             DateTimeOffset.Parse("2022-05-13T08:00:00+00:00"));
 
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
@@ -106,11 +98,11 @@ internal class PragmaticPlayTransferGameRecordListGetServiceUnitTest
                 Arg.Is(configuration.ApiUrl),
                 Arg.Is(configuration.SecureLogin),
                 Arg.Is(configuration.SecretKey),
-                Arg.Is(query.DataType.ToString()),
+                Arg.Is("R2"),
                 Arg.Is(query.StartTime))
             .Returns((success, gameRecordInfoResponse));
 
-        var sut = new PragmaticPlayTransferGameRecordListGetService(fakeService, fakeApiClient);
+        var sut = new PragmaticPlayTransferFishingGameRecordsGetService(fakeService, fakeApiClient);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration.KY;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.KY
 {
@@ -11,7 +11,7 @@ namespace Tgs.GameProviders.Core.KY
 
         ValueTask<KYBrandMerchant> GetBrandMerchantAsync(string brandCode);
 
-        RoundClientStatus GetClientRound(decimal playerWinLoss);
+        GameRoundClientStatus GetClientRound(decimal playerWinLoss);
 
         ValueTask<Guid> GetGameProviderIdAsync();
 

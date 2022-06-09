@@ -19,6 +19,8 @@ data:
         "NatsMQ": "{{ .Values.nats.urls }}"
       },
       "GameProviders": {
-        "GameProvidersQueryServerBaseUrl": "http://game-gameprovider-queryserver"
+        "GameProvidersQueryServerBaseUrl": "http://game-gameprovider-queryserver",
+        "GameInterfaceAwcServiceBaseUrl":"http://game-gameinterface-awc-service:9090",
+        "GameRoundsServiceBaseUrl":"http://game-gamerounds"
       },
     }

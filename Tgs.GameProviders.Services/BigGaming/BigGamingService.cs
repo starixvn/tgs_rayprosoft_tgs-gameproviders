@@ -6,7 +6,7 @@ using Tgs.GameProviders.Core.BigGaming;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.BigGaming;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Services.BigGaming
 {
@@ -30,12 +30,12 @@ namespace Tgs.GameProviders.Services.BigGaming
             return configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.CurrencyCode, currencyCode) && x.Status).FirstOrDefault();
         }
 
-        public RoundClientStatus GetClientRound(decimal winLoss)
+        public GameRoundClientStatus GetClientRound(decimal winLoss)
             => winLoss switch
             {
-                > 0 => RoundClientStatus.Win,
-                < 0 => RoundClientStatus.Loss,
-                0 => RoundClientStatus.Draw
+                > 0 => GameRoundClientStatus.Win,
+                < 0 => GameRoundClientStatus.Loss,
+                0 => GameRoundClientStatus.Draw
             };
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)

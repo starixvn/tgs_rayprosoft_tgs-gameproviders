@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration.VR;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.VR
 {
@@ -9,10 +9,10 @@ namespace Tgs.GameProviders.Core.VR
     {
         ValueTask<VRBrandMerchant> GetBrandMerchantAsync(string brandCode);
 
-        RoundClientStatus GetClientRound(int state);
+        GameRoundClientStatus GetClientRound(int state);
 
         ValueTask<Guid> GetGameProviderIdAsync();
 
-        RoundStatus GetRoundStatus(int state);
+        GameRoundStatus GetRoundStatus(int state);
     }
 }

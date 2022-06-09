@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Avia.ApplicationServices
@@ -62,7 +62,7 @@ namespace Tgs.GameProviders.Core.Avia.ApplicationServices
                 ExternalRoundId = data.OrderID,
                 ExternalGameId = "4",
                 ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.CreateAt), TimeSpan.FromHours(+8)),
-                ExternalClosedOn = _service.GetRoundStatus(data.Status) == RoundStatus.Closed ? new DateTimeOffset(DateTime.Parse(data.RewardAt), TimeSpan.FromHours(+8)) : null,
+                ExternalClosedOn = _service.GetRoundStatus(data.Status) == GameRoundStatus.Closed ? new DateTimeOffset(DateTime.Parse(data.RewardAt), TimeSpan.FromHours(+8)) : null,
                 BetAmount = data.BetAmount,
                 ValidBetAmount = data.BetMoney,
                 PlayerWinLoss = data.Money,

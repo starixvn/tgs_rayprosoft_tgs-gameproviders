@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration.Avia;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.Avia
 {
@@ -9,7 +9,7 @@ namespace Tgs.GameProviders.Core.Avia
     {
         ValueTask<AviaBrandMerchant> GetBrandMerchantAsync(string brandCode);
 
-        RoundClientStatus GetClientRound(string state);
+        GameRoundClientStatus GetClientRound(string state);
 
         string GetGameProviderCode();
 
@@ -19,6 +19,6 @@ namespace Tgs.GameProviders.Core.Avia
 
         ValueTask<Guid> GetGameProviderIdAsync();
 
-        RoundStatus GetRoundStatus(string state);
+        GameRoundStatus GetRoundStatus(string state);
     }
 }

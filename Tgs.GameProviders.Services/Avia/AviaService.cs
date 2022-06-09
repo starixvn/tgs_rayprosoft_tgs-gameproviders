@@ -6,7 +6,7 @@ using Tgs.GameProviders.Core.Avia;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.Avia;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Services.Avia
 {
@@ -32,14 +32,14 @@ namespace Tgs.GameProviders.Services.Avia
                 configuration.BrandMerchants.Where(x => IgnoreCaseEquals(x.BrandCode, DefConst.BrandCodeDefault) && x.Status).FirstOrDefault();
         }
 
-        public RoundClientStatus GetClientRound(string state)
+        public GameRoundClientStatus GetClientRound(string state)
             => state switch
             {
-                "None" => RoundClientStatus.Open,
-                "Cancel" => RoundClientStatus.Void,
-                "Win" => RoundClientStatus.Win,
-                "Lose" => RoundClientStatus.Loss,
-                _ => RoundClientStatus.Void
+                "None" => GameRoundClientStatus.Open,
+                "Cancel" => GameRoundClientStatus.Void,
+                "Win" => GameRoundClientStatus.Win,
+                "Lose" => GameRoundClientStatus.Loss,
+                _ => GameRoundClientStatus.Void
             };
 
         public string GetGameProviderCode()
@@ -62,11 +62,11 @@ namespace Tgs.GameProviders.Services.Avia
         public ValueTask<Guid> GetGameProviderIdAsync()
              => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.Avia);
 
-        public RoundStatus GetRoundStatus(string state)
+        public GameRoundStatus GetRoundStatus(string state)
             => state switch
             {
-                "None" => RoundStatus.Open,
-                _ => RoundStatus.Closed
+                "None" => GameRoundStatus.Open,
+                _ => GameRoundStatus.Closed
             };
 
         private static bool IgnoreCaseEquals(string source, string trigger)

@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.DreamGame.ApplicationServices
@@ -45,8 +45,8 @@ namespace Tgs.GameProviders.Core.DreamGame.ApplicationServices
                 GameProviderCode = gameProviderCode,
                 GameProviderId = gameProviderId,
                 PlayerCode = data.UserName.ToLower(),
-                Status = data.IsRevocation == 0 ? RoundStatus.Open : RoundStatus.Closed,
-                ClientStatus = data.IsRevocation == 0 ? RoundClientStatus.Open : data.IsRevocation == 2 ? RoundClientStatus.Void : (data.WinOrLoss - data.BetPoints) == 0 ? RoundClientStatus.Draw : (data.WinOrLoss - data.BetPoints) > 0 ? RoundClientStatus.Win : RoundClientStatus.Loss,
+                Status = data.IsRevocation == 0 ? GameRoundStatus.Open : GameRoundStatus.Closed,
+                ClientStatus = data.IsRevocation == 0 ? GameRoundClientStatus.Open : data.IsRevocation == 2 ? GameRoundClientStatus.Void : (data.WinOrLoss - data.BetPoints) == 0 ? GameRoundClientStatus.Draw : (data.WinOrLoss - data.BetPoints) > 0 ? GameRoundClientStatus.Win : GameRoundClientStatus.Loss,
                 ExternalRoundId = data.Id.ToString(),
                 ExternalGameId = data.TableId.ToString(),
                 ExternalCreatedOn = new DateTimeOffset(DateTime.Parse(data.BetTime), TimeSpan.FromHours(+8)),

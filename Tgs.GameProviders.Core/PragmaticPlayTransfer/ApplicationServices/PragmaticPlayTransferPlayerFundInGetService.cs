@@ -8,8 +8,8 @@ namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 
 internal class PragmaticPlayTransferPlayerFundInGetService : IGetService<PragmaticPlayTransferPlayerFundInQuery, PlayerFundResult>
 {
-    private readonly IPragmaticPlayTransferService _service;
     private readonly IPragmaticPlayTransferApiClient _client;
+    private readonly IPragmaticPlayTransferService _service;
 
     public PragmaticPlayTransferPlayerFundInGetService(
         IPragmaticPlayTransferService service,

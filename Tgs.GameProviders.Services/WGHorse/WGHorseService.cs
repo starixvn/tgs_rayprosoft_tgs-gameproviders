@@ -4,7 +4,7 @@ using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.WGHorse;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Services.WGHorse
 {
@@ -25,12 +25,12 @@ namespace Tgs.GameProviders.Services.WGHorse
             _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         }
 
-        public RoundClientStatus GetClientRound(decimal playerWinLoss)
+        public GameRoundClientStatus GetClientRound(decimal playerWinLoss)
             => playerWinLoss switch
             {
-                > 0 => RoundClientStatus.Win,
-                0 => RoundClientStatus.Draw,
-                < 0 => RoundClientStatus.Loss,
+                > 0 => GameRoundClientStatus.Win,
+                0 => GameRoundClientStatus.Draw,
+                < 0 => GameRoundClientStatus.Loss,
             };
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)

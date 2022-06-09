@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,8 +13,8 @@ using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameProviders.ViewModels;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.IntegrationTests.GameRecordList;
 
@@ -62,12 +61,6 @@ internal class PragmaticPlayTransferGameRecordListUnitTest
         var gameProviderId = Guid.Parse("e4ecfa98-b373-4123-87e0-cb9e883d0691");
 
         var success = true;
-        var additionalData = new
-        {
-            ExternalRoundId = "2806980613",
-            ParentExternalRoundId = (string?)null,
-            PlayType = "Round"
-        };
 
         var result = new PragmaticPlayTransferGameRecordResult
         {
@@ -80,8 +73,8 @@ internal class PragmaticPlayTransferGameRecordListUnitTest
                     GameProviderCode = gameProviderCode,
                     GameProviderId = gameProviderId,
                     PlayerCode = "4ucmqplxb029",
-                    Status = RoundStatus.Closed,
-                    ClientStatus = RoundClientStatus.Loss,
+                    Status = GameRoundStatus.Closed,
+                    ClientStatus = GameRoundClientStatus.Loss,
                     ExternalRoundId = "2806980613",
                     ExternalGameId = "vs25bkofkngdm",
                     ExternalCreatedOn = DateTimeOffset.Parse("2022-05-13 08:04:41", null, DateTimeStyles.AssumeUniversal),
@@ -93,7 +86,7 @@ internal class PragmaticPlayTransferGameRecordListUnitTest
                     Turnover = 2.50m,
                     SettleAmount = 0.00m,
                     TieBetAdjustment = null,
-                    AdditionalData = JsonSerializer.Serialize(additionalData)
+                    AdditionalData = null
                 }
             }
         };

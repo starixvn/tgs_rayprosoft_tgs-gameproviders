@@ -11,6 +11,7 @@ using Tgs.GameProviders.Core.Saba.Models;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.Saba;
 
@@ -126,7 +127,7 @@ public class SabaRoundDetailGetServiceUnitTest
             playerInfo.PlayerCode,
             600001,
             playerInfo.DefaultWalletCurrencyCode,
-            Tgs.GameProviders.QueryServer.Models.RoundStatus.Closed,
+            GameRoundStatus.Closed,
             Guid.NewGuid(),
             playerInfo.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
@@ -142,7 +143,7 @@ public class SabaRoundDetailGetServiceUnitTest
             20m,
             -25m,
             null,
-            Tgs.GameProviders.QueryServer.Models.RoundClientStatus.Win,
+            GameRoundClientStatus.Win,
             null,
             null,
             null,

@@ -7,9 +7,9 @@ namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
 internal class JokerPlayerFundOutGetService : IGetService<JokerPlayerFundOutQuery, PlayerFundResult>
 {
+    private readonly IJokerAgentMapper _agentMapper;
     private readonly IJokerApiClient _client;
     private readonly IJokerService _service;
-    private readonly IJokerAgentMapper _agentMapper;
 
     public JokerPlayerFundOutGetService(
         IJokerApiClient client,

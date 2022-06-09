@@ -9,11 +9,11 @@ namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
 internal class JokerRoundDetailGetService : IGetService<JokerRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IJokerApiClient _client;
-    private readonly IJokerService _service;
     private readonly IJokerAgentMapper _agentMapper;
+    private readonly IJokerApiClient _client;
     private readonly IPlayerService _playerService;
     private readonly IRoundService _roundService;
+    private readonly IJokerService _service;
 
     public JokerRoundDetailGetService(
         IJokerApiClient client,
