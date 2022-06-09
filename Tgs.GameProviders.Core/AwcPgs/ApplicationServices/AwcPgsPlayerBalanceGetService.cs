@@ -10,7 +10,7 @@ namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
     public class AwcPgsPlayerBalanceGetService : IGetService<AwcPgsPlayerBalanceQuery, decimal?>
     {
         private readonly IBrandService _brand;
-        private readonly IAwcRcbGamePlayer _gamePlayer;
+        private readonly IAwcPgsGamePlayer _gamePlayer;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
         private readonly IPlayerRepository _player;
@@ -18,7 +18,7 @@ namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
 
         public AwcPgsPlayerBalanceGetService(
             IBrandService brand,
-            IAwcRcbGamePlayer gamePlayer,
+            IAwcPgsGamePlayer gamePlayer,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
             IPlayerRepository player,
@@ -34,8 +34,8 @@ namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
 
         public async ValueTask<decimal?> GetAsync(AwcPgsPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
-            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_RCB).ConfigureAwait(false);
-            var configuration = await _setting.GetAwcRcbConfigurationAsync().ConfigureAwait(false);
+            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_PGS).ConfigureAwait(false);
+            var configuration = await _setting.GetAwcPgsConfigurationAsync().ConfigureAwait(false);
             var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
