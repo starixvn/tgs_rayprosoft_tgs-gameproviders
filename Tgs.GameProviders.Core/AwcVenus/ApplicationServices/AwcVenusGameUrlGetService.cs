@@ -55,7 +55,7 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
                 Language = cultureCode
             };
 
-            var response = await _grpc.GameUrlByLiveLobbyByAwcVenusAsync(
+            var response = await _grpc.GameUrlLiveLobbyByAwcVenusAsync(
                 request: request,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -69,7 +69,7 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
                       command.Language,
                       cancellationToken).ConfigureAwait(false);
 
-                response = await _grpc.GameUrlByLiveLobbyByAwcVenusAsync(
+                response = await _grpc.GameUrlLiveLobbyByAwcVenusAsync(
                     request: request,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
             }
