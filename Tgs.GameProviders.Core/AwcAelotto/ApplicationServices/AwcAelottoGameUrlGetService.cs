@@ -48,7 +48,7 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
             var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en";
             var game = await _game.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
-            var response = game.GameType == GameType.Lottery
+            var response = game.GameCode.Contains("AE-LOTTO-021", StringComparison.InvariantCultureIgnoreCase)
                 ? await GetGameUrl(
                    configuration,
                    configurationData,
@@ -117,7 +117,7 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
                 Language = cultureCode
             };
 
-            var response = await _grpc.GameUrlByLottoLobbyByAwcAeLottoAsync(
+            var response = await _grpc.GameUrlLottoLobbyByAwcAeLottoAsync(
                 request: request,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -131,7 +131,7 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
                       command.Language,
                       cancellationToken).ConfigureAwait(false);
 
-                response = await _grpc.GameUrlByLottoLobbyByAwcAeLottoAsync(
+                response = await _grpc.GameUrlLottoLobbyByAwcAeLottoAsync(
                     request: request,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
             }
