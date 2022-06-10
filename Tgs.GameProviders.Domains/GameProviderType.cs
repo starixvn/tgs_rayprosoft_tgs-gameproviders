@@ -15,6 +15,7 @@
         public static readonly string AWC_PGS = "AWC_PGS";
         public static readonly string AWC_RCB = "AWC_RCB";
         public static readonly string AWC_SPADE = "AWC_SPADE";
+        public static readonly string AWC_SG = "AWC_SG";
         public static readonly string AWC_VENUS = "AWC_VENUS";
         public static readonly string AWC_YL = "AWC_YL";
         public static readonly string BetConstruct = "BC";

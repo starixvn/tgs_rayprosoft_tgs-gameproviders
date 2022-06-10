@@ -26,6 +26,8 @@ namespace Tgs.GameProviders.Core
 
         ValueTask<AwcSpadeConfiguration> GetAwcSpadeConfigurationAsync();
 
+        ValueTask<AwcSgConfiguration> GetAwcSgConfigurationAsync();
+
         ValueTask<AwcVenusConfiguration> GetAwcVenusConfigurationAsync();
 
         ValueTask<AwcYlConfiguration> GetAwcYlConfigurationAsync();
