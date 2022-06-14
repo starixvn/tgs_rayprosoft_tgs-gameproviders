@@ -10,7 +10,7 @@ namespace Tgs.GameProviders.Core.AwcRcb.ApplicationServices
     public class AwcRcbPlayerBalanceGetService : IGetService<AwcRcbPlayerBalanceQuery, decimal?>
     {
         private readonly IBrandService _brand;
-        private readonly IAwcRcbGamePlayer _gamePlayer;
+        private readonly ICommandService<AwcRcbCreatePlayerCommand> _createPlayerCommandService;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
         private readonly IPlayerRepository _player;
@@ -18,14 +18,14 @@ namespace Tgs.GameProviders.Core.AwcRcb.ApplicationServices
 
         public AwcRcbPlayerBalanceGetService(
             IBrandService brand,
-            IAwcRcbGamePlayer gamePlayer,
+            ICommandService<AwcRcbCreatePlayerCommand> createPlayerCommandService,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
             IPlayerRepository player,
             ISettingRepository setting)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
-            _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
+            _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
             _player = player ?? throw new ArgumentNullException(nameof(player));
@@ -40,33 +40,28 @@ namespace Tgs.GameProviders.Core.AwcRcb.ApplicationServices
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
-            var apiUrl = configuration.ApiUrl;
-            string agentId = configurationData.AgentId;
-            string cert = configurationData.Cert;
-            string playerCode = command.PlayerCode;
-
             var response = await _grpc.GetBalanceAsync(
-                apiUrl,
-                agentId,
-                cert,
-                playerCode,
-                cancellationToken).ConfigureAwait(false);
+                apiUrl: configuration.ApiUrl,
+                agentId: configurationData.AgentId,
+                cert: configurationData.Cert,
+                playerCode: player.PlayerCode,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
 
             if (response.Success && !response.IsPlayerExist)
             {
-                await _gamePlayer.CreatePlayerAsync(
-                      configuration,
-                      configurationData,
-                      player.PlayerCode,
-                      player.DefaultWalletCurrencyCode,
-                      cancellationToken: cancellationToken).ConfigureAwait(false);
+                await _createPlayerCommandService.ExecuteAsync(new AwcRcbCreatePlayerCommand(
+                    Configuration: configuration,
+                    ConfigurationData: configurationData,
+                    PlayerCode: player.PlayerCode,
+                    CurrencyCode: player.DefaultWalletCurrencyCode),
+                    cancellationToken).ConfigureAwait(false);
 
                 response = await _grpc.GetBalanceAsync(
-                    apiUrl,
-                    agentId,
-                    cert,
-                    playerCode,
-                    cancellationToken).ConfigureAwait(false);
+                    apiUrl: configuration.ApiUrl,
+                    agentId: configurationData.AgentId,
+                    cert: configurationData.Cert,
+                    playerCode: player.PlayerCode,
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
             return !response.Success

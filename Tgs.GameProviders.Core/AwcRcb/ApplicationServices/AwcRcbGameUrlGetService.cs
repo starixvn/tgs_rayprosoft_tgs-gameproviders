@@ -2,7 +2,6 @@
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using NATS.Client.JetStream;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.AwcService.Protos;
 using Tgs.GameProviders.Domains;
@@ -13,7 +12,7 @@ namespace Tgs.GameProviders.Core.AwcRcb.ApplicationServices
     public class AwcRcbGameUrlGetService : IGetService<AwcRcbGameUrlQuery, GameUrlResult>
     {
         private readonly IBrandService _brand;
-        private readonly IAwcRcbGamePlayer _gamePlayer;
+        private readonly ICommandService<AwcRcbCreatePlayerCommand> _createPlayerCommandService;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
         private readonly IPlayerRepository _player;
@@ -21,14 +20,14 @@ namespace Tgs.GameProviders.Core.AwcRcb.ApplicationServices
 
         public AwcRcbGameUrlGetService(
             IBrandService brand,
-            IAwcRcbGamePlayer gamePlayer,
+            ICommandService<AwcRcbCreatePlayerCommand> createPlayerCommandService,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
             IPlayerRepository player,
             ISettingRepository setting)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
-            _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
+            _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
             _player = player ?? throw new ArgumentNullException(nameof(player));
@@ -62,13 +61,13 @@ namespace Tgs.GameProviders.Core.AwcRcb.ApplicationServices
 
             if (response.Success && !response.IsPlayerExist)
             {
-                await _gamePlayer.CreatePlayerAsync(
-                      configuration,
-                      configurationData,
-                      player.PlayerCode,
-                      player.DefaultWalletCurrencyCode,
-                      command.Language,
-                      cancellationToken).ConfigureAwait(false);
+                await _createPlayerCommandService.ExecuteAsync(new AwcRcbCreatePlayerCommand(
+                    Configuration: configuration,
+                    ConfigurationData: configurationData,
+                    PlayerCode: player.PlayerCode,
+                    CurrencyCode: player.DefaultWalletCurrencyCode,
+                    Language: command.Language),
+                    cancellationToken).ConfigureAwait(false);
 
                 response = await _grpc.GameUrlLiveLobbyByAwcRcbAsync(
                     request: request,
