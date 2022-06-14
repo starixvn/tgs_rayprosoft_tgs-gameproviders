@@ -13,8 +13,8 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
     public class AwcAelottoGameUrlGetService : IGetService<AwcAelottoGameUrlQuery, GameUrlResult>
     {
         private readonly IBrandService _brand;
+        private readonly ICommandService<AwcAelottoCreatePlayerCommand> _createPlayerCommandService;
         private readonly IGameRepository _game;
-        private readonly IAwcAelottoGamePlayer _gamePlayer;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
         private readonly IPlayerRepository _player;
@@ -22,16 +22,16 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
 
         public AwcAelottoGameUrlGetService(
             IBrandService brand,
+            ICommandService<AwcAelottoCreatePlayerCommand> createPlayerCommandService,
             IGameRepository game,
-            IAwcAelottoGamePlayer gamePlayer,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
             IPlayerRepository player,
             ISettingRepository setting)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+            _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
             _game = game ?? throw new ArgumentNullException(nameof(game));
-            _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
             _player = player ?? throw new ArgumentNullException(nameof(player));
@@ -48,7 +48,7 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
             var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en";
             var game = await _game.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
-            var response = game.GameCode.Contains("AE-LOTTO-021", StringComparison.InvariantCultureIgnoreCase)
+            var response = game.GameExternalId.Contains("AE-LOTTO-021", StringComparison.InvariantCultureIgnoreCase)
                 ? await GetGameUrl(
                    configuration,
                    configurationData,
@@ -88,13 +88,13 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
 
             if (response.Success && !response.IsPlayerExist)
             {
-                await _gamePlayer.CreatePlayerAsync(
-                      configuration,
-                      configurationData,
-                      player.PlayerCode,
-                      player.DefaultWalletCurrencyCode,
-                      command.Language,
-                      cancellationToken).ConfigureAwait(false);
+                await _createPlayerCommandService.ExecuteAsync(new AwcAelottoCreatePlayerCommand(
+                    Configuration: configuration,
+                    ConfigurationData: configurationData,
+                    PlayerCode: player.PlayerCode,
+                    CurrencyCode: player.DefaultWalletCurrencyCode,
+                    Language: command.Language),
+                    cancellationToken).ConfigureAwait(false);
 
                 response = await _grpc.GameUrlByAwcAeLottoAsync(
                     request: request,
@@ -123,13 +123,13 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
 
             if (response.Success && !response.IsPlayerExist)
             {
-                await _gamePlayer.CreatePlayerAsync(
-                      configuration,
-                      configurationData,
-                      player.PlayerCode,
-                      player.DefaultWalletCurrencyCode,
-                      command.Language,
-                      cancellationToken).ConfigureAwait(false);
+                await _createPlayerCommandService.ExecuteAsync(new AwcAelottoCreatePlayerCommand(
+                    Configuration: configuration,
+                    ConfigurationData: configurationData,
+                    PlayerCode: player.PlayerCode,
+                    CurrencyCode: player.DefaultWalletCurrencyCode,
+                    Language: command.Language),
+                    cancellationToken).ConfigureAwait(false);
 
                 response = await _grpc.GameUrlLottoLobbyByAwcAeLottoAsync(
                     request: request,
