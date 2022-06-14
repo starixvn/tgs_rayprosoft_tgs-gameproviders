@@ -28,14 +28,14 @@ namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices
                 ?? throw new Exception($"This game product currency does not exist.({command.CurrencyCode})");
 
             await _grpc.CreatePlayerAsync(
-                 command.Configuration.ApiUrl,
-                 command.ConfigurationData.AgentId,
-                 command.ConfigurationData.Cert,
-                 command.PlayerCode,
-                 command.PlayerCode,
-                 currency,
-                 cultureCode,
-                 cancellationToken: cancellationToken).ConfigureAwait(false);
+                apiUrl: command.Configuration.ApiUrl,
+                agentId: command.ConfigurationData.AgentId,
+                cert: command.ConfigurationData.Cert,
+                playerCode: command.PlayerCode,
+                userName: command.PlayerCode,
+                currency: currency,
+                language: cultureCode,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }
