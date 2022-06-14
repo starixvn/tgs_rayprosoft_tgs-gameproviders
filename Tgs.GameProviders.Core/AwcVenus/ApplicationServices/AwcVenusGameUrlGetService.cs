@@ -12,7 +12,7 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
     public class AwcVenusGameUrlGetService : IGetService<AwcVenusGameUrlQuery, GameUrlResult>
     {
         private readonly IBrandService _brand;
-        private readonly IAwcVenusGamePlayer _gamePlayer;
+        private readonly ICommandService<AwcVenusCreatePlayerCommand> _createPlayerCommandService;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
         private readonly IPlayerRepository _player;
@@ -20,14 +20,14 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
 
         public AwcVenusGameUrlGetService(
             IBrandService brand,
-            IAwcVenusGamePlayer gamePlayer,
+            ICommandService<AwcVenusCreatePlayerCommand> createPlayerCommandService,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
             IPlayerRepository player,
             ISettingRepository setting)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
-            _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
+            _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
             _player = player ?? throw new ArgumentNullException(nameof(player));
@@ -61,13 +61,13 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
 
             if (response.Success && !response.IsPlayerExist)
             {
-                await _gamePlayer.CreatePlayerAsync(
-                      configuration,
-                      configurationData,
-                      player.PlayerCode,
-                      player.DefaultWalletCurrencyCode,
-                      command.Language,
-                      cancellationToken).ConfigureAwait(false);
+                await _createPlayerCommandService.ExecuteAsync(new AwcVenusCreatePlayerCommand(
+                    Configuration: configuration,
+                    ConfigurationData: configurationData,
+                    PlayerCode: player.PlayerCode,
+                    CurrencyCode: player.DefaultWalletCurrencyCode,
+                    Language: command.Language),
+                    cancellationToken).ConfigureAwait(false);
 
                 response = await _grpc.GameUrlLiveLobbyByAwcVenusAsync(
                     request: request,

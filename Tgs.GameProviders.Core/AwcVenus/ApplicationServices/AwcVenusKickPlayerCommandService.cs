@@ -36,17 +36,13 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
             var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
-            var apiUrl = configuration.ApiUrl;
-            string agentId = configurationData.AgentId;
-            string cert = configurationData.Cert;
-            string playerCode = command.PlayerCode;
 
             await _grpc.KickPlayerAsync(
-                apiUrl,
-                agentId,
-                cert,
-                playerCode,
-                cancellationToken).ConfigureAwait(false);
+                apiUrl: configuration.ApiUrl,
+                agentId: configurationData.AgentId,
+                cert: configurationData.Cert,
+                playerCode: player.PlayerCode,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }
