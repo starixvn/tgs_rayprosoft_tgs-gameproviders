@@ -70,7 +70,7 @@ public class AwcFsGameUrlGetServiceUnitTest
             "test",
             "test",
             null,
-            GameProviderType.AWC_AWS);
+            GameProviderType.AWC_FS);
 
         var query = new AwcFsGameUrlQuery
         {

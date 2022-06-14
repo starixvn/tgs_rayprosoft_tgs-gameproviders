@@ -70,7 +70,7 @@ public class AwcFacaiGameUrlGetServiceUnitTest
             "test",
             "test",
             null,
-            GameProviderType.AWC_AWS);
+            GameProviderType.AWC_FACAI);
 
         var query = new AwcFacaiGameUrlQuery
         {

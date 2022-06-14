@@ -36,16 +36,12 @@ namespace Tgs.GameProviders.Core.AwcKm.ApplicationServices
             var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
-            var apiUrl = configuration.ApiUrl;
-            string agentId = configurationData.AgentId;
-            string cert = configurationData.Cert;
-            string playerCode = command.PlayerCode;
 
             await _grpc.KickPlayerAsync(
-                apiUrl,
-                agentId,
-                cert,
-                playerCode,
+                configuration.ApiUrl,
+                configurationData.AgentId,
+                configurationData.Cert,
+                command.PlayerCode,
                 cancellationToken).ConfigureAwait(false);
         }
     }
