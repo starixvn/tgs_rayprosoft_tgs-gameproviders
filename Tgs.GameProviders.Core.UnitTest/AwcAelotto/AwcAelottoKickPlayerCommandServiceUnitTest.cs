@@ -23,8 +23,6 @@ public class AwcAelottoKickPlayerCommandServiceUnitTest
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
-        var gameUrl = new Uri("http://www.google.com");
-
         var configuration = new AwcAelottoConfiguration
         {
             ApiUrl = new("https://tttint.onlinegames22.com/"),
@@ -32,8 +30,8 @@ public class AwcAelottoKickPlayerCommandServiceUnitTest
         };
 
         var configurationData = new AwcConfigurationData(
-            AgentId: "thbgpiaelotto",
-            Cert: "sJQKnLeKugNHE7yqW7C",
+            AgentId: "testAgentId",
+            Cert: "testCert",
             BetLimit: null);
 
         var playerModel = new PlayerModel(
@@ -79,7 +77,6 @@ public class AwcAelottoKickPlayerCommandServiceUnitTest
             Arg.Is(configuration.ApiUrl),
             Arg.Is(configurationData.AgentId),
             Arg.Is(configurationData.Cert),
-            Arg.Is(command.PlayerCode)
-            );
+            Arg.Is(command.PlayerCode));
     }
 }

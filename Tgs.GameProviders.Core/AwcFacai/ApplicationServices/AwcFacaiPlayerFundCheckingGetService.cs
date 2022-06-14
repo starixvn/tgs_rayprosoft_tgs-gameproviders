@@ -37,14 +37,10 @@ namespace Tgs.GameProviders.Core.AwcFacai.ApplicationServices
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
-            var apiUrl = configuration.ApiUrl;
-            string agentId = configurationData.AgentId;
-            string cert = configurationData.Cert;
-
             var response = await _grpc.FundOrderCheckingAsync(
-                apiUrl,
-                agentId,
-                cert,
+                configuration.ApiUrl,
+                configurationData.AgentId,
+                configurationData.Cert,
                 command.OrderId,
                 cancellationToken).ConfigureAwait(false);
 

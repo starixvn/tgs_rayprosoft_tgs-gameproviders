@@ -25,8 +25,6 @@ public class AwcAwsPlayerBalanceGetServiceUnitTest
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
-        var gameUrl = new Uri("http://www.google.com");
-
         var configuration = new AwcAwsConfiguration
         {
             ApiUrl = new("https://tttint.onlinegames22.com/"),
@@ -34,8 +32,8 @@ public class AwcAwsPlayerBalanceGetServiceUnitTest
         };
 
         var configurationData = new AwcConfigurationData(
-            AgentId: "thbgpiaelotto",
-            Cert: "sJQKnLeKugNHE7yqW7C",
+            AgentId: "testAgentId",
+            Cert: "testCert",
             BetLimit: null);
 
         var playerModel = new PlayerModel(

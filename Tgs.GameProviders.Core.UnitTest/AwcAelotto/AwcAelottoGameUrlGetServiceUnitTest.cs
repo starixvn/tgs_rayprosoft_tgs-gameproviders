@@ -35,8 +35,8 @@ public class AwcAelottoGameUrlGetServiceUnitTest
         };
 
         var configurationData = new AwcConfigurationData(
-            AgentId: "thbgpiaelotto",
-            Cert: "sJQKnLeKugNHE7yqW7C",
+            AgentId: "testAgentId",
+            Cert: "testCert",
             BetLimit: null);
 
         var playerModel = new PlayerModel(
@@ -153,8 +153,8 @@ public class AwcAelottoGameUrlGetServiceUnitTest
         };
 
         var configurationData = new AwcConfigurationData(
-            AgentId: "thbgpiaelotto",
-            Cert: "sJQKnLeKugNHE7yqW7C",
+            AgentId: "testAgentId",
+            Cert: "testCert",
             BetLimit: null);
 
         var playerModel = new PlayerModel(
