@@ -38,11 +38,11 @@ namespace Tgs.GameProviders.Core.AwcKm.ApplicationServices
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
             var response = await _grpc.FundOrderCheckingAsync(
-                configuration.ApiUrl,
-                configurationData.AgentId,
-                configurationData.Cert,
-                command.OrderId,
-                cancellationToken).ConfigureAwait(false);
+                apiUrl: configuration.ApiUrl,
+                agentId: configurationData.AgentId,
+                cert: configurationData.Cert,
+                transactionId: command.OrderId,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return new() { OrderStatus = response };
         }
