@@ -38,13 +38,13 @@ namespace Tgs.GameProviders.Core.AwcSg.ApplicationServices
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
             var reply = await _grpc.FundInAsync(
-                apiUrl: configuration.ApiUrl,
-                agentId: configurationData.AgentId,
-                cert: configurationData.Cert,
-                playerCode: player.PlayerCode,
-                transactionId: command.OrderId,
-                amount: command.Amount,
-                cancellationToken: cancellationToken).ConfigureAwait(false);
+               apiUrl: configuration.ApiUrl,
+               agentId: configurationData.AgentId,
+               cert: configurationData.Cert,
+               playerCode: player.PlayerCode,
+               transactionId: command.OrderId,
+               amount: command.Amount,
+               cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return (reply.Success) ? new() { OrderId = reply.GameProductTransactionId } : null;
         }
