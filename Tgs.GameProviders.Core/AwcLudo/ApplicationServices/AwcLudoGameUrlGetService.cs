@@ -11,8 +11,8 @@ namespace Tgs.GameProviders.Core.AwcLudo.ApplicationServices
     public class AwcLudoGameUrlGetService : IGetService<AwcLudoGameUrlQuery, GameUrlResult>
     {
         private readonly IBrandService _brand;
+        private readonly ICommandService<AwcLudoCreatePlayerCommand> _createPlayerCommandService;
         private readonly IGameRepository _game;
-        private readonly IAwcLudoGamePlayer _gamePlayer;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
         private readonly IPlayerRepository _player;
@@ -20,16 +20,16 @@ namespace Tgs.GameProviders.Core.AwcLudo.ApplicationServices
 
         public AwcLudoGameUrlGetService(
             IBrandService brand,
+            ICommandService<AwcLudoCreatePlayerCommand> createPlayerCommandService,
             IGameRepository game,
-            IAwcLudoGamePlayer gamePlayer,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
             IPlayerRepository player,
             ISettingRepository setting)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+            _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
             _game = game ?? throw new ArgumentNullException(nameof(game));
-            _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
             _player = player ?? throw new ArgumentNullException(nameof(player));
@@ -65,13 +65,13 @@ namespace Tgs.GameProviders.Core.AwcLudo.ApplicationServices
 
             if (response.Success && !response.IsPlayerExist)
             {
-                await _gamePlayer.CreatePlayerAsync(
-                      configuration,
-                      configurationData,
-                      player.PlayerCode,
-                      player.DefaultWalletCurrencyCode,
-                      command.Language,
-                      cancellationToken).ConfigureAwait(false);
+                await _createPlayerCommandService.ExecuteAsync(new AwcLudoCreatePlayerCommand(
+                    Configuration: configuration,
+                    ConfigurationData: configurationData,
+                    PlayerCode: player.PlayerCode,
+                    CurrencyCode: player.DefaultWalletCurrencyCode,
+                    Language: command.Language),
+                    cancellationToken).ConfigureAwait(false);
 
                 response = await _grpc.GameUrlByAwcLudoAsync(
                     request: request,
