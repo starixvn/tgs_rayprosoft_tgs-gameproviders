@@ -38,11 +38,11 @@ namespace Tgs.GameProviders.Core.AwcFacai.ApplicationServices
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
             await _grpc.KickPlayerAsync(
-                configuration.ApiUrl,
-                configurationData.AgentId,
-                configurationData.Cert,
-                command.PlayerCode,
-                cancellationToken).ConfigureAwait(false);
+                apiUrl: configuration.ApiUrl,
+                agentId: configurationData.AgentId,
+                cert: configurationData.Cert,
+                playerCode: player.PlayerCode,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
         }
     }
 }
