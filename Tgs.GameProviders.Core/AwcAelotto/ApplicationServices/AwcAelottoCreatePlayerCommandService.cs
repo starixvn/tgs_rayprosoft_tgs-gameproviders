@@ -26,6 +26,7 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
             var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language).ConfigureAwait(false) ?? "en";
             var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, command.CurrencyCode).ConfigureAwait(false)
                 ?? throw new Exception($"This game product currency does not exist.({command.CurrencyCode})");
+
             await _grpc.CreatePlayerAsync(
                  command.Configuration.ApiUrl,
                  command.ConfigurationData.AgentId,

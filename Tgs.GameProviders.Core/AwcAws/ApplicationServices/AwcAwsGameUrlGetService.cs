@@ -11,8 +11,8 @@ namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices
     public class AwcAwsGameUrlGetService : IGetService<AwcAwsGameUrlQuery, GameUrlResult>
     {
         private readonly IBrandService _brand;
+        private readonly ICommandService<AwcAwsCreatePlayerCommand> _createPlayerCommandService;
         private readonly IGameRepository _game;
-        private readonly IAwcAwsGamePlayer _gamePlayer;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
         private readonly IPlayerRepository _player;
@@ -20,16 +20,16 @@ namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices
 
         public AwcAwsGameUrlGetService(
             IBrandService brand,
+            ICommandService<AwcAwsCreatePlayerCommand> createPlayerCommandService,
             IGameRepository game,
-            IAwcAwsGamePlayer gamePlayer,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
             IPlayerRepository player,
             ISettingRepository setting)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+            _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
             _game = game ?? throw new ArgumentNullException(nameof(game));
-            _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
             _player = player ?? throw new ArgumentNullException(nameof(player));
@@ -65,13 +65,13 @@ namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices
 
             if (response.Success && !response.IsPlayerExist)
             {
-                await _gamePlayer.CreatePlayerAsync(
-                      configuration,
-                      configurationData,
-                      player.PlayerCode,
-                      player.DefaultWalletCurrencyCode,
-                      command.Language,
-                      cancellationToken).ConfigureAwait(false);
+                await _createPlayerCommandService.ExecuteAsync(new AwcAwsCreatePlayerCommand(
+                    Configuration: configuration,
+                    ConfigurationData: configurationData,
+                    PlayerCode: player.PlayerCode,
+                    CurrencyCode: player.DefaultWalletCurrencyCode,
+                    Language: command.Language),
+                    cancellationToken).ConfigureAwait(false);
 
                 response = await _grpc.GameUrlByAwcAwsAsync(
                     request: request,
