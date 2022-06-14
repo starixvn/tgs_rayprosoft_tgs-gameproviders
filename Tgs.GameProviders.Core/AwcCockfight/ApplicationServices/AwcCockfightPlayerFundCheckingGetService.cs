@@ -37,16 +37,12 @@ namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
-            var apiUrl = configuration.ApiUrl;
-            string agentId = configurationData.AgentId;
-            string cert = configurationData.Cert;
-
             var response = await _grpc.FundOrderCheckingAsync(
-                apiUrl,
-                agentId,
-                cert,
-                command.OrderId,
-                cancellationToken).ConfigureAwait(false);
+                apiUrl: configuration.ApiUrl,
+                agentId: configurationData.AgentId,
+                cert: configurationData.Cert,
+                transactionId: command.OrderId,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return new() { OrderStatus = response };
         }

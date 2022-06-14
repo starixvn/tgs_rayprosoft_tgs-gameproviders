@@ -36,16 +36,14 @@ namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices
             var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
-            var apiUrl = configuration.ApiUrl;
-            string agentId = configurationData.AgentId;
-            string cert = configurationData.Cert;
+
             var reply = await _grpc.FundOutAsync(
-                apiUrl,
-                agentId,
-                cert,
-                command.PlayerCode,
-                command.OrderId,
-                command.Amount,
+                apiUrl: configuration.ApiUrl,
+                agentId: configurationData.AgentId,
+                cert: configurationData.Cert,
+                playerCode: player.PlayerCode,
+                transactionId: command.OrderId,
+                amount: command.Amount,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return (reply.Success) ? new() { OrderId = reply.GameProductTransactionId } : null;

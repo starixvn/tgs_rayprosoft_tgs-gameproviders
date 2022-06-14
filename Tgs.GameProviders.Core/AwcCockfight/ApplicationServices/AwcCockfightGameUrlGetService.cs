@@ -12,7 +12,7 @@ namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices
     public class AwcCockfightGameUrlGetService : IGetService<AwcCockfightGameUrlQuery, GameUrlResult>
     {
         private readonly IBrandService _brand;
-        private readonly IAwcCockfightGamePlayer _gamePlayer;
+        private readonly ICommandService<AwcCockfightCreatePlayerCommand> _createPlayerCommandService;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
         private readonly IPlayerRepository _player;
@@ -20,14 +20,14 @@ namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices
 
         public AwcCockfightGameUrlGetService(
             IBrandService brand,
-            IAwcCockfightGamePlayer gamePlayer,
+            ICommandService<AwcCockfightCreatePlayerCommand> createPlayerCommandService,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
             IPlayerRepository player,
             ISettingRepository setting)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
-            _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
+            _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
             _player = player ?? throw new ArgumentNullException(nameof(player));
@@ -61,13 +61,13 @@ namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices
 
             if (response.Success && !response.IsPlayerExist)
             {
-                await _gamePlayer.CreatePlayerAsync(
-                      configuration,
-                      configurationData,
-                      player.PlayerCode,
-                      player.DefaultWalletCurrencyCode,
-                      command.Language,
-                      cancellationToken).ConfigureAwait(false);
+                await _createPlayerCommandService.ExecuteAsync(new AwcCockfightCreatePlayerCommand(
+                    Configuration: configuration,
+                    ConfigurationData: configurationData,
+                    PlayerCode: player.PlayerCode,
+                    CurrencyCode: player.DefaultWalletCurrencyCode,
+                    Language: command.Language),
+                    cancellationToken).ConfigureAwait(false);
 
                 response = await _grpc.GameUrlByLiveLobbyByAwcCockfightAsync(
                     request: request,
