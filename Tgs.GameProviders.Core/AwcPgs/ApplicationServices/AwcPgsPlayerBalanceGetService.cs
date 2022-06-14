@@ -10,7 +10,7 @@ namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
     public class AwcPgsPlayerBalanceGetService : IGetService<AwcPgsPlayerBalanceQuery, decimal?>
     {
         private readonly IBrandService _brand;
-        private readonly IAwcPgsGamePlayer _gamePlayer;
+        private readonly ICommandService<AwcPgsCreatePlayerCommand> _createPlayerCommandService;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
         private readonly IPlayerRepository _player;
@@ -18,14 +18,14 @@ namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
 
         public AwcPgsPlayerBalanceGetService(
             IBrandService brand,
-            IAwcPgsGamePlayer gamePlayer,
+            ICommandService<AwcPgsCreatePlayerCommand> createPlayerCommandService,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
             IPlayerRepository player,
             ISettingRepository setting)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
-            _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
+            _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
             _player = player ?? throw new ArgumentNullException(nameof(player));
@@ -40,32 +40,27 @@ namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
-            var apiUrl = configuration.ApiUrl;
-            string agentId = configurationData.AgentId;
-            string cert = configurationData.Cert;
-            string playerCode = command.PlayerCode;
-
             var response = await _grpc.GetBalanceAsync(
-                apiUrl,
-                agentId,
-                cert,
-                playerCode,
+                configuration.ApiUrl,
+                configurationData.AgentId,
+                configurationData.Cert,
+                command.PlayerCode,
                 cancellationToken).ConfigureAwait(false);
 
             if (response.Success && !response.IsPlayerExist)
             {
-                await _gamePlayer.CreatePlayerAsync(
-                      configuration,
-                      configurationData,
-                      player.PlayerCode,
-                      player.DefaultWalletCurrencyCode,
-                      cancellationToken: cancellationToken).ConfigureAwait(false);
+                await _createPlayerCommandService.ExecuteAsync(new AwcPgsCreatePlayerCommand(
+                    Configuration: configuration,
+                    ConfigurationData: configurationData,
+                    PlayerCode: player.PlayerCode,
+                    CurrencyCode: player.DefaultWalletCurrencyCode),
+                    cancellationToken).ConfigureAwait(false);
 
                 response = await _grpc.GetBalanceAsync(
-                    apiUrl,
-                    agentId,
-                    cert,
-                    playerCode,
+                    configuration.ApiUrl,
+                    configurationData.AgentId,
+                    configurationData.Cert,
+                    command.PlayerCode,
                     cancellationToken).ConfigureAwait(false);
             }
 

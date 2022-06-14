@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.AwcService.Client;
@@ -12,8 +11,8 @@ namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
     public class AwcPgsGameUrlGetService : IGetService<AwcPgsGameUrlQuery, GameUrlResult>
     {
         private readonly IBrandService _brand;
+        private readonly ICommandService<AwcPgsCreatePlayerCommand> _createPlayerCommandService;
         private readonly IGameRepository _game;
-        private readonly IAwcPgsGamePlayer _gamePlayer;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IGameInterfaceAwcServiceGrpc _grpc;
         private readonly IPlayerRepository _player;
@@ -21,16 +20,16 @@ namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
 
         public AwcPgsGameUrlGetService(
             IBrandService brand,
+            ICommandService<AwcPgsCreatePlayerCommand> createPlayerCommandService,
             IGameRepository game,
-            IAwcPgsGamePlayer gamePlayer,
             IGameProviderRepository gameProvider,
             IGameInterfaceAwcServiceGrpc grpc,
             IPlayerRepository player,
             ISettingRepository setting)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+            _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
             _game = game ?? throw new ArgumentNullException(nameof(game));
-            _gamePlayer = gamePlayer ?? throw new ArgumentNullException(nameof(gamePlayer));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
             _player = player ?? throw new ArgumentNullException(nameof(player));
@@ -66,13 +65,13 @@ namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
 
             if (response.Success && !response.IsPlayerExist)
             {
-                await _gamePlayer.CreatePlayerAsync(
-                      configuration,
-                      configurationData,
-                      player.PlayerCode,
-                      player.DefaultWalletCurrencyCode,
-                      command.Language,
-                      cancellationToken).ConfigureAwait(false);
+                await _createPlayerCommandService.ExecuteAsync(new AwcPgsCreatePlayerCommand(
+                    Configuration: configuration,
+                    ConfigurationData: configurationData,
+                    PlayerCode: player.PlayerCode,
+                    CurrencyCode: player.DefaultWalletCurrencyCode,
+                    Language: command.Language),
+                    cancellationToken).ConfigureAwait(false);
 
                 response = await _grpc.GameUrlByAwcPgsAsync(
                     request: request,
