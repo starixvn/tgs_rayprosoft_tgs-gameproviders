@@ -41,11 +41,11 @@ namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
             var response = await _grpc.GetBalanceAsync(
-                configuration.ApiUrl,
-                configurationData.AgentId,
-                configurationData.Cert,
-                command.PlayerCode,
-                cancellationToken).ConfigureAwait(false);
+                apiUrl: configuration.ApiUrl,
+                agentId: configurationData.AgentId,
+                cert: configurationData.Cert,
+                playerCode: player.PlayerCode,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
 
             if (response.Success && !response.IsPlayerExist)
             {
@@ -57,11 +57,11 @@ namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices
                     cancellationToken).ConfigureAwait(false);
 
                 response = await _grpc.GetBalanceAsync(
-                    configuration.ApiUrl,
-                    configurationData.AgentId,
-                    configurationData.Cert,
-                    command.PlayerCode,
-                    cancellationToken).ConfigureAwait(false);
+                    apiUrl: configuration.ApiUrl,
+                    agentId: configurationData.AgentId,
+                    cert: configurationData.Cert,
+                    playerCode: player.PlayerCode,
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
             return !response.Success

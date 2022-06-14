@@ -40,11 +40,6 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
-            var apiUrl = configuration.ApiUrl;
-            string agentId = configurationData.AgentId;
-            string cert = configurationData.Cert;
-            string playerCode = command.PlayerCode;
-
             var response = await _grpc.GetBalanceAsync(
                 apiUrl: configuration.ApiUrl,
                 agentId: configurationData.AgentId,
