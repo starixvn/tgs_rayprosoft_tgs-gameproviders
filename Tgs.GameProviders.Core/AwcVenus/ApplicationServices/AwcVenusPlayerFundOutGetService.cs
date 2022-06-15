@@ -46,7 +46,7 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
                 amount: command.Amount,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            return (reply.Success) ? new() { OrderId = reply.GameProductTransactionId } : null;
+            return (reply.Success) ? new() { OrderId = reply.GameProviderTransactionId } : null;
         }
     }
 }

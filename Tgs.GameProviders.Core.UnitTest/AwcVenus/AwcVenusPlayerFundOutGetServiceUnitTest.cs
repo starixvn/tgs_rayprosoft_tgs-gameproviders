@@ -76,12 +76,12 @@ public class AwcVenusPlayerFundOutGetServiceUnitTest
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
         _ = fakeGameProviderRepository.GetAwcConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
 
-        var gameProductTransactionId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+        var gameProviderTransactionId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         var reply = new GameInterfaceAwcServiceFundReply()
         {
             Success = true,
             TransactionId = query.OrderId,
-            GameProductTransactionId = gameProductTransactionId,
+            GameProviderTransactionId = gameProviderTransactionId,
             CurrentBalance = 100m,
             Amount = query.Amount
         };
@@ -103,6 +103,6 @@ public class AwcVenusPlayerFundOutGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameProductTransactionId, actual.OrderId);
+        Assert.AreEqual(gameProviderTransactionId, actual.OrderId);
     }
 }
