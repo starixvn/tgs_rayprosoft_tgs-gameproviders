@@ -10,14 +10,14 @@ namespace Tgs.GameProviders.Services.Card365;
 
 internal class Card365Service : ICard365Service
 {
-    private readonly IGameProviderService _gameProviderService;
+    private readonly IGameProviderRepository _gameProviderService;
     private readonly ILogger<Card365Service> _logger;
-    private readonly ISettingService _settingService;
+    private readonly ISettingRepository _settingService;
 
     public Card365Service(
         ILogger<Card365Service> logger,
-        IGameProviderService gameProviderService,
-        ISettingService settingService)
+        IGameProviderRepository gameProviderService,
+        ISettingRepository settingService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));

@@ -55,7 +55,7 @@ namespace Tgs.GameProviders.ApiClients.DreamGame
             var tryCount = 1;
             var seconds = 30;
             var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var token = GetHashMD5($"{agentName}{apiKey }{random}");
+            var token = GetHashMD5($"{agentName}{apiKey}{random}");
             var request = new
             {
                 token,
@@ -101,7 +101,7 @@ namespace Tgs.GameProviders.ApiClients.DreamGame
         public async ValueTask<LoginResult> LoginAsync(Uri apiUrl, string apiKey, string agentName, string username, string password, PlatformType platformType = PlatformType.Desktop, string lang = "en")
         {
             var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var token = GetHashMD5($"{agentName}{apiKey }{random}");
+            var token = GetHashMD5($"{agentName}{apiKey}{random}");
 
             var request = new
             {
@@ -141,7 +141,7 @@ namespace Tgs.GameProviders.ApiClients.DreamGame
             var tryCount = 1;
             var seconds = 30;
             var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var token = GetHashMD5($"{agentName}{apiKey }{random}");
+            var token = GetHashMD5($"{agentName}{apiKey}{random}");
             var request = new
             {
                 token,
@@ -180,7 +180,7 @@ namespace Tgs.GameProviders.ApiClients.DreamGame
             var tryCount = 1;
             var seconds = 30;
             var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var token = GetHashMD5($"{agentName}{apiKey }{random}");
+            var token = GetHashMD5($"{agentName}{apiKey}{random}");
             var request = new
             {
                 token,
@@ -219,7 +219,7 @@ namespace Tgs.GameProviders.ApiClients.DreamGame
             var tryCount = 1;
             var seconds = 30;
             var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var token = GetHashMD5($"{agentName}{apiKey }{random}");
+            var token = GetHashMD5($"{agentName}{apiKey}{random}");
             var request = new
             {
                 token,
@@ -265,7 +265,7 @@ namespace Tgs.GameProviders.ApiClients.DreamGame
         public async ValueTask<int> SignUpAsync(Uri apiUrl, string apiKey, string agentName, string username, string password, string currencyName, string tableLimit = "A", int winLimit = 0)
         {
             var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var token = GetHashMD5($"{agentName}{apiKey }{random}");
+            var token = GetHashMD5($"{agentName}{apiKey}{random}");
 
             var request = new
             {
@@ -299,7 +299,7 @@ namespace Tgs.GameProviders.ApiClients.DreamGame
 
         private async ValueTask<JsonDocument> PostAsync(Uri apiUrl, string paths, JsonDocument request, string logPrefix)
         {
-            logPrefix = $"{nameof(DreamGameApiClient).ToLower() }.{logPrefix}";
+            logPrefix = $"{nameof(DreamGameApiClient).ToLower()}.{logPrefix}";
             var sw = Stopwatch.StartNew();
 
             var url = $"{apiUrl?.ToString()}?{paths}";

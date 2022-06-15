@@ -43,7 +43,7 @@ public class JokerPlayerFundOutGetServiceUnitTest
             }
         };
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -65,14 +65,14 @@ public class JokerPlayerFundOutGetServiceUnitTest
         _ = fakeAgentMapper
             .GetAgentByCurrencyCode(
                 Arg.Is(configuration.BrandMerchants),
-                Arg.Is(playerInfo.BrandCode),
-                Arg.Is(playerInfo.DefaultWalletCurrencyCode))
+                Arg.Is(player.BrandCode),
+                Arg.Is(player.DefaultWalletCurrencyCode))
             .Returns(agent);
 
         _ = fakeApiClient
             .FundOutAsync(
                 Arg.Is(configuration.ApiUrl),
-                Arg.Is(playerInfo.PlayerCode),
+                Arg.Is(player.PlayerCode),
                 Arg.Is(orderId),
                 Arg.Is(fundOutAmount),
                 Arg.Is(agent.AgentId),
@@ -82,10 +82,10 @@ public class JokerPlayerFundOutGetServiceUnitTest
         var query = new JokerPlayerFundOutQuery
         {
             Amount = fundOutAmount,
-            BrandCode = playerInfo.BrandCode,
-            CurrencyCode = playerInfo.DefaultWalletCurrencyCode,
+            BrandCode = player.BrandCode,
+            CurrencyCode = player.DefaultWalletCurrencyCode,
             OrderId = orderId,
-            PlayerCode = playerInfo.PlayerCode
+            PlayerCode = player.PlayerCode
         };
 
         var sut = new JokerPlayerFundOutGetService(

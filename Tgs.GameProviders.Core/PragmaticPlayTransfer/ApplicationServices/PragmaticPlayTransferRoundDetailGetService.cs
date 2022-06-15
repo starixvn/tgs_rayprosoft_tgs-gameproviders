@@ -15,18 +15,18 @@ internal class PragmaticPlayTransferRoundDetailGetService
     : IGetService<PragmaticPlayTransferRoundDetailQuery, RoundDetailResult?>
 {
     private readonly IPragmaticPlayTransferApiClient _client;
-    private readonly IGameService _gameService;
+    private readonly IGameRepository _gameRepository;
     private readonly IRoundService _roundService;
     private readonly IPragmaticPlayTransferService _service;
 
     public PragmaticPlayTransferRoundDetailGetService(
         IRoundService roundService,
-        IGameService gameService,
+        IGameRepository gameRepository,
         IPragmaticPlayTransferService service,
         IPragmaticPlayTransferApiClient client)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
-        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
@@ -47,7 +47,7 @@ internal class PragmaticPlayTransferRoundDetailGetService
             throw new Exception($"This game manufacturer does not exist.{roundInfo.GameProviderId}");
         }
 
-        var gameInfo = await _gameService.GetCacheAsync(roundInfo.GameId).ConfigureAwait(false);
+        var gameInfo = await _gameRepository.GetAsync(roundInfo.GameId).ConfigureAwait(false);
         if (gameInfo is null)
         {
             throw new Exception($"This game does not exist.{roundInfo.GameId}");

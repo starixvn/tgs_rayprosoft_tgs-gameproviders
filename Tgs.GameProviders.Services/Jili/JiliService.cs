@@ -10,14 +10,14 @@ namespace Tgs.GameProviders.Services.Jili;
 
 internal class JiliService : IJiliService
 {
-    private readonly IGameProviderService _gameProviderService;
+    private readonly IGameProviderRepository _gameProviderService;
     private readonly ILogger<JiliService> _logger;
-    private readonly ISettingService _settingService;
+    private readonly ISettingRepository _settingService;
 
     public JiliService(
         ILogger<JiliService> logger,
-        IGameProviderService gameProviderService,
-        ISettingService settingService)
+        IGameProviderRepository gameProviderService,
+        ISettingRepository settingService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));

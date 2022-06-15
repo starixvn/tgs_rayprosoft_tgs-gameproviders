@@ -10,7 +10,7 @@ internal class JokerPlayerBalanceGetService : IGetService<JokerPlayerBalanceQuer
     private readonly IJokerAgentMapper _agentMapper;
     private readonly IJokerApiClient _client;
     private readonly IJokerGamePlayer _gamePlayer;
-    private readonly IPlayerService _playerService;
+    private readonly IPlayerRepository _playerService;
     private readonly IJokerService _service;
 
     public JokerPlayerBalanceGetService(
@@ -18,7 +18,7 @@ internal class JokerPlayerBalanceGetService : IGetService<JokerPlayerBalanceQuer
         IJokerService service,
         IJokerGamePlayer gamePlayer,
         IJokerAgentMapper agentMapper,
-        IPlayerService playerService)
+        IPlayerRepository playerService)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -31,27 +31,21 @@ internal class JokerPlayerBalanceGetService : IGetService<JokerPlayerBalanceQuer
         JokerPlayerBalanceQuery query,
         CancellationToken cancellationToken = default)
     {
-        var playerInfo = await _playerService.GetCacheAsync(query.PlayerCode).ConfigureAwait(false);
-
-        if (playerInfo == null)
-        {
-            throw new Exception($"The player does not exist.{query.PlayerCode}");
-        }
-
+        var playerModel = await _playerService.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
         var agent = _agentMapper.GetAgentByCurrencyCode(
             configuration.BrandMerchants,
-            playerInfo.BrandCode,
-            playerInfo.DefaultWalletCurrencyCode);
+            playerModel.BrandCode,
+            playerModel.DefaultWalletCurrencyCode);
 
         if (agent == null)
         {
-            throw new Exception($"The agent does not exist of brand '{playerInfo.BrandCode}' and currency '{playerInfo.DefaultWalletCurrencyCode}'");
+            throw new Exception($"The agent does not exist of brand '{playerModel.BrandCode}' and currency '{playerModel.DefaultWalletCurrencyCode}'");
         }
 
         var (isPlayerExist, balance) = await _client
-            .GetBalanceAsync(configuration.ApiUrl, playerInfo.PlayerCode, agent.AgentId, agent.SecretKey)
+            .GetBalanceAsync(configuration.ApiUrl, playerModel.PlayerCode, agent.AgentId, agent.SecretKey)
             .ConfigureAwait(false);
 
         if (isPlayerExist is not false)
@@ -59,13 +53,13 @@ internal class JokerPlayerBalanceGetService : IGetService<JokerPlayerBalanceQuer
             return balance;
         }
 
-        var created = await _gamePlayer.CreatePlayerAsync(playerInfo.PlayerCode, configuration.ApiUrl, agent)
+        var created = await _gamePlayer.CreatePlayerAsync(playerModel.PlayerCode, configuration.ApiUrl, agent)
             .ConfigureAwait(false);
 
         if (created)
         {
             (_, balance) = await _client
-                .GetBalanceAsync(configuration.ApiUrl, playerInfo.PlayerCode, agent.AgentId, agent.SecretKey)
+                .GetBalanceAsync(configuration.ApiUrl, playerModel.PlayerCode, agent.AgentId, agent.SecretKey)
                 .ConfigureAwait(false);
         }
 

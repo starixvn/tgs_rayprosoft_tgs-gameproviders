@@ -12,14 +12,14 @@ namespace Tgs.GameProviders.Core.VR.ApplicationServices
         private readonly IVRApiClient _client;
         private readonly ILogger<VRPlayerBalanceGetService> _logger;
         private readonly IVRGamePlayer _playerCreate;
-        private readonly IPlayerService _playerService;
+        private readonly IPlayerRepository _playerService;
         private readonly IVRService _service;
 
         public VRPlayerBalanceGetService(
             IVRApiClient client,
             ILogger<VRPlayerBalanceGetService> logger,
             IVRGamePlayer playerCreate,
-            IPlayerService playerService,
+            IPlayerRepository playerService,
             IVRService service
             )
         {
@@ -32,13 +32,8 @@ namespace Tgs.GameProviders.Core.VR.ApplicationServices
 
         public async ValueTask<decimal?> GetAsync(VRPlayerBalanceQuery command, CancellationToken cancellationToken = default)
         {
-            var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-            if (playerInfo == null)
-            {
-                throw new Exception($"The player does not exist.{command.PlayerCode}");
-            }
-
-            var brandMerchant = await _service.GetBrandMerchantAsync(playerInfo.BrandCode).ConfigureAwait(false);
+            var playerModel = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode).ConfigureAwait(false);
 
             if (brandMerchant == null)
             {
@@ -59,7 +54,7 @@ namespace Tgs.GameProviders.Core.VR.ApplicationServices
 
             if (string.IsNullOrEmpty(response.PlayerName) || response.Balance == -1)
             {
-                if (await _playerCreate.CreatePlayerAsync(brandMerchant, playerInfo.PlayerCode).ConfigureAwait(false))
+                if (await _playerCreate.CreatePlayerAsync(brandMerchant, playerModel.PlayerCode).ConfigureAwait(false))
                 {
                     response = await _client.GetBalanceAsync(
                         brandMerchant.ApiUrl,

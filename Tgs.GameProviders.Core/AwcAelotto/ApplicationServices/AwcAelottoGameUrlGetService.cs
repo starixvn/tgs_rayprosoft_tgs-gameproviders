@@ -1,0 +1,142 @@
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.AwcService.Protos;
+using Tgs.GameProviders.Domains;
+using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.GameProviders.QueryServer.Models;
+using Tgs.ServiceUtility;
+
+namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
+{
+    public class AwcAelottoGameUrlGetService : IGetService<AwcAelottoGameUrlQuery, GameUrlResult>
+    {
+        private readonly IBrandService _brand;
+        private readonly ICommandService<AwcAelottoCreatePlayerCommand> _createPlayerCommandService;
+        private readonly IGameRepository _game;
+        private readonly IGameProviderRepository _gameProvider;
+        private readonly IGameInterfaceAwcServiceGrpc _grpc;
+        private readonly IPlayerRepository _player;
+        private readonly ISettingRepository _setting;
+
+        public AwcAelottoGameUrlGetService(
+            IBrandService brand,
+            ICommandService<AwcAelottoCreatePlayerCommand> createPlayerCommandService,
+            IGameRepository game,
+            IGameProviderRepository gameProvider,
+            IGameInterfaceAwcServiceGrpc grpc,
+            IPlayerRepository player,
+            ISettingRepository setting)
+        {
+            _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+            _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
+            _game = game ?? throw new ArgumentNullException(nameof(game));
+            _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
+            _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+            _player = player ?? throw new ArgumentNullException(nameof(player));
+            _setting = setting ?? throw new ArgumentNullException(nameof(setting));
+        }
+
+        public async ValueTask<GameUrlResult> GetAsync(AwcAelottoGameUrlQuery command, CancellationToken cancellationToken = default)
+        {
+            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_AELOTTO).ConfigureAwait(false);
+            var configuration = await _setting.GetAwcAelottoConfigurationAsync().ConfigureAwait(false);
+            var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
+            var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+            var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en";
+            var game = await _game.GetAsync(command.GameId.Value).ConfigureAwait(false);
+
+            var response = game.GameExternalId.Contains("AE-LOTTO-021", StringComparison.InvariantCultureIgnoreCase)
+                ? await GetGameUrl(
+                   configuration,
+                   configurationData,
+                   command,
+                   cultureCode,
+                   player,
+                   game.GameExternalId,
+                   cancellationToken).ConfigureAwait(false)
+                : await GetLottoLobbyGameUrl(
+                    configuration,
+                    configurationData,
+                    command,
+                    cultureCode,
+                    player,
+                    cancellationToken).ConfigureAwait(false);
+
+            return (response != null) ? new() { Url = new(response.GameUrl) } : null;
+        }
+
+        private async ValueTask<GameInterfaceAwcServiceGameUrlReply> GetGameUrl(AwcAelottoConfiguration configuration, AwcConfigurationData configurationData, AwcAelottoGameUrlQuery command, string cultureCode, PlayerModel player, string externalGameId, CancellationToken cancellationToken = default)
+        {
+            var request = new GameInterfaceAwcServiceGameUrlRequest()
+            {
+                ApiUrl = configuration.ApiUrl.ToString(),
+                AgentId = configurationData.AgentId,
+                Cert = configurationData.Cert,
+                PlayerCode = command.PlayerCode,
+                BackUrl = command.BackUrl.ToString(),
+                IsMobileLogin = command.PlatformType == PlatformType.Mobile,
+                ExternalGameId = externalGameId,
+                Language = cultureCode
+            };
+
+            var response = await _grpc.GameUrlByAwcAeLottoAsync(
+                request: request,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
+
+            if (response.Success && !response.IsPlayerExist)
+            {
+                await _createPlayerCommandService.ExecuteAsync(new AwcAelottoCreatePlayerCommand(
+                    Configuration: configuration,
+                    ConfigurationData: configurationData,
+                    PlayerCode: player.PlayerCode,
+                    CurrencyCode: player.DefaultWalletCurrencyCode,
+                    Language: command.Language),
+                    cancellationToken).ConfigureAwait(false);
+
+                response = await _grpc.GameUrlByAwcAeLottoAsync(
+                    request: request,
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
+
+            return response;
+        }
+
+        private async ValueTask<GameInterfaceAwcServiceGameUrlReply> GetLottoLobbyGameUrl(AwcAelottoConfiguration configuration, AwcConfigurationData configurationData, AwcAelottoGameUrlQuery command, string cultureCode, PlayerModel player, CancellationToken cancellationToken = default)
+        {
+            var request = new GameInterfaceAwcServiceGameUrlByLottoLobbyRequest()
+            {
+                ApiUrl = configuration.ApiUrl.ToString(),
+                AgentId = configurationData.AgentId,
+                Cert = configurationData.Cert,
+                PlayerCode = command.PlayerCode,
+                BackUrl = command.BackUrl.ToString(),
+                IsMobileLogin = command.PlatformType == PlatformType.Mobile,
+                Language = cultureCode
+            };
+
+            var response = await _grpc.GameUrlLottoLobbyByAwcAeLottoAsync(
+                request: request,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
+
+            if (response.Success && !response.IsPlayerExist)
+            {
+                await _createPlayerCommandService.ExecuteAsync(new AwcAelottoCreatePlayerCommand(
+                    Configuration: configuration,
+                    ConfigurationData: configurationData,
+                    PlayerCode: player.PlayerCode,
+                    CurrencyCode: player.DefaultWalletCurrencyCode,
+                    Language: command.Language),
+                    cancellationToken).ConfigureAwait(false);
+
+                response = await _grpc.GameUrlLottoLobbyByAwcAeLottoAsync(
+                    request: request,
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
+            }
+
+            return response;
+        }
+    }
+}

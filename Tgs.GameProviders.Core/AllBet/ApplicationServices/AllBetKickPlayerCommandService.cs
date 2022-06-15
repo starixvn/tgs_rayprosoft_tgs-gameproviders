@@ -12,12 +12,12 @@ internal class AllBetKickPlayerCommandService : ICommandService<AllBetKickPlayer
     private readonly IAllBetAgentMapper _agentMapper;
     private readonly IAllBetApiClient _client;
     private readonly ILogger<AllBetKickPlayerCommandService> _logger;
-    private readonly IPlayerService _playerService;
+    private readonly IPlayerRepository _playerService;
     private readonly IAllBetService _service;
 
     public AllBetKickPlayerCommandService(
         ILogger<AllBetKickPlayerCommandService> logger,
-        IPlayerService playerService,
+        IPlayerRepository playerService,
         IAllBetService service,
         IAllBetAgentMapper agentMapper,
         IAllBetApiClient client)
@@ -33,11 +33,7 @@ internal class AllBetKickPlayerCommandService : ICommandService<AllBetKickPlayer
         AllBetKickPlayerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-        if (playerInfo == null)
-        {
-            throw new Exception($"The player does not exist.{command.PlayerCode}");
-        }
+        var playerInfo = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 

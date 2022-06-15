@@ -2,8 +2,11 @@
 using System.Reflection;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.AwcVenus;
 using Tgs.GameProviders.QueryServer.Client;
 using Tgs.GameRounds.Client;
+using Tgs.GameProviders.Core.AwcSpade;
+using Tgs.GameProviders.Core.AwcYl;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -18,6 +21,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 .RegisterAllServiceUtilityTypes(
                     Assembly.GetExecutingAssembly(),
                     ServiceLifetime.Transient)
+                .Scan(scan =>
+                {
+                    _ = scan.FromCallingAssembly()
+                    .AddClasses(classes => classes.Where(t => t.Name.EndsWith("gameplayer", StringComparison.OrdinalIgnoreCase)))
+                    .AsImplementedInterfaces()
+                    .WithTransientLifetime();
+                })
                 .AddGameProvidersQueryServerClient(gameProvidersQueryServerClientOptions)
                 .AddGameInterfaceAwcServiceClient(gameInterfaceAwcServiceClientOptions)
                 .AddGameRoundsClient(gameRoundsClientOptions)
@@ -25,11 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddMemoryCache()
                 .AddTransient<IBrandService, BrandService>()
                 .AddTransient<IGameActionService, GameActionService>()
-                .AddTransient<IGameService, GameService>()
-                .AddTransient<IGameProviderService, GameProviderService>()
-                .AddTransient<IPlayerService, PlayerService>()
                 .AddTransient<IRoundService, RoundService>()
-                .AddTransient<ISettingService, SettingService>()
                 .AddTransient<ISystemClock, SystemClock>();
     }
 }

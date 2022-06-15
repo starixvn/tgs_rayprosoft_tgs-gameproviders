@@ -8,13 +8,13 @@ namespace Tgs.GameProviders.Core.BigGaming.ApplicationServices
 {
     public class BigGamingGameUrlGetService : IGetService<BigGamingGameUrlQuery, GameUrlResult>
     {
-        private readonly IGameService _gameService;
+        private readonly IGameRepository _gameService;
         private readonly IBigGamingGameUrl _gameUrl;
         private readonly IBigGamingGamePlayer _gamingGamePlayerCreate;
         private readonly IBigGamingService _service;
 
         public BigGamingGameUrlGetService(
-            IGameService gameService,
+            IGameRepository gameService,
             IBigGamingService service,
             IBigGamingGamePlayer gamingGamePlayerCreate,
             IBigGamingGameUrl gameUrl
@@ -36,7 +36,7 @@ namespace Tgs.GameProviders.Core.BigGaming.ApplicationServices
                 throw new Exception("The merchant does not exist.");
             }
 
-            var getGame = await _gameService.GetCacheAsync(command.GameId.Value).ConfigureAwait(false);
+            var getGame = await _gameService.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
             if (getGame == null)
             {

@@ -12,14 +12,14 @@ internal class JiliRoundDetailGetService : IGetService<JiliRoundDetailQuery, Rou
     private readonly IJiliApiClient _client;
     private readonly ILogger<JiliRoundDetailGetService> _logger;
     private readonly IJiliMerchantMapper _merchantMapper;
-    private readonly IPlayerService _playerService;
+    private readonly IPlayerRepository _playerService;
     private readonly IRoundService _roundService;
     private readonly IJiliService _service;
 
     public JiliRoundDetailGetService(
         ILogger<JiliRoundDetailGetService> logger,
         IRoundService roundService,
-        IPlayerService playerService,
+        IPlayerRepository playerService,
         IJiliService service,
         IJiliMerchantMapper merchantMapper,
         IJiliApiClient client)
@@ -42,14 +42,9 @@ internal class JiliRoundDetailGetService : IGetService<JiliRoundDetailQuery, Rou
             throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        var playerInfo = await _playerService.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
-        if (playerInfo == null)
-        {
-            throw new Exception($"This player could not be found.{roundInfo.PlayerCode}");
-        }
-
+        var playerModel = await _playerService.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-        var merchant = _merchantMapper.GetMerchant(configuration.Merchants, playerInfo.BrandCode);
+        var merchant = _merchantMapper.GetMerchant(configuration.Merchants, playerModel.BrandCode);
 
         var gameProviderCultureCode = await _service
             .GetGameProviderLanguageCodeAsync(roundInfo.GameProviderId, query.Language)

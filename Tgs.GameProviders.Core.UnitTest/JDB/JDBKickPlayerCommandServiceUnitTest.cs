@@ -19,7 +19,7 @@ public class JDBKickPlayerCommandServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<JDBKickPlayerCommandService>.Instance;
-        var fakePlayerService = Substitute.For<IPlayerService>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
         var fakeService = Substitute.For<IJDBService>();
         var fakeAgentMapper = Substitute.For<IJDBAgentMapper>();
         var fakeApiClient = Substitute.For<IJDBApiClient>();
@@ -45,7 +45,7 @@ public class JDBKickPlayerCommandServiceUnitTest
             }
         };
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -60,18 +60,18 @@ public class JDBKickPlayerCommandServiceUnitTest
 
         var command = new JDBKickPlayerCommand
         {
-            PlayerCode = playerInfo.PlayerCode
+            PlayerCode = player.PlayerCode
         };
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeAgentMapper.GetAgent(configuration.Agents, playerInfo.DefaultWalletCurrencyCode)
+        fakeAgentMapper.GetAgent(configuration.Agents, player.DefaultWalletCurrencyCode)
             .Returns(agent);
 
-        fakePlayerService.GetCacheAsync(command.PlayerCode).Returns(Task.FromResult(playerInfo));
+        fakePlayer.GetAsync(command.PlayerCode).Returns(Task.FromResult(player));
 
         var sut = new JDBKickPlayerCommandService(
             fakeLogger,
-            fakePlayerService,
+            fakePlayer,
             fakeService,
             fakeAgentMapper,
             fakeApiClient);
@@ -87,6 +87,6 @@ public class JDBKickPlayerCommandServiceUnitTest
                 configuration.AESKey,
                 Arg.Is<JDBLogoutRequest>(x
                     => x.Parent == agent.Id &&
-                       x.UserId == playerInfo.PlayerCode));
+                       x.UserId == player.PlayerCode));
     }
 }

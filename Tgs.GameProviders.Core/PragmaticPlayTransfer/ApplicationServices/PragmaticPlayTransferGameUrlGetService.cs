@@ -8,15 +8,15 @@ namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 internal class PragmaticPlayTransferGameUrlGetService : IGetService<PragmaticPlayTransferGameUrlQuery, GameUrlResult>
 {
     private readonly IPragmaticPlayTransferApiClient _client;
-    private readonly IGameService _gameService;
+    private readonly IGameRepository _gameRepository;
     private readonly IPragmaticPlayTransferService _service;
 
     public PragmaticPlayTransferGameUrlGetService(
-        IGameService gameService,
+        IGameRepository gameRepository,
         IPragmaticPlayTransferService service,
         IPragmaticPlayTransferApiClient client)
     {
-        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
@@ -29,7 +29,7 @@ internal class PragmaticPlayTransferGameUrlGetService : IGetService<PragmaticPla
         if (configuration is null)
             return null;
 
-        var game = await _gameService.GetCacheAsync(query.GameId!.Value).ConfigureAwait(false);
+        var game = await _gameRepository.GetAsync(query.GameId!.Value).ConfigureAwait(false);
         if (game is null)
             return null;
 

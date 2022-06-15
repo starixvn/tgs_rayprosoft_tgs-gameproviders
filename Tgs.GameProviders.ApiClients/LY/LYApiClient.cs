@@ -335,7 +335,7 @@ namespace Tgs.GameProviders.ApiClients.LY
 
         private async ValueTask<LYApiResponse<TData>> GetAPIAsync<TData>(Uri apiUrl, LYApiRequest request, string logPrefix)
         {
-            logPrefix = $"{nameof(LYApiClient).ToLower() }.{logPrefix}";
+            logPrefix = $"{nameof(LYApiClient).ToLower()}.{logPrefix}";
 
             var sw = Stopwatch.StartNew();
 

@@ -19,7 +19,7 @@ public class JokerRoundDetailGetServiceUnitTest
     public async ValueTask Normal_Process()
     {
         var fakeRoundService = Substitute.For<IRoundService>();
-        var fakePlayerService = Substitute.For<IPlayerService>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
         var fakeService = Substitute.For<IJokerService>();
         var fakeAgentMapper = Substitute.For<IJokerAgentMapper>();
         var fakeApiClient = Substitute.For<IJokerApiClient>();
@@ -50,7 +50,7 @@ public class JokerRoundDetailGetServiceUnitTest
         var gameProviderLanguage = "en";
         var historyUrl = "//hs.gwp6868.net/History?Signature=lpjOI3lMu5kXnhT3tSF9VPD5g9Y%3d&Key=83ztt1eowy7qy&Timestamp=1650520123495&Lang=en&TransactionOCode=xj88k7byqz9ne";
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -69,16 +69,16 @@ public class JokerRoundDetailGetServiceUnitTest
             Guid.Parse("4a3cf6e9-8001-0000-0001-000020dd98d5"),
             "83ztt1eowy7qy",
             Guid.Parse("2ebfe118-b36b-40fa-85b5-78363470addc"),
-            playerInfo.PlayerCode,
+            player.PlayerCode,
             2600025,
-            playerInfo.DefaultWalletCurrencyCode,
+            player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
-            playerInfo.DefaultWalletId,
+            player.DefaultWalletId,
             DateTime.Now,
             DateTime.Now,
             DateTime.Now,
-            playerInfo.BrandId,
+            player.BrandId,
             DateTimeOffset.Parse("2022-04-20T15:00:10.621+08:00"),
             DateTimeOffset.Parse("2022-04-20T15:00:10.621+08:00"),
             1.2m,
@@ -94,7 +94,7 @@ public class JokerRoundDetailGetServiceUnitTest
             null,
             additionalData);
 
-        var sut = new JokerRoundDetailGetService(fakeApiClient, fakeService, fakeAgentMapper, fakePlayerService, fakeRoundService);
+        var sut = new JokerRoundDetailGetService(fakeApiClient, fakeService, fakeAgentMapper, fakePlayer, fakeRoundService);
 
         var query = new JokerRoundDetailQuery
         {
@@ -103,7 +103,7 @@ public class JokerRoundDetailGetServiceUnitTest
         };
 
         _ = fakeRoundService.GetAsync(Arg.Is(query.RoundId)).Returns(roundInfo);
-        _ = fakePlayerService.GetAsync(Arg.Is(roundInfo.PlayerCode)).Returns(playerInfo);
+        _ = fakePlayer.GetAsync(Arg.Is(roundInfo.PlayerCode)).Returns(player);
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
         _ = fakeService
             .GetGameProviderLanguageCodeAsync(Arg.Is(query.Language))
@@ -112,7 +112,7 @@ public class JokerRoundDetailGetServiceUnitTest
         _ = fakeAgentMapper
             .GetAgentByCurrencyCode(
                 Arg.Is(configuration.BrandMerchants),
-                Arg.Is(playerInfo.BrandCode),
+                Arg.Is(player.BrandCode),
                 Arg.Is(roundInfo.CurrencyCode))
             .Returns(agent);
 
