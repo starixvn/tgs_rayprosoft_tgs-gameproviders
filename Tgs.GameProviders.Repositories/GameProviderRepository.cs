@@ -40,7 +40,13 @@ namespace Tgs.GameProviders.Repositories
                 : JsonSerializer.Deserialize<AwcConfigurationData>(data.ConfigurationData, _SerializerOptions)!;
         }
 
-        public ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId) => throw new NotImplementedException();
+        public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId)
+        {
+            var data = await _client.GameProviderGetGameProviderConfigAsync(gameProviderConfigurationId).ConfigureAwait(false);
+            return data is null ?
+                throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+                : (data.DesktopEndpoint, data.MobileEndpoint);
+        }
 
         public ValueTask<string?> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode)
             => _client.GameProviderGetCultureCodeAsync(gameProviderId, cultureCode);
