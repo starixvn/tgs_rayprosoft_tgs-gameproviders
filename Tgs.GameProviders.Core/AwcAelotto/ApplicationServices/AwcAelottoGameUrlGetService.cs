@@ -4,8 +4,6 @@ using System.Threading.Tasks;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.AwcService.Protos;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
@@ -48,28 +46,13 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
             var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en";
             var game = await _game.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
-            var response = game.GameExternalId.Contains("AE-LOTTO-021", StringComparison.InvariantCultureIgnoreCase)
-                ? await GetGameUrl(
-                   configuration,
-                   configurationData,
-                   command,
-                   cultureCode,
-                   player,
-                   game.GameExternalId,
-                   cancellationToken).ConfigureAwait(false)
-                : await GetLottoLobbyGameUrl(
-                    configuration,
-                    configurationData,
-                    command,
-                    cultureCode,
-                    player,
-                    cancellationToken).ConfigureAwait(false);
+            var gameExternalId = "AE-LOTTO-004";
 
-            return (response != null) ? new() { Url = new(response.GameUrl) } : null;
-        }
+            if (game.SubGameProviderCode.Contains("AWC_YEEKEE_LOTTO", StringComparison.InvariantCultureIgnoreCase))
+            {
+                gameExternalId = "AE-LOTTO-021";
+            }
 
-        private async ValueTask<GameInterfaceAwcServiceGameUrlReply> GetGameUrl(AwcAelottoConfiguration configuration, AwcConfigurationData configurationData, AwcAelottoGameUrlQuery command, string cultureCode, PlayerModel player, string externalGameId, CancellationToken cancellationToken = default)
-        {
             var request = new GameInterfaceAwcServiceGameUrlRequest()
             {
                 ApiUrl = configuration.ApiUrl.ToString(),
@@ -78,7 +61,7 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
                 PlayerCode = command.PlayerCode,
                 BackUrl = command.BackUrl.ToString(),
                 IsMobileLogin = command.PlatformType == PlatformType.Mobile,
-                ExternalGameId = externalGameId,
+                ExternalGameId = gameExternalId,
                 Language = cultureCode
             };
 
@@ -101,42 +84,7 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
                     cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
-            return response;
-        }
-
-        private async ValueTask<GameInterfaceAwcServiceGameUrlReply> GetLottoLobbyGameUrl(AwcAelottoConfiguration configuration, AwcConfigurationData configurationData, AwcAelottoGameUrlQuery command, string cultureCode, PlayerModel player, CancellationToken cancellationToken = default)
-        {
-            var request = new GameInterfaceAwcServiceGameUrlByLottoLobbyRequest()
-            {
-                ApiUrl = configuration.ApiUrl.ToString(),
-                AgentId = configurationData.AgentId,
-                Cert = configurationData.Cert,
-                PlayerCode = command.PlayerCode,
-                BackUrl = command.BackUrl.ToString(),
-                IsMobileLogin = command.PlatformType == PlatformType.Mobile,
-                Language = cultureCode
-            };
-
-            var response = await _grpc.GameUrlLottoLobbyByAwcAeLottoAsync(
-                request: request,
-                cancellationToken: cancellationToken).ConfigureAwait(false);
-
-            if (response.Success && !response.IsPlayerExist)
-            {
-                await _createPlayerCommandService.ExecuteAsync(new AwcAelottoCreatePlayerCommand(
-                    Configuration: configuration,
-                    ConfigurationData: configurationData,
-                    PlayerCode: player.PlayerCode,
-                    CurrencyCode: player.DefaultWalletCurrencyCode,
-                    Language: command.Language),
-                    cancellationToken).ConfigureAwait(false);
-
-                response = await _grpc.GameUrlLottoLobbyByAwcAeLottoAsync(
-                    request: request,
-                    cancellationToken: cancellationToken).ConfigureAwait(false);
-            }
-
-            return response;
+            return (response != null) ? new() { Url = new(response.GameUrl) } : null;
         }
     }
 }
