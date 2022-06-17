@@ -68,7 +68,7 @@ namespace Tgs.GameProviders.Core.Avia.ApplicationServices
                 PlayerWinLoss = data.Money,
                 Commission = 0,
                 Turnover = data.BetMoney,
-                SettleAmount = _service.GetClientRound(data.Status) is GameRoundClientStatus.Win ? data.BetAmount + data.Money : 0,
+                SettleAmount = _service.GetClientRound(data.Status) is GameRoundClientStatus.Win ? (data.BetAmount + data.Money) : 0,
                 TieBetAdjustment = null,
                 AdditionalData = JsonSerializer.Serialize(data),
             }).ToArray();
