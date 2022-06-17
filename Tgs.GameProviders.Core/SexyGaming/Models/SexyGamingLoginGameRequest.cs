@@ -29,7 +29,7 @@ namespace Tgs.GameProviders.Core.SexyGaming.Models
         /// 平台游戏代码.
         /// </summary>
         [JsonPropertyName("gameCode")]
-        public string GameCode { get; set; }
+        public string GameCode => "MX-LIVE-002";
         /// <summary>
         /// Default is English预设为英文.
         /// </summary>
