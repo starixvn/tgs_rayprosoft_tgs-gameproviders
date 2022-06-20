@@ -32,6 +32,8 @@ namespace Tgs.GameProviders.Core
 
         ValueTask<AwcYlConfiguration> GetAwcYlConfigurationAsync();
 
+        ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync();
+
         ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase;
     }
 }

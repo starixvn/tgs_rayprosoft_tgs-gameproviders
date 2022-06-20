@@ -97,7 +97,7 @@ namespace Tgs.GameProviders.Controllers
         /// <remarks>
         /// <b>Example</b><br />
         ///
-        ///     Delete Avia/kickplayer/4ucmqplxb029
+        ///     Delete kickplayer/4ucmqplxb029
         /// </remarks>
         [HttpDelete("kickplayer/{playerCode}")]
         public ValueTask KickPlayerAsync(
@@ -117,7 +117,7 @@ namespace Tgs.GameProviders.Controllers
         /// <remarks>
         ///   <b>Example</b><br />
         ///
-        ///   Get Avia/balance/4ucmqplxb029
+        ///   Get balance/4ucmqplxb029
         /// </remarks>
         [HttpGet("Balance/{playerCode}")]
         public ValueTask<decimal?> PlayerBalanceAsync(
@@ -218,7 +218,7 @@ namespace Tgs.GameProviders.Controllers
         /// <remarks>
         /// <b>Example</b><br />
         ///
-        ///     Get ab/rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
+        ///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(

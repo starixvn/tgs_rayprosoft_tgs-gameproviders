@@ -109,7 +109,7 @@ public class JOKERController : ControllerBase,
     /// <remarks>
     /// <b>Example</b><br />
     ///
-    ///     Delete joker/kickplayer/4uf6k014jp5x
+    ///     Delete kickplayer/4uf6k014jp5x
     /// </remarks>
     [HttpDelete("kickplayer/{playerCode}")]
     public ValueTask KickPlayerAsync(
@@ -129,7 +129,7 @@ public class JOKERController : ControllerBase,
     /// <remarks>
     ///   <b>Example</b><br />
     ///
-    ///   Get joker/balance/4uf6k014jp5x
+    ///   Get balance/4uf6k014jp5x
     /// </remarks>
     [HttpGet("Balance/{playerCode}")]
     public ValueTask<decimal?> PlayerBalanceAsync(
@@ -230,7 +230,7 @@ public class JOKERController : ControllerBase,
     /// <remarks>
     /// <b>Example</b><br />
     ///
-    ///     Get joker/rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
+    ///     Get rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
     public ValueTask<RoundDetailResult?> RoundDetailAsync(

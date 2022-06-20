@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Repositories
@@ -27,7 +28,7 @@ namespace Tgs.GameProviders.Repositories
             {
                 configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
-                _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(1));
+                _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
             }
             return configurationData;
         }
@@ -73,6 +74,18 @@ namespace Tgs.GameProviders.Repositories
                 _ = _memoryCache.Set(gameProviderCode, gameProviderId, TimeSpan.FromDays(1));
             }
             return gameProviderId;
+        }
+
+        public async ValueTask<JiliTransferConfigurationData> GetJiliTransferConfigurationData(Guid gameProviderConfigurationId)
+        {
+            var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+            if (!_memoryCache.TryGetValue(key, out JiliTransferConfigurationData configurationData))
+            {
+                configurationData = await _gameProvider.GetJiliTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+
+                _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+            }
+            return configurationData;
         }
     }
 }

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using ExpectedObjects;
 using NSubstitute;
-using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.QueryServer.Client;
 using Tgs.GameProviders.QueryServer.Models;
 
@@ -159,6 +159,39 @@ namespace Tgs.GameProviders.Repositories.UnitTest
 
             Assert.IsNotNull(actual);
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public async Task Get_JiliTransfer_ConfigurationData()
+        {
+            var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+
+            var gameProviderId = Guid.NewGuid();
+            var gameProviderConfigurationId = Guid.NewGuid();
+            var awcConfigurationData = new JiliTransferConfigurationData(
+                AgentId: "testAgentId");
+            var configurationData = JsonSerializer.Serialize(awcConfigurationData);
+
+            _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+                GameProviderId: gameProviderId,
+                GameProviderCode: "JILITF",
+                GameProviderConfigId: gameProviderConfigurationId,
+                Name: "JILITF-GPI",
+                Description: "JILITF-GPI Configuration",
+                ClientId: "JILITF-GPI",
+                SecretKey: Guid.NewGuid().ToString("N"),
+                Status: GameProviderConfigStatus.Active,
+                DesktopEndpoint: string.Empty,
+                MobileEndpoint: string.Empty,
+                ConfigurationData: configurationData,
+                IsDefault: false));
+
+            var repository = new GameProviderRepository(fakeClient);
+
+            var actual = await repository.GetJiliTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+
+            Assert.IsNotNull(actual);
+            awcConfigurationData.ToExpectedObject().ShouldEqual(actual);
         }
     }
 }

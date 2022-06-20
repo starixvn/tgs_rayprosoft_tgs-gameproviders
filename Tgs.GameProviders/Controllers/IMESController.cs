@@ -70,7 +70,7 @@ namespace Tgs.GameProviders.Controllers
         /// <remarks>
         /// <b>Example</b><br />
         ///
-        ///     Get imes/rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
+        ///     Get rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(

@@ -94,9 +94,9 @@ namespace Tgs.GameProviders.Controllers
         /// <remarks>
         /// <b>Example</b><br />
         ///
-        ///     LiveDealer Get evo/rounddetail/a2b1bc1f-3845-4f92-a382-08d99f799e5a?language=zh-CN
+        ///     LiveDealer Get rounddetail/a2b1bc1f-3845-4f92-a382-08d99f799e5a?language=zh-CN
         ///
-        ///     Slot Get evo/rounddetail/a05bf300-79fa-47ca-a432-08d99f799e5a?language=zh-CN
+        ///     Slot Get rounddetail/a05bf300-79fa-47ca-a432-08d99f799e5a?language=zh-CN
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(

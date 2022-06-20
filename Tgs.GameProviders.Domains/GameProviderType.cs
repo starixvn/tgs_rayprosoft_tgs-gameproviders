@@ -14,8 +14,8 @@
         public static readonly string AWC_LUDO = "AWC_LUDO";
         public static readonly string AWC_PGS = "AWC_PGS";
         public static readonly string AWC_RCB = "AWC_RCB";
-        public static readonly string AWC_SPADE = "AWC_SPADE";
         public static readonly string AWC_SG = "AWC_SG";
+        public static readonly string AWC_SPADE = "AWC_SPADE";
         public static readonly string AWC_VENUS = "AWC_VENUS";
         public static readonly string AWC_YL = "AWC_YL";
         public static readonly string BetConstruct = "BC";
@@ -27,6 +27,7 @@
         public static readonly string IMESports = "IMES";
         public static readonly string JDB = "JDB";
         public static readonly string Jili = "JILI";
+        public static readonly string JiliTransfer = "JILITF";
         public static readonly string Joker = "JOKER";
         public static readonly string KY = "KY";
         public static readonly string LY = "LY";

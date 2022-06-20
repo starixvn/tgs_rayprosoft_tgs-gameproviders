@@ -85,7 +85,7 @@ namespace Tgs.GameProviders.Controllers
         /// <remarks>
         /// <b>Example</b><br />
         ///
-        ///     Delete dg/kickplayer/4ucmqplxb029
+        ///     Delete kickplayer/4ucmqplxb029
         /// </remarks>
         [HttpDelete("kickplayer/{playerCode}")]
         public ValueTask KickPlayerAsync([FromServices] ICommandService<DreamGameKickPlayerCommand> commandService, string playerCode)
@@ -116,7 +116,7 @@ namespace Tgs.GameProviders.Controllers
         /// <remarks>
         /// <b>Example</b><br />
         ///
-        ///     Get dg/rounddetail/4455978d-1aa4-ec11-bfe6-8c554ae8ab6b?language=zh-CN
+        ///     Get rounddetail/4455978d-1aa4-ec11-bfe6-8c554ae8ab6b?language=zh-CN
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync([FromServices] IGetService<DreamGameRoundDetailQuery, RoundDetailResult?> getService, Guid roundId, [FromQuery] string language)

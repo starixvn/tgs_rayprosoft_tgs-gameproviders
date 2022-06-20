@@ -334,5 +334,27 @@ namespace Tgs.GameProviders.Repositories.UnitTest
             Assert.IsNotNull(actual);
             expected.ToExpectedObject().ShouldEqual(actual);
         }
+
+        [TestMethod]
+        public async Task Get_Jili_Trans_Configuration()
+        {
+            var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+
+            var key = GameProviderConfigurations.JiliTransfer;
+
+            var expected = new JiliTransferConfiguration()
+            {
+                ApiUrl = new Uri("http://apiurl.google.com"),
+                AgentKey = Guid.NewGuid().ToString("N")
+            };
+            _ = fakeClient.SettingGetConfigurationAsync<JiliTransferConfiguration>(Arg.Is(key)).Returns(expected);
+
+            var repository = new SettingRepository(fakeClient);
+
+            var actual = await repository.GetJiliTransferConfigurationAsync().ConfigureAwait(false);
+
+            Assert.IsNotNull(actual);
+            expected.ToExpectedObject().ShouldEqual(actual);
+        }
     }
 }

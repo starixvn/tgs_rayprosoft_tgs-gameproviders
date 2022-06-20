@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Threading.Tasks;
+using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core
@@ -10,6 +11,8 @@ namespace Tgs.GameProviders.Core
         ValueTask<GameProviderModel> GetAsync(Guid gameProviderId);
 
         ValueTask<AwcConfigurationData> GetAwcConfigurationData(Guid gameProviderConfigurationId);
+
+        ValueTask<JiliTransferConfigurationData> GetJiliTransferConfigurationData(Guid gameProviderConfigurationId);
 
         ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId);
 

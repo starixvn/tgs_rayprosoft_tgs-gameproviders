@@ -70,7 +70,7 @@ public class JDBController : ControllerBase,
     /// <remarks>
     /// <b>Example</b><br />
     ///
-    ///     Delete jdb/kickplayer/4ucmqplxb029
+    ///     Delete kickplayer/4ucmqplxb029
     /// </remarks>
     [HttpDelete("kickplayer/{playerCode}")]
     public ValueTask KickPlayerAsync(
@@ -92,7 +92,7 @@ public class JDBController : ControllerBase,
     /// <remarks>
     /// <b>Example</b><br />
     ///
-    ///     Get jdb/rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
+    ///     Get rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
