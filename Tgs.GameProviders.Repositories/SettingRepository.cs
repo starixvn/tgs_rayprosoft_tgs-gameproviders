@@ -42,8 +42,10 @@ namespace Tgs.GameProviders.Repositories
 
         public ValueTask<AwcRcbConfiguration> GetAwcRcbConfigurationAsync()
             => GetAsync<AwcRcbConfiguration>(GameProviderConfigurations.AWC_RCB);
+
         public ValueTask<AwcSgConfiguration> GetAwcSgConfigurationAsync()
            => GetAsync<AwcSgConfiguration>(GameProviderConfigurations.AWC_SG);
+
         public ValueTask<AwcSpadeConfiguration> GetAwcSpadeConfigurationAsync()
             => GetAsync<AwcSpadeConfiguration>(GameProviderConfigurations.AWC_SPADE);
 

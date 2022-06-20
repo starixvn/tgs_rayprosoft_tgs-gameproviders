@@ -14,6 +14,7 @@ namespace Tgs.GameProviders.Repositories
         }
 
         public async Task<PlayerModel> GetAsync(string playerCode)
-           => await _client.PlayerGetAsync(playerCode).ConfigureAwait(false) ?? throw new Exception($"The player does not exist.{playerCode}");
+           => await _client.PlayerGetAsync(playerCode).ConfigureAwait(false)
+            ?? throw new Exception($"The player does not exist.{playerCode}");
     }
 }
