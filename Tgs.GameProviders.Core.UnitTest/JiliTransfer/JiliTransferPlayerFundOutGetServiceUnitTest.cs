@@ -24,11 +24,9 @@ public class JiliTransferPlayerFundOutGetServiceUnitTest
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
-        var configuration = new JiliTransferConfiguration
-        {
-            ApiUrl = new("https://tttint.onlinegames22.com/"),
-            AgentKey = Guid.NewGuid().ToString("N")
-        };
+        var configuration = new JiliTransferConfiguration(
+            ApiUrl: new("https://tttint.onlinegames22.com/"),
+            AgentKey: Guid.NewGuid().ToString("N"));
 
         var configurationData = new JiliTransferConfigurationData(
             AgentId: "testAgentId");

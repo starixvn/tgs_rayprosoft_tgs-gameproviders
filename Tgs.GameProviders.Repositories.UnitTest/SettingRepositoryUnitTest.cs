@@ -342,11 +342,10 @@ namespace Tgs.GameProviders.Repositories.UnitTest
 
             var key = GameProviderConfigurations.JiliTransfer;
 
-            var expected = new JiliTransferConfiguration()
-            {
-                ApiUrl = new Uri("http://apiurl.google.com"),
-                AgentKey = Guid.NewGuid().ToString("N")
-            };
+            var expected = new JiliTransferConfiguration(
+                ApiUrl: new("https://tttint.onlinegames22.com/"),
+                AgentKey: Guid.NewGuid().ToString("N"));
+
             _ = fakeClient.SettingGetConfigurationAsync<JiliTransferConfiguration>(Arg.Is(key)).Returns(expected);
 
             var repository = new SettingRepository(fakeClient);
