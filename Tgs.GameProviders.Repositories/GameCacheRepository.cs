@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.QueryServer.Models;
 
@@ -11,8 +6,8 @@ namespace Tgs.GameProviders.Repositories
 {
     internal class GameCacheRepository : IGameRepository
     {
-        private readonly IMemoryCache _memoryCache;
         private readonly IGameRepository _game;
+        private readonly IMemoryCache _memoryCache;
 
         public GameCacheRepository(
             IMemoryCache memoryCache,
@@ -24,16 +19,18 @@ namespace Tgs.GameProviders.Repositories
 
         public async ValueTask<GameModel?> GetAsync(int gameId)
         {
-            if (!_memoryCache.TryGetValue(gameId, out GameModel? gameModel))
+            var key = $"GameProviders:GameCache:{gameId}".ToLower();
+            if (!_memoryCache.TryGetValue(key, out GameModel? gameModel))
             {
                 gameModel = await _game.GetAsync(gameId).ConfigureAwait(false);
-                if (gameModel != null)
+                if (gameModel is not null)
                 {
-                    _ = _memoryCache.Set(gameId, gameModel, TimeSpan.FromHours(1));
+                    _ = _memoryCache.Set(key, gameModel, TimeSpan.FromHours(1));
                 }
             }
             return gameModel;
         }
+
         public IAsyncEnumerable<GameModel> GetGameListAsync(Guid gameProviderId, GameType gameType)
             => _game.GetGameListAsync(gameProviderId, gameType);
     }
