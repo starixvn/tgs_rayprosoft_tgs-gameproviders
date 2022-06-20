@@ -82,7 +82,7 @@ public class AGController : ControllerBase,
     /// <remarks>
     /// <b>Example</b><br />
     ///
-    ///     Get ag/rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
+    ///     Get rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
