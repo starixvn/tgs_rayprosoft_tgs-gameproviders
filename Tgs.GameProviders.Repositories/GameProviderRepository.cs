@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.QueryServer.Client;
 using Tgs.GameProviders.QueryServer.Models;
 
@@ -54,5 +55,12 @@ namespace Tgs.GameProviders.Repositories
         public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
             => await _client.GameProviderGetGameProviderIdAsync(gameProviderCode).ConfigureAwait(false)
             ?? throw new Exception($"Game Provider does not exist.({gameProviderCode})");
+        public async ValueTask<JiliTransferConfigurationData> GetJiliTransferConfigurationData(Guid gameProviderConfigurationId)
+        {
+            var data = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false);
+            return data is null ?
+                throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+                : JsonSerializer.Deserialize<JiliTransferConfigurationData>(data.ConfigurationData, _SerializerOptions)!;
+        }
     }
 }

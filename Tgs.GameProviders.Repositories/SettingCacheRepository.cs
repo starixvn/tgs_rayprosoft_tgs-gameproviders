@@ -178,5 +178,16 @@ namespace Tgs.GameProviders.Repositories
 
         public ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase
             => _setting.GetConfigurationAsync<TConfiguration>(key);
+        public async ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync()
+        {
+            var key = $"GameProviders:SettingCache:{GameProviderConfigurations.JiliTransfer}".ToLower();
+            if (!_memoryCache.TryGetValue(key, out JiliTransferConfiguration configuration))
+            {
+                configuration = await _setting.GetJiliTransferConfigurationAsync().ConfigureAwait(false);
+
+                _ = _memoryCache.Set(key, configuration, _absoluteExpiration);
+            }
+            return configuration;
+        }
     }
 }

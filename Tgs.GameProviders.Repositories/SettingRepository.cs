@@ -55,6 +55,9 @@ namespace Tgs.GameProviders.Repositories
         public ValueTask<AwcYlConfiguration> GetAwcYlConfigurationAsync()
             => GetAsync<AwcYlConfiguration>(GameProviderConfigurations.AWC_YL);
 
+        public ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync()
+            => GetAsync<JiliTransferConfiguration>(GameProviderConfigurations.JiliTransfer);
+
         public ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase
             => GetAsync<TConfiguration>(key);
 

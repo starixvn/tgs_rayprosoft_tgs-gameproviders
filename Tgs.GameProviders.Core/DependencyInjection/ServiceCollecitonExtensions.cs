@@ -7,6 +7,7 @@ using Tgs.GameProviders.QueryServer.Client;
 using Tgs.GameRounds.Client;
 using Tgs.GameProviders.Core.AwcSpade;
 using Tgs.GameProviders.Core.AwcYl;
+using Tgs.GameInterface.JiliService.Client;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -16,20 +17,15 @@ namespace Microsoft.Extensions.DependencyInjection
             this IServiceCollection services,
             Action<GameProvidersQueryServerClientOptions, IServiceProvider> gameProvidersQueryServerClientOptions,
             Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions,
+            Action<GameInterfaceJiliServiceClientOptions, IServiceProvider> gameInterfaceJiliServiceClientOptions,
             Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions)
             => services
                 .RegisterAllServiceUtilityTypes(
                     Assembly.GetExecutingAssembly(),
                     ServiceLifetime.Transient)
-                .Scan(scan =>
-                {
-                    _ = scan.FromCallingAssembly()
-                    .AddClasses(classes => classes.Where(t => t.Name.EndsWith("gameplayer", StringComparison.OrdinalIgnoreCase)))
-                    .AsImplementedInterfaces()
-                    .WithTransientLifetime();
-                })
                 .AddGameProvidersQueryServerClient(gameProvidersQueryServerClientOptions)
                 .AddGameInterfaceAwcServiceClient(gameInterfaceAwcServiceClientOptions)
+                .AddGameInterfaceJiliServiceClient(gameInterfaceJiliServiceClientOptions)
                 .AddGameRoundsClient(gameRoundsClientOptions)
                 .AddSecurity()//Tgs.Core.Infrastructures.Security
                 .AddMemoryCache()
