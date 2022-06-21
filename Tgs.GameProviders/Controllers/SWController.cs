@@ -81,7 +81,7 @@ namespace Tgs.GameProviders.Controllers
         /// <remarks>
         /// <b>Example</b><br />
         ///
-        ///     Get sw/rounddetail/3c6282df-d531-4482-088e-08d9a004e811?language=zh-CN
+        ///     Get rounddetail/3c6282df-d531-4482-088e-08d9a004e811?language=zh-CN
         /// </remarks>
         [HttpGet("RoundDetail/{roundId}")]
         public async ValueTask<RoundDetailResult?> RoundDetailAsync(

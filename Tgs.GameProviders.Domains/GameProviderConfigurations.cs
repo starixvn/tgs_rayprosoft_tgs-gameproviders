@@ -16,8 +16,8 @@
         public static readonly string AWC_LUDO = string.Format(_template, GameProviderType.AWC_LUDO);
         public static readonly string AWC_PGS = string.Format(_template, GameProviderType.AWC_PGS);
         public static readonly string AWC_RCB = string.Format(_template, GameProviderType.AWC_RCB);
-        public static readonly string AWC_SPADE = string.Format(_template, GameProviderType.AWC_SPADE);
         public static readonly string AWC_SG = string.Format(_template, GameProviderType.AWC_SG);
+        public static readonly string AWC_SPADE = string.Format(_template, GameProviderType.AWC_SPADE);
         public static readonly string AWC_VENUS = string.Format(_template, GameProviderType.AWC_VENUS);
         public static readonly string AWC_YL = string.Format(_template, GameProviderType.AWC_YL);
         public static readonly string BetConstruct = string.Format(_template, GameProviderType.BetConstruct);
@@ -29,6 +29,7 @@
         public static readonly string IMESports = string.Format(_template, GameProviderType.IMESports);
         public static readonly string JDB = string.Format(_template, GameProviderType.JDB);
         public static readonly string Jili = string.Format(_template, GameProviderType.Jili);
+        public static readonly string JiliTransfer = string.Format(_template, GameProviderType.JiliTransfer);
         public static readonly string Joker = string.Format(_template, GameProviderType.Joker);
         public static readonly string KY = string.Format(_template, GameProviderType.KY);
         public static readonly string LY = string.Format(_template, GameProviderType.LY);

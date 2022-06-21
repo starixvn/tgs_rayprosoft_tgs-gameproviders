@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameProviders.Client", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameProviders.Repositories", "Tgs.GameProviders.Repositories\Tgs.GameProviders.Repositories.csproj", "{AF685546-58E1-43A1-806B-DAA6FD3B8FAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameProviders.Services.UnitTest", "Tgs.GameProviders.Services.UnitTest\Tgs.GameProviders.Services.UnitTest.csproj", "{D30A79F5-33D3-48AC-895F-74FFA6311640}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameProviders.Repositories.UnitTest", "Tgs.GameProviders.Repositories.UnitTest\Tgs.GameProviders.Repositories.UnitTest.csproj", "{BD8D9254-A835-47BF-B6F5-3CA79454D4FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,10 +77,10 @@ Global
 		{AF685546-58E1-43A1-806B-DAA6FD3B8FAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF685546-58E1-43A1-806B-DAA6FD3B8FAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF685546-58E1-43A1-806B-DAA6FD3B8FAD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D30A79F5-33D3-48AC-895F-74FFA6311640}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D30A79F5-33D3-48AC-895F-74FFA6311640}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D30A79F5-33D3-48AC-895F-74FFA6311640}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D30A79F5-33D3-48AC-895F-74FFA6311640}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD8D9254-A835-47BF-B6F5-3CA79454D4FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD8D9254-A835-47BF-B6F5-3CA79454D4FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD8D9254-A835-47BF-B6F5-3CA79454D4FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD8D9254-A835-47BF-B6F5-3CA79454D4FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -42,8 +42,10 @@ namespace Tgs.GameProviders.Repositories
 
         public ValueTask<AwcRcbConfiguration> GetAwcRcbConfigurationAsync()
             => GetAsync<AwcRcbConfiguration>(GameProviderConfigurations.AWC_RCB);
+
         public ValueTask<AwcSgConfiguration> GetAwcSgConfigurationAsync()
            => GetAsync<AwcSgConfiguration>(GameProviderConfigurations.AWC_SG);
+
         public ValueTask<AwcSpadeConfiguration> GetAwcSpadeConfigurationAsync()
             => GetAsync<AwcSpadeConfiguration>(GameProviderConfigurations.AWC_SPADE);
 
@@ -52,6 +54,9 @@ namespace Tgs.GameProviders.Repositories
 
         public ValueTask<AwcYlConfiguration> GetAwcYlConfigurationAsync()
             => GetAsync<AwcYlConfiguration>(GameProviderConfigurations.AWC_YL);
+
+        public ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync()
+            => GetAsync<JiliTransferConfiguration>(GameProviderConfigurations.JiliTransfer);
 
         public ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase
             => GetAsync<TConfiguration>(key);

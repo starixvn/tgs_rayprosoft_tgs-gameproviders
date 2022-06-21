@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Repositories
@@ -22,11 +23,12 @@ namespace Tgs.GameProviders.Repositories
 
         public async ValueTask<AwcConfigurationData> GetAwcConfigurationData(Guid gameProviderConfigurationId)
         {
-            if (!_memoryCache.TryGetValue(gameProviderConfigurationId, out AwcConfigurationData configurationData))
+            var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+            if (!_memoryCache.TryGetValue(key, out AwcConfigurationData configurationData))
             {
                 configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
-                _ = _memoryCache.Set(gameProviderConfigurationId, configurationData, TimeSpan.FromHours(1));
+                _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
             }
             return configurationData;
         }
@@ -34,11 +36,35 @@ namespace Tgs.GameProviders.Repositories
         public ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId)
             => _gameProvider.GetGameEndpointsAsync(gameProviderConfigurationId);
 
-        public ValueTask<string?> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode)
-            => _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode);
+        public async ValueTask<string?> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode)
+        {
+            var key = $"GameProviders:GameProviderCache:{gameProviderId}:{cultureCode}".ToLower();
+            if (!_memoryCache.TryGetValue(key, out string? gameProviderCultureCode))
+            {
+                gameProviderCultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
 
-        public ValueTask<string?> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
-            => _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode);
+                if (!string.IsNullOrWhiteSpace(gameProviderCultureCode))
+                {
+                    _ = _memoryCache.Set(key, gameProviderCultureCode, TimeSpan.FromHours(1));
+                }
+            }
+            return gameProviderCultureCode;
+        }
+
+        public async ValueTask<string?> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
+        {
+            var key = $"GameProviders:GameProviderCache:{gameProviderId}:{currencyCode}".ToLower();
+            if (!_memoryCache.TryGetValue(key, out string? gameProviderCurrencyCode))
+            {
+                gameProviderCurrencyCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
+
+                if (!string.IsNullOrWhiteSpace(gameProviderCurrencyCode))
+                {
+                    _ = _memoryCache.Set(key, gameProviderCurrencyCode, TimeSpan.FromHours(1));
+                }
+            }
+            return gameProviderCurrencyCode;
+        }
 
         public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
         {
@@ -48,6 +74,18 @@ namespace Tgs.GameProviders.Repositories
                 _ = _memoryCache.Set(gameProviderCode, gameProviderId, TimeSpan.FromDays(1));
             }
             return gameProviderId;
+        }
+
+        public async ValueTask<JiliTransferConfigurationData> GetJiliTransferConfigurationData(Guid gameProviderConfigurationId)
+        {
+            var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+            if (!_memoryCache.TryGetValue(key, out JiliTransferConfigurationData configurationData))
+            {
+                configurationData = await _gameProvider.GetJiliTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+
+                _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+            }
+            return configurationData;
         }
     }
 }

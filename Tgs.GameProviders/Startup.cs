@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Npgsql;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Resources;
@@ -126,6 +125,11 @@ namespace Tgs.GameProviders
                 (options, sp) =>
                 {
                     var configuration = sp.GetRequiredService<IConfiguration>();
+                    options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceJiliServiceBaseUrl");
+                },
+                (options, sp) =>
+                {
+                    var configuration = sp.GetRequiredService<IConfiguration>();
                     options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameRoundsServiceBaseUrl");
                 });
 
@@ -159,7 +163,6 @@ namespace Tgs.GameProviders
                     .AddSource("TGS.*")
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddNpgsql()
                     .AddAspNetCoreInstrumentation()
                     .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
                     .AddProfileViewExporter()

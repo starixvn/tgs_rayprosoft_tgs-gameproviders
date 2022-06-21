@@ -19,11 +19,12 @@ namespace Tgs.GameProviders.Repositories
 
         public async Task<PlayerModel> GetAsync(string playerCode)
         {
-            if (!_memoryCache.TryGetValue(playerCode, out PlayerModel playerModel))
+            var key = $"GameProviders:PlayerCache:{playerCode}".ToLower();
+            if (!_memoryCache.TryGetValue(key, out PlayerModel playerModel))
             {
                 playerModel = await _player.GetAsync(playerCode).ConfigureAwait(false);
 
-                _ = _memoryCache.Set(playerCode, playerModel, TimeSpan.FromHours(1));
+                _ = _memoryCache.Set(key, playerModel, TimeSpan.FromHours(1));
             }
             return playerModel;
         }
