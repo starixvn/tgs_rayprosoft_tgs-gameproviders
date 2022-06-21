@@ -56,7 +56,7 @@ namespace Tgs.GameProviders.Repositories
             var key = $"GameProviders:GameProviderCache:{gameProviderId}:{currencyCode}".ToLower();
             if (!_memoryCache.TryGetValue(key, out string? gameProviderCurrencyCode))
             {
-                gameProviderCurrencyCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
+                gameProviderCurrencyCode = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
 
                 if (!string.IsNullOrWhiteSpace(gameProviderCurrencyCode))
                 {
