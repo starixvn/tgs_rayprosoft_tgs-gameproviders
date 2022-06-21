@@ -6,14 +6,6 @@ metadata:
 data:
   appsettings.json: |
     {
-      "Logging": {
-        "LogLevel": {
-          "Default": "Information",
-          "Microsoft": "Warning",
-          "Microsoft.Hosting.Lifetime": "Warning",
-          "Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware": "Information"
-        }
-      },
       "ConnectionStrings": {
         "RedisConfigurationString": "{{ .Values.connectionStrings.redis }}",
         "NatsMQ": "{{ .Values.nats.urls }}"
