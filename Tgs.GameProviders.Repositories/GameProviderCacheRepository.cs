@@ -68,10 +68,11 @@ namespace Tgs.GameProviders.Repositories
 
         public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
         {
-            if (!_memoryCache.TryGetValue(gameProviderCode, out Guid gameProviderId))
+            var key = $"GameProviders:GameProviderCache:{gameProviderCode}".ToLower();
+            if (!_memoryCache.TryGetValue(key, out Guid gameProviderId))
             {
                 gameProviderId = await _gameProvider.GetGameProviderIdAsync(gameProviderCode).ConfigureAwait(false);
-                _ = _memoryCache.Set(gameProviderCode, gameProviderId, TimeSpan.FromDays(1));
+                _ = _memoryCache.Set(key, gameProviderId, TimeSpan.FromDays(1));
             }
             return gameProviderId;
         }
