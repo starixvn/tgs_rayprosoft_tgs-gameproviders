@@ -28,18 +28,10 @@ namespace Tgs.GameProviders
             => Configuration = configuration;
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(
-            IApplicationBuilder app,
-            IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-            }
-            // ±Ò¥Î HTTP °O¿ý
-            _ = app.UseHttpLogging();
-
             _ = app.UseSwagger();
-            _ = app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tgs.GameProviders v1"));
+            _ = app.UseSwaggerUI();
 
             _ = app.UseHttpsRedirection();
 
@@ -59,13 +51,6 @@ namespace Tgs.GameProviders
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            _ = services.AddHttpLogging(httpLogging =>
-            {
-                httpLogging.LoggingFields = HttpLoggingFields.All;
-                httpLogging.RequestBodyLogLimit = 4096;
-                httpLogging.ResponseBodyLogLimit = 4096;
-            });
-
             _ = services
                 .AddRouting(options => options.LowercaseUrls = true)
                 .AddControllers(configure =>
@@ -81,13 +66,6 @@ namespace Tgs.GameProviders
             {
                 var xmlFileNames = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml");
                 foreach (var xmlFileName in xmlFileNames) c.IncludeXmlComments(xmlFileName);
-
-                c.SwaggerDoc("v1",
-                    new OpenApiInfo
-                    {
-                        Title = "Tgs.GameProviders",
-                        Version = "v1"
-                    });
             });
 
             _ = services
