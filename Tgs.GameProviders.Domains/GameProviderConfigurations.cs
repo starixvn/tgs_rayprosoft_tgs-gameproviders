@@ -25,6 +25,7 @@
         public static readonly string Card365 = string.Format(_template, GameProviderType.Card365);
         public static readonly string DreamGame = string.Format(_template, GameProviderType.DreamGame);
         public static readonly string Evolution = string.Format(_template, GameProviderType.Evolution);
+        public static readonly string EvolutionTransfer = string.Format(_template, GameProviderType.EvolutionTransfer);
         public static readonly string Habanero = string.Format(_template, GameProviderType.Habanero);
         public static readonly string IMESports = string.Format(_template, GameProviderType.IMESports);
         public static readonly string JDB = string.Format(_template, GameProviderType.JDB);
@@ -45,5 +46,6 @@
         public static readonly string WGHorse = string.Format(_template, GameProviderType.WGHorse);
         public static readonly string WGSports = string.Format(_template, GameProviderType.WGSports);
         public static readonly string WMCasino = string.Format(_template, GameProviderType.WMCasino);
+        public static readonly string WMCasinoTransfer = string.Format(_template, GameProviderType.WMCasinoTransfer);
     }
 }
