@@ -22,7 +22,7 @@ public class AllBetRoundDetailGetServiceUnitTest
         var fakeLogger = NullLogger<AllBetRoundDetailGetService>.Instance;
         var fakeRoundService = Substitute.For<IRoundService>();
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
          "TGS",
          Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -39,16 +39,16 @@ public class AllBetRoundDetailGetServiceUnitTest
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "1639679431950180036",
             Guid.Parse("579d6da3-b0ed-4e3f-bd4a-434a98efbd68"),
-            playerInfo.PlayerCode,
+            player.PlayerCode,
             1300002,
-            playerInfo.DefaultWalletCurrencyCode,
+            player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
-            playerInfo.DefaultWalletId,
+            player.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerInfo.BrandId,
+            player.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,

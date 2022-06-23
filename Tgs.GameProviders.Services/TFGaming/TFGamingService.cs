@@ -10,9 +10,9 @@ namespace Tgs.GameProviders.Services.TFGaming
 {
     internal class TFGamingService : ITFGamingService
     {
-        private readonly ISettingService _settingService;
+        private readonly ISettingRepository _settingService;
 
-        public TFGamingService(ISettingService settingService)
+        public TFGamingService(ISettingRepository settingService)
         {
             _settingService = settingService ?? throw new System.ArgumentNullException(nameof(settingService));
         }

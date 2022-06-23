@@ -18,7 +18,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
         var fakeService = Substitute.For<IPragmaticPlayTransferService>();
         var fakeApiClient = Substitute.For<IPragmaticPlayTransferApiClient>();
         var fakeGamePlayer = Substitute.For<IPragmaticPlayTransferGamePlayer>();
-        var fakePlayerService = Substitute.For<IPlayerService>();
+        var fakePlayerService = Substitute.For<IPlayerRepository>();
 
         var configuration = new PragmaticPlayTransferConfiguration()
         {
@@ -32,7 +32,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
         var gameProviderId = Guid.Parse("e4ecfa98-b373-4123-87e0-cb9e883d0691");
         var gameProviderCurrencyCode = "CNY";
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -49,10 +49,10 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
 
         var query = new PragmaticPlayTransferPlayerBalanceQuery
         {
-            PlayerCode = playerInfo.PlayerCode
+            PlayerCode = player.PlayerCode
         };
 
-        _ = fakePlayerService.GetCacheAsync(Arg.Is(playerInfo.PlayerCode)).Returns(playerInfo);
+        _ = fakePlayerService.GetAsync(Arg.Is(player.PlayerCode)).Returns(player);
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
 
         _ = fakeApiClient
@@ -60,7 +60,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
                 Arg.Is(configuration.ApiUrl),
                 Arg.Is(configuration.SecureLogin),
                 Arg.Is(configuration.SecretKey),
-                Arg.Is(playerInfo.PlayerCode))
+                Arg.Is(player.PlayerCode))
             .Returns(
                 x => (false, null),
                 x => (true, 100m));
@@ -70,12 +70,12 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
         _ = fakeService
             .GetGameProviderCurrencyCodeAsync(
             Arg.Is(gameProviderId),
-            Arg.Is(playerInfo.DefaultWalletCurrencyCode))
+            Arg.Is(player.DefaultWalletCurrencyCode))
             .Returns(gameProviderCurrencyCode);
 
         _ = fakeGamePlayer
             .CreatePlayerAsync(
-                Arg.Is(playerInfo.PlayerCode),
+                Arg.Is(player.PlayerCode),
                 Arg.Is(gameProviderCurrencyCode),
                 Arg.Is(configuration))
             .Returns(true);
@@ -93,7 +93,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
         _ = fakeGamePlayer
             .Received(1)
             .CreatePlayerAsync(
-                Arg.Is(playerInfo.PlayerCode),
+                Arg.Is(player.PlayerCode),
                 Arg.Is(gameProviderCurrencyCode),
                 Arg.Is(configuration));
 
@@ -103,7 +103,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
                 Arg.Is(configuration.ApiUrl),
                 Arg.Is(configuration.SecureLogin),
                 Arg.Is(configuration.SecretKey),
-                Arg.Is(playerInfo.PlayerCode));
+                Arg.Is(player.PlayerCode));
     }
 
     [Test]
@@ -112,7 +112,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
         var fakeService = Substitute.For<IPragmaticPlayTransferService>();
         var fakeApiClient = Substitute.For<IPragmaticPlayTransferApiClient>();
         var fakeGamePlayer = Substitute.For<IPragmaticPlayTransferGamePlayer>();
-        var fakePlayerService = Substitute.For<IPlayerService>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
 
         var configuration = new PragmaticPlayTransferConfiguration
         {
@@ -125,7 +125,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
 
         var gameProviderCurrencyCode = "CNY";
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -142,10 +142,10 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
 
         var query = new PragmaticPlayTransferPlayerBalanceQuery
         {
-            PlayerCode = playerInfo.PlayerCode
+            PlayerCode = player.PlayerCode
         };
 
-        _ = fakePlayerService.GetCacheAsync(Arg.Is(playerInfo.PlayerCode)).Returns(playerInfo);
+        _ = fakePlayer.GetAsync(Arg.Is(player.PlayerCode)).Returns(player);
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
 
         _ = fakeApiClient
@@ -153,11 +153,11 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
                 Arg.Is(configuration.ApiUrl),
                 Arg.Is(configuration.SecureLogin),
                 Arg.Is(configuration.SecretKey),
-                Arg.Is(playerInfo.PlayerCode))
+                Arg.Is(player.PlayerCode))
             .Returns((true, balance));
 
         var sut = new PragmaticPlayTransferPlayerBalanceGetService(
-            fakePlayerService,
+            fakePlayer,
             fakeService,
             fakeGamePlayer,
             fakeApiClient);
@@ -169,7 +169,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
         _ = fakeGamePlayer
             .DidNotReceive()
             .CreatePlayerAsync(
-                Arg.Is(playerInfo.PlayerCode),
+                Arg.Is(player.PlayerCode),
                 Arg.Is(gameProviderCurrencyCode),
                 Arg.Is(configuration));
     }

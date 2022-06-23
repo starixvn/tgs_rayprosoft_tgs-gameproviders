@@ -9,12 +9,12 @@ namespace Tgs.GameProviders.Services.SexyGaming
 {
     internal class SexyGamingService : ISexyGamingService
     {
-        private readonly IGameProviderService _gameProviderService;
-        private readonly ISettingService _settingService;
+        private readonly IGameProviderRepository _gameProviderService;
+        private readonly ISettingRepository _settingService;
 
         public SexyGamingService(
-            ISettingService settingService,
-            IGameProviderService gameProviderService
+            ISettingRepository settingService,
+            IGameProviderRepository gameProviderService
             )
         {
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
@@ -23,14 +23,14 @@ namespace Tgs.GameProviders.Services.SexyGaming
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
-            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.SexyGaming).ConfigureAwait(false);
+            var gameProviderId = await _gameProviderService.GetGameProviderIdAsync(GameProviderType.SexyGaming).ConfigureAwait(false);
             var gameProviderCultureCode = await _gameProviderService.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
             return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "en";
         }
 
         public async ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode)
         {
-            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.SexyGaming).ConfigureAwait(false);
+            var gameProviderId = await _gameProviderService.GetGameProviderIdAsync(GameProviderType.SexyGaming).ConfigureAwait(false);
             var gameProviderCurrencyCode = await _gameProviderService.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
             return !string.IsNullOrEmpty(gameProviderCurrencyCode) ? gameProviderCurrencyCode : null;
         }

@@ -10,12 +10,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Npgsql;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Prometheus;
+using Tgs.GameProviders.Repositories.DependencyInjection;
 using Tgs.GameProviders.ViewModelMappings;
 
 namespace Tgs.GameProviders
@@ -28,18 +28,10 @@ namespace Tgs.GameProviders
             => Configuration = configuration;
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(
-            IApplicationBuilder app,
-            IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-            }
-            // ±Ò¥Î HTTP °O¿ý
-            _ = app.UseHttpLogging();
-
             _ = app.UseSwagger();
-            _ = app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tgs.GameProviders v1"));
+            _ = app.UseSwaggerUI();
 
             _ = app.UseHttpsRedirection();
 
@@ -59,13 +51,6 @@ namespace Tgs.GameProviders
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            _ = services.AddHttpLogging(httpLogging =>
-            {
-                httpLogging.LoggingFields = HttpLoggingFields.All;
-                httpLogging.RequestBodyLogLimit = 4096;
-                httpLogging.ResponseBodyLogLimit = 4096;
-            });
-
             _ = services
                 .AddRouting(options => options.LowercaseUrls = true)
                 .AddControllers(configure =>
@@ -81,13 +66,6 @@ namespace Tgs.GameProviders
             {
                 var xmlFileNames = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml");
                 foreach (var xmlFileName in xmlFileNames) c.IncludeXmlComments(xmlFileName);
-
-                c.SwaggerDoc("v1",
-                    new OpenApiInfo
-                    {
-                        Title = "Tgs.GameProviders",
-                        Version = "v1"
-                    });
             });
 
             _ = services
@@ -110,6 +88,7 @@ namespace Tgs.GameProviders
                     var configuration = sp.GetRequiredService<IConfiguration>();
                     options.ConnectionString = configuration.GetConnectionString("RedisConfigurationString");
                 })
+                .AddGameProvidersRepositories()
                 .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
                 .AddGameProviders((options, sp) =>
                 {
@@ -120,6 +99,11 @@ namespace Tgs.GameProviders
                 {
                     var configuration = sp.GetRequiredService<IConfiguration>();
                     options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceAwcServiceBaseUrl");
+                },
+                (options, sp) =>
+                {
+                    var configuration = sp.GetRequiredService<IConfiguration>();
+                    options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceJiliServiceBaseUrl");
                 },
                 (options, sp) =>
                 {
@@ -157,7 +141,6 @@ namespace Tgs.GameProviders
                     .AddSource("TGS.*")
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddNpgsql()
                     .AddAspNetCoreInstrumentation()
                     .AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
                     .AddProfileViewExporter()

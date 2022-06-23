@@ -6,23 +6,24 @@ using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.PragmaticPlayerTransfer;
 
 internal class PragmaticPlayTransferService : IPragmaticPlayTransferService
 {
-    private readonly IGameProviderService _gameProviderService;
-    private readonly ISettingService _settingService;
+    private readonly IGameProviderRepository _gameProviderService;
+    private readonly ISettingRepository _settingService;
 
     public PragmaticPlayTransferService(
-        IGameProviderService gameProviderService,
-        ISettingService settingService)
+        IGameProviderRepository gameProviderService,
+        ISettingRepository settingService)
     {
         _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
         _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
     }
 
-    public ValueTask<GameProviderInfo> GetGameProviderAsync(Guid gameProviderId)
+    public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
         => _gameProviderService.GetAsync(gameProviderId);
 
     public async ValueTask<string?> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
@@ -34,7 +35,7 @@ internal class PragmaticPlayTransferService : IPragmaticPlayTransferService
     }
 
     public ValueTask<Guid> GetGameProviderIdAsync()
-        => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.PragmaticPlayTransfer);
+        => _gameProviderService.GetGameProviderIdAsync(GameProviderType.PragmaticPlayTransfer);
 
     public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
     {

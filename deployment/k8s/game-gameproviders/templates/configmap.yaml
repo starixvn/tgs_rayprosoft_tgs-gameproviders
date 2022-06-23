@@ -6,14 +6,6 @@ metadata:
 data:
   appsettings.json: |
     {
-      "Logging": {
-        "LogLevel": {
-          "Default": "Information",
-          "Microsoft": "Warning",
-          "Microsoft.Hosting.Lifetime": "Warning",
-          "Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware": "Information"
-        }
-      },
       "ConnectionStrings": {
         "RedisConfigurationString": "{{ .Values.connectionStrings.redis }}",
         "NatsMQ": "{{ .Values.nats.urls }}"
@@ -21,6 +13,7 @@ data:
       "GameProviders": {
         "GameProvidersQueryServerBaseUrl": "http://game-gameprovider-queryserver",
         "GameInterfaceAwcServiceBaseUrl":"http://game-gameinterface-awc-service:9090",
+        "GameInterfaceJiliServiceBaseUrl":"http://game-gameinterface-jili-service:9090",
         "GameRoundsServiceBaseUrl":"http://game-gamerounds"
       },
     }

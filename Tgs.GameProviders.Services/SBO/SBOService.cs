@@ -5,31 +5,28 @@ using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.SBO;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.SBO
 {
     internal class SBOService : ISBOService
     {
-        private readonly IGameProviderService _gameProviderService;
-        private readonly IGameService _gameService;
-        private readonly ILogger<SBOService> _logger;
-        private readonly ISettingService _settingService;
+        private readonly IGameProviderRepository _gameProviderService;
+        private readonly IGameRepository _gameRepository;
+        private readonly ISettingRepository _settingService;
 
         public SBOService(
-            ILogger<SBOService> logger,
-            ISettingService settingService,
-            IGameProviderService gameProviderService,
-            IGameService gameService)
+            ISettingRepository settingService,
+            IGameProviderRepository gameProviderService,
+            IGameRepository gameRepository)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
             _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
         }
 
-        public async ValueTask<GameInfo> GetGameAsync(
-            int gameId)
-            => await _gameService.GetAsync(gameId).ConfigureAwait(false);
+        public async ValueTask<GameModel> GetGameAsync(int gameId)
+            => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode)
         {
@@ -49,7 +46,7 @@ namespace Tgs.GameProviders.Services.SBO
         }
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.SBOBET);
+            => _gameProviderService.GetGameProviderIdAsync(GameProviderType.SBOBET);
 
         public async ValueTask<SBOConfiguration> GetSettingConfigurationAsync()
             => await _settingService.GetConfigurationAsync<SBOConfiguration>(GameProviderConfigurations.SBOBET)

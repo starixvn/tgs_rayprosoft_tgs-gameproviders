@@ -12,12 +12,12 @@ internal class Card365KickPlayerCommandService : ICommandService<Card365KickPlay
     private readonly ICard365AgentMapper _agentMapper;
     private readonly ICard365ApiClient _client;
     private readonly ILogger<Card365KickPlayerCommandService> _logger;
-    private readonly IPlayerService _playerService;
+    private readonly IPlayerRepository _playerService;
     private readonly ICard365Service _service;
 
     public Card365KickPlayerCommandService(
         ILogger<Card365KickPlayerCommandService> logger,
-        IPlayerService playerService,
+        IPlayerRepository playerService,
         ICard365Service service,
         ICard365AgentMapper agentMapper,
         ICard365ApiClient client)
@@ -33,21 +33,17 @@ internal class Card365KickPlayerCommandService : ICommandService<Card365KickPlay
         Card365KickPlayerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-        if (playerInfo == null)
-        {
-            throw new Exception($"The player does not exist.{command.PlayerCode}");
-        }
+        var playerModel = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-        var agent = _agentMapper.GetAgent(configuration.BrandAgents, playerInfo.BrandCode);
+        var agent = _agentMapper.GetAgent(configuration.BrandAgents, playerModel.BrandCode);
 
         var request = new Card365LogoutRequest
         {
             Cert = configuration.Cert,
             AgentId = agent.AgentId,
-            PlayerCode = playerInfo.PlayerCode
+            PlayerCode = playerModel.PlayerCode
         };
 
         _ = await _client.LogoutAsync(

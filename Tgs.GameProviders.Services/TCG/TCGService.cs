@@ -11,25 +11,21 @@ namespace Tgs.GameProviders.Services.TCG
 {
     internal class TCGService : ITCGService
     {
-        private readonly IGameProviderService _gameProviderService;
-        private readonly IGameService _gameService;
-        private readonly ISettingService _settingService;
+        private readonly IGameProviderRepository _gameProviderRepository;
+        private readonly ISettingRepository _settingRepository;
 
         public TCGService(
-            ISettingService settingService,
-            IGameProviderService gameProviderService,
-            IGameService gameService
-            )
+            ISettingRepository settingRepository,
+            IGameProviderRepository gameProviderRepository )
         {
-            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
-            _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+            _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+            _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         }
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
-            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.TCG).ConfigureAwait(false);
-            var gameProviderCultureCode = await _gameProviderService.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
+            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.TCG).ConfigureAwait(false);
+            var gameProviderCultureCode = await _gameProviderRepository.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
             return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "EN";
         }
 
@@ -40,6 +36,6 @@ namespace Tgs.GameProviders.Services.TCG
         }
 
         public ValueTask<TCGConfiguration> GetSettingConfigurationAsync()
-            => _settingService.GetConfigurationAsync<TCGConfiguration>(GameProviderConfigurations.TCG);
+            => _settingRepository.GetConfigurationAsync<TCGConfiguration>(GameProviderConfigurations.TCG);
     }
 }

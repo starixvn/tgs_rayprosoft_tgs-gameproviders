@@ -4,35 +4,36 @@ using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.Joker;
 
 internal class JokerService : IJokerService
 {
-    private readonly IGameProviderService _gameProviderService;
-    private readonly IGameService _gameService;
-    private readonly ISettingService _settingService;
+    private readonly IGameProviderRepository _gameProviderRepository;
+    private readonly IGameRepository _gameRepository;
+    private readonly ISettingRepository _settingRepository;
 
     public JokerService(
-        IGameProviderService gameProviderService,
-        IGameService gameService,
-        ISettingService settingService)
+        IGameProviderRepository gameProviderRepository,
+        IGameRepository gameRepository,
+        ISettingRepository settingRepository)
     {
-        _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
-        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-        _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
+        _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
+        _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
     }
 
-    public ValueTask<GameInfo> GetGameAsync(int gameId)
-        => _gameService.GetAsync(gameId);
+    public ValueTask<GameModel> GetGameAsync(int gameId)
+        => _gameRepository.GetAsync(gameId);
 
     public ValueTask<Guid> GetGameProviderIdAsync()
-        => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.Joker);
+        => _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.Joker);
 
     public async ValueTask<string> GetGameProviderLanguageCodeAsync(string cultureCode)
     {
         var gameProviderId = await GetGameProviderIdAsync().ConfigureAwait(false);
-        var gameProviderCultureCode = await _gameProviderService
+        var gameProviderCultureCode = await _gameProviderRepository
             .GetGameProviderCultureCodeAsync(gameProviderId, cultureCode)
             .ConfigureAwait(false);
 
@@ -40,7 +41,7 @@ internal class JokerService : IJokerService
     }
 
     public async ValueTask<JokerConfiguration> GetSettingConfigurationAsync()
-                    => await _settingService
+        => await _settingRepository
             .GetConfigurationAsync<JokerConfiguration>(GameProviderConfigurations.Joker)
             .ConfigureAwait(false);
 }

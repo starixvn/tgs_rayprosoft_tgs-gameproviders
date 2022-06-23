@@ -11,12 +11,12 @@ internal class JiliKickPlayerCommandService : ICommandService<JiliKickPlayerComm
     private readonly IJiliApiClient _client;
     private readonly ILogger<JiliKickPlayerCommandService> _logger;
     private readonly IJiliMerchantMapper _merchantMapper;
-    private readonly IPlayerService _playerService;
+    private readonly IPlayerRepository _playerService;
     private readonly IJiliService _service;
 
     public JiliKickPlayerCommandService(
         ILogger<JiliKickPlayerCommandService> logger,
-        IPlayerService playerService,
+        IPlayerRepository playerService,
         IJiliService service,
         IJiliMerchantMapper merchantMapper,
         IJiliApiClient client)
@@ -32,15 +32,10 @@ internal class JiliKickPlayerCommandService : ICommandService<JiliKickPlayerComm
         JiliKickPlayerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-        if (playerInfo == null)
-        {
-            throw new Exception($"The player does not exist.{command.PlayerCode}");
-        }
-
+        var playerModel = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-        var merchant = _merchantMapper.GetMerchant(configuration.Merchants, playerInfo.BrandCode);
-        var jiliPlayerId = $"{playerInfo.BrandCode}_{playerInfo.PlayerCode}";
+        var merchant = _merchantMapper.GetMerchant(configuration.Merchants, playerModel.BrandCode);
+        var jiliPlayerId = $"{playerModel.BrandCode}_{playerModel.PlayerCode}";
 
         await _client.KickMemberAsync(
                 configuration.ApiUrl,

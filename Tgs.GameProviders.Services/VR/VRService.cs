@@ -12,12 +12,12 @@ namespace Tgs.GameProviders.Services.VR
 {
     internal class VRService : IVRService
     {
-        private readonly IGameProviderService _gameProviderService;
-        private readonly ISettingService _settingService;
+        private readonly IGameProviderRepository _gameProviderService;
+        private readonly ISettingRepository _settingService;
 
         public VRService(
-            ISettingService settingService,
-            IGameProviderService gameProviderService
+            ISettingRepository settingService,
+            IGameProviderRepository gameProviderService
             )
         {
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
@@ -42,7 +42,7 @@ namespace Tgs.GameProviders.Services.VR
            };
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.VR);
+            => _gameProviderService.GetGameProviderIdAsync(GameProviderType.VR);
 
         public GameRoundStatus GetRoundStatus(int state) =>
            state switch

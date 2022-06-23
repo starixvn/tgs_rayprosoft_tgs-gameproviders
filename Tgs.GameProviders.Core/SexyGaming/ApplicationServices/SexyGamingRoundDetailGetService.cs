@@ -10,17 +10,17 @@ namespace Tgs.GameProviders.Core.SexyGaming.ApplicationServices
 {
     internal class SexyGamingRoundDetailGetService : IGetService<SexyGamingRoundDetailQuery, RoundDetailResult>
     {
-        private readonly IGameService _gameService;
+        private readonly IGameRepository _gameRepository;
         private readonly IRoundService _roundService;
         private readonly ISexyGamingRoundDetailAnalyzeService _sexyGamingRoundDetailAnalyzeService;
 
         public SexyGamingRoundDetailGetService(
-            IGameService gameService,
+            IGameRepository gameRepository,
             IRoundService roundService,
             ISexyGamingRoundDetailAnalyzeService sexyGamingRoundDetailAnalyzeService
             )
         {
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
             _sexyGamingRoundDetailAnalyzeService = sexyGamingRoundDetailAnalyzeService ?? throw new ArgumentNullException(nameof(sexyGamingRoundDetailAnalyzeService));
         }
@@ -33,7 +33,7 @@ namespace Tgs.GameProviders.Core.SexyGaming.ApplicationServices
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
 
-            var gameInfo = await _gameService.GetCacheAsync(roundInfo.GameId).ConfigureAwait(false);
+            var gameInfo = await _gameRepository.GetAsync(roundInfo.GameId).ConfigureAwait(false);
             if (gameInfo == null)
             {
                 throw new Exception($"This game Id could not be found..{roundInfo.GameId}");

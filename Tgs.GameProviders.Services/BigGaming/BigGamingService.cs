@@ -12,12 +12,12 @@ namespace Tgs.GameProviders.Services.BigGaming
 {
     internal class BigGamingService : IBigGamingService
     {
-        private readonly IGameProviderService _gameProviderService;
-        private readonly ISettingService _settingService;
+        private readonly IGameProviderRepository _gameProviderService;
+        private readonly ISettingRepository _settingService;
 
         public BigGamingService(
-            ISettingService settingService,
-            IGameProviderService gameProviderRepository
+            ISettingRepository settingService,
+            IGameProviderRepository gameProviderRepository
             )
         {
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
@@ -40,13 +40,13 @@ namespace Tgs.GameProviders.Services.BigGaming
 
         public async ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode)
         {
-            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.BigGaming).ConfigureAwait(false);
+            var gameProviderId = await _gameProviderService.GetGameProviderIdAsync(GameProviderType.BigGaming).ConfigureAwait(false);
             var gameProviderCultureCode = await _gameProviderService.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
             return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "en_US";
         }
 
         public ValueTask<Guid> GetGameProviderIdAsync()
-            => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.BigGaming);
+            => _gameProviderService.GetGameProviderIdAsync(GameProviderType.BigGaming);
 
         private static bool IgnoreCaseEquals(string source, string trigger)
             => string.Equals(source, trigger, StringComparison.OrdinalIgnoreCase);

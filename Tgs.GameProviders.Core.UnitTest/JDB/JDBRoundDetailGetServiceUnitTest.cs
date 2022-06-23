@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameProviders.Core.JDB;
@@ -20,11 +19,10 @@ public class JDBRoundDetailGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<JDBRoundDetailGetService>.Instance;
-        var fakePlayerService = Substitute.For<IPlayerService>();
+        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeRoundService = Substitute.For<IRoundService>();
-        var fakeGameProviderService = Substitute.For<IGameProviderService>();
-        var fakeGameService = Substitute.For<IGameService>();
+        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+        var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeService = Substitute.For<IJDBService>();
         var fakeAgentMapper = Substitute.For<IJDBAgentMapper>();
         var fakeApiClient = Substitute.For<IJDBApiClient>();
@@ -50,7 +48,7 @@ public class JDBRoundDetailGetServiceUnitTest
             Agents = new[] { agent }
         };
 
-        var playerInfo = new PlayerInfo(
+        var player = new PlayerModel(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
          "TGS",
          Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -63,7 +61,7 @@ public class JDBRoundDetailGetServiceUnitTest
          "CNY",
          PlayerStatus.Enabled);
 
-        var gameProviderInfo = new GameProviderInfo(
+        var gameProviderInfo = new GameProviderModel(
             Guid.Parse("65cc2057-cb52-44aa-8bff-dbb3d9ebdddc"),
             GameProviderStatus.Active,
             null,
@@ -78,7 +76,7 @@ public class JDBRoundDetailGetServiceUnitTest
             "JDB",
             null);
 
-        var gameInfo = new GameInfo(
+        var gameModel = new GameModel(
             700010,
             GameStatus.Active,
             "0_14034",
@@ -102,16 +100,16 @@ public class JDBRoundDetailGetServiceUnitTest
             Guid.Parse("015dc0ab-eecc-49da-299e-08d9d18bf7ef"),
             "5250172280339",
             gameProviderInfo.GameProviderId,
-            playerInfo.PlayerCode,
-            gameInfo.GameId,
-            playerInfo.DefaultWalletCurrencyCode,
+            player.PlayerCode,
+            gameModel.GameId,
+            player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
-            playerInfo.DefaultWalletId,
+            player.DefaultWalletId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             DateTime.Now,
-            playerInfo.BrandId,
+            player.BrandId,
             DateTime.Now.AddMinutes(-1),
             DateTime.Now,
             20m,
@@ -144,19 +142,19 @@ public class JDBRoundDetailGetServiceUnitTest
             }
         };
 
-        fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderLanguageAsync(roundInfo.GameProviderId, query.Language)
-            .Returns(ValueTask.FromResult(gameProviderLanguageCode));
+        _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+        _ = fakeService.GetGameProviderLanguageAsync(roundInfo.GameProviderId, query.Language)
+             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-        fakeAgentMapper.GetAgent(configuration.Agents, playerInfo.DefaultWalletCurrencyCode)
+        _ = fakeAgentMapper.GetAgent(configuration.Agents, player.DefaultWalletCurrencyCode)
             .Returns(agent);
 
-        fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
-        fakePlayerService.GetCacheAsync(roundInfo.PlayerCode).Returns(Task.FromResult(playerInfo));
-        fakeGameProviderService.GetAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderInfo));
-        fakeGameService.GetCacheAsync(roundInfo.GameId).Returns(ValueTask.FromResult<GameInfo?>(gameInfo));
+        _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
+        _ = fakePlayerRepository.GetAsync(roundInfo.PlayerCode).Returns(Task.FromResult(player));
+        _ = fakeGameProviderRepository.GetAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderInfo));
+        _ = fakeGameRepository.GetAsync(roundInfo.GameId).Returns(ValueTask.FromResult<GameModel?>(gameModel));
 
-        var items = gameInfo.GameExternalId.Split('_');
+        var items = gameModel.GameExternalId.Split('_');
 
         fakeApiClient
             .GetBetHistoryUrlAsync(
@@ -166,7 +164,7 @@ public class JDBRoundDetailGetServiceUnitTest
                 configuration.AESKey,
                 Arg.Is<JDBBetHistoryRequest>(x
                     => x.Parent == agent.Id &&
-                       x.UserId == playerInfo.PlayerCode &&
+                       x.UserId == player.PlayerCode &&
                        x.Language == gameProviderLanguageCode &&
                        x.GameType == int.Parse(items[0]) &&
                        x.SequenceNo == long.Parse(roundInfo.ExternalRoundId)))
@@ -184,11 +182,10 @@ public class JDBRoundDetailGetServiceUnitTest
                 }));
 
         var sut = new JDBRoundDetailGetService(
-            fakeLogger,
             fakeRoundService,
-            fakePlayerService,
-            fakeGameProviderService,
-            fakeGameService,
+            fakePlayerRepository,
+            fakeGameProviderRepository,
+            fakeGameRepository,
             fakeService,
             fakeAgentMapper,
             fakeApiClient);

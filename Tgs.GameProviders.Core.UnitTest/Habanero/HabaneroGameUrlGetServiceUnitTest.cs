@@ -38,7 +38,7 @@ public class HabaneroGameUrlGetServiceUnitTest
             BetHistoryUrl = new("https://app-test.insvr.com")
         };
 
-        var game = new GameInfo(
+        var gameModel = new GameModel(
             200001,
             GameStatus.Active,
             "SGTotemTowers",
@@ -58,7 +58,7 @@ public class HabaneroGameUrlGetServiceUnitTest
             null,
             "HABA");
 
-        var player = new PlayerInfo(
+        var player = new PlayerModel(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -73,8 +73,8 @@ public class HabaneroGameUrlGetServiceUnitTest
 
         var query = new HabaneroGameUrlQuery
         {
-            GameType = game.GameType,
-            GameId = game.GameId,
+            GameType = gameModel.GameType,
+            GameId = gameModel.GameId,
             BrandCode = "GPI",
             PlayerCode = playerCode,
             CurrencyCode = "CNY",
@@ -85,20 +85,20 @@ public class HabaneroGameUrlGetServiceUnitTest
             BackUrl = new("https://dev-t1.rpgp.cc/")
         };
 
-        fakeTokenProvider.EncryptAsync(query.LoginRecordId).Returns(ValueTask.FromResult(token));
-        fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetPlayerAsync(query.PlayerCode).Returns(ValueTask.FromResult(player));
-        fakeService.GetGameAsync(query.GameId!.Value).Returns(ValueTask.FromResult(game));
+        _ = fakeTokenProvider.EncryptAsync(query.LoginRecordId).Returns(ValueTask.FromResult(token));
+        _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+        _ = fakeService.GetPlayerAsync(query.PlayerCode).Returns(ValueTask.FromResult(player));
+        _ = fakeService.GetGameAsync(query.GameId!.Value).Returns(ValueTask.FromResult(gameModel));
 
-        fakeService.GetGameDomainAsync(
-                player.BrandId,
-                game.GameProviderId,
-                query.PlatformType)
-            .Returns(ValueTask.FromResult(gameDomain));
+        _ = fakeService.GetGameDomainAsync(
+                 player.BrandId,
+                 gameModel.GameProviderId,
+                 query.PlatformType)
+             .Returns(ValueTask.FromResult(gameDomain));
 
-        fakeService
-            .GetGameProviderLanguageCodeAsync(game.GameProviderId, query.Language)
-            .Returns(ValueTask.FromResult(gameProviderLanguageCode));
+        _ = fakeService
+             .GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
+             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         var sut = new HabaneroGameUrlGetService(fakeLogger, fakeService, fakeTokenProvider);
 

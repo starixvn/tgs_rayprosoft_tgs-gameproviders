@@ -10,14 +10,14 @@ namespace Tgs.GameProviders.Services.JDB;
 
 internal class JDBService : IJDBService
 {
-    private readonly IGameProviderService _gameProviderService;
+    private readonly IGameProviderRepository _gameProviderService;
     private readonly ILogger<JDBService> _logger;
-    private readonly ISettingService _settingService;
+    private readonly ISettingRepository _settingService;
 
     public JDBService(
         ILogger<JDBService> logger,
-        ISettingService settingService,
-        IGameProviderService gameProviderService)
+        ISettingRepository settingService,
+        IGameProviderRepository gameProviderService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));

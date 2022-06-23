@@ -10,14 +10,14 @@ namespace Tgs.GameProviders.Services.AllBet
 {
     internal class AllBetService : IAllBetService
     {
-        private readonly IGameProviderService _gameProviderService;
+        private readonly IGameProviderRepository _gameProviderService;
         private readonly ILogger<AllBetService> _logger;
-        private readonly ISettingService _settingService;
+        private readonly ISettingRepository _settingService;
 
         public AllBetService(
             ILogger<AllBetService> logger,
-            ISettingService settingService,
-            IGameProviderService gameProviderService)
+            ISettingRepository settingService,
+            IGameProviderRepository gameProviderService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
@@ -26,7 +26,7 @@ namespace Tgs.GameProviders.Services.AllBet
 
         public async ValueTask<string> GetGameProviderLanguageAsync(string cultureCode)
         {
-            var gameProviderId = await _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.AllBet)
+            var gameProviderId = await _gameProviderService.GetGameProviderIdAsync(GameProviderType.AllBet)
                 .ConfigureAwait(false);
 
             var gameProviderCultureCode = await _gameProviderService

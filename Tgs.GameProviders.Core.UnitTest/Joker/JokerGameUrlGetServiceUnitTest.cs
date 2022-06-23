@@ -47,7 +47,7 @@ public class JokerGameUrlGetServiceUnitTest
             }
         };
 
-        var game = new GameInfo(
+        var gameModel = new GameModel(
             2600001,
             GameStatus.Active,
             "t656f48j75z6a",
@@ -69,8 +69,8 @@ public class JokerGameUrlGetServiceUnitTest
 
         var query = new JokerGameUrlQuery
         {
-            GameType = game.GameType,
-            GameId = game.GameId,
+            GameType = gameModel.GameType,
+            GameId = gameModel.GameId,
             BrandCode = "GPI_HKD",
             PlayerCode = "4uf6k014jp5x",
             CurrencyCode = "HKD",
@@ -92,7 +92,7 @@ public class JokerGameUrlGetServiceUnitTest
             Arg.Is(query.BrandCode),
             Arg.Is(query.CurrencyCode)).Returns(agent);
 
-        _ = fakeService.GetGameAsync(Arg.Is(game.GameId)).Returns((GameInfo?)game);
+        _ = fakeService.GetGameAsync(Arg.Is(gameModel.GameId)).Returns((GameModel?)gameModel);
 
         _ = fakeService
              .GetGameProviderLanguageCodeAsync(Arg.Is(query.Language))

@@ -96,7 +96,7 @@ public class DreamGameGameUrlGetServiceUnitTest
             }
         };
 
-        var gameInfo = new GameInfo(
+        var gameModel = new GameModel(
             2500001,
             GameStatus.Active,
             "DreamGameLobby",
@@ -118,8 +118,8 @@ public class DreamGameGameUrlGetServiceUnitTest
 
         var query = new DreamGameGameUrlQuery
         {
-            GameType = gameInfo.GameType,
-            GameId = gameInfo.GameId,
+            GameType = gameModel.GameType,
+            GameId = gameModel.GameId,
             BrandCode = "GPI",
             PlayerCode = "4ucmqplxb029",
             CurrencyCode = "CNY",

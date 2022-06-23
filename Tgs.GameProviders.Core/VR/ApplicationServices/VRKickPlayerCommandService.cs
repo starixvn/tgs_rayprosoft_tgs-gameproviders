@@ -10,13 +10,13 @@ namespace Tgs.GameProviders.Core.VR.ApplicationServices
     {
         private readonly IVRApiClient _client;
         private readonly ILogger<VRKickPlayerCommandService> _logger;
-        private readonly IPlayerService _playerService;
+        private readonly IPlayerRepository _playerService;
         private readonly IVRService _service;
 
         public VRKickPlayerCommandService(
             IVRApiClient client,
             ILogger<VRKickPlayerCommandService> logger,
-            IPlayerService playerService,
+            IPlayerRepository playerService,
             IVRService service)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -27,13 +27,8 @@ namespace Tgs.GameProviders.Core.VR.ApplicationServices
 
         public async ValueTask ExecuteAsync(VRKickPlayerCommand command, CancellationToken cancellationToken = default)
         {
-            var playerInfo = await _playerService.GetCacheAsync(command.PlayerCode).ConfigureAwait(false);
-            if (playerInfo == null)
-            {
-                throw new Exception($"The player does not exist.{command.PlayerCode}");
-            }
-
-            var brandMerchant = await _service.GetBrandMerchantAsync(playerInfo.BrandCode).ConfigureAwait(false);
+            var playerModel = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode).ConfigureAwait(false);
 
             await _client.KickAsync(
                 brandMerchant.ApiUrl,
@@ -42,7 +37,7 @@ namespace Tgs.GameProviders.Core.VR.ApplicationServices
                 brandMerchant.Deskey,
                 new()
                 {
-                    PlayerCode = playerInfo.PlayerCode
+                    PlayerCode = playerModel.PlayerCode
                 }).ConfigureAwait(false);
         }
     }

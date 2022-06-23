@@ -66,7 +66,7 @@ public class PPController : ControllerBase,
     /// <remarks>
     /// <b>Example</b><br />
     ///
-    ///     Delete pp/kickplayer/4ucmqplxb029
+    ///     Delete kickplayer/4ucmqplxb029
     /// </remarks>
     [HttpDelete("kickplayer/{playerCode}")]
     public ValueTask KickPlayerAsync(
@@ -87,7 +87,7 @@ public class PPController : ControllerBase,
     /// <remarks>
     /// <b>Example</b><br />
     ///
-    ///     Get pp/rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
+    ///     Get rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(

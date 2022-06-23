@@ -10,20 +10,17 @@ namespace Tgs.GameProviders.Core.LY.ApplicationServices
     public class LYGameUrlGetService : IGetService<LYGameUrlQuery, GameUrlResult>
     {
         private readonly ILYApiClient _client;
-        private readonly IGameService _gameService;
-        private readonly ILogger<LYGameUrlGetService> _logger;
+        private readonly IGameRepository _gameRepository;
         private readonly ILYService _service;
 
         public LYGameUrlGetService(
             ILYApiClient client,
-            IGameService gameService,
-            ILogger<LYGameUrlGetService> logger,
+            IGameRepository gameRepository,
             ILYService service
             )
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
             _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
@@ -37,7 +34,7 @@ namespace Tgs.GameProviders.Core.LY.ApplicationServices
 
             if (command.GameType != GameType.CardGameLobby)
             {
-                var getGame = await _gameService.GetCacheAsync(command.GameId.Value).ConfigureAwait(false);
+                var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
 
                 if (getGame != null)
                 {

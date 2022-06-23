@@ -154,7 +154,7 @@ namespace Tgs.GameProviders.IntegrationTests
                 OppositeBets = Array.Empty<OppositeBetSetting>()
             };
 
-            var gameInfo = new GameInfo(
+            var gameModel = new GameModel(
                 400001,
                 GameStatus.Active,
                 "asiagaminglobby",
@@ -174,7 +174,7 @@ namespace Tgs.GameProviders.IntegrationTests
                 null,
                 "AG");
 
-            var playerInfo = new PlayerInfo(
+            var player = new PlayerModel(
                 Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
                 "TGS",
                 Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -189,10 +189,10 @@ namespace Tgs.GameProviders.IntegrationTests
 
             var query = new AsiaGamingGameUrlQuery
             {
-                GameType = gameInfo.GameType,
-                GameId = gameInfo.GameId,
+                GameType = gameModel.GameType,
+                GameId = gameModel.GameId,
                 BrandCode = "GPI",
-                PlayerCode = playerInfo.PlayerCode,
+                PlayerCode = player.PlayerCode,
                 CurrencyCode = "CNY",
                 LoginRecordId = Guid.NewGuid(),
                 PlatformType = Core.PlatformType.Desktop,
@@ -207,28 +207,28 @@ namespace Tgs.GameProviders.IntegrationTests
                 .Returns(ValueTask.FromResult(configuration));
 
             _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-            _ = fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
-            _ = fakeService.GetGameAsync(gameInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
+            _ = fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameModel.GameProviderId));
+            _ = fakeService.GetGameAsync(gameModel.GameId).Returns(ValueTask.FromResult(gameModel));
 
             _ = fakeService
-                .GetGameProviderCurrencyCodeAsync(gameInfo.GameProviderId, query.CurrencyCode)
+                .GetGameProviderCurrencyCodeAsync(gameModel.GameProviderId, query.CurrencyCode)
                 .Returns(ValueTask.FromResult(gameProviderCurrencyCode));
 
-            _ = fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
+            _ = fakeService.GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
                 .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-            _ = fakeService.GetBrandIdAsync(playerInfo.BrandCode).Returns(ValueTask.FromResult(playerInfo.BrandId));
+            _ = fakeService.GetBrandIdAsync(player.BrandCode).Returns(ValueTask.FromResult(player.BrandId));
             _ = fakeService
-                .GetGameDomainAsync(playerInfo.BrandId, gameInfo.GameProviderId, query.PlatformType)
+                .GetGameDomainAsync(player.BrandId, gameModel.GameProviderId, query.PlatformType)
                 .Returns(ValueTask.FromResult(domain));
 
-            _ = fakePlayerService.CheckOrCreateAccountAsync(configuration, playerInfo.PlayerCode, gameProviderCurrencyCode)
+            _ = fakePlayerService.CheckOrCreateAccountAsync(configuration, player.PlayerCode, gameProviderCurrencyCode)
                 .Returns(ValueTask.FromResult(true));
 
             _ = fakeSessionService
                 .CreateGameSessionAsync(
                     configuration,
-                    playerInfo.PlayerCode,
+                    player.PlayerCode,
                     query.LoginRecordId,
                     query.PlayerBalance)
                 .Returns(ValueTask.FromResult(true));
@@ -236,9 +236,9 @@ namespace Tgs.GameProviders.IntegrationTests
             _ = fakeUtility.GetQueryString(
                     Arg.Is<AsiaGamingGameUrlRequest>(x =>
                         x.AgentCode == configuration.AgentCode &&
-                        x.PlayerCode == playerInfo.PlayerCode &&
+                        x.PlayerCode == player.PlayerCode &&
                         x.Lang == gameProviderLanguageCode &&
-                        x.GameId == gameInfo.GameExternalId &&
+                        x.GameId == gameModel.GameExternalId &&
                         x.Currency == gameProviderCurrencyCode),
                     Arg.Any<string>())
                 .Returns(queryString);

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.IMESports.Models;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.IMESports.ApplicationServices
@@ -52,15 +53,10 @@ namespace Tgs.GameProviders.Core.IMESports.ApplicationServices
                 throw new Exception($"This game round number could not be found.{query.RoundId}");
             }
 
-            var playerInfo = await _service.GetPlayerAsync(roundInfo.PlayerCode).ConfigureAwait(false);
-            if (playerInfo == null)
-            {
-                throw new Exception($"This player could not be found.{roundInfo.PlayerCode}");
-            }
-
+            var playerModel = await _service.GetPlayerAsync(roundInfo.PlayerCode).ConfigureAwait(false);
             var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-            var result = await GetRoundResultAsync(configuration, roundInfo, playerInfo, query.Language).ConfigureAwait(false);
+            var result = await GetRoundResultAsync(configuration, roundInfo, playerModel, query.Language).ConfigureAwait(false);
 
             var value = result == null ?
                 null :
@@ -84,7 +80,7 @@ namespace Tgs.GameProviders.Core.IMESports.ApplicationServices
         private async ValueTask<IMESportsHistoryResult> GetRoundResultAsync(
             IMESportsConfiguration configuration,
             RoundInfo roundInfo,
-            PlayerInfo playerInfo,
+            PlayerModel playerInfo,
             string cultureCode)
         {
             var merchant = _merchantMapper.GetBrandMerchant(configuration.BrandMerchants, playerInfo.BrandCode);

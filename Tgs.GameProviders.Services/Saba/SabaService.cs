@@ -10,14 +10,14 @@ namespace Tgs.GameProviders.Services.Saba;
 
 internal class SabaService : ISabaService
 {
-    private readonly IGameProviderService _gameProviderService;
+    private readonly IGameProviderRepository _gameProviderService;
     private readonly ILogger<SabaService> _logger;
-    private readonly ISettingService _settingService;
+    private readonly ISettingRepository _settingService;
 
     public SabaService(
         ILogger<SabaService> logger,
-        IGameProviderService gameProviderService,
-        ISettingService settingService)
+        IGameProviderRepository gameProviderService,
+        ISettingRepository settingService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _gameProviderService = gameProviderService ?? throw new ArgumentNullException(nameof(gameProviderService));
@@ -34,7 +34,7 @@ internal class SabaService : ISabaService
     }
 
     public ValueTask<Guid> GetGameProviderIdAsync()
-        => _gameProviderService.GetCacheGameProviderIdAsync(GameProviderType.Saba);
+        => _gameProviderService.GetGameProviderIdAsync(GameProviderType.Saba);
 
     public async ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode)
     {
