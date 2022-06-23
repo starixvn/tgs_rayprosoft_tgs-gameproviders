@@ -108,6 +108,11 @@ namespace Tgs.GameProviders
                 (options, sp) =>
                 {
                     var configuration = sp.GetRequiredService<IConfiguration>();
+                    options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceWMCasinoServiceBaseUrl");
+                },
+                (options, sp) =>
+                {
+                    var configuration = sp.GetRequiredService<IConfiguration>();
                     options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameRoundsServiceBaseUrl");
                 });
 
