@@ -1,4 +1,5 @@
 ﻿#nullable enable
+
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
@@ -33,6 +34,8 @@ namespace Tgs.GameProviders.Core
         ValueTask<AwcYlConfiguration> GetAwcYlConfigurationAsync();
 
         ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync();
+
+        ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync();
 
         ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase;
     }

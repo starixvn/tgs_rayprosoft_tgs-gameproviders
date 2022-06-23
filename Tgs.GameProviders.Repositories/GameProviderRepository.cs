@@ -38,6 +38,14 @@ namespace Tgs.GameProviders.Repositories
                 : JsonSerializer.Deserialize<AwcConfigurationData>(data.ConfigurationData, _SerializerOptions)!;
         }
 
+        public async ValueTask<WMCasinoTransferConfigurationData> GetWMCasinoTransferConfigurationData(Guid gameProviderConfigurationId)
+        {
+            var data = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false);
+            return data is null ?
+                throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+                : JsonSerializer.Deserialize<WMCasinoTransferConfigurationData>(data.ConfigurationData, _SerializerOptions)!;
+        }
+
         public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId)
         {
             var data = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false);
@@ -55,6 +63,7 @@ namespace Tgs.GameProviders.Repositories
         public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
             => await _client.GameProviderGetGameProviderIdAsync(gameProviderCode).ConfigureAwait(false)
             ?? throw new Exception($"Game Provider does not exist.({gameProviderCode})");
+
         public async ValueTask<JiliTransferConfigurationData> GetJiliTransferConfigurationData(Guid gameProviderConfigurationId)
         {
             var data = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false);
