@@ -41,12 +41,13 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
             var configurationData = await _gameProvider.GetWMCasinoTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
             var password = "TgsP@ssword";
+            var user = $"wmtf_{command.PlayerCode}_{player.BrandCode}";
 
             var response = await _grpc.GameUrlAsync(
                 apiUrl: configuration.ApiUrl,
                 vendorId: configurationData.VendorId,
                 signature: configurationData.Signature,
-                playerCode: command.PlayerCode,
+                user: user,
                 password: password,
                 language: 0,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -64,7 +65,7 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
                     apiUrl: configuration.ApiUrl,
                     vendorId: configurationData.VendorId,
                     signature: configurationData.Signature,
-                    playerCode: command.PlayerCode,
+                    user: user,
                     password: password,
                     language: 0,
                     cancellationToken: cancellationToken).ConfigureAwait(false);

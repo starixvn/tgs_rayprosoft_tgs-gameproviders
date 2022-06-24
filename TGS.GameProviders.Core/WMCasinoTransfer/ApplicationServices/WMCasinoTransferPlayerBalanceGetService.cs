@@ -40,11 +40,12 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetWMCasinoTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
+            var user = $"wmtf_{command.PlayerCode}_{player.BrandCode}";
             var response = await _grpc.GetBalanceAsync(
                 apiUrl: configuration.ApiUrl,
                 vendorId: configurationData.VendorId,
                 signature: configurationData.Signature,
-                playerCode: player.PlayerCode,
+                user: user,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
             if (response.Success && !response.IsPlayerExist)
@@ -61,7 +62,7 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
                     apiUrl: configuration.ApiUrl,
                     vendorId: configurationData.VendorId,
                     signature: configurationData.Signature,
-                    playerCode: player.PlayerCode,
+                    user: user,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
             }
 
