@@ -52,7 +52,7 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
                 user: user,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            _logger.LogInformation("GameInterfaceWMCasinoServiceBalanceReply response:{response}", response);
+            _logger.LogInformation("GameInterfaceWMCasinoServiceBalanceReply response Success:{Success}, IsPlayerExist:{IsPlayerExist}", response.Success,response.IsPlayerExist);
 
             if (response.Success && !response.IsPlayerExist)
             {
