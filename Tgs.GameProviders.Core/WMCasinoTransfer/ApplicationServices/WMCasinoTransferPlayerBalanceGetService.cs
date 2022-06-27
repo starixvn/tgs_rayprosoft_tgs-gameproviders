@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
@@ -15,6 +16,7 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
         private readonly IGameInterfaceWMCasinoServiceGrpc _grpc;
         private readonly IPlayerRepository _player;
         private readonly ISettingRepository _setting;
+        private readonly ILogger<WMCasinoTransferPlayerBalanceGetService> _logger;
 
         public WMCasinoTransferPlayerBalanceGetService(
             IBrandService brand,
@@ -22,7 +24,8 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
             IGameProviderRepository gameProvider,
             IGameInterfaceWMCasinoServiceGrpc grpc,
             IPlayerRepository player,
-            ISettingRepository setting)
+            ISettingRepository setting,
+            ILogger<WMCasinoTransferPlayerBalanceGetService> logger)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
             _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
@@ -30,6 +33,7 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
             _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
             _player = player ?? throw new ArgumentNullException(nameof(player));
             _setting = setting ?? throw new ArgumentNullException(nameof(setting));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async ValueTask<decimal?> GetAsync(WMCasinoTransferPlayerBalanceQuery command, CancellationToken cancellationToken = default)
@@ -47,6 +51,8 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
                 signature: configurationData.Signature,
                 user: user,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
+
+            _logger.LogInformation("GameInterfaceWMCasinoServiceBalanceReply response:{response}", response);
 
             if (response.Success && !response.IsPlayerExist)
             {
@@ -67,7 +73,7 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
             }
 
             return !response.Success
-                ? throw new Exception($"This game product has failed to withdraw the balance..{response.Message}")
+                ? throw new Exception($"This game product has failed to get the balance..{response.Message}")
                 : response.Balance;
         }
     }
