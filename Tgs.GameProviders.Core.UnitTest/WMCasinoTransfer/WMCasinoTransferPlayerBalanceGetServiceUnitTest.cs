@@ -10,6 +10,7 @@ using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Tgs.GameProviders.Core.UnitTest.WMCasinoTransfer;
 
@@ -25,6 +26,7 @@ public class WMCasinoTransferPlayerBalanceGetServiceUnitTest
         var fakeGameInterfaceWMCasinoServiceGrpc = Substitute.For<IGameInterfaceWMCasinoServiceGrpc>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
+        var fakeLogger = NullLogger<WMCasinoTransferPlayerBalanceGetService>.Instance;
 
         var configuration = new WMCasinoTransferConfiguration
         {
@@ -84,7 +86,8 @@ public class WMCasinoTransferPlayerBalanceGetServiceUnitTest
             fakeGameProviderRepository,
             fakeGameInterfaceWMCasinoServiceGrpc,
             fakePlayerRepository,
-            fakeSettingRepository);
+            fakeSettingRepository,
+            fakeLogger);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
