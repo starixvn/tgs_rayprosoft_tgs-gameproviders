@@ -16,6 +16,7 @@ namespace Tgs.GameProviders.Controllers
             IKickPlayerHandler<WMCasinoTransferKickPlayerCommand>,
             IPlayerBalanceHandler<WMCasinoTransferPlayerBalanceQuery>,
             IPlayerFundHandler<WMCasinoTransferPlayerFundInQuery, WMCasinoTransferPlayerFundOutQuery>,
+            IPlayerFundCheckingHandler<WMCasinoTransferPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
             IRoundDetailHandler<WMCasinoTransferRoundDetailQuery>
     {
         /// <summary>
