@@ -37,11 +37,13 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetWMCasinoTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
+            var user = $"wmtf_{player.PlayerCode}_{player.BrandCode}";
+
             var reply = await _grpc.FundInAsync(
                 apiUrl: configuration.ApiUrl,
                 vendorId: configurationData.VendorId,
                 signature: configurationData.Signature,
-                playerCode: player.PlayerCode,
+                user: user,
                 transactionId: command.OrderId,
                 amount: command.Amount,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
