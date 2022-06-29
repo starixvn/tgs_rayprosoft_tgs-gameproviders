@@ -37,7 +37,18 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetWMCasinoTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
+            var agentBalance = await _grpc.GetAgentBalanceAsync(
+                apiUrl: configuration.ApiUrl,
+                vendorId: configurationData.VendorId,
+                signature: configurationData.Signature).ConfigureAwait(false);
+
+            if (agentBalance.Success && command.Amount > agentBalance.Balance)
+            {
+                throw new Exception($"Fund out failed(Tgs->WMCasino), transfer amount({command.Amount}) is over WMCasio({configurationData.VendorId}) agent's balance({agentBalance}).");
+            }
+
             var user = $"wmtf_{player.PlayerCode}_{player.BrandCode}";
+
             var reply = await _grpc.FundOutAsync(
                 apiUrl: configuration.ApiUrl,
                 vendorId: configurationData.VendorId,
