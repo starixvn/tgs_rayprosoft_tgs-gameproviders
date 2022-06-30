@@ -42,6 +42,12 @@ spec:
               name: appsettings
               readOnly: true
               subPath: appsettings.json
+            {{- if eq .Values.namespace "prod" }}
+            - mountPath: /etc/ssl/certs/rds-combined-ca-bundle.pem
+              name: rds-combined-ca-bundle
+              readOnly: true
+              subPath: rds-combined-ca-bundle.pem
+            {{- end }}
           env:
             - name: OTEL_SERVICE_NAME
               value: Game-GameProviders({{ .Values.namespace }})
@@ -49,15 +55,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-            - name: ConnectionStrings__Nats
-              valueFrom:
-                secretKeyRef:
-                  name: tgs-connections
-            - name: ConnectionStrings__Redis
-              valueFrom:
-                secretKeyRef:
-                  name: tgs-connections
-                  key: redis
           livenessProbe:
             httpGet:
               path: /healthz
