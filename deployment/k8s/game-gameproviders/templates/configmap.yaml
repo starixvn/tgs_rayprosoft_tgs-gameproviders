@@ -6,10 +6,6 @@ metadata:
 data:
   appsettings.json: |
     {
-      "ConnectionStrings": {
-        "Redis": "{{ .Values.connectionStrings.redis }}",
-        "Nats": "{{ .Values.nats.urls }}"
-      },
       "GameProviders": {
         "GameProvidersQueryServerBaseUrl": "http://game-gameprovider-queryserver",
         "GameInterfaceAwcServiceBaseUrl":"http://game-gameinterface-awc-service:9090",
