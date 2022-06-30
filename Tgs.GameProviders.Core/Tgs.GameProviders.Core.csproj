@@ -10,11 +10,12 @@
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
 		<PackageReference Include="Scrutor" Version="4.2.0" />
-		<PackageReference Include="StackExchange.Redis" Version="2.6.45" />
+		<PackageReference Include="StackExchange.Redis" Version="2.6.48" />
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 		<PackageReference Include="Tgs.Core.Infrastructures.Security" Version="0.0.1" />
 		<PackageReference Include="Tgs.GameInterface.AwcService.Client" Version="0.0.8" />
 		<PackageReference Include="Tgs.GameInterface.JiliService.Client" Version="0.0.1" />
+		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="1.0.5" />
 		<PackageReference Include="Tgs.GameProviders.QueryServer.Client" Version="0.0.13" />
 		<PackageReference Include="Tgs.GameRounds.Client" Version="0.0.19" />
 		<PackageReference Include="TGS.ServiceUtility" Version="0.1.0" />
