@@ -19,12 +19,12 @@ spec:
       {{- end }}
       labels:
         {{- include "game-gameproviders.selectorLabels" . | nindent 8 }}
-        tgs.kind: game
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "game-gameproviders.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -50,45 +50,57 @@ spec:
             {{- end }}
           env:
             - name: OTEL_SERVICE_NAME
-              value: Game-GameProviders({{ .Values.namespace }})
+              value: Game-GameProviders({{ .Release.Namespace }})
             - name: NODE_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
+            - name: ConnectionStrings__Nats
+              valueFrom:
+                secretKeyRef:
+                  name: tgs-connections
+                  key: nats
+            - name: ConnectionStrings__Redis
+              valueFrom:
+                secretKeyRef:
+                  name: tgs-connections
+                  key: redis
+          volumeMounts:
+            - mountPath: /config/appsettings.json
+              name: appsettings
+              readOnly: true
+              subPath: appsettings.json
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
           livenessProbe:
             httpGet:
               path: /healthz
               port: http
-          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          startupProbe:
             httpGet:
               path: /healthz
               port: http
+            failureThreshold: 30
+            periodSeconds: 2
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: appsettings
           configMap:
             name: configmap-{{ include "game-gameproviders.fullname" . }}
-        {{- if eq .Values.namespace "prod" }}
-        - name: rds-combined-ca-bundle
-          configMap:
-            name: configmap-mongodb-pem
-        {{- end }}
-      {{ if eq .Values.namespace "staging" }}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
-        dedicated: nonprod
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
       tolerations:
-      - effect: NoSchedule
-        key: dedicated
-        operator: Equal
-        value: nonprod
-      {{ end }}
-      {{ if eq .Values.namespace "prod" }}
-      nodeSelector:
-        dedicated: prod
-      tolerations:
-      - effect: NoSchedule
-        key: dedicated
-        operator: Equal
-        value: prod
-      {{ end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
