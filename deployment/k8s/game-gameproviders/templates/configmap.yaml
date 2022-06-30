@@ -6,15 +6,11 @@ metadata:
 data:
   appsettings.json: |
     {
-      "ConnectionStrings": {
-        "RedisConfigurationString": "{{ .Values.connectionStrings.redis }}",
-        "NatsMQ": "{{ .Values.nats.urls }}"
-      },
       "GameProviders": {
         "GameProvidersQueryServerBaseUrl": "http://game-gameprovider-queryserver",
         "GameInterfaceAwcServiceBaseUrl":"http://game-gameinterface-awc-service:9090",
         "GameInterfaceJiliServiceBaseUrl":"http://game-gameinterface-jili-service:9090",
         "GameInterfaceWMCasinoServiceBaseUrl":"http://game-gameinterface-wmcasino-service:9090",
         "GameRoundsServiceBaseUrl":"http://game-gamerounds"
-      },
+      }
     }

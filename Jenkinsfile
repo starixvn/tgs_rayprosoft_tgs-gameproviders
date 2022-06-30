@@ -1,15 +1,16 @@
+@Library('global-shared-library') _
 def message = "";
 
 pipeline {
-	agent any
-	
-	environment {
-		BuildConfiguration="Debug"
+    agent any
+    
+    environment {
+        BuildConfiguration="Debug"
         ImageName="harbor.rpgp.cc/tgs/game-gameproviders"
-	}
+    }
 
-	stages {
-		stage('Prepare') {
+    stages {
+        stage('Prepare') {
             steps {
                 sh "echo 'Branch: $GIT_BRANCH'";
                 script {
@@ -48,19 +49,19 @@ pipeline {
             }
         }
 
-		stage('Build') {
-			steps {
-				sh 'dotnet build -c $BuildConfiguration'
-			}
-		}
+        stage('Build') {
+            steps {
+                sh 'dotnet build -c $BuildConfiguration'
+            }
+        }
 
-		stage('Test') {
-			steps {
-				sh 'dotnet test -c $BuildConfiguration --logger trx --no-build'
-			}
-		}
+        stage('Test') {
+            steps {
+                sh 'dotnet test -c $BuildConfiguration --logger trx --no-build'
+            }
+        }
 
-        stage('Push packages') {
+		stage('Push packages') {
 			steps {
 				sh 'dotnet pack -c $BuildConfiguration "Tgs.GameProviders.Client/Tgs.GameProviders.Client.csproj" --no-restore'
 				sh 'dotnet nuget push "Tgs.GameProviders.Client/bin/$BuildConfiguration/*.nupkg" --source "raypro-baget" -k admin --skip-duplicate'
@@ -68,18 +69,18 @@ pipeline {
 		}
 
         stage('Build Docker Image') {
-			steps {
-				sh 'dotnet build "Tgs.GameProviders/Tgs.GameProviders.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageName:${TAG}" --no-restore '
-			}
-		}
+            steps {
+                sh 'dotnet build "Tgs.GameProviders/Tgs.GameProviders.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageName:${TAG}" --no-restore '
+            }
+        }
 
-		stage('Push Docker Image') {
-			steps {
-				sh 'docker push $ImageName:${TAG}'
-			}
-		}
+        stage('Push Docker Image') {
+            steps {
+                sh 'docker push $ImageName:${TAG}'
+            }
+        }
 
-		stage('Deploy') {
+        stage('Deploy') {
             when {
                 expression {
                     return env.kube_ns == 'prod';
@@ -97,69 +98,68 @@ pipeline {
 
 		stage('Deploy to k8s') {
 			steps {
-				withKubeConfig([credentialsId: env.k8s_config]) {
-                    withCredentials([string(credentialsId: "tgs-${kube_ns}-connectionstring", variable: "tgs_tgs")]) {
-                        sh '''
-                            helm template deployment/k8s/game-gameproviders \
+                script {
+                    withKubeConfig([credentialsId: env.k8s_config]) {
+                        def resources = getResources(env.k8s_config, env.kube_ns, "game-gameproviders")
+                        def dedicated = getTgsSettings(env.k8s_config, env.kube_ns, "dedicated")
+                        def node_selector = getTgsSettings(env.k8s_config, env.kube_ns, "node-selector")
+                        
+                        println resources
+                        println dedicated
+                        println node_selector
+
+                        sh """
+                            cat << EOF | yq e -P | helm template deployment/k8s/game-gameproviders \
+                                -n ${kube_ns} \
                                 --set image.tag=${TAG} \
-                                --set namespace=${kube_ns} \
-                                --set autoscaling.enabled=${tgs_autoscaling} \
-                                --set connectionStrings.redis="$tgs_redis" \
-                                --set nats.urls="$tgs_nats" \
-                        '''
-                        sh '''
-                            helm template deployment/k8s/game-gameproviders \
+                                -f -
+                            {
+                                "nodeSelector": $node_selector,
+                                "tolerations": [$dedicated],
+                                "resources": $resources
+                            }
+                        """
+                        sh """
+                            cat << EOF | yq e -P | helm template deployment/k8s/game-gameproviders \
+                                -n ${kube_ns} \
                                 --set image.tag=${TAG} \
-                                --set namespace=${kube_ns} \
-                                --set autoscaling.enabled=${tgs_autoscaling} \
-                                --set connectionStrings.redis="$tgs_redis" \
-                                --set nats.urls="$tgs_nats" \
+                                -f - \
                                 | kubectl -n ${kube_ns} apply -f -
-                        '''
+                            {
+                                "nodeSelector": $node_selector,
+                                "tolerations": [$dedicated],
+                                "resources": $resources
+                            }
+                        """
                     }
-				}
+                }
 			}
 		}
 
-		stage('Add Tag on Prod') {
+        stage('Add Tag on Prod') {
             when {
                 expression {
                     return env.kube_ns == 'prod';
                 }
-            }			
+            }
             steps {	
-				sshagent(['ssh-jenkins']) {
+                sshagent(['ssh-jenkins']) {
                     sh "git tag -a ${TAG} -m ${TAG}"
                     sh "git push ${GIT_URL} ${TAG} HEAD:${GIT_BRANCH}"
                 }
             }
         }
-	}
+    }
 
-	post {
-		always {
-			step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: false, keepLongStdio: true])
-		}
-		success {
+    post {
+        always {
+            step([$class: 'MSTestPublisher', testResultsFile:"**/*.trx", failOnError: false, keepLongStdio: true])
+        }
+        success {
              sendTelegram("Pipeline: ${currentBuild.fullDisplayName} OK! ${message} \n${currentBuild.getBuildCauses()[0].shortDescription}\n")
         }
         failure {
             sendTelegram("<b>Failed Pipeline:</b> ${currentBuild.fullDisplayName} Something is wrong with ${env.BUILD_URL}/console\n${currentBuild.getBuildCauses()[0].shortDescription}\n")
         }
-	}
-}
-
-
-def sendTelegram(message) {
-    def encodedMessage = URLEncoder.encode(message, "UTF-8")
-
-    withCredentials([string(credentialsId: "telegramToken", variable: "TOKEN"), string(credentialsId: "telegramChatId", variable: "CHAT_ID")]) {
-
-        response = httpRequest (consoleLogResponseBody: true,
-                contentType: 'APPLICATION_JSON',
-                httpMode: 'GET',
-                url: "https://api.telegram.org/bot${TOKEN}/sendMessage?text=${encodedMessage}&chat_id=${CHAT_ID}",
-                validResponseCodes: '200')
-        return response
     }
 }

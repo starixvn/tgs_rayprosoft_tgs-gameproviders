@@ -34,8 +34,12 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "game-gameproviders.labels" -}}
+helm.sh/chart: {{ include "game-gameproviders.chart" . }}
 {{ include "game-gameproviders.selectorLabels" . }}
-tgs.kind: game
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
@@ -43,6 +47,7 @@ Selector labels
 */}}
 {{- define "game-gameproviders.selectorLabels" -}}
 app: {{ include "game-gameproviders.name" . }}
+tgs.kind: game
 {{- end }}
 
 {{/*

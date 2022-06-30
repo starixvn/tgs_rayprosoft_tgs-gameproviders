@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Resources;
@@ -76,7 +73,7 @@ namespace Tgs.GameProviders
                     .ConfigQueueOptions((options, sp) =>
                     {
                         var configuration = sp.GetRequiredService<IConfiguration>();
-                        options.Url = configuration.GetConnectionString("NatsMQ");
+                        options.Url = configuration.GetConnectionString("Nats");
                     });
                 })
                 .AddNatsGlobPatternExchange("*");
@@ -86,7 +83,7 @@ namespace Tgs.GameProviders
                 .UseRedis((options, sp) =>
                 {
                     var configuration = sp.GetRequiredService<IConfiguration>();
-                    options.ConnectionString = configuration.GetConnectionString("RedisConfigurationString");
+                    options.ConnectionString = configuration.GetConnectionString("Redis");
                 })
                 .AddGameProvidersRepositories()
                 .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
