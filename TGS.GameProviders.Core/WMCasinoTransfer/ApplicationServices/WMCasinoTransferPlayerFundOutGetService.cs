@@ -40,7 +40,8 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
             var agentBalance = await _grpc.GetAgentBalanceAsync(
                 apiUrl: configuration.ApiUrl,
                 vendorId: configurationData.VendorId,
-                signature: configurationData.Signature).ConfigureAwait(false);
+                signature: configurationData.Signature,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
 
             if (agentBalance.Success && command.Amount > agentBalance.Balance)
             {
