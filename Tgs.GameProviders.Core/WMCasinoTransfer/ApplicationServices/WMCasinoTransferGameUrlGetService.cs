@@ -39,6 +39,7 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
             var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configurationData = await _gameProvider.GetWMCasinoTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+            var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "0";
 
             var password = "TgsP@ssword";
             var user = $"wmtf_{command.PlayerCode}_{player.BrandCode}";
@@ -49,7 +50,7 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
                 signature: configurationData.Signature,
                 user: user,
                 password: password,
-                language: 0,
+                language: int.Parse(cultureCode),
                 cancellationToken: cancellationToken).ConfigureAwait(false);
 
             if (response.Success && !response.IsPlayerExist)

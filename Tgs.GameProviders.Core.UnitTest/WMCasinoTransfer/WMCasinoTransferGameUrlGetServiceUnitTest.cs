@@ -80,11 +80,11 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
             CurrencyCode = "CNY",
             LoginRecordId = Guid.NewGuid(),
             PlatformType = PlatformType.Desktop,
-            Language = "en-US",
+            Language = "0",
             IPAddress = "127.0.0.1",
             BackUrl = new("https://dev-t1.rpgp.cc/")
         };
-        var gameProviderCultureCode = "en-US";
+        var gameProviderCultureCode = "0";
         var gameProviderConfigurationId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WMCasinoTransfer)).Returns(gameModel.GameProviderId);
         _ = fakeSettingRepository.GetWMCasinoTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
