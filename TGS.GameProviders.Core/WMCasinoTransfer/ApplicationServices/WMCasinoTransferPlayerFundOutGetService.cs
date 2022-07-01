@@ -45,7 +45,7 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
 
             if (agentBalance.Success && command.Amount > agentBalance.Balance)
             {
-                throw new Exception($"Fund out failed(Tgs->WMCasino), transfer amount({command.Amount}) is over WMCasio({configurationData.VendorId}) agent's balance({agentBalance}).");
+                throw new Exception($"Fund out failed(Tgs->WMCasino), transfer amount({command.Amount}) is over WMCasio({configurationData.VendorId}) agent's balance({agentBalance.Balance}).");
             }
 
             var user = $"wmtf_{player.PlayerCode}_{player.BrandCode}";
