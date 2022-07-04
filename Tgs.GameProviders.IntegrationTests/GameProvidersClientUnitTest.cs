@@ -253,7 +253,6 @@ namespace Tgs.GameProviders.IntegrationTests
             var sut = new GameProvidersClient(httpClient);
 
             var actual = await sut.GameUrlByAsiaGamingAsync(
-                "AG",
                 (GameProvidersClientGameType)query.GameType,
                 query.GameId.Value,
                 query.BrandCode,
@@ -300,7 +299,6 @@ namespace Tgs.GameProviders.IntegrationTests
 
             var sut = new GameProvidersClient(httpClient);
 
-            var gameProviderCode = "BC";
             var gameType = GameProvidersClientGameType.Sportsbook;
             var gameId = 2100001;
             var brandCode = "GPI";
@@ -312,7 +310,6 @@ namespace Tgs.GameProviders.IntegrationTests
             var lobbyDomain = "https://devsportsbook.srvttt.com";
 
             var actual = await sut.GameUrlByBetConstructAsync(
-                gameProviderCode,
                 gameType,
                 gameId,
                 brandCode,
