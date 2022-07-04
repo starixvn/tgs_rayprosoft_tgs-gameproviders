@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains;
 
@@ -29,20 +30,22 @@ namespace Tgs.GameProviders.Client
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public async ValueTask<GameRecordResponse?> GameRecordListAsync()
+        public async ValueTask<GameRecordResponse?> GameRecordListAsync(CancellationToken cancellationToken = default)
         {
             var response = await _httpClient
-               .GetAsync($"/api/{GameProviderType.DreamGame}/GameRecordList")
+               .GetAsync(
+                    requestUri: $"/api/{GameProviderType.DreamGame}/GameRecordList",
+                    cancellationToken: cancellationToken)
                .ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
         }
 
-        public async ValueTask MarkGameRecordListAsync(IEnumerable<string> externalRoundIds)
+        public async ValueTask MarkGameRecordListAsync(IEnumerable<string> externalRoundIds, CancellationToken cancellationToken = default)
         {
             var source = externalRoundIds.ToArray();
 
@@ -51,11 +54,12 @@ namespace Tgs.GameProviders.Client
 
             var response = await _httpClient
                .PostAsync(
-                $"/api/{GameProviderType.DreamGame}/markgamerecordlist",
-                requestContent)
+                    requestUri: $"/api/{GameProviderType.DreamGame}/markgamerecordlist",
+                    content: requestContent,
+                    cancellationToken: cancellationToken)
                .ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
         }
     }
 }
