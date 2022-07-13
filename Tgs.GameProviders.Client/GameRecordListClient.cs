@@ -4,6 +4,7 @@ using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains;
 
@@ -29,7 +30,13 @@ internal class GameRecordListClient : IGameRecordListClient
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     }
 
-    public async ValueTask<GameRecordResponse?> AviaGameRecordListAsync(string brandCode, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
+    public async ValueTask<GameRecordResponse?> AviaGameRecordListAsync(
+        string brandCode,
+        DateTimeOffset startTime,
+        DateTimeOffset endTime,
+        int page,
+        int rows,
+        CancellationToken cancellationToken = default)
     {
         var source = new
         {
@@ -44,18 +51,25 @@ internal class GameRecordListClient : IGameRecordListClient
 
         var response = await _httpClient
             .PostAsync(
-                $"/api/{GameProviderType.Avia}/GameRecordList",
-                requestContent)
+                requestUri: $"/api/{GameProviderType.Avia}/GameRecordList",
+                content: requestContent,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        response.EnsureSuccessStatusCode();
+        _ = response.EnsureSuccessStatusCode();
 
-        var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
         return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
     }
 
-    public async ValueTask<GameRecordResponse?> BigGamingFishingGameRecordListAsync(string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
+    public async ValueTask<GameRecordResponse?> BigGamingFishingGameRecordListAsync(
+        string currencyCode,
+        DateTimeOffset startTime,
+        DateTimeOffset endTime,
+        int page,
+        int rows,
+        CancellationToken cancellationToken = default)
     {
         var source = new
         {
@@ -70,13 +84,14 @@ internal class GameRecordListClient : IGameRecordListClient
 
         var response = await _httpClient
             .PostAsync(
-                $"/api/{GameProviderType.BigGaming}/FishingGameRecordList",
-                requestContent)
+                requestUri: $"/api/{GameProviderType.BigGaming}/FishingGameRecordList",
+                content: requestContent,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        response.EnsureSuccessStatusCode();
+        _ = response.EnsureSuccessStatusCode();
 
-        var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
         return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
     }
@@ -86,7 +101,8 @@ internal class GameRecordListClient : IGameRecordListClient
         string agentId,
         DateTimeOffset startTime,
         DateTimeOffset endTime,
-        string? nextId)
+        string? nextId,
+        CancellationToken cancellationToken = default)
     {
         var source = new
         {
@@ -102,18 +118,24 @@ internal class GameRecordListClient : IGameRecordListClient
 
         var response = await _httpClient
             .PostAsync(
-                string.Format(_GameRecordListPath, GameProviderType.Joker),
-                requestContent)
+                requestUri: string.Format(_GameRecordListPath, GameProviderType.Joker),
+                content: requestContent,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         _ = response.EnsureSuccessStatusCode();
 
-        var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
         return JsonSerializer.Deserialize<JokerGameRecordResponse>(contentJson, _SerializerOptions);
     }
 
-    public async ValueTask<GameRecordResponse?> KYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime)
+    public async ValueTask<GameRecordResponse?> KYGameRecordListAsync(
+        string brandCode,
+        string currencyCode,
+        DateTimeOffset startTime,
+        DateTimeOffset endTime,
+        CancellationToken cancellationToken = default)
     {
         var source = new
         {
@@ -127,18 +149,24 @@ internal class GameRecordListClient : IGameRecordListClient
 
         var response = await _httpClient
             .PostAsync(
-                string.Format(_GameRecordListPath, GameProviderType.KY),
-                requestContent)
+                requestUri: string.Format(_GameRecordListPath, GameProviderType.KY),
+                content: requestContent,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        response.EnsureSuccessStatusCode();
+        _ = response.EnsureSuccessStatusCode();
 
-        var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
         return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
     }
 
-    public async ValueTask<GameRecordResponse?> LYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime)
+    public async ValueTask<GameRecordResponse?> LYGameRecordListAsync(
+        string brandCode,
+        string currencyCode,
+        DateTimeOffset startTime,
+        DateTimeOffset endTime,
+        CancellationToken cancellationToken = default)
     {
         var source = new
         {
@@ -152,18 +180,22 @@ internal class GameRecordListClient : IGameRecordListClient
 
         var response = await _httpClient
             .PostAsync(
-                string.Format(_GameRecordListPath, GameProviderType.LY),
-                requestContent)
+                requestUri: string.Format(_GameRecordListPath, GameProviderType.LY),
+                content: requestContent,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        response.EnsureSuccessStatusCode();
+        _ = response.EnsureSuccessStatusCode();
 
-        var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
         return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
     }
 
-    public async ValueTask<PragmaticPlayTransferGameRecordResponse?> PragmaticPlayTransferGameRecordListAsync(PragmaticPlayTransferGameDataType dataType, DateTimeOffset startTime)
+    public async ValueTask<PragmaticPlayTransferGameRecordResponse?> PragmaticPlayTransferGameRecordListAsync(
+        PragmaticPlayTransferGameDataType dataType,
+        DateTimeOffset startTime,
+        CancellationToken cancellationToken = default)
     {
         var source = new
         {
@@ -176,18 +208,26 @@ internal class GameRecordListClient : IGameRecordListClient
 
         var response = await _httpClient
             .PostAsync(
-                string.Format(_GameRecordListPath, GameProviderType.PragmaticPlayTransfer),
-                requestContent)
+                requestUri: string.Format(_GameRecordListPath, GameProviderType.PragmaticPlayTransfer),
+                content: requestContent,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         _ = response.EnsureSuccessStatusCode();
 
-        var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
         return JsonSerializer.Deserialize<PragmaticPlayTransferGameRecordResponse>(contentJson, _SerializerOptions);
     }
 
-    public async ValueTask<GameRecordResponse?> VRGameRecordListAsync(string brandCode, bool isUpdateTime, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
+    public async ValueTask<GameRecordResponse?> VRGameRecordListAsync(
+        string brandCode,
+        bool isUpdateTime,
+        DateTimeOffset startTime,
+        DateTimeOffset endTime,
+        int page,
+        int rows,
+        CancellationToken cancellationToken = default)
     {
         var source = new
         {
@@ -203,18 +243,24 @@ internal class GameRecordListClient : IGameRecordListClient
 
         var response = await _httpClient
             .PostAsync(
-                string.Format(_GameRecordListPath, GameProviderType.VR),
-                requestContent)
+                requestUri: string.Format(_GameRecordListPath, GameProviderType.VR),
+                content: requestContent,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        response.EnsureSuccessStatusCode();
+        _ = response.EnsureSuccessStatusCode();
 
-        var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
         return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
     }
 
-    public async ValueTask<GameRecordResponse?> WGHorseGameRecordListAsync(DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows)
+    public async ValueTask<GameRecordResponse?> WGHorseGameRecordListAsync(
+        DateTimeOffset startTime,
+        DateTimeOffset endTime,
+        int page,
+        int rows,
+        CancellationToken cancellationToken = default)
     {
         var source = new
         {
@@ -228,18 +274,23 @@ internal class GameRecordListClient : IGameRecordListClient
 
         var response = await _httpClient
             .PostAsync(
-                string.Format(_GameRecordListPath, GameProviderType.WGHorse),
-                requestContent)
+                requestUri: string.Format(_GameRecordListPath, GameProviderType.WGHorse),
+                content: requestContent,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        response.EnsureSuccessStatusCode();
+        _ = response.EnsureSuccessStatusCode();
 
-        var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
         return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
     }
 
-    public async ValueTask<GameRecordResponse?> WGSportsGameRecordListAsync(bool isSettlement, DateTimeOffset startTime, DateTimeOffset endTime)
+    public async ValueTask<GameRecordResponse?> WGSportsGameRecordListAsync(
+        bool isSettlement,
+        DateTimeOffset startTime,
+        DateTimeOffset endTime,
+        CancellationToken cancellationToken = default)
     {
         var source = new
         {
@@ -252,13 +303,14 @@ internal class GameRecordListClient : IGameRecordListClient
 
         var response = await _httpClient
             .PostAsync(
-                string.Format(_GameRecordListPath, GameProviderType.WGSports),
-                requestContent)
+                requestUri: string.Format(_GameRecordListPath, GameProviderType.WGSports),
+                content: requestContent,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        response.EnsureSuccessStatusCode();
+        _ = response.EnsureSuccessStatusCode();
 
-        var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
         return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
     }

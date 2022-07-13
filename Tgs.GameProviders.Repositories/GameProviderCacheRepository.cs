@@ -33,6 +33,18 @@ namespace Tgs.GameProviders.Repositories
             return configurationData;
         }
 
+        public async ValueTask<WMCasinoTransferConfigurationData> GetWMCasinoTransferConfigurationData(Guid gameProviderConfigurationId)
+        {
+            var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+            if (!_memoryCache.TryGetValue(key, out WMCasinoTransferConfigurationData configurationData))
+            {
+                configurationData = await _gameProvider.GetWMCasinoTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+
+                _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+            }
+            return configurationData;
+        }
+
         public ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId)
             => _gameProvider.GetGameEndpointsAsync(gameProviderConfigurationId);
 

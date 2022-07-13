@@ -13,6 +13,7 @@ namespace Tgs.GameProviders.Core
         ValueTask<AwcConfigurationData> GetAwcConfigurationData(Guid gameProviderConfigurationId);
 
         ValueTask<JiliTransferConfigurationData> GetJiliTransferConfigurationData(Guid gameProviderConfigurationId);
+        ValueTask<WMCasinoTransferConfigurationData> GetWMCasinoTransferConfigurationData(Guid gameProviderConfigurationId);
 
         ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId);
 

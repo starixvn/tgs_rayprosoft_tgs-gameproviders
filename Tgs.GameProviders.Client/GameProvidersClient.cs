@@ -4,7 +4,9 @@ using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
 
 namespace Tgs.GameProviders.Client
@@ -35,7 +37,19 @@ namespace Tgs.GameProviders.Client
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public async ValueTask<Uri?> GameUrlAsync(string gameProviderCode, GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl)
+        public async ValueTask<Uri?> GameUrlAsync(
+            string gameProviderCode,
+            GameProvidersClientGameType gameType,
+            int gameId,
+            string brandCode,
+            string playerCode,
+            string currencyCode,
+            Guid loginRecordId,
+            GameProvidersClientPlatformType platformType,
+            string language,
+            string ipAddress,
+            Uri? backUrl,
+            CancellationToken cancellationToken = default)
         {
             var request = new
             {
@@ -56,19 +70,18 @@ namespace Tgs.GameProviders.Client
 
             var response = await _httpClient
                .PostAsync(
-                   string.Format(_GameURL, gameProviderCode),
-                   requestContent)
-               .ConfigureAwait(false);
+                   requestUri: string.Format(_GameURL, gameProviderCode),
+                   content: requestContent,
+                   cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<GameUrlResponse>(contentJson, _SerializerOptions)?.Url;
         }
 
         public async ValueTask<Uri?> GameUrlByAsiaGamingAsync(
-            string gameProviderCode,
             GameProvidersClientGameType gameType,
             int gameId,
             string brandCode,
@@ -79,7 +92,8 @@ namespace Tgs.GameProviders.Client
             string language,
             string ipAddress,
             Uri? backUrl,
-            decimal playerBalance)
+            decimal playerBalance,
+            CancellationToken cancellationToken = default)
         {
             var request = new
             {
@@ -101,18 +115,30 @@ namespace Tgs.GameProviders.Client
 
             var response = await _httpClient
                 .PostAsync(
-                    string.Format(_GameURL, gameProviderCode),
-                    requestContent)
-                .ConfigureAwait(false);
+                    requestUri: string.Format(_GameURL, GameProviderType.AsiaGaming),
+                    content: requestContent,
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<GameUrlResponse>(contentJson, _SerializerOptions)?.Url;
         }
 
-        public async ValueTask<Uri?> GameUrlByBetConstructAsync(string gameProviderCode, GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, string lobbyDomain)
+        public async ValueTask<Uri?> GameUrlByBetConstructAsync(
+            GameProvidersClientGameType gameType,
+            int gameId,
+            string brandCode,
+            string playerCode,
+            string currencyCode,
+            Guid loginRecordId,
+            GameProvidersClientPlatformType platformType,
+            string language,
+            string ipAddress,
+            Uri? backUrl,
+            string lobbyDomain,
+            CancellationToken cancellationToken = default)
         {
             var request = new
             {
@@ -134,40 +160,40 @@ namespace Tgs.GameProviders.Client
 
             var response = await _httpClient
                .PostAsync(
-                   string.Format(_GameURL, gameProviderCode),
-                   requestContent)
-               .ConfigureAwait(false);
+                   requestUri: string.Format(_GameURL, GameProviderType.BetConstruct),
+                   content: requestContent,
+                   cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<GameUrlResponse>(contentJson, _SerializerOptions)?.Url;
         }
 
-        public async ValueTask KickPlayerAsync(string gameProviderCode, string playerCode)
+        public async ValueTask KickPlayerAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default)
         {
-            var response = await _httpClient
-               .DeleteAsync(
-                   string.Format(_KickPlayerPath, gameProviderCode, playerCode))
-               .ConfigureAwait(false);
+            _ = await _httpClient
+              .DeleteAsync(
+                  requestUri: string.Format(_KickPlayerPath, gameProviderCode, playerCode),
+                  cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        public async ValueTask<decimal?> PlayerBalanceAsync(string gameProviderCode, string playerCode)
+        public async ValueTask<decimal?> PlayerBalanceAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default)
         {
             var response = await _httpClient
                 .GetAsync(
-                string.Format(_PlayerBalancePath, gameProviderCode, playerCode))
-               .ConfigureAwait(false);
+                    requestUri: string.Format(_PlayerBalancePath, gameProviderCode, playerCode),
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return JsonSerializer.Deserialize<decimal?>(contentJson);
         }
 
-        public async ValueTask<bool?> PlayerFundCheckingAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId)
+        public async ValueTask<bool?> PlayerFundCheckingAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, CancellationToken cancellationToken = default)
         {
             var request = new
             {
@@ -182,18 +208,18 @@ namespace Tgs.GameProviders.Client
 
             var response = await _httpClient
                .PostAsync(
-                   string.Format(_PlayerFundChecking, gameProviderCode),
-                   requestContent)
-               .ConfigureAwait(false);
+                   requestUri: string.Format(_PlayerFundChecking, gameProviderCode),
+                   content: requestContent,
+                   cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return string.IsNullOrEmpty(contentJson) ? false : JsonSerializer.Deserialize<PlayerFundCheckingResponse>(contentJson, _SerializerOptions)?.OrderStatus;
         }
 
-        public async ValueTask<bool?> PlayerFundCheckingByVRAsync(string brandCode, string playerCode, string currencyCode, string orderId, DateTimeOffset startTime, DateTimeOffset endTime)
+        public async ValueTask<bool?> PlayerFundCheckingByVRAsync(string brandCode, string playerCode, string currencyCode, string orderId, DateTimeOffset startTime, DateTimeOffset endTime, CancellationToken cancellationToken = default)
         {
             var request = new
             {
@@ -210,17 +236,18 @@ namespace Tgs.GameProviders.Client
 
             var response = await _httpClient
                .PostAsync(
-                   string.Format(_PlayerFundChecking, "VR"),
-                   requestContent)
-               .ConfigureAwait(false);
+                   requestUri: string.Format(_PlayerFundChecking, "VR"),
+                   content: requestContent,
+                   cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+
             return string.IsNullOrEmpty(contentJson) ? false : JsonSerializer.Deserialize<PlayerFundCheckingResponse>(contentJson, _SerializerOptions)?.OrderStatus;
         }
 
-        public async ValueTask<string?> PlayerFundInAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount)
+        public async ValueTask<string?> PlayerFundInAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default)
         {
             var request = new
             {
@@ -236,18 +263,18 @@ namespace Tgs.GameProviders.Client
 
             var response = await _httpClient
                .PostAsync(
-                   string.Format(_PlayerFundInPath, gameProviderCode),
-                   requestContent)
-               .ConfigureAwait(false);
+                   requestUri: string.Format(_PlayerFundInPath, gameProviderCode),
+                   content: requestContent,
+                   cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<PlayerFundResponse>(contentJson, _SerializerOptions)?.OrderId;
         }
 
-        public async ValueTask<string?> PlayerFundOutAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount)
+        public async ValueTask<string?> PlayerFundOutAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default)
         {
             var request = new
             {
@@ -263,27 +290,27 @@ namespace Tgs.GameProviders.Client
 
             var response = await _httpClient
                .PostAsync(
-                   string.Format(_PlayerFundOutPath, gameProviderCode),
-                   requestContent)
-               .ConfigureAwait(false);
+                   requestUri: string.Format(_PlayerFundOutPath, gameProviderCode),
+                   content: requestContent,
+                   cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<PlayerFundResponse>(contentJson, _SerializerOptions)?.OrderId;
         }
 
-        public async ValueTask<RoundDetailResult?> RoundDetailAsync(string gameProviderCode, Guid roundId, string language)
+        public async ValueTask<RoundDetailResult?> RoundDetailAsync(string gameProviderCode, Guid roundId, string language, CancellationToken cancellationToken = default)
         {
             var response = await _httpClient
                .GetAsync(
-                   string.Format(_RoundDetail, gameProviderCode, roundId, language))
-               .ConfigureAwait(false);
+                   requestUri: string.Format(_RoundDetail, gameProviderCode, roundId, language),
+                   cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            _ = response.EnsureSuccessStatusCode();
 
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
             return string.IsNullOrEmpty(contentJson) ? null : JsonSerializer.Deserialize<RoundDetailResult>(contentJson, _SerializerOptions);
         }

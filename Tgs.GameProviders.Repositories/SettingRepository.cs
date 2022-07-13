@@ -58,6 +58,9 @@ namespace Tgs.GameProviders.Repositories
         public ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync()
             => GetAsync<JiliTransferConfiguration>(GameProviderConfigurations.JiliTransfer);
 
+        public ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync()
+            => GetAsync<WMCasinoTransferConfiguration>(GameProviderConfigurations.WMCasinoTransfer);
+
         public ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase
             => GetAsync<TConfiguration>(key);
 

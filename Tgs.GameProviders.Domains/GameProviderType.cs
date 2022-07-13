@@ -23,6 +23,7 @@
         public static readonly string Card365 = "365";
         public static readonly string DreamGame = "DG";
         public static readonly string Evolution = "EVO";
+        public static readonly string EvolutionTransfer = "EVOTF";
         public static readonly string Habanero = "HABA";
         public static readonly string IMESports = "IMES";
         public static readonly string JDB = "JDB";
@@ -45,5 +46,6 @@
         public static readonly string WGHorse = "WGVIA";
         public static readonly string WGSports = "WGFM";
         public static readonly string WMCasino = "WM";
+        public static readonly string WMCasinoTransfer = "WMTF";
     }
 }
