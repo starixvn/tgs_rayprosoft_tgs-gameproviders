@@ -55,12 +55,13 @@ public class AwcSpadeGameUrlGetServiceUnitTest
 
         var gameModel = new GameModel(
             1,
-            GameStatus.Active,
-            "test",
-            null,
-            null,
-            null,
             Guid.NewGuid(),
+            GameProviderType.AWC_SPADE,
+            "test",
+            GameStatus.Active,
+            null,
+            null,
+            null,
             GameType.Slot,
             GamePlatformType.DesktopAndMobile,
             false,

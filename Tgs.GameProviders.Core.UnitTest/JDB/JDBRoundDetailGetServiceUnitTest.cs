@@ -78,12 +78,13 @@ public class JDBRoundDetailGetServiceUnitTest
 
         var gameModel = new GameModel(
             700010,
-            GameStatus.Active,
-            "0_14034",
-            null,
-            null,
-            null,
             gameProviderInfo.GameProviderId,
+            "JDB",
+            "0_14034",
+            GameStatus.Active,
+            null,
+            null,
+            null,
             GameType.Slot,
             GamePlatformType.DesktopAndMobile,
             false,

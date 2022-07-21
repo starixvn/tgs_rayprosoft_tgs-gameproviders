@@ -55,12 +55,13 @@ public class AwcLudoGameUrlGetServiceUnitTest
 
         var gameModel = new GameModel(
             1,
-            GameStatus.Active,
-            "test",
-            null,
-            null,
-            null,
             Guid.NewGuid(),
+            GameProviderType.AWC_LUDO,
+            "test",
+            GameStatus.Active,
+            null,
+            null,
+            null,
             GameType.Slot,
             GamePlatformType.DesktopAndMobile,
             false,

@@ -65,12 +65,13 @@ public class HabaneroRoundDetailGetServiceUnitTest
 
         var gameModel = new GameModel(
             200001,
-            GameStatus.Active,
+            gameProviderInfo.GameProviderId,
+            "HABA",
             "SGTotemTowers",
+            GameStatus.Active,
             null,
             "?brandId={BRANDID}&token={TOKEN}&locale={CULTURE}&mode=real",
             null,
-            gameProviderInfo.GameProviderId,
             GameType.Slot,
             GamePlatformType.Desktop,
             false,

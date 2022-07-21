@@ -51,12 +51,13 @@ public class Card365GameUrlQueryGetServiceUnitTest
 
         var gameModel = new GameModel(
             1900001,
-            GameStatus.Active,
-            "384",
-            null,
-            null,
-            null,
             Guid.Parse("630e822b-2635-4314-a7e4-5c7057c1a920"),
+            "365",
+            "384",
+            GameStatus.Active,
+            null,
+            null,
+            null,
             GameType.CardGameLobby,
             GamePlatformType.Desktop,
             false,

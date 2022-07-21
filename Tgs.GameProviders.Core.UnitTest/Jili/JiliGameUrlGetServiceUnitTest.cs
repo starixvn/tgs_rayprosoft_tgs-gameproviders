@@ -49,12 +49,13 @@ public class JiliGameUrlGetServiceUnitTest
 
         var game = new GameModel(
             2200001,
-            GameStatus.Active,
-            "10",
-            null,
-            null,
-            null,
             Guid.Parse("b957e28c-0e94-40af-9d37-ab48cdeb5d29"),
+            "JILI",
+            "10",
+            GameStatus.Active,
+            null,
+            null,
+            null,
             GameType.Slot,
             GamePlatformType.Desktop,
             false,
