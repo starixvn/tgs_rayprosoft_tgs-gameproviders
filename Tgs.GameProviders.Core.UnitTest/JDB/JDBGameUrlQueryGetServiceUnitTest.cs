@@ -47,12 +47,13 @@ public class JDBGameUrlQueryGetServiceUnitTest
 
         var gameModel = new GameModel(
             700010,
-            GameStatus.Active,
-            "0_14034",
-            null,
-            null,
-            null,
             Guid.Parse("65cc2057-cb52-44aa-8bff-dbb3d9ebdddc"),
+            "JDB",
+            "0_14034",
+            GameStatus.Active,
+            null,
+            null,
+            null,
             GameType.Slot,
             GamePlatformType.DesktopAndMobile,
             false,

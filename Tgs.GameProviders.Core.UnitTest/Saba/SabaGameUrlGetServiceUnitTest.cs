@@ -38,12 +38,13 @@ public class SabaGameUrlGetServiceUnitTest
 
         var gameModel = new GameModel(
             600001,
-            GameStatus.Active,
-            "1",
+             Guid.Parse("09d8d244-206b-4030-8110-b2ea90dc9d2f"),
+             "SABA",
+             "1",
+             GameStatus.Active,
             null,
             null,
             null,
-            Guid.Parse("09d8d244-206b-4030-8110-b2ea90dc9d2f"),
             GameType.Sportsbook,
             GamePlatformType.Desktop,
             false,
@@ -135,12 +136,13 @@ public class SabaGameUrlGetServiceUnitTest
 
         var gameModel = new GameModel(
             600001,
+             Guid.Parse("09d8d244-206b-4030-8110-b2ea90dc9d2f"),
+             "SABA",
+             "1",
             GameStatus.Active,
-            "1",
             null,
             null,
             null,
-            Guid.Parse("09d8d244-206b-4030-8110-b2ea90dc9d2f"),
             GameType.Sportsbook,
             GamePlatformType.Desktop,
             false,

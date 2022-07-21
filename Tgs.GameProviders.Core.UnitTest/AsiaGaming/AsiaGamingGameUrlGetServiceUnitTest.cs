@@ -142,12 +142,13 @@ public class AsiaGamingGameUrlGetServiceUnitTest
 
         var gameModel = new GameModel(
             400001,
+             Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
+             "AG",
+             "asiagaminglobby",
             GameStatus.Active,
-            "asiagaminglobby",
             null,
             "/forwardGame.do?params={PARAS}&key={KEY}",
             null,
-            Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
             GameType.LiveDealerLobby,
             GamePlatformType.DesktopAndMobile,
             false,

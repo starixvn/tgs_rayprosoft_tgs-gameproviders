@@ -33,12 +33,13 @@ internal class PragmaticPlayTransferGameUrlGetServiceUnitTest
 
         var game = new GameModel(
             2700001,
-            GameStatus.Active,
+              Guid.Parse("E4ECFA98-B373-4123-87E0-CB9E883D0691"),
+              "PPTF",
             "vs20kraken",
+            GameStatus.Active,
             null,
             null,
             null,
-            Guid.Parse("E4ECFA98-B373-4123-87E0-CB9E883D0691"),
             GameType.Slot,
             GamePlatformType.Desktop,
             false,

@@ -156,13 +156,14 @@ namespace Tgs.GameProviders.IntegrationTests
 
             var gameModel = new GameModel(
                 400001,
-                GameStatus.Active,
+                Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
+                "AG",
                 "asiagaminglobby",
+                GameStatus.Active,
                 null,
                 "/forwardGame.do?params={PARAS}&key={KEY}",
                 null,
-                Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
-                Tgs.GameProviders.QueryServer.Models.GameType.LiveDealerLobby,
+                GameType.LiveDealerLobby,
                 GamePlatformType.DesktopAndMobile,
                 false,
                 true,

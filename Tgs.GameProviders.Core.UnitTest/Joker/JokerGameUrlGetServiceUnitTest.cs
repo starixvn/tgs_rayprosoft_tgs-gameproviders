@@ -49,12 +49,13 @@ public class JokerGameUrlGetServiceUnitTest
 
         var gameModel = new GameModel(
             2600001,
-            GameStatus.Active,
-            "t656f48j75z6a",
-            null,
-            null,
-            null,
             Guid.Parse("2EBFE118-B36B-40FA-85B5-78363470ADDC"),
+            "JOKER",
+            "t656f48j75z6a",
+            GameStatus.Active,
+            null,
+            null,
+            null,
             GameType.Slot,
             GamePlatformType.Desktop,
             false,
