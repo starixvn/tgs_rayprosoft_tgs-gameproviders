@@ -25,7 +25,7 @@ namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices
 
             var response = await _grpc.GetTransactionInfoAsync(
                 configuration.ApiUrl,
-                configuration.ecID,
+                configuration.EcId,
                 command.PlayerCode,
                 command.OrderId,
                 cancellationToken).ConfigureAwait(false);

@@ -24,11 +24,11 @@ public class EvolutionTransferPlayerFundCheckingGetServiceUnitTest
         {
             Ua2AuthenticationUrl = new("https://babylonpega2.uat1.evo-test.com/ua/v1/babylonpega20001/test123"),
             ApiUrl = new("https://babylonpega2.uat1.evo-test.com"),
-            CasinoID = "babylonpega20001",
+            CasinoId = "babylonpega20001",
             Ua2Token = "test123",
             GameHistoryApiToken = "test123",
             ExternalLobbyApiToken = "test123",
-            ecID = "babylonpega20001test123"
+            EcId = "babylonpega20001test123"
         };
 
         var playerModel = new PlayerModel(
@@ -72,7 +72,7 @@ public class EvolutionTransferPlayerFundCheckingGetServiceUnitTest
 
         _ = fakeGameInterfaceEvolutionServiceGrpc.GetTransactionInfoAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
-            agentId: Arg.Is(configuration.ecID),
+            agentId: Arg.Is(configuration.EcId),
             playerCode: query.PlayerCode,
             transactionId: Arg.Is(query.OrderId)).Returns(response);
 

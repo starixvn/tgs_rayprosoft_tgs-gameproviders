@@ -31,11 +31,11 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
         {
             Ua2AuthenticationUrl = new("https://babylonpega2.uat1.evo-test.com/ua/v1/babylonpega20001/test123"),
             ApiUrl = new("https://babylonpega2.uat1.evo-test.com"),
-            CasinoID = "babylonpega20001",
+            CasinoId = "babylonpega20001",
             Ua2Token = "test123",
             GameHistoryApiToken = "test123",
             ExternalLobbyApiToken = "test123",
-            ecID = "babylonpega20001test123"
+            EcId = "babylonpega20001test123"
         };
 
         var playerModel = new PlayerModel(
@@ -85,8 +85,9 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
         };
 
         var token = "token";
-
         var gameProviderCultureCode = "en-US";
+        var gameProviderCurrencyCode = "CNY";
+
         var gameProviderConfigurationId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.EvolutionTransfer)).Returns(gameModel.GameProviderId);
         _ = fakeSettingRepository.GetEvolutionTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
@@ -99,6 +100,9 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
         _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameModel);
         _ = fakeToken.EncryptAsync(query.LoginRecordId).Returns(token);
+        _ = fakeGameProviderRepository.GetGameProviderCurrencyCodeAsync(
+            Arg.Is(gameModel.GameProviderId),
+            Arg.Is(playerModel.DefaultWalletCurrencyCode)).Returns(gameProviderCurrencyCode);
 
         var response = new GameUrlReply()
         {
@@ -151,11 +155,11 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
         {
             Ua2AuthenticationUrl = new("https://babylonpega2.uat1.evo-test.com/ua/v1/babylonpega20001/test123"),
             ApiUrl = new("https://babylonpega2.uat1.evo-test.com"),
-            CasinoID = "babylonpega20001",
+            CasinoId = "babylonpega20001",
             Ua2Token = "test123",
             GameHistoryApiToken = "test123",
             ExternalLobbyApiToken = "test123",
-            ecID = "babylonpega20001test123"
+            EcId = "babylonpega20001test123"
         };
 
         var playerModel = new PlayerModel(
@@ -205,8 +209,9 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
         };
 
         var token = "token";
-
         var gameProviderCultureCode = "en-US";
+        var gameProviderCurrencyCode = "CNY";
+
         var gameProviderConfigurationId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.EvolutionTransfer)).Returns(gameModel.GameProviderId);
         _ = fakeSettingRepository.GetEvolutionTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
@@ -219,6 +224,9 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
         _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameModel);
         _ = fakeToken.EncryptAsync(query.LoginRecordId).Returns(token);
+        _ = fakeGameProviderRepository.GetGameProviderCurrencyCodeAsync(
+            Arg.Is(gameModel.GameProviderId),
+            Arg.Is(playerModel.DefaultWalletCurrencyCode)).Returns(gameProviderCurrencyCode);
 
         var response = new GameUrlReply()
         {
@@ -232,7 +240,6 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
              platformType: (short)query.PlatformType,
              ipAddress: query.IPAddress,
              encryptedToken: token,
-             externalGameId: gameModel.GameExternalId,
              externalCultureCode: gameProviderCultureCode,
              externalCurrencyCode: query.CurrencyCode,
              cancellationToken: default

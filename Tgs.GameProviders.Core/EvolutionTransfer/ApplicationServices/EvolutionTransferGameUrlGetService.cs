@@ -41,6 +41,10 @@ namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices
             var configuration = await _setting.GetEvolutionTransferConfigurationAsync().ConfigureAwait(false);
             var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
             var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en-US";
+            var currencyCode = await _gameProvider
+                    .GetGameProviderCurrencyCodeAsync(gameProviderId, command.CurrencyCode)
+                    .ConfigureAwait(false)
+                ?? throw new Exception($"This game product currency does not exist.({command.CurrencyCode})");
             var game = await _game.GetAsync(command.GameId!.Value).ConfigureAwait(false);
 
             var response = game.GameType switch
@@ -53,8 +57,7 @@ namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices
                     command.IPAddress,
                     encryptedToken,
                     cultureCode,
-                    command.CurrencyCode,
-                    game.GameExternalId,
+                    currencyCode,
                     cancellationToken).ConfigureAwait(false),
                 _                           => 
                     await _grpc.GetSlotGameUrlAsync(
@@ -64,7 +67,7 @@ namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices
                     command.IPAddress,
                     encryptedToken,
                     cultureCode,
-                    command.CurrencyCode,
+                    currencyCode,
                     game.GameExternalId,
                     cancellationToken).ConfigureAwait(false)
             };

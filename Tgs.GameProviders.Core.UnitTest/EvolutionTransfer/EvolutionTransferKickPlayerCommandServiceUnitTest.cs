@@ -22,11 +22,11 @@ public class EvolutionTransferKickPlayerCommandServiceUnitTest
         {
             Ua2AuthenticationUrl = new("https://babylonpega2.uat1.evo-test.com/ua/v1/babylonpega20001/test123"),
             ApiUrl = new("https://babylonpega2.uat1.evo-test.com"),
-            CasinoID = "babylonpega20001",
+            CasinoId = "babylonpega20001",
             Ua2Token = "test123",
             GameHistoryApiToken = "test123",
             ExternalLobbyApiToken = "test123",
-            ecID = "babylonpega20001test123"
+            EcId = "babylonpega20001test123"
         };
 
         var command = new EvolutionTransferKickPlayerCommand
@@ -46,7 +46,7 @@ public class EvolutionTransferKickPlayerCommandServiceUnitTest
             .Received(1)
             .KickPlayerAsync(
             Arg.Is(configuration.ApiUrl),
-            Arg.Is(configuration.CasinoID),
+            Arg.Is(configuration.CasinoId),
             Arg.Is(configuration.Ua2Token),
             Arg.Any<string>(),
             Arg.Is(command.PlayerCode));

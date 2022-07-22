@@ -29,7 +29,7 @@ namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices
 
             var reply = await _grpc.FundOutAsync(
                 configuration.ApiUrl,
-                configuration.ecID,
+                configuration.EcId,
                 player.PlayerCode,
                 command.OrderId,
                 command.Amount,

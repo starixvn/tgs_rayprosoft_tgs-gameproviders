@@ -27,7 +27,7 @@ namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices
 
             await _grpc.KickPlayerAsync(
                 configuration.ApiUrl,
-                configuration.CasinoID,
+                configuration.CasinoId,
                 configuration.Ua2Token,
                 Guid.NewGuid().ToString(),
                 command.PlayerCode,

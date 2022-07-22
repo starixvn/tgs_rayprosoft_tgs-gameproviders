@@ -11,7 +11,13 @@ namespace Tgs.GameProviders.Controllers
 {
     [Route("api/evotf")]
     [ApiController]
-    public class EvolutionTransferController : ControllerBase
+    public class EvolutionTransferController : ControllerBase,
+        IGameUrlHandler<EvolutionTransferGameUrlQuery>,
+        IKickPlayerHandler<EvolutionTransferKickPlayerCommand>,
+        IPlayerBalanceHandler<EvolutionTransferPlayerBalanceQuery>,
+        IPlayerFundHandler<EvolutionTransferPlayerFundInQuery, EvolutionTransferPlayerFundOutQuery>,
+        IPlayerFundCheckingHandler<EvolutionTransferPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
+        IRoundDetailHandler<EvolutionTransferRoundDetailQuery>
     {
         /// <summary>
         /// Games the URL asynchronous.
@@ -89,19 +95,12 @@ namespace Tgs.GameProviders.Controllers
         /// 
         ///   Get balance/4ucmqplxb029
         /// </remarks>
-        [HttpPost("Balance/{playerCode}")]
+        [HttpGet("Balance/{playerCode}")]
         public ValueTask<decimal?> PlayerBalanceAsync(
              [FromServices] IGetService<EvolutionTransferPlayerBalanceQuery, decimal?> getService,
-             string playerCode,
-             EvolutionTransferBalanceRequest request)
+             string playerCode)
             => getService.GetAsync(new()
             {
-                GameId = request.GameId,
-                CurrencyCode = request.CurrencyCode,
-                LoginRecordId = request.LoginRecordId,
-                PlatformType = request.PlatformType,
-                Language = request.Language,
-                IPAddress = request.IpAddress,
                 PlayerCode = playerCode
             });
 
