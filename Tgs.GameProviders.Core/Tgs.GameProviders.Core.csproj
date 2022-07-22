@@ -14,6 +14,7 @@
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 		<PackageReference Include="Tgs.Core.Infrastructures.Security" Version="0.0.1" />
 		<PackageReference Include="Tgs.GameInterface.AwcService.Client" Version="0.0.8" />
+		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.3" />
 		<PackageReference Include="Tgs.GameInterface.JiliService.Client" Version="0.0.1" />
 		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="1.0.5" />
 		<PackageReference Include="Tgs.GameProviders.QueryServer.Client" Version="0.0.13" />

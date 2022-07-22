@@ -176,6 +176,18 @@ namespace Tgs.GameProviders.Repositories
             return configuration;
         }
 
+        public async ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync()
+        {
+            var key = $"GameProviders:SettingCache:{GameProviderConfigurations.EvolutionTransfer}".ToLower();
+            if (!_memoryCache.TryGetValue(key, out EvolutionTransferConfiguration configuration))
+            {
+                configuration = await _setting.GetEvolutionTransferConfigurationAsync().ConfigureAwait(false);
+
+                _ = _memoryCache.Set(key, configuration, _absoluteExpiration);
+            }
+            return configuration;
+        }
+
         public ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase
             => _setting.GetConfigurationAsync<TConfiguration>(key);
 

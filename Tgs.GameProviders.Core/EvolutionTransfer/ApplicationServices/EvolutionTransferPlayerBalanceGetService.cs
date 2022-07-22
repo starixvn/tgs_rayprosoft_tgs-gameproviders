@@ -1,0 +1,76 @@
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Tgs.Core.Infrastructures.Security;
+using Tgs.GameInterface.EvolutionService.Client;
+using Tgs.GameProviders.Domains;
+using Tgs.ServiceUtility;
+
+namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices
+{
+    public class EvolutionTransferPlayerBalanceGetService : IGetService<EvolutionTransferPlayerBalanceQuery, decimal?>
+    {
+        private readonly IGameProviderRepository _gameProvider;
+        private readonly IGameRepository _game;
+        private readonly IGameInterfaceEvolutionClient _grpc;
+        private readonly IPlayerRepository _player;
+        private readonly ISettingRepository _setting;
+        private readonly ITokenProvider _tokenProvider;
+
+        public EvolutionTransferPlayerBalanceGetService(
+            IGameProviderRepository gameProvider,
+            IGameRepository game,
+            IGameInterfaceEvolutionClient grpc,
+            IPlayerRepository player,
+            ISettingRepository setting,
+            ITokenProvider tokenProvider)
+        {
+            _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
+            _game = game ?? throw new ArgumentNullException(nameof(game));
+            _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+            _player = player ?? throw new ArgumentNullException(nameof(player));
+            _setting = setting ?? throw new ArgumentNullException(nameof(setting));
+            _tokenProvider = tokenProvider ?? throw new ArgumentNullException(nameof(tokenProvider));
+        }
+
+        public async ValueTask<decimal?> GetAsync(EvolutionTransferPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+        {
+            var encryptedToken = await _tokenProvider.EncryptAsync(command.LoginRecordId).ConfigureAwait(false);
+            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.EvolutionTransfer).ConfigureAwait(false);
+            var configuration = await _setting.GetEvolutionTransferConfigurationAsync().ConfigureAwait(false);
+            var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
+            var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en-US";
+            var game = await _game.GetAsync(command.GameId).ConfigureAwait(false);
+
+            var response = await _grpc.GetBalanceAsync(
+                configuration.ApiUrl,
+                configuration.ecID,
+                player.PlayerCode,
+                cancellationToken).ConfigureAwait(false);
+
+            if (response.Result)
+            {
+                return response.ABalance;
+            }
+
+            _ = await _grpc.GetSlotGameUrlAsync(
+                configuration.Ua2AuthenticationUrl,
+                player.PlayerCode,
+                (short)command.PlatformType,
+                command.IPAddress,
+                encryptedToken,
+                cultureCode,
+                command.CurrencyCode,
+                game.GameExternalId,
+                cancellationToken).ConfigureAwait(false);
+
+            response = await _grpc.GetBalanceAsync(
+                configuration.ApiUrl,
+                configuration.ecID,
+                player.PlayerCode,
+                cancellationToken).ConfigureAwait(false);
+
+            return response.ABalance;
+        }
+    }
+}
