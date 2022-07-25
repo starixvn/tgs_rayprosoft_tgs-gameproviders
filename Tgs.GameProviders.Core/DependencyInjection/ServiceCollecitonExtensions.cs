@@ -3,6 +3,7 @@ using System.Reflection;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.JiliService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
+using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.QueryServer.Client;
 using Tgs.GameRounds.Client;
@@ -17,6 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions,
             Action<GameInterfaceJiliServiceClientOptions, IServiceProvider> gameInterfaceJiliServiceClientOptions,
             Action<GameInterfaceWMCasinoServiceClientOptions, IServiceProvider> gameInterfaceWMCasinoClientOptions,
+            Action<GameInterfaceEvoOptions, IServiceProvider> gameInterfaceEvolutionServiceClientOptions,
             Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions)
             => services
                 .RegisterAllServiceUtilityTypes(
@@ -26,6 +28,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddGameInterfaceAwcServiceClient(gameInterfaceAwcServiceClientOptions)
                 .AddGameInterfaceJiliServiceClient(gameInterfaceJiliServiceClientOptions)
                 .AddGameInterfaceWMCasinoServiceClient(gameInterfaceWMCasinoClientOptions)
+                .AddGameInterfaceEvoClient(gameInterfaceEvolutionServiceClientOptions)
                 .AddGameRoundsClient(gameRoundsClientOptions)
                 .AddSecurity()//Tgs.Core.Infrastructures.Security
                 .AddMemoryCache()

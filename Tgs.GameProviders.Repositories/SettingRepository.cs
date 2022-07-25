@@ -61,6 +61,9 @@ namespace Tgs.GameProviders.Repositories
         public ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync()
             => GetAsync<WMCasinoTransferConfiguration>(GameProviderConfigurations.WMCasinoTransfer);
 
+        public ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync()
+            => GetAsync<EvolutionTransferConfiguration>(GameProviderConfigurations.EvolutionTransfer);
+
         public ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase
             => GetAsync<TConfiguration>(key);
 
