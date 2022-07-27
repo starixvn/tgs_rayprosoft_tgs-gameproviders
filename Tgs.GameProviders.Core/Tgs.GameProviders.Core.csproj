@@ -5,7 +5,7 @@
 	</PropertyGroup>
   
 	<ItemGroup>
-		<PackageReference Include="CsvHelper" Version="27.2.1" />
+		<PackageReference Include="CsvHelper" Version="28.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
@@ -14,9 +14,10 @@
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 		<PackageReference Include="Tgs.Core.Infrastructures.Security" Version="0.0.1" />
 		<PackageReference Include="Tgs.GameInterface.AwcService.Client" Version="0.0.8" />
+		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.GameInterface.JiliService.Client" Version="0.0.1" />
 		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="1.0.5" />
-		<PackageReference Include="Tgs.GameProviders.QueryServer.Client" Version="0.0.13" />
+		<PackageReference Include="Tgs.GameProviders.QueryServer.Client" Version="0.0.14" />
 		<PackageReference Include="Tgs.GameRounds.Client" Version="0.0.19" />
 		<PackageReference Include="TGS.ServiceUtility" Version="0.1.0" />
 		<PackageReference Include="Tgs.Logging" Version="0.0.19" />

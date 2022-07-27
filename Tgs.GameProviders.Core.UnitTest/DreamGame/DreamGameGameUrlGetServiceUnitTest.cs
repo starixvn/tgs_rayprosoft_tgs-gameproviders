@@ -98,12 +98,13 @@ public class DreamGameGameUrlGetServiceUnitTest
 
         var gameModel = new GameModel(
             2500001,
-            GameStatus.Active,
-            "DreamGameLobby",
-            null,
-            null,
-            null,
             Guid.Parse("579d6da3-b0ed-4e3f-bd4a-434a98efbd68"),
+            "DG",
+            "DreamGameLobby",
+            GameStatus.Active,
+            null,
+            null,
+            null,
             GameType.LiveDealerLobby,
             GamePlatformType.Desktop,
             false,

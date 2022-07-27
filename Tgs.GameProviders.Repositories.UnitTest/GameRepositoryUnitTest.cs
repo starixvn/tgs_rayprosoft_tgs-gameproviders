@@ -18,12 +18,15 @@ namespace Tgs.GameProviders.Repositories.UnitTest
 
             var expected = new GameModel[] {new (
                 GameId: 1,
-                Status: GameStatus.Archived,
+                GameProviderId: Guid.NewGuid(),
+                "BG",
                 GameExternalId: "Fishing",
+                Status: GameStatus.Archived,
+
                 Description: "Fishing",
                 EndpointPath: string.Empty,
                 RuleUrl: string.Empty,
-                GameProviderId: Guid.NewGuid(),
+
                 GameType: GameType.Fishing,
                 PlatformType: GamePlatformType.DesktopAndMobile,
                 SubGame: false,
@@ -54,12 +57,13 @@ namespace Tgs.GameProviders.Repositories.UnitTest
 
             _ = fakeClient.GameGetAsync(gameId).Returns(new GameModel(
                 GameId: gameId,
-                Status: GameStatus.Archived,
+                GameProviderId: Guid.NewGuid(),
+                GameProviderCode: "KY",
                 GameExternalId: "CardGameLobby",
+                Status: GameStatus.Archived,
                 Description: "CardGameLobby",
                 EndpointPath: string.Empty,
                 RuleUrl: string.Empty,
-                GameProviderId: Guid.NewGuid(),
                 GameType: GameType.CardGameLobby,
                 PlatformType: GamePlatformType.DesktopAndMobile,
                 SubGame: false,

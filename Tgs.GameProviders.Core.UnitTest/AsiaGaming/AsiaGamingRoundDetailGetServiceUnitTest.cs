@@ -147,12 +147,13 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
 
         var gameModel = new GameModel(
             400013,
-            GameStatus.Active,
+            Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
+            "AG",
             "AGIN_AGQ_BAC",
+            GameStatus.Active,
             null,
             "/forwardGame.do?params={PARAS}&key={KEY}",
             null,
-            Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
             GameType.LiveDealer,
             GamePlatformType.DesktopAndMobile,
             false,

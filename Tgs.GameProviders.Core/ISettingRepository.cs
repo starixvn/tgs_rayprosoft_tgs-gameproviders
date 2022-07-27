@@ -37,6 +37,8 @@ namespace Tgs.GameProviders.Core
 
         ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync();
 
+        ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync();
+
         ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase;
     }
 }
