@@ -52,6 +52,7 @@ namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices
                 GameType.LiveDealerLobby    => 
                     await _grpc.GetLiveDealerGameUrlAsync(
                     configuration.Ua2AuthenticationUrl,
+                    command.BrandCode,
                     player.PlayerCode,
                     (short)command.PlatformType,
                     command.IPAddress,
@@ -62,6 +63,7 @@ namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices
                 _                           => 
                     await _grpc.GetSlotGameUrlAsync(
                     configuration.Ua2AuthenticationUrl,
+                    command.BrandCode,
                     player.PlayerCode,
                     (short)command.PlatformType,
                     command.IPAddress,
