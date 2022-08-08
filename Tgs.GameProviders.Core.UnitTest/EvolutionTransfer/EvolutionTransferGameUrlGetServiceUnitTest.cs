@@ -113,6 +113,7 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
         };
         _ = fakeGameInterfaceEvolutionServiceGrpc.GetSlotGameUrlAsync(
              ua2AuthenticationUrl: configuration.Ua2AuthenticationUrl,
+             brandCode: query.BrandCode,
              playerCode: playerModel.PlayerCode,
              platformType: (short)query.PlatformType,
              ipAddress: query.IPAddress,
@@ -238,6 +239,7 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
         };
         _ = fakeGameInterfaceEvolutionServiceGrpc.GetLiveDealerGameUrlAsync(
              ua2AuthenticationUrl: configuration.Ua2AuthenticationUrl,
+             brandCode: query.BrandCode,
              playerCode: playerModel.PlayerCode,
              platformType: (short)query.PlatformType,
              ipAddress: query.IPAddress,
