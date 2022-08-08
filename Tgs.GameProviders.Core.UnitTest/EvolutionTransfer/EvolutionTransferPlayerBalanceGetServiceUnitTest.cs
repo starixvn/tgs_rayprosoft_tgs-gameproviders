@@ -156,6 +156,7 @@ public class EvolutionTransferPlayerBalanceGetServiceUnitTest
 
         _ = fakeGameInterfaceEvolutionServiceGrpc.GetLiveDealerGameUrlAsync(
             ua2AuthenticationUrl: configuration.Ua2AuthenticationUrl,
+            brandCode: playerModel.BrandCode,
             playerCode: playerModel.PlayerCode,
             platformType: (short)PlatformType.Desktop,
             ipAddress: "127.0.0.1",

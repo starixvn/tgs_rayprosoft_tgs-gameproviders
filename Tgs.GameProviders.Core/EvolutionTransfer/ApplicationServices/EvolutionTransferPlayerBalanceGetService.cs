@@ -50,6 +50,7 @@ namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices
 
             _ = await _grpc.GetLiveDealerGameUrlAsync(
                 configuration.Ua2AuthenticationUrl,
+                player.BrandCode,
                 player.PlayerCode,
                 (short)PlatformType.Desktop,
                 "127.0.0.1",
