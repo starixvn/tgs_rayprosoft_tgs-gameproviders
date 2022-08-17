@@ -22,6 +22,7 @@ builder.Configuration
     .AddEnvironmentVariables();
 
 builder.Logging
+    .AddTgsLog()
     .AddOpenTelemetry(options =>
     {
         options.IncludeFormattedMessage = true;
