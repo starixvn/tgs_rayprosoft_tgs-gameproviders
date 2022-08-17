@@ -27,6 +27,7 @@
         public static readonly string Evolution = string.Format(_template, GameProviderType.Evolution);
         public static readonly string EvolutionTransfer = string.Format(_template, GameProviderType.EvolutionTransfer);
         public static readonly string Habanero = string.Format(_template, GameProviderType.Habanero);
+        public static readonly string IDNLive = string.Format(_template, GameProviderType.IDNLive);
         public static readonly string IMESports = string.Format(_template, GameProviderType.IMESports);
         public static readonly string JDB = string.Format(_template, GameProviderType.JDB);
         public static readonly string Jili = string.Format(_template, GameProviderType.Jili);

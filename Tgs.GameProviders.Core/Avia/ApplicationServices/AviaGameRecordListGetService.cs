@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
+#nullable enable
 
 namespace Tgs.GameProviders.Core.Avia.ApplicationServices
 {

@@ -38,7 +38,7 @@ namespace Tgs.GameProviders.Core.Avia.ApplicationServices
             var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(command.CurrencyCode).ConfigureAwait(false);
             var gameProviderCultureCode = await _service.GetGameProviderCultureCodeAsync(command.Language).ConfigureAwait(false);
 
-            (bool IsPlayer, Uri? GameUrl) = await _client.GetGameUrlAsync(
+            (bool IsPlayer, Uri GameUrl) = await _client.GetGameUrlAsync(
                 brandMerchant.ApiUrl,
                 brandMerchant.Authorization,
                 command.PlayerCode,

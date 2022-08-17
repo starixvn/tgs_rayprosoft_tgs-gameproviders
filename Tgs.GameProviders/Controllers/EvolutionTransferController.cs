@@ -88,11 +88,10 @@ namespace Tgs.GameProviders.Controllers
         /// </summary>
         /// <param name="getService">The get service.</param>
         /// <param name="playerCode">The player code.</param>
-        /// <param name="request"></param>
         /// <returns></returns>
         /// <remarks>
         ///   <b>Example</b><br />
-        /// 
+        ///
         ///   Get balance/4ucmqplxb029
         /// </remarks>
         [HttpGet("Balance/{playerCode}")]

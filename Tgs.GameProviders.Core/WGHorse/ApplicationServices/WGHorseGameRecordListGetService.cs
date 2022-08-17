@@ -8,6 +8,8 @@ using Tgs.GameProviders.Domains;
 using Tgs.GameRounds.Common;
 using Tgs.ServiceUtility;
 
+#nullable enable
+
 namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
 {
     public class WGHorseGameRecordListGetService : IGetService<WGHorseGameRecordListQuery, GameRecordListResult>

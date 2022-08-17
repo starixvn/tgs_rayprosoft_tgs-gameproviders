@@ -214,5 +214,17 @@ namespace Tgs.GameProviders.Repositories
             }
             return configuration;
         }
+
+        public async ValueTask<IDNLiveConfiguration> GetIDNLiveConfigurationAsync()
+        {
+            var key = $"GameProviders:SettingCache:{GameProviderConfigurations.IDNLive}".ToLower();
+            if (!_memoryCache.TryGetValue(key, out IDNLiveConfiguration configuration))
+            {
+                configuration = await _setting.GetIDNLiveConfigurationAsync().ConfigureAwait(false);
+
+                _ = _memoryCache.Set(key, configuration, _absoluteExpiration);
+            }
+            return configuration;
+        }
     }
 }

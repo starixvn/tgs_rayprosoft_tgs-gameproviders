@@ -14,7 +14,7 @@ namespace Tgs.GameProviders.Core
         decimal WinLoss,
         decimal UnsettledBets,
         decimal Balance,
-        string? BetType,
+        string BetType,
         string ExternalBetId,
         string ExternalGameActionGroupId,
         Guid? ReferencedGameActionId,
@@ -24,7 +24,7 @@ namespace Tgs.GameProviders.Core
         bool IsClosingRound,
         bool? ClosingRoundExplicitRequest,
         string PlayerIp,
-        string? ExtraData,
-        string? JackpotContribution,
+        string ExtraData,
+        string JackpotContribution,
         DateTimeOffset StoredOn);
 }

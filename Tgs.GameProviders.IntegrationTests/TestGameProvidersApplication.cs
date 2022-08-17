@@ -7,7 +7,7 @@ using OpenTelemetry.Exporter;
 
 namespace Tgs.GameProviders.IntegrationTests
 {
-    internal class TestGameProvidersApplication : WebApplicationFactory<Startup>
+    internal class TestGameProvidersApplication : WebApplicationFactory<Program>
     {
         private readonly Action<IWebHostBuilder>? _webHostConfigure;
 
