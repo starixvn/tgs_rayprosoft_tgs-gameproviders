@@ -38,7 +38,7 @@ internal class PragmaticPlayTransferVirtualSportsGameRecordsGetServiceUnitTest
             PlayerCode = "4ucmqplxb029",
             ExternalGameId = "vpdr7",
             ExternalRoundId = "2806980613",
-            ParentExternalRoundId = null,
+            ParentExternalRoundId = string.Empty,
             StartDate = "2022-05-13 08:04:41",
             EndDate = "2022-05-13 08:04:41",
             Status = "C",

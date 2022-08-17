@@ -13,6 +13,6 @@ namespace Tgs.GameProviders.Domains.SettingConfiguration
 
         public string PlayerPassword { get; init; } = default!;
 
-        public DreamGameBetLimit[] BetLimits { get; init; }
+        public DreamGameBetLimit[] BetLimits { get; init; } = default!;
     }
 }

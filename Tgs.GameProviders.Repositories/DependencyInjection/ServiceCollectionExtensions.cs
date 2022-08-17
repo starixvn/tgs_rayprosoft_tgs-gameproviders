@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Tgs.GameProviders.Core;
+﻿using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Repositories;
 
-namespace Tgs.GameProviders.Repositories.DependencyInjection
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceCollectionExtensions
     {

@@ -39,6 +39,8 @@ namespace Tgs.GameProviders.Core
 
         ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync();
 
+        ValueTask<IDNLiveConfiguration> GetIDNLiveConfigurationAsync();
+
         ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase;
     }
 }

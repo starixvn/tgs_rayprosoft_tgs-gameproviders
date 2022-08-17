@@ -25,6 +25,7 @@
         public static readonly string Evolution = "EVO";
         public static readonly string EvolutionTransfer = "EVOTF";
         public static readonly string Habanero = "HABA";
+        public static readonly string IDNLive = "IDNLIVE";
         public static readonly string IMESports = "IMES";
         public static readonly string JDB = "JDB";
         public static readonly string Jili = "JILI";

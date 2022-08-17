@@ -7,6 +7,10 @@ using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.QueryServer.Client;
 using Tgs.GameRounds.Client;
+using Tgs.GameInterface.IdnLiveService.Client;
+using Tgs.GameToken.Client;
+using Tgs.GameToken.Clients.DependencyInjection;
+using Tgs.GamePlayerTransform.Client;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -19,7 +23,10 @@ namespace Microsoft.Extensions.DependencyInjection
             Action<GameInterfaceJiliServiceClientOptions, IServiceProvider> gameInterfaceJiliServiceClientOptions,
             Action<GameInterfaceWMCasinoServiceClientOptions, IServiceProvider> gameInterfaceWMCasinoClientOptions,
             Action<GameInterfaceEvoOptions, IServiceProvider> gameInterfaceEvolutionServiceClientOptions,
-            Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions)
+            Action<GameInterfaceIdnLiveClientOptions, IServiceProvider> gameInterfaceIdnLiveClientOptions,
+            Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions,
+            Action<GameTokenClientOptions, IServiceProvider> gameTokenClientOptions,
+            Action<GamePlayerTransformClientOptions, IServiceProvider> gamePlayerTransformClientOptions)
             => services
                 .RegisterAllServiceUtilityTypes(
                     Assembly.GetExecutingAssembly(),
@@ -29,7 +36,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddGameInterfaceJiliServiceClient(gameInterfaceJiliServiceClientOptions)
                 .AddGameInterfaceWMCasinoServiceClient(gameInterfaceWMCasinoClientOptions)
                 .AddGameInterfaceEvoClient(gameInterfaceEvolutionServiceClientOptions)
+                .AddGameInterfaceIdnLiveServiceClient(gameInterfaceIdnLiveClientOptions)
                 .AddGameRoundsClient(gameRoundsClientOptions)
+                .AddGameTokenClient(gameTokenClientOptions)
+                .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)
                 .AddSecurity()//Tgs.Core.Infrastructures.Security
                 .AddMemoryCache()
                 .AddTransient<IBrandService, BrandService>()

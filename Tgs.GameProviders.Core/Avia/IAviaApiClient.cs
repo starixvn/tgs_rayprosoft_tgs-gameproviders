@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core.Avia.Models;
+#nullable enable
 
 namespace Tgs.GameProviders.Core.Avia
 {

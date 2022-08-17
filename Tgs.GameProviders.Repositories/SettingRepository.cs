@@ -70,5 +70,7 @@ namespace Tgs.GameProviders.Repositories
         private async ValueTask<TConfiguration> GetAsync<TConfiguration>(string key)
             => await _client.SettingGetConfigurationAsync<TConfiguration>(key).ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({key})");
+        public ValueTask<IDNLiveConfiguration> GetIDNLiveConfigurationAsync()
+            => GetAsync<IDNLiveConfiguration>(GameProviderConfigurations.IDNLive);
     }
 }

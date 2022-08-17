@@ -38,7 +38,7 @@ internal class PragmaticPlayTransferLiveDealerGameRecordsGetServiceUnitTest
             PlayerCode = "4ucmqplxb029",
             ExternalGameId = "401",
             ExternalRoundId = "40411502808",
-            ParentExternalRoundId = null,
+            ParentExternalRoundId = string.Empty,
             StartDate = "2022-05-13 08:04:41",
             EndDate = "2022-05-13 08:04:41",
             Status = "C",
