@@ -41,5 +41,7 @@ public interface ISettingRepository
 
     ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync();
 
+    ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync();
+
     ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync();
 }
