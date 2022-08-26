@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.ApiClients.WGSports.Models;
 using Tgs.GameProviders.ApiClients.WGSports.Models.Commons;
@@ -143,15 +144,20 @@ namespace Tgs.GameProviders.ApiClients.WGSports
 
         public async ValueTask<Uri?> GetLoginAsync(Uri apiUrl, string partnerCode, string token, string lang)
         {
-            var request = new
-            {
-                Token = token,
-                Lang = lang
-            };
 
-            var url = new Uri($"{apiUrl}?m=api&c=index&a=Login&Token={System.Web.HttpUtility.UrlEncode(token)}&PartnerCode={partnerCode}&Lang={lang}");
+            var query = HttpUtility.ParseQueryString(string.Empty);
+            query["m"] = "api";
+            query["c"] = "index";
+            query["a"] = "Login";
+            query["Token"] = HttpUtility.UrlEncode(token);
+            query["PartnerCode"] = partnerCode;
+            query["Lang"] = lang;
+            query["Version"] = "2";
 
-            var response = await GetAsync<WGSportsLoginResponse>(url, request, "Login").ConfigureAwait(false);
+
+            var requestUri = new Uri($"{apiUrl}?{query}");
+
+            var response = await GetAsync<WGSportsLoginResponse>(requestUri, query, "Login").ConfigureAwait(false);
 
             return response.ReturnCode is not 1 ? null : new(response.LoginUrl);
         }
