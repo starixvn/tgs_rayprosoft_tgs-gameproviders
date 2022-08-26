@@ -215,6 +215,18 @@ internal class SettingCacheRepository : ISettingRepository
         return configuration;
     }
 
+    public async ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync()
+    {
+        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.SkywindTransfer}".ToLower();
+        if (!_memoryCache.TryGetValue(key, out SkywindTransferConfiguration configuration))
+        {
+            configuration = await _setting.GetSkywindTransferConfigurationAsync().ConfigureAwait(false);
+
+            _ = _memoryCache.Set(key, configuration, _absoluteExpiration);
+        }
+        return configuration;
+    }
+
     public async ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync()
     {
         var key = $"GameProviders:SettingCache:{GameProviderConfigurations.WMCasinoTransfer}".ToLower();
