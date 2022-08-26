@@ -125,7 +125,7 @@ builder.Services
     (options, sp) =>
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
-        options.BaseUrl = configuration.GetValue<Uri>("GameInterfaceSkywindBaseUrl");
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceSkywindBaseUrl");
     })
     .AddGameProvidersRepositories()
     .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database);
