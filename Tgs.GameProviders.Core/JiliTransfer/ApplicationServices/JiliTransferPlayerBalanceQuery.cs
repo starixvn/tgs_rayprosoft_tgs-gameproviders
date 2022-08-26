@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices
-{
-    public record JiliTransferPlayerBalanceQuery : PlayerBalanceQuery;
-}
+﻿namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
+
+public record JiliTransferPlayerBalanceQuery : PlayerBalanceQuery;

@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Tgs.GameProviders.Core
+namespace Tgs.GameProviders.Core;
+
+internal class SystemClock : ISystemClock
 {
-    internal class SystemClock : ISystemClock
-    {
-        public DateTimeOffset CurrentTime => DateTimeOffset.UtcNow;
-    }
+    public DateTimeOffset CurrentTime => DateTimeOffset.UtcNow;
 }

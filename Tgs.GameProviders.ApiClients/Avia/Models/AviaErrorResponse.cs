@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.ApiClients.Avia.Models
+namespace Tgs.GameProviders.ApiClients.Avia.Models;
+
+internal record AviaErrorResponse
 {
-    internal record AviaErrorResponse
-    {
-        [JsonPropertyName("Error")]
-        public string Error { get; init; }
-    }
+    [JsonPropertyName("Error")]
+    public string Error { get; init; }
 }

@@ -4,24 +4,23 @@ using System.Threading.Tasks;
 using Tgs.GameInterface.JiliService.Client;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices
+namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
+
+internal class JiliTransferCreatePlayerCommandService : ICommandService<JiliTransferCreatePlayerCommand>
 {
-    internal class JiliTransferCreatePlayerCommandService : ICommandService<JiliTransferCreatePlayerCommand>
+    private readonly IGameInterfaceJiliServiceGrpc _grpc;
+
+    public JiliTransferCreatePlayerCommandService(
+        IGameInterfaceJiliServiceGrpc grpc)
     {
-        private readonly IGameInterfaceJiliServiceGrpc _grpc;
-
-        public JiliTransferCreatePlayerCommandService(
-            IGameInterfaceJiliServiceGrpc grpc)
-        {
-            _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
-        }
-
-        public ValueTask ExecuteAsync(JiliTransferCreatePlayerCommand command, CancellationToken cancellationToken = default)
-            => _grpc.CreatePlayerAsync(
-                apiUrl: command.Configuration.ApiUrl,
-                agentId: command.ConfigurationData.AgentId,
-                agentKey: command.Configuration.AgentKey,
-                playerCode: command.PlayerCode,
-                cancellationToken: cancellationToken);
+        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
     }
+
+    public ValueTask ExecuteAsync(JiliTransferCreatePlayerCommand command, CancellationToken cancellationToken = default)
+        => _grpc.CreatePlayerAsync(
+            apiUrl: command.Configuration.ApiUrl,
+            agentId: command.ConfigurationData.AgentId,
+            agentKey: command.Configuration.AgentKey,
+            playerCode: command.PlayerCode,
+            cancellationToken: cancellationToken);
 }

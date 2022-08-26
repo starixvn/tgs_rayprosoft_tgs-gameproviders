@@ -9,60 +9,59 @@ using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration.Avia;
 using Tgs.GameProviders.QueryServer.Models;
 
-namespace Tgs.GameProviders.Core.UnitTest.Avia
+namespace Tgs.GameProviders.Core.UnitTest.Avia;
+
+[TestFixture]
+public class AviaKickPlayerCommandServiceUnitTest
 {
-    [TestFixture]
-    public class AviaKickPlayerCommandServiceUnitTest
+    [Test]
+    public async Task Normal_Process()
     {
-        [Test]
-        public async Task Normal_Process()
+        var faceLogger = NullLogger<AviaKickPlayerCommandService>.Instance;
+        var fakeAviaApiClient = Substitute.For<IAviaApiClient>();
+        var fakeAviaService = Substitute.For<IAviaService>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
+
+        var fakeService = new AviaKickPlayerCommandService(
+            faceLogger,
+            fakeAviaApiClient,
+            fakeAviaService,
+            fakePlayer);
+
+        var command = new AviaKickPlayerCommand()
         {
-            var faceLogger = NullLogger<AviaKickPlayerCommandService>.Instance;
-            var fakeAviaApiClient = Substitute.For<IAviaApiClient>();
-            var fakeAviaService = Substitute.For<IAviaService>();
-            var fakePlayer = Substitute.For<IPlayerRepository>();
+            PlayerCode = "4ucmqplxb029"
+        };
 
-            var fakeService = new AviaKickPlayerCommandService(
-                faceLogger,
-                fakeAviaApiClient,
-                fakeAviaService,
-                fakePlayer);
+        var player = new PlayerModel(
+            Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
+            "TGS",
+            Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
+            "TGS",
+            Guid.Parse("4e86719f-243f-46f6-b010-5c758b7285af"),
+            "GPI",
+            "4ucmqplxb029",
+            "4ucmqplxb029",
+            Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
+            "CNY",
+            PlayerStatus.Enabled);
 
-            var command = new AviaKickPlayerCommand()
-            {
-                PlayerCode = "4ucmqplxb029"
-            };
+        var brandMerchant = new AviaBrandMerchant()
+        {
+            BrandCode = DefConst.BrandCodeDefault,
+            ApiUrl = new("https://api.aviaapi.vip"),
+            Authorization = "81e2d1a24c684a76a710a70f4900a353",
+            PlayerPassword = "TgsP@ssw0rd"
+        };
 
-            var player = new PlayerModel(
-                Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
-                "TGS",
-                Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
-                "TGS",
-                Guid.Parse("4e86719f-243f-46f6-b010-5c758b7285af"),
-                "GPI",
-                "4ucmqplxb029",
-                "4ucmqplxb029",
-                Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-                "CNY",
-                PlayerStatus.Enabled);
+        _ = fakeAviaService.GetBrandMerchantAsync(player.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
+        _ = fakePlayer.GetAsync(command.PlayerCode).Returns(Task.FromResult(player));
 
-            var brandMerchant = new AviaBrandMerchant()
-            {
-                BrandCode = DefConst.BrandCodeDefault,
-                ApiUrl = new("https://api.aviaapi.vip"),
-                Authorization = "81e2d1a24c684a76a710a70f4900a353",
-                PlayerPassword = "TgsP@ssw0rd"
-            };
+        _ = fakeAviaApiClient.KickAsync(
+            brandMerchant.ApiUrl,
+            brandMerchant.Authorization,
+            command.PlayerCode);
 
-            _ = fakeAviaService.GetBrandMerchantAsync(player.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
-            _ = fakePlayer.GetAsync(command.PlayerCode).Returns(Task.FromResult(player));
-
-            _ = fakeAviaApiClient.KickAsync(
-                brandMerchant.ApiUrl,
-                brandMerchant.Authorization,
-                command.PlayerCode);
-
-            await fakeService.ExecuteAsync(command).ConfigureAwait(false);
-        }
+        await fakeService.ExecuteAsync(command).ConfigureAwait(false);
     }
 }

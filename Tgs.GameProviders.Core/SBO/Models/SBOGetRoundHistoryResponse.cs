@@ -1,6 +1,5 @@
 ﻿// ReSharper disable IdentifierTypo
 
-namespace Tgs.GameProviders.Core.SBO.Models
-{
-    public record SBOGetRoundHistoryResponse : SBOGetBetHistoryResponse;
-}
+namespace Tgs.GameProviders.Core.SBO.Models;
+
+public record SBOGetRoundHistoryResponse : SBOGetBetHistoryResponse;

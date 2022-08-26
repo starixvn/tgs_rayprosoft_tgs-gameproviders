@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.AwcLudo.ApplicationServices
-{
-    public record AwcLudoPlayerBalanceQuery : PlayerBalanceQuery;
-}
+﻿namespace Tgs.GameProviders.Core.AwcLudo.ApplicationServices;
+
+public record AwcLudoPlayerBalanceQuery : PlayerBalanceQuery;

@@ -4,11 +4,10 @@ using Tgs.GameProviders.Core;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders
+namespace Tgs.GameProviders;
+
+public interface IPlayerFundCheckingHandler<TQuery, TRequest> where TQuery : PlayerFundCheckingQuery
 {
-    public interface IPlayerFundCheckingHandler<TQuery, TRequest> where TQuery : PlayerFundCheckingQuery
-    {
-        [HttpPost("PlayerFundChecking")]
-        ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync([FromServices] IGetService<TQuery, PlayerFundCheckingResult> getService, TRequest request);
-    }
+    [HttpPost("PlayerFundChecking")]
+    ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync([FromServices] IGetService<TQuery, PlayerFundCheckingResult> getService, TRequest request);
 }

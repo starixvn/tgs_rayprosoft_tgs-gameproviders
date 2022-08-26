@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.Evolution.Models.Commons.EvolutionGameUrl
+namespace Tgs.GameProviders.Core.Evolution.Models.Commons.EvolutionGameUrl;
+
+public record EvolutionGameUrlConfigGameTable
 {
-    public record EvolutionGameUrlConfigGameTable
-    {
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
-    }
+    [JsonPropertyName("id")]
+    public string Id { get; set; }
 }

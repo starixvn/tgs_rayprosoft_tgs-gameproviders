@@ -6,38 +6,37 @@ using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Core.AwcRcb.ApplicationServices
+namespace Tgs.GameProviders.Core.AwcRcb.ApplicationServices;
+
+internal class AwcRcbCreatePlayerCommandService : ICommandService<AwcRcbCreatePlayerCommand>
 {
-    internal class AwcRcbCreatePlayerCommandService : ICommandService<AwcRcbCreatePlayerCommand>
+    private readonly IGameProviderRepository _gameProvider;
+    private readonly IGameInterfaceAwcServiceGrpc _grpc;
+
+    public AwcRcbCreatePlayerCommandService(
+        IGameProviderRepository gameProvider,
+        IGameInterfaceAwcServiceGrpc grpc)
     {
-        private readonly IGameProviderRepository _gameProvider;
-        private readonly IGameInterfaceAwcServiceGrpc _grpc;
+        _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
+        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+    }
 
-        public AwcRcbCreatePlayerCommandService(
-            IGameProviderRepository gameProvider,
-            IGameInterfaceAwcServiceGrpc grpc)
-        {
-            _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-            _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
-        }
+    public async ValueTask ExecuteAsync(AwcRcbCreatePlayerCommand command, CancellationToken cancellationToken = default)
+    {
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_RCB).ConfigureAwait(false);
+        var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language).ConfigureAwait(false) ?? "en";
+        var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, command.CurrencyCode).ConfigureAwait(false)
+            ?? throw new Exception($"This game product currency does not exist.({command.CurrencyCode})");
 
-        public async ValueTask ExecuteAsync(AwcRcbCreatePlayerCommand command, CancellationToken cancellationToken = default)
-        {
-            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_RCB).ConfigureAwait(false);
-            var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language).ConfigureAwait(false) ?? "en";
-            var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, command.CurrencyCode).ConfigureAwait(false)
-                ?? throw new Exception($"This game product currency does not exist.({command.CurrencyCode})");
-
-            await _grpc.CreatePlayerByBetLimitAsync(
-                apiUrl: command.Configuration.ApiUrl,
-                agentId: command.ConfigurationData.AgentId,
-                cert: command.ConfigurationData.Cert,
-                playerCode: command.PlayerCode,
-                userName: command.PlayerCode,
-                currency: currency,
-                betLimit: JsonSerializer.Serialize(command.ConfigurationData.BetLimit),
-                language: cultureCode,
-                cancellationToken: cancellationToken).ConfigureAwait(false);
-        }
+        await _grpc.CreatePlayerByBetLimitAsync(
+            apiUrl: command.Configuration.ApiUrl,
+            agentId: command.ConfigurationData.AgentId,
+            cert: command.ConfigurationData.Cert,
+            playerCode: command.PlayerCode,
+            userName: command.PlayerCode,
+            currency: currency,
+            betLimit: JsonSerializer.Serialize(command.ConfigurationData.BetLimit),
+            language: cultureCode,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 }

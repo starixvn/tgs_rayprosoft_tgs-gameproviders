@@ -1,10 +1,9 @@
-﻿namespace Tgs.GameProviders.ViewModels
+﻿namespace Tgs.GameProviders.ViewModels;
+
+public record PlayerFundResponse
 {
-    public record PlayerFundResponse
-    {
-        /// <summary>
-        /// The order identifier
-        /// </summary>
-        public string? OrderId { get; set; } = null;
-    }
+    /// <summary>
+    /// The order identifier
+    /// </summary>
+    public string? OrderId { get; set; } = null;
 }

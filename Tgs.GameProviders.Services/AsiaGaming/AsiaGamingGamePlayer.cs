@@ -5,42 +5,41 @@ using Tgs.GameProviders.Core.AsiaGaming;
 using Tgs.GameProviders.Core.AsiaGaming.Models;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
-namespace Tgs.GameProviders.Services.AsiaGaming
+namespace Tgs.GameProviders.Services.AsiaGaming;
+
+internal class AsiaGamingGamePlayer : IAsiaGamingGamePlayer
 {
-    internal class AsiaGamingGamePlayer : IAsiaGamingGamePlayer
+    private readonly IAsiaGamingApiClient _client;
+    private readonly ILogger<AsiaGamingGamePlayer> _logger;
+
+    public AsiaGamingGamePlayer(
+        ILogger<AsiaGamingGamePlayer> logger,
+        IAsiaGamingApiClient client)
     {
-        private readonly IAsiaGamingApiClient _client;
-        private readonly ILogger<AsiaGamingGamePlayer> _logger;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+    }
 
-        public AsiaGamingGamePlayer(
-            ILogger<AsiaGamingGamePlayer> logger,
-            IAsiaGamingApiClient client)
+    public async ValueTask<bool> CheckOrCreateAccountAsync(
+        AsiaGamingConfiguration configuration,
+        string playerCode,
+        string gameProviderCurrencyCode)
+    {
+        var request = new AsiaGamingCheckOrCreateAccountRequest
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-        }
+            AgentCode = configuration.AgentCode,
+            PlayerCode = playerCode,
+            Currency = gameProviderCurrencyCode
+        };
 
-        public async ValueTask<bool> CheckOrCreateAccountAsync(
-            AsiaGamingConfiguration configuration,
-            string playerCode,
-            string gameProviderCurrencyCode)
-        {
-            var request = new AsiaGamingCheckOrCreateAccountRequest
-            {
-                AgentCode = configuration.AgentCode,
-                PlayerCode = playerCode,
-                Currency = gameProviderCurrencyCode
-            };
+        var response = await _client
+            .CheckOrCreateAccountAsync(
+                configuration.LoginApiUrl,
+                configuration.Md5Key,
+                configuration.DesKey,
+                request)
+            .ConfigureAwait(false);
 
-            var response = await _client
-                .CheckOrCreateAccountAsync(
-                    configuration.LoginApiUrl,
-                    configuration.Md5Key,
-                    configuration.DesKey,
-                    request)
-                .ConfigureAwait(false);
-
-            return response.Result == "0";
-        }
+        return response.Result == "0";
     }
 }

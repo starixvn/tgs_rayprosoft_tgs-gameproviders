@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Domains.SettingConfiguration.SexyGaming
+namespace Tgs.GameProviders.Domains.SettingConfiguration.SexyGaming;
+
+public record SexyGamingBetLimitVenusLive
 {
-    public record SexyGamingBetLimitVenusLive
-    {
-        [JsonPropertyName("limitId")]
-        public int[] LimitId { get; init; } = default!;
-    }
+    [JsonPropertyName("limitId")]
+    public int[] LimitId { get; init; } = default!;
 }

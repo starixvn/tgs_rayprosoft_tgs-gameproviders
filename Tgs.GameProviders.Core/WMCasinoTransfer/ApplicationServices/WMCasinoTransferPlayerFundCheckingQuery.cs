@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
-{
-    public record WMCasinoTransferPlayerFundCheckingQuery : PlayerFundCheckingQuery;
-}
+﻿namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
+
+public record WMCasinoTransferPlayerFundCheckingQuery : PlayerFundCheckingQuery;

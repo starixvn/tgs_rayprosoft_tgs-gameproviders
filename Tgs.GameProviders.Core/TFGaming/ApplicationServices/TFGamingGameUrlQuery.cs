@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.TFGaming.ApplicationServices
-{
-    public record TFGamingGameUrlQuery : GameUrlQuery;
-}
+﻿namespace Tgs.GameProviders.Core.TFGaming.ApplicationServices;
+
+public record TFGamingGameUrlQuery : GameUrlQuery;

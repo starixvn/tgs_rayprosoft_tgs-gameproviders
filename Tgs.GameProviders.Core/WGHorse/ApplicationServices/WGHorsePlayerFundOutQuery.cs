@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
-{
-    public record WGHorsePlayerFundOutQuery : PlayerFundQuery;
-}
+﻿namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices;
+
+public record WGHorsePlayerFundOutQuery : PlayerFundQuery;

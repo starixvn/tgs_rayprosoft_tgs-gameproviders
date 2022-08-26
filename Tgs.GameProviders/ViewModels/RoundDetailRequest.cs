@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Tgs.GameProviders.ViewModels
-{
-    public record RoundDetailRequest
-    {
-        public Guid RoundId { get; set; } = default!;
+namespace Tgs.GameProviders.ViewModels;
 
-        public string Language { get; init; } = default!;
-    }
+public record RoundDetailRequest
+{
+    public Guid RoundId { get; set; } = default!;
+
+    public string Language { get; init; } = default!;
 }

@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 
 #nullable enable
 
-namespace Tgs.GameProviders.Core
+namespace Tgs.GameProviders.Core;
+
+public interface IRoundService
 {
-    public interface IRoundService
-    {
-        ValueTask<RoundInfo?> GetAsync(Guid roundId);
-    }
+    ValueTask<RoundInfo?> GetAsync(Guid roundId);
 }

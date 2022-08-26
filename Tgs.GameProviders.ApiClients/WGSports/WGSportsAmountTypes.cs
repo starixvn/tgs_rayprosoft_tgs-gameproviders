@@ -1,17 +1,16 @@
-﻿namespace Tgs.GameProviders.ApiClients.WGSports
-{
-    public enum WGSportsAmountTypes
-    {
-        /// <summary>
-        /// The fund out
-        /// TGS->GP
-        /// </summary>
-        FundOut = 1,
+﻿namespace Tgs.GameProviders.ApiClients.WGSports;
 
-        /// <summary>
-        /// The fund in
-        /// GP->TGS
-        /// </summary>
-        FundIn = 2
-    }
+public enum WGSportsAmountTypes
+{
+    /// <summary>
+    /// The fund out
+    /// TGS->GP
+    /// </summary>
+    FundOut = 1,
+
+    /// <summary>
+    /// The fund in
+    /// GP->TGS
+    /// </summary>
+    FundIn = 2
 }

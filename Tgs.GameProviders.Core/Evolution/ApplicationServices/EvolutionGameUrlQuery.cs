@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.Evolution.ApplicationServices
-{
-    public record EvolutionGameUrlQuery : GameUrlQuery;
-}
+﻿namespace Tgs.GameProviders.Core.Evolution.ApplicationServices;
+
+public record EvolutionGameUrlQuery : GameUrlQuery;

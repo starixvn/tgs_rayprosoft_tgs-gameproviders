@@ -10,30 +10,29 @@ using Tgs.GameProviders.Core.WGHorse.ApplicationServices;
 using Tgs.GameProviders.Core.WGSports.ApplicationServices;
 using Tgs.GameProviders.ViewModels;
 
-namespace Tgs.GameProviders.ViewModelMappings
+namespace Tgs.GameProviders.ViewModelMappings;
+
+public class PlayerFundCheckingMapping : Profile
 {
-    public class PlayerFundCheckingMapping : Profile
+    public PlayerFundCheckingMapping()
     {
-        public PlayerFundCheckingMapping()
-        {
-            _ = CreateMap<PlayerFundCheckingResult, PlayerFundCheckingResponse>()
-                  .ReverseMap();
-            _ = CreateMap<PlayerFundCheckingRequest, KYPlayerFundCheckingQuery>()
-                  .ReverseMap();
-            _ = CreateMap<PlayerFundCheckingRequest, WGHorsePlayerFundCheckingQuery>()
-                  .ReverseMap();
-            _ = CreateMap<PlayerFundCheckingRequest, WGSportsPlayerFundCheckingQuery>()
-                  .ReverseMap();
-            _ = CreateMap<VRPlayerFundCheckingRequest, VRPlayerFundCheckingQuery>()
-                  .ReverseMap();
-            _ = CreateMap<PlayerFundCheckingRequest, LYPlayerFundCheckingQuery>()
-                  .ReverseMap();
-            _ = CreateMap<PlayerFundCheckingRequest, AviaPlayerFundCheckingQuery>()
-                  .ReverseMap();
-            _ = CreateMap<PlayerFundCheckingRequest, JokerPlayerFundCheckingQuery>()
-                .ReverseMap();
-            _ = CreateMap<PlayerFundCheckingRequest, PragmaticPlayTransferPlayerFundCheckingQuery>()
-                  .ReverseMap();
-        }
+        _ = CreateMap<PlayerFundCheckingResult, PlayerFundCheckingResponse>()
+              .ReverseMap();
+        _ = CreateMap<PlayerFundCheckingRequest, KYPlayerFundCheckingQuery>()
+              .ReverseMap();
+        _ = CreateMap<PlayerFundCheckingRequest, WGHorsePlayerFundCheckingQuery>()
+              .ReverseMap();
+        _ = CreateMap<PlayerFundCheckingRequest, WGSportsPlayerFundCheckingQuery>()
+              .ReverseMap();
+        _ = CreateMap<VRPlayerFundCheckingRequest, VRPlayerFundCheckingQuery>()
+              .ReverseMap();
+        _ = CreateMap<PlayerFundCheckingRequest, LYPlayerFundCheckingQuery>()
+              .ReverseMap();
+        _ = CreateMap<PlayerFundCheckingRequest, AviaPlayerFundCheckingQuery>()
+              .ReverseMap();
+        _ = CreateMap<PlayerFundCheckingRequest, JokerPlayerFundCheckingQuery>()
+            .ReverseMap();
+        _ = CreateMap<PlayerFundCheckingRequest, PragmaticPlayTransferPlayerFundCheckingQuery>()
+              .ReverseMap();
     }
 }

@@ -12,120 +12,119 @@ using Tgs.GameProviders.Core.Evolution.Models;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.Logging;
 
-namespace Tgs.GameProviders.ApiClients.Evolution
+namespace Tgs.GameProviders.ApiClients.Evolution;
+
+internal class EvolutionApiClient : IEvolutionApiClient
 {
-    internal class EvolutionApiClient : IEvolutionApiClient
+    private readonly HttpClient _client;
+    private readonly ILogger<EvolutionApiClient> _logger;
+    private readonly ITgsLog _tgsLog;
+
+    public EvolutionApiClient(
+        HttpClient client,
+        ILogger<EvolutionApiClient> logger,
+        ITgsLog tgsLog
+        )
     {
-        private readonly HttpClient _client;
-        private readonly ILogger<EvolutionApiClient> _logger;
-        private readonly ITgsLog _tgsLog;
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
+    }
 
-        public EvolutionApiClient(
-            HttpClient client,
-            ILogger<EvolutionApiClient> logger,
-            ITgsLog tgsLog
-            )
+    public ValueTask<EvolutionGameUrlResponse> GetGameUrlAsync(Uri ua2AuthenticationUrl, EvolutionGameUrlRequest request)
+        => PostAsync<EvolutionGameUrlRequest, EvolutionGameUrlResponse>(ua2AuthenticationUrl, request, "GetGameUrl");
+
+    public async ValueTask<EvolutionGamHistoryRoundResponse> GetGamHistoryRoundAsync(Uri apiUrl, string casinoID, string gameHistoryApiToken, EvolutionGamHistoryRoundRequest request)
+    {
+        var url = new Uri($"{apiUrl}api/gamehistory/v1/players/{request.PlayerCode}/games/{request.RoundId}");
+        return await GetAsync<EvolutionGamHistoryRoundResponse>(url, casinoID, gameHistoryApiToken, "GetGamHistoryRound").ConfigureAwait(false);
+    }
+
+    private async ValueTask<TResult> GetAsync<TResult>(Uri apiUrl, string casinoID, string gameHistoryApiToken, string logPrefix)
+    {
+        logPrefix = $"{nameof(EvolutionApiClient).ToLower()}.{logPrefix}";
+
+        var sw = Stopwatch.StartNew();
+
+        _client.DefaultRequestHeaders.Add("Authorization", $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{casinoID}:{gameHistoryApiToken}"))}");
+
+        var httpResponseMessage = await _client.GetAsync(apiUrl);
+
+        sw.Stop();
+
+        var responseMessage = default(string);
+        using (var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result))
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
+            responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
         }
 
-        public ValueTask<EvolutionGameUrlResponse> GetGameUrlAsync(Uri ua2AuthenticationUrl, EvolutionGameUrlRequest request)
-            => PostAsync<EvolutionGameUrlRequest, EvolutionGameUrlResponse>(ua2AuthenticationUrl, request, "GetGameUrl");
-
-        public async ValueTask<EvolutionGamHistoryRoundResponse> GetGamHistoryRoundAsync(Uri apiUrl, string casinoID, string gameHistoryApiToken, EvolutionGamHistoryRoundRequest request)
+        var apiLogEvent = new ApiLogEvent
         {
-            var url = new Uri($"{apiUrl}api/gamehistory/v1/players/{request.PlayerCode}/games/{request.RoundId}");
-            return await GetAsync<EvolutionGamHistoryRoundResponse>(url, casinoID, gameHistoryApiToken, "GetGamHistoryRound").ConfigureAwait(false);
+            Ip = string.Empty,
+            Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
+            Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
+            Prefix = logPrefix,
+            ServerName = Environment.MachineName.NoLongerThan(128),
+            RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
+            RequestContent = string.Empty,
+            ResponseHeaders = httpResponseMessage.Headers.ToString(),
+            ResponseContent = responseMessage.NoLongerThan(4096),
+            ResponseCode = (short)httpResponseMessage.StatusCode,
+            ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+            RecordedOn = DateTimeOffset.UtcNow
+        };
+        _tgsLog.LogApi(apiLogEvent);
+        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
+        {
+            return JsonSerializer.Deserialize<TResult>(responseMessage);
         }
 
-        private async ValueTask<TResult> GetAsync<TResult>(Uri apiUrl, string casinoID, string gameHistoryApiToken, string logPrefix)
+        return default;
+    }
+
+    private async ValueTask<TResult> PostAsync<TSource, TResult>(Uri apiUrl, TSource source, string logPrefix)
+    {
+        logPrefix = $"{nameof(EvolutionApiClient).ToLower()}.{logPrefix}";
+
+        var sw = Stopwatch.StartNew();
+
+        HttpContent content = new StringContent(JsonSerializer.Serialize(source), Encoding.UTF8, "application/json");
+
+        var httpResponseMessage = await _client.PostAsync(apiUrl, content);
+
+        sw.Stop();
+
+        var responseMessage = default(string);
+        using (var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result))
         {
-            logPrefix = $"{nameof(EvolutionApiClient).ToLower()}.{logPrefix}";
-
-            var sw = Stopwatch.StartNew();
-
-            _client.DefaultRequestHeaders.Add("Authorization", $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes($"{casinoID}:{gameHistoryApiToken}"))}");
-
-            var httpResponseMessage = await _client.GetAsync(apiUrl);
-
-            sw.Stop();
-
-            var responseMessage = default(string);
-            using (var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result))
-            {
-                responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
-            }
-
-            var apiLogEvent = new ApiLogEvent
-            {
-                Ip = string.Empty,
-                Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
-                Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
-                Prefix = logPrefix,
-                ServerName = Environment.MachineName.NoLongerThan(128),
-                RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
-                RequestContent = string.Empty,
-                ResponseHeaders = httpResponseMessage.Headers.ToString(),
-                ResponseContent = responseMessage.NoLongerThan(4096),
-                ResponseCode = (short)httpResponseMessage.StatusCode,
-                ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                RecordedOn = DateTimeOffset.UtcNow
-            };
-            _tgsLog.LogApi(apiLogEvent);
-            _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
-
-            if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
-            {
-                return JsonSerializer.Deserialize<TResult>(responseMessage);
-            }
-
-            return default;
+            responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
         }
 
-        private async ValueTask<TResult> PostAsync<TSource, TResult>(Uri apiUrl, TSource source, string logPrefix)
+        var apiLogEvent = new ApiLogEvent
         {
-            logPrefix = $"{nameof(EvolutionApiClient).ToLower()}.{logPrefix}";
+            Ip = string.Empty,
+            Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
+            Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
+            Prefix = logPrefix,
+            ServerName = Environment.MachineName.NoLongerThan(128),
+            RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
+            RequestContent = (await content.ReadAsStringAsync().ConfigureAwait(false)).NoLongerThan(4096),
+            ResponseHeaders = httpResponseMessage.Headers.ToString(),
+            ResponseContent = responseMessage.NoLongerThan(4096),
+            ResponseCode = (short)httpResponseMessage.StatusCode,
+            ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+            RecordedOn = DateTimeOffset.UtcNow
+        };
+        _tgsLog.LogApi(apiLogEvent);
+        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
-            var sw = Stopwatch.StartNew();
-
-            HttpContent content = new StringContent(JsonSerializer.Serialize(source), Encoding.UTF8, "application/json");
-
-            var httpResponseMessage = await _client.PostAsync(apiUrl, content);
-
-            sw.Stop();
-
-            var responseMessage = default(string);
-            using (var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result))
-            {
-                responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
-            }
-
-            var apiLogEvent = new ApiLogEvent
-            {
-                Ip = string.Empty,
-                Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
-                Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
-                Prefix = logPrefix,
-                ServerName = Environment.MachineName.NoLongerThan(128),
-                RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
-                RequestContent = (await content.ReadAsStringAsync().ConfigureAwait(false)).NoLongerThan(4096),
-                ResponseHeaders = httpResponseMessage.Headers.ToString(),
-                ResponseContent = responseMessage.NoLongerThan(4096),
-                ResponseCode = (short)httpResponseMessage.StatusCode,
-                ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                RecordedOn = DateTimeOffset.UtcNow
-            };
-            _tgsLog.LogApi(apiLogEvent);
-            _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
-
-            if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
-            {
-                return JsonSerializer.Deserialize<TResult>(responseMessage);
-            }
-
-            return default;
+        if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
+        {
+            return JsonSerializer.Deserialize<TResult>(responseMessage);
         }
+
+        return default;
     }
 }

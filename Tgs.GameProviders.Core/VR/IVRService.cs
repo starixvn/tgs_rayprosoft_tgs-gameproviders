@@ -3,16 +3,15 @@ using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration.VR;
 using Tgs.GameRounds.Common;
 
-namespace Tgs.GameProviders.Core.VR
+namespace Tgs.GameProviders.Core.VR;
+
+public interface IVRService
 {
-    public interface IVRService
-    {
-        ValueTask<VRBrandMerchant> GetBrandMerchantAsync(string brandCode);
+    ValueTask<VRBrandMerchant> GetBrandMerchantAsync(string brandCode);
 
-        GameRoundClientStatus GetClientRound(int state);
+    GameRoundClientStatus GetClientRound(int state);
 
-        ValueTask<Guid> GetGameProviderIdAsync();
+    ValueTask<Guid> GetGameProviderIdAsync();
 
-        GameRoundStatus GetRoundStatus(int state);
-    }
+    GameRoundStatus GetRoundStatus(int state);
 }

@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.IDNLive.ApplicationServices
-{
-    public record IDNLiveRoundDetailQuery : RoundDetailQuery;
-}
+﻿namespace Tgs.GameProviders.Core.IDNLive.ApplicationServices;
+
+public record IDNLiveRoundDetailQuery : RoundDetailQuery;

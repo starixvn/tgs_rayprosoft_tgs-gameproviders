@@ -2,14 +2,13 @@
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core.Skywind.Models;
 
-namespace Tgs.GameProviders.Core.Skywind
+namespace Tgs.GameProviders.Core.Skywind;
+
+public interface ISkywindApiClient
 {
-    public interface ISkywindApiClient
-    {
-        ValueTask<SkywindUserLoginResponse> GetAccessTokenAsync(Uri apiUrl, SkywindUserLoginRequest request);
+    ValueTask<SkywindUserLoginResponse> GetAccessTokenAsync(Uri apiUrl, SkywindUserLoginRequest request);
 
-        ValueTask<SkywindGameUrlResponse> GetGameUrlAsync(Uri apiUrl, string getaccessToken, SkywindGameUrlRequest request);
+    ValueTask<SkywindGameUrlResponse> GetGameUrlAsync(Uri apiUrl, string getaccessToken, SkywindGameUrlRequest request);
 
-        ValueTask<SkywindGamHistoryRoundDetailsResponse> GetGamHistoryRoundDetailsAsync(Uri apiUrl, string getaccessToken, SkywindGamHistoryRoundDetailsRequest request);
-    }
+    ValueTask<SkywindGamHistoryRoundDetailsResponse> GetGamHistoryRoundDetailsAsync(Uri apiUrl, string getaccessToken, SkywindGamHistoryRoundDetailsRequest request);
 }

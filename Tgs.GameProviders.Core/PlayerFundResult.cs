@@ -1,10 +1,9 @@
-﻿namespace Tgs.GameProviders.Core
+﻿namespace Tgs.GameProviders.Core;
+
+public record PlayerFundResult
 {
-    public record PlayerFundResult
-    {
-        /// <summary>
-        /// The order identifier
-        /// </summary>
-        public string OrderId { get; set; }
-    }
+    /// <summary>
+    /// The order identifier
+    /// </summary>
+    public string OrderId { get; set; }
 }

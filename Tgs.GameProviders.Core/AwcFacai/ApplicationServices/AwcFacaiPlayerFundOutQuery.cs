@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.AwcFacai.ApplicationServices
-{
-    public record AwcFacaiPlayerFundOutQuery : PlayerFundQuery;
-}
+﻿namespace Tgs.GameProviders.Core.AwcFacai.ApplicationServices;
+
+public record AwcFacaiPlayerFundOutQuery : PlayerFundQuery;

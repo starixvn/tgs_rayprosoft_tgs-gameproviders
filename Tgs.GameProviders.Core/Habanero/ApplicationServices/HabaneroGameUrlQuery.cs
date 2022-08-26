@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.Habanero.ApplicationServices
-{
-    public record HabaneroGameUrlQuery : GameUrlQuery;
-}
+﻿namespace Tgs.GameProviders.Core.Habanero.ApplicationServices;
+
+public record HabaneroGameUrlQuery : GameUrlQuery;

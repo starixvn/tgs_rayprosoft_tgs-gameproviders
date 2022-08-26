@@ -5,34 +5,33 @@ using StackExchange.Redis;
 using Tgs.GameProviders.Core.IMESports;
 using Tgs.GameProviders.Core.IMESports.Models;
 
-namespace Tgs.GameProviders.Services.IMESports
+namespace Tgs.GameProviders.Services.IMESports;
+
+internal class IMESportsRedisDataStore : IIMESportsDataStore
 {
-    internal class IMESportsRedisDataStore : IIMESportsDataStore
+    private static readonly string _KeyPrefix = "IMSessionToken";
+    private readonly IDatabase _database;
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
+
+    public IMESportsRedisDataStore(IDatabase redisDatabase)
     {
-        private static readonly string _KeyPrefix = "IMSessionToken";
-        private readonly IDatabase _database;
-        private readonly JsonSerializerOptions _jsonSerializerOptions;
+        _database = redisDatabase ?? throw new ArgumentNullException(nameof(redisDatabase));
+        _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = false };
+    }
 
-        public IMESportsRedisDataStore(IDatabase redisDatabase)
-        {
-            _database = redisDatabase ?? throw new ArgumentNullException(nameof(redisDatabase));
-            _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = false };
-        }
+    public async ValueTask CacheSessionTokenAsync(
+        string playerCode,
+        string gameExternalId,
+        string sessionToken,
+        int timeToLeave)
+    {
+        var tokenInfo = new IMESportsTokenInfo(sessionToken, timeToLeave);
+        var expiry = TimeSpan.FromSeconds(timeToLeave);
 
-        public async ValueTask CacheSessionTokenAsync(
-            string playerCode,
-            string gameExternalId,
-            string sessionToken,
-            int timeToLeave)
-        {
-            var tokenInfo = new IMESportsTokenInfo(sessionToken, timeToLeave);
-            var expiry = TimeSpan.FromSeconds(timeToLeave);
+        var dataKey = $"{_KeyPrefix}:{playerCode}_{gameExternalId}";
+        var setValue = JsonSerializer.Serialize(tokenInfo, _jsonSerializerOptions);
 
-            var dataKey = $"{_KeyPrefix}:{playerCode}_{gameExternalId}";
-            var setValue = JsonSerializer.Serialize(tokenInfo, _jsonSerializerOptions);
-
-            _ = await _database.StringSetAsync(dataKey, setValue, expiry, when: When.Always)
-                .ConfigureAwait(false);
-        }
+        _ = await _database.StringSetAsync(dataKey, setValue, expiry, when: When.Always)
+            .ConfigureAwait(false);
     }
 }

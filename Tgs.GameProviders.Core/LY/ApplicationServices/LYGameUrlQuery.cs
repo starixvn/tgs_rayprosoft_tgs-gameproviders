@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.LY.ApplicationServices
-{
-    public record LYGameUrlQuery : GameUrlQuery;
-}
+﻿namespace Tgs.GameProviders.Core.LY.ApplicationServices;
+
+public record LYGameUrlQuery : GameUrlQuery;

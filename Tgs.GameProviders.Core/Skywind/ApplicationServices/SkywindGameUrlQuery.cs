@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.Skywind.ApplicationServices
-{
-    public record SkywindGameUrlQuery : GameUrlQuery;
-}
+﻿namespace Tgs.GameProviders.Core.Skywind.ApplicationServices;
+
+public record SkywindGameUrlQuery : GameUrlQuery;

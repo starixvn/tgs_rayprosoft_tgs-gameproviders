@@ -5,119 +5,118 @@ using NUnit.Framework;
 using Tgs.GameProviders.Core.SBO;
 using Tgs.GameProviders.Core.SBO.Models;
 
-namespace Tgs.GameProviders.ApiClients.UnitTest
+namespace Tgs.GameProviders.ApiClients.UnitTest;
+
+[TestFixture]
+public class SBOApiClientUnitTest
 {
-    [TestFixture]
-    public class SBOApiClientUnitTest
+    private const string AgentPrefix = "STGTGS";
+    private const string BrandCode = "GPI";
+    private const string CompanyKey = "34B2C4ED616F4E7B965EAE0861A3F92E";
+    private const string GameProviderCurrencyCode = "CNY";
+    private const string PlayerCurrencyCode = "CNY";
+    private readonly Uri _apiUrl = new("https://ex-api-demo-yy.568win.com");
+
+    [Test]
+    public async Task CreateAgentAsync()
     {
-        private const string AgentPrefix = "STGTGS";
-        private const string BrandCode = "GPI";
-        private const string CompanyKey = "34B2C4ED616F4E7B965EAE0861A3F92E";
-        private const string GameProviderCurrencyCode = "CNY";
-        private const string PlayerCurrencyCode = "CNY";
-        private readonly Uri _apiUrl = new("https://ex-api-demo-yy.568win.com");
+        var agentId =
+            $"{AgentPrefix}{BrandCode.ToUpper()}{PlayerCurrencyCode.Replace("_", string.Empty).ToUpper()}";
 
-        [Test]
-        public async Task CreateAgentAsync()
+        var request = new SBOCreateAgentRequest
         {
-            var agentId =
-                $"{AgentPrefix}{BrandCode.ToUpper()}{PlayerCurrencyCode.Replace("_", string.Empty).ToUpper()}";
+            CompanyKey = CompanyKey,
+            AgentId = agentId,
+            CurrencyCode = GameProviderCurrencyCode
+        };
 
-            var request = new SBOCreateAgentRequest
-            {
-                CompanyKey = CompanyKey,
-                AgentId = agentId,
-                CurrencyCode = GameProviderCurrencyCode
-            };
+        var client = Substitute.For<ISBOApiClient>();
 
-            var client = Substitute.For<ISBOApiClient>();
+        _ = await client.CreateAgentAsync(_apiUrl, request).ConfigureAwait(false);
+    }
 
-            _ = await client.CreateAgentAsync(_apiUrl, request).ConfigureAwait(false);
-        }
+    [Test]
+    public async Task CreatePlayerAsync()
+    {
+        var playerCode = "4udwxysersic";
 
-        [Test]
-        public async Task CreatePlayerAsync()
+        var agentId =
+            $"{AgentPrefix}{BrandCode.ToUpper()}{PlayerCurrencyCode.Replace("_", string.Empty).ToUpper()}";
+
+        var request = new SBOCreatePlayerRequest
         {
-            var playerCode = "4udwxysersic";
+            CompanyKey = CompanyKey,
+            PlayerCode = playerCode,
+            AgentId = agentId
+        };
 
-            var agentId =
-                $"{AgentPrefix}{BrandCode.ToUpper()}{PlayerCurrencyCode.Replace("_", string.Empty).ToUpper()}";
+        var client = Substitute.For<ISBOApiClient>();
 
-            var request = new SBOCreatePlayerRequest
-            {
-                CompanyKey = CompanyKey,
-                PlayerCode = playerCode,
-                AgentId = agentId
-            };
+        _ = await client.CreatePlayerAsync(_apiUrl, request).ConfigureAwait(false);
+    }
 
-            var client = Substitute.For<ISBOApiClient>();
+    [Test]
+    public async Task GetGameUrlAsync()
+    {
+        var playerCode = "4ucmqplxb029";
 
-            _ = await client.CreatePlayerAsync(_apiUrl, request).ConfigureAwait(false);
-        }
-
-        [Test]
-        public async Task GetGameUrlAsync()
+        var request = new SBOLoginRequest
         {
-            var playerCode = "4ucmqplxb029";
+            CompanyKey = CompanyKey,
+            PlayerCode = playerCode,
+            Portfolio = "SportsBook"
+        };
 
-            var request = new SBOLoginRequest
-            {
-                CompanyKey = CompanyKey,
-                PlayerCode = playerCode,
-                Portfolio = "SportsBook"
-            };
+        var client = Substitute.For<ISBOApiClient>();
 
-            var client = Substitute.For<ISBOApiClient>();
+        _ = await client.LoginAsync(_apiUrl, request).ConfigureAwait(false);
+    }
 
-            _ = await client.LoginAsync(_apiUrl, request).ConfigureAwait(false);
-        }
-
-        [Test]
-        public async Task GetSportsBookRoundHistoryAsync()
+    [Test]
+    public async Task GetSportsBookRoundHistoryAsync()
+    {
+        var request = new SBOGetRoundHistoryRequest
         {
-            var request = new SBOGetRoundHistoryRequest
-            {
-                CompanyKey = CompanyKey,
-                Portfolio = "SportsBook",
-                ExternalRoundId = "4040907",
-                Language = "en_US"
-            };
+            CompanyKey = CompanyKey,
+            Portfolio = "SportsBook",
+            ExternalRoundId = "4040907",
+            Language = "en_US"
+        };
 
-            var client = Substitute.For<ISBOApiClient>();
+        var client = Substitute.For<ISBOApiClient>();
 
-            _ = await client.GetRoundHistoryAsync(_apiUrl, request).ConfigureAwait(false);
-        }
+        _ = await client.GetRoundHistoryAsync(_apiUrl, request).ConfigureAwait(false);
+    }
 
-        [Test]
-        public async Task GetVirtualSportsRoundHistoryAsync()
+    [Test]
+    public async Task GetVirtualSportsRoundHistoryAsync()
+    {
+        var request = new SBOGetRoundHistoryRequest
         {
-            var request = new SBOGetRoundHistoryRequest
-            {
-                CompanyKey = CompanyKey,
-                Portfolio = "VirtualSports",
-                ExternalRoundId = "B2677480",
-                Language = "en_US"
-            };
+            CompanyKey = CompanyKey,
+            Portfolio = "VirtualSports",
+            ExternalRoundId = "B2677480",
+            Language = "en_US"
+        };
 
-            var client = Substitute.For<ISBOApiClient>();
+        var client = Substitute.For<ISBOApiClient>();
 
-            _ = await client.GetRoundHistoryAsync(_apiUrl, request).ConfigureAwait(false);
-        }
+        _ = await client.GetRoundHistoryAsync(_apiUrl, request).ConfigureAwait(false);
+    }
 
-        [Test]
-        public async Task KickAsync()
+    [Test]
+    public async Task KickAsync()
+    {
+        var playerCode = "4ucmqplxb029";
+
+        var request = new SBOLogoutRequest
         {
-            var playerCode = "4ucmqplxb029";
+            CompanyKey = CompanyKey,
+            PlayerCode = playerCode
+        };
 
-            var request = new SBOLogoutRequest
-            {
-                CompanyKey = CompanyKey,
-                PlayerCode = playerCode
-            };
+        var client = Substitute.For<ISBOApiClient>();
 
-            var client = Substitute.For<ISBOApiClient>();
-
-            _ = await client.LogoutAsync(_apiUrl, request).ConfigureAwait(false);
-        }
+        _ = await client.LogoutAsync(_apiUrl, request).ConfigureAwait(false);
     }
 }

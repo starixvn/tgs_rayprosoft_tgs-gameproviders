@@ -15,132 +15,131 @@ using Tgs.GameProviders.Core.SexyGaming.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.Logging;
 
-namespace Tgs.GameProviders.ApiClients.SexyGaming
+namespace Tgs.GameProviders.ApiClients.SexyGaming;
+
+internal class SexyGamingApiClient : ISexyGamingApiClient
 {
-    internal class SexyGamingApiClient : ISexyGamingApiClient
+    private readonly HttpClient _client;
+    private readonly ILogger<SexyGamingApiClient> _logger;
+    private readonly ITgsLog _tgsLog;
+
+    public SexyGamingApiClient(
+        HttpClient client,
+        ILogger<SexyGamingApiClient> logger,
+        ITgsLog tgsLog
+        )
     {
-        private readonly HttpClient _client;
-        private readonly ILogger<SexyGamingApiClient> _logger;
-        private readonly ITgsLog _tgsLog;
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
+    }
 
-        public SexyGamingApiClient(
-            HttpClient client,
-            ILogger<SexyGamingApiClient> logger,
-            ITgsLog tgsLog
-            )
-        {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
-        }
+    public ValueTask<SexyGamingCreateMemberResponse> CreatePlayerAsync(Uri apiUrl, SexyGamingCreateMemberRequest request)
+        => PostAsync<SexyGamingCreateMemberRequest, SexyGamingCreateMemberResponse>(apiUrl, "/wallet/createMember", request, $"CreatePlayerAsync");
 
-        public ValueTask<SexyGamingCreateMemberResponse> CreatePlayerAsync(Uri apiUrl, SexyGamingCreateMemberRequest request)
-            => PostAsync<SexyGamingCreateMemberRequest, SexyGamingCreateMemberResponse>(apiUrl, "/wallet/createMember", request, $"CreatePlayerAsync");
+    public async ValueTask<SexyGamingGameUrlResponse> GetGamingGameUrlAsync(Uri apiUrl, SexyGamingGameUrlRequest request)
+    {
+        var tryCount = 3;
+        var seconds = 1;
 
-        public async ValueTask<SexyGamingGameUrlResponse> GetGamingGameUrlAsync(Uri apiUrl, SexyGamingGameUrlRequest request)
-        {
-            var tryCount = 3;
-            var seconds = 1;
-
-            var retryPolicy = Policy.HandleResult<SexyGamingGameUrlResponse>(r
-                 => r.Status == ((int)SexyGamingGameApiError.UnableToProceedPleaseTryAgainLater).ToString("d4"))
-             .WaitAndRetryAsync(tryCount,
-                 retryAttempt => TimeSpan.FromSeconds(seconds),
-                 (response, retryTime, context) =>
+        var retryPolicy = Policy.HandleResult<SexyGamingGameUrlResponse>(r
+             => r.Status == ((int)SexyGamingGameApiError.UnableToProceedPleaseTryAgainLater).ToString("d4"))
+         .WaitAndRetryAsync(tryCount,
+             retryAttempt => TimeSpan.FromSeconds(seconds),
+             (response, retryTime, context) =>
+             {
+                 var data = new
                  {
-                     var data = new
-                     {
-                         GameProviderCode = GameProviderType.SexyGaming,
-                         Request = request,
-                         Response = response,
-                         Delay = retryTime,
-                         CreationTime = DateTimeOffset.UtcNow
-                     };
-                     _logger.LogWarning(System.Text.Json.JsonSerializer.Serialize(data));
-                 });
+                     GameProviderCode = GameProviderType.SexyGaming,
+                     Request = request,
+                     Response = response,
+                     Delay = retryTime,
+                     CreationTime = DateTimeOffset.UtcNow
+                 };
+                 _logger.LogWarning(System.Text.Json.JsonSerializer.Serialize(data));
+             });
 
-            return await retryPolicy.ExecuteAsync(async ()
-                => await PostAsync<SexyGamingGameUrlRequest, SexyGamingGameUrlResponse>(apiUrl, "/wallet/login", request, "GetGamingGameUrlAsync"));
-        }
+        return await retryPolicy.ExecuteAsync(async ()
+            => await PostAsync<SexyGamingGameUrlRequest, SexyGamingGameUrlResponse>(apiUrl, "/wallet/login", request, "GetGamingGameUrlAsync"));
+    }
 
-        public async ValueTask<SexyGamingGameUrlResponse> GetGamingLoginGameAsync(Uri apiUrl, SexyGamingLoginGameRequest request)
-        {
-            var tryCount = 3;
-            var seconds = 1;
+    public async ValueTask<SexyGamingGameUrlResponse> GetGamingLoginGameAsync(Uri apiUrl, SexyGamingLoginGameRequest request)
+    {
+        var tryCount = 3;
+        var seconds = 1;
 
-            var retryPolicy = Policy.HandleResult<SexyGamingGameUrlResponse>(r
-                 => r.Status == ((int)SexyGamingGameApiError.UnableToProceedPleaseTryAgainLater).ToString("d4"))
-             .WaitAndRetryAsync(tryCount,
-                 retryAttempt => TimeSpan.FromSeconds(seconds),
-                 (response, retryTime, context) =>
+        var retryPolicy = Policy.HandleResult<SexyGamingGameUrlResponse>(r
+             => r.Status == ((int)SexyGamingGameApiError.UnableToProceedPleaseTryAgainLater).ToString("d4"))
+         .WaitAndRetryAsync(tryCount,
+             retryAttempt => TimeSpan.FromSeconds(seconds),
+             (response, retryTime, context) =>
+             {
+                 var data = new
                  {
-                     var data = new
-                     {
-                         GameProviderCode = GameProviderType.SexyGaming,
-                         Request = request,
-                         Response = response,
-                         Delay = retryTime,
-                         CreationTime = DateTimeOffset.UtcNow
-                     };
-                     _logger.LogWarning(System.Text.Json.JsonSerializer.Serialize(data));
-                 });
+                     GameProviderCode = GameProviderType.SexyGaming,
+                     Request = request,
+                     Response = response,
+                     Delay = retryTime,
+                     CreationTime = DateTimeOffset.UtcNow
+                 };
+                 _logger.LogWarning(System.Text.Json.JsonSerializer.Serialize(data));
+             });
 
-            return await retryPolicy.ExecuteAsync(async ()
-                => await PostAsync<SexyGamingLoginGameRequest, SexyGamingGameUrlResponse>(apiUrl, "/wallet/doLoginAndLaunchGame", request, "GetGamingLoginGameAsync"));
-        }
+        return await retryPolicy.ExecuteAsync(async ()
+            => await PostAsync<SexyGamingLoginGameRequest, SexyGamingGameUrlResponse>(apiUrl, "/wallet/doLoginAndLaunchGame", request, "GetGamingLoginGameAsync"));
+    }
 
-        public ValueTask<SexyGamingLogoutResponse> LogoutAsync(Uri apiUrl, SexyGamingLogoutRequest request)
-            => PostAsync<SexyGamingLogoutRequest, SexyGamingLogoutResponse>(apiUrl, "/wallet/logout", request, "LogOut");
+    public ValueTask<SexyGamingLogoutResponse> LogoutAsync(Uri apiUrl, SexyGamingLogoutRequest request)
+        => PostAsync<SexyGamingLogoutRequest, SexyGamingLogoutResponse>(apiUrl, "/wallet/logout", request, "LogOut");
 
-        private async ValueTask<TResult> PostAsync<TSource, TResult>(Uri apiUrl, string path, TSource source, string logPrefix)
+    private async ValueTask<TResult> PostAsync<TSource, TResult>(Uri apiUrl, string path, TSource source, string logPrefix)
+    {
+        logPrefix = $"{nameof(SexyGamingApiClient).ToLower()}.{logPrefix}";
+
+        var sw = Stopwatch.StartNew();
+
+        var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(System.Text.Json.JsonSerializer.Serialize(source));
+
+        var url = new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{path}");
+
+        HttpContent content = new FormUrlEncodedContent(data);
+        content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded")
         {
-            logPrefix = $"{nameof(SexyGamingApiClient).ToLower()}.{logPrefix}";
+            CharSet = "UTF-8"
+        };
 
-            var sw = Stopwatch.StartNew();
+        var httpResponseMessage = await _client.PostAsync(url, content);
 
-            var data = JsonConvert.DeserializeObject<Dictionary<string, string>>(System.Text.Json.JsonSerializer.Serialize(source));
+        sw.Stop();
 
-            var url = new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{path}");
-
-            HttpContent content = new FormUrlEncodedContent(data);
-            content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded")
-            {
-                CharSet = "UTF-8"
-            };
-
-            var httpResponseMessage = await _client.PostAsync(url, content);
-
-            sw.Stop();
-
-            var responseMessage = default(string);
-            using (var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result))
-            {
-                responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
-            }
-
-            var apiLogEvent = new ApiLogEvent
-            {
-                Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
-                Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
-                Prefix = logPrefix,
-                ServerName = Environment.MachineName.NoLongerThan(128),
-                RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
-                RequestContent = (await content.ReadAsStringAsync().ConfigureAwait(false)).NoLongerThan(4096),
-                ResponseHeaders = httpResponseMessage.Headers.ToString(),
-                ResponseContent = responseMessage.NoLongerThan(4096),
-                ResponseCode = (short)httpResponseMessage.StatusCode,
-                ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                RecordedOn = DateTimeOffset.UtcNow
-            };
-            _tgsLog.LogApi(apiLogEvent);
-            _logger.LogInformation("{System.Text.Json.JsonSerializer.Serialize(apiLogEvent)}", System.Text.Json.JsonSerializer.Serialize(apiLogEvent));
-
-            if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
-            {
-                return System.Text.Json.JsonSerializer.Deserialize<TResult>(responseMessage);
-            }
-
-            return default;
+        var responseMessage = default(string);
+        using (var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result))
+        {
+            responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
         }
+
+        var apiLogEvent = new ApiLogEvent
+        {
+            Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
+            Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
+            Prefix = logPrefix,
+            ServerName = Environment.MachineName.NoLongerThan(128),
+            RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
+            RequestContent = (await content.ReadAsStringAsync().ConfigureAwait(false)).NoLongerThan(4096),
+            ResponseHeaders = httpResponseMessage.Headers.ToString(),
+            ResponseContent = responseMessage.NoLongerThan(4096),
+            ResponseCode = (short)httpResponseMessage.StatusCode,
+            ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+            RecordedOn = DateTimeOffset.UtcNow
+        };
+        _tgsLog.LogApi(apiLogEvent);
+        _logger.LogInformation("{System.Text.Json.JsonSerializer.Serialize(apiLogEvent)}", System.Text.Json.JsonSerializer.Serialize(apiLogEvent));
+
+        if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
+        {
+            return System.Text.Json.JsonSerializer.Deserialize<TResult>(responseMessage);
+        }
+
+        return default;
     }
 }

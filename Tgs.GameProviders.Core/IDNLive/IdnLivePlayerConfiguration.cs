@@ -1,7 +1,6 @@
-﻿namespace Tgs.GameProviders.Core.IDNLive
+﻿namespace Tgs.GameProviders.Core.IDNLive;
+
+public record IdnLivePlayerconfiguration
 {
-    public record IdnLivePlayerconfiguration
-    {
-        public string Table { get; set; } = "B";
-    }
+    public string Table { get; set; } = "B";
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameInterface.WMCasinoService.Client;
@@ -10,7 +11,6 @@ using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
-using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Tgs.GameProviders.Core.UnitTest.WMCasinoTransfer;
 

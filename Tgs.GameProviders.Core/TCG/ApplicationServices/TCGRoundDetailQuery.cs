@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.TCG.ApplicationServices
-{
-    public record TCGRoundDetailQuery : RoundDetailQuery;
-}
+﻿namespace Tgs.GameProviders.Core.TCG.ApplicationServices;
+
+public record TCGRoundDetailQuery : RoundDetailQuery;

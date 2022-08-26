@@ -1,8 +1,7 @@
-﻿namespace Tgs.GameProviders.ApiClients.WGHorse.Models
+﻿namespace Tgs.GameProviders.ApiClients.WGHorse.Models;
+
+public record WGHorseLoginRequest
 {
-    public record WGHorseLoginRequest
-    {
-        public string Token { get; init; } = default!;
-        public string Lang { get; init; } = default!;
-    }
+    public string Token { get; init; } = default!;
+    public string Lang { get; init; } = default!;
 }

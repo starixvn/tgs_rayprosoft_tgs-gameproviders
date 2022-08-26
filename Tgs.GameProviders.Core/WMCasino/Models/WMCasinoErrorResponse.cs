@@ -2,14 +2,13 @@
 
 using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.WMCasino.Models
-{
-    public record WMCasinoErrorResponse
-    {
-        [JsonPropertyName("errorCode")]
-        public int ErrorCode { get; init; }
+namespace Tgs.GameProviders.Core.WMCasino.Models;
 
-        [JsonPropertyName("errorMessage")]
-        public string ErrorMessage { get; init; } = default!;
-    }
+public record WMCasinoErrorResponse
+{
+    [JsonPropertyName("errorCode")]
+    public int ErrorCode { get; init; }
+
+    [JsonPropertyName("errorMessage")]
+    public string ErrorMessage { get; init; } = default!;
 }

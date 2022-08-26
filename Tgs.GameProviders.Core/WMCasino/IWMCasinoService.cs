@@ -2,14 +2,13 @@
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
 
-namespace Tgs.GameProviders.Core.WMCasino
+namespace Tgs.GameProviders.Core.WMCasino;
+
+public interface IWMCasinoService
 {
-    public interface IWMCasinoService
-    {
-        ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
+    ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 
-        ValueTask<PlayerModel> GetPlayerAsync(string playerCode);
+    ValueTask<PlayerModel> GetPlayerAsync(string playerCode);
 
-        ValueTask<WMCasinoConfiguration> GetSettingConfigurationAsync();
-    }
+    ValueTask<WMCasinoConfiguration> GetSettingConfigurationAsync();
 }

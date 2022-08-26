@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.SBO.ApplicationServices
-{
-    public record SBOGameUrlQuery : GameUrlQuery;
-}
+﻿namespace Tgs.GameProviders.Core.SBO.ApplicationServices;
+
+public record SBOGameUrlQuery : GameUrlQuery;

@@ -2,52 +2,51 @@
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 
-namespace Tgs.GameProviders
+namespace Tgs.GameProviders;
+
+internal class RedisConnectionFactory : IDisposable
 {
-    internal class RedisConnectionFactory : IDisposable
+    private readonly ConnectionMultiplexer _connectionMultiplexer;
+    private bool _disposedValue;
+
+    public IConnectionMultiplexer Connection { get; }
+
+    public IDatabase Database { get; }
+
+    public RedisConnectionFactory(
+        IOptions<RedisOptions> optionsAccessor)
     {
-        private readonly ConnectionMultiplexer _connectionMultiplexer;
-        private bool _disposedValue;
+        if (optionsAccessor is null)
+            throw new ArgumentNullException(nameof(optionsAccessor));
 
-        public IConnectionMultiplexer Connection { get; }
+        var options = optionsAccessor.Value;
 
-        public IDatabase Database { get; }
+        var connectionOptions = ConfigurationOptions.Parse(options.ConnectionString);
 
-        public RedisConnectionFactory(
-            IOptions<RedisOptions> optionsAccessor)
+        _connectionMultiplexer = ConnectionMultiplexer.Connect(connectionOptions);
+        Connection = _connectionMultiplexer;
+        Database = _connectionMultiplexer.GetDatabase();
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
         {
-            if (optionsAccessor is null)
-                throw new ArgumentNullException(nameof(optionsAccessor));
-
-            var options = optionsAccessor.Value;
-
-            var connectionOptions = ConfigurationOptions.Parse(options.ConnectionString);
-
-            _connectionMultiplexer = ConnectionMultiplexer.Connect(connectionOptions);
-            Connection = _connectionMultiplexer;
-            Database = _connectionMultiplexer.GetDatabase();
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    _connectionMultiplexer?.Dispose();
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                _disposedValue = true;
+                _connectionMultiplexer?.Dispose();
             }
+
+            // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+            // TODO: set large fields to null
+            _disposedValue = true;
         }
     }
 }

@@ -4,42 +4,41 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Core.LY.ApplicationServices
+namespace Tgs.GameProviders.Core.LY.ApplicationServices;
+
+public class LYPlayerFundCheckingGetService : IGetService<LYPlayerFundCheckingQuery, PlayerFundCheckingResult>
 {
-    public class LYPlayerFundCheckingGetService : IGetService<LYPlayerFundCheckingQuery, PlayerFundCheckingResult>
+    private readonly ILYApiClient _client;
+    private readonly ILogger<LYPlayerFundCheckingGetService> _logger;
+    private readonly ILYService _service;
+
+    public LYPlayerFundCheckingGetService(
+        ILogger<LYPlayerFundCheckingGetService> logger,
+        ILYApiClient client,
+        ILYService service)
     {
-        private readonly ILYApiClient _client;
-        private readonly ILogger<LYPlayerFundCheckingGetService> _logger;
-        private readonly ILYService _service;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+        _service = service ?? throw new ArgumentNullException(nameof(service));
+    }
 
-        public LYPlayerFundCheckingGetService(
-            ILogger<LYPlayerFundCheckingGetService> logger,
-            ILYApiClient client,
-            ILYService service)
+    public async ValueTask<PlayerFundCheckingResult> GetAsync(LYPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
+    {
+        var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
+
+        if (brandMerchant == null)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
+            return null;
         }
+        var agentId = await _service.GetAgentIdAsync(command.BrandCode, command.CurrencyCode).ConfigureAwait(false);
 
-        public async ValueTask<PlayerFundCheckingResult> GetAsync(LYPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
-        {
-            var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
+        var response = await _client.FundCheckingAsync(
+            brandMerchant.ApiUrl,
+            brandMerchant.Deskey,
+            brandMerchant.Md5key,
+            agentId,
+            command.OrderId).ConfigureAwait(false);
 
-            if (brandMerchant == null)
-            {
-                return null;
-            }
-            var agentId = await _service.GetAgentIdAsync(command.BrandCode, command.CurrencyCode).ConfigureAwait(false);
-
-            var response = await _client.FundCheckingAsync(
-                brandMerchant.ApiUrl,
-                brandMerchant.Deskey,
-                brandMerchant.Md5key,
-                agentId,
-                command.OrderId).ConfigureAwait(false);
-
-            return new() { OrderStatus = response };
-        }
+        return new() { OrderStatus = response };
     }
 }

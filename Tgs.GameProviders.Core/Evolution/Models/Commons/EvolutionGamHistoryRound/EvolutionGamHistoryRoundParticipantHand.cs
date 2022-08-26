@@ -1,16 +1,15 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.Evolution.Models.Commons.EvolutionGamHistoryRound
+namespace Tgs.GameProviders.Core.Evolution.Models.Commons.EvolutionGamHistoryRound;
+
+public record EvolutionGamHistoryRoundParticipantHand
 {
-    public record EvolutionGamHistoryRoundParticipantHand
-    {
-        [JsonPropertyName("cards")]
-        public string[] Cards { get; set; }
-        [JsonPropertyName("decisions")]
-        public EvolutionGamHistoryRoundParticipantHandDecision[] Decisions { get; set; }
-        [JsonPropertyName("outcome")]
-        public string Outcome { get; set; }
-        [JsonPropertyName("score")]
-        public int Score { get; set; }
-    }
+    [JsonPropertyName("cards")]
+    public string[] Cards { get; set; }
+    [JsonPropertyName("decisions")]
+    public EvolutionGamHistoryRoundParticipantHandDecision[] Decisions { get; set; }
+    [JsonPropertyName("outcome")]
+    public string Outcome { get; set; }
+    [JsonPropertyName("score")]
+    public int Score { get; set; }
 }

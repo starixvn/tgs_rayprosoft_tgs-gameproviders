@@ -4,43 +4,42 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Core.Avia.ApplicationServices
+namespace Tgs.GameProviders.Core.Avia.ApplicationServices;
+
+public class AviaPlayerFundOutGetService : IGetService<AviaPlayerFundOutQuery, PlayerFundResult>
 {
-    public class AviaPlayerFundOutGetService : IGetService<AviaPlayerFundOutQuery, PlayerFundResult>
+    private readonly IAviaApiClient _client;
+    private readonly ILogger<AviaPlayerFundOutGetService> _logger;
+    private readonly IAviaService _service;
+
+    public AviaPlayerFundOutGetService(
+        ILogger<AviaPlayerFundOutGetService> logger,
+        IAviaApiClient client,
+        IAviaService service)
     {
-        private readonly IAviaApiClient _client;
-        private readonly ILogger<AviaPlayerFundOutGetService> _logger;
-        private readonly IAviaService _service;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+        _service = service ?? throw new ArgumentNullException(nameof(service));
+    }
 
-        public AviaPlayerFundOutGetService(
-            ILogger<AviaPlayerFundOutGetService> logger,
-            IAviaApiClient client,
-            IAviaService service)
+    public async ValueTask<PlayerFundResult> GetAsync(AviaPlayerFundOutQuery command, CancellationToken cancellationToken = default)
+    {
+        var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode);
+
+        if (brandMerchant == null)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
+            throw new ArgumentNullException(nameof(brandMerchant));
         }
 
-        public async ValueTask<PlayerFundResult> GetAsync(AviaPlayerFundOutQuery command, CancellationToken cancellationToken = default)
-        {
-            var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode);
+        var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(command.CurrencyCode).ConfigureAwait(false);
+        var (Success, orderId) = await _client.TransferOutAsync(
+            brandMerchant.ApiUrl,
+            brandMerchant.Authorization,
+            command.PlayerCode,
+            gameProviderCurrencyCode,
+            command.Amount
+            ).ConfigureAwait(false);
 
-            if (brandMerchant == null)
-            {
-                throw new ArgumentNullException(nameof(brandMerchant));
-            }
-
-            var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(command.CurrencyCode).ConfigureAwait(false);
-            var (Success, orderId) = await _client.TransferOutAsync(
-                brandMerchant.ApiUrl,
-                brandMerchant.Authorization,
-                command.PlayerCode,
-                gameProviderCurrencyCode,
-                command.Amount
-                ).ConfigureAwait(false);
-
-            return (Success) ? new() { OrderId = orderId } : null;
-        }
+        return (Success) ? new() { OrderId = orderId } : null;
     }
 }

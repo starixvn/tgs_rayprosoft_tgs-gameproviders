@@ -9,74 +9,73 @@ using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Core.Habanero.ApplicationServices
+namespace Tgs.GameProviders.Core.Habanero.ApplicationServices;
+
+internal class HabaneroRoundDetailGetService : IGetService<HabaneroRoundDetailQuery, RoundDetailResult>
 {
-    internal class HabaneroRoundDetailGetService : IGetService<HabaneroRoundDetailQuery, RoundDetailResult>
+    private readonly ILogger<HabaneroRoundDetailGetService> _logger;
+    private readonly IRoundService _roundService;
+    private readonly IHabaneroService _service;
+
+    public HabaneroRoundDetailGetService(
+        ILogger<HabaneroRoundDetailGetService> logger,
+        IHabaneroService service,
+        IRoundService roundService)
     {
-        private readonly ILogger<HabaneroRoundDetailGetService> _logger;
-        private readonly IRoundService _roundService;
-        private readonly IHabaneroService _service;
-
-        public HabaneroRoundDetailGetService(
-            ILogger<HabaneroRoundDetailGetService> logger,
-            IHabaneroService service,
-            IRoundService roundService)
-        {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
-            _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
-        }
-
-        public async ValueTask<RoundDetailResult> GetAsync(
-            HabaneroRoundDetailQuery query,
-            CancellationToken cancellationToken = default)
-        {
-            var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-            if (roundInfo == null)
-            {
-                throw new Exception($"This game round number could not be found.{query.RoundId}");
-            }
-
-            var gameProviderModel = await _service.GetGameProviderAsync(roundInfo.GameProviderId).ConfigureAwait(false);
-            if (gameProviderModel == null)
-            {
-                throw new Exception($"This game manufacturer does not exist.{roundInfo.GameProviderId}");
-            }
-
-            var configuration = await _service
-                .GetSettingConfigurationAsync()
-                .ConfigureAwait(false);
-
-            var gameProviderCulture = await _service
-                .GetGameProviderLanguageCodeAsync(gameProviderModel.GameProviderId, query.Language)
-                .ConfigureAwait(false);
-
-            var valueToHash =
-                $"{roundInfo.ExternalRoundId.ToLower()}{configuration.BrandId.ToLower()}{configuration.ApiKey.ToLower()}";
-
-            var hashKey = Sha256Hash(valueToHash);
-
-            var url = $"{configuration.BetHistoryUrl.AbsoluteUri}games/history"
-                .AppendQueryString($"brandId={configuration.BrandId}")
-                .AppendQueryString($"friendlyid={roundInfo.ExternalRoundId}")
-                .AppendQueryString("viewtype=game")
-                .AppendQueryString($"local={gameProviderCulture}")
-                .AppendQueryString($"hash={hashKey}");
-
-            return new RoundDetailResult
-            {
-                Data = new RoundDetailDataBase[]
-                {
-                    new RoundDetailDataUrl
-                    {
-                        Url = url
-                    }
-                }
-            };
-        }
-
-        private string Sha256Hash(string value)
-            => new BigInteger(SHA256.HashData(Encoding.UTF8.GetBytes(value)), isBigEndian: true)
-                .ToString("x");
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _service = service ?? throw new ArgumentNullException(nameof(service));
+        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }
+
+    public async ValueTask<RoundDetailResult> GetAsync(
+        HabaneroRoundDetailQuery query,
+        CancellationToken cancellationToken = default)
+    {
+        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+        if (roundInfo == null)
+        {
+            throw new Exception($"This game round number could not be found.{query.RoundId}");
+        }
+
+        var gameProviderModel = await _service.GetGameProviderAsync(roundInfo.GameProviderId).ConfigureAwait(false);
+        if (gameProviderModel == null)
+        {
+            throw new Exception($"This game manufacturer does not exist.{roundInfo.GameProviderId}");
+        }
+
+        var configuration = await _service
+            .GetSettingConfigurationAsync()
+            .ConfigureAwait(false);
+
+        var gameProviderCulture = await _service
+            .GetGameProviderLanguageCodeAsync(gameProviderModel.GameProviderId, query.Language)
+            .ConfigureAwait(false);
+
+        var valueToHash =
+            $"{roundInfo.ExternalRoundId.ToLower()}{configuration.BrandId.ToLower()}{configuration.ApiKey.ToLower()}";
+
+        var hashKey = Sha256Hash(valueToHash);
+
+        var url = $"{configuration.BetHistoryUrl.AbsoluteUri}games/history"
+            .AppendQueryString($"brandId={configuration.BrandId}")
+            .AppendQueryString($"friendlyid={roundInfo.ExternalRoundId}")
+            .AppendQueryString("viewtype=game")
+            .AppendQueryString($"local={gameProviderCulture}")
+            .AppendQueryString($"hash={hashKey}");
+
+        return new RoundDetailResult
+        {
+            Data = new RoundDetailDataBase[]
+            {
+                new RoundDetailDataUrl
+                {
+                    Url = url
+                }
+            }
+        };
+    }
+
+    private string Sha256Hash(string value)
+        => new BigInteger(SHA256.HashData(Encoding.UTF8.GetBytes(value)), isBigEndian: true)
+            .ToString("x");
 }

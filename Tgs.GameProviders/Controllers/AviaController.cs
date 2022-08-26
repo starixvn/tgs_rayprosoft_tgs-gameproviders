@@ -8,229 +8,228 @@ using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Controllers
+namespace Tgs.GameProviders.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class AviaController : ControllerBase,
+    IGameRecordListHandler<AviaGameRecordListQuery, AviaGameRecordListQuery>,
+    IGameUrlHandler<AviaGameUrlQuery>,
+    IKickPlayerHandler<AviaKickPlayerCommand>,
+    IPlayerBalanceHandler<AviaPlayerBalanceQuery>,
+    IPlayerFundCheckingHandler<AviaPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
+    IPlayerFundHandler<AviaPlayerFundInQuery, AviaPlayerFundOutQuery>,
+    IRoundDetailHandler<AviaRoundDetailQuery>
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AviaController : ControllerBase,
-        IGameRecordListHandler<AviaGameRecordListQuery, AviaGameRecordListQuery>,
-        IGameUrlHandler<AviaGameUrlQuery>,
-        IKickPlayerHandler<AviaKickPlayerCommand>,
-        IPlayerBalanceHandler<AviaPlayerBalanceQuery>,
-        IPlayerFundCheckingHandler<AviaPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-        IPlayerFundHandler<AviaPlayerFundInQuery, AviaPlayerFundOutQuery>,
-        IRoundDetailHandler<AviaRoundDetailQuery>
+    private readonly IMapper _mapper;
+
+    public AviaController(
+        IMapper mapper)
     {
-        private readonly IMapper _mapper;
-
-        public AviaController(
-            IMapper mapper)
-        {
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        }
-
-        /// <summary>
-        /// Games the record list asynchronous.
-        /// </summary>
-        /// <param name="getService">The get service.</param>
-        /// <param name="request">The request.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <b>Example</b><br />
-        ///
-        ///     Post
-        ///         {
-        ///             "brandCode": "Default",
-        ///             "startTime": "2021-12-01T00:00:00+00:00",
-        ///             "endTime": "2021-12-13T00:00:00+00:00",
-        ///             "page": 1,
-        ///             "rows": 20
-        ///         }
-        /// </remarks>
-        [HttpPost("GameRecordList")]
-        public async ValueTask<GameRecordListResult?> GameRecordListAsync(
-            [FromServices] IGetService<AviaGameRecordListQuery, GameRecordListResult> getService,
-            AviaGameRecordListQuery request)
-        {
-            var result = await getService.GetAsync(request).ConfigureAwait(false);
-            return result ?? null;
-        }
-
-        /// <summary>
-        /// Games the URL asynchronous.
-        /// </summary>
-        /// <param name="getService">The get service.</param>
-        /// <param name="request">The request.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <b>Example</b><br />
-        ///
-        ///     Post
-        ///         {
-        ///             "gameType": 4,
-        ///             "gameId": 2300001,
-        ///             "brandCode": "GPI",
-        ///             "playerCode": "4ucmqplxb029",
-        ///             "currencyCode": "CNY",
-        ///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        ///             "platformType": 0,
-        ///             "language": "zh-CN",
-        ///             "ipAddress": "127.0.0.1",
-        ///             "backUrl": "https://dev-t1.rpgp.cc/"
-        ///         }
-        /// </remarks>
-        [HttpPost("GameUrl")]
-        public async ValueTask<GameUrlResponse?> GameUrlAsync(
-            [FromServices] IGetService<AviaGameUrlQuery, GameUrlResult> getService,
-            GameUrlRequest request)
-        {
-            var result = await getService.GetAsync(_mapper.Map<AviaGameUrlQuery>(request)).ConfigureAwait(false);
-            return result == null ? null : _mapper.Map<GameUrlResponse>(result);
-        }
-
-        /// <summary>
-        /// Kicks the player asynchronous.
-        /// </summary>
-        /// <param name="commandService">The command service.</param>
-        /// <param name="playerCode">The player code.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <b>Example</b><br />
-        ///
-        ///     Delete kickplayer/4ucmqplxb029
-        /// </remarks>
-        [HttpDelete("kickplayer/{playerCode}")]
-        public ValueTask KickPlayerAsync(
-            [FromServices] ICommandService<AviaKickPlayerCommand> commandService,
-            string playerCode)
-            => commandService.ExecuteAsync(new()
-            {
-                PlayerCode = playerCode
-            });
-
-        /// <summary>
-        /// Players the balance asynchronous.
-        /// </summary>
-        /// <param name="getService">The get service.</param>
-        /// <param name="playerCode">The player code.</param>
-        /// <returns></returns>
-        /// <remarks>
-        ///   <b>Example</b><br />
-        ///
-        ///   Get balance/4ucmqplxb029
-        /// </remarks>
-        [HttpGet("Balance/{playerCode}")]
-        public ValueTask<decimal?> PlayerBalanceAsync(
-             [FromServices] IGetService<AviaPlayerBalanceQuery, decimal?> getService,
-             string playerCode)
-            => getService.GetAsync(new()
-            {
-                PlayerCode = playerCode
-            });
-
-        /// <summary>
-        /// Players the fund checking asynchronous.
-        /// </summary>
-        /// <param name="getService">The get service.</param>
-        /// <param name="request">The request.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <b>Example</b><br />
-        ///
-        ///     Post
-        ///         {
-        ///             "brandCode": "GPI",
-        ///             "playerCode": "4ucmqplxb029",
-        ///             "currencyCode": "CNY",
-        ///             "orderId":"72412202110271546265054ucmqplxb029"
-        ///         }
-        /// </remarks>
-        [HttpPost("PlayerFundChecking")]
-        public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-            [FromServices] IGetService<AviaPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
-            PlayerFundCheckingRequest request)
-        {
-            var result = await getService.GetAsync(_mapper.Map<AviaPlayerFundCheckingQuery>(request)).ConfigureAwait(false);
-            return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
-        }
-
-        /// <summary>
-        /// Players the fund in asynchronous.
-        /// </summary>
-        /// <param name="getService">The get service.</param>
-        /// <param name="request">The request.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <b>Example</b><br />
-        ///
-        ///     Post
-        ///         {
-        ///             "brandCode": "GPI",
-        ///             "playerCode": "4ucmqplxb029",
-        ///             "currencyCode": "CNY",
-        ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
-        ///             "amount": 1
-        ///         }
-        /// </remarks>
-        [HttpPost("PlayerFundIn")]
-        public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
-            [FromServices] IGetService<AviaPlayerFundInQuery, PlayerFundResult> getService,
-            PlayerFundRequest request)
-        {
-            var result = await getService.GetAsync(_mapper.Map<AviaPlayerFundInQuery>(request)).ConfigureAwait(false);
-            return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
-        }
-
-        /// <summary>
-        /// Players the fund out asynchronous.
-        /// </summary>
-        /// <param name="getService">The get service.</param>
-        /// <param name="request">The request.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <b>Example</b><br />
-        ///
-        ///     Post
-        ///         {
-        ///             "brandCode": "GPI",
-        ///             "playerCode": "4ucmqplxb029",
-        ///             "currencyCode": "CNY",
-        ///             "orderId":"D07B3FAD0BE5F0B4EE0C2A401FC5C41075ED",
-        ///             "amount": 1
-        ///         }
-        /// </remarks>
-        [HttpPost("PlayerFundOut")]
-        public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
-            [FromServices] IGetService<AviaPlayerFundOutQuery, PlayerFundResult> getService,
-            PlayerFundRequest request)
-        {
-            var result = await getService.GetAsync(_mapper.Map<AviaPlayerFundOutQuery>(request)).ConfigureAwait(false);
-            return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
-        }
-
-        /// <summary>
-        /// Rounds the detail asynchronous.
-        /// </summary>
-        /// <param name="getService">The get service.</param>
-        /// <param name="roundId">The round identifier.</param>
-        /// <param name="language">The language.</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <b>Example</b><br />
-        ///
-        ///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
-        /// </remarks>
-        [HttpGet("RoundDetail/{roundId}")]
-        public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-            [FromServices] IGetService<AviaRoundDetailQuery, RoundDetailResult?> getService,
-            Guid roundId,
-            [FromQuery] string language)
-            => await getService
-            .GetAsync(new AviaRoundDetailQuery
-            {
-                RoundId = roundId,
-                Language = language
-            })
-            .ConfigureAwait(false);
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
+
+    /// <summary>
+    /// Games the record list asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "Default",
+    ///             "startTime": "2021-12-01T00:00:00+00:00",
+    ///             "endTime": "2021-12-13T00:00:00+00:00",
+    ///             "page": 1,
+    ///             "rows": 20
+    ///         }
+    /// </remarks>
+    [HttpPost("GameRecordList")]
+    public async ValueTask<GameRecordListResult?> GameRecordListAsync(
+        [FromServices] IGetService<AviaGameRecordListQuery, GameRecordListResult> getService,
+        AviaGameRecordListQuery request)
+    {
+        var result = await getService.GetAsync(request).ConfigureAwait(false);
+        return result ?? null;
+    }
+
+    /// <summary>
+    /// Games the URL asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "gameType": 4,
+    ///             "gameId": 2300001,
+    ///             "brandCode": "GPI",
+    ///             "playerCode": "4ucmqplxb029",
+    ///             "currencyCode": "CNY",
+    ///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    ///             "platformType": 0,
+    ///             "language": "zh-CN",
+    ///             "ipAddress": "127.0.0.1",
+    ///             "backUrl": "https://dev-t1.rpgp.cc/"
+    ///         }
+    /// </remarks>
+    [HttpPost("GameUrl")]
+    public async ValueTask<GameUrlResponse?> GameUrlAsync(
+        [FromServices] IGetService<AviaGameUrlQuery, GameUrlResult> getService,
+        GameUrlRequest request)
+    {
+        var result = await getService.GetAsync(_mapper.Map<AviaGameUrlQuery>(request)).ConfigureAwait(false);
+        return result == null ? null : _mapper.Map<GameUrlResponse>(result);
+    }
+
+    /// <summary>
+    /// Kicks the player asynchronous.
+    /// </summary>
+    /// <param name="commandService">The command service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Delete kickplayer/4ucmqplxb029
+    /// </remarks>
+    [HttpDelete("kickplayer/{playerCode}")]
+    public ValueTask KickPlayerAsync(
+        [FromServices] ICommandService<AviaKickPlayerCommand> commandService,
+        string playerCode)
+        => commandService.ExecuteAsync(new()
+        {
+            PlayerCode = playerCode
+        });
+
+    /// <summary>
+    /// Players the balance asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    ///   <b>Example</b><br />
+    ///
+    ///   Get balance/4ucmqplxb029
+    /// </remarks>
+    [HttpGet("Balance/{playerCode}")]
+    public ValueTask<decimal?> PlayerBalanceAsync(
+         [FromServices] IGetService<AviaPlayerBalanceQuery, decimal?> getService,
+         string playerCode)
+        => getService.GetAsync(new()
+        {
+            PlayerCode = playerCode
+        });
+
+    /// <summary>
+    /// Players the fund checking asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "GPI",
+    ///             "playerCode": "4ucmqplxb029",
+    ///             "currencyCode": "CNY",
+    ///             "orderId":"72412202110271546265054ucmqplxb029"
+    ///         }
+    /// </remarks>
+    [HttpPost("PlayerFundChecking")]
+    public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
+        [FromServices] IGetService<AviaPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        PlayerFundCheckingRequest request)
+    {
+        var result = await getService.GetAsync(_mapper.Map<AviaPlayerFundCheckingQuery>(request)).ConfigureAwait(false);
+        return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
+    }
+
+    /// <summary>
+    /// Players the fund in asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "GPI",
+    ///             "playerCode": "4ucmqplxb029",
+    ///             "currencyCode": "CNY",
+    ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
+    ///             "amount": 1
+    ///         }
+    /// </remarks>
+    [HttpPost("PlayerFundIn")]
+    public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
+        [FromServices] IGetService<AviaPlayerFundInQuery, PlayerFundResult> getService,
+        PlayerFundRequest request)
+    {
+        var result = await getService.GetAsync(_mapper.Map<AviaPlayerFundInQuery>(request)).ConfigureAwait(false);
+        return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+    }
+
+    /// <summary>
+    /// Players the fund out asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "GPI",
+    ///             "playerCode": "4ucmqplxb029",
+    ///             "currencyCode": "CNY",
+    ///             "orderId":"D07B3FAD0BE5F0B4EE0C2A401FC5C41075ED",
+    ///             "amount": 1
+    ///         }
+    /// </remarks>
+    [HttpPost("PlayerFundOut")]
+    public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
+        [FromServices] IGetService<AviaPlayerFundOutQuery, PlayerFundResult> getService,
+        PlayerFundRequest request)
+    {
+        var result = await getService.GetAsync(_mapper.Map<AviaPlayerFundOutQuery>(request)).ConfigureAwait(false);
+        return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+    }
+
+    /// <summary>
+    /// Rounds the detail asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="roundId">The round identifier.</param>
+    /// <param name="language">The language.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
+    /// </remarks>
+    [HttpGet("RoundDetail/{roundId}")]
+    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+        [FromServices] IGetService<AviaRoundDetailQuery, RoundDetailResult?> getService,
+        Guid roundId,
+        [FromQuery] string language)
+        => await getService
+        .GetAsync(new AviaRoundDetailQuery
+        {
+            RoundId = roundId,
+            Language = language
+        })
+        .ConfigureAwait(false);
 }

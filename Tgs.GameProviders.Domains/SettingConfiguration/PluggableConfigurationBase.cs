@@ -1,7 +1,6 @@
-﻿namespace Tgs.GameProviders.Domains.SettingConfiguration
+﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
+
+public record PluggableConfigurationBase
 {
-    public record PluggableConfigurationBase
-    {
-        public Uri ServiceEndpointUrl { get; init; } = default!;
-    }
+    public Uri ServiceEndpointUrl { get; init; } = default!;
 }

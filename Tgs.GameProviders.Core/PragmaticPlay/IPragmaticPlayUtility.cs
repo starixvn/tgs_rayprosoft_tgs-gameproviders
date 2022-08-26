@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace Tgs.GameProviders.Core.PragmaticPlay
+namespace Tgs.GameProviders.Core.PragmaticPlay;
+
+public interface IPragmaticPlayUtility
 {
-    public interface IPragmaticPlayUtility
-    {
-        public string Md5Hash(IDictionary<string, string> parameters, string md5Key);
-    }
+    public string Md5Hash(IDictionary<string, string> parameters, string md5Key);
 }

@@ -1,7 +1,6 @@
-﻿namespace Tgs.GameProviders.ViewModels
+﻿namespace Tgs.GameProviders.ViewModels;
+
+public record PlayerBalanceResponse
 {
-    public record PlayerBalanceResponse
-    {
-        public decimal? Balance { get; set; }
-    }
+    public decimal? Balance { get; set; }
 }

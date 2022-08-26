@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.LY.ApplicationServices
-{
-    public record LYKickPlayerCommand : KickPlayerCommand;
-}
+﻿namespace Tgs.GameProviders.Core.LY.ApplicationServices;
+
+public record LYKickPlayerCommand : KickPlayerCommand;

@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.VR.Models
+namespace Tgs.GameProviders.Core.VR.Models;
+
+public record VRGetBalanceRequest
 {
-    public record VRGetBalanceRequest
-    {
-        [JsonPropertyName("playerName")]
-        public string PlayerCode { get; init; }
-    }
+    [JsonPropertyName("playerName")]
+    public string PlayerCode { get; init; }
 }

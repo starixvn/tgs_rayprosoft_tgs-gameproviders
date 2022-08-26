@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.AwcKm.ApplicationServices
-{
-    public record AwcKmPlayerFundCheckingQuery : PlayerFundCheckingQuery;
-}
+﻿namespace Tgs.GameProviders.Core.AwcKm.ApplicationServices;
+
+public record AwcKmPlayerFundCheckingQuery : PlayerFundCheckingQuery;

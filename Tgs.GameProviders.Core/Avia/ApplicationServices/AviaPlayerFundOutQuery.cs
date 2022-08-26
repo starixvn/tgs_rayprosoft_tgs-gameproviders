@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.Avia.ApplicationServices
-{
-    public record AviaPlayerFundOutQuery : PlayerFundQuery;
-}
+﻿namespace Tgs.GameProviders.Core.Avia.ApplicationServices;
+
+public record AviaPlayerFundOutQuery : PlayerFundQuery;

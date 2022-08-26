@@ -1,11 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.EvolutionTransfer;
 
