@@ -1,5 +1,4 @@
 ﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
-
 public record SkywindTransferConfiguration
 {
     public Uri ApiUrl { get; init; } = default!;
