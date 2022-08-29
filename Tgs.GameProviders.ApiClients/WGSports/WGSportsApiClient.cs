@@ -148,7 +148,7 @@ internal class WGSportsApiClient : IWGSportsApiClient
         query["m"] = "api";
         query["c"] = "index";
         query["a"] = "Login";
-        query["Token"] = HttpUtility.UrlEncode(token);
+        query["Token"] = HttpUtility.UrlEncode(token,Encoding.UTF8);
         query["PartnerCode"] = partnerCode;
         query["Lang"] = lang;
         query["Version"] = "2";
