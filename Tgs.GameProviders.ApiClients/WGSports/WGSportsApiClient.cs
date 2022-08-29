@@ -147,8 +147,7 @@ internal class WGSportsApiClient : IWGSportsApiClient
     {
         var query = HttpUtility.ParseQueryString(string.Empty);
 
-        var encodeToken = HttpUtility.UrlEncode(token, Encoding.UTF8);
-        encodeToken = Regex.Replace(encodeToken, @"(?<=%).{2}", m => m.Value.ToUpper());
+        var encodeToken = WebUtility.UrlEncode(token);
 
         _logger.LogError("Token:{token} | EncodeToken:{encodeToken}", token, encodeToken);
 
@@ -161,6 +160,8 @@ internal class WGSportsApiClient : IWGSportsApiClient
         query["Version"] = "2";
 
         var requestUri = new Uri($"{apiUrl}?{query}");
+
+        _logger.LogError("RequestUri:{requestUri}", requestUri);
 
         var response = await GetAsync<WGSportsLoginResponse>(requestUri, query, "Login").ConfigureAwait(false);
 
