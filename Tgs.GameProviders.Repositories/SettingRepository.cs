@@ -67,8 +67,8 @@ internal class SettingRepository : ISettingRepository
     public ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync()
         => GetAsync<JiliTransferConfiguration>(GameProviderConfigurations.JiliTransfer);
 
-    public ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync()
-        => GetAsync<SkywindTransferConfiguration>(GameProviderConfigurations.SkywindTransfer);
+    public ValueTask<SWTransferConfiguration> GetSkywindTransferConfigurationAsync()
+        => GetAsync<SWTransferConfiguration>(GameProviderConfigurations.SkywindTransfer);
 
     public ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync()
         => GetAsync<WMCasinoTransferConfiguration>(GameProviderConfigurations.WMCasinoTransfer);

@@ -215,10 +215,10 @@ internal class SettingCacheRepository : ISettingRepository
         return configuration;
     }
 
-    public async ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync()
+    public async ValueTask<SWTransferConfiguration> GetSkywindTransferConfigurationAsync()
     {
         var key = GetKey(GameProviderConfigurations.SkywindTransfer);
-        if (!_memoryCache.TryGetValue(key, out SkywindTransferConfiguration configuration))
+        if (!_memoryCache.TryGetValue(key, out SWTransferConfiguration configuration))
         {
             configuration = await _setting.GetSkywindTransferConfigurationAsync().ConfigureAwait(false);
 

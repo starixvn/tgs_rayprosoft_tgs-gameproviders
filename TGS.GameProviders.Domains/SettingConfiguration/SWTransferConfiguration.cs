@@ -1,5 +1,5 @@
 ﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-public record SkywindTransferConfiguration
+public record SWTransferConfiguration
 {
 }
