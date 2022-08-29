@@ -22,7 +22,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<AwcAelottoConfiguration> GetAwcAelottoConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.AWC_AELOTTO}".ToLower();
+        var key = GetKey(GameProviderConfigurations.AWC_AELOTTO);
         if (!_memoryCache.TryGetValue(key, out AwcAelottoConfiguration configuration))
         {
             configuration = await _setting.GetAwcAelottoConfigurationAsync().ConfigureAwait(false);
@@ -34,7 +34,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<AwcAwsConfiguration> GetAwcAwsConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.AWC_AWS}".ToLower();
+        var key = GetKey(GameProviderConfigurations.AWC_AWS);
         if (!_memoryCache.TryGetValue(key, out AwcAwsConfiguration configuration))
         {
             configuration = await _setting.GetAwcAwsConfigurationAsync().ConfigureAwait(false);
@@ -46,7 +46,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<AwcCockfightConfiguration> GetAwcCockfightConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.AWC_COCKFIGHT}".ToLower();
+        var key = GetKey(GameProviderConfigurations.AWC_COCKFIGHT);
         if (!_memoryCache.TryGetValue(key, out AwcCockfightConfiguration configuration))
         {
             configuration = await _setting.GetAwcCockfightConfigurationAsync().ConfigureAwait(false);
@@ -58,7 +58,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<AwcFacaiConfiguration> GetAwcFacaiConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.AWC_FACAI}".ToLower();
+        var key = GetKey(GameProviderConfigurations.AWC_FACAI);
         if (!_memoryCache.TryGetValue(key, out AwcFacaiConfiguration configuration))
         {
             configuration = await _setting.GetAwcFacaiConfigurationAsync().ConfigureAwait(false);
@@ -70,7 +70,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<AwcFsConfiguration> GetAwcFsConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.AWC_FS}".ToLower();
+        var key = GetKey(GameProviderConfigurations.AWC_FS);
         if (!_memoryCache.TryGetValue(key, out AwcFsConfiguration configuration))
         {
             configuration = await _setting.GetAwcFsConfigurationAsync().ConfigureAwait(false);
@@ -82,7 +82,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<AwcKmConfiguration> GetAwcKmConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.AWC_KM}".ToLower();
+        var key = GetKey(GameProviderConfigurations.AWC_KM);
         if (!_memoryCache.TryGetValue(key, out AwcKmConfiguration configuration))
         {
             configuration = await _setting.GetAwcKmConfigurationAsync().ConfigureAwait(false);
@@ -94,7 +94,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<AwcLudoConfiguration> GetAwcLudoConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.AWC_LUDO}".ToLower();
+        var key = GetKey(GameProviderConfigurations.AWC_LUDO);
         if (!_memoryCache.TryGetValue(key, out AwcLudoConfiguration configuration))
         {
             configuration = await _setting.GetAwcLudoConfigurationAsync().ConfigureAwait(false);
@@ -106,7 +106,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<AwcPgsConfiguration> GetAwcPgsConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.AWC_PGS}".ToLower();
+        var key = GetKey(GameProviderConfigurations.AWC_PGS);
         if (!_memoryCache.TryGetValue(key, out AwcPgsConfiguration configuration))
         {
             configuration = await _setting.GetAwcPgsConfigurationAsync().ConfigureAwait(false);
@@ -118,7 +118,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<AwcRcbConfiguration> GetAwcRcbConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.AWC_RCB}".ToLower();
+        var key = GetKey(GameProviderConfigurations.AWC_RCB);
         if (!_memoryCache.TryGetValue(key, out AwcRcbConfiguration configuration))
         {
             configuration = await _setting.GetAwcRcbConfigurationAsync().ConfigureAwait(false);
@@ -130,7 +130,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<AwcSgConfiguration> GetAwcSgConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.AWC_SG}".ToLower();
+        var key = GetKey(GameProviderConfigurations.AWC_SG);
         if (!_memoryCache.TryGetValue(key, out AwcSgConfiguration configuration))
         {
             configuration = await _setting.GetAwcSgConfigurationAsync().ConfigureAwait(false);
@@ -142,7 +142,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<AwcSpadeConfiguration> GetAwcSpadeConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.AWC_SPADE}".ToLower();
+        var key = GetKey(GameProviderConfigurations.AWC_SPADE);
         if (!_memoryCache.TryGetValue(key, out AwcSpadeConfiguration configuration))
         {
             configuration = await _setting.GetAwcSpadeConfigurationAsync().ConfigureAwait(false);
@@ -154,7 +154,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<AwcVenusConfiguration> GetAwcVenusConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.AWC_VENUS}".ToLower();
+        var key = GetKey(GameProviderConfigurations.AWC_VENUS);
         if (!_memoryCache.TryGetValue(key, out AwcVenusConfiguration configuration))
         {
             configuration = await _setting.GetAwcVenusConfigurationAsync().ConfigureAwait(false);
@@ -166,7 +166,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<AwcYlConfiguration> GetAwcYlConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.AWC_YL}".ToLower();
+        var key = GetKey(GameProviderConfigurations.AWC_YL);
         if (!_memoryCache.TryGetValue(key, out AwcYlConfiguration configuration))
         {
             configuration = await _setting.GetAwcYlConfigurationAsync().ConfigureAwait(false);
@@ -181,7 +181,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.EvolutionTransfer}".ToLower();
+        var key = GetKey(GameProviderConfigurations.EvolutionTransfer);
         if (!_memoryCache.TryGetValue(key, out EvolutionTransferConfiguration configuration))
         {
             configuration = await _setting.GetEvolutionTransferConfigurationAsync().ConfigureAwait(false);
@@ -193,7 +193,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<IDNLiveConfiguration> GetIDNLiveConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.IDNLive}".ToLower();
+        var key = GetKey(GameProviderConfigurations.IDNLive);
         if (!_memoryCache.TryGetValue(key, out IDNLiveConfiguration configuration))
         {
             configuration = await _setting.GetIDNLiveConfigurationAsync().ConfigureAwait(false);
@@ -205,7 +205,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.JiliTransfer}".ToLower();
+        var key = GetKey(GameProviderConfigurations.JiliTransfer);
         if (!_memoryCache.TryGetValue(key, out JiliTransferConfiguration configuration))
         {
             configuration = await _setting.GetJiliTransferConfigurationAsync().ConfigureAwait(false);
@@ -217,7 +217,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.SkywindTransfer}".ToLower();
+        var key = GetKey(GameProviderConfigurations.SkywindTransfer);
         if (!_memoryCache.TryGetValue(key, out SkywindTransferConfiguration configuration))
         {
             configuration = await _setting.GetSkywindTransferConfigurationAsync().ConfigureAwait(false);
@@ -229,7 +229,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public async ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync()
     {
-        var key = $"GameProviders:SettingCache:{GameProviderConfigurations.WMCasinoTransfer}".ToLower();
+        var key = GetKey(GameProviderConfigurations.WMCasinoTransfer);
         if (!_memoryCache.TryGetValue(key, out WMCasinoTransferConfiguration configuration))
         {
             configuration = await _setting.GetWMCasinoTransferConfigurationAsync().ConfigureAwait(false);
@@ -238,4 +238,7 @@ internal class SettingCacheRepository : ISettingRepository
         }
         return configuration;
     }
+
+    private static string GetKey(string gameProviderCode)
+        => $"gameg:gameproviders:setting:{gameProviderCode}".ToLower();
 }
