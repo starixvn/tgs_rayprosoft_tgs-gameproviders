@@ -1,0 +1,17 @@
+﻿using System.Text.Json.Serialization;
+
+namespace Tgs.GameProviders.Core.BigGaming.Models.Commons;
+
+public record BigGamingErrorResponse
+{
+    [JsonPropertyName("code")]
+    public string Code { get; set; }
+    [JsonPropertyName("sn")]
+    public string Sn { get; set; }
+    [JsonPropertyName("message")]
+    public string Message { get; set; }
+    [JsonPropertyName("reason")]
+    public string Reason { get; set; }
+    [JsonPropertyName("action")]
+    public string Action { get; set; }
+}
