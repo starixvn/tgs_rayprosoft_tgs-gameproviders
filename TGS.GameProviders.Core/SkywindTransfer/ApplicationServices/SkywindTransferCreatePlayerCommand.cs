@@ -3,6 +3,6 @@
 namespace Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 
 public record SkywindTransferCreatePlayerCommand(
-    SWTransferConfiguration Configuration,
+    SkywindTransferConfiguration Configuration,
     string PlayerCode,
     string CurrencyCode);

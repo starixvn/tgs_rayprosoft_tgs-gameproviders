@@ -18,7 +18,7 @@ public class SkywindTransferPlayerFundCheckingGetServiceUnitTest
         var fakeGameInterfaceSkywindClient = Substitute.For<IGameInterfaceSkywindClient>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
-        var configuration = new SWTransferConfiguration
+        var configuration = new SkywindTransferConfiguration
         {
             ApiUrl = new("http://localhost/"),
             LiveLobbyUrl = new("http://localhost/"),
