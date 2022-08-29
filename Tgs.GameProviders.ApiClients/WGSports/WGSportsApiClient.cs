@@ -159,7 +159,7 @@ internal class WGSportsApiClient : IWGSportsApiClient
         query["Lang"] = lang;
         query["Version"] = "2";
 
-        var requestUri = new Uri($"{apiUrl}?{query}");
+        var requestUri = new Uri($"{apiUrl}?m=api&c=index&a=Login&Token={encodeToken}&PartnerCode={partnerCode}&Lang={lang}&Version=2");
 
         _logger.LogError("RequestUri:{requestUri}", requestUri);
 
