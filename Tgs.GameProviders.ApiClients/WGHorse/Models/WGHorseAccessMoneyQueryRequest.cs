@@ -1,7 +1,6 @@
-﻿namespace Tgs.GameProviders.ApiClients.WGHorse.Models
+﻿namespace Tgs.GameProviders.ApiClients.WGHorse.Models;
+
+public record WGHorseAccessMoneyQueryRequest
 {
-    public record WGHorseAccessMoneyQueryRequest
-    {
-        public string OrderId { get; init; }
-    }
+    public string OrderId { get; init; }
 }

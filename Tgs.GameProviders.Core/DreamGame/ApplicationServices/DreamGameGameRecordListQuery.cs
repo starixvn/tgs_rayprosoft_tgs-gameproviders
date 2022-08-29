@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.DreamGame.ApplicationServices
-{
-    public record DreamGameGameRecordListQuery();
-}
+﻿namespace Tgs.GameProviders.Core.DreamGame.ApplicationServices;
+
+public record DreamGameGameRecordListQuery();

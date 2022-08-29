@@ -1,7 +1,6 @@
-﻿namespace Tgs.GameProviders.Core
+﻿namespace Tgs.GameProviders.Core;
+
+public record PlayerBalanceQuery
 {
-    public record PlayerBalanceQuery
-    {
-        public string PlayerCode { get; init; }
-    }
+    public string PlayerCode { get; init; }
 }

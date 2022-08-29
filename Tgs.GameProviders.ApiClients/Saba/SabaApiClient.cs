@@ -13,128 +13,127 @@ using Tgs.GameProviders.Core.Saba;
 using Tgs.GameProviders.Core.Saba.Models;
 using Tgs.Logging;
 
-namespace Tgs.GameProviders.ApiClients.Saba
+namespace Tgs.GameProviders.ApiClients.Saba;
+
+internal class SabaApiClient : ISabaApiClient
 {
-    internal class SabaApiClient : ISabaApiClient
+    private readonly HttpClient _client;
+    private readonly ILogger<SabaApiClient> _logger;
+    private readonly ITgsLog _tgsLog;
+
+    public SabaApiClient(
+        ILogger<SabaApiClient> logger,
+        HttpClient client,
+        ITgsLog tgsLog)
     {
-        private readonly HttpClient _client;
-        private readonly ILogger<SabaApiClient> _logger;
-        private readonly ITgsLog _tgsLog;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
+    }
 
-        public SabaApiClient(
-            ILogger<SabaApiClient> logger,
-            HttpClient client,
-            ITgsLog tgsLog)
+    public ValueTask<SabaCreateMemberResponse> CreateMemberAsync(Uri apiUrl, SabaCreateMemberRequest request)
+    {
+        var options = new JsonSerializerOptions
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-            _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
+            NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString
+        };
+
+        var value = JsonSerializer.Serialize(request, options);
+        var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(value);
+
+        return PostAsync<SabaCreateMemberResponse>(
+            apiUrl,
+            "/api/CreateMember",
+            parameters,
+            "CreateMember");
+    }
+
+    public ValueTask<SabaGetRoundHistoryResponse> GetBetDetailByTransIdAsync(Uri apiUrl, SabaGetRoundHistoryRequest request)
+    {
+        var value = JsonSerializer.Serialize(request);
+        var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(value);
+
+        return PostAsync<SabaGetRoundHistoryResponse>(
+            apiUrl,
+            "/api/GetBetDetailByTransID",
+            parameters,
+            "GetRoundDetail");
+    }
+
+    public ValueTask<SabaGameUrlResponse> GetGameUrlAsync(Uri apiUrl, SabaGameUrlRequest request)
+    {
+        var value = JsonSerializer.Serialize(request);
+        var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(value);
+
+        return PostAsync<SabaGameUrlResponse>(
+            apiUrl,
+            "/api/GetSabaUrl",
+            parameters,
+            "GetSabaUrl");
+    }
+
+    public ValueTask<SabaKickUserResponse> KickUserAsync(Uri apiUrl, SabaKickUserRequest request)
+    {
+        var value = JsonSerializer.Serialize(request);
+        var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(value);
+
+        return PostAsync<SabaKickUserResponse>(
+            apiUrl,
+            "/api/KickUser",
+            parameters,
+            "KickUser");
+    }
+
+    private async ValueTask<TResponse> PostAsync<TResponse>(
+        Uri apiUrl,
+        string path,
+        IEnumerable<KeyValuePair<string, string>> parameters,
+        string action)
+    {
+        var logPrefix = $"{nameof(SabaApiClient).ToLower()}.{action}";
+
+        var uriString = $"{apiUrl.AbsoluteUri.TrimEnd('/')}{path}";
+
+        var sw = Stopwatch.StartNew();
+
+        var content = new FormUrlEncodedContent(parameters);
+        var httpResponseMessage = await _client.PostAsync(uriString, content).ConfigureAwait(false);
+
+        sw.Stop();
+
+        var responseMessage = default(string);
+
+        var requestMessage = await content.ReadAsStringAsync().ConfigureAwait(false);
+
+        var stream = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
+        using (var sr = new StreamReader(stream))
+        {
+            responseMessage = await sr.ReadToEndAsync().ConfigureAwait(false);
         }
 
-        public ValueTask<SabaCreateMemberResponse> CreateMemberAsync(Uri apiUrl, SabaCreateMemberRequest request)
+        var apiLogEvent = new ApiLogEvent
         {
-            var options = new JsonSerializerOptions
-            {
-                NumberHandling = JsonNumberHandling.WriteAsString | JsonNumberHandling.AllowReadingFromString
-            };
+            Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
+            Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
+            Prefix = logPrefix,
+            ServerName = Environment.MachineName.NoLongerThan(128),
+            RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
+            RequestContent = requestMessage.NoLongerThan(4096),
+            ResponseHeaders = httpResponseMessage.Headers.ToString(),
+            ResponseContent = responseMessage.NoLongerThan(4096),
+            ResponseCode = (short)httpResponseMessage.StatusCode,
+            ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
+            RecordedOn = DateTimeOffset.UtcNow
+        };
+        _tgsLog.LogApi(apiLogEvent);
+        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
-            var value = JsonSerializer.Serialize(request, options);
-            var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(value);
-
-            return PostAsync<SabaCreateMemberResponse>(
-                apiUrl,
-                "/api/CreateMember",
-                parameters,
-                "CreateMember");
+        if (!string.IsNullOrEmpty(responseMessage) &&
+            httpResponseMessage.StatusCode == HttpStatusCode.OK)
+        {
+            return JsonSerializer.Deserialize<TResponse>(responseMessage);
         }
 
-        public ValueTask<SabaGetRoundHistoryResponse> GetBetDetailByTransIdAsync(Uri apiUrl, SabaGetRoundHistoryRequest request)
-        {
-            var value = JsonSerializer.Serialize(request);
-            var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(value);
-
-            return PostAsync<SabaGetRoundHistoryResponse>(
-                apiUrl,
-                "/api/GetBetDetailByTransID",
-                parameters,
-                "GetRoundDetail");
-        }
-
-        public ValueTask<SabaGameUrlResponse> GetGameUrlAsync(Uri apiUrl, SabaGameUrlRequest request)
-        {
-            var value = JsonSerializer.Serialize(request);
-            var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(value);
-
-            return PostAsync<SabaGameUrlResponse>(
-                apiUrl,
-                "/api/GetSabaUrl",
-                parameters,
-                "GetSabaUrl");
-        }
-
-        public ValueTask<SabaKickUserResponse> KickUserAsync(Uri apiUrl, SabaKickUserRequest request)
-        {
-            var value = JsonSerializer.Serialize(request);
-            var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(value);
-
-            return PostAsync<SabaKickUserResponse>(
-                apiUrl,
-                "/api/KickUser",
-                parameters,
-                "KickUser");
-        }
-
-        private async ValueTask<TResponse> PostAsync<TResponse>(
-            Uri apiUrl,
-            string path,
-            IEnumerable<KeyValuePair<string, string>> parameters,
-            string action)
-        {
-            var logPrefix = $"{nameof(SabaApiClient).ToLower()}.{action}";
-
-            var uriString = $"{apiUrl.AbsoluteUri.TrimEnd('/')}{path}";
-
-            var sw = Stopwatch.StartNew();
-
-            var content = new FormUrlEncodedContent(parameters);
-            var httpResponseMessage = await _client.PostAsync(uriString, content).ConfigureAwait(false);
-
-            sw.Stop();
-
-            var responseMessage = default(string);
-
-            var requestMessage = await content.ReadAsStringAsync().ConfigureAwait(false);
-
-            var stream = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false);
-            using (var sr = new StreamReader(stream))
-            {
-                responseMessage = await sr.ReadToEndAsync().ConfigureAwait(false);
-            }
-
-            var apiLogEvent = new ApiLogEvent
-            {
-                Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
-                Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
-                Prefix = logPrefix,
-                ServerName = Environment.MachineName.NoLongerThan(128),
-                RequestHeaders = httpResponseMessage.RequestMessage?.Headers + httpResponseMessage.RequestMessage?.Content?.Headers?.ToString(),
-                RequestContent = requestMessage.NoLongerThan(4096),
-                ResponseHeaders = httpResponseMessage.Headers.ToString(),
-                ResponseContent = responseMessage.NoLongerThan(4096),
-                ResponseCode = (short)httpResponseMessage.StatusCode,
-                ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
-                RecordedOn = DateTimeOffset.UtcNow
-            };
-            _tgsLog.LogApi(apiLogEvent);
-            _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
-
-            if (!string.IsNullOrEmpty(responseMessage) &&
-                httpResponseMessage.StatusCode == HttpStatusCode.OK)
-            {
-                return JsonSerializer.Deserialize<TResponse>(responseMessage);
-            }
-
-            return default;
-        }
+        return default;
     }
 }

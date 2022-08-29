@@ -3,20 +3,19 @@ using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameRounds.Common;
 
-namespace Tgs.GameProviders.Core.WGSports
+namespace Tgs.GameProviders.Core.WGSports;
+
+public interface IWGSportsService
 {
-    public interface IWGSportsService
-    {
-        decimal GetAmount(string amountString);
+    decimal GetAmount(string amountString);
 
-        GameRoundClientStatus GetClientRound(string playerWinLoss);
+    GameRoundClientStatus GetClientRound(string playerWinLoss);
 
-        ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
+    ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 
-        ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
+    ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
 
-        ValueTask<Guid> GetGameProviderIdAsync();
+    ValueTask<Guid> GetGameProviderIdAsync();
 
-        ValueTask<WGSportsConfiguration> GetSettingConfigurationAsync();
-    }
+    ValueTask<WGSportsConfiguration> GetSettingConfigurationAsync();
 }

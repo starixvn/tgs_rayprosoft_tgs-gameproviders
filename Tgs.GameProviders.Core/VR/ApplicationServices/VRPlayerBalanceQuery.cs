@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.VR.ApplicationServices
-{
-    public record VRPlayerBalanceQuery : PlayerBalanceQuery;
-}
+﻿namespace Tgs.GameProviders.Core.VR.ApplicationServices;
+
+public record VRPlayerBalanceQuery : PlayerBalanceQuery;

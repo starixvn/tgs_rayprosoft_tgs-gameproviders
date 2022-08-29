@@ -4,11 +4,10 @@ using Tgs.GameProviders.Core;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders
+namespace Tgs.GameProviders;
+
+public interface IGameUrlHandler<TQuery> where TQuery : GameUrlQuery
 {
-    public interface IGameUrlHandler<TQuery> where TQuery : GameUrlQuery
-    {
-        [HttpPost("GameUrl")]
-        ValueTask<GameUrlResponse?> GameUrlAsync([FromServices] IGetService<TQuery, GameUrlResult> getService, GameUrlRequest request);
-    }
+    [HttpPost("GameUrl")]
+    ValueTask<GameUrlResponse?> GameUrlAsync([FromServices] IGetService<TQuery, GameUrlResult> getService, GameUrlRequest request);
 }

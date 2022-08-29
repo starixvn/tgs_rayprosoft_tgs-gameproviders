@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.AwcFacai.ApplicationServices
-{
-    public record AwcFacaiGameUrlQuery : GameUrlQuery;
-}
+﻿namespace Tgs.GameProviders.Core.AwcFacai.ApplicationServices;
+
+public record AwcFacaiGameUrlQuery : GameUrlQuery;

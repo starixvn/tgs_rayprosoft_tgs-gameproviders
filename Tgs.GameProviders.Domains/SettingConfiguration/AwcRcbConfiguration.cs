@@ -1,8 +1,7 @@
-﻿namespace Tgs.GameProviders.Domains.SettingConfiguration
+﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
+
+public record AwcRcbConfiguration
 {
-    public record AwcRcbConfiguration
-    {
-        public Uri ApiUrl { get; init; } = default!;
-        public Uri ApiRecordUrl { get; init; } = default!;
-    }
+    public Uri ApiUrl { get; init; } = default!;
+    public Uri ApiRecordUrl { get; init; } = default!;
 }

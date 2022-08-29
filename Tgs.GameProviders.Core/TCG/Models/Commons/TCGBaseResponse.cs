@@ -1,12 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.TCG.Models.Commons
+namespace Tgs.GameProviders.Core.TCG.Models.Commons;
+
+public record TCGBaseResponse
 {
-    public record TCGBaseResponse
-    {
-        [JsonPropertyName("status")]
-        public int Status { get; set; }
-        [JsonPropertyName("error_desc")]
-        public string ErrorDesc { get; set; }
-    }
+    [JsonPropertyName("status")]
+    public int Status { get; set; }
+    [JsonPropertyName("error_desc")]
+    public string ErrorDesc { get; set; }
 }

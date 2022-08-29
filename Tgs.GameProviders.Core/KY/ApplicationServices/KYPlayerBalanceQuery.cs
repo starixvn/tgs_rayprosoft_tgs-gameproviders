@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.KY.ApplicationServices
-{
-    public record KYPlayerBalanceQuery : PlayerBalanceQuery;
-}
+﻿namespace Tgs.GameProviders.Core.KY.ApplicationServices;
+
+public record KYPlayerBalanceQuery : PlayerBalanceQuery;

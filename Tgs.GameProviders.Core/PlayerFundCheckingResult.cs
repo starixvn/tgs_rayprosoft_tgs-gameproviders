@@ -1,7 +1,6 @@
-﻿namespace Tgs.GameProviders.Core
+﻿namespace Tgs.GameProviders.Core;
+
+public record PlayerFundCheckingResult
 {
-    public record PlayerFundCheckingResult
-    {
-        public bool OrderStatus { get; init; }
-    }
+    public bool OrderStatus { get; init; }
 }

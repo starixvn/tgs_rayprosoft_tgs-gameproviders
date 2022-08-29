@@ -2,14 +2,13 @@
 
 using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.IMESports.Models
-{
-    public record IMESportsRegisterPlayerResponse
-    {
-        [JsonPropertyName("Code")]
-        public IMESportsGameApiError ErrorCode { get; init; }
+namespace Tgs.GameProviders.Core.IMESports.Models;
 
-        [JsonPropertyName("Message")]
-        public string Message { get; init; }
-    }
+public record IMESportsRegisterPlayerResponse
+{
+    [JsonPropertyName("Code")]
+    public IMESportsGameApiError ErrorCode { get; init; }
+
+    [JsonPropertyName("Message")]
+    public string Message { get; init; }
 }

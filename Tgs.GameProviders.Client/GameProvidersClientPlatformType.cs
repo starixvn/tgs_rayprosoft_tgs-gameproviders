@@ -1,15 +1,14 @@
-﻿namespace Tgs.GameProviders.Client
-{
-    public enum GameProvidersClientPlatformType
-    {
-        /// <summary>
-        ///     Desktop
-        /// </summary>
-        Desktop = 0,
+﻿namespace Tgs.GameProviders.Client;
 
-        /// <summary>
-        ///     Mobile
-        /// </summary>
-        Mobile = 1
-    }
+public enum GameProvidersClientPlatformType
+{
+    /// <summary>
+    ///     Desktop
+    /// </summary>
+    Desktop = 0,
+
+    /// <summary>
+    ///     Mobile
+    /// </summary>
+    Mobile = 1
 }

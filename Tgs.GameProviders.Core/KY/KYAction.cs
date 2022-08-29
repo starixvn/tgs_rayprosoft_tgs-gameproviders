@@ -1,45 +1,44 @@
-﻿namespace Tgs.GameProviders.Core.KY
+﻿namespace Tgs.GameProviders.Core.KY;
+
+public enum KYAction
 {
-    public enum KYAction
-    {
-        /// <summary>
-        /// The get game URL
-        /// </summary>
-        GetGameUrl,
+    /// <summary>
+    /// The get game URL
+    /// </summary>
+    GetGameUrl,
 
-        /// <summary>
-        /// The get balance
-        /// </summary>
-        GetBalance,
+    /// <summary>
+    /// The get balance
+    /// </summary>
+    GetBalance,
 
-        /// <summary>
-        /// The fnud out(Tgs -> Gp)
-        /// </summary>
-        FundOut,
+    /// <summary>
+    /// The fnud out(Tgs -> Gp)
+    /// </summary>
+    FundOut,
 
-        /// <summary>
-        /// The fnud in(GP -> Tgs)
-        /// </summary>
-        FundIn,
+    /// <summary>
+    /// The fnud in(GP -> Tgs)
+    /// </summary>
+    FundIn,
 
-        /// <summary>
-        /// The fund checking
-        /// </summary>
-        FundChecking,
+    /// <summary>
+    /// The fund checking
+    /// </summary>
+    FundChecking,
 
-        /// <summary>
-        /// The kick
-        /// </summary>
-        Kick,
+    /// <summary>
+    /// The kick
+    /// </summary>
+    Kick,
 
-        /// <summary>
-        /// The game record
-        /// </summary>
-        GameRecord,
+    /// <summary>
+    /// The game record
+    /// </summary>
+    GameRecord,
 
-        /// <summary>
-        /// The create player
-        /// </summary>
-        CreatePlayer,
-    }
+    /// <summary>
+    /// The create player
+    /// </summary>
+    CreatePlayer,
 }

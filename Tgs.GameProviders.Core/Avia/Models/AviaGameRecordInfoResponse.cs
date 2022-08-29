@@ -1,19 +1,18 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.Avia.Models
+namespace Tgs.GameProviders.Core.Avia.Models;
+
+public class AviaGameRecordInfoResponse
 {
-    public class AviaGameRecordInfoResponse
-    {
-        [JsonPropertyName("list")]
-        public AviaGameRecordData[] List { get; set; }
+    [JsonPropertyName("list")]
+    public AviaGameRecordData[] List { get; set; }
 
-        [JsonPropertyName("PageIndex")]
-        public int PageIndex { get; set; }
+    [JsonPropertyName("PageIndex")]
+    public int PageIndex { get; set; }
 
-        [JsonPropertyName("PageSize")]
-        public int PageSize { get; set; }
+    [JsonPropertyName("PageSize")]
+    public int PageSize { get; set; }
 
-        [JsonPropertyName("RecordCount")]
-        public int RecordCount { get; set; }
-    }
+    [JsonPropertyName("RecordCount")]
+    public int RecordCount { get; set; }
 }

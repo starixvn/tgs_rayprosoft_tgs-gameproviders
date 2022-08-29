@@ -1,8 +1,7 @@
 ﻿// ReSharper disable InconsistentNaming
 
-namespace Tgs.GameProviders.Core.WMCasino.Models
+namespace Tgs.GameProviders.Core.WMCasino.Models;
+
+public record WMCasinoLogoutGameResponse : WMCasinoErrorResponse
 {
-    public record WMCasinoLogoutGameResponse : WMCasinoErrorResponse
-    {
-    }
 }

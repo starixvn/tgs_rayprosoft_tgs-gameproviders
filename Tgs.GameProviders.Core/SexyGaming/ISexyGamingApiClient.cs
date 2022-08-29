@@ -2,16 +2,15 @@
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core.SexyGaming.Models;
 
-namespace Tgs.GameProviders.Core.SexyGaming
+namespace Tgs.GameProviders.Core.SexyGaming;
+
+public interface ISexyGamingApiClient
 {
-    public interface ISexyGamingApiClient
-    {
-        ValueTask<SexyGamingCreateMemberResponse> CreatePlayerAsync(Uri apiUrl, SexyGamingCreateMemberRequest request);
+    ValueTask<SexyGamingCreateMemberResponse> CreatePlayerAsync(Uri apiUrl, SexyGamingCreateMemberRequest request);
 
-        ValueTask<SexyGamingGameUrlResponse> GetGamingGameUrlAsync(Uri apiUrl, SexyGamingGameUrlRequest request);
+    ValueTask<SexyGamingGameUrlResponse> GetGamingGameUrlAsync(Uri apiUrl, SexyGamingGameUrlRequest request);
 
-        ValueTask<SexyGamingGameUrlResponse> GetGamingLoginGameAsync(Uri apiUrl, SexyGamingLoginGameRequest request);
+    ValueTask<SexyGamingGameUrlResponse> GetGamingLoginGameAsync(Uri apiUrl, SexyGamingLoginGameRequest request);
 
-        ValueTask<SexyGamingLogoutResponse> LogoutAsync(Uri apiUrl, SexyGamingLogoutRequest request);
-    }
+    ValueTask<SexyGamingLogoutResponse> LogoutAsync(Uri apiUrl, SexyGamingLogoutRequest request);
 }

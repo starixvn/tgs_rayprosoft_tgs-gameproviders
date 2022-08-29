@@ -1,9 +1,8 @@
 ﻿using Tgs.GameProviders.Core.BigGaming.Models;
 
-namespace Tgs.GameProviders.Core.BigGaming
+namespace Tgs.GameProviders.Core.BigGaming;
+
+public interface IBigGamingRoundDetailAnalyzeService
 {
-    public interface IBigGamingRoundDetailAnalyzeService
-    {
-        string GetAnalyze(BigGamingVideoRoundQueryItemResponse source);
-    }
+    string GetAnalyze(BigGamingVideoRoundQueryItemResponse source);
 }

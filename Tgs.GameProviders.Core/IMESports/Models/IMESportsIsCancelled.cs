@@ -1,11 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.IMESports.Models
+namespace Tgs.GameProviders.Core.IMESports.Models;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum IMESportsIsCancelled
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum IMESportsIsCancelled
-    {
-        NotCancel = 0,
-        Cancel = 1
-    }
+    NotCancel = 0,
+    Cancel = 1
 }

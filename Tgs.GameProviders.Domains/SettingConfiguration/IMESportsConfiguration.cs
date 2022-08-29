@@ -1,11 +1,10 @@
 ﻿using Tgs.GameProviders.Domains.SettingConfiguration.IMESports;
 
-namespace Tgs.GameProviders.Domains.SettingConfiguration
+namespace Tgs.GameProviders.Domains.SettingConfiguration;
+
+public record IMESportsConfiguration : PluggableConfigurationBase
 {
-    public record IMESportsConfiguration : PluggableConfigurationBase
-    {
-        public IMESportsBrandMerchant[] BrandMerchants { get; init; } = default!;
-        public int ProductWallet { get; init; }
-        public bool SupportHttps { get; init; } = false;
-    }
+    public IMESportsBrandMerchant[] BrandMerchants { get; init; } = default!;
+    public int ProductWallet { get; init; }
+    public bool SupportHttps { get; init; } = false;
 }

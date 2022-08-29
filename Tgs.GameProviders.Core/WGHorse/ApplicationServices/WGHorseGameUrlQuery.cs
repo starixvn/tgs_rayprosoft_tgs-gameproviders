@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices
-{
-    public record WGHorseGameUrlQuery : GameUrlQuery;
-}
+﻿namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices;
+
+public record WGHorseGameUrlQuery : GameUrlQuery;

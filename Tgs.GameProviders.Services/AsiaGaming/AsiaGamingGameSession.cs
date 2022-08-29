@@ -5,38 +5,37 @@ using Tgs.GameProviders.Core.AsiaGaming;
 using Tgs.GameProviders.Core.AsiaGaming.Models;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
-namespace Tgs.GameProviders.Services.AsiaGaming
+namespace Tgs.GameProviders.Services.AsiaGaming;
+
+internal class AsiaGamingGameSession : IAsiaGamingGameSession
 {
-    internal class AsiaGamingGameSession : IAsiaGamingGameSession
+    private readonly IAsiaGamingApiClient _client;
+    private readonly ILogger<AsiaGamingGameSession> _logger;
+
+    public AsiaGamingGameSession(
+        ILogger<AsiaGamingGameSession> logger,
+        IAsiaGamingApiClient client)
     {
-        private readonly IAsiaGamingApiClient _client;
-        private readonly ILogger<AsiaGamingGameSession> _logger;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+    }
 
-        public AsiaGamingGameSession(
-            ILogger<AsiaGamingGameSession> logger,
-            IAsiaGamingApiClient client)
+    public async ValueTask<bool> CreateGameSessionAsync(
+        AsiaGamingConfiguration configuration,
+        string playerCode,
+        Guid loginRecordId,
+        decimal playerBalance)
+    {
+        var request = new AsiaGamingCreateGameSessionRequest
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-        }
+            ProductId = configuration.ProductionId,
+            PlayerCode = playerCode,
+            LoginRecordId = loginRecordId,
+            Balance = playerBalance
+        };
 
-        public async ValueTask<bool> CreateGameSessionAsync(
-            AsiaGamingConfiguration configuration,
-            string playerCode,
-            Guid loginRecordId,
-            decimal playerBalance)
-        {
-            var request = new AsiaGamingCreateGameSessionRequest
-            {
-                ProductId = configuration.ProductionId,
-                PlayerCode = playerCode,
-                LoginRecordId = loginRecordId,
-                Balance = playerBalance
-            };
+        var response = await _client.CreateGameSessionAsync(configuration.ApiUrl, request).ConfigureAwait(false);
 
-            var response = await _client.CreateGameSessionAsync(configuration.ApiUrl, request).ConfigureAwait(false);
-
-            return response.Error == "OK";
-        }
+        return response.Error == "OK";
     }
 }

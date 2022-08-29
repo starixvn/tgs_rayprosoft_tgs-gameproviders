@@ -5,52 +5,51 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.VR.Models;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Core.VR.ApplicationServices
+namespace Tgs.GameProviders.Core.VR.ApplicationServices;
+
+public class VRPlayerFundInGetService : IGetService<VRPlayerFundInQuery, PlayerFundResult>
 {
-    public class VRPlayerFundInGetService : IGetService<VRPlayerFundInQuery, PlayerFundResult>
+    private readonly IVRApiClient _client;
+    private readonly ILogger<VRPlayerFundInGetService> _logger;
+    private readonly IVRService _service;
+
+    public VRPlayerFundInGetService(
+        ILogger<VRPlayerFundInGetService> logger,
+        IVRApiClient client,
+        IVRService service)
     {
-        private readonly IVRApiClient _client;
-        private readonly ILogger<VRPlayerFundInGetService> _logger;
-        private readonly IVRService _service;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+        _service = service ?? throw new ArgumentNullException(nameof(service));
+    }
 
-        public VRPlayerFundInGetService(
-            ILogger<VRPlayerFundInGetService> logger,
-            IVRApiClient client,
-            IVRService service)
+    public async ValueTask<PlayerFundResult> GetAsync(VRPlayerFundInQuery command, CancellationToken cancellationToken = default)
+    {
+        var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
+        if (brandMerchant == null)
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
+            return null;
         }
 
-        public async ValueTask<PlayerFundResult> GetAsync(VRPlayerFundInQuery command, CancellationToken cancellationToken = default)
+        var orderId = command.OrderId;
+        var date = DateTimeOffset.UtcNow;
+        var data = new VRFnudRequest()
         {
-            var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
-            if (brandMerchant == null)
-            {
-                return null;
-            }
+            SerialNumber = orderId,
+            PlayerCode = command.PlayerCode,
+            Type = (int)VRAmountTypes.FundIn,
+            Amount = command.Amount,
+            CreateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ")
+        };
 
-            var orderId = command.OrderId;
-            var date = DateTimeOffset.UtcNow;
-            var data = new VRFnudRequest()
-            {
-                SerialNumber = orderId,
-                PlayerCode = command.PlayerCode,
-                Type = (int)VRAmountTypes.FundIn,
-                Amount = command.Amount,
-                CreateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ")
-            };
+        var response = await _client.FundAsync(
+            brandMerchant.ApiUrl,
+            brandMerchant.Merchantid,
+            brandMerchant.Version,
+            brandMerchant.Deskey,
+            VRAction.FundIn,
+            data).ConfigureAwait(false);
 
-            var response = await _client.FundAsync(
-                brandMerchant.ApiUrl,
-                brandMerchant.Merchantid,
-                brandMerchant.Version,
-                brandMerchant.Deskey,
-                VRAction.FundIn,
-                data).ConfigureAwait(false);
-
-            return (response != null && response?.State == 0) ? new() { OrderId = orderId } : null;
-        }
+        return (response != null && response?.State == 0) ? new() { OrderId = orderId } : null;
     }
 }

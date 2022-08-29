@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.PragmaticPlay.ApplicationServices
-{
-    public record PragmaticPlayKickPlayerCommand : KickPlayerCommand;
-}
+﻿namespace Tgs.GameProviders.Core.PragmaticPlay.ApplicationServices;
+
+public record PragmaticPlayKickPlayerCommand : KickPlayerCommand;

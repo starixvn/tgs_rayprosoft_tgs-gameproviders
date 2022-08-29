@@ -45,7 +45,7 @@ internal class PragmaticPlayTransferService : IPragmaticPlayTransferService
         return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "en";
     }
 
-    public ValueTask<PragmaticPlayTransferConfiguration?> GetSettingConfigurationAsync()
+    public ValueTask<PragmaticPlayTransferConfiguration> GetSettingConfigurationAsync()
         => _settingService.GetConfigurationAsync<PragmaticPlayTransferConfiguration>(
             GameProviderConfigurations.PragmaticPlayTransfer);
 }

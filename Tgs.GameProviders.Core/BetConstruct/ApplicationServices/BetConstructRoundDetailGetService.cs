@@ -4,43 +4,42 @@ using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Core.BetConstruct.ApplicationServices
+namespace Tgs.GameProviders.Core.BetConstruct.ApplicationServices;
+
+internal class BetConstructRoundDetailGetService : IGetService<BetConstructRoundDetailQuery, RoundDetailResult>
 {
-    internal class BetConstructRoundDetailGetService : IGetService<BetConstructRoundDetailQuery, RoundDetailResult>
+    private readonly IRoundService _roundService;
+
+    public BetConstructRoundDetailGetService(
+        IRoundService roundService)
     {
-        private readonly IRoundService _roundService;
+        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
+    }
 
-        public BetConstructRoundDetailGetService(
-            IRoundService roundService)
+    public async ValueTask<RoundDetailResult> GetAsync(BetConstructRoundDetailQuery query, CancellationToken cancellationToken = default)
+    {
+        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+        if (roundInfo == null)
         {
-            _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
+            throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        public async ValueTask<RoundDetailResult> GetAsync(BetConstructRoundDetailQuery query, CancellationToken cancellationToken = default)
-        {
-            var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-            if (roundInfo == null)
+        var gameRecord = roundInfo.AdditionalData;
+
+        return string.IsNullOrWhiteSpace(gameRecord)
+            ? (new RoundDetailResult()
             {
-                throw new Exception($"This game round number could not be found.{query.RoundId}");
-            }
-
-            var gameRecord = roundInfo.AdditionalData;
-
-            return string.IsNullOrWhiteSpace(gameRecord)
-                ? (new RoundDetailResult()
+                Data = new RoundDetailDataBase[]
                 {
-                    Data = new RoundDetailDataBase[]
-                    {
-                        new RoundDetailDataJson {Value = null}
-                    }
-                })
-                : (new()
-                {
-                    Data = new RoundDetailDataBase[]
-                {
-                    new RoundDetailDataJson {Value = gameRecord}
+                    new RoundDetailDataJson {Value = null}
                 }
-                });
-        }
+            })
+            : (new()
+            {
+                Data = new RoundDetailDataBase[]
+            {
+                new RoundDetailDataJson {Value = gameRecord}
+            }
+            });
     }
 }

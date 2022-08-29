@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Tgs.GameProviders.ViewModels
+namespace Tgs.GameProviders.ViewModels;
+
+public class GameUrlResponse
 {
-    public class GameUrlResponse
-    {
-        public Uri? Url { get; set; }
-    }
+    public Uri? Url { get; set; }
 }

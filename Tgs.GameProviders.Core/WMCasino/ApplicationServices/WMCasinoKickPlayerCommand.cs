@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.WMCasino.ApplicationServices
-{
-    public record WMCasinoKickPlayerCommand : KickPlayerCommand;
-}
+﻿namespace Tgs.GameProviders.Core.WMCasino.ApplicationServices;
+
+public record WMCasinoKickPlayerCommand : KickPlayerCommand;

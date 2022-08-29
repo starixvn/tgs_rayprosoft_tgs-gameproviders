@@ -1,15 +1,14 @@
-﻿namespace Tgs.GameProviders.Core.TCG
-{
-    public enum TCGPlayerGameMode
-    {
-        /// <summary>
-        /// The trial player
-        /// </summary>
-        TrialPlayer = 0,
+﻿namespace Tgs.GameProviders.Core.TCG;
 
-        /// <summary>
-        /// The real player
-        /// </summary>
-        RealPlayer = 1
-    }
+public enum TCGPlayerGameMode
+{
+    /// <summary>
+    /// The trial player
+    /// </summary>
+    TrialPlayer = 0,
+
+    /// <summary>
+    /// The real player
+    /// </summary>
+    RealPlayer = 1
 }

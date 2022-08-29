@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.AsiaGaming;
 using Tgs.GameProviders.Domains.SettingConfiguration;

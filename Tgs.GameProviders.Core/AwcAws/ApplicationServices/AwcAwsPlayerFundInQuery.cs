@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices
-{
-    public record AwcAwsPlayerFundInQuery : PlayerFundQuery;
-}
+﻿namespace Tgs.GameProviders.Core.AwcAws.ApplicationServices;
+
+public record AwcAwsPlayerFundInQuery : PlayerFundQuery;

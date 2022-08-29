@@ -1,7 +1,6 @@
-﻿namespace Tgs.GameProviders
+﻿namespace Tgs.GameProviders;
+
+public class RedisOptions
 {
-    public class RedisOptions
-    {
-        public string ConnectionString { get; set; } = "localhost";
-    }
+    public string ConnectionString { get; set; } = "localhost";
 }

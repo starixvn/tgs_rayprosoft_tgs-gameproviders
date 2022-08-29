@@ -1,9 +1,8 @@
-﻿namespace Tgs.GameProviders.Domains.SettingConfiguration.AllBet
-{
-    public record AllBetBrandMerchant
-    {
-        public string BrandCode { get; init; } = default!;
+﻿namespace Tgs.GameProviders.Domains.SettingConfiguration.AllBet;
 
-        public AllBetAgent[] Agents { get; init; } = default!;
-    }
+public record AllBetBrandMerchant
+{
+    public string BrandCode { get; init; } = default!;
+
+    public AllBetAgent[] Agents { get; init; } = default!;
 }

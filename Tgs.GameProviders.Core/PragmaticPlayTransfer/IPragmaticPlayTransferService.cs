@@ -17,5 +17,5 @@ public interface IPragmaticPlayTransferService
 
     ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode);
 
-    ValueTask<PragmaticPlayTransferConfiguration?> GetSettingConfigurationAsync();
+    ValueTask<PragmaticPlayTransferConfiguration> GetSettingConfigurationAsync();
 }

@@ -2,17 +2,16 @@
 
 using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.SBO.Models
+namespace Tgs.GameProviders.Core.SBO.Models;
+
+public record SBOGetRoundHistoryRequest : SBOBaseRequest
 {
-    public record SBOGetRoundHistoryRequest : SBOBaseRequest
-    {
-        [JsonPropertyName("RefNos")]
-        public string ExternalRoundId { get; init; }
+    [JsonPropertyName("RefNos")]
+    public string ExternalRoundId { get; init; }
 
-        [JsonPropertyName("Language")]
-        public string Language { get; init; }
+    [JsonPropertyName("Language")]
+    public string Language { get; init; }
 
-        [JsonPropertyName("Portfolio")]
-        public string Portfolio { get; init; }
-    }
+    [JsonPropertyName("Portfolio")]
+    public string Portfolio { get; init; }
 }

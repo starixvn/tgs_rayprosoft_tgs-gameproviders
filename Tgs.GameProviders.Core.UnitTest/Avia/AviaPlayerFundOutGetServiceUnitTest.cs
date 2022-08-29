@@ -8,54 +8,53 @@ using Tgs.GameProviders.Core.Avia.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration.Avia;
 
-namespace Tgs.GameProviders.Core.UnitTest.Avia
+namespace Tgs.GameProviders.Core.UnitTest.Avia;
+
+[TestFixture]
+public class AviaPlayerFundOutGetServiceUnitTest
 {
-    [TestFixture]
-    public class AviaPlayerFundOutGetServiceUnitTest
+    [Test]
+    public async Task Normal_Process()
     {
-        [Test]
-        public async Task Normal_Process()
+        var faceLogger = NullLogger<AviaPlayerFundOutGetService>.Instance;
+        var fakeAviaApiClient = Substitute.For<IAviaApiClient>();
+        var fakeAviaService = Substitute.For<IAviaService>();
+
+        var fakeService = new AviaPlayerFundOutGetService(faceLogger, fakeAviaApiClient, fakeAviaService);
+
+        var query = new AviaPlayerFundOutQuery()
         {
-            var faceLogger = NullLogger<AviaPlayerFundOutGetService>.Instance;
-            var fakeAviaApiClient = Substitute.For<IAviaApiClient>();
-            var fakeAviaService = Substitute.For<IAviaService>();
+            BrandCode = "GPI",
+            PlayerCode = "4ucmqplxb029",
+            CurrencyCode = "CNY",
+            OrderId = Guid.NewGuid().ToString("N"),
+            Amount = 1.00m
+        };
 
-            var fakeService = new AviaPlayerFundOutGetService(faceLogger, fakeAviaApiClient, fakeAviaService);
+        var brandMerchant = new AviaBrandMerchant()
+        {
+            BrandCode = DefConst.BrandCodeDefault,
+            ApiUrl = new("https://api.aviaapi.vip"),
+            Authorization = "81e2d1a24c684a76a710a70f4900a353",
+            PlayerPassword = "TgsP@ssw0rd"
+        };
 
-            var query = new AviaPlayerFundOutQuery()
-            {
-                BrandCode = "GPI",
-                PlayerCode = "4ucmqplxb029",
-                CurrencyCode = "CNY",
-                OrderId = Guid.NewGuid().ToString("N"),
-                Amount = 1.00m
-            };
+        var success = true;
+        var orderId = $"{DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)):yyyyMMddHHmmssfff}{query.PlayerCode}";
+        var gameProviderCurrencyCode = "CNY";
 
-            var brandMerchant = new AviaBrandMerchant()
-            {
-                BrandCode = DefConst.BrandCodeDefault,
-                ApiUrl = new("https://api.aviaapi.vip"),
-                Authorization = "81e2d1a24c684a76a710a70f4900a353",
-                PlayerPassword = "TgsP@ssw0rd"
-            };
+        _ = fakeAviaService.GetBrandMerchantAsync(query.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
+        _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
+        _ = fakeAviaApiClient.TransferOutAsync(
+            brandMerchant.ApiUrl,
+            brandMerchant.Authorization,
+            query.PlayerCode,
+            query.CurrencyCode,
+            query.Amount).Returns(ValueTask.FromResult<(bool Success, string orderId)>((success, orderId)));
 
-            var success = true;
-            var orderId = $"{DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)):yyyyMMddHHmmssfff}{query.PlayerCode}";
-            var gameProviderCurrencyCode = "CNY";
+        var actual = await fakeService.GetAsync(query).ConfigureAwait(false);
 
-            _ = fakeAviaService.GetBrandMerchantAsync(query.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
-            _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
-            _ = fakeAviaApiClient.TransferOutAsync(
-                brandMerchant.ApiUrl,
-                brandMerchant.Authorization,
-                query.PlayerCode,
-                query.CurrencyCode,
-                query.Amount).Returns(ValueTask.FromResult<(bool Success, string orderId)>((success, orderId)));
-
-            var actual = await fakeService.GetAsync(query).ConfigureAwait(false);
-
-            Assert.NotNull(actual);
-            Assert.AreEqual(orderId, actual.OrderId);
-        }
+        Assert.NotNull(actual);
+        Assert.AreEqual(orderId, actual.OrderId);
     }
 }

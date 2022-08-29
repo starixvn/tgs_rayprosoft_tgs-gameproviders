@@ -5,46 +5,45 @@ using Tgs.GameProviders.Core.SBO;
 using Tgs.GameProviders.Core.SBO.Models;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
-namespace Tgs.GameProviders.Services.SBO
+namespace Tgs.GameProviders.Services.SBO;
+
+internal class SBOGameAgent : ISBOGameAgent
 {
-    internal class SBOGameAgent : ISBOGameAgent
+    private readonly ISBOApiClient _client;
+    private readonly ILogger<SBOGameAgent> _logger;
+    private readonly ISBOService _service;
+
+    public SBOGameAgent(
+        ILogger<SBOGameAgent> logger,
+        ISBOService service,
+        ISBOApiClient client)
     {
-        private readonly ISBOApiClient _client;
-        private readonly ILogger<SBOGameAgent> _logger;
-        private readonly ISBOService _service;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _service = service ?? throw new ArgumentNullException(nameof(service));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+    }
 
-        public SBOGameAgent(
-            ILogger<SBOGameAgent> logger,
-            ISBOService service,
-            ISBOApiClient client)
+    public async ValueTask<bool> CreateAgentAsync(
+        SBOConfiguration configuration,
+        string agentId,
+        string currencyCode)
+    {
+        var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
+
+        var gameProviderCurrencyCode = await _service
+            .GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)
+            .ConfigureAwait(false);
+
+        var request = new SBOCreateAgentRequest
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-        }
+            AgentId = agentId,
+            CurrencyCode = gameProviderCurrencyCode,
+            CompanyKey = configuration.CompanyKey
+        };
 
-        public async ValueTask<bool> CreateAgentAsync(
-            SBOConfiguration configuration,
-            string agentId,
-            string currencyCode)
-        {
-            var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
+        var response = await _client.CreateAgentAsync(configuration.ApiUrl, request)
+            .ConfigureAwait(false);
 
-            var gameProviderCurrencyCode = await _service
-                .GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode)
-                .ConfigureAwait(false);
-
-            var request = new SBOCreateAgentRequest
-            {
-                AgentId = agentId,
-                CurrencyCode = gameProviderCurrencyCode,
-                CompanyKey = configuration.CompanyKey
-            };
-
-            var response = await _client.CreateAgentAsync(configuration.ApiUrl, request)
-                .ConfigureAwait(false);
-
-            return response.Error.Code == SBOApiErrorCode.None;
-        }
+        return response.Error.Code == SBOApiErrorCode.None;
     }
 }

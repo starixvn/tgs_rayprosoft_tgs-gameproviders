@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Domains.RoundDetail
+namespace Tgs.GameProviders.Domains.RoundDetail;
+
+public record RoundDetailResult
 {
-    public record RoundDetailResult
-    {
-        [JsonPropertyName("data")]
-        public RoundDetailDataBase[]? Data { get; init; }
-    }
+    [JsonPropertyName("data")]
+    public RoundDetailDataBase[]? Data { get; init; }
 }

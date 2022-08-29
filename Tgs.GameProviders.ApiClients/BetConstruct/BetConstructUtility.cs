@@ -3,24 +3,23 @@ using System.Security.Cryptography;
 using System.Text;
 using Tgs.GameProviders.Core.BetConstruct;
 
-namespace Tgs.GameProviders.ApiClients.BetConstruct
+namespace Tgs.GameProviders.ApiClients.BetConstruct;
+
+internal class BetConstructUtility : IBetConstructUtility
 {
-    internal class BetConstructUtility : IBetConstructUtility
+    private static readonly MD5 _Md5;
+
+    static BetConstructUtility()
     {
-        private static readonly MD5 _Md5;
+        _Md5 = MD5.Create();
+    }
 
-        static BetConstructUtility()
-        {
-            _Md5 = MD5.Create();
-        }
+    public string MD5Hash(string plainText)
+    {
+        var data = Encoding.UTF8.GetBytes(plainText);
 
-        public string MD5Hash(string plainText)
-        {
-            var data = Encoding.UTF8.GetBytes(plainText);
+        var hash = _Md5.ComputeHash(data);
 
-            var hash = _Md5.ComputeHash(data);
-
-            return Convert.ToHexString(hash).ToLower();
-        }
+        return Convert.ToHexString(hash).ToLower();
     }
 }

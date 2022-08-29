@@ -3,42 +3,45 @@
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
-namespace Tgs.GameProviders.Core
+namespace Tgs.GameProviders.Core;
+
+public interface ISettingRepository
 {
-    public interface ISettingRepository
-    {
-        ValueTask<AwcAelottoConfiguration> GetAwcAelottoConfigurationAsync();
+    ValueTask<AwcAelottoConfiguration> GetAwcAelottoConfigurationAsync();
 
-        ValueTask<AwcAwsConfiguration> GetAwcAwsConfigurationAsync();
+    ValueTask<AwcAwsConfiguration> GetAwcAwsConfigurationAsync();
 
-        ValueTask<AwcCockfightConfiguration> GetAwcCockfightConfigurationAsync();
+    ValueTask<AwcCockfightConfiguration> GetAwcCockfightConfigurationAsync();
 
-        ValueTask<AwcFacaiConfiguration> GetAwcFacaiConfigurationAsync();
+    ValueTask<AwcFacaiConfiguration> GetAwcFacaiConfigurationAsync();
 
-        ValueTask<AwcFsConfiguration> GetAwcFsConfigurationAsync();
+    ValueTask<AwcFsConfiguration> GetAwcFsConfigurationAsync();
 
-        ValueTask<AwcKmConfiguration> GetAwcKmConfigurationAsync();
+    ValueTask<AwcKmConfiguration> GetAwcKmConfigurationAsync();
 
-        ValueTask<AwcLudoConfiguration> GetAwcLudoConfigurationAsync();
+    ValueTask<AwcLudoConfiguration> GetAwcLudoConfigurationAsync();
 
-        ValueTask<AwcPgsConfiguration> GetAwcPgsConfigurationAsync();
+    ValueTask<AwcPgsConfiguration> GetAwcPgsConfigurationAsync();
 
-        ValueTask<AwcRcbConfiguration> GetAwcRcbConfigurationAsync();
+    ValueTask<AwcRcbConfiguration> GetAwcRcbConfigurationAsync();
 
-        ValueTask<AwcSpadeConfiguration> GetAwcSpadeConfigurationAsync();
+    ValueTask<AwcSgConfiguration> GetAwcSgConfigurationAsync();
 
-        ValueTask<AwcSgConfiguration> GetAwcSgConfigurationAsync();
+    ValueTask<AwcSpadeConfiguration> GetAwcSpadeConfigurationAsync();
 
-        ValueTask<AwcVenusConfiguration> GetAwcVenusConfigurationAsync();
+    ValueTask<AwcVenusConfiguration> GetAwcVenusConfigurationAsync();
 
-        ValueTask<AwcYlConfiguration> GetAwcYlConfigurationAsync();
+    ValueTask<AwcYlConfiguration> GetAwcYlConfigurationAsync();
 
-        ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync();
+    ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase;
 
-        ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync();
+    ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync();
 
-        ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync();
+    ValueTask<IDNLiveConfiguration> GetIDNLiveConfigurationAsync();
 
-        ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key) where TConfiguration : PluggableConfigurationBase;
-    }
+    ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync();
+
+    ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync();
+
+    ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync();
 }

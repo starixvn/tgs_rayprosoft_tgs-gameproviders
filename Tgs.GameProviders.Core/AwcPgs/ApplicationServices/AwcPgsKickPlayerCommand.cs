@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices
-{
-    public record AwcPgsKickPlayerCommand : KickPlayerCommand;
-}
+﻿namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices;
+
+public record AwcPgsKickPlayerCommand : KickPlayerCommand;

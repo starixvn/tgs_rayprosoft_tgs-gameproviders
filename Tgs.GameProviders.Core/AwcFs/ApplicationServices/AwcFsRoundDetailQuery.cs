@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.AwcFs.ApplicationServices
-{
-    public record AwcFsRoundDetailQuery : RoundDetailQuery;
-}
+﻿namespace Tgs.GameProviders.Core.AwcFs.ApplicationServices;
+
+public record AwcFsRoundDetailQuery : RoundDetailQuery;

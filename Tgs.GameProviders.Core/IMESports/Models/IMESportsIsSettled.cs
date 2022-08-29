@@ -1,11 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.IMESports.Models
+namespace Tgs.GameProviders.Core.IMESports.Models;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum IMESportsIsSettled
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum IMESportsIsSettled
-    {
-        NotSettled = 0,
-        Settled = 1
-    }
+    NotSettled = 0,
+    Settled = 1
 }

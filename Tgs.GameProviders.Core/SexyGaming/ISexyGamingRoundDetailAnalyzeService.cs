@@ -1,9 +1,8 @@
 ﻿using Tgs.GameProviders.Core.SexyGaming.Models;
 
-namespace Tgs.GameProviders.Core.SexyGaming
+namespace Tgs.GameProviders.Core.SexyGaming;
+
+public interface ISexyGamingRoundDetailAnalyzeService
 {
-    public interface ISexyGamingRoundDetailAnalyzeService
-    {
-        string GetAnalyze(string externalGameId, SexyGamingGameRecord source);
-    }
+    string GetAnalyze(string externalGameId, SexyGamingGameRecord source);
 }

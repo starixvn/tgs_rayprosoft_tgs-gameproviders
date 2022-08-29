@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices
-{
-    public record EvolutionTransferPlayerFundCheckingQuery : PlayerFundCheckingQuery;
-}
+﻿namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
+
+public record EvolutionTransferPlayerFundCheckingQuery : PlayerFundCheckingQuery;

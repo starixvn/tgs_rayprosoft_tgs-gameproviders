@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.ApiClients.KY.Models.Commons
+namespace Tgs.GameProviders.ApiClients.KY.Models.Commons;
+
+public record KYBaseDataResponse
 {
-    public record KYBaseDataResponse
-    {
-        [JsonPropertyName("code")]
-        public int Code { get; init; }
-    }
+    [JsonPropertyName("code")]
+    public int Code { get; init; }
 }

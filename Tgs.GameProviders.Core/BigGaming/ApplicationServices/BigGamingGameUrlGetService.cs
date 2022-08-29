@@ -4,61 +4,60 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Core.BigGaming.ApplicationServices
-{
-    public class BigGamingGameUrlGetService : IGetService<BigGamingGameUrlQuery, GameUrlResult>
-    {
-        private readonly IGameRepository _gameService;
-        private readonly IBigGamingGameUrl _gameUrl;
-        private readonly IBigGamingGamePlayer _gamingGamePlayerCreate;
-        private readonly IBigGamingService _service;
+namespace Tgs.GameProviders.Core.BigGaming.ApplicationServices;
 
-        public BigGamingGameUrlGetService(
-            IGameRepository gameService,
-            IBigGamingService service,
-            IBigGamingGamePlayer gamingGamePlayerCreate,
-            IBigGamingGameUrl gameUrl
-            )
+public class BigGamingGameUrlGetService : IGetService<BigGamingGameUrlQuery, GameUrlResult>
+{
+    private readonly IGameRepository _gameService;
+    private readonly IBigGamingGameUrl _gameUrl;
+    private readonly IBigGamingGamePlayer _gamingGamePlayerCreate;
+    private readonly IBigGamingService _service;
+
+    public BigGamingGameUrlGetService(
+        IGameRepository gameService,
+        IBigGamingService service,
+        IBigGamingGamePlayer gamingGamePlayerCreate,
+        IBigGamingGameUrl gameUrl
+        )
+    {
+        _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
+        _service = service ?? throw new ArgumentNullException(nameof(service));
+        _gamingGamePlayerCreate = gamingGamePlayerCreate ?? throw new ArgumentNullException(nameof(gamingGamePlayerCreate));
+        _gameUrl = gameUrl ?? throw new ArgumentNullException(nameof(gameUrl));
+    }
+
+    public async ValueTask<GameUrlResult> GetAsync(BigGamingGameUrlQuery command, CancellationToken cancellationToken = default)
+    {
+        var gameProviderCultureCode = await _service.GetGameProviderCultureCodeAsync(command.Language).ConfigureAwait(false);
+        var brandMerchant = await _service.GetBrandMerchantAsync(command.CurrencyCode).ConfigureAwait(false);
+
+        if (brandMerchant == null)
         {
-            _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
-            _gamingGamePlayerCreate = gamingGamePlayerCreate ?? throw new ArgumentNullException(nameof(gamingGamePlayerCreate));
-            _gameUrl = gameUrl ?? throw new ArgumentNullException(nameof(gameUrl));
+            throw new Exception("The merchant does not exist.");
         }
 
-        public async ValueTask<GameUrlResult> GetAsync(BigGamingGameUrlQuery command, CancellationToken cancellationToken = default)
+        var getGame = await _gameService.GetAsync(command.GameId.Value).ConfigureAwait(false);
+
+        if (getGame == null)
         {
-            var gameProviderCultureCode = await _service.GetGameProviderCultureCodeAsync(command.Language).ConfigureAwait(false);
-            var brandMerchant = await _service.GetBrandMerchantAsync(command.CurrencyCode).ConfigureAwait(false);
+            return null;
+        }
 
-            if (brandMerchant == null)
+        var responseGameUrl = await _gameUrl.GetGameUrlAsync(brandMerchant, command.PlayerCode, getGame, gameProviderCultureCode).ConfigureAwait(false);
+
+        if (responseGameUrl.Error != null)
+        {
+            if (responseGameUrl.Error.Code == "2213")
             {
-                throw new Exception("The merchant does not exist.");
-            }
-
-            var getGame = await _gameService.GetAsync(command.GameId.Value).ConfigureAwait(false);
-
-            if (getGame == null)
-            {
-                return null;
-            }
-
-            var responseGameUrl = await _gameUrl.GetGameUrlAsync(brandMerchant, command.PlayerCode, getGame, gameProviderCultureCode).ConfigureAwait(false);
-
-            if (responseGameUrl.Error != null)
-            {
-                if (responseGameUrl.Error.Code == "2213")
+                if (await _gamingGamePlayerCreate.CreatePlayerAsync(command.BrandCode, command.PlayerCode, command.CurrencyCode).ConfigureAwait(false))
                 {
-                    if (await _gamingGamePlayerCreate.CreatePlayerAsync(command.BrandCode, command.PlayerCode, command.CurrencyCode).ConfigureAwait(false))
-                    {
-                        responseGameUrl = await _gameUrl.GetGameUrlAsync(brandMerchant, command.PlayerCode, getGame, gameProviderCultureCode).ConfigureAwait(false);
-                    }
+                    responseGameUrl = await _gameUrl.GetGameUrlAsync(brandMerchant, command.PlayerCode, getGame, gameProviderCultureCode).ConfigureAwait(false);
                 }
             }
-
-            return (responseGameUrl.Error == null) ?
-                new() { Url = new Uri(JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(responseGameUrl.Result))) } :
-                throw new Exception($"The manufacturer responded incorrectly.({responseGameUrl.Error.Message})"); ;
         }
+
+        return (responseGameUrl.Error == null) ?
+            new() { Url = new Uri(JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(responseGameUrl.Result))) } :
+            throw new Exception($"The manufacturer responded incorrectly.({responseGameUrl.Error.Message})"); ;
     }
 }

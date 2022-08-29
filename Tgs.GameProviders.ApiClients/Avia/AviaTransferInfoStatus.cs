@@ -1,10 +1,9 @@
-﻿namespace Tgs.GameProviders.ApiClients.Avia
+﻿namespace Tgs.GameProviders.ApiClients.Avia;
+
+internal enum AviaTransferInfoStatus
 {
-    internal enum AviaTransferInfoStatus
-    {
-        Unknown,
-        None,
-        Finish,
-        Faild
-    }
+    Unknown,
+    None,
+    Finish,
+    Faild
 }

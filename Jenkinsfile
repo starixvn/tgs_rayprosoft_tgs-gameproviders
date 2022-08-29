@@ -98,30 +98,48 @@ pipeline {
 
 		stage('Deploy to k8s') {
 			steps {
-				withKubeConfig([credentialsId: env.k8s_config]) {
-                    withCredentials([string(credentialsId: "tgs-${kube_ns}-connectionstring", variable: "tgs_tgs")]) {
-                        sh '''
-                            helm template deployment/k8s/game-gameproviders \
+                script {
+                    withKubeConfig([credentialsId: env.k8s_config]) {
+                        def resources = getResources(env.k8s_config, env.kube_ns, "game-gameproviders")
+                        def dedicated = getTgsSettings(env.k8s_config, env.kube_ns, "dedicated")
+                        def node_selector = getTgsSettings(env.k8s_config, env.kube_ns, "node-selector")
+                        def autoscaling = getAutoscaling(env.k8s_config, env.kube_ns, "game-gameproviders")
+
+                        println resources
+                        println dedicated
+                        println node_selector
+                        println autoscaling
+
+                        sh """
+                            cat << EOF | yq e -P | helm template deployment/k8s/game-gameproviders \
+                                -n ${kube_ns} \
                                 --set image.tag=${TAG} \
-                                --set namespace=${kube_ns} \
-                                --set autoscaling.enabled=${tgs_autoscaling} \
-                                --set connectionStrings.redis="$tgs_redis" \
-                                --set nats.urls="$tgs_nats" \
-                        '''
-                        sh '''
-                            helm template deployment/k8s/game-gameproviders \
+                                -f -
+                            {
+                                "nodeSelector": $node_selector,
+                                "tolerations": [$dedicated],
+                                "resources": $resources,
+                                "autoscaling": $autoscaling
+                            }
+                        """
+                        sh """
+                            cat << EOF | yq e -P | helm template deployment/k8s/game-gameproviders \
+                                -n ${kube_ns} \
                                 --set image.tag=${TAG} \
-                                --set namespace=${kube_ns} \
-                                --set autoscaling.enabled=${tgs_autoscaling} \
-                                --set connectionStrings.redis="$tgs_redis" \
-                                --set nats.urls="$tgs_nats" \
+                                -f - \
                                 | kubectl -n ${kube_ns} apply -f -
-                        '''
+                            {
+                                "nodeSelector": $node_selector,
+                                "tolerations": [$dedicated],
+                                "resources": $resources,
+                                "autoscaling": $autoscaling
+                            }
+                        """
                     }
-				}
+                }
 			}
 		}
-
+        
 		stage('Add Tag on Prod') {
             when {
                 expression {

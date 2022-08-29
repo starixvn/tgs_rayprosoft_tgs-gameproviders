@@ -5,38 +5,37 @@ using Tgs.GameProviders.Core.WMCasino;
 using Tgs.GameProviders.Core.WMCasino.Models;
 using Tgs.GameProviders.Domains.SettingConfiguration.WMCasino;
 
-namespace Tgs.GameProviders.Services.WMCasino
+namespace Tgs.GameProviders.Services.WMCasino;
+
+public class WMCasinoGamePlayer : IWMCasinoGamePlayer
 {
-    public class WMCasinoGamePlayer : IWMCasinoGamePlayer
+    private readonly IWMCasinoApiClient _client;
+    private readonly ILogger<WMCasinoGamePlayer> _logger;
+
+    public WMCasinoGamePlayer(
+        ILogger<WMCasinoGamePlayer> logger,
+        IWMCasinoApiClient client)
     {
-        private readonly IWMCasinoApiClient _client;
-        private readonly ILogger<WMCasinoGamePlayer> _logger;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+    }
 
-        public WMCasinoGamePlayer(
-            ILogger<WMCasinoGamePlayer> logger,
-            IWMCasinoApiClient client)
+    public async ValueTask<bool> CreatePlayerAsync(
+        Uri apiUrl,
+        WMCasinoAgent agent,
+        string wmPlayerId,
+        string username)
+    {
+        var request = new WMCasinoMemberRegisterRequest
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-        }
+            VendorId = agent.AgentId,
+            Signature = agent.Signature,
+            User = wmPlayerId,
+            Username = username.Length > 30 ? username[..30] : username
+        };
 
-        public async ValueTask<bool> CreatePlayerAsync(
-            Uri apiUrl,
-            WMCasinoAgent agent,
-            string wmPlayerId,
-            string username)
-        {
-            var request = new WMCasinoMemberRegisterRequest
-            {
-                VendorId = agent.AgentId,
-                Signature = agent.Signature,
-                User = wmPlayerId,
-                Username = username.Length > 30 ? username[..30] : username
-            };
+        var response = await _client.MemberRegisterAsync(apiUrl, request).ConfigureAwait(false);
 
-            var response = await _client.MemberRegisterAsync(apiUrl, request).ConfigureAwait(false);
-
-            return response.ErrorCode == (int)WMCasinoApiErrorCode.Success;
-        }
+        return response.ErrorCode == (int)WMCasinoApiErrorCode.Success;
     }
 }

@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Tgs.GameProviders.Core.BigGaming
+namespace Tgs.GameProviders.Core.BigGaming;
+
+public interface IBigGamingGamePlayer
 {
-    public interface IBigGamingGamePlayer
-    {
-        ValueTask<bool> CreatePlayerAsync(string brandCode, string playerCode, string currencyCode);
-    }
+    ValueTask<bool> CreatePlayerAsync(string brandCode, string playerCode, string currencyCode);
 }

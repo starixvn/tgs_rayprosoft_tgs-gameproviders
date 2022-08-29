@@ -2,14 +2,13 @@
 using Tgs.GameProviders.Core.BigGaming.ApplicationServices;
 using Tgs.GameProviders.ViewModels;
 
-namespace Tgs.GameProviders.ViewModelMappings
+namespace Tgs.GameProviders.ViewModelMappings;
+
+public class RoundDetailMapping : Profile
 {
-    public class RoundDetailMapping : Profile
+    public RoundDetailMapping()
     {
-        public RoundDetailMapping()
-        {
-            CreateMap<RoundDetailRequest, BigGamingRoundDetailQuery>()
-                .ReverseMap();
-        }
+        CreateMap<RoundDetailRequest, BigGamingRoundDetailQuery>()
+            .ReverseMap();
     }
 }

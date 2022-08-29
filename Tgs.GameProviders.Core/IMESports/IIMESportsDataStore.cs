@@ -1,13 +1,12 @@
 ﻿using System.Threading.Tasks;
 
-namespace Tgs.GameProviders.Core.IMESports
+namespace Tgs.GameProviders.Core.IMESports;
+
+public interface IIMESportsDataStore
 {
-    public interface IIMESportsDataStore
-    {
-        ValueTask CacheSessionTokenAsync(
-            string playerCode,
-            string gameExternalId,
-            string sessionToken,
-            int timeToLeave);
-    }
+    ValueTask CacheSessionTokenAsync(
+        string playerCode,
+        string gameExternalId,
+        string sessionToken,
+        int timeToLeave);
 }

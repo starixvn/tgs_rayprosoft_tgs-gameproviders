@@ -14,11 +14,15 @@
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 		<PackageReference Include="Tgs.Core.Infrastructures.Security" Version="0.0.1" />
 		<PackageReference Include="Tgs.GameInterface.AwcService.Client" Version="0.0.8" />
-		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.6" />
+		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.7" />
+		<PackageReference Include="Tgs.GameInterface.IdnLiveService.Client" Version="0.0.1" />
 		<PackageReference Include="Tgs.GameInterface.JiliService.Client" Version="0.0.1" />
+		<PackageReference Include="Tgs.GameInterface.SkywindService.Client" Version="0.0.1" />
 		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="1.0.5" />
+		<PackageReference Include="Tgs.GamePlayerTransform.Client" Version="0.0.6" />
 		<PackageReference Include="Tgs.GameProviders.QueryServer.Client" Version="0.0.14" />
-		<PackageReference Include="Tgs.GameRounds.Client" Version="0.0.19" />
+		<PackageReference Include="Tgs.GameRounds.Client" Version="0.0.27" />
+		<PackageReference Include="Tgs.GameToken.Client" Version="0.0.2" />
 		<PackageReference Include="TGS.ServiceUtility" Version="0.1.0" />
 		<PackageReference Include="Tgs.Logging" Version="0.0.19" />
 	</ItemGroup>

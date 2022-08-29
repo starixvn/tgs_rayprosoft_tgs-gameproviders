@@ -1,8 +1,7 @@
-﻿namespace Tgs.GameProviders.Core
+﻿namespace Tgs.GameProviders.Core;
+
+public record GameRecordListResult
 {
-    public record GameRecordListResult
-    {
-        public bool Success { get; init; }
-        public GameRecordListModel[] Datas { get; init; }
-    }
+    public bool Success { get; init; }
+    public GameRecordListModel[] Datas { get; init; }
 }

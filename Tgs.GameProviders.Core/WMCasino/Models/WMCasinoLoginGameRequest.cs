@@ -2,19 +2,18 @@
 
 using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.WMCasino.Models
+namespace Tgs.GameProviders.Core.WMCasino.Models;
+
+public record WMCasinoLoginGameRequest : WMCasinoBaseRequest
 {
-    public record WMCasinoLoginGameRequest : WMCasinoBaseRequest
-    {
-        public override string Action => "LoginGame";
+    public override string Action => "LoginGame";
 
-        [JsonPropertyName("lang")]
-        public string Language { get; init; } = default!;
+    [JsonPropertyName("lang")]
+    public string Language { get; init; } = default!;
 
-        [JsonPropertyName("password")]
-        public string Password => "TgsP@ssword";
+    [JsonPropertyName("password")]
+    public string Password => "TgsP@ssword";
 
-        [JsonPropertyName("user")]
-        public string User { get; set; } = default!;
-    }
+    [JsonPropertyName("user")]
+    public string User { get; set; } = default!;
 }

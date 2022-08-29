@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.SBO.ApplicationServices
-{
-    public record SBOKickPlayerCommand : KickPlayerCommand;
-}
+﻿namespace Tgs.GameProviders.Core.SBO.ApplicationServices;
+
+public record SBOKickPlayerCommand : KickPlayerCommand;

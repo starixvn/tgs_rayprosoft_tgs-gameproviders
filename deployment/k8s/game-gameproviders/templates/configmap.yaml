@@ -7,11 +7,15 @@ data:
   appsettings.json: |
     {
       "GameProviders": {
-        "GameProvidersQueryServerBaseUrl": "http://game-gameprovider-queryserver",
-        "GameInterfaceAwcServiceBaseUrl":"http://game-gameinterface-awc-service:9090",
-        "GameInterfaceJiliServiceBaseUrl":"http://game-gameinterface-jili-service:9090",
-        "GameInterfaceWMCasinoServiceBaseUrl":"http://game-gameinterface-wmcasino-service:9090",
-        "GameInterfaceEvolutionServiceBaseUrl":"http://game-gameinterface-evolution-service:9090",
-        "GameRoundsServiceBaseUrl":"http://game-gamerounds"
-      },
+        "GameRoundsBaseUrl":"http://game-gamerounds",
+        "GameTokenBaseUrl":"http://game-token",
+        "GamePlayerTransformBaseUrl":"http://game-gameplayertransform:9090",
+        "GameProvidersQueryBaseUrl": "http://game-gameprovider-queryserver",
+        "GameInterfaceAwcBaseUrl":"http://game-gameinterface-awc-service:9090",
+        "GameInterfaceJiliBaseUrl":"http://game-gameinterface-jili-service:9090",
+        "GameInterfaceWMCasinoBaseUrl":"http://game-gameinterface-wmcasino-service:9090",
+        "GameInterfaceEvolutionBaseUrl":"http://game-gameinterface-evolution-service:9090",
+        "GameInterfaceIdnLiveBaseUrl":"http://game-gameinterface-idnlive-service:9090",
+        "GameInterfaceSkywindBaseUrl":"http://game-gameinterface-sw-service:9090",
+      }
     }

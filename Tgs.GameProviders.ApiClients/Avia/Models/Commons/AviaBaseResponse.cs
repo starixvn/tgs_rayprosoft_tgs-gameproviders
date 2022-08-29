@@ -1,14 +1,13 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.ApiClients.Avia.Models.Commons
+namespace Tgs.GameProviders.ApiClients.Avia.Models.Commons;
+
+internal record AviaBaseResponse<TInfo>
 {
-    internal record AviaBaseResponse<TInfo>
-    {
-        [JsonPropertyName("success")]
-        public int Success { get; init; }
-        [JsonPropertyName("msg")]
-        public string Message { get; init; }
-        [JsonPropertyName("info")]
-        public TInfo Info { get; init; }
-    }
+    [JsonPropertyName("success")]
+    public int Success { get; init; }
+    [JsonPropertyName("msg")]
+    public string Message { get; init; }
+    [JsonPropertyName("info")]
+    public TInfo Info { get; init; }
 }

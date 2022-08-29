@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
-namespace Tgs.GameProviders.Core.BetConstruct
+namespace Tgs.GameProviders.Core.BetConstruct;
+
+public interface IBetConstructService
 {
-    public interface IBetConstructService
-    {
-        ValueTask<BetConstructConfiguration> GetSettingConfigurationAsync();
-    }
+    ValueTask<BetConstructConfiguration> GetSettingConfigurationAsync();
 }

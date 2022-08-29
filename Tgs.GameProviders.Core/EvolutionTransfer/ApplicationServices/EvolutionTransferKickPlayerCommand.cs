@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices
-{
-    public record EvolutionTransferKickPlayerCommand : KickPlayerCommand;
-}
+﻿namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
+
+public record EvolutionTransferKickPlayerCommand : KickPlayerCommand;

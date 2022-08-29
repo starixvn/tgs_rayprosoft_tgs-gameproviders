@@ -5,11 +5,10 @@ using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders
+namespace Tgs.GameProviders;
+
+public interface IRoundDetailHandler<TQuery> where TQuery : RoundDetailQuery
 {
-    public interface IRoundDetailHandler<TQuery> where TQuery : RoundDetailQuery
-    {
-        [HttpGet("RoundDetail/{roundId}")]
-        ValueTask<RoundDetailResult?> RoundDetailAsync([FromServices] IGetService<TQuery, RoundDetailResult?> getService, Guid roundId, [FromQuery] string language);
-    }
+    [HttpGet("RoundDetail/{roundId}")]
+    ValueTask<RoundDetailResult?> RoundDetailAsync([FromServices] IGetService<TQuery, RoundDetailResult?> getService, Guid roundId, [FromQuery] string language);
 }

@@ -1,7 +1,6 @@
-﻿namespace Tgs.GameProviders.Core.Saba
+﻿namespace Tgs.GameProviders.Core.Saba;
+
+public interface ISabaUtility
 {
-    public interface ISabaUtility
-    {
-        public string ToSabaPlayerId(string playerCode, bool isTestEnvironment);
-    }
+    public string ToSabaPlayerId(string playerCode, bool isTestEnvironment);
 }
