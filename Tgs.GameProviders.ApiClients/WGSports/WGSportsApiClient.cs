@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Extensions.Logging;
@@ -145,10 +146,14 @@ internal class WGSportsApiClient : IWGSportsApiClient
     public async ValueTask<Uri?> GetLoginAsync(Uri apiUrl, string partnerCode, string token, string lang)
     {
         var query = HttpUtility.ParseQueryString(string.Empty);
+
+        var encodeToken = HttpUtility.UrlEncode(token, Encoding.UTF8);
+        encodeToken = Regex.Replace(encodeToken, @"(?<=%).{2}", m => m.Value.ToUpper());
+
         query["m"] = "api";
         query["c"] = "index";
         query["a"] = "Login";
-        query["Token"] = HttpUtility.UrlEncode(token,Encoding.UTF8);
+        query["Token"] = encodeToken;
         query["PartnerCode"] = partnerCode;
         query["Lang"] = lang;
         query["Version"] = "2";
