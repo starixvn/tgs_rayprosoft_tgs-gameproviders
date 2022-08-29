@@ -150,6 +150,8 @@ internal class WGSportsApiClient : IWGSportsApiClient
         var encodeToken = HttpUtility.UrlEncode(token, Encoding.UTF8);
         encodeToken = Regex.Replace(encodeToken, @"(?<=%).{2}", m => m.Value.ToUpper());
 
+        _logger.LogError("Token:{token} | EncodeToken:{encodeToken}", token, encodeToken);
+
         query["m"] = "api";
         query["c"] = "index";
         query["a"] = "Login";
