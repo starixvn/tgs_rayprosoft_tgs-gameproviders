@@ -147,21 +147,15 @@ internal class WGSportsApiClient : IWGSportsApiClient
     {
         var query = HttpUtility.ParseQueryString(string.Empty);
 
-        var encodeToken = WebUtility.UrlEncode(token);
-
-        _logger.LogError("Token:{token} | EncodeToken:{encodeToken}", token, encodeToken);
-
         query["m"] = "api";
         query["c"] = "index";
         query["a"] = "Login";
-        query["Token"] = encodeToken;
+        query["Token"] = WebUtility.UrlEncode(token);
         query["PartnerCode"] = partnerCode;
         query["Lang"] = lang;
         query["Version"] = "2";
 
-        var requestUri = new Uri($"{apiUrl}?m=api&c=index&a=Login&Token={encodeToken}&PartnerCode={partnerCode}&Lang={lang}&Version=2");
-
-        _logger.LogError("RequestUri:{requestUri}", requestUri);
+        var requestUri = new Uri($"{apiUrl}?m=api&c=index&a=Login&Token={WebUtility.UrlEncode(token)}&PartnerCode={partnerCode}&Lang={lang}&Version=2");
 
         var response = await GetAsync<WGSportsLoginResponse>(requestUri, query, "Login").ConfigureAwait(false);
 

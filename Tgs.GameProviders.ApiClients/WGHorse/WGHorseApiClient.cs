@@ -152,7 +152,7 @@ internal class WGHorseApiClient : IWGHorseApiClient
             Lang = lang
         };
 
-        var url = new Uri($"{apiUrl}?m=api&c=index&a=Login&Token={System.Web.HttpUtility.UrlEncode(token)}&PartnerCode={partnerCode}&Lang={lang}");
+        var url = new Uri($"{apiUrl}?m=api&c=index&a=Login&Token={WebUtility.UrlEncode(token)}&PartnerCode={partnerCode}&Lang={lang}");
 
         var response = await GetAsync<WGHorseLoginResponse>(url, request, "Login").ConfigureAwait(false);
 
