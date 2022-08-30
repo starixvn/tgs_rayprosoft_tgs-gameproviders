@@ -44,21 +44,37 @@ public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameU
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.SkywindTransfer).ConfigureAwait(false);
         var configuration = await _setting.GetSkywindTransferConfigurationAsync().ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
+        var currencyCode = await _gameProvider
+                       .GetGameProviderCurrencyCodeAsync(gameProviderId, query.CurrencyCode)
+                       .ConfigureAwait(false)
+                   ?? throw new Exception($"This game product currency does not exist.({query.CurrencyCode})");
         var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, query.Language) ?? "en";
         var game = await _game.GetAsync(query.GameId.Value).ConfigureAwait(false);
 
-        var authToken = await _gameTokenClient
-            .CreateAuthAsync(
-                playerCode: player.PlayerCode,
-                info: JsonSerializer.Serialize(player),
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-
         Uri gameUrl;
 
-        if (game.GameType == GameType.Slot)
+        if (game.GameType == GameType.LiveDealerLobby)
         {
-            var request = new GameURLBySlotRequest()
+            var info = new ValidateTicketInfo()
+            {
+                PlayerCode = player.PlayerCode,
+                CurrencyCode = currencyCode,
+                TestCust = false,
+                Country = "CN"
+            };
+            var authToken = await _gameTokenClient
+               .CreateAuthAsync(
+                   playerCode: player.PlayerCode,
+                   info: JsonSerializer.Serialize(info),
+                   cancellationToken: cancellationToken)
+               .ConfigureAwait(false);
+
+            gameUrl = new($"{configuration.LiveLobbyUrl}#/ticket/{authToken}?lang={cultureCode}");
+
+        }
+        else
+        {
+            var request = new GameUrlRequest()
             {
                 ApiUrl = configuration.ApiUrl.ToString(),
                 SecretKey = configuration.SecretKey,
@@ -70,7 +86,7 @@ public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameU
             };
 
             var reply = await _client
-                    .GameURLBySlotAsync(
+                    .GameUrlAsync(
                         request: request,
                         cancellationToken: cancellationToken)
                     .ConfigureAwait(false);
@@ -84,45 +100,10 @@ public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameU
                     cancellationToken).ConfigureAwait(false);
 
                 reply = await _client
-                        .GameURLBySlotAsync(
+                        .GameUrlAsync(
                             request: request,
                             cancellationToken: cancellationToken)
                         .ConfigureAwait(false);
-            }
-            gameUrl = (reply.IsPlayer) ? new(reply.GameUrl) : null;
-        }
-        else
-        {
-            var request = new GameURLByLiveRequest()
-            {
-                ApiUrl = configuration.ApiUrl.ToString(),
-                SecretKey = configuration.SecretKey,
-                Username = configuration.Username,
-                Password = configuration.Password,
-                PlayerCode = query.PlayerCode,
-                AuthToken = authToken,
-                Language = cultureCode
-            };
-
-            var reply = await _client
-                    .GameURLByLiveAsync(
-                        request: request,
-                        cancellationToken: cancellationToken)
-                    .ConfigureAwait(false);
-
-            if (!reply.IsPlayer)
-            {
-                await _createPlayerCommandService.ExecuteAsync(new SkywindTransferCreatePlayerCommand(
-                    Configuration: configuration,
-                    PlayerCode: player.PlayerCode,
-                    CurrencyCode: player.DefaultWalletCurrencyCode),
-                    cancellationToken).ConfigureAwait(false);
-
-                reply = await _client
-                        .GameURLByLiveAsync(
-                            request: request,
-                            cancellationToken: cancellationToken)
-                                    .ConfigureAwait(false);
             }
             gameUrl = (reply.IsPlayer) ? new(reply.GameUrl) : null;
         }

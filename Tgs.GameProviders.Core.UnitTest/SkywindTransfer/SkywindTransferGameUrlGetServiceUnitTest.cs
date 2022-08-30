@@ -76,6 +76,11 @@ public class SkywindTransferGameUrlGetServiceUnitTest
             Arg.Is(gameProviderId),
             Arg.Is(query.Language)).Returns(cultureCode);
 
+        var currencyCode = "CNY";
+        _ = fakeGameProviderRepository.GetGameProviderCurrencyCodeAsync(
+            Arg.Is(gameProviderId),
+            Arg.Is(query.CurrencyCode)).Returns(currencyCode);
+
         var gameModel = new GameModel(
             1,
             Guid.NewGuid(),
@@ -98,7 +103,7 @@ public class SkywindTransferGameUrlGetServiceUnitTest
             GameProviderType.JiliTransfer);
         _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameModel);
 
-        var request = new GameURLBySlotRequest()
+        var request = new GameUrlRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
             SecretKey = configuration.SecretKey,
@@ -108,12 +113,12 @@ public class SkywindTransferGameUrlGetServiceUnitTest
             GameCode = gameModel.GameExternalId,
             Language = cultureCode
         };
-        var response = new GameURLReply()
+        var response = new GameUrlReply()
         {
             IsPlayer = true,
             GameUrl = "http://localhost/"
         };
-        _ = fakeGameInterfaceSkywindClient.GameURLBySlotAsync(
+        _ = fakeGameInterfaceSkywindClient.GameUrlAsync(
             Arg.Is(request)).Returns(response);
 
         var sut = new SkywindTransferGameUrlGetService(
