@@ -3,23 +3,16 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.WGSports.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 
 namespace Tgs.GameProviders.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class WGFMController : ControllerBase,
-    IGameRecordListHandler<WGSportsGameRecordListQuery, WGSportsGameRecordListQuery>,
-    IGameUrlHandler<WGSportsGameUrlQuery>,
-    IKickPlayerHandler<WGSportsKickPlayerCommand>,
-    IPlayerBalanceHandler<WGSportsPlayerBalanceQuery>,
-    IPlayerFundCheckingHandler<WGSportsPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-    IPlayerFundHandler<WGSportsPlayerFundInQuery, WGSportsPlayerFundOutQuery>,
-    IRoundDetailHandler<WGSportsRoundDetailQuery>
+public class WGFMController : ControllerBase
 {
     private readonly IMapper _mapper;
 
@@ -27,31 +20,6 @@ public class WGFMController : ControllerBase,
         IMapper mapper)
     {
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    }
-
-    /// <summary>
-    /// Games the record list asynchronous.
-    /// </summary>
-    /// <param name="getService">The get service.</param>
-    /// <param name="request">The request.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Post
-    ///         {
-    ///             "isSettlement": true,
-    ///             "startTime": "2021-10-26T03:34:00-04:00",
-    ///             "endTime": "2021-10-26T03:44:00-04:00"
-    ///         }
-    /// </remarks>
-    [HttpPost("GameRecordList")]
-    public async ValueTask<GameRecordListResult?> GameRecordListAsync(
-        [FromServices] IGetService<WGSportsGameRecordListQuery, GameRecordListResult> getService,
-        WGSportsGameRecordListQuery request)
-    {
-        var result = await getService.GetAsync(request).ConfigureAwait(false);
-        return result ?? null;
     }
 
     /// <summary>
@@ -78,12 +46,30 @@ public class WGFMController : ControllerBase,
     ///         }
     /// </remarks>
     [HttpPost("GameUrl")]
-    public async ValueTask<GameUrlResponse?> GameUrlAsync(
-        [FromServices] IGetService<WGSportsGameUrlQuery, GameUrlResult> getService,
+    public async ValueTask<GameUrlResponse> GameUrlAsync(
+        [FromServices] IGetService<WGFmGamingGameUrlQuery, Uri> getService,
         GameUrlRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<WGSportsGameUrlQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<GameUrlResponse>(result);
+        var query = new WGFmGamingGameUrlQuery()
+        {
+            GameType = request.GameType,
+            GameId = request.GameId,
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            LoginRecordId = request.LoginRecordId,
+            PlatformType = request.PlatformType,
+            Language = request.Language,
+            IPAddress = request.IPAddress,
+            BackUrl = request.BackUrl
+        };
+
+        var gameUrl = await getService.GetAsync(query).ConfigureAwait(false);
+
+        return new GameUrlResponse()
+        {
+            Url = gameUrl
+        };
     }
 
     /// <summary>
@@ -99,7 +85,7 @@ public class WGFMController : ControllerBase,
     /// </remarks>
     [HttpDelete("kickplayer/{playerCode}")]
     public ValueTask KickPlayerAsync(
-        [FromServices] ICommandService<WGSportsKickPlayerCommand> commandService,
+        [FromServices] ICommandService<WGFmGamingKickPlayerCommand> commandService,
         string playerCode)
         => commandService.ExecuteAsync(new()
         {
@@ -119,7 +105,7 @@ public class WGFMController : ControllerBase,
     /// </remarks>
     [HttpGet("Balance/{playerCode}")]
     public ValueTask<decimal?> PlayerBalanceAsync(
-         [FromServices] IGetService<WGSportsPlayerBalanceQuery, decimal?> getService,
+         [FromServices] IGetService<WGFmGamingPlayerBalanceQuery, decimal?> getService,
          string playerCode)
         => getService.GetAsync(new()
         {
@@ -145,10 +131,10 @@ public class WGFMController : ControllerBase,
     /// </remarks>
     [HttpPost("PlayerFundChecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<WGSportsPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<WGFmGamingPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
         PlayerFundCheckingRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<WGSportsPlayerFundCheckingQuery>(request)).ConfigureAwait(false);
+        var result = await getService.GetAsync(_mapper.Map<WGFmGamingPlayerFundCheckingQuery>(request)).ConfigureAwait(false);
         return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
     }
 
@@ -172,10 +158,10 @@ public class WGFMController : ControllerBase,
     /// </remarks>
     [HttpPost("PlayerFundIn")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
-        [FromServices] IGetService<WGSportsPlayerFundInQuery, PlayerFundResult> getService,
+        [FromServices] IGetService<WGFmGamingPlayerFundInQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<WGSportsPlayerFundInQuery>(request)).ConfigureAwait(false);
+        var result = await getService.GetAsync(_mapper.Map<WGFmGamingPlayerFundInQuery>(request)).ConfigureAwait(false);
         return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
     }
 
@@ -199,10 +185,10 @@ public class WGFMController : ControllerBase,
     /// </remarks>
     [HttpPost("PlayerFundOut")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
-        [FromServices] IGetService<WGSportsPlayerFundOutQuery, PlayerFundResult> getService,
+        [FromServices] IGetService<WGFmGamingPlayerFundOutQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<WGSportsPlayerFundOutQuery>(request)).ConfigureAwait(false);
+        var result = await getService.GetAsync(_mapper.Map<WGFmGamingPlayerFundOutQuery>(request)).ConfigureAwait(false);
         return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
     }
 
@@ -220,7 +206,7 @@ public class WGFMController : ControllerBase,
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<WGSportsRoundDetailQuery, RoundDetailResult?> getService,
+        [FromServices] IGetService<WGFmGamingRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
     {

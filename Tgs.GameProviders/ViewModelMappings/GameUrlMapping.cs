@@ -23,9 +23,9 @@ using Tgs.GameProviders.Core.Skywind.ApplicationServices;
 using Tgs.GameProviders.Core.TCG.ApplicationServices;
 using Tgs.GameProviders.Core.VR.ApplicationServices;
 using Tgs.GameProviders.Core.WGHorse.ApplicationServices;
-using Tgs.GameProviders.Core.WGSports.ApplicationServices;
 using Tgs.GameProviders.Core.WMCasino.ApplicationServices;
 using Tgs.GameProviders.ViewModels;
+using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 
 namespace Tgs.GameProviders.ViewModelMappings;
 
@@ -37,7 +37,7 @@ public class GameUrlMapping : Profile
             .ReverseMap();
         _ = CreateMap<GameUrlRequest, KYGameUrlQuery>()
             .ReverseMap();
-        _ = CreateMap<GameUrlRequest, WGSportsGameUrlQuery>()
+        _ = CreateMap<GameUrlRequest, WGFmGamingGameUrlQuery>()
             .ReverseMap();
         _ = CreateMap<GameUrlRequest, WGHorseGameUrlQuery>()
             .ReverseMap();

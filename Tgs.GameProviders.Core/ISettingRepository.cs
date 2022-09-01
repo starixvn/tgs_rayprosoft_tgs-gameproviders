@@ -44,4 +44,6 @@ public interface ISettingRepository
     ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync();
 
     ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync();
+
+    ValueTask<WGSportsConfiguration> GetWGSportsConfigurationAsync();
 }

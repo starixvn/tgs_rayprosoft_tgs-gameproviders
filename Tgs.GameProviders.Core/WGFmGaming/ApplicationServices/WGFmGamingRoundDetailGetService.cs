@@ -4,18 +4,18 @@ using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Core.WGSports.ApplicationServices;
+namespace Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 
-public class WGSportsRoundDetailGetService : IGetService<WGSportsRoundDetailQuery, RoundDetailResult>
+public class WGFmGamingRoundDetailGetService : IGetService<WGFmGamingRoundDetailQuery, RoundDetailResult>
 {
     private readonly IRoundService _roundService;
 
-    public WGSportsRoundDetailGetService(IRoundService roundService)
+    public WGFmGamingRoundDetailGetService(IRoundService roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }
 
-    public async ValueTask<RoundDetailResult> GetAsync(WGSportsRoundDetailQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<RoundDetailResult> GetAsync(WGFmGamingRoundDetailQuery query, CancellationToken cancellationToken = default)
     {
         var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
         if (roundInfo == null)
