@@ -239,6 +239,18 @@ internal class SettingCacheRepository : ISettingRepository
         return configuration;
     }
 
+    public async ValueTask<WGSportsConfiguration> GetWGSportsConfigurationAsync()
+    {
+        var key = GetKey(GameProviderConfigurations.WGSports);
+        if (!_memoryCache.TryGetValue(key, out WGSportsConfiguration configuration))
+        {
+            configuration = await _setting.GetWGSportsConfigurationAsync().ConfigureAwait(false);
+
+            _ = _memoryCache.Set(key, configuration, _absoluteExpiration);
+        }
+        return configuration;
+    }
+
     private static string GetKey(string gameProviderCode)
-        => $"gameg:gameproviders:setting:{gameProviderCode}".ToLower();
+            => $"gameg:gameproviders:setting:{gameProviderCode}".ToLower();
 }

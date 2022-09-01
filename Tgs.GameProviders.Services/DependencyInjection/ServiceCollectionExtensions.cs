@@ -25,7 +25,6 @@ using Tgs.GameProviders.Core.TCG;
 using Tgs.GameProviders.Core.TFGaming;
 using Tgs.GameProviders.Core.VR;
 using Tgs.GameProviders.Core.WGHorse;
-using Tgs.GameProviders.Core.WGSports;
 using Tgs.GameProviders.Core.WMCasino;
 using Tgs.GameProviders.Services.AllBet;
 using Tgs.GameProviders.Services.AsiaGaming;
@@ -52,7 +51,6 @@ using Tgs.GameProviders.Services.TCG;
 using Tgs.GameProviders.Services.TFGaming;
 using Tgs.GameProviders.Services.VR;
 using Tgs.GameProviders.Services.WGHorse;
-using Tgs.GameProviders.Services.WGSports;
 using Tgs.GameProviders.Services.WMCasino;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -75,9 +73,6 @@ public static class ServiceCollectionExtensions
         _ = services
             .AddTransient<IWGHorseService, WGHorseService>()
             .AddTransient<IWGHorseGamePlayer, WGHorseGamePlayer>();
-        _ = services
-            .AddTransient<IWGSportsService, WGSportsService>()
-            .AddTransient<IWGSportsGamePlayer, WGSportsGamePlayer>();
 
         _ = services
             .AddTransient<IBigGamingService, BigGamingService>()

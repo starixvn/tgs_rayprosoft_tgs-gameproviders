@@ -7,8 +7,8 @@ using Tgs.GameProviders.Core.LY.ApplicationServices;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 using Tgs.GameProviders.Core.VR.ApplicationServices;
 using Tgs.GameProviders.Core.WGHorse.ApplicationServices;
-using Tgs.GameProviders.Core.WGSports.ApplicationServices;
 using Tgs.GameProviders.ViewModels;
+using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 
 namespace Tgs.GameProviders.ViewModelMappings;
 
@@ -22,7 +22,7 @@ public class PlayerFundCheckingMapping : Profile
               .ReverseMap();
         _ = CreateMap<PlayerFundCheckingRequest, WGHorsePlayerFundCheckingQuery>()
               .ReverseMap();
-        _ = CreateMap<PlayerFundCheckingRequest, WGSportsPlayerFundCheckingQuery>()
+        _ = CreateMap<PlayerFundCheckingRequest, WGFmGamingPlayerFundCheckingQuery>()
               .ReverseMap();
         _ = CreateMap<VRPlayerFundCheckingRequest, VRPlayerFundCheckingQuery>()
               .ReverseMap();

@@ -285,33 +285,4 @@ internal class GameRecordListClient : IGameRecordListClient
 
         return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
     }
-
-    public async ValueTask<GameRecordResponse?> WGSportsGameRecordListAsync(
-        bool isSettlement,
-        DateTimeOffset startTime,
-        DateTimeOffset endTime,
-        CancellationToken cancellationToken = default)
-    {
-        var source = new
-        {
-            IsSettlement = isSettlement,
-            StartTime = startTime,
-            EndTime = endTime
-        };
-        var requestContent = new StringContent(JsonSerializer.Serialize(source, _SerializerOptions));
-        requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-        var response = await _httpClient
-            .PostAsync(
-                requestUri: string.Format(_GameRecordListPath, GameProviderType.WGSports),
-                content: requestContent,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-
-        _ = response.EnsureSuccessStatusCode();
-
-        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-
-        return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
-    }
 }

@@ -17,5 +17,6 @@ data:
         "GameInterfaceEvolutionBaseUrl":"http://game-gameinterface-evolution-service:9090",
         "GameInterfaceIdnLiveBaseUrl":"http://game-gameinterface-idnlive-service:9090",
         "GameInterfaceSkywindBaseUrl":"http://game-gameinterface-sw-service:9090",
+        "GameInterfaceWGFmGamingBaseUrl":"http://game-gameinterface-wgfm-service:9090"
       }
     }
