@@ -38,7 +38,7 @@ public class GameRepositoryUnitTest
             Name: "KY Fishing",
             Localization: null,
             SubGameProviderCode: "BG") };
-        _ = fakeClient.GameQueryAsync(gameProviderId, gameType).Returns(expected);
+        _ = fakeClient.GameQueryAsync(gameProviderId, gameType).Returns(expected.ToAsyncEnumerable());
 
         var repository = new GameRepository(fakeClient);
 

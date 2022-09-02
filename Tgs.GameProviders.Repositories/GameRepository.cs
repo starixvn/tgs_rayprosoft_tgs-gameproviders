@@ -16,16 +16,6 @@ internal class GameRepository : IGameRepository
     public ValueTask<GameModel?> GetAsync(int gameId)
         => _client.GameGetAsync(gameId);
 
-    public async IAsyncEnumerable<GameModel> GetGameListAsync(Guid gameProviderId, GameType gameType)
-    {
-        var gameModels = await _client.GameQueryAsync(gameProviderId, gameType).ConfigureAwait(false);
-
-        if (gameModels == null)
-        {
-            yield break;
-        }
-
-        foreach (var gameViewModel in gameModels)
-            yield return gameViewModel;
-    }
+    public IAsyncEnumerable<GameModel> GetGameListAsync(Guid gameProviderId, GameType gameType)
+        => _client.GameQueryAsync(gameProviderId, gameType);
 }
