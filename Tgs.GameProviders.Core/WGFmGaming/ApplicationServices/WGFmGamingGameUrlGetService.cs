@@ -61,6 +61,7 @@ public class WGFmGamingGameUrlGetService : IGetService<WGFmGamingGameUrlQuery, U
                 configuration.PartnerCode,
                 token,
                 cultureCode,
+                2,
                 cancellationToken)
             .ConfigureAwait(false);
     }
