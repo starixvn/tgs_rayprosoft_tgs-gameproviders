@@ -88,7 +88,8 @@ public class WGFmGamingGameUrlGetServiceUnitTest
                 Arg.Is(configuration.ApiUrl),
                 Arg.Is(configuration.PartnerCode),
                 Arg.Is(token),
-                Arg.Is(cultureCode))
+                Arg.Is(cultureCode),
+                Arg.Is(2))
             .Returns(gameUrl);
 
         var sut = new WGFmGamingGameUrlGetService(
