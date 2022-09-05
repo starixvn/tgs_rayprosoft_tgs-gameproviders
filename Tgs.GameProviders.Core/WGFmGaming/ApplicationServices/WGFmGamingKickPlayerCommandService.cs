@@ -23,7 +23,7 @@ public class WGFmGamingKickPlayerCommandService : ICommandService<WGFmGamingKick
     {
         var configuration = await _settingRepository.GetWGSportsConfigurationAsync().ConfigureAwait(false);
 
-        await _client.PlayerKickLineAsync(
+        await _client.PlayerKickAsync(
             configuration.ApiUrl,
             configuration.PartnerCode,
             configuration.PartnerKey,
