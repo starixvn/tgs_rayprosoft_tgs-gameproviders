@@ -98,7 +98,7 @@ internal class GameProviderRepository : IGameProviderRepository
             ?? throw new Exception($"{GameProviderConfigurations.WGSports} Required parameters(IV)");
 
         var version = settingConfigurationJson["Version"]?.ToString()
-           ?? throw new Exception($"{GameProviderConfigurations.WGSports} Required parameters(IV)");
+           ?? throw new Exception($"{GameProviderConfigurations.WGSports} Required parameters(Version)");
 
         var configuration = new WGFmGamingConfiguration()
         {
