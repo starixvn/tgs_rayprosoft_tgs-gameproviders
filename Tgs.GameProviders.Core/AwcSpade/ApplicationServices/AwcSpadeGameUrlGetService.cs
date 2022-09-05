@@ -10,7 +10,7 @@ namespace Tgs.GameProviders.Core.AwcSpade.ApplicationServices;
 
 public class AwcSpadeGameUrlGetService : IGetService<AwcSpadeGameUrlQuery, GameUrlResult>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly ICommandService<AwcSpadeCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameRepository _game;
     private readonly IGameProviderRepository _gameProvider;
@@ -19,7 +19,7 @@ public class AwcSpadeGameUrlGetService : IGetService<AwcSpadeGameUrlQuery, GameU
     private readonly ISettingRepository _setting;
 
     public AwcSpadeGameUrlGetService(
-        IBrandService brand,
+        IBrandRepository brand,
         ICommandService<AwcSpadeCreatePlayerCommand> createPlayerCommandService,
         IGameRepository game,
         IGameProviderRepository gameProvider,

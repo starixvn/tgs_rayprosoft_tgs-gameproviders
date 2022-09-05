@@ -239,10 +239,10 @@ internal class SettingCacheRepository : ISettingRepository
         return configuration;
     }
 
-    public async ValueTask<WGSportsConfiguration> GetWGSportsConfigurationAsync()
+    public async ValueTask<WGFmGamingConfiguration> GetWGSportsConfigurationAsync()
     {
         var key = GetKey(GameProviderConfigurations.WGSports);
-        if (!_memoryCache.TryGetValue(key, out WGSportsConfiguration configuration))
+        if (!_memoryCache.TryGetValue(key, out WGFmGamingConfiguration configuration))
         {
             configuration = await _setting.GetWGSportsConfigurationAsync().ConfigureAwait(false);
 

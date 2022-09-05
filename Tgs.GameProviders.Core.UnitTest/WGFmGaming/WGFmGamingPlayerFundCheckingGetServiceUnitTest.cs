@@ -4,7 +4,9 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.WGFmGaming;
 
@@ -15,7 +17,9 @@ public class WGFmGamingPlayerFundCheckingGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeGameInterfaceWGFmGamingClient = Substitute.For<IGameInterfaceWGFmGamingClient>();
-        var fakeSettingRepository = Substitute.For<ISettingRepository>();
+        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakeBrandRepository = Substitute.For<IBrandRepository>();
 
         var query = new WGFmGamingPlayerFundCheckingQuery
         {
@@ -25,15 +29,38 @@ public class WGFmGamingPlayerFundCheckingGetServiceUnitTest
             OrderId = Guid.NewGuid().ToString("N")
         };
 
-        var configuration = new WGSportsConfiguration
+        var gameProviderId = Guid.NewGuid();
+        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WGSports)).Returns(ValueTask.FromResult(gameProviderId));
+
+        var player = new PlayerModel(
+                   ResellerId: Guid.NewGuid(),
+                   ResellerCode: "GPI",
+                   LicenseeId: Guid.NewGuid(),
+                   LicenseeCode: "GPI",
+                   BrandId: Guid.NewGuid(),
+                   BrandCode: "GPI",
+                   PlayerCode: "test",
+                   Username: "test",
+                   DefaultWalletId: Guid.NewGuid(),
+                   DefaultWalletCurrencyCode: "CNY",
+                   PlayerStatus.Enabled);
+        _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(player);
+
+        var gameProviderConfigurationId = Guid.NewGuid();
+        _ = fakeBrandRepository.GetBrandGameProviderConfigurationIdAsync(
+            Arg.Is(gameProviderId),
+            Arg.Is(player.BrandId)).Returns(ValueTask.FromResult(gameProviderConfigurationId));
+
+        var configuration = new WGFmGamingConfiguration
         {
             ApiUrl = new("http://localhost/"),
             PartnerCode = "PartnerCode",
             PartnerKey = "PartnerKey",
             IV = "IV"
         };
-
-        _ = fakeSettingRepository.GetWGSportsConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+        _ = fakeGameProviderRepository.GetWGFmGamingConfigurationData(
+            Arg.Is(gameProviderConfigurationId)
+            ).Returns(ValueTask.FromResult(configuration));
 
         _ = fakeGameInterfaceWGFmGamingClient
             .FundStatusAsync(
@@ -46,7 +73,9 @@ public class WGFmGamingPlayerFundCheckingGetServiceUnitTest
 
         var sut = new WGFmGamingPlayerFundCheckingGetService(
             fakeGameInterfaceWGFmGamingClient,
-            fakeSettingRepository);
+            fakeGameProviderRepository,
+            fakePlayerRepository,
+            fakeBrandRepository);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 

@@ -9,14 +9,14 @@ namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 
 public class JiliTransferPlayerFundInGetService : IGetService<JiliTransferPlayerFundInQuery, PlayerFundResult>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceJiliServiceGrpc _grpc;
     private readonly IPlayerRepository _player;
     private readonly ISettingRepository _setting;
 
     public JiliTransferPlayerFundInGetService(
-        IBrandService brand,
+        IBrandRepository brand,
         IGameProviderRepository gameProvider,
         IGameInterfaceJiliServiceGrpc grpc,
         IPlayerRepository player,

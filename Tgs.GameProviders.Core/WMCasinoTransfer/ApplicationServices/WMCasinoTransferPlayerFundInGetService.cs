@@ -9,14 +9,14 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 
 public class WMCasinoTransferPlayerFundInGetService : IGetService<WMCasinoTransferPlayerFundInQuery, PlayerFundResult>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceWMCasinoServiceGrpc _grpc;
     private readonly IPlayerRepository _player;
     private readonly ISettingRepository _setting;
 
     public WMCasinoTransferPlayerFundInGetService(
-        IBrandService brand,
+        IBrandRepository brand,
         IGameProviderRepository gameProvider,
         IGameInterfaceWMCasinoServiceGrpc grpc,
         IPlayerRepository player,

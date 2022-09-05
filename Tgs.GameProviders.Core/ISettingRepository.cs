@@ -45,5 +45,5 @@ public interface ISettingRepository
 
     ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync();
 
-    ValueTask<WGSportsConfiguration> GetWGSportsConfigurationAsync();
+    ValueTask<WGFmGamingConfiguration> GetWGSportsConfigurationAsync();
 }

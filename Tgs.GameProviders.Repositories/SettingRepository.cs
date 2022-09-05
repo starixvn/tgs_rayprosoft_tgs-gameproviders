@@ -70,8 +70,8 @@ internal class SettingRepository : ISettingRepository
     public ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync()
         => GetAsync<SkywindTransferConfiguration>(GameProviderConfigurations.SkywindTransfer);
 
-    public ValueTask<WGSportsConfiguration> GetWGSportsConfigurationAsync()
-        => GetAsync<WGSportsConfiguration>(GameProviderConfigurations.WGSports);
+    public ValueTask<WGFmGamingConfiguration> GetWGSportsConfigurationAsync()
+        => GetAsync<WGFmGamingConfiguration>(GameProviderConfigurations.WGSports);
 
     public ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync()
         => GetAsync<WMCasinoTransferConfiguration>(GameProviderConfigurations.WMCasinoTransfer);

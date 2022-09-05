@@ -9,7 +9,7 @@ namespace Tgs.GameProviders.Services.AsiaGaming;
 
 internal class AsiaGamingService : IAsiaGamingService
 {
-    private readonly IBrandService _brandService;
+    private readonly IBrandRepository _brandService;
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IGameRepository _gameRepository;
     private readonly ISettingRepository _settingRepository;
@@ -18,7 +18,7 @@ internal class AsiaGamingService : IAsiaGamingService
         ISettingRepository settingRepository,
         IGameProviderRepository gameProviderRepository,
         IGameRepository gameRepository,
-        IBrandService brandService)
+        IBrandRepository brandService)
     {
         _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
         _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));

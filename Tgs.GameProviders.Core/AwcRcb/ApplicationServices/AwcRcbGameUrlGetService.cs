@@ -11,7 +11,7 @@ namespace Tgs.GameProviders.Core.AwcRcb.ApplicationServices;
 
 public class AwcRcbGameUrlGetService : IGetService<AwcRcbGameUrlQuery, GameUrlResult>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly ICommandService<AwcRcbCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceAwcServiceGrpc _grpc;
@@ -19,7 +19,7 @@ public class AwcRcbGameUrlGetService : IGetService<AwcRcbGameUrlQuery, GameUrlRe
     private readonly ISettingRepository _setting;
 
     public AwcRcbGameUrlGetService(
-        IBrandService brand,
+        IBrandRepository brand,
         ICommandService<AwcRcbCreatePlayerCommand> createPlayerCommandService,
         IGameProviderRepository gameProvider,
         IGameInterfaceAwcServiceGrpc grpc,

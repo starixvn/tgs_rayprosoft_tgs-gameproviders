@@ -11,7 +11,7 @@ namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices;
 
 public class AwcCockfightGameUrlGetService : IGetService<AwcCockfightGameUrlQuery, GameUrlResult>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly ICommandService<AwcCockfightCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceAwcServiceGrpc _grpc;
@@ -19,7 +19,7 @@ public class AwcCockfightGameUrlGetService : IGetService<AwcCockfightGameUrlQuer
     private readonly ISettingRepository _setting;
 
     public AwcCockfightGameUrlGetService(
-        IBrandService brand,
+        IBrandRepository brand,
         ICommandService<AwcCockfightCreatePlayerCommand> createPlayerCommandService,
         IGameProviderRepository gameProvider,
         IGameInterfaceAwcServiceGrpc grpc,

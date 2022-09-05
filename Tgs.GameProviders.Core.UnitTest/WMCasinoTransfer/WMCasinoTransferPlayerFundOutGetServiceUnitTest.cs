@@ -18,7 +18,7 @@ public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
     [Test]
     public void Can_Not_Fund_Out_Over_WM_Agent_Balance()
     {
-        var fakeBrandService = Substitute.For<IBrandService>();
+        var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameInterfaceWMCasinoServiceGrpc = Substitute.For<IGameInterfaceWMCasinoServiceGrpc>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
@@ -90,7 +90,7 @@ public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeBrandService = Substitute.For<IBrandService>();
+        var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameInterfaceWMCasinoServiceGrpc = Substitute.For<IGameInterfaceWMCasinoServiceGrpc>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();

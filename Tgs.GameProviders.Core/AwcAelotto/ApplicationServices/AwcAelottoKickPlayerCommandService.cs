@@ -9,14 +9,14 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices;
 
 public class AwcAelottoKickPlayerCommandService : ICommandService<AwcAelottoKickPlayerCommand>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceAwcServiceGrpc _grpc;
     private readonly IPlayerRepository _player;
     private readonly ISettingRepository _setting;
 
     public AwcAelottoKickPlayerCommandService(
-        IBrandService brand,
+        IBrandRepository brand,
         IGameProviderRepository gameProvider,
         IGameInterfaceAwcServiceGrpc grpc,
         IPlayerRepository player,

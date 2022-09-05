@@ -1,6 +1,7 @@
 using System.Text.Json;
 using ExpectedObjects;
 using NSubstitute;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.QueryServer.Client;
 using Tgs.GameProviders.QueryServer.Models;
@@ -192,5 +193,81 @@ public class GameProviderRepositoryUnitTest
 
         Assert.IsNotNull(actual);
         awcConfigurationData.ToExpectedObject().ShouldEqual(actual);
+    }
+
+    [TestMethod]
+    public async Task Get_WGFmGaming_ConfigurationData()
+    {
+        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        _ = fakeClient
+            .SettingGetConfigurationStringAsync(Arg.Is(GameProviderConfigurations.WGSports))
+            .Returns(
+                "{\"AmountMaximum\":999999999999,\"AmountFormat\":\"12,2\",\"ApiUrl\":\"https://api.jsc080.net/\",\"PartnerCode\":\"SettingConfigurationPartnerCode\",\"PartnerKey\":\"SettingConfigurationPartnerKey\",\"IV\":\"SettingConfigurationPartnerIV\",\"Version\":2}");
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+            GameProviderId: gameProviderId,
+            GameProviderCode: "WGFM",
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "WGFM-GPI",
+            Description: "WGFM-GPI Configuration",
+            ClientId: "WGFM-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"PartnerCode\":\"ConfigurationDataPartnerCode\",\"PartnerKey\":\"ConfigurationDataPartnerKey\",\"IV\":\"ConfigurationDataPartnerIV\",\"Version\":1}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetWGFmGamingConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual("ConfigurationDataPartnerCode", actual.PartnerCode);
+        Assert.AreEqual("ConfigurationDataPartnerKey", actual.PartnerKey);
+        Assert.AreEqual("ConfigurationDataPartnerIV", actual.IV);
+        Assert.AreEqual(1, actual.Version);
+    }
+
+    [TestMethod]
+    public async Task Get_WGFmGaming_ConfigurationData_Is_Empty()
+    {
+        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        _ = fakeClient
+    .SettingGetConfigurationStringAsync(Arg.Is(GameProviderConfigurations.WGSports))
+    .Returns(
+        "{\"AmountMaximum\":999999999999,\"AmountFormat\":\"12,2\",\"ApiUrl\":\"https://api.jsc080.net/\",\"PartnerCode\":\"SettingConfigurationPartnerCode\",\"PartnerKey\":\"SettingConfigurationPartnerKey\",\"IV\":\"SettingConfigurationPartnerIV\",\"Version\":2}");
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+            GameProviderId: gameProviderId,
+            GameProviderCode: "WGFM",
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "WGFM-GPI",
+            Description: "WGFM-GPI Configuration",
+            ClientId: "WGFM-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: string.Empty,
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetWGFmGamingConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual("SettingConfigurationPartnerCode", actual.PartnerCode);
+        Assert.AreEqual("SettingConfigurationPartnerKey", actual.PartnerKey);
+        Assert.AreEqual("SettingConfigurationPartnerIV", actual.IV);
+        Assert.AreEqual(2, actual.Version);
     }
 }
