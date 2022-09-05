@@ -9,7 +9,7 @@ namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 
 public class JiliTransferGameUrlGetService : IGetService<JiliTransferGameUrlQuery, GameUrlResult>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly ICommandService<JiliTransferCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameRepository _game;
     private readonly IGameProviderRepository _gameProvider;
@@ -18,7 +18,7 @@ public class JiliTransferGameUrlGetService : IGetService<JiliTransferGameUrlQuer
     private readonly ISettingRepository _setting;
 
     public JiliTransferGameUrlGetService(
-        IBrandService brand,
+        IBrandRepository brand,
         ICommandService<JiliTransferCreatePlayerCommand> createPlayerCommandService,
         IGameRepository game,
         IGameProviderRepository gameProvider,

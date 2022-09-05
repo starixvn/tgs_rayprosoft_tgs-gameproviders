@@ -9,7 +9,7 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 
 public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGameUrlQuery, GameUrlResult>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly ICommandService<WMCasinoTransferCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceWMCasinoServiceGrpc _grpc;
@@ -17,7 +17,7 @@ public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGam
     private readonly ISettingRepository _setting;
 
     public WMCasinoTransferGameUrlGetService(
-        IBrandService brand,
+        IBrandRepository brand,
         ICommandService<WMCasinoTransferCreatePlayerCommand> createPlayerCommandService,
         IGameProviderRepository gameProvider,
         IGameInterfaceWMCasinoServiceGrpc grpc,

@@ -9,7 +9,7 @@ namespace Tgs.GameProviders.Core.AwcFs.ApplicationServices;
 
 public class AwcFsPlayerBalanceGetService : IGetService<AwcFsPlayerBalanceQuery, decimal?>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly ICommandService<AwcFsCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceAwcServiceGrpc _grpc;
@@ -17,7 +17,7 @@ public class AwcFsPlayerBalanceGetService : IGetService<AwcFsPlayerBalanceQuery,
     private readonly ISettingRepository _setting;
 
     public AwcFsPlayerBalanceGetService(
-        IBrandService brand,
+        IBrandRepository brand,
         ICommandService<AwcFsCreatePlayerCommand> createPlayerCommandService,
         IGameProviderRepository gameProvider,
         IGameInterfaceAwcServiceGrpc grpc,

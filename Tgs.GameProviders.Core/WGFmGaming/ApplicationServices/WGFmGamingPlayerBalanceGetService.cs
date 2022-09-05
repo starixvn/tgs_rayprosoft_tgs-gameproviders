@@ -10,64 +10,63 @@ namespace Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 public class WGFmGamingPlayerBalanceGetService : IGetService<WGFmGamingPlayerBalanceQuery, decimal?>
 {
     private readonly IGameInterfaceWGFmGamingClient _client;
-    private readonly ISettingRepository _settingRepository;
-    private readonly IPlayerRepository _playerRepository;
     private readonly IGameProviderRepository _gameProviderRepository;
+    private readonly IPlayerRepository _playerRepository;
+    private readonly IBrandRepository _brandRepository;
 
     public WGFmGamingPlayerBalanceGetService(
         IGameInterfaceWGFmGamingClient client,
-        ISettingRepository settingRepository,
+        IGameProviderRepository gameProviderRepository,
         IPlayerRepository playerRepository,
-        IGameProviderRepository gameProviderRepository
-        )
+        IBrandRepository brandRepository)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
-        _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
         _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+        _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+        _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
     }
 
     public async ValueTask<decimal?> GetAsync(WGFmGamingPlayerBalanceQuery command, CancellationToken cancellationToken = default)
     {
-        var playerModel = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var configuration = await _settingRepository.GetWGSportsConfigurationAsync().ConfigureAwait(false);
+        var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
+        var player = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
+        var configurationData = await _gameProviderRepository.GetWGFmGamingConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
         (bool IsPlayer, decimal balance) = await _client.PlayerBalanceAsync(
-            configuration.ApiUrl,
-            configuration.PartnerCode,
-            configuration.PartnerKey,
-            configuration.IV,
-            playerModel.PlayerCode,
+            configurationData.ApiUrl,
+            configurationData.PartnerCode,
+            configurationData.PartnerKey,
+            configurationData.IV,
+            player.PlayerCode,
             cancellationToken).ConfigureAwait(false);
 
         if (!IsPlayer)
         {
-            var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
-
             var currencyCode = await _gameProviderRepository
                 .GetGameProviderCurrencyCodeAsync(
                     gameProviderId,
-                    playerModel.DefaultWalletCurrencyCode)
+                    player.DefaultWalletCurrencyCode)
                 .ConfigureAwait(false)
-                ?? throw new Exception($"This game product currency does not exist.({playerModel.DefaultWalletCurrencyCode})");
+                ?? throw new Exception($"This game product currency does not exist.({player.DefaultWalletCurrencyCode})");
 
             _ = await _client
                  .GamePrepareLoginAsync(
-                     configuration.ApiUrl,
-                     configuration.PartnerCode,
-                     configuration.PartnerKey,
-                     configuration.IV,
-                     playerModel.PlayerCode,
+                     configurationData.ApiUrl,
+                     configurationData.PartnerCode,
+                     configurationData.PartnerKey,
+                     configurationData.IV,
+                     player.PlayerCode,
                      currencyCode,
                      cancellationToken)
                  .ConfigureAwait(false);
 
             (IsPlayer, balance) = await _client.PlayerBalanceAsync(
-                configuration.ApiUrl,
-                configuration.PartnerCode,
-                configuration.PartnerKey,
-                configuration.IV,
-                playerModel.PlayerCode,
+                configurationData.ApiUrl,
+                configurationData.PartnerCode,
+                configurationData.PartnerKey,
+                configurationData.IV,
+                player.PlayerCode,
                 cancellationToken).ConfigureAwait(false);
         }
 

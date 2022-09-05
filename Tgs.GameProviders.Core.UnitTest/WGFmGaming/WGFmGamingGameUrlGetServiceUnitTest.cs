@@ -17,9 +17,9 @@ public class WGFmGamingGameUrlGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeGameInterfaceWGFmGamingClient = Substitute.For<IGameInterfaceWGFmGamingClient>();
-        var fakeSettingRepository = Substitute.For<ISettingRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakeBrandRepository = Substitute.For<IBrandRepository>();
 
         var query = new WGFmGamingGameUrlQuery
         {
@@ -38,28 +38,35 @@ public class WGFmGamingGameUrlGetServiceUnitTest
         var gameProviderId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WGSports)).Returns(ValueTask.FromResult(gameProviderId));
 
-        var configuration = new WGSportsConfiguration
+        var player = new PlayerModel(
+                   ResellerId: Guid.NewGuid(),
+                   ResellerCode: "GPI",
+                   LicenseeId: Guid.NewGuid(),
+                   LicenseeCode: "GPI",
+                   BrandId: Guid.NewGuid(),
+                   BrandCode: "GPI",
+                   PlayerCode: "test",
+                   Username: "test",
+                   DefaultWalletId: Guid.NewGuid(),
+                   DefaultWalletCurrencyCode: "CNY",
+                   PlayerStatus.Enabled);
+        _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(player);
+
+        var gameProviderConfigurationId = Guid.NewGuid();
+        _ = fakeBrandRepository.GetBrandGameProviderConfigurationIdAsync(
+            Arg.Is(gameProviderId),
+            Arg.Is(player.BrandId)).Returns(ValueTask.FromResult(gameProviderConfigurationId));
+
+        var configuration = new WGFmGamingConfiguration
         {
             ApiUrl = new("http://localhost/"),
             PartnerCode = "PartnerCode",
             PartnerKey = "PartnerKey",
             IV = "IV"
         };
-        _ = fakeSettingRepository.GetWGSportsConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-
-        var playerModel = new PlayerModel(
-            ResellerId: Guid.NewGuid(),
-            ResellerCode: "GPI",
-            LicenseeId: Guid.NewGuid(),
-            LicenseeCode: "GPI",
-            BrandId: Guid.NewGuid(),
-            BrandCode: "GPI",
-            PlayerCode: "test",
-            Username: "test",
-            DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
-        _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
+        _ = fakeGameProviderRepository.GetWGFmGamingConfigurationData(
+            Arg.Is(gameProviderConfigurationId)
+            ).Returns(ValueTask.FromResult(configuration));
 
         var cultureCode = "2";
         _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
@@ -78,7 +85,7 @@ public class WGFmGamingGameUrlGetServiceUnitTest
                  Arg.Is(configuration.PartnerCode),
                  Arg.Is(configuration.PartnerKey),
                  Arg.Is(configuration.IV),
-                 Arg.Is(playerModel.PlayerCode),
+                 Arg.Is(player.PlayerCode),
                  Arg.Is(currencyCode))
              .Returns(token);
 
@@ -94,9 +101,9 @@ public class WGFmGamingGameUrlGetServiceUnitTest
 
         var sut = new WGFmGamingGameUrlGetService(
             fakeGameInterfaceWGFmGamingClient,
-            fakeSettingRepository,
             fakeGameProviderRepository,
-            fakePlayerRepository);
+            fakePlayerRepository,
+            fakeBrandRepository);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 

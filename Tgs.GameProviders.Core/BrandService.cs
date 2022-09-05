@@ -5,7 +5,7 @@ using Tgs.GameProviders.QueryServer.Client;
 
 namespace Tgs.GameProviders.Core;
 
-internal class BrandService : IBrandService
+internal class BrandService : IBrandRepository
 {
     private readonly IGameProvidersQueryServerClient _gameProvidersQueryServerClient;
     private readonly IMemoryCache _memoryCache;

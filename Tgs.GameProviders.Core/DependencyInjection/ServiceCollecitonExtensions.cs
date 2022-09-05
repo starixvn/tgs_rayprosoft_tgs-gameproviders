@@ -48,7 +48,7 @@ public static class ServiceCollecitonExtensions
             .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)
             .AddSecurity()//Tgs.Core.Infrastructures.Security
             .AddMemoryCache()
-            .AddTransient<IBrandService, BrandService>()
+            .AddTransient<IBrandRepository, BrandService>()
             .AddTransient<IGameActionService, GameActionService>()
             .AddTransient<IRoundService, RoundService>()
             .AddTransient<ISystemClock, SystemClock>();

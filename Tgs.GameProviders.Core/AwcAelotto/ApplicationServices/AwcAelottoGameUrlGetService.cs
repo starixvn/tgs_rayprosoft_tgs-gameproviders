@@ -10,7 +10,7 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices;
 
 public class AwcAelottoGameUrlGetService : IGetService<AwcAelottoGameUrlQuery, GameUrlResult>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly ICommandService<AwcAelottoCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameRepository _game;
     private readonly IGameProviderRepository _gameProvider;
@@ -19,7 +19,7 @@ public class AwcAelottoGameUrlGetService : IGetService<AwcAelottoGameUrlQuery, G
     private readonly ISettingRepository _setting;
 
     public AwcAelottoGameUrlGetService(
-        IBrandService brand,
+        IBrandRepository brand,
         ICommandService<AwcAelottoCreatePlayerCommand> createPlayerCommandService,
         IGameRepository game,
         IGameProviderRepository gameProvider,

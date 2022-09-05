@@ -10,7 +10,7 @@ namespace Tgs.GameProviders.Core.AwcFacai.ApplicationServices;
 
 public class AwcFacaiGameUrlGetService : IGetService<AwcFacaiGameUrlQuery, GameUrlResult>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly ICommandService<AwcFacaiCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameRepository _game;
     private readonly IGameProviderRepository _gameProvider;
@@ -19,7 +19,7 @@ public class AwcFacaiGameUrlGetService : IGetService<AwcFacaiGameUrlQuery, GameU
     private readonly ISettingRepository _setting;
 
     public AwcFacaiGameUrlGetService(
-        IBrandService brand,
+        IBrandRepository brand,
         ICommandService<AwcFacaiCreatePlayerCommand> createPlayerCommandService,
         IGameRepository game,
         IGameProviderRepository gameProvider,

@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-public record WGSportsConfiguration : PluggableConfigurationBase
+public record WGFmGamingConfiguration : PluggableConfigurationBase
 {
     /// <summary>
     /// The amount maximum
@@ -19,4 +19,6 @@ public record WGSportsConfiguration : PluggableConfigurationBase
     public string PartnerKey { get; init; } = default!;
 
     public string IV { get; init; } = default!;
+
+    public int Version { get; init; } = default!;
 }

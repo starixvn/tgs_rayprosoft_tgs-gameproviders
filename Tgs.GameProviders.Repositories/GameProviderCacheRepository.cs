@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Domains.ConfigurationData;
+using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Repositories;
@@ -72,7 +73,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out Guid gameProviderId))
         {
             gameProviderId = await _gameProvider.GetGameProviderIdAsync(gameProviderCode).ConfigureAwait(false);
-            _ = _memoryCache.Set(key, gameProviderId, TimeSpan.FromDays(1));
+            _ = _memoryCache.Set(key, gameProviderId);
         }
         return gameProviderId;
     }
@@ -95,6 +96,18 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out WMCasinoTransferConfigurationData configurationData))
         {
             configurationData = await _gameProvider.GetWMCasinoTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+
+            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+        }
+        return configurationData;
+    }
+
+    public async ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationData(Guid gameProviderConfigurationId)
+    {
+        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+        if (!_memoryCache.TryGetValue(key, out WGFmGamingConfiguration configurationData))
+        {
+            configurationData = await _gameProvider.GetWGFmGamingConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
             _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
         }

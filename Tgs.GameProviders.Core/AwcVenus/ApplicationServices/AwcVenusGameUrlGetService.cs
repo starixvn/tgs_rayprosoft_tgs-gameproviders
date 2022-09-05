@@ -11,7 +11,7 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices;
 
 public class AwcVenusGameUrlGetService : IGetService<AwcVenusGameUrlQuery, GameUrlResult>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly ICommandService<AwcVenusCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceAwcServiceGrpc _grpc;
@@ -19,7 +19,7 @@ public class AwcVenusGameUrlGetService : IGetService<AwcVenusGameUrlQuery, GameU
     private readonly ISettingRepository _setting;
 
     public AwcVenusGameUrlGetService(
-        IBrandService brand,
+        IBrandRepository brand,
         ICommandService<AwcVenusCreatePlayerCommand> createPlayerCommandService,
         IGameProviderRepository gameProvider,
         IGameInterfaceAwcServiceGrpc grpc,

@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.WGFmGamingService.Client;
+using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
@@ -9,25 +10,34 @@ namespace Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 public class WGFmGamingPlayerFundInGetService : IGetService<WGFmGamingPlayerFundInQuery, PlayerFundResult>
 {
     private readonly IGameInterfaceWGFmGamingClient _client;
-    private readonly ISettingRepository _settingRepository;
+    private readonly IGameProviderRepository _gameProviderRepository;
+    private readonly IPlayerRepository _playerRepository;
+    private readonly IBrandRepository _brandRepository;
 
     public WGFmGamingPlayerFundInGetService(
         IGameInterfaceWGFmGamingClient client,
-        ISettingRepository settingRepository)
+        IGameProviderRepository gameProviderRepository,
+        IPlayerRepository playerRepository,
+        IBrandRepository brandRepository)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
+        _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
+        _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+        _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
     }
 
     public async ValueTask<PlayerFundResult> GetAsync(WGFmGamingPlayerFundInQuery query, CancellationToken cancellationToken = default)
     {
-        var configuration = await _settingRepository.GetWGSportsConfigurationAsync().ConfigureAwait(false);
+        var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
+        var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
+        var configurationData = await _gameProviderRepository.GetWGFmGamingConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
         await _client.FundInAsync(
-           configuration.ApiUrl,
-           configuration.PartnerCode,
-           configuration.PartnerKey,
-           configuration.IV,
+           configurationData.ApiUrl,
+           configurationData.PartnerCode,
+           configurationData.PartnerKey,
+           configurationData.IV,
            query.PlayerCode,
            query.OrderId,
            query.Amount,

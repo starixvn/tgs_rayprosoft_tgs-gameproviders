@@ -20,7 +20,7 @@ public class WMCasinoTransferPlayerBalanceGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeBrandService = Substitute.For<IBrandService>();
+        var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<WMCasinoTransferCreatePlayerCommand>>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameInterfaceWMCasinoServiceGrpc = Substitute.For<IGameInterfaceWMCasinoServiceGrpc>();

@@ -9,7 +9,7 @@ namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 
 public class JiliTransferPlayerBalanceGetService : IGetService<JiliTransferPlayerBalanceQuery, decimal?>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly ICommandService<JiliTransferCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceJiliServiceGrpc _grpc;
@@ -17,7 +17,7 @@ public class JiliTransferPlayerBalanceGetService : IGetService<JiliTransferPlaye
     private readonly ISettingRepository _setting;
 
     public JiliTransferPlayerBalanceGetService(
-        IBrandService brand,
+        IBrandRepository brand,
         ICommandService<JiliTransferCreatePlayerCommand> createPlayerCommandService,
         IGameProviderRepository gameProvider,
         IGameInterfaceJiliServiceGrpc grpc,

@@ -10,14 +10,14 @@ namespace Tgs.GameProviders.Services.Habanero;
 
 internal class HabaneroService : IHabaneroService
 {
-    private readonly IBrandService _brandService;
+    private readonly IBrandRepository _brandService;
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IGameRepository _gameRepository;
     private readonly IPlayerRepository _playerRepository;
     private readonly ISettingRepository _settingRepository;
 
     public HabaneroService(
-        IBrandService brandService,
+        IBrandRepository brandService,
         IGameProviderRepository gameProviderRepository,
         IGameRepository gameRepository,
         IPlayerRepository playerRepository,

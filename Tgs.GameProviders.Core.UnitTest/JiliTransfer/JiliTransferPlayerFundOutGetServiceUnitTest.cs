@@ -18,7 +18,7 @@ public class JiliTransferPlayerFundOutGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeBrandService = Substitute.For<IBrandService>();
+        var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameInterfaceJiliServiceGrpc = Substitute.For<IGameInterfaceJiliServiceGrpc>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();

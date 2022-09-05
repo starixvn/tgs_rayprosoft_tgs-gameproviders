@@ -10,27 +10,28 @@ namespace Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 public class WGFmGamingGameUrlGetService : IGetService<WGFmGamingGameUrlQuery, Uri>
 {
     private readonly IGameInterfaceWGFmGamingClient _client;
-    private readonly ISettingRepository _settingRepository;
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IPlayerRepository _playerRepository;
+    private readonly IBrandRepository _brandRepository;
 
     public WGFmGamingGameUrlGetService(
         IGameInterfaceWGFmGamingClient client,
-        ISettingRepository settingRepository,
         IGameProviderRepository gameProviderRepository,
-        IPlayerRepository playerRepository)
+        IPlayerRepository playerRepository,
+        IBrandRepository brandRepository)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
         _gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
         _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
+        _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
     }
 
     public async ValueTask<Uri> GetAsync(WGFmGamingGameUrlQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
-        var configuration = await _settingRepository.GetWGSportsConfigurationAsync().ConfigureAwait(false);
-        var playerModel = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
+        var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
+        var configurationData = await _gameProviderRepository.GetWGFmGamingConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
         var cultureCode = await _gameProviderRepository
             .GetGameProviderCultureCodeAsync(
                 gameProviderId,
@@ -40,28 +41,28 @@ public class WGFmGamingGameUrlGetService : IGetService<WGFmGamingGameUrlQuery, U
         var currencyCode = await _gameProviderRepository
             .GetGameProviderCurrencyCodeAsync(
                 gameProviderId,
-                playerModel.DefaultWalletCurrencyCode)
+                player.DefaultWalletCurrencyCode)
             .ConfigureAwait(false)
             ?? throw new Exception($"This game product currency does not exist.({query.CurrencyCode})");
 
         var token = await _client
             .GamePrepareLoginAsync(
-                configuration.ApiUrl,
-                configuration.PartnerCode,
-                configuration.PartnerKey,
-                configuration.IV,
-                playerModel.PlayerCode,
+                configurationData.ApiUrl,
+                configurationData.PartnerCode,
+                configurationData.PartnerKey,
+                configurationData.IV,
+                player.PlayerCode,
                 currencyCode,
                 cancellationToken)
             .ConfigureAwait(false);
 
         return await _client
             .GameLoginAsync(
-                configuration.ApiUrl,
-                configuration.PartnerCode,
+                configurationData.ApiUrl,
+                configurationData.PartnerCode,
                 token,
                 cultureCode,
-                2,
+                configurationData.Version,
                 cancellationToken)
             .ConfigureAwait(false);
     }

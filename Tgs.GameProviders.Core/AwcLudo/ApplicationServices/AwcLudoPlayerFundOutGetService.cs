@@ -9,14 +9,14 @@ namespace Tgs.GameProviders.Core.AwcLudo.ApplicationServices;
 
 public class AwcLudoPlayerFundOutGetService : IGetService<AwcLudoPlayerFundOutQuery, PlayerFundResult>
 {
-    private readonly IBrandService _brand;
+    private readonly IBrandRepository _brand;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceAwcServiceGrpc _grpc;
     private readonly IPlayerRepository _player;
     private readonly ISettingRepository _setting;
 
     public AwcLudoPlayerFundOutGetService(
-        IBrandService brand,
+        IBrandRepository brand,
         IGameProviderRepository gameProvider,
         IGameInterfaceAwcServiceGrpc grpc,
         IPlayerRepository player,

@@ -19,7 +19,7 @@ public class AwcAelottoGameUrlGetServiceUnitTest
     [Test]
     public async Task Normal_Process_SubGP_AWC_AELOTTO()
     {
-        var fakeBrandService = Substitute.For<IBrandService>();
+        var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<AwcAelottoCreatePlayerCommand>>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
@@ -138,7 +138,7 @@ public class AwcAelottoGameUrlGetServiceUnitTest
     [Test]
     public async Task Normal_Process_SubGP_AWC_YEEKEE_LOTTO()
     {
-        var fakeBrandService = Substitute.For<IBrandService>();
+        var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<AwcAelottoCreatePlayerCommand>>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();

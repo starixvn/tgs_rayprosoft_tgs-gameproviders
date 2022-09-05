@@ -18,7 +18,7 @@ public class WMCasinoTransferKickPlayerCommandServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeBrandService = Substitute.For<IBrandService>();
+        var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameInterfaceWMCasinoServiceGrpc = Substitute.For<IGameInterfaceWMCasinoServiceGrpc>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
