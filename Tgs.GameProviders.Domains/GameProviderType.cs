@@ -28,6 +28,7 @@ public static class GameProviderType
     public static readonly string IDNLive = "IDNLIVE";
     public static readonly string IMESports = "IMES";
     public static readonly string JDB = "JDB";
+    public static readonly string JDBTransfer = "JDBTF";
     public static readonly string Jili = "JILI";
     public static readonly string JiliTransfer = "JILITF";
     public static readonly string Joker = "JOKER";
