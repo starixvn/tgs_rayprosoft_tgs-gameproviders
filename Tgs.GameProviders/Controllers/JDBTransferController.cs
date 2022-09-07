@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.JDBTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
-using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
-using Tgs.GameProviders.Core.JDBTransfer.ApplicationServices;
 
 namespace Tgs.GameProviders.Controllers;
 
@@ -15,7 +13,6 @@ namespace Tgs.GameProviders.Controllers;
 [Route("api/jdbtf")]
 public class JDBTransferController : ControllerBase
 {
-
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
@@ -109,7 +106,7 @@ public class JDBTransferController : ControllerBase
     /// <summary>
     /// Players the fund checking asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
     /// <remarks>

@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
-using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 
 namespace Tgs.GameProviders.Controllers;
 
