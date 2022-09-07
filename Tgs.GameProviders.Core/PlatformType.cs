@@ -1,15 +1,14 @@
-﻿namespace Tgs.GameProviders.Core
-{
-    public enum PlatformType
-    {
-        /// <summary>
-        ///     Desktop
-        /// </summary>
-        Desktop = 0,
+﻿namespace Tgs.GameProviders.Core;
 
-        /// <summary>
-        ///     Mobile
-        /// </summary>
-        Mobile = 1
-    }
+public enum PlatformType
+{
+    /// <summary>
+    ///     Desktop
+    /// </summary>
+    Desktop = 0,
+
+    /// <summary>
+    ///     Mobile
+    /// </summary>
+    Mobile = 1
 }

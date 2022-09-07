@@ -3,18 +3,17 @@ using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameRounds.Common;
 
-namespace Tgs.GameProviders.Core.WGHorse
+namespace Tgs.GameProviders.Core.WGHorse;
+
+public interface IWGHorseService
 {
-    public interface IWGHorseService
-    {
-        GameRoundClientStatus GetClientRound(decimal playerWinLoss);
+    GameRoundClientStatus GetClientRound(decimal playerWinLoss);
 
-        ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
+    ValueTask<string> GetGameProviderCultureCodeAsync(string cultureCode);
 
-        ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
+    ValueTask<string> GetGameProviderCurrencyCodeAsync(string currencyCode);
 
-        ValueTask<Guid> GetGameProviderIdAsync();
+    ValueTask<Guid> GetGameProviderIdAsync();
 
-        ValueTask<WGHorseConfiguration> GetSettingConfigurationAsync();
-    }
+    ValueTask<WGHorseConfiguration> GetSettingConfigurationAsync();
 }

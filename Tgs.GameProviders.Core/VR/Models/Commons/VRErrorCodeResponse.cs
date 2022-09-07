@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.VR.Models.Commons
+namespace Tgs.GameProviders.Core.VR.Models.Commons;
+
+public record VRErrorCodeResponse
 {
-    public record VRErrorCodeResponse
-    {
-        [JsonPropertyName("errorCode")]
-        public int ErrorCode { get; init; }
-    }
+    [JsonPropertyName("errorCode")]
+    public int ErrorCode { get; init; }
 }

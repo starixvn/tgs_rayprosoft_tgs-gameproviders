@@ -5,20 +5,19 @@ using Tgs.GameProviders.Core.BetConstruct;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
-namespace Tgs.GameProviders.Services.BetConstruct
+namespace Tgs.GameProviders.Services.BetConstruct;
+
+internal class BetConstructService : IBetConstructService
 {
-    internal class BetConstructService : IBetConstructService
+    private readonly ISettingRepository _settingService;
+
+    public BetConstructService(ISettingRepository settingService)
     {
-        private readonly ISettingRepository _settingService;
-
-        public BetConstructService(ISettingRepository settingService)
-        {
-            _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
-        }
-
-        public async ValueTask<BetConstructConfiguration> GetSettingConfigurationAsync() =>
-            await _settingService
-                .GetConfigurationAsync<BetConstructConfiguration>(GameProviderConfigurations.BetConstruct)
-                .ConfigureAwait(false);
+        _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
     }
+
+    public async ValueTask<BetConstructConfiguration> GetSettingConfigurationAsync() =>
+        await _settingService
+            .GetConfigurationAsync<BetConstructConfiguration>(GameProviderConfigurations.BetConstruct)
+            .ConfigureAwait(false);
 }

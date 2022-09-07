@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.Habanero.ApplicationServices
-{
-    public record HabaneroRoundDetailQuery : RoundDetailQuery;
-}
+﻿namespace Tgs.GameProviders.Core.Habanero.ApplicationServices;
+
+public record HabaneroRoundDetailQuery : RoundDetailQuery;

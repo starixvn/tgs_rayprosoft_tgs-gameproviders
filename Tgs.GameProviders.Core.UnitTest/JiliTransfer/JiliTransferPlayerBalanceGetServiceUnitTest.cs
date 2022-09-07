@@ -19,7 +19,7 @@ public class JiliTransferPlayerBalanceGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeBrandService = Substitute.For<IBrandService>();
+        var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<JiliTransferCreatePlayerCommand>>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameInterfaceJiliServiceGrpc = Substitute.For<IGameInterfaceJiliServiceGrpc>();

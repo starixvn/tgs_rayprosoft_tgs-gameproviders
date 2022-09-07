@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices
-{
-    public record WMCasinoTransferPlayerBalanceQuery : PlayerBalanceQuery;
-}
+﻿namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
+
+public record WMCasinoTransferPlayerBalanceQuery : PlayerBalanceQuery;

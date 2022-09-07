@@ -19,7 +19,7 @@ public class AwcKmGameUrlGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeBrandService = Substitute.For<IBrandService>();
+        var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<AwcKmCreatePlayerCommand>>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();

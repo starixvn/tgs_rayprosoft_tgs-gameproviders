@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Tgs.GameProviders.Core.Skywind
+namespace Tgs.GameProviders.Core.Skywind;
+
+public interface ISkywindAccessToken
 {
-    public interface ISkywindAccessToken
-    {
-        ValueTask<string> GetAccessTokenAsync();
-    }
+    ValueTask<string> GetAccessTokenAsync();
 }

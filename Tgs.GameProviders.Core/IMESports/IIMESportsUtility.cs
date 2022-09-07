@@ -1,7 +1,6 @@
-﻿namespace Tgs.GameProviders.Core.IMESports
+﻿namespace Tgs.GameProviders.Core.IMESports;
+
+public interface IIMESportsUtility
 {
-    public interface IIMESportsUtility
-    {
-        string ToIMESportsPlayerId(string playerCode, string prefix);
-    }
+    string ToIMESportsPlayerId(string playerCode, string prefix);
 }

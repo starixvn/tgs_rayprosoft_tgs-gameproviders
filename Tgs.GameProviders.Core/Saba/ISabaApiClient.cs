@@ -2,24 +2,23 @@
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core.Saba.Models;
 
-namespace Tgs.GameProviders.Core.Saba
+namespace Tgs.GameProviders.Core.Saba;
+
+public interface ISabaApiClient
 {
-    public interface ISabaApiClient
-    {
-        ValueTask<SabaCreateMemberResponse> CreateMemberAsync(
-            Uri apiUrl,
-            SabaCreateMemberRequest request);
+    ValueTask<SabaCreateMemberResponse> CreateMemberAsync(
+        Uri apiUrl,
+        SabaCreateMemberRequest request);
 
-        ValueTask<SabaGetRoundHistoryResponse> GetBetDetailByTransIdAsync(
-            Uri apiUrl,
-            SabaGetRoundHistoryRequest request);
+    ValueTask<SabaGetRoundHistoryResponse> GetBetDetailByTransIdAsync(
+        Uri apiUrl,
+        SabaGetRoundHistoryRequest request);
 
-        ValueTask<SabaGameUrlResponse> GetGameUrlAsync(
-                            Uri apiUrl,
-            SabaGameUrlRequest request);
+    ValueTask<SabaGameUrlResponse> GetGameUrlAsync(
+                        Uri apiUrl,
+        SabaGameUrlRequest request);
 
-        ValueTask<SabaKickUserResponse> KickUserAsync(
-            Uri apiUrl,
-            SabaKickUserRequest request);
-    }
+    ValueTask<SabaKickUserResponse> KickUserAsync(
+        Uri apiUrl,
+        SabaKickUserRequest request);
 }

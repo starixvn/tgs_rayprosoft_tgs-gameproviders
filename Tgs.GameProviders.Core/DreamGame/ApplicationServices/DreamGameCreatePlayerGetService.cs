@@ -4,32 +4,31 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Core.DreamGame.ApplicationServices
+namespace Tgs.GameProviders.Core.DreamGame.ApplicationServices;
+
+internal class DreamGameCreatePlayerGetService : IGetService<DreamGameCreatePlayerQuery, int>
 {
-    internal class DreamGameCreatePlayerGetService : IGetService<DreamGameCreatePlayerQuery, int>
+    private readonly IDreamGameApiClient _client;
+
+    public DreamGameCreatePlayerGetService(IDreamGameApiClient client)
     {
-        private readonly IDreamGameApiClient _client;
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+    }
 
-        public DreamGameCreatePlayerGetService(IDreamGameApiClient client)
+    public ValueTask<int> GetAsync(DreamGameCreatePlayerQuery query, CancellationToken cancellationToken = default)
+    {
+        var tableLimit = query.BetLimits.Where(x => string.Equals(x.Currency, query.CurrencyCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().TableLimit;
+        if (string.IsNullOrEmpty(tableLimit))
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
+            throw new Exception($"Currency limit red does not exist.({query.CurrencyCode})");
         }
-
-        public ValueTask<int> GetAsync(DreamGameCreatePlayerQuery query, CancellationToken cancellationToken = default)
-        {
-            var tableLimit = query.BetLimits.Where(x => string.Equals(x.Currency, query.CurrencyCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault().TableLimit;
-            if (string.IsNullOrEmpty(tableLimit))
-            {
-                throw new Exception($"Currency limit red does not exist.({query.CurrencyCode})");
-            }
-            return _client.SignUpAsync(
-                    query.ApiUrl,
-                    query.ApiKey,
-                    query.AgentName,
-                    query.PlayerCode,
-                    query.Password,
-                    query.GameProviderCurrencyCode,
-                    tableLimit: tableLimit);
-        }
+        return _client.SignUpAsync(
+                query.ApiUrl,
+                query.ApiKey,
+                query.AgentName,
+                query.PlayerCode,
+                query.Password,
+                query.GameProviderCurrencyCode,
+                tableLimit: tableLimit);
     }
 }

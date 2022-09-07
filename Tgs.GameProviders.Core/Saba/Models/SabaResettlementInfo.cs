@@ -1,19 +1,18 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.Saba.Models
+namespace Tgs.GameProviders.Core.Saba.Models;
+
+public record SabaResettlementInfo
 {
-    public record SabaResettlementInfo
-    {
-        [JsonPropertyName("winlost")]
-        public decimal Winlost { get; init; }
+    [JsonPropertyName("winlost")]
+    public decimal Winlost { get; init; }
 
-        [JsonPropertyName("ActionDate")]
-        public string ActionDate { get; init; }
+    [JsonPropertyName("ActionDate")]
+    public string ActionDate { get; init; }
 
-        [JsonPropertyName("ticket_status")]
-        public string TicketStatus { get; init; }
+    [JsonPropertyName("ticket_status")]
+    public string TicketStatus { get; init; }
 
-        [JsonPropertyName("balancechange")]
-        public bool BalanceChange { get; init; }
-    }
+    [JsonPropertyName("balancechange")]
+    public bool BalanceChange { get; init; }
 }

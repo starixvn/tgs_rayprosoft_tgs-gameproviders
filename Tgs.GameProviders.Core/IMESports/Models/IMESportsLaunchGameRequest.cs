@@ -2,29 +2,28 @@
 
 using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.IMESports.Models
+namespace Tgs.GameProviders.Core.IMESports.Models;
+
+public record IMESportsLaunchGameRequest
 {
-    public record IMESportsLaunchGameRequest
-    {
-        [JsonPropertyName("MerchantCode")]
-        public string MerchantCode { get; init; } = default!;
+    [JsonPropertyName("MerchantCode")]
+    public string MerchantCode { get; init; } = default!;
 
-        [JsonPropertyName("PlayerId")]
-        public string IMESPlayerId { get; init; } = default!;
+    [JsonPropertyName("PlayerId")]
+    public string IMESPlayerId { get; init; } = default!;
 
-        [JsonPropertyName("GameCode")]
-        public string GameId { get; init; } = default!;
+    [JsonPropertyName("GameCode")]
+    public string GameId { get; init; } = default!;
 
-        [JsonPropertyName("Language")]
-        public string Language { get; init; } = default!;
+    [JsonPropertyName("Language")]
+    public string Language { get; init; } = default!;
 
-        [JsonPropertyName("IpAddress")]
-        public string IpAddress => "127.0.0.1";
+    [JsonPropertyName("IpAddress")]
+    public string IpAddress => "127.0.0.1";
 
-        [JsonPropertyName("ProductWallet")]
-        public int ProductWallet { get; init; }
+    [JsonPropertyName("ProductWallet")]
+    public int ProductWallet { get; init; }
 
-        [JsonPropertyName("Http")]
-        public string Http { get; init; } = default!;
-    }
+    [JsonPropertyName("Http")]
+    public string Http { get; init; } = default!;
 }

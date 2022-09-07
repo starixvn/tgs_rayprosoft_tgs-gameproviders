@@ -1,7 +1,6 @@
-﻿namespace Tgs.GameProviders.Core.BetConstruct
+﻿namespace Tgs.GameProviders.Core.BetConstruct;
+
+public interface IBetConstructUtility
 {
-    public interface IBetConstructUtility
-    {
-        public string MD5Hash(string plainText);
-    }
+    public string MD5Hash(string plainText);
 }

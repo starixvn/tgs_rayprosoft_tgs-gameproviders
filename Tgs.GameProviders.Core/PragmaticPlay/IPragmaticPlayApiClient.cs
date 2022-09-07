@@ -2,23 +2,22 @@
 using System.Threading.Tasks;
 using Tgs.GameProviders.Core.PragmaticPlay.Models;
 
-namespace Tgs.GameProviders.Core.PragmaticPlay
+namespace Tgs.GameProviders.Core.PragmaticPlay;
+
+public interface IPragmaticPlayApiClient
 {
-    public interface IPragmaticPlayApiClient
-    {
-        ValueTask<PragmaticPlayGameUrlResponse> GetGameUrlAsync(
-            Uri apiUrl,
-            string md5Key,
-            PragmaticPlayGameUrlRequest request);
+    ValueTask<PragmaticPlayGameUrlResponse> GetGameUrlAsync(
+        Uri apiUrl,
+        string md5Key,
+        PragmaticPlayGameUrlRequest request);
 
-        ValueTask<PragmaticPlayOpenHistoryExtendedResponse> GetRoundHistoryAsync(
-            Uri apiUrl,
-            string md5Key,
-            PragmaticPlayOpenHistoryExtendedRequest request);
+    ValueTask<PragmaticPlayOpenHistoryExtendedResponse> GetRoundHistoryAsync(
+        Uri apiUrl,
+        string md5Key,
+        PragmaticPlayOpenHistoryExtendedRequest request);
 
-        ValueTask<PragmaticPlayLogoutResponse> LogoutAsync(
-            Uri apiUrl,
-            string md5Key,
-            PragmaticPlayLogoutRequest request);
-    }
+    ValueTask<PragmaticPlayLogoutResponse> LogoutAsync(
+        Uri apiUrl,
+        string md5Key,
+        PragmaticPlayLogoutRequest request);
 }

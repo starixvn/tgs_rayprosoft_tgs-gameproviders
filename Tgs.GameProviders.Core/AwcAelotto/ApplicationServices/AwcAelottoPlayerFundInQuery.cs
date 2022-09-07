@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
-{
-    public record AwcAelottoPlayerFundInQuery : PlayerFundQuery;
-}
+﻿namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices;
+
+public record AwcAelottoPlayerFundInQuery : PlayerFundQuery;

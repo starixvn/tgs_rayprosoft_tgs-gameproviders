@@ -5,67 +5,66 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.VR.Models;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Core.VR.ApplicationServices
+namespace Tgs.GameProviders.Core.VR.ApplicationServices;
+
+public class VRPlayerBalanceGetService : IGetService<VRPlayerBalanceQuery, decimal?>
 {
-    public class VRPlayerBalanceGetService : IGetService<VRPlayerBalanceQuery, decimal?>
+    private readonly IVRApiClient _client;
+    private readonly ILogger<VRPlayerBalanceGetService> _logger;
+    private readonly IVRGamePlayer _playerCreate;
+    private readonly IPlayerRepository _playerService;
+    private readonly IVRService _service;
+
+    public VRPlayerBalanceGetService(
+        IVRApiClient client,
+        ILogger<VRPlayerBalanceGetService> logger,
+        IVRGamePlayer playerCreate,
+        IPlayerRepository playerService,
+        IVRService service
+        )
     {
-        private readonly IVRApiClient _client;
-        private readonly ILogger<VRPlayerBalanceGetService> _logger;
-        private readonly IVRGamePlayer _playerCreate;
-        private readonly IPlayerRepository _playerService;
-        private readonly IVRService _service;
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _playerCreate = playerCreate ?? throw new ArgumentNullException(nameof(playerCreate));
+        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
+        _service = service ?? throw new ArgumentNullException(nameof(service));
+    }
 
-        public VRPlayerBalanceGetService(
-            IVRApiClient client,
-            ILogger<VRPlayerBalanceGetService> logger,
-            IVRGamePlayer playerCreate,
-            IPlayerRepository playerService,
-            IVRService service
-            )
+    public async ValueTask<decimal?> GetAsync(VRPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+    {
+        var playerModel = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
+        var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode).ConfigureAwait(false);
+
+        if (brandMerchant == null)
         {
-            _client = client ?? throw new ArgumentNullException(nameof(client));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _playerCreate = playerCreate ?? throw new ArgumentNullException(nameof(playerCreate));
-            _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
-            _service = service ?? throw new ArgumentNullException(nameof(service));
+            return null;
         }
 
-        public async ValueTask<decimal?> GetAsync(VRPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+        var data = new VRGetBalanceRequest()
         {
-            var playerModel = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
-            var brandMerchant = await _service.GetBrandMerchantAsync(playerModel.BrandCode).ConfigureAwait(false);
+            PlayerCode = command.PlayerCode
+        };
 
-            if (brandMerchant == null)
+        var response = await _client.GetBalanceAsync(
+            brandMerchant.ApiUrl,
+            brandMerchant.Merchantid,
+            brandMerchant.Version,
+            brandMerchant.Deskey,
+            data).ConfigureAwait(false);
+
+        if (string.IsNullOrEmpty(response.PlayerName) || response.Balance == -1)
+        {
+            if (await _playerCreate.CreatePlayerAsync(brandMerchant, playerModel.PlayerCode).ConfigureAwait(false))
             {
-                return null;
+                response = await _client.GetBalanceAsync(
+                    brandMerchant.ApiUrl,
+                    brandMerchant.Merchantid,
+                    brandMerchant.Version,
+                    brandMerchant.Deskey,
+                    data).ConfigureAwait(false);
             }
-
-            var data = new VRGetBalanceRequest()
-            {
-                PlayerCode = command.PlayerCode
-            };
-
-            var response = await _client.GetBalanceAsync(
-                brandMerchant.ApiUrl,
-                brandMerchant.Merchantid,
-                brandMerchant.Version,
-                brandMerchant.Deskey,
-                data).ConfigureAwait(false);
-
-            if (string.IsNullOrEmpty(response.PlayerName) || response.Balance == -1)
-            {
-                if (await _playerCreate.CreatePlayerAsync(brandMerchant, playerModel.PlayerCode).ConfigureAwait(false))
-                {
-                    response = await _client.GetBalanceAsync(
-                        brandMerchant.ApiUrl,
-                        brandMerchant.Merchantid,
-                        brandMerchant.Version,
-                        brandMerchant.Deskey,
-                        data).ConfigureAwait(false);
-                }
-            }
-
-            return (string.IsNullOrEmpty(response.PlayerName) || response.Balance == -1) ? null : response.Balance;
         }
+
+        return (string.IsNullOrEmpty(response.PlayerName) || response.Balance == -1) ? null : response.Balance;
     }
 }

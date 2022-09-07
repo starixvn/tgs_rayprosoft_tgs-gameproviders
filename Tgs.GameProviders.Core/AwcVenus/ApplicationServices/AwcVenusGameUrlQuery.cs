@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices
-{
-    public record AwcVenusGameUrlQuery : GameUrlQuery;
-}
+﻿namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices;
+
+public record AwcVenusGameUrlQuery : GameUrlQuery;

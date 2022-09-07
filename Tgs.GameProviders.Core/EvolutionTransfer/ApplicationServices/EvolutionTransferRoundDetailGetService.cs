@@ -4,29 +4,28 @@ using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices
+namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
+
+internal class EvolutionTransferRoundDetailGetService : IGetService<EvolutionTransferRoundDetailQuery, RoundDetailResult>
 {
-    internal class EvolutionTransferRoundDetailGetService : IGetService<EvolutionTransferRoundDetailQuery, RoundDetailResult>
+    private readonly IRoundService _roundService;
+
+    public EvolutionTransferRoundDetailGetService(IRoundService roundService)
     {
-        private readonly IRoundService _roundService;
+        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
+    }
 
-        public EvolutionTransferRoundDetailGetService(IRoundService roundService)
-        {
-            _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
-        }
-
-        public async ValueTask<RoundDetailResult> GetAsync(EvolutionTransferRoundDetailQuery query, CancellationToken cancellationToken = default)
-        {
-            var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-            return roundInfo == null
-                ? throw new Exception($"This game round number could not be found.{query.RoundId}")
-                : (new RoundDetailResult()
+    public async ValueTask<RoundDetailResult> GetAsync(EvolutionTransferRoundDetailQuery query, CancellationToken cancellationToken = default)
+    {
+        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+        return roundInfo == null
+            ? throw new Exception($"This game round number could not be found.{query.RoundId}")
+            : (new RoundDetailResult()
+            {
+                Data = new RoundDetailDataBase[]
                 {
-                    Data = new RoundDetailDataBase[]
-                    {
-                        new RoundDetailDataJson {Value = roundInfo.AdditionalData}
-                    }
-                });
-        }
+                    new RoundDetailDataJson {Value = roundInfo.AdditionalData}
+                }
+            });
     }
 }

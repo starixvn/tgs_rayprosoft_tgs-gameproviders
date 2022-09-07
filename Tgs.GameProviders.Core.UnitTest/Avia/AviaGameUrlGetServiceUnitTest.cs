@@ -9,61 +9,60 @@ using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration.Avia;
 using Tgs.GameProviders.QueryServer.Models;
 
-namespace Tgs.GameProviders.Core.UnitTest.Avia
+namespace Tgs.GameProviders.Core.UnitTest.Avia;
+
+[TestFixture]
+public class AviaGameUrlGetServiceUnitTest
 {
-    [TestFixture]
-    public class AviaGameUrlGetServiceUnitTest
+    [Test]
+    public async Task Normal_Process()
     {
-        [Test]
-        public async Task Normal_Process()
+        var faceLogger = NullLogger<AviaGameUrlGetService>.Instance;
+        var fakeAviaApiClient = Substitute.For<IAviaApiClient>();
+        var fakeAviaService = Substitute.For<IAviaService>();
+        var fakeGamePlayerService = Substitute.For<IAviaGamePlayerService>();
+
+        var fakeService = new AviaGameUrlGetService(fakeAviaApiClient, faceLogger, fakeAviaService, fakeGamePlayerService);
+
+        var query = new AviaGameUrlQuery()
         {
-            var faceLogger = NullLogger<AviaGameUrlGetService>.Instance;
-            var fakeAviaApiClient = Substitute.For<IAviaApiClient>();
-            var fakeAviaService = Substitute.For<IAviaService>();
-            var fakeGamePlayerService = Substitute.For<IAviaGamePlayerService>();
+            GameType = GameType.ESports,
+            GameId = 2300001,
+            BrandCode = "GPI",
+            PlayerCode = "4ucmqplxb029",
+            CurrencyCode = "CNY",
+            LoginRecordId = Guid.NewGuid(),
+            PlatformType = PlatformType.Desktop,
+            Language = "zh-CN",
+            IPAddress = "127.0.0.1",
+            BackUrl = new("https://dev-t1.rpgp.cc/")
+        };
 
-            var fakeService = new AviaGameUrlGetService(fakeAviaApiClient, faceLogger, fakeAviaService, fakeGamePlayerService);
+        var brandMerchant = new AviaBrandMerchant()
+        {
+            BrandCode = DefConst.BrandCodeDefault,
+            ApiUrl = new("https://api.aviaapi.vip"),
+            Authorization = "81e2d1a24c684a76a710a70f4900a353",
+            PlayerPassword = "TgsP@ssw0rd"
+        };
 
-            var query = new AviaGameUrlQuery()
-            {
-                GameType = GameType.ESports,
-                GameId = 2300001,
-                BrandCode = "GPI",
-                PlayerCode = "4ucmqplxb029",
-                CurrencyCode = "CNY",
-                LoginRecordId = Guid.NewGuid(),
-                PlatformType = PlatformType.Desktop,
-                Language = "zh-CN",
-                IPAddress = "127.0.0.1",
-                BackUrl = new("https://dev-t1.rpgp.cc/")
-            };
+        var gameProviderCurrencyCode = "CNY";
+        var gameProviderCultureCode = "CHN";
+        Uri gameUrl = new("https://www.google.com/");
+        _ = fakeAviaService.GetBrandMerchantAsync(query.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
+        _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
+        _ = fakeAviaService.GetGameProviderCultureCodeAsync(query.Language).Returns(ValueTask.FromResult(gameProviderCultureCode));
+        _ = fakeAviaApiClient.GetGameUrlAsync(
+            brandMerchant.ApiUrl,
+            brandMerchant.Authorization,
+            query.PlayerCode,
+            gameProviderCultureCode,
+            null,
+            null).Returns(ValueTask.FromResult<(bool Success, Uri?)>((true, gameUrl)));
 
-            var brandMerchant = new AviaBrandMerchant()
-            {
-                BrandCode = DefConst.BrandCodeDefault,
-                ApiUrl = new("https://api.aviaapi.vip"),
-                Authorization = "81e2d1a24c684a76a710a70f4900a353",
-                PlayerPassword = "TgsP@ssw0rd"
-            };
+        var actual = await fakeService.GetAsync(query).ConfigureAwait(false);
 
-            var gameProviderCurrencyCode = "CNY";
-            var gameProviderCultureCode = "CHN";
-            Uri gameUrl = new("https://www.google.com/");
-            _ = fakeAviaService.GetBrandMerchantAsync(query.BrandCode).Returns(ValueTask.FromResult(brandMerchant));
-            _ = fakeAviaService.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).Returns(ValueTask.FromResult(gameProviderCurrencyCode));
-            _ = fakeAviaService.GetGameProviderCultureCodeAsync(query.Language).Returns(ValueTask.FromResult(gameProviderCultureCode));
-            _ = fakeAviaApiClient.GetGameUrlAsync(
-                brandMerchant.ApiUrl,
-                brandMerchant.Authorization,
-                query.PlayerCode,
-                gameProviderCultureCode,
-                null,
-                null).Returns(ValueTask.FromResult<(bool Success, Uri?)>((true, gameUrl)));
-
-            var actual = await fakeService.GetAsync(query).ConfigureAwait(false);
-
-            Assert.NotNull(actual);
-            Assert.AreEqual(gameUrl, actual.Url);
-        }
+        Assert.NotNull(actual);
+        Assert.AreEqual(gameUrl, actual.Url);
     }
 }

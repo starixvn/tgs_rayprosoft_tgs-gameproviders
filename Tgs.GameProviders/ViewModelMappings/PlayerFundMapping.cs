@@ -7,56 +7,55 @@ using Tgs.GameProviders.Core.LY.ApplicationServices;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 using Tgs.GameProviders.Core.VR.ApplicationServices;
 using Tgs.GameProviders.Core.WGHorse.ApplicationServices;
-using Tgs.GameProviders.Core.WGSports.ApplicationServices;
 using Tgs.GameProviders.ViewModels;
+using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 
-namespace Tgs.GameProviders.ViewModelMappings
+namespace Tgs.GameProviders.ViewModelMappings;
+
+public class PlayerFundMapping : Profile
 {
-    public class PlayerFundMapping : Profile
+    public PlayerFundMapping()
     {
-        public PlayerFundMapping()
-        {
-            _ = CreateMap<PlayerFundResult, PlayerFundResponse>()
-                .ReverseMap();
+        _ = CreateMap<PlayerFundResult, PlayerFundResponse>()
+            .ReverseMap();
 
-            _ = CreateMap<PlayerFundRequest, KYPlayerFundOutQuery>()
-                .ReverseMap();
-            _ = CreateMap<PlayerFundRequest, KYPlayerFundInQuery>()
-                .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, KYPlayerFundOutQuery>()
+            .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, KYPlayerFundInQuery>()
+            .ReverseMap();
 
-            _ = CreateMap<PlayerFundRequest, VRPlayerFundOutQuery>()
-                .ReverseMap();
-            _ = CreateMap<PlayerFundRequest, VRPlayerFundInQuery>()
-                .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, VRPlayerFundOutQuery>()
+            .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, VRPlayerFundInQuery>()
+            .ReverseMap();
 
-            _ = CreateMap<PlayerFundRequest, WGSportsPlayerFundOutQuery>()
-                .ReverseMap();
-            _ = CreateMap<PlayerFundRequest, WGSportsPlayerFundInQuery>()
-                .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, WGFmGamingPlayerFundOutQuery>()
+            .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, WGFmGamingPlayerFundInQuery>()
+            .ReverseMap();
 
-            _ = CreateMap<PlayerFundRequest, WGHorsePlayerFundOutQuery>()
-                .ReverseMap();
-            _ = CreateMap<PlayerFundRequest, WGHorsePlayerFundInQuery>()
-                .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, WGHorsePlayerFundOutQuery>()
+            .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, WGHorsePlayerFundInQuery>()
+            .ReverseMap();
 
-            _ = CreateMap<PlayerFundRequest, LYPlayerFundOutQuery>()
-                .ReverseMap();
-            _ = CreateMap<PlayerFundRequest, LYPlayerFundInQuery>()
-                .ReverseMap();
-            _ = CreateMap<PlayerFundRequest, AviaPlayerFundOutQuery>()
-                .ReverseMap();
-            _ = CreateMap<PlayerFundRequest, AviaPlayerFundInQuery>()
-                .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, LYPlayerFundOutQuery>()
+            .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, LYPlayerFundInQuery>()
+            .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, AviaPlayerFundOutQuery>()
+            .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, AviaPlayerFundInQuery>()
+            .ReverseMap();
 
-            _ = CreateMap<PlayerFundRequest, JokerPlayerFundOutQuery>()
-                .ReverseMap();
-            _ = CreateMap<PlayerFundRequest, JokerPlayerFundInQuery>()
-                .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, JokerPlayerFundOutQuery>()
+            .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, JokerPlayerFundInQuery>()
+            .ReverseMap();
 
-            _ = CreateMap<PlayerFundRequest, PragmaticPlayTransferPlayerFundOutQuery>()
-                .ReverseMap();
-            _ = CreateMap<PlayerFundRequest, PragmaticPlayTransferPlayerFundInQuery>()
-                .ReverseMap();
-        }
+        _ = CreateMap<PlayerFundRequest, PragmaticPlayTransferPlayerFundOutQuery>()
+            .ReverseMap();
+        _ = CreateMap<PlayerFundRequest, PragmaticPlayTransferPlayerFundInQuery>()
+            .ReverseMap();
     }
 }

@@ -1,15 +1,14 @@
-﻿namespace Tgs.GameProviders.Domains.SettingConfiguration.Avia
+﻿namespace Tgs.GameProviders.Domains.SettingConfiguration.Avia;
+
+public class AviaBrandMerchant
 {
-    public class AviaBrandMerchant
-    {
-        public Uri ApiUrl { get; init; } = default!;
+    public Uri ApiUrl { get; init; } = default!;
 
-        public string Authorization { get; set; } = default!;
+    public string Authorization { get; set; } = default!;
 
-        public string BrandCode { get; init; } = default!;
+    public string BrandCode { get; init; } = default!;
 
-        public string PlayerPassword { get; init; } = default!;
+    public string PlayerPassword { get; init; } = default!;
 
-        public bool Status { get; init; }
-    }
+    public bool Status { get; init; }
 }

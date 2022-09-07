@@ -1,12 +1,11 @@
 ﻿using Tgs.GameProviders.Domains.SettingConfiguration.TF;
 
-namespace Tgs.GameProviders.Domains.SettingConfiguration
+namespace Tgs.GameProviders.Domains.SettingConfiguration;
+
+public record TFGamingConfiguration : PluggableConfigurationBase
 {
-    public record TFGamingConfiguration : PluggableConfigurationBase
-    {
-        /// <summary>
-        /// The brand merchants
-        /// </summary>
-        public TFBrandMerchant[] BrandMerchants { get; init; } = default!;
-    }
+    /// <summary>
+    /// The brand merchants
+    /// </summary>
+    public TFBrandMerchant[] BrandMerchants { get; init; } = default!;
 }

@@ -1,14 +1,13 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Domains.RoundDetail
-{
-    public record RoundDetailDataJson : RoundDetailDataBase
-    {
-        public RoundDetailDataJson() : base(RoundDetailDataType.Json)
-        {
-        }
+namespace Tgs.GameProviders.Domains.RoundDetail;
 
-        [JsonPropertyName("value")]
-        public string? Value { get; init; } = default!;
+public record RoundDetailDataJson : RoundDetailDataBase
+{
+    public RoundDetailDataJson() : base(RoundDetailDataType.Json)
+    {
     }
+
+    [JsonPropertyName("value")]
+    public string? Value { get; init; } = default!;
 }

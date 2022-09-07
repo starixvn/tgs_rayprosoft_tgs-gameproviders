@@ -1,10 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.AsiaGaming.Models
+namespace Tgs.GameProviders.Core.AsiaGaming.Models;
+
+public record AsiaGamingCheckOrCreateAccountRequest : AsiaGamingBaseRequest
 {
-    public record AsiaGamingCheckOrCreateAccountRequest : AsiaGamingBaseRequest
-    {
-        [JsonPropertyName("method")]
-        public string Method => "lg";
-    }
+    [JsonPropertyName("method")]
+    public string Method => "lg";
 }

@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices
-{
-    public record AwcAelottoGameUrlQuery : GameUrlQuery;
-}
+﻿namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices;
+
+public record AwcAelottoGameUrlQuery : GameUrlQuery;

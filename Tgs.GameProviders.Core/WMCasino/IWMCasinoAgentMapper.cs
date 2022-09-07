@@ -1,9 +1,8 @@
 ﻿using Tgs.GameProviders.Domains.SettingConfiguration.WMCasino;
 
-namespace Tgs.GameProviders.Core.WMCasino
+namespace Tgs.GameProviders.Core.WMCasino;
+
+public interface IWMCasinoAgentMapper
 {
-    public interface IWMCasinoAgentMapper
-    {
-        WMCasinoAgent GetAgent(WMCasinoBrandMerchant[] merchants, string brandCode, string currencyCode);
-    }
+    WMCasinoAgent GetAgent(WMCasinoBrandMerchant[] merchants, string brandCode, string currencyCode);
 }

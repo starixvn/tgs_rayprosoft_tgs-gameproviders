@@ -2,14 +2,13 @@
 
 using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.SBO.Models
-{
-    public record SBOBaseResponse
-    {
-        [JsonPropertyName("error")]
-        public SBOErrorData Error { get; init; }
+namespace Tgs.GameProviders.Core.SBO.Models;
 
-        [JsonPropertyName("serverId")]
-        public string ServerId { get; init; }
-    }
+public record SBOBaseResponse
+{
+    [JsonPropertyName("error")]
+    public SBOErrorData Error { get; init; }
+
+    [JsonPropertyName("serverId")]
+    public string ServerId { get; init; }
 }

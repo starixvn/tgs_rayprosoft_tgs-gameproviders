@@ -1,20 +1,19 @@
-﻿namespace Tgs.GameProviders.Domains.SettingConfiguration.KY
+﻿namespace Tgs.GameProviders.Domains.SettingConfiguration.KY;
+
+public record KYAgentMapper
 {
-    public record KYAgentMapper
-    {
-        /// <summary>
-        /// The currency code
-        /// </summary>
-        public string CurrencyCode { get; init; } = default!;
+    /// <summary>
+    /// The currency code
+    /// </summary>
+    public string CurrencyCode { get; init; } = default!;
 
-        /// <summary>
-        /// The agent identifier
-        /// </summary>
-        public string AgentId { get; init; } = default!;
+    /// <summary>
+    /// The agent identifier
+    /// </summary>
+    public string AgentId { get; init; } = default!;
 
-        /// <summary>
-        /// The status
-        /// </summary>
-        public bool Status { get; init; }
-    }
+    /// <summary>
+    /// The status
+    /// </summary>
+    public bool Status { get; init; }
 }

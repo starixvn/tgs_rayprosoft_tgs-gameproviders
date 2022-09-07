@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Tgs.GameProviders.Core
+namespace Tgs.GameProviders.Core;
+
+public interface ISystemClock
 {
-    public interface ISystemClock
-    {
-        DateTimeOffset CurrentTime { get; }
-    }
+    DateTimeOffset CurrentTime { get; }
 }

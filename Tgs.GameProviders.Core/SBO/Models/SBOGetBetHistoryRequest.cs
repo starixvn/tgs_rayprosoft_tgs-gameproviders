@@ -2,17 +2,16 @@
 
 using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.SBO.Models
+namespace Tgs.GameProviders.Core.SBO.Models;
+
+public record SBOGetBetHistoryRequest : SBOBaseRequest
 {
-    public record SBOGetBetHistoryRequest : SBOBaseRequest
-    {
-        [JsonPropertyName("EndDate")]
-        public string EndDate { get; init; }
+    [JsonPropertyName("EndDate")]
+    public string EndDate { get; init; }
 
-        [JsonPropertyName("Portfolio")]
-        public string Portfolio { get; init; }
+    [JsonPropertyName("Portfolio")]
+    public string Portfolio { get; init; }
 
-        [JsonPropertyName("StartDate")]
-        public string StartDate { get; init; }
-    }
+    [JsonPropertyName("StartDate")]
+    public string StartDate { get; init; }
 }

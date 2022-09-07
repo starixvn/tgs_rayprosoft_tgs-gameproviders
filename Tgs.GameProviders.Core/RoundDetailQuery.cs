@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Tgs.GameProviders.Core
-{
-    public record RoundDetailQuery
-    {
-        public Guid RoundId { get; set; } = default!;
+namespace Tgs.GameProviders.Core;
 
-        public string Language { get; init; } = default!;
-    }
+public record RoundDetailQuery
+{
+    public Guid RoundId { get; set; } = default!;
+
+    public string Language { get; init; } = default!;
 }

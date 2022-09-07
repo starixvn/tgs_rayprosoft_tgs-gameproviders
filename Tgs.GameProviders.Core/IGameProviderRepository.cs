@@ -1,26 +1,30 @@
 ﻿#nullable enable
+
 using System;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.ConfigurationData;
+using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
 
-namespace Tgs.GameProviders.Core
+namespace Tgs.GameProviders.Core;
+
+public interface IGameProviderRepository
 {
-    public interface IGameProviderRepository
-    {
-        ValueTask<GameProviderModel> GetAsync(Guid gameProviderId);
+    ValueTask<GameProviderModel> GetAsync(Guid gameProviderId);
 
-        ValueTask<AwcConfigurationData> GetAwcConfigurationData(Guid gameProviderConfigurationId);
+    ValueTask<AwcConfigurationData> GetAwcConfigurationData(Guid gameProviderConfigurationId);
 
-        ValueTask<JiliTransferConfigurationData> GetJiliTransferConfigurationData(Guid gameProviderConfigurationId);
-        ValueTask<WMCasinoTransferConfigurationData> GetWMCasinoTransferConfigurationData(Guid gameProviderConfigurationId);
+    ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId);
 
-        ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId);
+    ValueTask<string?> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode);
 
-        ValueTask<string?> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode);
+    ValueTask<string?> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
 
-        ValueTask<string?> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
+    ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode);
 
-        ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode);
-    }
+    ValueTask<JiliTransferConfigurationData> GetJiliTransferConfigurationData(Guid gameProviderConfigurationId);
+
+    ValueTask<WMCasinoTransferConfigurationData> GetWMCasinoTransferConfigurationData(Guid gameProviderConfigurationId);
+
+    ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationData(Guid gameProviderConfigurationId);
 }

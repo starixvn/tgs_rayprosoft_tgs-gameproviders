@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices
-{
-    public record AwcCockfightPlayerFundOutQuery : PlayerFundQuery;
-}
+﻿namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices;
+
+public record AwcCockfightPlayerFundOutQuery : PlayerFundQuery;

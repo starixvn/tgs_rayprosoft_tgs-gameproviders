@@ -1,13 +1,12 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.Saba.Models
-{
-    public record SabaGetRoundHistoryRequest
-    {
-        [JsonPropertyName("vendor_id")]
-        public string VendorId { get; init; }
+namespace Tgs.GameProviders.Core.Saba.Models;
 
-        [JsonPropertyName("trans_id")]
-        public string ExternalTransactionId { get; init; }
-    }
+public record SabaGetRoundHistoryRequest
+{
+    [JsonPropertyName("vendor_id")]
+    public string VendorId { get; init; }
+
+    [JsonPropertyName("trans_id")]
+    public string ExternalTransactionId { get; init; }
 }

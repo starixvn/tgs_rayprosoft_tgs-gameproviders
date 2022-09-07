@@ -1,10 +1,9 @@
-﻿namespace Tgs.GameProviders.Client
+﻿namespace Tgs.GameProviders.Client;
+
+internal record PlayerFundCheckingResponse
 {
-    internal record PlayerFundCheckingResponse
-    {
-        /// <summary>
-        /// The order status
-        /// </summary>
-        public bool OrderStatus { get; init; }
-    }
+    /// <summary>
+    /// The order status
+    /// </summary>
+    public bool OrderStatus { get; init; }
 }

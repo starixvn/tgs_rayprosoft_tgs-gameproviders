@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.LY.ApplicationServices
-{
-    public record LYRoundDetailQuery : RoundDetailQuery;
-}
+﻿namespace Tgs.GameProviders.Core.LY.ApplicationServices;
+
+public record LYRoundDetailQuery : RoundDetailQuery;

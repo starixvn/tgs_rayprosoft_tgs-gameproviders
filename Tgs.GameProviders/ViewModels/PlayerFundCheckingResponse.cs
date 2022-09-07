@@ -1,7 +1,6 @@
-﻿namespace Tgs.GameProviders.ViewModels
+﻿namespace Tgs.GameProviders.ViewModels;
+
+public record PlayerFundCheckingResponse
 {
-    public record PlayerFundCheckingResponse
-    {
-        public bool OrderStatus { get; init; }
-    }
+    public bool OrderStatus { get; init; }
 }

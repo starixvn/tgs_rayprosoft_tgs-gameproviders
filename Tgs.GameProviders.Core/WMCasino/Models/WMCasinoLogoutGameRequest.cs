@@ -2,13 +2,12 @@
 
 using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.WMCasino.Models
-{
-    public record WMCasinoLogoutGameRequest : WMCasinoBaseRequest
-    {
-        public override string Action => "LogoutGame";
+namespace Tgs.GameProviders.Core.WMCasino.Models;
 
-        [JsonPropertyName("user")]
-        public string User { get; init; } = default!;
-    }
+public record WMCasinoLogoutGameRequest : WMCasinoBaseRequest
+{
+    public override string Action => "LogoutGame";
+
+    [JsonPropertyName("user")]
+    public string User { get; init; } = default!;
 }

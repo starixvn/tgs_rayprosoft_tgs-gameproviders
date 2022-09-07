@@ -1,7 +1,6 @@
-﻿namespace Tgs.GameProviders.Core.WMCasino
+﻿namespace Tgs.GameProviders.Core.WMCasino;
+
+public interface IWMCasinoUtility
 {
-    public interface IWMCasinoUtility
-    {
-        string ToWMCasinoPlayerId(string playerCode, string prefix, string suffix);
-    }
+    string ToWMCasinoPlayerId(string playerCode, string prefix, string suffix);
 }

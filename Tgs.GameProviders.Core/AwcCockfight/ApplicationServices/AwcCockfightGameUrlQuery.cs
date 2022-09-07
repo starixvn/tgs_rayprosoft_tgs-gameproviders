@@ -1,4 +1,3 @@
-﻿namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices
-{
-    public record AwcCockfightGameUrlQuery : GameUrlQuery;
-}
+﻿namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices;
+
+public record AwcCockfightGameUrlQuery : GameUrlQuery;

@@ -2,14 +2,13 @@
 
 using System.Text.Json.Serialization;
 
-namespace Tgs.GameProviders.Core.IMESports.Models
-{
-    public record IMESportsPagination
-    {
-        [JsonPropertyName("CurrentPage")]
-        public int CurrentPage { get; init; }
+namespace Tgs.GameProviders.Core.IMESports.Models;
 
-        [JsonPropertyName("TotalPage")]
-        public int TotalPage { get; init; }
-    }
+public record IMESportsPagination
+{
+    [JsonPropertyName("CurrentPage")]
+    public int CurrentPage { get; init; }
+
+    [JsonPropertyName("TotalPage")]
+    public int TotalPage { get; init; }
 }

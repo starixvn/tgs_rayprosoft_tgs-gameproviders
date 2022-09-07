@@ -25,7 +25,6 @@ using Tgs.GameProviders.Core.TCG;
 using Tgs.GameProviders.Core.TFGaming;
 using Tgs.GameProviders.Core.VR;
 using Tgs.GameProviders.Core.WGHorse;
-using Tgs.GameProviders.Core.WGSports;
 using Tgs.GameProviders.Core.WMCasino;
 using Tgs.GameProviders.Services.AllBet;
 using Tgs.GameProviders.Services.AsiaGaming;
@@ -52,134 +51,129 @@ using Tgs.GameProviders.Services.TCG;
 using Tgs.GameProviders.Services.TFGaming;
 using Tgs.GameProviders.Services.VR;
 using Tgs.GameProviders.Services.WGHorse;
-using Tgs.GameProviders.Services.WGSports;
 using Tgs.GameProviders.Services.WMCasino;
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace Microsoft.Extensions.DependencyInjection;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddGameProvidersServices(
+        this IServiceCollection services,
+         Func<IServiceProvider, IDatabase> redisDatabaseResolver)
     {
-        public static IServiceCollection AddGameProvidersServices(
-            this IServiceCollection services,
-             Func<IServiceProvider, IDatabase> redisDatabaseResolver)
-        {
-            _ = services
-                .AddTransient<IKYService, KYService>();
+        _ = services
+            .AddTransient<IKYService, KYService>();
 
-            _ = services
-                .AddTransient<IVRService, VRService>();
+        _ = services
+            .AddTransient<IVRService, VRService>();
 
-            _ = services
-                .AddTransient<IVRGamePlayer, VRGamePlayer>();
+        _ = services
+            .AddTransient<IVRGamePlayer, VRGamePlayer>();
 
-            _ = services
-                .AddTransient<IWGHorseService, WGHorseService>()
-                .AddTransient<IWGHorseGamePlayer, WGHorseGamePlayer>();
-            _ = services
-                .AddTransient<IWGSportsService, WGSportsService>()
-                .AddTransient<IWGSportsGamePlayer, WGSportsGamePlayer>();
+        _ = services
+            .AddTransient<IWGHorseService, WGHorseService>()
+            .AddTransient<IWGHorseGamePlayer, WGHorseGamePlayer>();
 
-            _ = services
-                .AddTransient<IBigGamingService, BigGamingService>()
-                .AddTransient<IBigGamingGamePlayer, BigGamingGamePlayer>()
-                .AddTransient<IBigGamingGameUrl, BigGamingGameUrl>();
+        _ = services
+            .AddTransient<IBigGamingService, BigGamingService>()
+            .AddTransient<IBigGamingGamePlayer, BigGamingGamePlayer>()
+            .AddTransient<IBigGamingGameUrl, BigGamingGameUrl>();
 
-            _ = services
-                .AddTransient<ISexyGamingService, SexyGamingService>()
-                .AddTransient<ISexyGamingGamePlayer, SexyGamingGamePlayer>();
+        _ = services
+            .AddTransient<ISexyGamingService, SexyGamingService>()
+            .AddTransient<ISexyGamingGamePlayer, SexyGamingGamePlayer>();
 
-            _ = services
-                .AddTransient<ISkywindService, SkywindService>();
-            _ = services
-                .AddTransient<ISkywindAccessToken>(sp => ActivatorUtilities.CreateInstance<SkywindAccessToken>(sp, redisDatabaseResolver(sp)));
+        _ = services
+            .AddTransient<ISkywindService, SkywindService>();
+        _ = services
+            .AddTransient<ISkywindAccessToken>(sp => ActivatorUtilities.CreateInstance<SkywindAccessToken>(sp, redisDatabaseResolver(sp)));
 
-            _ = services
-                .AddTransient<ITCGService, TCGService>()
-                .AddTransient<ITCGGamePlayer, TCGGamePlayer>();
+        _ = services
+            .AddTransient<ITCGService, TCGService>()
+            .AddTransient<ITCGGamePlayer, TCGGamePlayer>();
 
-            _ = services
-                .AddTransient<IEvolutionService, EvolutionService>();
+        _ = services
+            .AddTransient<IEvolutionService, EvolutionService>();
 
-            _ = services
-                .AddTransient<ILYService, LYService>();
+        _ = services
+            .AddTransient<ILYService, LYService>();
 
-            _ = services
-                .AddTransient<ISBOService, SBOService>()
-                .AddTransient<ISBOGamePlayer, SBOGamePlayer>()
-                .AddTransient<ISBOUtility, SBOUtility>()
-                .AddTransient<ISBOGameAgent, SBOGameAgent>();
+        _ = services
+            .AddTransient<ISBOService, SBOService>()
+            .AddTransient<ISBOGamePlayer, SBOGamePlayer>()
+            .AddTransient<ISBOUtility, SBOUtility>()
+            .AddTransient<ISBOGameAgent, SBOGameAgent>();
 
-            _ = services
-                .AddTransient<IWMCasinoService, WMCasinoService>()
-                .AddTransient<IWMCasinoAgentMapper, WMCasinoAgentMapper>()
-                .AddTransient<IWMCasinoUtility, WMCasinoUtility>()
-                .AddTransient<IWMCasinoGamePlayer, WMCasinoGamePlayer>();
+        _ = services
+            .AddTransient<IWMCasinoService, WMCasinoService>()
+            .AddTransient<IWMCasinoAgentMapper, WMCasinoAgentMapper>()
+            .AddTransient<IWMCasinoUtility, WMCasinoUtility>()
+            .AddTransient<IWMCasinoGamePlayer, WMCasinoGamePlayer>();
 
-            _ = services
-                .AddTransient<IAsiaGamingService, AsiaGamingService>()
-                .AddTransient<IAsiaGamingGameSession, AsiaGamingGameSession>()
-                .AddTransient<IAsiaGamingGamePlayer, AsiaGamingGamePlayer>();
+        _ = services
+            .AddTransient<IAsiaGamingService, AsiaGamingService>()
+            .AddTransient<IAsiaGamingGameSession, AsiaGamingGameSession>()
+            .AddTransient<IAsiaGamingGamePlayer, AsiaGamingGamePlayer>();
 
-            _ = services
-                .AddTransient<IPragmaticPlayService, PragmaticPlayService>();
+        _ = services
+            .AddTransient<IPragmaticPlayService, PragmaticPlayService>();
 
-            _ = services
-                .AddTransient<IIMESportsMerchantMapper, IMESportsMerchantMapper>()
-                .AddTransient<IIMESportsGamePlayer, IMESportsGamePlayer>()
-                .AddTransient<IIMESportsUtility, IMESportsUtility>()
-                .AddTransient<IIMESportsService, IMESportsService>();
+        _ = services
+            .AddTransient<IIMESportsMerchantMapper, IMESportsMerchantMapper>()
+            .AddTransient<IIMESportsGamePlayer, IMESportsGamePlayer>()
+            .AddTransient<IIMESportsUtility, IMESportsUtility>()
+            .AddTransient<IIMESportsService, IMESportsService>();
 
-            _ = services
-                .AddTransient<IIMESportsDataStore>(sp => ActivatorUtilities.CreateInstance<IMESportsRedisDataStore>(sp, redisDatabaseResolver(sp)));
+        _ = services
+            .AddTransient<IIMESportsDataStore>(sp => ActivatorUtilities.CreateInstance<IMESportsRedisDataStore>(sp, redisDatabaseResolver(sp)));
 
-            _ = services
-                .AddTransient<ISabaService, SabaService>()
-                .AddTransient<ISabaGamePlayer, SabaGamePlayer>()
-                .AddTransient<ISabaUtility, SabaUtility>();
+        _ = services
+            .AddTransient<ISabaService, SabaService>()
+            .AddTransient<ISabaGamePlayer, SabaGamePlayer>()
+            .AddTransient<ISabaUtility, SabaUtility>();
 
-            _ = services
-                .AddTransient<IHabaneroService, HabaneroService>();
+        _ = services
+            .AddTransient<IHabaneroService, HabaneroService>();
 
-            _ = services
-                .AddTransient<IBetConstructService, BetConstructService>();
+        _ = services
+            .AddTransient<IBetConstructService, BetConstructService>();
 
-            _ = services
-                .AddTransient<IAllBetService, AllBetService>()
-                .AddTransient<IAllBetAgentMapper, AllBetAgentMapper>()
-                .AddTransient<IAllBetGamePlayer, AllBetGamePlayer>();
+        _ = services
+            .AddTransient<IAllBetService, AllBetService>()
+            .AddTransient<IAllBetAgentMapper, AllBetAgentMapper>()
+            .AddTransient<IAllBetGamePlayer, AllBetGamePlayer>();
 
-            _ = services
-                .AddTransient<IAviaService, AviaService>()
-                .AddTransient<IAviaGamePlayerService, AviaGamePlayer>();
+        _ = services
+            .AddTransient<IAviaService, AviaService>()
+            .AddTransient<IAviaGamePlayerService, AviaGamePlayer>();
 
-            _ = services
-                .AddTransient<IJiliService, JiliService>()
-                .AddTransient<IJiliMerchantMapper, JiliMerchantMapper>();
+        _ = services
+            .AddTransient<IJiliService, JiliService>()
+            .AddTransient<IJiliMerchantMapper, JiliMerchantMapper>();
 
-            _ = services
-                .AddTransient<ITFGamingService, TFGamingService>();
+        _ = services
+            .AddTransient<ITFGamingService, TFGamingService>();
 
-            _ = services
-                .AddTransient<ICard365Service, Card365Service>()
-                .AddTransient<ICard365AgentMapper, Card365AgentMapper>();
+        _ = services
+            .AddTransient<ICard365Service, Card365Service>()
+            .AddTransient<ICard365AgentMapper, Card365AgentMapper>();
 
-            _ = services
-                .AddTransient<IJDBService, JDBService>()
-                .AddTransient<IJDBAgentMapper, JDBAgentMapper>();
+        _ = services
+            .AddTransient<IJDBService, JDBService>()
+            .AddTransient<IJDBAgentMapper, JDBAgentMapper>();
 
-            _ = services
-                .AddTransient<IDreamGameService, DreamGameService>();
+        _ = services
+            .AddTransient<IDreamGameService, DreamGameService>();
 
-            _ = services
-                .AddTransient<IJokerAgentMapper, JokerAgentMapper>()
-                .AddTransient<IJokerService, JokerService>()
-                .AddTransient<IJokerGamePlayer, JokerGamePlayer>();
+        _ = services
+            .AddTransient<IJokerAgentMapper, JokerAgentMapper>()
+            .AddTransient<IJokerService, JokerService>()
+            .AddTransient<IJokerGamePlayer, JokerGamePlayer>();
 
-            _ = services
-                .AddTransient<IPragmaticPlayTransferService, PragmaticPlayTransferService>()
-                .AddTransient<IPragmaticPlayTransferGamePlayer, PragmaticPlayTransferGamePlayer>();
+        _ = services
+            .AddTransient<IPragmaticPlayTransferService, PragmaticPlayTransferService>()
+            .AddTransient<IPragmaticPlayTransferGamePlayer, PragmaticPlayTransferGamePlayer>();
 
-            return services;
-        }
+        return services;
     }
 }

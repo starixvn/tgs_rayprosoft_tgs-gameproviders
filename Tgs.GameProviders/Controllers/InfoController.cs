@@ -6,32 +6,31 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Tgs.GameProviders.Controllers
+namespace Tgs.GameProviders.Controllers;
+
+[Route("[controller]")]
+[ApiController]
+public class InfoController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class InfoController : ControllerBase
+    [HttpGet]
+    public async Task<object> GetAsync([FromServices] IWebHostEnvironment _hostingEnvironment)
     {
-        [HttpGet]
-        public async Task<object> GetAsync([FromServices] IWebHostEnvironment _hostingEnvironment)
+        var hostName = Dns.GetHostName();
+        var hostEntry = await Dns.GetHostEntryAsync(hostName);
+        var hostIp = Array.Find(hostEntry.AddressList,
+            x => x.AddressFamily == AddressFamily.InterNetwork);
+        return new
         {
-            var hostName = Dns.GetHostName();
-            var hostEntry = await Dns.GetHostEntryAsync(hostName);
-            var hostIp = Array.Find(hostEntry.AddressList,
-                x => x.AddressFamily == AddressFamily.InterNetwork);
-            return new
+            Data = new
             {
-                Data = new
-                {
-                    Environment.MachineName,
-                    HostName = hostName,
-                    HostIp = hostIp?.ToString() ?? string.Empty,
-                    Environment = _hostingEnvironment.EnvironmentName,
-                    OsVersion = $"{Environment.OSVersion}",
-                    Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
-                    ProcessCount = Environment.ProcessorCount
-                }
-            };
-        }
+                Environment.MachineName,
+                HostName = hostName,
+                HostIp = hostIp?.ToString() ?? string.Empty,
+                Environment = _hostingEnvironment.EnvironmentName,
+                OsVersion = $"{Environment.OSVersion}",
+                Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
+                ProcessCount = Environment.ProcessorCount
+            }
+        };
     }
 }
