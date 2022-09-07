@@ -224,7 +224,7 @@ public class JDBTransferController : ControllerBase
     /// <summary>
     /// Rounds the detail asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="roundId">The round identifier.</param>
     /// <param name="language">The language.</param>
     /// <returns></returns>
@@ -235,11 +235,11 @@ public class JDBTransferController : ControllerBase
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<WGFmGamingRoundDetailQuery, RoundDetailResult?> getService,
+        [FromServices] IGetService<JDBTransferRoundDetailQuery, RoundDetailResult> service,
         Guid roundId,
         [FromQuery] string language)
     {
-        var result = await getService.GetAsync(new()
+        var result = await service.GetAsync(new()
         {
             RoundId = roundId,
             Language = language
