@@ -60,6 +60,43 @@ internal class GameProviderRepository : IGameProviderRepository
     public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
         => await _client.GameProviderGetGameProviderIdAsync(gameProviderCode).ConfigureAwait(false)
         ?? throw new Exception($"Game Provider does not exist.({gameProviderCode})");
+    public async ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(Guid gameProviderConfigurationId)
+    {
+        var settingConfiguration = await _client.SettingGetConfigurationStringAsync(GameProviderConfigurations.JDBTransfer).ConfigureAwait(false)
+            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.JDBTransfer})");
+
+        var settingConfigurationJson = JsonNode.Parse(settingConfiguration);
+
+        if (settingConfigurationJson == null)
+        {
+            throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.JDBTransfer})");
+        }
+
+        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
+                  ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+
+        var configurationDataJson = JsonNode.Parse(gameProviderConfig.ConfigurationData);
+
+        return configurationDataJson is null
+            ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+            : new JDBTransferConfiguration()
+            {
+                ApiUrl = new(configurationDataJson["ApiUrl"]?.ToString()
+                            ?? settingConfigurationJson["ApiUrl"]?.ToString()
+                            ?? throw new Exception($"{GameProviderConfigurations.JDBTransfer} Required parameters(ApiUrl)")),
+                Domain = configurationDataJson["Domain"]?.ToString()
+                            ?? settingConfigurationJson["Domain"]?.ToString()
+                            ?? throw new Exception($"{GameProviderConfigurations.JDBTransfer} Required parameters(Domain)"),
+                Agent = configurationDataJson["Agent"]?.ToString()
+                            ?? throw new Exception($"{GameProviderConfigurations.JDBTransfer} Required parameters(Agent)"),
+                AesIV = configurationDataJson["AesIV"]?.ToString()
+                            ?? settingConfigurationJson["AesIV"]?.ToString()
+                            ?? throw new Exception($"{GameProviderConfigurations.JDBTransfer} Required parameters(AesIV)"),
+                AesKey = configurationDataJson["AesKey"]?.ToString()
+                            ?? settingConfigurationJson["AesKey"]?.ToString()
+                            ?? throw new Exception($"{GameProviderConfigurations.JDBTransfer} Required parameters(AesKey)")
+            };
+    }
 
     public async ValueTask<JiliTransferConfigurationData> GetJiliTransferConfigurationData(Guid gameProviderConfigurationId)
     {
