@@ -1,12 +1,11 @@
-﻿using System.Threading.Tasks;
-using System;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
-using Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 
 namespace Tgs.GameProviders.Controllers;
 
@@ -216,5 +215,4 @@ public class SkywindTransferController : ControllerBase,
             Language = language
         })
         .ConfigureAwait(false);
-
 }

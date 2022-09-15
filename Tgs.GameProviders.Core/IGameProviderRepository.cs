@@ -27,4 +27,6 @@ public interface IGameProviderRepository
     ValueTask<WMCasinoTransferConfigurationData> GetWMCasinoTransferConfigurationData(Guid gameProviderConfigurationId);
 
     ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationData(Guid gameProviderConfigurationId);
+
+    ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(Guid gameProviderConfigurationId);
 }
