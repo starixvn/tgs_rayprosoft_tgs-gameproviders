@@ -136,6 +136,11 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceJDBBaseUrl");
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceSBOBaseUrl");
     })
     .AddGameProvidersRepositories()
     .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database);

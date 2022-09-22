@@ -5,6 +5,7 @@ using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.JiliService.Client;
+using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
@@ -32,7 +33,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceIdnLiveClientOptions, IServiceProvider> gameInterfaceIdnLiveClientOptions,
         Action<GameInterfaceSkywindClientOptions, IServiceProvider> gameInterfaceSkywindClientOptions,
         Action<GameInterfaceWGFmGamingClientOptions, IServiceProvider> gameInterfaceWGFmGamingClientOptions,
-        Action<GameInterfaceJDBClientOptions, IServiceProvider> gameInterfaceJDBClientOptions)
+        Action<GameInterfaceJDBClientOptions, IServiceProvider> gameInterfaceJDBClientOptions,
+        Action<GameInterfaceSBOClientOptions, IServiceProvider> gameInterfaceSBOClientOptions)
         => services
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
@@ -46,6 +48,7 @@ public static class ServiceCollecitonExtensions
             .AddGameInterfaceSkywindServiceClient(gameInterfaceSkywindClientOptions)
             .AddGameInterfaceWGFmGamingServiceClient(gameInterfaceWGFmGamingClientOptions)
             .AddGameInterfaceJDBServiceClient(gameInterfaceJDBClientOptions)
+            .AddGameInterfaceSBOServiceClient(gameInterfaceSBOClientOptions)
             .AddGameRoundsClient(gameRoundsClientOptions)
             .AddGameTokenClient(gameTokenClientOptions)
             .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)
