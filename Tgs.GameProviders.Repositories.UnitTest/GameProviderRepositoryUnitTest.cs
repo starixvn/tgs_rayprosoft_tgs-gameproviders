@@ -270,4 +270,43 @@ public class GameProviderRepositoryUnitTest
         Assert.AreEqual("SettingConfigurationPartnerIV", actual.IV);
         Assert.AreEqual(2, actual.Version);
     }
+
+    [TestMethod]
+    public async Task Get_SBO_ConfigurationData()
+    {
+        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        _ = fakeClient
+            .SettingGetConfigurationStringAsync(Arg.Is(GameProviderConfigurations.SBOTransfer))
+            .Returns(
+                "{\"ApiUrl\":\"https://ex-api-demo-yy.568win.com/\",\"CompanyKey\":\"56E0854E61C3468580E491C38405580B\",\"Min\":1,\"Max\":5000,\"MaxPerMatch\":20000,\"CasinoTableLimit\":1}");
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+            GameProviderId: gameProviderId,
+            GameProviderCode: "SBOTF",
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "SBOTF-GPI",
+            Description: "SBOTF-GPI Configuration",
+            ClientId: "SBOTF-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"Agent\":\"STAG_GPI\",\"Currency\":\"CNY\",\"Min\":1,\"Max\":10000,\"MaxPerMatch\":40000,\"CasinoTableLimit\":2}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetSBOTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual("STAG_GPI", actual.Agent);
+        Assert.AreEqual("CNY", actual.Currency);
+        Assert.AreEqual(10000, actual.Max);
+        Assert.AreEqual(40000, actual.MaxPerMatch);
+        Assert.AreEqual(2, actual.CasinoTableLimit);
+    }
 }

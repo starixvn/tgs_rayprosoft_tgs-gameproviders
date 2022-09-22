@@ -4,6 +4,7 @@ using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.JiliService.Client;
+using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
@@ -31,7 +32,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceIdnLiveClientOptions, IServiceProvider> gameInterfaceIdnLiveClientOptions,
         Action<GameInterfaceSkywindClientOptions, IServiceProvider> gameInterfaceSkywindClientOptions,
         Action<GameInterfaceWGFmGamingClientOptions, IServiceProvider> gameInterfaceWGFmGamingClientOptions,
-        Action<GameInterfaceJDBClientOptions, IServiceProvider> gameInterfaceJDBClientOptions)
+        Action<GameInterfaceJDBClientOptions, IServiceProvider> gameInterfaceJDBClientOptions,
+        Action<GameInterfaceSBOClientOptions, IServiceProvider> gameInterfaceSBOClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -49,5 +51,6 @@ public static class ServiceCollectionExtensions
                 gameInterfaceIdnLiveClientOptions,
                 gameInterfaceSkywindClientOptions,
                 gameInterfaceWGFmGamingClientOptions,
-                gameInterfaceJDBClientOptions);
+                gameInterfaceJDBClientOptions,
+                gameInterfaceSBOClientOptions);
 }
