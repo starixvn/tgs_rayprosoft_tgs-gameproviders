@@ -125,4 +125,16 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         }
         return configurationData;
     }
+
+    public async ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(Guid gameProviderConfigurationId)
+    {
+        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+        if (!_memoryCache.TryGetValue(key, out SBOTransferConfiguration configurationData))
+        {
+            configurationData = await _gameProvider.GetSBOTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+        }
+        return configurationData;
+    }
 }
