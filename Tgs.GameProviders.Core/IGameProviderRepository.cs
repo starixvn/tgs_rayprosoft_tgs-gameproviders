@@ -29,4 +29,6 @@ public interface IGameProviderRepository
     ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationData(Guid gameProviderConfigurationId);
 
     ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(Guid gameProviderConfigurationId);
+
+    ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(Guid gameProviderConfigurationId);
 }

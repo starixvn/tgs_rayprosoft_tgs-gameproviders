@@ -1,8 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.Extensions.Configuration;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.ConfigurationData;
@@ -60,6 +58,7 @@ internal class GameProviderRepository : IGameProviderRepository
     public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
         => await _client.GameProviderGetGameProviderIdAsync(gameProviderCode).ConfigureAwait(false)
         ?? throw new Exception($"Game Provider does not exist.({gameProviderCode})");
+
     public async ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(Guid gameProviderConfigurationId)
     {
         var settingConfiguration = await _client.SettingGetConfigurationStringAsync(GameProviderConfigurations.JDBTransfer).ConfigureAwait(false)
@@ -106,6 +105,66 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonSerializer.Deserialize<JiliTransferConfigurationData>(data.ConfigurationData, _SerializerOptions)!;
     }
 
+    public async ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(Guid gameProviderConfigurationId)
+    {
+        var settingConfiguration = await _client.SettingGetConfigurationStringAsync(GameProviderConfigurations.SBOTransfer).ConfigureAwait(false)
+            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.SBOTransfer})");
+
+        var settingConfigurationJson = JsonNode.Parse(settingConfiguration);
+
+        if (settingConfigurationJson == null)
+        {
+            throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.SBOTransfer})");
+        }
+
+        var apiUrl = settingConfigurationJson["ApiUrl"]?.ToString()
+            ?? throw new Exception($"{GameProviderConfigurations.SBOTransfer} Required parameters(ApiUrl)");
+
+        var companyKey = settingConfigurationJson["CompanyKey"]?.ToString()
+            ?? throw new Exception($"{GameProviderConfigurations.SBOTransfer} Required parameters(CompanyKey)");
+
+        var min = settingConfigurationJson["Min"]?.GetValue<int>()
+            ?? throw new Exception($"{GameProviderConfigurations.SBOTransfer} Required parameters(Min)");
+
+        var max = settingConfigurationJson["Max"]?.GetValue<int>()
+            ?? throw new Exception($"{GameProviderConfigurations.SBOTransfer} Required parameters(Max)");
+
+        var maxPerMatch = settingConfigurationJson["MaxPerMatch"]?.GetValue<int>()
+           ?? throw new Exception($"{GameProviderConfigurations.SBOTransfer} Required parameters(MaxPerMatch)");
+
+        var casinoTableLimit = settingConfigurationJson["CasinoTableLimit"]?.GetValue<int>()
+           ?? throw new Exception($"{GameProviderConfigurations.SBOTransfer} Required parameters(CasinoTableLimit)");
+
+        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
+                  ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+
+        if (string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData))
+        {
+            throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+        }
+
+        var configurationDataJson = JsonNode.Parse(gameProviderConfig.ConfigurationData);
+
+        if (configurationDataJson is null)
+        {
+            throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+        }
+
+        return new SBOTransferConfiguration()
+        {
+            ApiUrl = new Uri(configurationDataJson["ApiUrl"]?.ToString() ?? apiUrl),
+            CompanyKey = configurationDataJson["CompanyKey"]?.ToString() ?? companyKey,
+            Agent = configurationDataJson["Agent"]?.ToString() ??
+            throw new Exception($"{GameProviderConfigurations.SBOTransfer} Required parameters(Agent)"),
+            Currency = configurationDataJson["Currency"]?.ToString() ??
+            throw new Exception($"{GameProviderConfigurations.SBOTransfer} Required parameters(Currency)"),
+            Min = configurationDataJson["Min"]?.GetValue<int>() ?? min,
+            Max = configurationDataJson["Max"]?.GetValue<int>() ?? max,
+            MaxPerMatch = configurationDataJson["MaxPerMatch"]?.GetValue<int>() ?? maxPerMatch,
+            CasinoTableLimit = configurationDataJson["CasinoTableLimit"]?.GetValue<int>() ?? casinoTableLimit
+        };
+    }
+
     public async ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationData(Guid gameProviderConfigurationId)
     {
         var settingConfiguration = await _client.SettingGetConfigurationStringAsync(GameProviderConfigurations.WGSports).ConfigureAwait(false)
@@ -120,7 +179,6 @@ internal class GameProviderRepository : IGameProviderRepository
 
         var amountFormat = settingConfigurationJson["AmountFormat"]!.ToString();
         var amountMaximum = decimal.Parse(settingConfigurationJson["AmountMaximum"]!.ToString());
-
 
         var apiUrl = settingConfigurationJson["ApiUrl"]?.ToString()
             ?? throw new Exception($"{GameProviderConfigurations.WGSports} Required parameters(ApiUrl)");
