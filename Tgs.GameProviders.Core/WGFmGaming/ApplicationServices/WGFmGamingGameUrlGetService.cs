@@ -31,7 +31,7 @@ public class WGFmGamingGameUrlGetService : IGetService<WGFmGamingGameUrlQuery, U
         var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
         var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProviderRepository.GetWGFmGamingConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+        var configurationData = await _gameProviderRepository.GetWGFmGamingConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
         var cultureCode = await _gameProviderRepository
             .GetGameProviderCultureCodeAsync(
                 gameProviderId,

@@ -39,11 +39,5 @@ public interface ISettingRepository
 
     ValueTask<IDNLiveConfiguration> GetIDNLiveConfigurationAsync();
 
-    ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync();
-
     ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync();
-
-    ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync();
-
-    ValueTask<WGFmGamingConfiguration> GetWGSportsConfigurationAsync();
 }

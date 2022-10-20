@@ -1,5 +1,6 @@
 ﻿using System;
 using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.JDBService.Client;
@@ -33,7 +34,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceSkywindClientOptions, IServiceProvider> gameInterfaceSkywindClientOptions,
         Action<GameInterfaceWGFmGamingClientOptions, IServiceProvider> gameInterfaceWGFmGamingClientOptions,
         Action<GameInterfaceJDBClientOptions, IServiceProvider> gameInterfaceJDBClientOptions,
-        Action<GameInterfaceSBOClientOptions, IServiceProvider> gameInterfaceSBOClientOptions)
+        Action<GameInterfaceSBOClientOptions, IServiceProvider> gameInterfaceSBOClientOptions,
+        Action<GameInterfaceBTiClientOptions, IServiceProvider> gameInterfaceBTiClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -52,5 +54,6 @@ public static class ServiceCollectionExtensions
                 gameInterfaceSkywindClientOptions,
                 gameInterfaceWGFmGamingClientOptions,
                 gameInterfaceJDBClientOptions,
-                gameInterfaceSBOClientOptions);
+                gameInterfaceSBOClientOptions,
+                gameInterfaceBTiClientOptions);
 }

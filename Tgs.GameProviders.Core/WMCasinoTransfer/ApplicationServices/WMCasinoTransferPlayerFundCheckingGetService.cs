@@ -33,15 +33,14 @@ public class WMCasinoTransferPlayerFundCheckingGetService : IGetService<WMCasino
     public async ValueTask<PlayerFundCheckingResult> GetAsync(WMCasinoTransferPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.WMCasinoTransfer).ConfigureAwait(false);
-        var configuration = await _setting.GetWMCasinoTransferConfigurationAsync().ConfigureAwait(false);
         var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProvider.GetWMCasinoTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetWMCasinoTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
 
         var response = await _grpc.FundOrderAsync(
             apiUrl: configuration.ApiUrl,
-            vendorId: configurationData.VendorId,
-            signature: configurationData.Signature,
+            vendorId: configuration.VendorId,
+            signature: configuration.Signature,
             transactionId: command.OrderId,
             startTime: null,
             endTime: null,

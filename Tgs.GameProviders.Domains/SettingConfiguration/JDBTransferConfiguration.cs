@@ -11,5 +11,4 @@ public record JDBTransferConfiguration
     public string AesIV { get; init; } = default!;
 
     public string AesKey { get; init; } = default!;
-
 }
