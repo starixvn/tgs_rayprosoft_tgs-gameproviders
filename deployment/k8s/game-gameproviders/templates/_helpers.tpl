@@ -35,6 +35,7 @@ Common labels
 */}}
 {{- define "game-gameproviders.labels" -}}
 {{ include "game-gameproviders.selectorLabels" . }}
+tgs.kind: game
 {{- end }}
 
 {{/*
@@ -42,7 +43,6 @@ Selector labels
 */}}
 {{- define "game-gameproviders.selectorLabels" -}}
 app: {{ include "game-gameproviders.name" . }}
-tgs.kind: game
 {{- end }}
 
 {{/*
