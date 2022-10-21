@@ -5,7 +5,6 @@ using NUnit.Framework;
 using Tgs.GameInterface.JiliService.Client;
 using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
 
@@ -21,14 +20,20 @@ public class JiliTransferPlayerFundCheckingGetServiceUnitTest
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameInterfaceJiliServiceGrpc = Substitute.For<IGameInterfaceJiliServiceGrpc>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
-        var configuration = new JiliTransferConfiguration(
-            ApiUrl: new("https://tttint.onlinegames22.com/"),
-            AgentKey: Guid.NewGuid().ToString("N"));
+        var query = new JiliTransferPlayerFundCheckingQuery
+        {
+            BrandCode = "GPI",
+            PlayerCode = "4ucmqplxb029",
+            CurrencyCode = "CNY",
+            OrderId = Guid.NewGuid().ToString("N")
+        };
 
-        var configurationData = new JiliTransferConfigurationData(
-            AgentId: "testAgentId");
+        var gameProviderId = Guid.NewGuid();
+        _ = fakeGameProviderRepository
+            .GetGameProviderIdAsync(
+                Arg.Is(GameProviderType.JiliTransfer))
+            .Returns(gameProviderId);
 
         var playerModel = new PlayerModel(
             ResellerId: Guid.NewGuid(),
@@ -42,28 +47,32 @@ public class JiliTransferPlayerFundCheckingGetServiceUnitTest
             DefaultWalletId: Guid.NewGuid(),
             DefaultWalletCurrencyCode: "CNY",
             PlayerStatus.Enabled);
-
-        var query = new JiliTransferPlayerFundCheckingQuery
-        {
-            BrandCode = "GPI",
-            PlayerCode = "4ucmqplxb029",
-            CurrencyCode = "CNY",
-            OrderId = Guid.NewGuid().ToString("N")
-        };
+        _ = fakePlayerRepository
+        .GetAsync(
+                Arg.Is(query.PlayerCode))
+            .Returns(playerModel);
 
         var gameProviderConfigurationId = Guid.NewGuid();
-        var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.JiliTransfer)).Returns(gameProviderId);
-        _ = fakeSettingRepository.GetJiliTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
-        _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameProviderId),
-             Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetJiliTransferConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
+        _ = fakeBrandService
+            .GetBrandGameProviderConfigurationIdAsync(
+                Arg.Is(gameProviderId),
+                Arg.Is(playerModel.BrandId))
+            .Returns(gameProviderConfigurationId);
+
+        var configuration = new JiliTransferConfiguration
+        {
+            ApiUrl = new("https://tttint.onlinegames22.com/"),
+            AgentKey = Guid.NewGuid().ToString("N"),
+            AgentId = "testAgentId"
+        };
+        _ = fakeGameProviderRepository
+            .GetJiliTransferConfiguration(
+                Arg.Is(gameProviderConfigurationId))
+            .Returns(configuration);
 
         _ = fakeGameInterfaceJiliServiceGrpc.FundOrderCheckingAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
-            agentId: Arg.Is(configurationData.AgentId),
+            agentId: Arg.Is(configuration.AgentId),
             agentKey: Arg.Is(configuration.AgentKey),
             transactionId: Arg.Is(query.OrderId)).Returns(true);
 
@@ -71,8 +80,7 @@ public class JiliTransferPlayerFundCheckingGetServiceUnitTest
             fakeBrandService,
             fakeGameProviderRepository,
             fakeGameInterfaceJiliServiceGrpc,
-            fakePlayerRepository,
-            fakeSettingRepository);
+            fakePlayerRepository);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 

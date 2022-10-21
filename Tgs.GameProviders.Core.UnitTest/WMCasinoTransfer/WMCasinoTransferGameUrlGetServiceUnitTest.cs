@@ -6,7 +6,6 @@ using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
@@ -31,12 +30,10 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
 
         var configuration = new WMCasinoTransferConfiguration
         {
-            ApiUrl = new Uri("https://api.a45.me/api/public/Gateway.php")
+            ApiUrl = new Uri("https://api.a45.me/api/public/Gateway.php"),
+            VendorId = "testVendorId",
+            Signature = "testsignature"
         };
-
-        var configurationData = new WMCasinoTransferConfigurationData(
-            VendorId: "testVendorId",
-            Signature: "testsignature");
 
         var playerModel = new PlayerModel(
             ResellerId: Guid.NewGuid(),
@@ -88,12 +85,11 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
         var gameProviderCultureCode = "0";
         var gameProviderConfigurationId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WMCasinoTransfer)).Returns(gameModel.GameProviderId);
-        _ = fakeSettingRepository.GetWMCasinoTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
         _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
              Arg.Is(gameModel.GameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetWMCasinoTransferConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
+        _ = fakeGameProviderRepository.GetWMCasinoTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
         _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
             Arg.Is(gameModel.GameProviderId),
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
@@ -110,8 +106,8 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
 
         _ = fakeGameInterfaceWMCasinoServiceGrpc.GameUrlAsync(
              apiUrl: Arg.Is(configuration.ApiUrl),
-             vendorId: Arg.Is(configurationData.VendorId),
-             signature: Arg.Is(configurationData.Signature),
+             vendorId: Arg.Is(configuration.VendorId),
+             signature: Arg.Is(configuration.Signature),
              user: Arg.Is(user),
              password: Arg.Any<string>(),
              language: Arg.Any<int>()

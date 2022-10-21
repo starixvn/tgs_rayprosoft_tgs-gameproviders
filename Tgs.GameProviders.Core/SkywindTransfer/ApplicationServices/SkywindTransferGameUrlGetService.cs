@@ -70,7 +70,6 @@ public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameU
                .ConfigureAwait(false);
 
             gameUrl = new($"{configuration.LiveLobbyUrl}#/ticket/{authToken}?lang={cultureCode}");
-
         }
         else
         {
