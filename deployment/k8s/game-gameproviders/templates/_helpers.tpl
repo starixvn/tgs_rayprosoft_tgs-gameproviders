@@ -35,6 +35,7 @@ Common labels
 */}}
 {{- define "game-gameproviders.labels" -}}
 {{ include "game-gameproviders.selectorLabels" . }}
+{{- end }}
 
 {{/*
 Selector labels
