@@ -22,13 +22,15 @@ public interface IGameProviderRepository
 
     ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode);
 
-    ValueTask<JiliTransferConfigurationData> GetJiliTransferConfigurationData(Guid gameProviderConfigurationId);
+    ValueTask<JiliTransferConfiguration> GetJiliTransferConfiguration(Guid gameProviderConfigurationId);
 
-    ValueTask<WMCasinoTransferConfigurationData> GetWMCasinoTransferConfigurationData(Guid gameProviderConfigurationId);
+    ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(Guid gameProviderConfigurationId);
 
-    ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationData(Guid gameProviderConfigurationId);
+    ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfiguration(Guid gameProviderConfigurationId);
 
     ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(Guid gameProviderConfigurationId);
 
     ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(Guid gameProviderConfigurationId);
+
+    ValueTask<BTiSportsConfiguration> GetBTiSportsConfiguration(Guid gameProviderConfigurationId);
 }

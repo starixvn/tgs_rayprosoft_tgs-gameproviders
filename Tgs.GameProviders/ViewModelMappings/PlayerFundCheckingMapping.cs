@@ -6,9 +6,9 @@ using Tgs.GameProviders.Core.KY.ApplicationServices;
 using Tgs.GameProviders.Core.LY.ApplicationServices;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 using Tgs.GameProviders.Core.VR.ApplicationServices;
+using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 using Tgs.GameProviders.Core.WGHorse.ApplicationServices;
 using Tgs.GameProviders.ViewModels;
-using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 
 namespace Tgs.GameProviders.ViewModelMappings;
 

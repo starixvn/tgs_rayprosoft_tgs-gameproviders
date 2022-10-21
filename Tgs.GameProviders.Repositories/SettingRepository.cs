@@ -64,17 +64,11 @@ internal class SettingRepository : ISettingRepository
     public ValueTask<IDNLiveConfiguration> GetIDNLiveConfigurationAsync()
         => GetAsync<IDNLiveConfiguration>(GameProviderConfigurations.IDNLive);
 
-    public ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync()
-        => GetAsync<JiliTransferConfiguration>(GameProviderConfigurations.JiliTransfer);
-
     public ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync()
         => GetAsync<SkywindTransferConfiguration>(GameProviderConfigurations.SkywindTransfer);
 
     public ValueTask<WGFmGamingConfiguration> GetWGSportsConfigurationAsync()
         => GetAsync<WGFmGamingConfiguration>(GameProviderConfigurations.WGSports);
-
-    public ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync()
-        => GetAsync<WMCasinoTransferConfiguration>(GameProviderConfigurations.WMCasinoTransfer);
 
     private async ValueTask<TConfiguration> GetAsync<TConfiguration>(string key)
         => await _client.SettingGetConfigurationAsync<TConfiguration>(key).ConfigureAwait(false)

@@ -27,8 +27,8 @@ internal class WMCasinoTransferCreatePlayerCommandService : ICommandService<WMCa
 
         await _grpc.CreatePlayerAsync(
             apiUrl: command.Configuration.ApiUrl,
-            vendorId: command.ConfigurationData.VendorId,
-            signature: command.ConfigurationData.Signature,
+            vendorId: command.Configuration.VendorId,
+            signature: command.Configuration.Signature,
             user: user,
             password: command.Password,
             userName: command.PlayerCode,

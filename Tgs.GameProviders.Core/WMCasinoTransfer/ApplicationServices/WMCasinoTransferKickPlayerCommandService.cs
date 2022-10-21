@@ -32,17 +32,16 @@ public class WMCasinoTransferKickPlayerCommandService : ICommandService<WMCasino
     public async ValueTask ExecuteAsync(WMCasinoTransferKickPlayerCommand command, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.WMCasinoTransfer).ConfigureAwait(false);
-        var configuration = await _setting.GetWMCasinoTransferConfigurationAsync().ConfigureAwait(false);
         var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProvider.GetWMCasinoTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetWMCasinoTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
 
         var user = $"wmtf_{command.PlayerCode}_{player.BrandCode}";
 
         await _grpc.KickPlayerAsync(
             apiUrl: configuration.ApiUrl,
-            vendorId: configurationData.VendorId,
-            signature: configurationData.Signature,
+            vendorId: configuration.VendorId,
+            signature: configuration.Signature,
             user: user,
             cancellationToken: cancellationToken).ConfigureAwait(false);
     }

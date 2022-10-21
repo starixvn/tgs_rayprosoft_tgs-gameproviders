@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tgs.GameProviders.Domains.SettingConfiguration;
+﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
 public record SBOTransferConfiguration
 {
@@ -17,4 +11,3 @@ public record SBOTransferConfiguration
     public int MaxPerMatch { get; set; }
     public int CasinoTableLimit { get; set; }
 }
-

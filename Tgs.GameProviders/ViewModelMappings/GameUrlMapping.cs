@@ -22,10 +22,10 @@ using Tgs.GameProviders.Core.SexyGaming.ApplicationServices;
 using Tgs.GameProviders.Core.Skywind.ApplicationServices;
 using Tgs.GameProviders.Core.TCG.ApplicationServices;
 using Tgs.GameProviders.Core.VR.ApplicationServices;
+using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 using Tgs.GameProviders.Core.WGHorse.ApplicationServices;
 using Tgs.GameProviders.Core.WMCasino.ApplicationServices;
 using Tgs.GameProviders.ViewModels;
-using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 
 namespace Tgs.GameProviders.ViewModelMappings;
 

@@ -203,18 +203,6 @@ internal class SettingCacheRepository : ISettingRepository
         return configuration;
     }
 
-    public async ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync()
-    {
-        var key = GetKey(GameProviderConfigurations.JiliTransfer);
-        if (!_memoryCache.TryGetValue(key, out JiliTransferConfiguration configuration))
-        {
-            configuration = await _setting.GetJiliTransferConfigurationAsync().ConfigureAwait(false);
-
-            _ = _memoryCache.Set(key, configuration, _absoluteExpiration);
-        }
-        return configuration;
-    }
-
     public async ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync()
     {
         var key = GetKey(GameProviderConfigurations.SkywindTransfer);
@@ -227,29 +215,6 @@ internal class SettingCacheRepository : ISettingRepository
         return configuration;
     }
 
-    public async ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync()
-    {
-        var key = GetKey(GameProviderConfigurations.WMCasinoTransfer);
-        if (!_memoryCache.TryGetValue(key, out WMCasinoTransferConfiguration configuration))
-        {
-            configuration = await _setting.GetWMCasinoTransferConfigurationAsync().ConfigureAwait(false);
-
-            _ = _memoryCache.Set(key, configuration, _absoluteExpiration);
-        }
-        return configuration;
-    }
-
-    public async ValueTask<WGFmGamingConfiguration> GetWGSportsConfigurationAsync()
-    {
-        var key = GetKey(GameProviderConfigurations.WGSports);
-        if (!_memoryCache.TryGetValue(key, out WGFmGamingConfiguration configuration))
-        {
-            configuration = await _setting.GetWGSportsConfigurationAsync().ConfigureAwait(false);
-
-            _ = _memoryCache.Set(key, configuration, _absoluteExpiration);
-        }
-        return configuration;
-    }
 
     private static string GetKey(string gameProviderCode)
             => $"gameg:gameproviders:setting:{gameProviderCode}".ToLower();

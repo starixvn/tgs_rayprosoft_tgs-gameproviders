@@ -6,7 +6,6 @@ using NUnit.Framework;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
 
@@ -26,12 +25,10 @@ public class WMCasinoTransferKickPlayerCommandServiceUnitTest
 
         var configuration = new WMCasinoTransferConfiguration
         {
-            ApiUrl = new Uri("https://api.a45.me/api/public/Gateway.php")
+            ApiUrl = new Uri("https://api.a45.me/api/public/Gateway.php"),
+            VendorId = "testVendorId",
+            Signature = "testsignature"
         };
-
-        var configurationData = new WMCasinoTransferConfigurationData(
-            VendorId: "testAgentId",
-            Signature: "testsignature");
 
         var playerModel = new PlayerModel(
             ResellerId: Guid.NewGuid(),
@@ -54,12 +51,11 @@ public class WMCasinoTransferKickPlayerCommandServiceUnitTest
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WMCasinoTransfer)).Returns(gameProviderId);
-        _ = fakeSettingRepository.GetWMCasinoTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakePlayerRepository.GetAsync(Arg.Is(command.PlayerCode)).Returns(playerModel);
         _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
              Arg.Is(gameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetWMCasinoTransferConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
+        _ = fakeGameProviderRepository.GetWMCasinoTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var sut = new WMCasinoTransferKickPlayerCommandService(
             fakeBrandService,
@@ -76,8 +72,8 @@ public class WMCasinoTransferKickPlayerCommandServiceUnitTest
             .Received(1)
             .KickPlayerAsync(
             Arg.Is(configuration.ApiUrl),
-            Arg.Is(configurationData.VendorId),
-            Arg.Is(configurationData.Signature),
+            Arg.Is(configuration.VendorId),
+            Arg.Is(configuration.Signature),
             Arg.Is(user));
     }
 }

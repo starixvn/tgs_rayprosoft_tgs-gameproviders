@@ -3,6 +3,7 @@ using ExpectedObjects;
 using NSubstitute;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.ConfigurationData;
+using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Client;
 using Tgs.GameProviders.QueryServer.Models;
 
@@ -163,19 +164,26 @@ public class GameProviderRepositoryUnitTest
     }
 
     [TestMethod]
-    public async Task Get_JiliTransfer_ConfigurationData()
+    public async Task Get_JiliTransfer_Configuration()
     {
         var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
 
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
-        var awcConfigurationData = new JiliTransferConfigurationData(
-            AgentId: "testAgentId");
-        var configurationData = JsonSerializer.Serialize(awcConfigurationData);
+
+        var settingConfiguration = new JiliTransferConfiguration()
+        {
+            ApiUrl = new("https://wb-api.jlfafafa2.com/"),
+            AgentId = "SettingConfigurationAgentId",
+            AgentKey = "df65d2b1d7d42638c4c14a948c6d12bd348334b4",
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<JiliTransferConfiguration>(Arg.Is(GameProviderConfigurations.JiliTransfer))
+            .Returns(settingConfiguration);
 
         _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
             GameProviderId: gameProviderId,
-            GameProviderCode: "JILITF",
+            GameProviderCode: GameProviderType.JiliTransfer,
             GameProviderConfigId: gameProviderConfigurationId,
             Name: "JILITF-GPI",
             Description: "JILITF-GPI Configuration",
@@ -184,15 +192,15 @@ public class GameProviderRepositoryUnitTest
             Status: GameProviderConfigStatus.Active,
             DesktopEndpoint: string.Empty,
             MobileEndpoint: string.Empty,
-            ConfigurationData: configurationData,
+            ConfigurationData: "{\"AgentId\":\"ConfigurationData-AgentId\"}",
             IsDefault: false));
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetJiliTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetJiliTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
-        awcConfigurationData.ToExpectedObject().ShouldEqual(actual);
+        Assert.AreEqual("ConfigurationData-AgentId", actual.AgentId);
     }
 
     [TestMethod]
@@ -203,10 +211,19 @@ public class GameProviderRepositoryUnitTest
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
 
+        var settingConfiguration = new WGFmGamingConfiguration()
+        {
+            AmountMaximum = 999999999999,
+            AmountFormat = "12,2",
+            ApiUrl = new("https://api.jsc080.net/"),
+            PartnerCode = "SettingConfigurationPartnerCode",
+            PartnerKey = "SettingConfigurationPartnerKey",
+            IV = "SettingConfigurationPartnerIV",
+            Version = 2
+        };
         _ = fakeClient
-            .SettingGetConfigurationStringAsync(Arg.Is(GameProviderConfigurations.WGSports))
-            .Returns(
-                "{\"AmountMaximum\":999999999999,\"AmountFormat\":\"12,2\",\"ApiUrl\":\"https://api.jsc080.net/\",\"PartnerCode\":\"SettingConfigurationPartnerCode\",\"PartnerKey\":\"SettingConfigurationPartnerKey\",\"IV\":\"SettingConfigurationPartnerIV\",\"Version\":2}");
+            .SettingGetConfigurationAsync<WGFmGamingConfiguration>(Arg.Is(GameProviderConfigurations.WGSports))
+            .Returns(settingConfiguration);
 
         _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
             GameProviderId: gameProviderId,
@@ -224,7 +241,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetWGFmGamingConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetWGFmGamingConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual("ConfigurationDataPartnerCode", actual.PartnerCode);
@@ -241,10 +258,19 @@ public class GameProviderRepositoryUnitTest
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
 
+        var settingConfiguration = new WGFmGamingConfiguration()
+        {
+            AmountMaximum = 999999999999,
+            AmountFormat = "12,2",
+            ApiUrl = new("https://api.jsc080.net/"),
+            PartnerCode = "SettingConfigurationPartnerCode",
+            PartnerKey = "SettingConfigurationPartnerKey",
+            IV = "SettingConfigurationPartnerIV",
+            Version = 2
+        };
         _ = fakeClient
-    .SettingGetConfigurationStringAsync(Arg.Is(GameProviderConfigurations.WGSports))
-    .Returns(
-        "{\"AmountMaximum\":999999999999,\"AmountFormat\":\"12,2\",\"ApiUrl\":\"https://api.jsc080.net/\",\"PartnerCode\":\"SettingConfigurationPartnerCode\",\"PartnerKey\":\"SettingConfigurationPartnerKey\",\"IV\":\"SettingConfigurationPartnerIV\",\"Version\":2}");
+            .SettingGetConfigurationAsync<WGFmGamingConfiguration>(Arg.Is(GameProviderConfigurations.WGSports))
+            .Returns(settingConfiguration);
 
         _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
             GameProviderId: gameProviderId,
@@ -262,7 +288,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetWGFmGamingConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetWGFmGamingConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual("SettingConfigurationPartnerCode", actual.PartnerCode);
@@ -272,17 +298,25 @@ public class GameProviderRepositoryUnitTest
     }
 
     [TestMethod]
-    public async Task Get_SBO_ConfigurationData()
+    public async Task Get_SBOTransfer_Configuration()
     {
         var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
 
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
 
+        var settingConfiguration = new SBOTransferConfiguration()
+        {
+            ApiUrl = new("https://ex-api-demo-yy.568win.com/"),
+            CompanyKey = "56E0854E61C3468580E491C38405580B",
+            Min = 1,
+            Max = 5000,
+            MaxPerMatch = 20000,
+            CasinoTableLimit = 1
+        };
         _ = fakeClient
-            .SettingGetConfigurationStringAsync(Arg.Is(GameProviderConfigurations.SBOTransfer))
-            .Returns(
-                "{\"ApiUrl\":\"https://ex-api-demo-yy.568win.com/\",\"CompanyKey\":\"56E0854E61C3468580E491C38405580B\",\"Min\":1,\"Max\":5000,\"MaxPerMatch\":20000,\"CasinoTableLimit\":1}");
+            .SettingGetConfigurationAsync<SBOTransferConfiguration>(Arg.Is(GameProviderConfigurations.SBOTransfer))
+            .Returns(settingConfiguration);
 
         _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
             GameProviderId: gameProviderId,
@@ -308,5 +342,136 @@ public class GameProviderRepositoryUnitTest
         Assert.AreEqual(10000, actual.Max);
         Assert.AreEqual(40000, actual.MaxPerMatch);
         Assert.AreEqual(2, actual.CasinoTableLimit);
+    }
+
+    [TestMethod]
+    public async Task Get_BTiSports_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new BTiSportsConfiguration()
+        {
+            ApiUrl = new(" https://wallet.bti.bet/"),
+            TokenApiUrl = new(" https://asia-east2-bq-data-api.cloudfunctions.net/"),
+            HistoryBetsApiUrl = new("https://get-bet-by-id-d5nlg5buca-de.a.run.app/"),
+            HistoryBetsPagingApiUrl = new("https://get-history-bets-paging-d5nlg5buca-de.a.run.app/"),
+            OpenBetsApiUrl = new("https://get-open-bets-d5nlg5buca-de.a.run.app/"),
+            DesktopLayout = "sports",
+            MobileLayout = "sports"
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<BTiSportsConfiguration>(Arg.Is(GameProviderConfigurations.BTiSports))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.BTiSports,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "BTI-GPI",
+            Description: "BTI-GPI Configuration",
+            ClientId: "BTI-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"SportsbookURL\":\"https://prod20240-108707434.1x2aaa.com\",\"AgentUserName\":\"PegaGaming_GPIRMB\",\"AgentPassword\":\"IM60Ho7Y4B9C\",\"DesktopLayout\":\"asian-view\",\"MobileLayout \":\"sports\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetBTiSportsConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("https://prod20240-108707434.1x2aaa.com/"), actual.SportsbookURL);
+        Assert.AreEqual("PegaGaming_GPIRMB", actual.AgentUserName);
+        Assert.AreEqual("IM60Ho7Y4B9C", actual.AgentPassword);
+        Assert.AreEqual("asian-view", actual.DesktopLayout);
+        Assert.AreEqual("sports", actual.MobileLayout);
+    }
+
+    [TestMethod]
+    public async Task Get_JDBTransfer_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new JDBTransferConfiguration()
+        {
+            ApiUrl = new("http://api.jdb247.net/"),
+            Domain = "ZF",
+            AesIV = "SettingConfiguration-AesIV",
+            AesKey = "SettingConfiguration-AesKey"
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<JDBTransferConfiguration>(Arg.Is(GameProviderConfigurations.JDBTransfer))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.JDBTransfer,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "JDBTF-GPI",
+            Description: "JDBTF-GPI Configuration",
+            ClientId: "JDBTF-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"Agent\":\"ConfigurationData-Agent\",\"AesIV\":\"ConfigurationData-AesIV\",\"AesKey\":\"ConfigurationData-AesKey\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetJDBTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual("ConfigurationData-Agent", actual.Agent);
+        Assert.AreEqual("ConfigurationData-AesIV", actual.AesIV);
+        Assert.AreEqual("ConfigurationData-AesKey", actual.AesKey);
+    }
+
+    [TestMethod]
+    public async Task Get_WMCasinoTransfer_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new WMCasinoTransferConfiguration()
+        {
+            ApiUrl = new("https://api.a45.me/api/public/Gateway.php")
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<WMCasinoTransferConfiguration>(Arg.Is(GameProviderConfigurations.WMCasinoTransfer))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.WMCasinoTransfer,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "WMTF-GPI",
+            Description: "WMTF-GPI Configuration",
+            ClientId: "WMTF-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"vendorId\":\"hpg02twapi\",\"signature\":\"89448b444ed2e922ddc3aa0753370238\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetWMCasinoTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual("hpg02twapi", actual.VendorId);
+        Assert.AreEqual("89448b444ed2e922ddc3aa0753370238", actual.Signature);
     }
 }
