@@ -35,10 +35,9 @@ public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGam
     public async ValueTask<GameUrlResult> GetAsync(WMCasinoTransferGameUrlQuery command, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.WMCasinoTransfer).ConfigureAwait(false);
-        var configuration = await _setting.GetWMCasinoTransferConfigurationAsync().ConfigureAwait(false);
         var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProvider.GetWMCasinoTransferConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetWMCasinoTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
         var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "0";
 
         var password = "TgsP@ssword";
@@ -46,8 +45,8 @@ public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGam
 
         var response = await _grpc.GameUrlAsync(
             apiUrl: configuration.ApiUrl,
-            vendorId: configurationData.VendorId,
-            signature: configurationData.Signature,
+            vendorId: configuration.VendorId,
+            signature: configuration.Signature,
             user: user,
             password: password,
             language: int.Parse(cultureCode),
@@ -57,15 +56,14 @@ public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGam
         {
             await _createPlayerCommandService.ExecuteAsync(new WMCasinoTransferCreatePlayerCommand(
                 Configuration: configuration,
-                ConfigurationData: configurationData,
                 PlayerCode: player.PlayerCode,
                 CurrencyCode: player.DefaultWalletCurrencyCode),
                 cancellationToken).ConfigureAwait(false);
 
             response = await _grpc.GameUrlAsync(
                 apiUrl: configuration.ApiUrl,
-                vendorId: configurationData.VendorId,
-                signature: configurationData.Signature,
+                vendorId: configuration.VendorId,
+                signature: configuration.Signature,
                 user: user,
                 password: password,
                 language: 0,

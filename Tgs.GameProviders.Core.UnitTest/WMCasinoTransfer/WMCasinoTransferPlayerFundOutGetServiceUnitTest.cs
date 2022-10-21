@@ -6,7 +6,6 @@ using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
 
@@ -26,12 +25,10 @@ public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
 
         var configuration = new WMCasinoTransferConfiguration
         {
-            ApiUrl = new Uri("https://api.a45.me/api/public/Gateway.php")
+            ApiUrl = new Uri("https://api.a45.me/api/public/Gateway.php"),
+            VendorId = "testVendorId",
+            Signature = "testsignature"
         };
-
-        var configurationData = new WMCasinoTransferConfigurationData(
-            VendorId: "testAgentId",
-            Signature: "testsignature");
 
         var playerModel = new PlayerModel(
             ResellerId: Guid.NewGuid(),
@@ -58,12 +55,11 @@ public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
         var gameProviderConfigurationId = Guid.NewGuid();
         var gameProviderId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WMCasinoTransfer)).Returns(gameProviderId);
-        _ = fakeSettingRepository.GetWMCasinoTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
         _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
              Arg.Is(gameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetWMCasinoTransferConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
+        _ = fakeGameProviderRepository.GetWMCasinoTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var agentBalanceReply = new GameInterfaceWMCasinoServiceAgentBalanceReply
         {
@@ -74,8 +70,8 @@ public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
 
         _ = fakeGameInterfaceWMCasinoServiceGrpc.GetAgentBalanceAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
-            vendorId: Arg.Is(configurationData.VendorId),
-            signature: Arg.Is(configurationData.Signature)).Returns(agentBalanceReply);
+            vendorId: Arg.Is(configuration.VendorId),
+            signature: Arg.Is(configuration.Signature)).Returns(agentBalanceReply);
 
         var sut = new WMCasinoTransferPlayerFundOutGetService(
             fakeBrandService,
@@ -98,12 +94,10 @@ public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
 
         var configuration = new WMCasinoTransferConfiguration
         {
-            ApiUrl = new Uri("https://api.a45.me/api/public/Gateway.php")
+            ApiUrl = new Uri("https://api.a45.me/api/public/Gateway.php"),
+            VendorId = "testVendorId",
+            Signature = "testsignature"
         };
-
-        var configurationData = new WMCasinoTransferConfigurationData(
-            VendorId: "testAgentId",
-            Signature: "testsignature");
 
         var playerModel = new PlayerModel(
             ResellerId: Guid.NewGuid(),
@@ -130,12 +124,11 @@ public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
         var gameProviderConfigurationId = Guid.NewGuid();
         var gameProviderId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WMCasinoTransfer)).Returns(gameProviderId);
-        _ = fakeSettingRepository.GetWMCasinoTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
         _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
              Arg.Is(gameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetWMCasinoTransferConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
+        _ = fakeGameProviderRepository.GetWMCasinoTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var gameProviderTransactionId = "2147647425";
         var agentBalanceReply = new GameInterfaceWMCasinoServiceAgentBalanceReply
@@ -147,8 +140,8 @@ public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
 
         _ = fakeGameInterfaceWMCasinoServiceGrpc.GetAgentBalanceAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
-            vendorId: Arg.Is(configurationData.VendorId),
-            signature: Arg.Is(configurationData.Signature)).Returns(agentBalanceReply);
+            vendorId: Arg.Is(configuration.VendorId),
+            signature: Arg.Is(configuration.Signature)).Returns(agentBalanceReply);
 
         var reply = new GameInterfaceWMCasinoServiceFundReply()
         {
@@ -161,8 +154,8 @@ public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
         var user = $"wmtf_{playerModel.PlayerCode}_{playerModel.BrandCode}";
         _ = fakeGameInterfaceWMCasinoServiceGrpc.FundOutAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
-            vendorId: Arg.Is(configurationData.VendorId),
-            signature: Arg.Is(configurationData.Signature),
+            vendorId: Arg.Is(configuration.VendorId),
+            signature: Arg.Is(configuration.Signature),
             user: Arg.Is(user),
             transactionId: Arg.Is(query.OrderId),
             amount: Arg.Is(query.Amount)).Returns(reply);

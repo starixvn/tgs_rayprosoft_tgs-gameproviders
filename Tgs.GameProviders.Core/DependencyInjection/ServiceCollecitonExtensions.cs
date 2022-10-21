@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.JDBService.Client;
@@ -34,7 +35,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceSkywindClientOptions, IServiceProvider> gameInterfaceSkywindClientOptions,
         Action<GameInterfaceWGFmGamingClientOptions, IServiceProvider> gameInterfaceWGFmGamingClientOptions,
         Action<GameInterfaceJDBClientOptions, IServiceProvider> gameInterfaceJDBClientOptions,
-        Action<GameInterfaceSBOClientOptions, IServiceProvider> gameInterfaceSBOClientOptions)
+        Action<GameInterfaceSBOClientOptions, IServiceProvider> gameInterfaceSBOClientOptions,
+        Action<GameInterfaceBTiClientOptions, IServiceProvider> gameInterfaceBTiClientOptions)
         => services
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
@@ -49,6 +51,7 @@ public static class ServiceCollecitonExtensions
             .AddGameInterfaceWGFmGamingServiceClient(gameInterfaceWGFmGamingClientOptions)
             .AddGameInterfaceJDBServiceClient(gameInterfaceJDBClientOptions)
             .AddGameInterfaceSBOServiceClient(gameInterfaceSBOClientOptions)
+            .AddGameInterfaceBTiServiceClient(gameInterfaceBTiClientOptions)
             .AddGameRoundsClient(gameRoundsClientOptions)
             .AddGameTokenClient(gameTokenClientOptions)
             .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)

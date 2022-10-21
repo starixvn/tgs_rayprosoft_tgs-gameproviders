@@ -19,7 +19,7 @@ internal class JiliTransferCreatePlayerCommandService : ICommandService<JiliTran
     public ValueTask ExecuteAsync(JiliTransferCreatePlayerCommand command, CancellationToken cancellationToken = default)
         => _grpc.CreatePlayerAsync(
             apiUrl: command.Configuration.ApiUrl,
-            agentId: command.ConfigurationData.AgentId,
+            agentId: command.Configuration.AgentId,
             agentKey: command.Configuration.AgentKey,
             playerCode: command.PlayerCode,
             cancellationToken: cancellationToken);

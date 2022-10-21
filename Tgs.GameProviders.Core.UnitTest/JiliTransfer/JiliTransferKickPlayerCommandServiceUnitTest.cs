@@ -6,7 +6,6 @@ using NUnit.Framework;
 using Tgs.GameInterface.JiliService.Client;
 using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.QueryServer.Models;
 
@@ -22,14 +21,17 @@ public class JiliTransferKickPlayerCommandServiceUnitTest
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameInterfaceJiliServiceGrpc = Substitute.For<IGameInterfaceJiliServiceGrpc>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
-        var configuration = new JiliTransferConfiguration(
-            ApiUrl: new("https://tttint.onlinegames22.com/"),
-            AgentKey: Guid.NewGuid().ToString("N"));
+        var command = new JiliTransferKickPlayerCommand
+        {
+            PlayerCode = "4ucmqplxb029"
+        };
 
-        var configurationData = new JiliTransferConfigurationData(
-            AgentId: "testAgentId");
+        var gameProviderId = Guid.NewGuid();
+        _ = fakeGameProviderRepository
+            .GetGameProviderIdAsync(
+                Arg.Is(GameProviderType.JiliTransfer))
+            .Returns(gameProviderId);
 
         var playerModel = new PlayerModel(
             ResellerId: Guid.NewGuid(),
@@ -43,28 +45,34 @@ public class JiliTransferKickPlayerCommandServiceUnitTest
             DefaultWalletId: Guid.NewGuid(),
             DefaultWalletCurrencyCode: "CNY",
             PlayerStatus.Enabled);
+        _ = fakePlayerRepository
+        .GetAsync(
+                Arg.Is(command.PlayerCode))
+            .Returns(playerModel);
 
-        var command = new JiliTransferKickPlayerCommand
-        {
-            PlayerCode = "4ucmqplxb029"
-        };
-
-        var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.JiliTransfer)).Returns(gameProviderId);
-        _ = fakeSettingRepository.GetJiliTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakePlayerRepository.GetAsync(Arg.Is(command.PlayerCode)).Returns(playerModel);
-        _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameProviderId),
-             Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetJiliTransferConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
+        _ = fakeBrandService
+            .GetBrandGameProviderConfigurationIdAsync(
+                Arg.Is(gameProviderId),
+                Arg.Is(playerModel.BrandId))
+            .Returns(gameProviderConfigurationId);
+
+        var configuration = new JiliTransferConfiguration
+        {
+            ApiUrl = new("https://tttint.onlinegames22.com/"),
+            AgentKey = Guid.NewGuid().ToString("N"),
+            AgentId = "testAgentId"
+        };
+        _ = fakeGameProviderRepository
+            .GetJiliTransferConfiguration(
+                Arg.Is(gameProviderConfigurationId))
+            .Returns(configuration);
 
         var sut = new JiliTransferKickPlayerCommandService(
             fakeBrandService,
             fakeGameProviderRepository,
             fakeGameInterfaceJiliServiceGrpc,
-            fakePlayerRepository,
-            fakeSettingRepository);
+            fakePlayerRepository);
 
         await sut.ExecuteAsync(command).ConfigureAwait(false);
 
@@ -72,7 +80,7 @@ public class JiliTransferKickPlayerCommandServiceUnitTest
             .Received(1)
             .KickPlayerAsync(
             Arg.Is(configuration.ApiUrl),
-            Arg.Is(configurationData.AgentId),
+            Arg.Is(configuration.AgentId),
             Arg.Is(configuration.AgentKey),
             Arg.Is(command.PlayerCode));
     }
