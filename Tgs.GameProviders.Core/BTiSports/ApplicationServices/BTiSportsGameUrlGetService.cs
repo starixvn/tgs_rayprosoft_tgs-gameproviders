@@ -78,6 +78,6 @@ public class BTiSportsGameUrlGetService : IGetService<BTiSportsGameUrlQuery, Uri
 
         var layout = query.PlatformType == PlatformType.Desktop ? configuration.DesktopLayout : configuration.MobileLayout;
 
-        return new Uri(configuration.SportsbookURL, $"/{cultureCode}/{layout}/operatorToken={response.AuthToken}");
+        return new Uri(configuration.SportsbookURL, $"/{cultureCode}/{layout}/?operatorToken={response.AuthToken}");
     }
 }
