@@ -1,0 +1,48 @@
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Tgs.GameInterface.HabaneroService.Client;
+using Tgs.GameProviders.Domains;
+using Tgs.ServiceUtility;
+
+namespace Tgs.GameProviders.Core.HabaneroTransfer.ApplicationServices;
+
+internal class HabaneroTransferPlayerBalanceGetService : IGetService<HabaneroTransferPlayerBalanceQuery, decimal?>
+{
+    private readonly IBrandRepository _brand;
+    private readonly IGameProviderRepository _gameProvider;
+    private readonly IGameInterfaceHabaneroClient _client;
+    private readonly IPlayerRepository _player;
+
+    public HabaneroTransferPlayerBalanceGetService(
+        IBrandRepository brand,
+        IGameProviderRepository gameProvider,
+        IGameInterfaceHabaneroClient client,
+        IPlayerRepository player)
+    {
+        _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+        _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+        _player = player ?? throw new ArgumentNullException(nameof(player));
+    }
+
+    public async ValueTask<decimal?> GetAsync(HabaneroTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    {
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.HabaneroTransfer).ConfigureAwait(false);
+        var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetHabaneroTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+        var reply = await _client
+            .PlayerBalanceAsync(
+                apiUrl: configuration.ApiUrl,
+                brandId: configuration.BrandId,
+                apiKey: configuration.ApiKey,
+                username: player.PlayerCode,
+                password: "HabaTfP@ssw0rd",
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        return reply.IsPlayerExist ? reply.Balance : null;
+    }
+}

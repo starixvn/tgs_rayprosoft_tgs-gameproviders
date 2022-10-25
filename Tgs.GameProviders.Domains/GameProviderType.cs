@@ -52,4 +52,5 @@ public static class GameProviderType
     public static readonly string WMCasinoTransfer = "WMTF";
     public static readonly string SBOTransfer = "SBOTF";
     public static readonly string BTiSports = "BTI";
+    public static readonly string HabaneroTransfer = "HABATF";
 }
