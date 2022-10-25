@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Tgs.GameProviders.Core;
@@ -319,11 +320,11 @@ internal class DreamGameApiClient : IDreamGameApiClient
         logPrefix = $"{nameof(DreamGameApiClient).ToLower()}.{logPrefix}";
         var sw = Stopwatch.StartNew();
 
-        var url = $"{apiUrl?.ToString()}?{paths}";
+        var url = new Uri(apiUrl, paths);
 
         HttpContent content = new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, "application/json");
 
-        var httpResponseMessage = await _client.PostAsync($"{apiUrl?.ToString()}{paths}", content);
+        var httpResponseMessage = await _client.PostAsync(url, content);
         sw.Stop();
 
         var responseMessage = default(string);
