@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
@@ -133,16 +134,17 @@ public class DreamGameGameUrlGetServiceUnitTest
         var gameProviderCultureCode = "en";
         var gameProviderCurrencyCode = "CNY";
         var loginResult = new LoginResult(true, 0, gameUrl);
-        fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderLanguageCodeAsync(query.Language).Returns(gameProviderCultureCode);
-        fakeService.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).Returns(gameProviderCurrencyCode);
-
-        fakeApiClient.LoginAsync
+        _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+        _ = fakeService.GetGameProviderLanguageCodeAsync(query.Language).Returns(gameProviderCultureCode);
+        _ = fakeService.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).Returns(gameProviderCurrencyCode);
+        var tableLimit = configuration.BetLimits.Where(x => string.Equals(x.Currency, query.CurrencyCode, StringComparison.OrdinalIgnoreCase)).Single().TableLimit;
+        _ = fakeApiClient.LoginAsync
             (configuration.ApiUrl,
                  configuration.ApiKey,
                  configuration.AgentName,
                  query.PlayerCode,
                  configuration.PlayerPassword,
+                 tableLimit,
                  query.PlatformType,
                  gameProviderCultureCode)
             .Returns(loginResult);

@@ -13,7 +13,15 @@ public interface IDreamGameApiClient
 
     ValueTask<IEnumerable<GameReportResult>> GetReportAsync(Uri apiUrl, string apiKey, string agentName);
 
-    ValueTask<LoginResult> LoginAsync(Uri apiUrl, string apiKey, string agentName, string username, string password, PlatformType platformType = PlatformType.Desktop, string lang = "en");
+    ValueTask<LoginResult> LoginAsync(
+        Uri apiUrl,
+        string apiKey,
+        string agentName,
+        string username,
+        string password,
+        string tableLimit,
+        PlatformType platformType = PlatformType.Desktop,
+        string lang = "en");
 
     ValueTask<bool> MarkReportAsync(Uri apiUrl, string apiKey, string agentName, IEnumerable<string> externalRoundIds);
 
@@ -21,5 +29,13 @@ public interface IDreamGameApiClient
 
     ValueTask<IEnumerable<OnlineReportResult>> OnlineReportAsync(Uri apiUrl, string apiKey, string agentName);
 
-    ValueTask<int> SignUpAsync(Uri videoGameApiUrl, string apiKey, string agentName, string username, string password, string currencyNameint, string tableLimit = "A", int winLimit = 0);
+    ValueTask<int> SignUpAsync(
+        Uri videoGameApiUrl,
+        string apiKey,
+        string agentName,
+        string username,
+        string password,
+        string currencyNameint,
+        string tableLimit = "A",
+        int winLimit = 0);
 }
