@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.ServiceUtility;
@@ -27,16 +28,23 @@ public class DreamGameGameUrlGetService : IGetService<DreamGameGameUrlQuery, Gam
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
         var gameProviderCultureCode = await _service.GetGameProviderLanguageCodeAsync(query.Language).ConfigureAwait(false);
         var gameProviderCurrencyCode = await _service.GetGameProviderCurrencyCodeAsync(query.CurrencyCode).ConfigureAwait(false);
+        var tableLimit = configuration.BetLimits.Where(x => string.Equals(x.Currency, query.CurrencyCode, StringComparison.OrdinalIgnoreCase)).Single().TableLimit;
+        if (string.IsNullOrEmpty(tableLimit))
+        {
+            throw new Exception($"Currency limit red does not exist.({query.CurrencyCode})");
+        }
 
-        var loginResult = await _client.LoginAsync(
-             configuration.ApiUrl,
-             configuration.ApiKey,
-             configuration.AgentName,
-             query.PlayerCode,
-             configuration.PlayerPassword,
-             query.PlatformType,
-             gameProviderCultureCode
-             ).ConfigureAwait(false);
+        var loginResult = await _client
+            .LoginAsync(
+                configuration.ApiUrl,
+                configuration.ApiKey,
+                configuration.AgentName,
+                query.PlayerCode,
+                configuration.PlayerPassword,
+                tableLimit,
+                query.PlatformType,
+                gameProviderCultureCode)
+            .ConfigureAwait(false);
 
         if (!loginResult.Success && loginResult.CodeId is 102)
         {
@@ -51,14 +59,17 @@ public class DreamGameGameUrlGetService : IGetService<DreamGameGameUrlQuery, Gam
                 configuration.BetLimits
                 )).ConfigureAwait(false);
             loginResult = codeId is 0 or 116
-                ? await _client.LoginAsync(
-                    configuration.ApiUrl,
-                   configuration.ApiKey,
-                   configuration.AgentName,
-                   query.PlayerCode,
-                   configuration.PlayerPassword,
-                   query.PlatformType,
-                   gameProviderCultureCode).ConfigureAwait(false)
+                ? await _client
+                    .LoginAsync(
+                        configuration.ApiUrl,
+                        configuration.ApiKey,
+                        configuration.AgentName,
+                        query.PlayerCode,
+                        configuration.PlayerPassword,
+                        tableLimit,
+                        query.PlatformType,
+                        gameProviderCultureCode)
+                    .ConfigureAwait(false)
                 : throw new Exception($"The manufacturer responded incorrectly.({codeId})");
         }
         else

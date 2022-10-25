@@ -125,7 +125,7 @@ public class DreamGameApiClientUnitTest
         var faceLog = NullLogger<DreamGameApiClient>.Instance;
         var faceTgsLog = Substitute.For<ITgsLog>();
         IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog, faceTgsLog);
-        var actual = await client.LoginAsync(_apiUrl, _apiKey, _agentName, "4ucmqplxb029", "TgsP@ssw0rd", PlatformType.Desktop);
+        var actual = await client.LoginAsync(_apiUrl, _apiKey, _agentName, "4ucmqplxb029", "TgsP@ssw0rd", "A", PlatformType.Desktop);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual(true, actual.Success);
@@ -137,8 +137,8 @@ public class DreamGameApiClientUnitTest
     {
         IDreamGameApiClient client = Substitute.For<IDreamGameApiClient>();
         var expected = new LoginResult(true, 0, new("https://www.google.com/"));
-        _ = client.LoginAsync(_apiUrl, _apiKey, _agentName, "4ucmqplxb029", "TgsP@ssw0rd", PlatformType.Desktop).Returns(ValueTask.FromResult(expected));
-        var actual = await client.LoginAsync(_apiUrl, _apiKey, _agentName, "4ucmqplxb029", "TgsP@ssw0rd", PlatformType.Desktop);
+        _ = client.LoginAsync(_apiUrl, _apiKey, _agentName, "4ucmqplxb029", "TgsP@ssw0rd", "A", PlatformType.Desktop).Returns(ValueTask.FromResult(expected));
+        var actual = await client.LoginAsync(_apiUrl, _apiKey, _agentName, "4ucmqplxb029", "TgsP@ssw0rd", "A", PlatformType.Desktop);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual(expected.Success, actual.Success);

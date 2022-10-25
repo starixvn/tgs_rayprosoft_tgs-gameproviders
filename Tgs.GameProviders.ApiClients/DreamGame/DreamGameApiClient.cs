@@ -98,7 +98,15 @@ internal class DreamGameApiClient : IDreamGameApiClient
         return null;
     }
 
-    public async ValueTask<LoginResult> LoginAsync(Uri apiUrl, string apiKey, string agentName, string username, string password, PlatformType platformType = PlatformType.Desktop, string lang = "en")
+    public async ValueTask<LoginResult> LoginAsync(
+        Uri apiUrl,
+        string apiKey,
+        string agentName,
+        string username,
+        string password,
+        string tableLimit,
+        PlatformType platformType = PlatformType.Desktop,
+        string lang = "en")
     {
         var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         var token = GetHashMD5($"{agentName}{apiKey}{random}");
@@ -108,6 +116,7 @@ internal class DreamGameApiClient : IDreamGameApiClient
             token,
             random,
             lang,
+            data = tableLimit,
             member = new
             {
                 username,
@@ -262,7 +271,15 @@ internal class DreamGameApiClient : IDreamGameApiClient
         return null;
     }
 
-    public async ValueTask<int> SignUpAsync(Uri apiUrl, string apiKey, string agentName, string username, string password, string currencyName, string tableLimit = "A", int winLimit = 0)
+    public async ValueTask<int> SignUpAsync(
+        Uri apiUrl,
+        string apiKey,
+        string agentName,
+        string username,
+        string password,
+        string currencyName,
+        string tableLimit = "A",
+        int winLimit = 0)
     {
         var random = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         var token = GetHashMD5($"{agentName}{apiKey}{random}");
