@@ -2,6 +2,7 @@
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
+using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.JiliService.Client;
@@ -35,7 +36,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceWGFmGamingClientOptions, IServiceProvider> gameInterfaceWGFmGamingClientOptions,
         Action<GameInterfaceJDBClientOptions, IServiceProvider> gameInterfaceJDBClientOptions,
         Action<GameInterfaceSBOClientOptions, IServiceProvider> gameInterfaceSBOClientOptions,
-        Action<GameInterfaceBTiClientOptions, IServiceProvider> gameInterfaceBTiClientOptions)
+        Action<GameInterfaceBTiClientOptions, IServiceProvider> gameInterfaceBTiClientOptions,
+        Action<GameInterfaceHabaneroClientOptions, IServiceProvider> gameInterfaceHabaneroClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -55,5 +57,6 @@ public static class ServiceCollectionExtensions
                 gameInterfaceWGFmGamingClientOptions,
                 gameInterfaceJDBClientOptions,
                 gameInterfaceSBOClientOptions,
-                gameInterfaceBTiClientOptions);
+                gameInterfaceBTiClientOptions,
+                gameInterfaceHabaneroClientOptions);
 }
