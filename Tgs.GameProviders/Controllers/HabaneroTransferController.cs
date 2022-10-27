@@ -24,8 +24,8 @@ public class HabaneroTransferController : ControllerBase
     ///
     ///     Post
     ///         {
-    ///             "gameType": 1,
-    ///             "gameId": 4800001,
+    ///             "gameType": 15,
+    ///             "gameId": 5000001,
     ///             "brandCode": "GPI",
     ///             "playerCode": "4ucmqplxb029",
     ///             "currencyCode": "CNY",

@@ -54,6 +54,8 @@ internal class HabaneroTransferGameUrlGetService : IGetService<HabaneroTransferG
                 username: player.PlayerCode,
                 password: "HabaTfP@ssw0rd",
                 currencyCode: gameProviderCurrencyCode,
+                firstName: player.BrandCode,
+                lastName: player.PlayerCode,
                 cancellationToken)
             .ConfigureAwait(false);
 
