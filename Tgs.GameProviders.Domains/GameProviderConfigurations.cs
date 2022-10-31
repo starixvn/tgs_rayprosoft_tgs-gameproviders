@@ -53,4 +53,5 @@ public static class GameProviderConfigurations
     public static readonly string SBOTransfer = string.Format(_template, GameProviderType.SBOTransfer);
     public static readonly string BTiSports = string.Format(_template, GameProviderType.BTiSports);
     public static readonly string HabaneroTransfer = string.Format(_template, GameProviderType.HabaneroTransfer);
+    public static readonly string SabaTransfer = string.Format(_template, GameProviderType.SabaTransfer);
 }

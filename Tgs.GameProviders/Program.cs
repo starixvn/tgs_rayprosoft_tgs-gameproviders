@@ -151,6 +151,11 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceHabaneroBaseUrl");
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceSabaBaseUrl");
     })
     .AddGameProvidersRepositories()
     .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database);

@@ -53,4 +53,5 @@ public static class GameProviderType
     public static readonly string SBOTransfer = "SBOTF";
     public static readonly string BTiSports = "BTI";
     public static readonly string HabaneroTransfer = "HABATF";
+    public static readonly string SabaTransfer = "SABATF";
 }
