@@ -75,7 +75,7 @@ public class SabaTransferGameUrlGetServiceUnitTest
         var response = new GameUrlReply
         {
             IsPlayerExist = true,
-            GameUrl = "http://localhost/"
+            GameUrl = "http://localhost/DepositProcessLogin?token=QwAfMp4OEKSUwoe48C/CA"
         };
         _ = fakeGameInterfaceSabaClient
             .GameUrlAsync(
@@ -95,6 +95,6 @@ public class SabaTransferGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual);
+        Assert.AreEqual(new Uri($"http://localhost/DepositProcessLogin?token=QwAfMp4OEKSUwoe48C/CA&lang={gameProviderCultureCode}"), actual);
     }
 }
