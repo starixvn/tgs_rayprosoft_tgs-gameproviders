@@ -2,6 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: configmap-{{ include "game-gameproviders.fullname" . }}
+  labels:
+    {{- include "game-gameproviders.labels" . | nindent 4 }}
   namespace: {{ .Release.Namespace }}
 data:
   appsettings.json: |
@@ -21,7 +23,7 @@ data:
         "GameInterfaceJDBBaseUrl":"http://game-gameinterface-jdb-service:9090",
         "GameInterfaceSBOBaseUrl":"http://game-gameinterface-sbo-service:9090",
         "GameInterfaceBTIBaseUrl":"http://game-gameinterface-bti-service:9090",
-        "GameInterfaceHabaneroBaseUrl":"http://game-gameinterface-habanero-service:9090"
+        "GameInterfaceHabaneroBaseUrl":"http://game-gameinterface-habanero-service:9090",
         "GameInterfaceSabaBaseUrl":"http://game-gameinterface-saba-service:9090"
       }
     }
