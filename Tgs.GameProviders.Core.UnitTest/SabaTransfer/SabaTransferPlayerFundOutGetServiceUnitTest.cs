@@ -22,12 +22,14 @@ public class SabaTransferPlayerFundOutGetServiceUnitTest
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeBrandService = Substitute.For<IBrandRepository>();
 
+        var vendorTransId = Guid.NewGuid().ToString("N");
+
         var query = new SabaTransferPlayerFundOutQuery
         {
             BrandCode = "GPI",
             PlayerCode = "4ucmqplxb029",
             CurrencyCode = "CNY",
-            OrderId = Guid.NewGuid().ToString("N"),
+            OrderId = vendorTransId,
             Amount = 100m
         };
 
@@ -69,7 +71,7 @@ public class SabaTransferPlayerFundOutGetServiceUnitTest
                currencyCode: Arg.Is(player.DefaultWalletCurrencyCode))
             .Returns(gameProviderCurrencyCode);
 
-        var vendorTransId = Guid.NewGuid().ToString("N");
+
         var reply = new FundReply()
         {
             Check = false,
