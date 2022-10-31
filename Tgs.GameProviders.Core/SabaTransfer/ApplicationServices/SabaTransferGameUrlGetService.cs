@@ -79,6 +79,6 @@ public class SabaTransferGameUrlGetService : IGetService<SabaTransferGameUrlQuer
                     .ConfigureAwait(false);
         }
 
-        return new(reply.GameUrl);
+        return new($"{reply.GameUrl}&lang={cultureCode}");
     }
 }
