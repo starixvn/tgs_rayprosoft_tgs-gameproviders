@@ -161,4 +161,16 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         }
         return configurationData;
     }
+
+    public async ValueTask<SabaTransferConfiguration> GetSabaTransferConfiguration(Guid gameProviderConfigurationId)
+    {
+        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+        if (!_memoryCache.TryGetValue(key, out SabaTransferConfiguration configurationData))
+        {
+            configurationData = await _gameProvider.GetSabaTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+        }
+        return configurationData;
+    }
 }

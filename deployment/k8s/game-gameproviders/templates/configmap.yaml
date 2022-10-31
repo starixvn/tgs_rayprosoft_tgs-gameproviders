@@ -22,6 +22,7 @@ data:
         "GameInterfaceSBOBaseUrl":"http://game-gameinterface-sbo-service:9090",
         "GameInterfaceBTIBaseUrl":"http://game-gameinterface-bti-service:9090",
         "GameInterfaceHabaneroBaseUrl":"http://game-gameinterface-habanero-service:9090"
+        "GameInterfaceSabaBaseUrl":"http://game-gameinterface-saba-service:9090"
       }
     }
   monitor.settings.json: |

@@ -474,4 +474,46 @@ public class GameProviderRepositoryUnitTest
         Assert.AreEqual("hpg02twapi", actual.VendorId);
         Assert.AreEqual("89448b444ed2e922ddc3aa0753370238", actual.Signature);
     }
+
+    [TestMethod]
+    public async Task Get_SabaTransfer_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new SabaTransferConfiguration()
+        {
+            ApiUrl = new("http://h0i2tsa.bw6688.com/"),
+            OddsType = 1
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<SabaTransferConfiguration>(Arg.Is(GameProviderConfigurations.SabaTransfer))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.SabaTransfer,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "SABATF-GPI",
+            Description: "SABATF-GPI Configuration",
+            ClientId: "SABATF-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"OperatorId\":\"tg\",\"VendorId\":\"um5vspnzkx\",\"OddsType\":2}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetSabaTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+        var json = JsonSerializer.Serialize(actual);
+        Assert.IsNotNull(actual);
+        Assert.AreEqual("tg", actual.OperatorId);
+        Assert.AreEqual("um5vspnzkx", actual.VendorId);
+        Assert.AreEqual(2, actual.OddsType);
+    }
 }
