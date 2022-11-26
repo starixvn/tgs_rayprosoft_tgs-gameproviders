@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
@@ -42,6 +43,44 @@ internal class HabaneroTransferPlayerBalanceGetService : IGetService<HabaneroTra
                 password: "HabaTfP@ssw0rd",
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
+
+        if (!reply.IsPlayerExist)
+        {
+
+            var gameProviderCurrencyCode = await _gameProvider
+                    .GetGameProviderCurrencyCodeAsync(gameProviderId, player.DefaultWalletCurrencyCode)
+                    .ConfigureAwait(false)
+                ?? throw new Exception($"This game product currency does not exist.({player.DefaultWalletCurrencyCode})");
+
+
+            var response = await _client
+                .GameTokenAsync(
+                    apiUrl: configuration.ApiUrl,
+                    brandId: configuration.BrandId,
+                    apiKey: configuration.ApiKey,
+                    playerHostAddress: "127.0.0.1",
+                    useragent: PlatformType.Desktop.ToString(),
+                    username: player.PlayerCode,
+                    password: "HabaTfP@ssw0rd",
+                    currencyCode: gameProviderCurrencyCode,
+                    firstName: player.BrandCode,
+                    lastName: player.PlayerCode,
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            if (response.IsPlayerExist)
+            {
+                reply = await _client
+                            .PlayerBalanceAsync(
+                                apiUrl: configuration.ApiUrl,
+                                brandId: configuration.BrandId,
+                                apiKey: configuration.ApiKey,
+                                username: player.PlayerCode,
+                                password: "HabaTfP@ssw0rd",
+                                cancellationToken: cancellationToken)
+                            .ConfigureAwait(false);
+            }
+        }
 
         return reply.IsPlayerExist ? reply.Balance : null;
     }
