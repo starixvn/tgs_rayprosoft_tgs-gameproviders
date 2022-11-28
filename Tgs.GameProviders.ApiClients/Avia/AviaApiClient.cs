@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -238,16 +239,19 @@ internal class AviaApiClient : IAviaApiClient
             RequestUri = new Uri($"{apiUrl.Scheme}://{apiUrl.Host}{requestUri}")
         };
         requestMessage.Headers.Authorization = new AuthenticationHeaderValue(authorization);
-
+        requestMessage.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue(DecompressionMethods.GZip.ToString()));
+        requestMessage.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue(DecompressionMethods.Deflate.ToString()));
         requestMessage.Content = content;
-        _client.DefaultRequestHeaders.AcceptEncoding.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue("gzip"));
+
         var httpResponseMessage = await _client.SendAsync(requestMessage);
         sw.Stop();
 
         var responseMessage = default(string);
-        using (var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result))
+        using (Stream stream = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
+        using (Stream decompressed = new GZipStream(stream, CompressionMode.Decompress))
+        using (StreamReader reader = new StreamReader(decompressed))
         {
-            responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
+            responseMessage = await reader.ReadToEndAsync() ?? string.Empty;
         }
 
         var apiLogEvent = new ApiLogEvent
