@@ -264,7 +264,6 @@ internal class AviaApiClient : IAviaApiClient
             }
         }
 
-
         var apiLogEvent = new ApiLogEvent
         {
             Ip = string.Empty,
