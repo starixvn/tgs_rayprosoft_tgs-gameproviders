@@ -240,6 +240,7 @@ internal class AviaApiClient : IAviaApiClient
         requestMessage.Headers.Authorization = new AuthenticationHeaderValue(authorization);
 
         requestMessage.Content = content;
+        _client.DefaultRequestHeaders.AcceptEncoding.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue("gzip"));
         var httpResponseMessage = await _client.SendAsync(requestMessage);
         sw.Stop();
 
@@ -267,11 +268,8 @@ internal class AviaApiClient : IAviaApiClient
         _tgsLog.LogApi(apiLogEvent);
         _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
-        if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
-        {
-            return JsonSerializer.Deserialize<TResponse>(responseMessage);
-        }
+        _ = httpResponseMessage.EnsureSuccessStatusCode();
 
-        return default;
+        return JsonSerializer.Deserialize<TResponse>(responseMessage);
     }
 }
