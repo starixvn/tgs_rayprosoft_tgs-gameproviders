@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -224,14 +225,14 @@ internal class AviaApiClient : IAviaApiClient
     private DateTimeOffset GetDateTimeOffsetNowTimeZone8()
         => DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8));
 
-    private async Task<TResponse> PostAsync<TResponse>(Uri apiUrl, string authorization, Dictionary<string, string> parameters, AviaAction action, string contentLanguage = "CHN")
+    private async Task<TResponse> PostAsync<TResponse>(Uri apiUrl, string authorization, Dictionary<string, string> parameters, AviaAction action, string contentLanguage = "ENG")
     {
         var logPrefix = $"{nameof(AviaApiClient).ToLower()}.{action}";
         var requestUri = AviaMapper.AviaActionMapper.Where(x => x.Key == action).First().Value;
         var sw = Stopwatch.StartNew();
 
         var content = new FormUrlEncodedContent(parameters);
-        content.Headers.ContentType.CharSet = "utf-8";
+        content.Headers.ContentType.CharSet = Encoding.UTF8.HeaderName;
         content.Headers.Add("Content-Language", contentLanguage);
         var requestMessage = new HttpRequestMessage
         {
