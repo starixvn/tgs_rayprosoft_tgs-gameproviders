@@ -247,11 +247,18 @@ internal class AviaApiClient : IAviaApiClient
         sw.Stop();
 
         var responseMessage = default(string);
+
+        /*
         using (Stream stream = await httpResponseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
         using (Stream decompressed = new GZipStream(stream, CompressionMode.Decompress))
         using (StreamReader reader = new StreamReader(decompressed))
         {
             responseMessage = await reader.ReadToEndAsync() ?? string.Empty;
+        }
+        */
+        using (var sr = new StreamReader(httpResponseMessage.Content.ReadAsStreamAsync().Result))
+        {
+            responseMessage = await sr.ReadToEndAsync() ?? string.Empty;
         }
 
         var apiLogEvent = new ApiLogEvent
