@@ -10,6 +10,7 @@ using Tgs.GameInterface.JiliService.Client;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SkywindService.Client;
+using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GamePlayerTransform.Client;
@@ -40,7 +41,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceSBOClientOptions, IServiceProvider> gameInterfaceSBOClientOptions,
         Action<GameInterfaceBTiClientOptions, IServiceProvider> gameInterfaceBTiClientOptions,
         Action<GameInterfaceHabaneroClientOptions, IServiceProvider> gameInterfaceHabaneroClientOptions,
-        Action<GameInterfaceSabaClientOptions, IServiceProvider> gameInterfaceSabaClientOptions)
+        Action<GameInterfaceSabaClientOptions, IServiceProvider> gameInterfaceSabaClientOptions,
+        Action<GameInterfaceSM01ClientOptions, IServiceProvider> gameInterfaceSM01ClientOptions)
         => services
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
@@ -58,6 +60,7 @@ public static class ServiceCollecitonExtensions
             .AddGameInterfaceBTiServiceClient(gameInterfaceBTiClientOptions)
             .AddGameInterfaceHabaneroServiceClient(gameInterfaceHabaneroClientOptions)
             .AddGameInterfaceSabaServiceClient(gameInterfaceSabaClientOptions)
+            .AddGameInterfaceSM01ServiceClient(gameInterfaceSM01ClientOptions)
             .AddGameRoundsClient(gameRoundsClientOptions)
             .AddGameTokenClient(gameTokenClientOptions)
             .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)

@@ -9,6 +9,7 @@ using Tgs.GameInterface.JiliService.Client;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SkywindService.Client;
+using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GamePlayerTransform.Client;
@@ -39,7 +40,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceSBOClientOptions, IServiceProvider> gameInterfaceSBOClientOptions,
         Action<GameInterfaceBTiClientOptions, IServiceProvider> gameInterfaceBTiClientOptions,
         Action<GameInterfaceHabaneroClientOptions, IServiceProvider> gameInterfaceHabaneroClientOptions,
-        Action<GameInterfaceSabaClientOptions, IServiceProvider> gameInterfaceSabaClientOptions)
+        Action<GameInterfaceSabaClientOptions, IServiceProvider> gameInterfaceSabaClientOptions,
+        Action<GameInterfaceSM01ClientOptions, IServiceProvider> gameInterfaceSM01ClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -61,5 +63,6 @@ public static class ServiceCollectionExtensions
                 gameInterfaceSBOClientOptions,
                 gameInterfaceBTiClientOptions,
                 gameInterfaceHabaneroClientOptions,
-                gameInterfaceSabaClientOptions);
+                gameInterfaceSabaClientOptions,
+                gameInterfaceSM01ClientOptions);
 }

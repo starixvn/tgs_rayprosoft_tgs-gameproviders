@@ -516,4 +516,44 @@ public class GameProviderRepositoryUnitTest
         Assert.AreEqual("um5vspnzkx", actual.VendorId);
         Assert.AreEqual(2, actual.OddsType);
     }
+    [TestMethod]
+    public async Task Get_SM01_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new SM01Configuration()
+        {
+            ApiUrl = new("https://cn.ucfclive.com"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<SM01Configuration>(Arg.Is(GameProviderConfigurations.SM01))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.SM01,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "SM01-GPI",
+            Description: "SM01-GPI Configuration",
+            ClientId: "SM01-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"MerchantId\":\"SQjCxm2cX5bahBta\",\"MerchantKey\":\"XGKGkcmYNnfex8AecKzCEbD4GMExA2cb\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetSM01Configuration(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("https://cn.ucfclive.com"), actual.ApiUrl);
+        Assert.AreEqual("SQjCxm2cX5bahBta", actual.MerchantId);
+        Assert.AreEqual("XGKGkcmYNnfex8AecKzCEbD4GMExA2cb", actual.MerchantKey);
+    }
 }
