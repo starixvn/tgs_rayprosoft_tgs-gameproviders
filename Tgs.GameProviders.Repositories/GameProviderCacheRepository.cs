@@ -173,4 +173,16 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         }
         return configurationData;
     }
+
+    public async ValueTask<SM01Configuration> GetSM01Configuration(Guid gameProviderConfigurationId)
+    {
+        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+        if (!_memoryCache.TryGetValue(key, out SM01Configuration configurationData))
+        {
+            configurationData = await _gameProvider.GetSM01Configuration(gameProviderConfigurationId).ConfigureAwait(false);
+
+            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+        }
+        return configurationData;
+    }
 }

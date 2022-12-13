@@ -37,4 +37,6 @@ public interface IGameProviderRepository
     ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfiguration(Guid gameProviderConfigurationId);
 
     ValueTask<SabaTransferConfiguration> GetSabaTransferConfiguration(Guid gameProviderConfigurationId);
+
+    ValueTask<SM01Configuration> GetSM01Configuration(Guid gameProviderConfigurationId);
 }

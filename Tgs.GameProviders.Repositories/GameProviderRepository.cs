@@ -161,4 +161,17 @@ internal class GameProviderRepository : IGameProviderRepository
             ? settingConfiguration
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
+
+    public async ValueTask<SM01Configuration> GetSM01Configuration(Guid gameProviderConfigurationId)
+    {
+        var settingConfiguration = await _client.SettingGetConfigurationAsync<SM01Configuration>(GameProviderConfigurations.SM01).ConfigureAwait(false)
+            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.SM01})");
+
+        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
+                  ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+
+        return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
+            ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+            : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
+    }
 }

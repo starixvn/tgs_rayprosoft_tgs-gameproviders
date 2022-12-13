@@ -1,11 +1,4 @@
-using System;
-using System.IO;
-using System.Linq;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Instrumentation.AspNetCore;
@@ -156,6 +149,11 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceSabaBaseUrl");
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceSM01BaseUrl");
     })
     .AddGameProvidersRepositories()
     .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database);
