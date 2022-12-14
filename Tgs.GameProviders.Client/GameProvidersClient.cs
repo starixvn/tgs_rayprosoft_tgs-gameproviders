@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
+using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Client;
 
@@ -35,6 +36,40 @@ internal class GameProvidersClient : IGameProvidersClient
     public GameProvidersClient(HttpClient httpClient)
     {
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    }
+
+    public async ValueTask<SM01Configuration?> GamePlatformLoginBySM01Async(
+        string playerCode,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new
+        {
+            PlayerCode = playerCode,
+        };
+
+        var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
+        requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+
+        var response = await _httpClient
+           .PostAsync(
+               requestUri: string.Format("/api/{0}/gameurl", GameProviderType.SM01),
+               content: requestContent,
+               cancellationToken: cancellationToken).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+
+        var loginInfo = JsonSerializer.Deserialize<SM01PlatformLoginResponse>(contentJson, _SerializerOptions)!;
+
+        return string.IsNullOrEmpty(contentJson)
+            ? null
+            : new SM01Configuration
+            {
+                ApiUrl = loginInfo.ApiUrl,
+                MerchantId = loginInfo.MerchantId,
+                MerchantKey = loginInfo.MerchantKey
+            };
     }
 
     public async ValueTask<Uri?> GameUrlAsync(

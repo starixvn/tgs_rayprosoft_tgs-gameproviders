@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.RoundDetail;
+using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Client;
 
@@ -12,6 +13,8 @@ public interface IGameProvidersClient
     ValueTask<Uri?> GameUrlByAsiaGamingAsync(GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, decimal playerBalance, CancellationToken cancellationToken = default);
 
     ValueTask<Uri?> GameUrlByBetConstructAsync(GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, string lobbyDomain, CancellationToken cancellationToken = default);
+
+    ValueTask<SM01Configuration?> GamePlatformLoginBySM01Async(string playerCode, CancellationToken cancellationToken = default);
 
     ValueTask KickPlayerAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default);
 
