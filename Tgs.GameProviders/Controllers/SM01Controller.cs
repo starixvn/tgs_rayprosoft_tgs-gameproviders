@@ -12,6 +12,43 @@ namespace Tgs.GameProviders.Controllers;
 public class SM01Controller : ControllerBase
 {
     /// <summary>
+    /// Platforms the login asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    ///   <b>Example</b><br />
+    ///
+    ///   POST
+    ///     {
+    ///         "playerCode": "4ucmqplxb029"
+    ///     }
+    /// </remarks>
+    [HttpPost("GameUrl")]
+    public async ValueTask<SM01PlatformLoginResponse?> PlatformLoginAsync(
+        [FromServices] IGetService<SM01PlatformLoginQuery, SM01PlatformLoginInfo> getService,
+        GameSM01PlatformLoginRequest request)
+    {
+        var query = new SM01PlatformLoginQuery
+        {
+            PlayerCode = request.PlayerCode
+        };
+
+        var result = await getService
+            .GetAsync(query)
+            .ConfigureAwait(false);
+
+        return result == null
+            ? null
+            : new SM01PlatformLoginResponse(
+                result.MerchantId,
+                result.CustomerName,
+                result.Timestamp,
+                result.Sign);
+    }
+
+    /// <summary>
     /// Players the balance asynchronous.
     /// </summary>
     /// <param name="service">The service.</param>

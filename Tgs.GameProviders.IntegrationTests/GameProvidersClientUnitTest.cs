@@ -6,7 +6,10 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameInterface.SM01Service.Client;
+using Tgs.GameInterface.SM01Service.Protos;
 using Tgs.GameProviders.Client;
+using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.AsiaGaming;
 using Tgs.GameProviders.Core.AsiaGaming.ApplicationServices;
 using Tgs.GameProviders.Core.AsiaGaming.Models;
@@ -321,6 +324,80 @@ public class GameProvidersClientUnitTest
             ipAddress,
             null,
             lobbyDomain);
+
+        Assert.IsNotNull(actual);
+    }
+
+    [Test]
+    public async Task Test_GameProvidersClient_GamePlatformLoginBySM01Async()
+    {
+        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakeBrandRepository = Substitute.For<IBrandRepository>();
+        var fakeGameInterfaceSM01Client = Substitute.For<IGameInterfaceSM01Client>();
+
+        var web = new TestGameProvidersApplication(builder =>
+        {
+            _ = builder.ConfigureServices(services =>
+            {
+                _ = services.AddTransient(_ => fakeGameProviderRepository);
+                _ = services.AddTransient(_ => fakePlayerRepository);
+                _ = services.AddTransient(_ => fakeBrandRepository);
+                _ = services.AddTransient(_ => fakeGameInterfaceSM01Client);
+                _ = services.AddFakeNatsMessageQueue();
+            });
+        });
+
+        var gameProviderId = Guid.Parse("ba2997d9-b856-4589-91ae-5060a952cc3c");
+        var playerCode = "4ucmqplxb029";
+        var gameProviderConfigurationId = Guid.Parse("6bd1773a-6ba3-4087-83dd-737d0179831a");
+
+        _ = fakeGameProviderRepository.GetGameProviderIdAsync(GameProviderType.SM01).Returns(ValueTask.FromResult(gameProviderId));
+
+        var player = new PlayerModel(
+            Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
+            "TGS",
+            Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
+            "TGS",
+            BrandId: Guid.Parse("4e86719f-243f-46f6-b010-5c758b7285af"),
+            "GPI",
+            PlayerCode: "4ucmqplxb029",
+            "4ucmqplxb029",
+            Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
+            "CNY",
+            PlayerStatus.Enabled);
+
+        _ = fakePlayerRepository.GetAsync(playerCode).Returns(player);
+
+        _ = fakeBrandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).Returns(ValueTask.FromResult(gameProviderConfigurationId));
+
+        var config = new SM01Configuration
+        {
+            ApiUrl = new Uri("https://cn.ucfclive.com"),
+            MerchantId = "SQjCxm2cX5bahBta",
+            MerchantKey = "XGKGkcmYNnfex8AecKzCEbD4GMExA2cb",
+        };
+
+        _ = fakeGameProviderRepository.GetSM01Configuration(gameProviderConfigurationId).Returns(ValueTask.FromResult(config));
+
+        var reply = new PlatformLoginReply
+        {
+            MerchantId = "SQjCxm2cX5bahBta",
+            CustomerName = "4ucmqplxb029",
+            Timestamp = 1670390195123,
+            Sign = "46C9EA4F03900B74379A15A56ED14229"
+        };
+
+        _ = fakeGameInterfaceSM01Client.PlatformLoginAsync(config.ApiUrl, config.MerchantId, config.MerchantKey, playerCode).Returns(ValueTask.FromResult(reply));
+
+        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+
+        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+
+        var sut = new GameProvidersClient(httpClient);
+
+        var actual = await sut.GamePlatformLoginBySM01Async(
+            playerCode);
 
         Assert.IsNotNull(actual);
     }
