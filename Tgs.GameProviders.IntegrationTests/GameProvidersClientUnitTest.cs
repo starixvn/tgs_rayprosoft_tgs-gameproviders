@@ -344,6 +344,7 @@ public class GameProvidersClientUnitTest
                 _ = services.AddTransient(_ => fakePlayerRepository);
                 _ = services.AddTransient(_ => fakeBrandRepository);
                 _ = services.AddTransient(_ => fakeGameInterfaceSM01Client);
+                _ = services.AddFakeNatsMessageQueue();
             });
         });
 
