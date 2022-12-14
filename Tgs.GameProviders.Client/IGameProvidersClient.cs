@@ -14,7 +14,7 @@ public interface IGameProvidersClient
 
     ValueTask<Uri?> GameUrlByBetConstructAsync(GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, string lobbyDomain, CancellationToken cancellationToken = default);
 
-    ValueTask<SM01Configuration?> GamePlatformLoginBySM01Async(string playerCode, CancellationToken cancellationToken = default);
+    ValueTask<SM01PlatformLoginResponse?> GamePlatformLoginBySM01Async(string playerCode, CancellationToken cancellationToken = default);
 
     ValueTask KickPlayerAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default);
 

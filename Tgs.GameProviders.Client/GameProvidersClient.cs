@@ -38,7 +38,7 @@ internal class GameProvidersClient : IGameProvidersClient
         _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
     }
 
-    public async ValueTask<SM01Configuration?> GamePlatformLoginBySM01Async(
+    public async ValueTask<SM01PlatformLoginResponse?> GamePlatformLoginBySM01Async(
         string playerCode,
         CancellationToken cancellationToken = default)
     {
@@ -58,18 +58,11 @@ internal class GameProvidersClient : IGameProvidersClient
 
         _ = response.EnsureSuccessStatusCode();
 
-        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-
-        var loginInfo = JsonSerializer.Deserialize<SM01PlatformLoginResponse>(contentJson, _SerializerOptions)!;
+        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);        
 
         return string.IsNullOrEmpty(contentJson)
             ? null
-            : new SM01Configuration
-            {
-                ApiUrl = loginInfo.ApiUrl,
-                MerchantId = loginInfo.MerchantId,
-                MerchantKey = loginInfo.MerchantKey
-            };
+            : JsonSerializer.Deserialize<SM01PlatformLoginResponse>(contentJson, _SerializerOptions);
     }
 
     public async ValueTask<Uri?> GameUrlAsync(

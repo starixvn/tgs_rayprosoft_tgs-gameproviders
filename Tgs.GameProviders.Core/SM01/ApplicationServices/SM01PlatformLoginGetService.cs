@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
@@ -11,15 +12,18 @@ namespace Tgs.GameProviders.Core.SM01.ApplicationServices
         private readonly IBrandRepository _brand;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IPlayerRepository _player;
+        private readonly IGameInterfaceSM01Client _client;
 
         public SM01PlatformLoginGetService(
             IBrandRepository brand,
             IGameProviderRepository gameProvider,
-            IPlayerRepository player)
+            IPlayerRepository player,
+            IGameInterfaceSM01Client client)
         {
             _brand = brand ?? throw new ArgumentNullException(nameof(brand));
             _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
             _player = player ?? throw new ArgumentNullException(nameof(player));
+            _client = client ?? throw new ArgumentNullException(nameof(client));
         }
 
         public async ValueTask<SM01PlatformLoginInfo> GetAsync(SM01PlatformLoginQuery query, CancellationToken cancellationToken = default)
@@ -29,7 +33,11 @@ namespace Tgs.GameProviders.Core.SM01.ApplicationServices
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
             var configuration = await _gameProvider.GetSM01Configuration(gameProviderConfigurationId).ConfigureAwait(false);
 
-            return new SM01PlatformLoginInfo(configuration.ApiUrl, configuration.MerchantId, configuration.MerchantKey);
+            var loginInfo = await _client
+                .PlatformLoginAsync(configuration.ApiUrl, configuration.MerchantId, configuration.MerchantKey, query.PlayerCode)
+                .ConfigureAwait(false);
+
+            return new SM01PlatformLoginInfo(loginInfo.MerchantId, loginInfo.CustomerName, loginInfo.Timestamp, loginInfo.Sign);
         }
     }
 }

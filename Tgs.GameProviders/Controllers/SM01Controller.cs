@@ -42,9 +42,10 @@ public class SM01Controller : ControllerBase
         return result == null
             ? null
             : new SM01PlatformLoginResponse(
-                result.ApiUrl,
                 result.MerchantId,
-                result.MerchantKey);
+                result.CustomerName,
+                result.Timestamp,
+                result.Sign);
     }
 
     /// <summary>

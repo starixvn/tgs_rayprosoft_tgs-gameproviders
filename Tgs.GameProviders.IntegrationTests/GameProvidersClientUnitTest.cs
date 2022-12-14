@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameInterface.SM01Service.Client;
+using Tgs.GameInterface.SM01Service.Protos;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.AsiaGaming;
@@ -332,6 +334,7 @@ public class GameProvidersClientUnitTest
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeBrandRepository = Substitute.For<IBrandRepository>();
+        var fakeGameInterfaceSM01Client = Substitute.For<IGameInterfaceSM01Client>();
 
         var web = new TestGameProvidersApplication(builder =>
         {
@@ -340,6 +343,7 @@ public class GameProvidersClientUnitTest
                 _ = services.AddTransient(_ => fakeGameProviderRepository);
                 _ = services.AddTransient(_ => fakePlayerRepository);
                 _ = services.AddTransient(_ => fakeBrandRepository);
+                _ = services.AddTransient(_ => fakeGameInterfaceSM01Client);
             });
         });
 
@@ -374,6 +378,16 @@ public class GameProvidersClientUnitTest
         };
 
         _ = fakeGameProviderRepository.GetSM01Configuration(gameProviderConfigurationId).Returns(ValueTask.FromResult(config));
+
+        var reply = new PlatformLoginReply
+        {
+            MerchantId = "SQjCxm2cX5bahBta",
+            CustomerName = "4ucmqplxb029",
+            Timestamp = 1670390195123,
+            Sign = "46C9EA4F03900B74379A15A56ED14229"
+        };
+
+        _ = fakeGameInterfaceSM01Client.PlatformLoginAsync(config.ApiUrl, config.MerchantId, config.MerchantKey, playerCode).Returns(ValueTask.FromResult(reply));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 

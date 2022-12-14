@@ -1,8 +1,7 @@
-﻿using System;
-
-namespace Tgs.GameProviders.Client;
+﻿namespace Tgs.GameProviders.Client;
 
 public record SM01PlatformLoginResponse(
-    Uri ApiUrl,
     string MerchantId,
-    string MerchantKey);
+    string CustomerName,
+    long Timestamp,
+    string Sign);
