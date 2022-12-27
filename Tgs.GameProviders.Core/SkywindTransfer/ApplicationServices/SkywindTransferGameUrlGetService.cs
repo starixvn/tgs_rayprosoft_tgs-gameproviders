@@ -13,13 +13,13 @@ namespace Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 
 public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameUrlQuery, GameUrlResult>
 {
+    private readonly IGameInterfaceSkywindClient _client;
     private readonly ICommandService<SkywindTransferCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameRepository _game;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IGameInterfaceSkywindClient _client;
+    private readonly IGameTokenClient _gameTokenClient;
     private readonly IPlayerRepository _player;
     private readonly ISettingRepository _setting;
-    private readonly IGameTokenClient _gameTokenClient;
 
     public SkywindTransferGameUrlGetService(
         ICommandService<SkywindTransferCreatePlayerCommand> createPlayerCommandService,

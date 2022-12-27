@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
@@ -11,8 +10,8 @@ namespace Tgs.GameProviders.Core.HabaneroTransfer.ApplicationServices;
 internal class HabaneroTransferPlayerBalanceGetService : IGetService<HabaneroTransferPlayerBalanceQuery, decimal?>
 {
     private readonly IBrandRepository _brand;
-    private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceHabaneroClient _client;
+    private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
 
     public HabaneroTransferPlayerBalanceGetService(
@@ -46,12 +45,10 @@ internal class HabaneroTransferPlayerBalanceGetService : IGetService<HabaneroTra
 
         if (!reply.IsPlayerExist)
         {
-
             var gameProviderCurrencyCode = await _gameProvider
                     .GetGameProviderCurrencyCodeAsync(gameProviderId, player.DefaultWalletCurrencyCode)
                     .ConfigureAwait(false)
                 ?? throw new Exception($"This game product currency does not exist.({player.DefaultWalletCurrencyCode})");
-
 
             var response = await _client
                 .GameTokenAsync(

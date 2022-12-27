@@ -1,5 +1,4 @@
-﻿using System;
-using Tgs.GameProviders.Core.PragmaticPlayTransfer;
+﻿using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 
 namespace Tgs.GameProviders.ViewModels;
 

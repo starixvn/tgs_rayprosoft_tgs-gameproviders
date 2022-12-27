@@ -10,8 +10,8 @@ namespace Tgs.GameProviders.Core.SM01.ApplicationServices;
 internal class SM01PlayerBalanceGetService : IGetService<SM01PlayerBalanceQuery, decimal?>
 {
     private readonly IBrandRepository _brand;
-    private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceSM01Client _client;
+    private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
 
     public SM01PlayerBalanceGetService(

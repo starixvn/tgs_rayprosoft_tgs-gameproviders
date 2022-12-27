@@ -13,6 +13,42 @@ namespace Tgs.GameProviders.Core;
 public class JsonMergeUtils
 {
     /// <summary>
+    /// Extract property names with a null value.
+    /// </summary>
+    /// <remarks>Nested field names are returned joined by "."
+    /// Array items are ignored.
+    /// </remarks>
+    /// <param name="original"></param>
+    /// <param name="patch"></param>
+    /// <param name="writerOptions">Writer options used to write the merge result.</param>
+    /// <returns>The list of null properties.</returns>
+    public static List<string> ExtractNullProperties(string patch)
+    {
+        using var patchDoc = JsonDocument.Parse(patch);
+        return patchDoc.RootElement.ValueKind != JsonValueKind.Object
+            ? throw new InvalidOperationException($"The patch JSON document must be an object type. Instead it is {patchDoc.RootElement.ValueKind}.")
+            : ExtractNullPropertiesFromObject(patchDoc.RootElement).ToList();
+    }
+
+    /// <summary>
+    /// Extract property names with a null value.
+    /// </summary>
+    /// <remarks>Nested field names are returned joined by "."
+    /// Array items are ignored.
+    /// </remarks>
+    /// <param name="original"></param>
+    /// <param name="patch"></param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The list of null properties.</returns>
+    public static async Task<List<string>> ExtractNullPropertiesAsync(System.IO.Stream patch, CancellationToken cancellationToken = default)
+    {
+        using var patchDoc = await JsonDocument.ParseAsync(patch, new JsonDocumentOptions(), cancellationToken);
+        return patchDoc.RootElement.ValueKind != JsonValueKind.Object
+            ? throw new InvalidOperationException($"The patch JSON document must be an object type. Instead it is {patchDoc.RootElement.ValueKind}.")
+            : ExtractNullPropertiesFromObject(patchDoc.RootElement).ToList();
+    }
+
+    /// <summary>
     /// Return the result of merging the original JSON document with the JSON Merge patch document
     /// according to https://tools.ietf.org/html/rfc7386
     /// </summary>
@@ -98,42 +134,6 @@ public class JsonMergeUtils
         }
 
         return Encoding.UTF8.GetString(outputBuffer.WrittenSpan);
-    }
-
-    /// <summary>
-    /// Extract property names with a null value.
-    /// </summary>
-    /// <remarks>Nested field names are returned joined by "."
-    /// Array items are ignored.
-    /// </remarks>
-    /// <param name="original"></param>
-    /// <param name="patch"></param>
-    /// <param name="writerOptions">Writer options used to write the merge result.</param>
-    /// <returns>The list of null properties.</returns>
-    public static List<string> ExtractNullProperties(string patch)
-    {
-        using var patchDoc = JsonDocument.Parse(patch);
-        return patchDoc.RootElement.ValueKind != JsonValueKind.Object
-            ? throw new InvalidOperationException($"The patch JSON document must be an object type. Instead it is {patchDoc.RootElement.ValueKind}.")
-            : ExtractNullPropertiesFromObject(patchDoc.RootElement).ToList();
-    }
-
-    /// <summary>
-    /// Extract property names with a null value.
-    /// </summary>
-    /// <remarks>Nested field names are returned joined by "."
-    /// Array items are ignored.
-    /// </remarks>
-    /// <param name="original"></param>
-    /// <param name="patch"></param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The list of null properties.</returns>
-    public static async Task<List<string>> ExtractNullPropertiesAsync(System.IO.Stream patch, CancellationToken cancellationToken = default)
-    {
-        using var patchDoc = await JsonDocument.ParseAsync(patch, new JsonDocumentOptions(), cancellationToken);
-        return patchDoc.RootElement.ValueKind != JsonValueKind.Object
-            ? throw new InvalidOperationException($"The patch JSON document must be an object type. Instead it is {patchDoc.RootElement.ValueKind}.")
-            : ExtractNullPropertiesFromObject(patchDoc.RootElement).ToList();
     }
 
     /// <summary>

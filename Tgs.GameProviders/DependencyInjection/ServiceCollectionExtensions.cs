@@ -1,5 +1,4 @@
-﻿using System;
-using Tgs.GameInterface.AwcService.Client;
+﻿using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.HabaneroService.Client;

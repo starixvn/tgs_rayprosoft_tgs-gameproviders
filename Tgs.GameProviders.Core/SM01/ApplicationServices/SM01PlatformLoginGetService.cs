@@ -10,9 +10,9 @@ namespace Tgs.GameProviders.Core.SM01.ApplicationServices
     internal class SM01PlatformLoginGetService : IGetService<SM01PlatformLoginQuery, SM01PlatformLoginInfo>
     {
         private readonly IBrandRepository _brand;
+        private readonly IGameInterfaceSM01Client _client;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IPlayerRepository _player;
-        private readonly IGameInterfaceSM01Client _client;
 
         public SM01PlatformLoginGetService(
             IBrandRepository brand,

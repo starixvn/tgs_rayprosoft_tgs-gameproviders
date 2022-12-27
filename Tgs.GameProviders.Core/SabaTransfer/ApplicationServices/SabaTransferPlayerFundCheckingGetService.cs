@@ -10,10 +10,10 @@ namespace Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
 
 public class SabaTransferPlayerFundCheckingGetService : IGetService<SabaTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
 {
+    private readonly IBrandRepository _brand;
     private readonly IGameInterfaceSabaClient _client;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
-    private readonly IBrandRepository _brand;
 
     public SabaTransferPlayerFundCheckingGetService(
         IGameInterfaceSabaClient client,

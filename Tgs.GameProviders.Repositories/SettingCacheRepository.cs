@@ -215,7 +215,6 @@ internal class SettingCacheRepository : ISettingRepository
         return configuration;
     }
 
-
     private static string GetKey(string gameProviderCode)
             => $"gameg:gameproviders:setting:{gameProviderCode}".ToLower();
 }

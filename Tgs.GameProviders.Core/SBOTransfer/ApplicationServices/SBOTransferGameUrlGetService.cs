@@ -11,11 +11,11 @@ namespace Tgs.GameProviders.Core.SBOTransfer.ApplicationServices;
 
 public class SBOTransferGameUrlGetService : IGetService<SBOTransferGameUrlQuery, Uri>
 {
+    private readonly IBrandRepository _brandRepository;
     private readonly IGameInterfaceSBOClient _client;
     private readonly IGameProviderRepository _gameProviderRepository;
-    private readonly IPlayerRepository _playerRepository;
-    private readonly IBrandRepository _brandRepository;
     private readonly IGameRepository _gameRepository;
+    private readonly IPlayerRepository _playerRepository;
 
     public SBOTransferGameUrlGetService(
         IGameInterfaceSBOClient client,

@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Tgs.GameProviders;
 

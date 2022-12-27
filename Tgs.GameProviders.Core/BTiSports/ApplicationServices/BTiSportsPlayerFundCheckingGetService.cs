@@ -10,8 +10,8 @@ namespace Tgs.GameProviders.Core.BTiSports.ApplicationServices;
 public class BTiSportsPlayerFundCheckingGetService : IGetService<BTiSportsPlayerFundCheckingQuery, PlayerFundCheckingResult>
 {
     private readonly IBrandRepository _brand;
-    private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceBTiClient _client;
+    private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
 
     public BTiSportsPlayerFundCheckingGetService(

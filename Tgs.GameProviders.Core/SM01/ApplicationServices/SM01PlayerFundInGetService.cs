@@ -10,8 +10,8 @@ namespace Tgs.GameProviders.Core.SM01.ApplicationServices;
 public class SM01PlayerFundInGetService : IGetService<SM01PlayerFundInQuery, PlayerFundResult>
 {
     private readonly IBrandRepository _brand;
-    private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceSM01Client _client;
+    private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
 
     public SM01PlayerFundInGetService(
