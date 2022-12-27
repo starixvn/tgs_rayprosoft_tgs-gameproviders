@@ -9,8 +9,8 @@ namespace Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 
 public class SkywindTransferPlayerBalanceGetService : IGetService<SkywindTransferPlayerBalanceQuery, decimal?>
 {
-    private readonly ICommandService<SkywindTransferCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameInterfaceSkywindClient _client;
+    private readonly ICommandService<SkywindTransferCreatePlayerCommand> _createPlayerCommandService;
     private readonly IPlayerRepository _player;
     private readonly ISettingRepository _setting;
 

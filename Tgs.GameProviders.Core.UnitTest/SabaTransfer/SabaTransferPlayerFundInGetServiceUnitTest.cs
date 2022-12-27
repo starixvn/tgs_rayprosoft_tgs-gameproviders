@@ -71,7 +71,6 @@ public class SabaTransferPlayerFundInGetServiceUnitTest
                currencyCode: Arg.Is(player.DefaultWalletCurrencyCode))
             .Returns(gameProviderCurrencyCode);
 
-        
         var reply = new FundReply()
         {
             Check = false,

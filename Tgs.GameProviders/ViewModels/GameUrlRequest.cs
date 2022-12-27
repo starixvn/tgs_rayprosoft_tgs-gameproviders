@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.QueryServer.Models;
 

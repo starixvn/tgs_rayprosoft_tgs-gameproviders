@@ -9,10 +9,10 @@ namespace Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 
 public class WGFmGamingPlayerFundOutGetService : IGetService<WGFmGamingPlayerFundOutQuery, PlayerFundResult>
 {
+    private readonly IBrandRepository _brandRepository;
     private readonly IGameInterfaceWGFmGamingClient _client;
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IPlayerRepository _playerRepository;
-    private readonly IBrandRepository _brandRepository;
 
     public WGFmGamingPlayerFundOutGetService(
         IGameInterfaceWGFmGamingClient client,

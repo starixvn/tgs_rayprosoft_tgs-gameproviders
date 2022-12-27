@@ -10,9 +10,9 @@ namespace Tgs.GameProviders.Core.HabaneroTransfer.ApplicationServices;
 internal class HabaneroTransferPlayerFundCheckingGetService : IGetService<HabaneroTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
 {
     private readonly IBrandRepository _brand;
+    private readonly IGameInterfaceHabaneroClient _client;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
-    private readonly IGameInterfaceHabaneroClient _client;
 
     public HabaneroTransferPlayerFundCheckingGetService(
         IBrandRepository brand,

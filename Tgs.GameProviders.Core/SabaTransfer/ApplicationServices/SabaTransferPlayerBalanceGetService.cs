@@ -9,10 +9,10 @@ namespace Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
 
 public class SabaTransferPlayerBalanceGetService : IGetService<SabaTransferPlayerBalanceQuery, decimal?>
 {
+    private readonly IBrandRepository _brand;
     private readonly IGameInterfaceSabaClient _client;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
-    private readonly IBrandRepository _brand;
 
     public SabaTransferPlayerBalanceGetService(
         IGameInterfaceSabaClient client,

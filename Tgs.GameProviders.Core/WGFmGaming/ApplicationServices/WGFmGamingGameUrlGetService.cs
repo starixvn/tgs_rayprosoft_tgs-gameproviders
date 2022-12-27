@@ -9,10 +9,10 @@ namespace Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 
 public class WGFmGamingGameUrlGetService : IGetService<WGFmGamingGameUrlQuery, Uri>
 {
+    private readonly IBrandRepository _brandRepository;
     private readonly IGameInterfaceWGFmGamingClient _client;
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IPlayerRepository _playerRepository;
-    private readonly IBrandRepository _brandRepository;
 
     public WGFmGamingGameUrlGetService(
         IGameInterfaceWGFmGamingClient client,

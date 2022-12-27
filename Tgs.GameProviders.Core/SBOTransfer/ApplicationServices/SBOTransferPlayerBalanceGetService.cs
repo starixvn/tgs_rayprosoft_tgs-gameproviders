@@ -9,10 +9,10 @@ namespace Tgs.GameProviders.Core.SBOTransfer.ApplicationServices;
 
 public class SBOTransferPlayerBalanceGetService : IGetService<SBOTransferPlayerBalanceQuery, decimal?>
 {
+    private readonly IBrandRepository _brandRepository;
     private readonly IGameInterfaceSBOClient _client;
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IPlayerRepository _playerRepository;
-    private readonly IBrandRepository _brandRepository;
 
     public SBOTransferPlayerBalanceGetService(
         IGameInterfaceSBOClient client,

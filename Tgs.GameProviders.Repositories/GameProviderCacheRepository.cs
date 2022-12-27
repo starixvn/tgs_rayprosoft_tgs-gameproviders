@@ -34,8 +34,20 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         return configurationData;
     }
 
+    public async ValueTask<BTiSportsConfiguration> GetBTiSportsConfiguration(Guid gameProviderConfigurationId)
+    {
+        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+        if (!_memoryCache.TryGetValue(key, out BTiSportsConfiguration configurationData))
+        {
+            configurationData = await _gameProvider.GetBTiSportsConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+        }
+        return configurationData;
+    }
+
     public ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId)
-        => _gameProvider.GetGameEndpointsAsync(gameProviderConfigurationId);
+            => _gameProvider.GetGameEndpointsAsync(gameProviderConfigurationId);
 
     public async ValueTask<string?> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode)
     {
@@ -78,36 +90,12 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         return gameProviderId;
     }
 
-    public async ValueTask<JiliTransferConfiguration> GetJiliTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfiguration(Guid gameProviderConfigurationId)
     {
         var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
-        if (!_memoryCache.TryGetValue(key, out JiliTransferConfiguration configurationData))
+        if (!_memoryCache.TryGetValue(key, out HabaneroTransferConfiguration configurationData))
         {
-            configurationData = await _gameProvider.GetJiliTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
-
-            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
-        }
-        return configurationData;
-    }
-
-    public async ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(Guid gameProviderConfigurationId)
-    {
-        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
-        if (!_memoryCache.TryGetValue(key, out WMCasinoTransferConfiguration configurationData))
-        {
-            configurationData = await _gameProvider.GetWMCasinoTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
-
-            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
-        }
-        return configurationData;
-    }
-
-    public async ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfiguration(Guid gameProviderConfigurationId)
-    {
-        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
-        if (!_memoryCache.TryGetValue(key, out WGFmGamingConfiguration configurationData))
-        {
-            configurationData = await _gameProvider.GetWGFmGamingConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+            configurationData = await _gameProvider.GetHabaneroTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
 
             _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
         }
@@ -126,48 +114,12 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         return configurationData;
     }
 
-    public async ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<JiliTransferConfiguration> GetJiliTransferConfiguration(Guid gameProviderConfigurationId)
     {
         var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
-        if (!_memoryCache.TryGetValue(key, out SBOTransferConfiguration configurationData))
+        if (!_memoryCache.TryGetValue(key, out JiliTransferConfiguration configurationData))
         {
-            configurationData = await _gameProvider.GetSBOTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
-
-            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
-        }
-        return configurationData;
-    }
-
-    public async ValueTask<TFGamgingTransferConfiguration> GetTFGamgingTransferConfiguration(Guid gameProviderConfigurationId)
-    {
-        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
-        if (!_memoryCache.TryGetValue(key, out TFGamgingTransferConfiguration configurationData))
-        {
-            configurationData = await _gameProvider.GetTFGamgingTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
-
-            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
-        }
-        return configurationData;
-    }
-
-    public async ValueTask<BTiSportsConfiguration> GetBTiSportsConfiguration(Guid gameProviderConfigurationId)
-    {
-        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
-        if (!_memoryCache.TryGetValue(key, out BTiSportsConfiguration configurationData))
-        {
-            configurationData = await _gameProvider.GetBTiSportsConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
-
-            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
-        }
-        return configurationData;
-    }
-
-    public async ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfiguration(Guid gameProviderConfigurationId)
-    {
-        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
-        if (!_memoryCache.TryGetValue(key, out HabaneroTransferConfiguration configurationData))
-        {
-            configurationData = await _gameProvider.GetHabaneroTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+            configurationData = await _gameProvider.GetJiliTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
 
             _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
         }
@@ -186,12 +138,60 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         return configurationData;
     }
 
+    public async ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(Guid gameProviderConfigurationId)
+    {
+        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+        if (!_memoryCache.TryGetValue(key, out SBOTransferConfiguration configurationData))
+        {
+            configurationData = await _gameProvider.GetSBOTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+        }
+        return configurationData;
+    }           
     public async ValueTask<SM01Configuration> GetSM01Configuration(Guid gameProviderConfigurationId)
+
     {
         var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
         if (!_memoryCache.TryGetValue(key, out SM01Configuration configurationData))
         {
             configurationData = await _gameProvider.GetSM01Configuration(gameProviderConfigurationId).ConfigureAwait(false);
+
+            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+        }
+        return configurationData;
+    }
+
+    public async ValueTask<TFGamgingTransferConfiguration> GetTFGamgingTransferConfiguration(Guid gameProviderConfigurationId)
+    {
+        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+        if (!_memoryCache.TryGetValue(key, out TFGamgingTransferConfiguration configurationData))
+        {
+            configurationData = await _gameProvider.GetTFGamgingTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+        }
+        return configurationData;
+    }
+
+    public async ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfiguration(Guid gameProviderConfigurationId)
+    {
+        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+        if (!_memoryCache.TryGetValue(key, out WGFmGamingConfiguration configurationData))
+        {
+            configurationData = await _gameProvider.GetWGFmGamingConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+        }
+        return configurationData;
+    }
+
+    public async ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(Guid gameProviderConfigurationId)
+    {
+        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+        if (!_memoryCache.TryGetValue(key, out WMCasinoTransferConfiguration configurationData))
+        {
+            configurationData = await _gameProvider.GetWMCasinoTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
 
             _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
         }

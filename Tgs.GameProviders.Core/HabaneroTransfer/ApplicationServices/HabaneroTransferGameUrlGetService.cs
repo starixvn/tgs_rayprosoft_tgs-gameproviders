@@ -10,11 +10,11 @@ namespace Tgs.GameProviders.Core.HabaneroTransfer.ApplicationServices;
 
 internal class HabaneroTransferGameUrlGetService : IGetService<HabaneroTransferGameUrlQuery, Uri>
 {
+    private readonly IBrandRepository _brand;
     private readonly IGameInterfaceHabaneroClient _client;
-    private readonly IPlayerRepository _player;
     private readonly IGameRepository _game;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IBrandRepository _brand;
+    private readonly IPlayerRepository _player;
 
     public HabaneroTransferGameUrlGetService(
         IBrandRepository brand,

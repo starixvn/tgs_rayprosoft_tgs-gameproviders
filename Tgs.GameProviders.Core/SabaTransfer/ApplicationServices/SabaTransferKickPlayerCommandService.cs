@@ -9,10 +9,10 @@ namespace Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
 
 public class SabaTransferKickPlayerCommandService : ICommandService<SabaTransferKickPlayerCommand>
 {
+    private readonly IBrandRepository _brand;
     private readonly IGameInterfaceSabaClient _client;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
-    private readonly IBrandRepository _brand;
 
     public SabaTransferKickPlayerCommandService(
         IGameInterfaceSabaClient client,

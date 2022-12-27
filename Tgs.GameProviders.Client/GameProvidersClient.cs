@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
-using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Client;
 
@@ -58,7 +57,7 @@ internal class GameProvidersClient : IGameProvidersClient
 
         _ = response.EnsureSuccessStatusCode();
 
-        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);        
+        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
         return string.IsNullOrEmpty(contentJson)
             ? null

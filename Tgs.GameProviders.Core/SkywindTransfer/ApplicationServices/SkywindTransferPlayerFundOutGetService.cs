@@ -10,8 +10,8 @@ namespace Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 
 public class SkywindTransferPlayerFundOutGetService : IGetService<SkywindTransferPlayerFundOutQuery, PlayerFundResult>
 {
-    private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceSkywindClient _client;
+    private readonly IGameProviderRepository _gameProvider;
     private readonly ISettingRepository _setting;
 
     public SkywindTransferPlayerFundOutGetService(

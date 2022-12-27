@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Tgs.GameProviders.ViewModels;
+﻿namespace Tgs.GameProviders.ViewModels;
 
 public class JokerGameRecordListRequest
 {

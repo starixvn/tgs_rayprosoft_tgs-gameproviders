@@ -9,10 +9,10 @@ namespace Tgs.GameProviders.Core.SBOTransfer.ApplicationServices;
 
 public class SBOTransferPlayerFundInGetService : IGetService<SBOTransferPlayerFundInQuery, PlayerFundResult>
 {
+    private readonly IBrandRepository _brandRepository;
     private readonly IGameInterfaceSBOClient _client;
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IPlayerRepository _playerRepository;
-    private readonly IBrandRepository _brandRepository;
 
     public SBOTransferPlayerFundInGetService(
         IGameInterfaceSBOClient client,
