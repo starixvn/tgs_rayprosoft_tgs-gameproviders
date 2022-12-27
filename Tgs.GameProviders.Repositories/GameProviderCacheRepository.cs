@@ -138,6 +138,18 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         return configurationData;
     }
 
+    public async ValueTask<TFGamgingTransferConfiguration> GetTFGamgingTransferConfiguration(Guid gameProviderConfigurationId)
+    {
+        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+        if (!_memoryCache.TryGetValue(key, out TFGamgingTransferConfiguration configurationData))
+        {
+            configurationData = await _gameProvider.GetTFGamgingTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+        }
+        return configurationData;
+    }
+
     public async ValueTask<BTiSportsConfiguration> GetBTiSportsConfiguration(Guid gameProviderConfigurationId)
     {
         var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();

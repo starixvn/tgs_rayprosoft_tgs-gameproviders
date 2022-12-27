@@ -55,4 +55,5 @@ public static class GameProviderType
     public static readonly string HabaneroTransfer = "HABATF";
     public static readonly string SabaTransfer = "SABATF";
     public static readonly string SM01 = "SM01";
+    public static readonly string TFGamingTransfer = "TFTF";
 }

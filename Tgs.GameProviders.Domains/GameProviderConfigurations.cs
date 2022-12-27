@@ -55,4 +55,5 @@ public static class GameProviderConfigurations
     public static readonly string HabaneroTransfer = string.Format(_template, GameProviderType.HabaneroTransfer);
     public static readonly string SabaTransfer = string.Format(_template, GameProviderType.SabaTransfer);
     public static readonly string SM01 = string.Format(_template, GameProviderType.SM01);
+    public static readonly string TFGamingTransfer = string.Format(_template, GameProviderType.TFGamingTransfer);
 }
