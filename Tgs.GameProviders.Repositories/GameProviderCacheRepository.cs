@@ -162,10 +162,10 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         return configurationData;
     }
 
-    public async ValueTask<TFGamgingTransferConfiguration> GetTFGamgingTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<TFGamingTransferConfiguration> GetTFGamgingTransferConfiguration(Guid gameProviderConfigurationId)
     {
         var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
-        if (!_memoryCache.TryGetValue(key, out TFGamgingTransferConfiguration configurationData))
+        if (!_memoryCache.TryGetValue(key, out TFGamingTransferConfiguration configurationData))
         {
             configurationData = await _gameProvider.GetTFGamgingTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
 

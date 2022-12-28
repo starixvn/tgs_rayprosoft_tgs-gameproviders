@@ -40,9 +40,9 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonSerializer.Deserialize<AwcConfigurationData>(data.ConfigurationData, _SerializerOptions)!;
     }
 
-    public async ValueTask<TFGamgingTransferConfiguration> GetTFGamgingTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<TFGamingTransferConfiguration> GetTFGamgingTransferConfiguration(Guid gameProviderConfigurationId)
     {
-        var settingConfiguration = await _client.SettingGetConfigurationAsync<TFGamgingTransferConfiguration>(GameProviderConfigurations.TFGamingTransfer).ConfigureAwait(false)
+        var settingConfiguration = await _client.SettingGetConfigurationAsync<TFGamingTransferConfiguration>(GameProviderConfigurations.TFGamingTransfer).ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.TFGamingTransfer})");
 
         var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)

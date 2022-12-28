@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-public record TFGamgingTransferConfiguration
+public record TFGamingTransferConfiguration
 {
     public Uri ApiUrl { get; init; } = default!;
 
