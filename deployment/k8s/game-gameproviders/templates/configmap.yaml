@@ -25,7 +25,8 @@ data:
         "GameInterfaceBTIBaseUrl":"http://game-gameinterface-bti-service:9090",
         "GameInterfaceHabaneroBaseUrl":"http://game-gameinterface-habanero-service:9090",
         "GameInterfaceSabaBaseUrl":"http://game-gameinterface-saba-service:9090",
-        "GameInterfaceSM01BaseUrl": "http://game-gameinterface-sm01-service:9090"
+        "GameInterfaceSM01BaseUrl": "http://game-gameinterface-sm01-service:9090",
+        "GameInterfaceTFGamingBaseUrl": "http://game-gameinterface-tfgaming-service:9090"
       }
     }
   monitor.settings.json: |

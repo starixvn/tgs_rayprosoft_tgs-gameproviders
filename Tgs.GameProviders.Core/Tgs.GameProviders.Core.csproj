@@ -26,6 +26,7 @@
 		<PackageReference Include="Tgs.GameInterface.SBOService.Client" Version="0.0.2" />
 		<PackageReference Include="Tgs.GameInterface.SkywindService.Client" Version="0.0.4" />
 		<PackageReference Include="Tgs.GameInterface.SM01Service.Client" Version="0.0.1" />
+		<PackageReference Include="Tgs.GameInterface.TFGamingService.Client" Version="0.0.1" />
 		<PackageReference Include="Tgs.GameInterface.WGFmGamingService.Client" Version="0.0.4" />
 		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="1.0.5" />
 		<PackageReference Include="Tgs.GamePlayerTransform.Client" Version="0.0.6" />

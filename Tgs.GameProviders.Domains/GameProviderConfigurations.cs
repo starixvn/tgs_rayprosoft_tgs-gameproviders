@@ -50,6 +50,7 @@ public static class GameProviderConfigurations
     public static readonly string SM01 = string.Format(_template, GameProviderType.SM01);
     public static readonly string TCG = string.Format(_template, GameProviderType.TCG);
     public static readonly string TFGaming = string.Format(_template, GameProviderType.TFGaming);
+    public static readonly string TFGamingTransfer = string.Format(_template, GameProviderType.TFGamingTransfer);
     public static readonly string VR = string.Format(_template, GameProviderType.VR);
     public static readonly string WGHorse = string.Format(_template, GameProviderType.WGHorse);
     public static readonly string WGSports = string.Format(_template, GameProviderType.WGSports);

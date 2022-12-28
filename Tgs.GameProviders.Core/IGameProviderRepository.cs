@@ -36,6 +36,8 @@ public interface IGameProviderRepository
 
     ValueTask<SM01Configuration> GetSM01Configuration(Guid gameProviderConfigurationId);
 
+    ValueTask<TFGamingTransferConfiguration> GetTFGamgingTransferConfiguration(Guid gameProviderConfigurationId);
+
     ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfiguration(Guid gameProviderConfigurationId);
 
     ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(Guid gameProviderConfigurationId);

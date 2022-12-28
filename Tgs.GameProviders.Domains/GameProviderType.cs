@@ -50,6 +50,7 @@ public static class GameProviderType
     public static readonly string SM01 = "SM01";
     public static readonly string TCG = "TCG";
     public static readonly string TFGaming = "TF";
+    public static readonly string TFGamingTransfer = "TFTF";
     public static readonly string VR = "VR";
     public static readonly string WGHorse = "WGVIA";
     public static readonly string WGSports = "WGFM";
