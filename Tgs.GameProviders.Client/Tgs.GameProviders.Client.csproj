@@ -9,7 +9,7 @@
 
 	<PropertyGroup>
 		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
-		<Version>0.0.49</Version>
+		<Version>0.0.50</Version>
 		<Authors>Raypro</Authors>
 		<Description>TGS Game Providers Client</Description>
 		<PackageProjectUrl>https://gitlab.com/rayprosoft/tgs-gameproviders</PackageProjectUrl>
