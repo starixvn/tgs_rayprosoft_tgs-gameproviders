@@ -280,7 +280,7 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
         return (true, response);
     }
 
-    public async ValueTask<string?> GetGameUrlAsync(
+    public async ValueTask<(bool IsPlayerExist, string Url)> GetGameUrlAsync(
         Uri apiUrl,
         string secureLogin,
         string secretKey,
@@ -313,11 +313,18 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
             .ConfigureAwait(false);
 
         var errorCode = document?.RootElement.GetProperty("error").GetString();
-        if (errorCode is not "0")
-            return null;
+        switch (errorCode)
+        {
+            case "0":
+                var gameUrl = document!.RootElement.GetProperty("gameURL").GetString() ?? string.Empty;
+                return (true, gameUrl);
 
-        var gameUrl = document!.RootElement.GetProperty("gameURL").GetString();
-        return gameUrl;
+            case "17":
+                return (false, string.Empty);
+
+            default:
+                throw new Exception($"Error getting game url.({errorCode})");
+        }
     }
 
     public async ValueTask LogoutAsync(

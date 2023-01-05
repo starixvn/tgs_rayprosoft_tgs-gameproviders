@@ -271,7 +271,7 @@ internal class PragmaticPlayTransferApiClientUnitTest
             Arg.Is(language),
             Arg.Is(platform),
             Arg.Is((string?)null))
-            .Returns(gameUrl);
+            .Returns((true, gameUrl));
 
         var actual = await client.GetGameUrlAsync(
             _apiUrl,
@@ -284,7 +284,7 @@ internal class PragmaticPlayTransferApiClientUnitTest
             null).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual);
+        Assert.AreEqual(gameUrl, actual.Url);
     }
 
     [Test]
