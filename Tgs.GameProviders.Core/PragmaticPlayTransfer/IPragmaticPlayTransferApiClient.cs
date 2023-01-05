@@ -65,7 +65,7 @@ public interface IPragmaticPlayTransferApiClient
         string dataType,
         DateTimeOffset startTime);
 
-    ValueTask<string?> GetGameUrlAsync(
+    ValueTask<(bool IsPlayerExist, string Url)> GetGameUrlAsync(
         Uri apiUrl,
         string secureLogin,
         string secretKey,
