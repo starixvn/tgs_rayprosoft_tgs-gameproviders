@@ -46,6 +46,18 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         return configurationData;
     }
 
+    public async ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(Guid gameProviderConfigurationId)
+    {
+        var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
+        if (!_memoryCache.TryGetValue(key, out DreamGamingTransferConfiguration configurationData))
+        {
+            configurationData = await _gameProvider.GetDreamGamingTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+
+            _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
+        }
+        return configurationData;
+    }
+
     public ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId)
             => _gameProvider.GetGameEndpointsAsync(gameProviderConfigurationId);
 
@@ -148,7 +160,8 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
         }
         return configurationData;
-    }           
+    }
+
     public async ValueTask<SM01Configuration> GetSM01Configuration(Guid gameProviderConfigurationId)
 
     {
@@ -162,12 +175,12 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         return configurationData;
     }
 
-    public async ValueTask<TFGamingTransferConfiguration> GetTFGamgingTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfiguration(Guid gameProviderConfigurationId)
     {
         var key = $"GameProviders:GameProviderCache:{gameProviderConfigurationId}".ToLower();
         if (!_memoryCache.TryGetValue(key, out TFGamingTransferConfiguration configurationData))
         {
-            configurationData = await _gameProvider.GetTFGamgingTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+            configurationData = await _gameProvider.GetTFGamingTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
 
             _ = _memoryCache.Set(key, configurationData, TimeSpan.FromMinutes(5));
         }
