@@ -16,6 +16,8 @@ public interface IGameProviderRepository
 
     ValueTask<BTiSportsConfiguration> GetBTiSportsConfiguration(Guid gameProviderConfigurationId);
 
+    ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(Guid gameProviderConfigurationId);
+
     ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId);
 
     ValueTask<string?> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode);
@@ -36,7 +38,7 @@ public interface IGameProviderRepository
 
     ValueTask<SM01Configuration> GetSM01Configuration(Guid gameProviderConfigurationId);
 
-    ValueTask<TFGamingTransferConfiguration> GetTFGamgingTransferConfiguration(Guid gameProviderConfigurationId);
+    ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfiguration(Guid gameProviderConfigurationId);
 
     ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfiguration(Guid gameProviderConfigurationId);
 

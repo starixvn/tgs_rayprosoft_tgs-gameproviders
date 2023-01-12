@@ -40,7 +40,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonSerializer.Deserialize<AwcConfigurationData>(data.ConfigurationData, _SerializerOptions)!;
     }
 
-    public async ValueTask<TFGamingTransferConfiguration> GetTFGamgingTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfiguration(Guid gameProviderConfigurationId)
     {
         var settingConfiguration = await _client.SettingGetConfigurationAsync<TFGamingTransferConfiguration>(GameProviderConfigurations.TFGamingTransfer).ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.TFGamingTransfer})");
@@ -57,6 +57,19 @@ internal class GameProviderRepository : IGameProviderRepository
     {
         var settingConfiguration = await _client.SettingGetConfigurationAsync<BTiSportsConfiguration>(GameProviderConfigurations.BTiSports).ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.BTiSports})");
+
+        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
+                  ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+
+        return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
+            ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+            : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
+    }
+
+    public async ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(Guid gameProviderConfigurationId)
+    {
+        var settingConfiguration = await _client.SettingGetConfigurationAsync<DreamGamingTransferConfiguration>(GameProviderConfigurations.DreamGamingTransfer).ConfigureAwait(false)
+            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.DreamGamingTransfer})");
 
         var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
                   ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");

@@ -159,6 +159,11 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceTFGamingBaseUrl");
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceDreamGamingBaseUrl");
     })
     .AddGameProvidersRepositories()
     .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database);

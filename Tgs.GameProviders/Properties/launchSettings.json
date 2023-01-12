@@ -1,4 +1,4 @@
-{
+﻿{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
@@ -28,7 +28,7 @@
         "OTEL_SERVICE_NAME": "Game-GameProviders(local)",
         "NODE_IP": "otel.rpgp.cc"
       },
-      "dotnetRunMessages": "true",
+      "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:44336/"
     },
     "Docker": {
