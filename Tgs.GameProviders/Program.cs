@@ -57,7 +57,7 @@ builder.Services
         .ConfigQueueOptions((options, sp) =>
         {
             var configuration = sp.GetRequiredService<IConfiguration>();
-            options.Url = configuration.GetConnectionString("Nats");
+            options.Url = configuration.GetConnectionString("Nats")!;
         });
     })
     .AddNatsGlobPatternExchange("*");
@@ -68,7 +68,7 @@ builder.Services
     (options, sp) =>
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
-        options.ConnectionString = configuration.GetConnectionString("Redis");
+        options.ConnectionString = configuration.GetConnectionString("Redis")!;
     },
     (options, sp) =>
     {
