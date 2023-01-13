@@ -5,7 +5,6 @@ using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.DreamGamingService.Protos;
-using Tgs.GameProviders.Core.BTiSports.ApplicationServices;
 using Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;

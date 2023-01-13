@@ -2,11 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.DreamGamingService.Client;
-using Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
-namespace Tgs.GameProviders.Core.BTiSports.ApplicationServices;
+namespace Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices;
 
 public class DreamGamingTransferPlayerBalanceGetService : IGetService<DreamGamingTransferPlayerBalanceQuery, decimal?>
 {
