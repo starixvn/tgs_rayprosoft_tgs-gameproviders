@@ -17,7 +17,7 @@
 		<PackageReference Include="Tgs.Core.Infrastructures.Security" Version="0.0.2" />
 		<PackageReference Include="Tgs.GameInterface.AwcService.Client" Version="0.0.8" />
 		<PackageReference Include="Tgs.GameInterface.BTiService.Client" Version="0.0.2" />
-		<PackageReference Include="Tgs.GameInterface.DreamGamingService.Client" Version="0.0.3" />
+		<PackageReference Include="Tgs.GameInterface.DreamGamingService.Client" Version="0.0.4" />
 		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.7" />
 		<PackageReference Include="Tgs.GameInterface.HabaneroService.Client" Version="0.0.4" />
 		<PackageReference Include="Tgs.GameInterface.IdnLiveService.Client" Version="0.0.1" />
@@ -26,7 +26,7 @@
 		<PackageReference Include="Tgs.GameInterface.SabaService.Client" Version="0.0.2" />
 		<PackageReference Include="Tgs.GameInterface.SBOService.Client" Version="0.0.2" />
 		<PackageReference Include="Tgs.GameInterface.SkywindService.Client" Version="0.0.4" />
-		<PackageReference Include="Tgs.GameInterface.SM01Service.Client" Version="0.0.1" />
+		<PackageReference Include="Tgs.GameInterface.SM01Service.Client" Version="0.0.2" />
 		<PackageReference Include="Tgs.GameInterface.TFGamingService.Client" Version="0.0.5" />
 		<PackageReference Include="Tgs.GameInterface.WGFmGamingService.Client" Version="0.0.4" />
 		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="1.0.5" />
