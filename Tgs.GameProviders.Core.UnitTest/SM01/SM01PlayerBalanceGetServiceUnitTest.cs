@@ -61,7 +61,7 @@ public class SM01PlayerBalanceGetServiceUnitTest
         var response = new PlayerBalanceReply()
         {
             IsPlayerExist = true,
-            Balance = 1000
+            Balance = 1000M
         };
         _ = fakeGameInterfaceSM01Client.PlayerBalanceAsync(
                 Arg.Is(configuration.ApiUrl),
@@ -79,6 +79,6 @@ public class SM01PlayerBalanceGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(response.Balance, actual.Value);
+        Assert.AreEqual(1000M,actual);
     }
 }
