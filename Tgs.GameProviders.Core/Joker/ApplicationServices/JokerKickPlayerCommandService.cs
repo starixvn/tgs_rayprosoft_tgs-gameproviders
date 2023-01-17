@@ -28,7 +28,11 @@ internal class JokerKickPlayerCommandService : ICommandService<JokerKickPlayerCo
         JokerKickPlayerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var player = await _playerService.GetAsync(command.PlayerCode).ConfigureAwait(false);
+        var player = await _playerService
+            .GetAsync(
+                playerCode: command.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 

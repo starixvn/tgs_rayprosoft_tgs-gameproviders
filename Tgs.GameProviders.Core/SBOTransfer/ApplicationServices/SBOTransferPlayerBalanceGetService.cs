@@ -28,10 +28,27 @@ public class SBOTransferPlayerBalanceGetService : IGetService<SBOTransferPlayerB
 
     public async ValueTask<decimal?> GetAsync(SBOTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SBOTransfer).ConfigureAwait(false);
-        var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProviderRepository.GetSBOTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProviderRepository
+            .GetGameProviderIdAsync(
+                gameProviderCode: GameProviderType.SBOTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _playerRepository
+            .GetAsync(
+                playerCode: query.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brandRepository
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: gameProviderId,
+                brandId: player.BrandId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProviderRepository
+            .GetSBOTransferConfiguration(
+                gameProviderConfigurationId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var reply = await _client
                 .PlayerBalanceAsync(

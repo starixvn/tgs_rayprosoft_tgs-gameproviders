@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Saba;
 using Tgs.GameProviders.Core.Saba.ApplicationServices;
 using Tgs.GameProviders.Core.Saba.Models;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.Saba;
 
@@ -36,28 +37,27 @@ public class SabaGameUrlGetServiceUnitTest
             IsTestEnvironment = false
         };
 
-        var gameModel = new GameModel(
-            600001,
-             Guid.Parse("09d8d244-206b-4030-8110-b2ea90dc9d2f"),
-             "SABA",
-             "1",
-             GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.Sportsbook,
-            GamePlatformType.Desktop,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "Sportsbook",
-            "Sportsbook",
-            null,
-            "SABA");
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.Saba,
+            GameExternalId: "1",
+            Type: GameType.Slot,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.Saba);
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -67,13 +67,12 @@ public class SabaGameUrlGetServiceUnitTest
             "4ucmqplxb029",
             "4ucmqplxb029",
             Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY",
-            PlayerStatus.Enabled);
+            "CNY");
 
         var query = new SabaGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.Type,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
             PlayerCode = player.PlayerCode,
             CurrencyCode = "CNY",
@@ -85,7 +84,7 @@ public class SabaGameUrlGetServiceUnitTest
         };
 
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameModel.GameProviderId));
+        _ = fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
         _ = fakeUtility.ToSabaPlayerId(player.PlayerCode, configuration.IsTestEnvironment).Returns(player.PlayerCode);
         _ = fakeApiClient
              .GetGameUrlAsync(
@@ -99,7 +98,7 @@ public class SabaGameUrlGetServiceUnitTest
                  Url = returnUrl.AbsoluteUri
              }));
 
-        _ = fakeService.GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
+        _ = fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
              .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         var gameUrl = new Uri($"{returnUrl.AbsoluteUri}?tsId={query.LoginRecordId}&lang={gameProviderLanguageCode}");
@@ -134,28 +133,27 @@ public class SabaGameUrlGetServiceUnitTest
             IsTestEnvironment = true
         };
 
-        var gameModel = new GameModel(
-            600001,
-             Guid.Parse("09d8d244-206b-4030-8110-b2ea90dc9d2f"),
-             "SABA",
-             "1",
-            GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.Sportsbook,
-            GamePlatformType.Desktop,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "Sportsbook",
-            "Sportsbook",
-            null,
-            "SABA");
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.Saba,
+            GameExternalId: "1",
+            Type: GameType.Slot,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.Saba);
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -165,13 +163,12 @@ public class SabaGameUrlGetServiceUnitTest
             "4ucmqplxb029",
             "4ucmqplxb029",
             Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY",
-            PlayerStatus.Enabled);
+            "CNY");
 
         var query = new SabaGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.Type,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
             PlayerCode = player.PlayerCode,
             CurrencyCode = "CNY",
@@ -185,7 +182,7 @@ public class SabaGameUrlGetServiceUnitTest
         var playerId = $"{player.PlayerCode}_test";
 
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameModel.GameProviderId));
+        _ = fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
         _ = fakeUtility.ToSabaPlayerId(player.PlayerCode, configuration.IsTestEnvironment).Returns(playerId);
         _ = fakeApiClient
             .GetGameUrlAsync(
@@ -199,7 +196,7 @@ public class SabaGameUrlGetServiceUnitTest
                 Url = returnUrl.AbsoluteUri
             }));
 
-        _ = fakeService.GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
+        _ = fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         var gameUrl = new Uri($"{returnUrl.AbsoluteUri}?tsId={query.LoginRecordId}&lang={gameProviderLanguageCode}");

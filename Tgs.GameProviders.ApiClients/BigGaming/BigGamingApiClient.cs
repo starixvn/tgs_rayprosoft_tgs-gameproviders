@@ -12,7 +12,6 @@ using Tgs.GameProviders.Core.BigGaming;
 using Tgs.GameProviders.Core.BigGaming.Models;
 using Tgs.GameProviders.Core.BigGaming.Models.Commons;
 using Tgs.GameProviders.Core.Extensions;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.BigGaming;
 
@@ -20,17 +19,14 @@ internal class BigGamingApiClient : IBigGamingApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<BigGamingApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public BigGamingApiClient(
         HttpClient client,
-        ILogger<BigGamingApiClient> logger,
-        ITgsLog tgsLog)
+        ILogger<BigGamingApiClient> logger)
 
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public async ValueTask<BigGamingResponse> CreateAgentAsync(Uri apiurl, string secretCode, string secretKey, BigGamingCreateAgentRequest request)
@@ -167,7 +163,6 @@ internal class BigGamingApiClient : IBigGamingApiClient
 
         var apiLogEvent = new ApiLogEvent
         {
-            Ip = string.Empty,
             Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
             Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
             Prefix = logPrefix,
@@ -180,8 +175,8 @@ internal class BigGamingApiClient : IBigGamingApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         return !string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK
             ? JsonSerializer.Deserialize<BigGamingResponse>(responseMessage)

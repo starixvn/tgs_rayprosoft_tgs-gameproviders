@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.AllBet.ApplicationServices;
 using Tgs.GameProviders.Core.AllBet.Models;
 using Tgs.GameProviders.Domains.RoundDetail;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.AllBet;
@@ -22,7 +22,7 @@ public class AllBetRoundDetailGetServiceUnitTest
         var fakeLogger = NullLogger<AllBetRoundDetailGetService>.Instance;
         var fakeRoundService = Substitute.For<IRoundService>();
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
          "TGS",
          Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -32,8 +32,7 @@ public class AllBetRoundDetailGetServiceUnitTest
          "4ucmqplxb029",
          "4ucmqplxb029",
          Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-         "CNY",
-         PlayerStatus.Enabled);
+         "CNY");
 
         var roundInfo = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),

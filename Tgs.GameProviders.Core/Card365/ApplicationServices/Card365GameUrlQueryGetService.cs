@@ -5,8 +5,8 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Card365.Model;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Card365.ApplicationServices;
@@ -88,7 +88,7 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
         string website,
         string agentId,
         string accessKey,
-        PlayerModel player,
+        PlayerInfo player,
         string gameProviderLanguageCode,
         Guid loginRecordId)
     {
@@ -137,7 +137,7 @@ internal class Card365GameUrlQueryGetService : IGetService<Card365GameUrlQuery, 
         string website,
         string agentId,
         Guid gameProviderId,
-        PlayerModel playerModel)
+        PlayerInfo playerModel)
     {
         var gameProviderCurrencyCode = await _service
             .GetGameProviderCurrencyCodeAsync(gameProviderId, playerModel.DefaultWalletCurrencyCode)

@@ -9,8 +9,8 @@ namespace Tgs.GameProviders.Core.TFGamingTransfer.ApplicationServices;
 
 internal class TFGamingTransferCreatePlayerCommandService : ICommandService<TFGamingTransferCreatePlayerCommand>
 {
-    private readonly IGameInterfaceTFGamingClient _client;
     private readonly IBrandRepository _brand;
+    private readonly IGameInterfaceTFGamingClient _client;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
 

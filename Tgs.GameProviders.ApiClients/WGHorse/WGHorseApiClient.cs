@@ -13,7 +13,6 @@ using Tgs.GameProviders.ApiClients.WGHorse.Models.Commons;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.WGHorse;
 using Tgs.GameProviders.Core.WGHorse.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.WGHorse;
 
@@ -21,16 +20,13 @@ internal class WGHorseApiClient : IWGHorseApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<WGHorseApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public WGHorseApiClient(
         HttpClient client,
-        ILogger<WGHorseApiClient> logger,
-        ITgsLog tgsLog)
+        ILogger<WGHorseApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public async ValueTask<bool> AccessMoneyFundInAsync(Uri apiUrl, string partnerCode, string partnerKey, string partnerIV, string playerCode, string orderId, decimal amount)
@@ -252,8 +248,8 @@ internal class WGHorseApiClient : IWGHorseApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
         {

@@ -3,12 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.DreamGame;
 using Tgs.GameProviders.Core.DreamGame.ApplicationServices;
 using Tgs.GameProviders.Core.DreamGame.Models;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.DreamGame;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.DreamGame;
@@ -97,31 +98,30 @@ public class DreamGameGameUrlGetServiceUnitTest
             }
         };
 
-        var gameModel = new GameModel(
-            2500001,
-            Guid.Parse("579d6da3-b0ed-4e3f-bd4a-434a98efbd68"),
-            "DG",
-            "DreamGameLobby",
-            GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.LiveDealerLobby,
-            GamePlatformType.Desktop,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "Lobby",
-            "Lobby",
-            null,
-            "DG");
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.DreamGame,
+            GameExternalId: "1",
+            Type: GameType.LiveDealerLobby,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.DreamGame);
 
         var query = new DreamGameGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.Type,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
             PlayerCode = "4ucmqplxb029",
             CurrencyCode = "CNY",

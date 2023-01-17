@@ -3,11 +3,12 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Habanero;
 using Tgs.GameProviders.Core.Habanero.ApplicationServices;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.Habanero;
@@ -35,7 +36,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
             BetHistoryUrl = new("https://app-test.insvr.com")
         };
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -45,51 +46,48 @@ public class HabaneroRoundDetailGetServiceUnitTest
             "4ucmqplxb029",
             "4ucmqplxb029",
             Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY",
-            PlayerStatus.Enabled);
+            "CNY");
 
-        var gameProviderInfo = new GameProviderModel(
-            Guid.Parse("de301075-182b-453f-a316-28e3164b2d06"),
-            GameProviderStatus.Active,
-            null,
-            true,
-            true,
-            true,
-            10,
-            5,
-            20,
-            false,
-            "HABA",
-            "Habanero",
-            null);
+        var gameProviderInfo = new GameProviderInfo(
+            GameProviderId: Guid.Parse("de301075-182b-453f-a316-28e3164b2d06"),
+            GameProviderCode: GameProviderType.Habanero,
+            UniqueId: 1,
+            Name: GameProviderType.Habanero,
+            TransferWallet: false,
+            AutoCloseRound: true,
+            SupportTestPlayer: false,
+            AllowKickPlayer: true,
+            PlaceBetTimeout: 0,
+            SettleBetTimeout: 0,
+             Description: GameProviderType.Habanero,
+            Localization: null);
 
-        var gameModel = new GameModel(
-            200001,
-            gameProviderInfo.GameProviderId,
-            "HABA",
-            "SGTotemTowers",
-            GameStatus.Active,
-            null,
-            "?brandId={BRANDID}&token={TOKEN}&locale={CULTURE}&mode=real",
-            null,
-            GameType.Slot,
-            GamePlatformType.Desktop,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "SGTotemTowers",
-            "SGTotemTowers",
-            null,
-            "HABA");
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: gameProviderInfo.GameProviderId,
+            GameProviderCode: GameProviderType.Habanero,
+            GameExternalId: "1",
+            Type: GameType.Slot,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: "?brandId={BRANDID}&token={TOKEN}&locale={CULTURE}&mode=real",
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.Habanero);
 
         var roundInfo = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             externalRoundId,
             gameProviderInfo.GameProviderId,
             player.PlayerCode,
-            gameModel.GameId,
+            gameInfo.GameId,
             player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
@@ -123,7 +121,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
 
         _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
         _ = fakeService.GetGameProviderAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderInfo));
-        _ = fakeService.GetGameAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameModel));
+        _ = fakeService.GetGameAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
         _ = fakeService.GetPlayerAsync(roundInfo.PlayerCode).Returns(ValueTask.FromResult(player));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeService

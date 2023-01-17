@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.AwcService.Protos;
 using Tgs.GameProviders.Core.AwcKm.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.AwcKm;
@@ -40,7 +40,7 @@ public class AwcKmGameUrlGetServiceUnitTest
             Cert: "testCert",
             BetLimit: null);
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -50,34 +50,32 @@ public class AwcKmGameUrlGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
-        var gameModel = new GameModel(
-            1,
-            Guid.NewGuid(),
-            GameProviderType.AWC_KM,
-            "test",
-            GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.Slot,
-            GamePlatformType.DesktopAndMobile,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "test",
-            "test",
-            null,
-            GameProviderType.AWC_KM);
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: Guid.Parse("b957e28c-0e94-40af-9d37-ab48cdeb5d29"),
+            GameProviderCode: GameProviderType.AWC_KM,
+            GameExternalId: "10",
+            Type: GameType.Slot,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.AWC_KM);
 
         var query = new AwcKmGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.Type,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
             PlayerCode = "4ucmqplxb029",
             CurrencyCode = "CNY",
@@ -89,17 +87,17 @@ public class AwcKmGameUrlGetServiceUnitTest
         };
         var gameProviderCultureCode = "en";
         var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.AWC_KM)).Returns(gameModel.GameProviderId);
+        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.AWC_KM)).Returns(gameInfo.GameProviderId);
         _ = fakeSettingRepository.GetAwcKmConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
         _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameModel.GameProviderId),
+             Arg.Is(gameInfo.GameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
         _ = fakeGameProviderRepository.GetAwcConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
         _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
-             Arg.Is(gameModel.GameProviderId),
+             Arg.Is(gameInfo.GameProviderId),
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
-        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameModel);
+        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
 
         var request = new GameInterfaceAwcServiceGameUrlRequest()
         {
@@ -109,7 +107,7 @@ public class AwcKmGameUrlGetServiceUnitTest
             PlayerCode = query.PlayerCode,
             BackUrl = query.BackUrl.ToString(),
             IsMobileLogin = query.PlatformType == PlatformType.Mobile,
-            ExternalGameId = gameModel.GameExternalId,
+            ExternalGameId = gameInfo.GameExternalId,
             Language = gameProviderCultureCode
         };
         var response = new GameInterfaceAwcServiceGameUrlReply()

@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.PragmaticPlayTransfer;
 
@@ -32,7 +32,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
         var gameProviderId = Guid.Parse("e4ecfa98-b373-4123-87e0-cb9e883d0691");
         var gameProviderCurrencyCode = "CNY";
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -42,8 +42,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
             "4ucmqplxb029",
             "4ucmqplxb029",
             Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY",
-            PlayerStatus.Enabled);
+            "CNY");
 
         var balance = 100m;
 
@@ -125,7 +124,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
 
         var gameProviderCurrencyCode = "CNY";
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -135,8 +134,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
             "4ucmqplxb029",
             "4ucmqplxb029",
             Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY",
-            PlayerStatus.Enabled);
+            "CNY");
 
         var balance = 100m;
 

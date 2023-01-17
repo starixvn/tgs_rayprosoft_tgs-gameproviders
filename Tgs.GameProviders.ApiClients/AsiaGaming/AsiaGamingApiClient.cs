@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.AsiaGaming;
 using Tgs.GameProviders.Core.AsiaGaming.Models;
 using Tgs.GameProviders.Core.Extensions;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.AsiaGaming;
 
@@ -18,19 +17,16 @@ internal class AsiaGamingApiClient : IAsiaGamingApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<AsiaGamingApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
     private readonly IAsiaGamingUtility _utility;
 
     public AsiaGamingApiClient(
         ILogger<AsiaGamingApiClient> logger,
         HttpClient client,
-        IAsiaGamingUtility utility,
-        ITgsLog tgsLog)
+        IAsiaGamingUtility utility)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _utility = utility ?? throw new ArgumentNullException(nameof(utility));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public ValueTask<AsiaGamingCheckOrCreateAccountResponse> CheckOrCreateAccountAsync(
@@ -111,7 +107,6 @@ internal class AsiaGamingApiClient : IAsiaGamingApiClient
 
         var apiLogEvent = new ApiLogEvent
         {
-            Ip = string.Empty,
             Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
             Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
             Prefix = logPrefix,
@@ -124,8 +119,8 @@ internal class AsiaGamingApiClient : IAsiaGamingApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) &&
             httpResponseMessage.StatusCode == HttpStatusCode.OK)

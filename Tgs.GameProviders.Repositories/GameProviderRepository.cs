@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Tgs.GameCommand.Client;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Client;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Repositories;
 
@@ -21,44 +21,53 @@ internal class GameProviderRepository : IGameProviderRepository
         }
     };
 
-    private readonly IGameProvidersQueryServerClient _client;
+    private readonly IGameCommandClient _client;
 
-    public GameProviderRepository(IGameProvidersQueryServerClient client)
+    public GameProviderRepository(IGameCommandClient client)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async ValueTask<GameProviderModel> GetAsync(Guid gameProviderId)
-        => await _client.GameProviderGetAsync(gameProviderId).ConfigureAwait(false)
+    public async ValueTask<GameProviderInfo> GetAsync(
+        Guid gameProviderId,
+        CancellationToken cancellationToken = default)
+        => await _client
+        .GameProviderGetAsync(
+            gameProviderId: gameProviderId,
+            cancellationToken: cancellationToken)
+        .ConfigureAwait(false)
         ?? throw new Exception($"Game Provider does not exist.({gameProviderId})");
 
-    public async ValueTask<AwcConfigurationData> GetAwcConfigurationData(Guid gameProviderConfigurationId)
+    public async ValueTask<AwcConfigurationData> GetAwcConfigurationData(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
     {
-        var data = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var data = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
         return data is null ?
             throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
             : JsonSerializer.Deserialize<AwcConfigurationData>(data.ConfigurationData, _SerializerOptions)!;
     }
 
-    public async ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<BTiSportsConfiguration> GetBTiSportsConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
     {
-        var settingConfiguration = await _client.SettingGetConfigurationAsync<TFGamingTransferConfiguration>(GameProviderConfigurations.TFGamingTransfer).ConfigureAwait(false)
-            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.TFGamingTransfer})");
-
-        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
-                  ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
-
-        return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
-            ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
-            : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
-    }
-
-    public async ValueTask<BTiSportsConfiguration> GetBTiSportsConfiguration(Guid gameProviderConfigurationId)
-    {
-        var settingConfiguration = await _client.SettingGetConfigurationAsync<BTiSportsConfiguration>(GameProviderConfigurations.BTiSports).ConfigureAwait(false)
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<BTiSportsConfiguration>(
+                key: GameProviderConfigurations.BTiSports,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.BTiSports})");
 
-        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
                   ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
 
         return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
@@ -66,12 +75,22 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
     {
-        var settingConfiguration = await _client.SettingGetConfigurationAsync<DreamGamingTransferConfiguration>(GameProviderConfigurations.DreamGamingTransfer).ConfigureAwait(false)
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<DreamGamingTransferConfiguration>(
+                key: GameProviderConfigurations.DreamGamingTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.DreamGamingTransfer})");
 
-        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
                   ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
 
         return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
@@ -79,30 +98,70 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId)
+    public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
     {
-        var data = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var data = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
         return data is null ?
             throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
             : (data.DesktopEndpoint, data.MobileEndpoint);
     }
 
-    public ValueTask<string?> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode)
-        => _client.GameProviderGetCultureCodeAsync(gameProviderId, cultureCode);
+    public async ValueTask<string> GetGameProviderCultureCodeAsync(
+        Guid gameProviderId,
+        string cultureCode,
+        CancellationToken cancellationToken = default)
+        => await _client
+        .GameProviderGetCultureCodeAsync(
+            gameProviderId,
+            cultureCode,
+            cancellationToken)
+        .ConfigureAwait(false)
+        ?? string.Empty;
 
-    public ValueTask<string?> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
-        => _client.GameProviderGetCurrencyCodeAsync(gameProviderId, currencyCode);
+    public async ValueTask<string> GetGameProviderCurrencyCodeAsync(
+        Guid gameProviderId,
+        string currencyCode,
+        CancellationToken cancellationToken = default)
+        => await _client
+        .GameProviderGetCurrencyCodeAsync(
+            gameProviderId: gameProviderId,
+            currencyCode: currencyCode,
+            cancellationToken: cancellationToken)
+        .ConfigureAwait(false)
+        ?? string.Empty;
 
-    public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode)
-        => await _client.GameProviderGetGameProviderIdAsync(gameProviderCode).ConfigureAwait(false)
+    public async ValueTask<Guid> GetGameProviderIdAsync(
+        string gameProviderCode,
+        CancellationToken cancellationToken = default)
+        => await _client
+        .GameProviderGetGameProviderIdAsync(
+            gameProviderCode: gameProviderCode,
+            cancellationToken: cancellationToken)
+        .ConfigureAwait(false)
         ?? throw new Exception($"Game Provider does not exist.({gameProviderCode})");
 
-    public async ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
     {
-        var settingConfiguration = await _client.SettingGetConfigurationAsync<HabaneroTransferConfiguration>(GameProviderConfigurations.HabaneroTransfer).ConfigureAwait(false)
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<HabaneroTransferConfiguration>(
+                key: GameProviderConfigurations.HabaneroTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.HabaneroTransfer})");
 
-        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
 
         return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
@@ -110,91 +169,185 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
     {
-        var settingConfiguration = await _client.SettingGetConfigurationAsync<JDBTransferConfiguration>(GameProviderConfigurations.JDBTransfer).ConfigureAwait(false)
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<JDBTransferConfiguration>(
+                key: GameProviderConfigurations.JDBTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.JDBTransfer})");
 
-        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
-                  ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
 
         return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
             ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<JiliTransferConfiguration> GetJiliTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<JiliTransferConfiguration> GetJiliTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
     {
-        var settingConfiguration = await _client.SettingGetConfigurationAsync<JiliTransferConfiguration>(GameProviderConfigurations.JiliTransfer).ConfigureAwait(false)
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<JiliTransferConfiguration>(
+                key: GameProviderConfigurations.JiliTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.JiliTransfer})");
 
-        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
-                  ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
 
         return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
             ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<SabaTransferConfiguration> GetSabaTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<SabaTransferConfiguration> GetSabaTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
     {
-        var settingConfiguration = await _client.SettingGetConfigurationAsync<SabaTransferConfiguration>(GameProviderConfigurations.SabaTransfer).ConfigureAwait(false)
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<SabaTransferConfiguration>(
+                key: GameProviderConfigurations.SabaTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.SabaTransfer})");
 
-        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
-                  ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
 
         return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
             ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
     {
-        var settingConfiguration = await _client.SettingGetConfigurationAsync<SBOTransferConfiguration>(GameProviderConfigurations.SBOTransfer).ConfigureAwait(false)
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<SBOTransferConfiguration>(
+                key: GameProviderConfigurations.SBOTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.SBOTransfer})");
 
-        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
-                  ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
 
         return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
             ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<SM01Configuration> GetSM01Configuration(Guid gameProviderConfigurationId)
+    public async ValueTask<SM01Configuration> GetSM01Configuration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
     {
-        var settingConfiguration = await _client.SettingGetConfigurationAsync<SM01Configuration>(GameProviderConfigurations.SM01).ConfigureAwait(false)
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<SM01Configuration>(
+                key: GameProviderConfigurations.SM01,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.SM01})");
 
-        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
-                  ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
 
         return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
             ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
     {
-        var settingConfiguration = await _client.SettingGetConfigurationAsync<WGFmGamingConfiguration>(GameProviderConfigurations.WGSports).ConfigureAwait(false)
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<TFGamingTransferConfiguration>(
+                key: GameProviderConfigurations.TFGamingTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.TFGamingTransfer})");
+
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+
+        return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
+            ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+            : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
+    }
+
+    public async ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<WGFmGamingConfiguration>(
+                key: GameProviderConfigurations.WGSports,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.WGSports})");
 
-        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
-                  ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
 
         return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
             ? settingConfiguration
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(Guid gameProviderConfigurationId)
+    public async ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
     {
-        var settingConfiguration = await _client.SettingGetConfigurationAsync<WMCasinoTransferConfiguration>(GameProviderConfigurations.WMCasinoTransfer).ConfigureAwait(false)
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<WMCasinoTransferConfiguration>(
+                key: GameProviderConfigurations.WMCasinoTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.WMCasinoTransfer})");
 
-        var gameProviderConfig = await _client.GameProviderConfigurationGetAsync(gameProviderConfigurationId).ConfigureAwait(false)
-                  ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId:
+                gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
 
         return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
             ? settingConfiguration

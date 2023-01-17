@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
@@ -47,7 +47,7 @@ public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferG
             ?? throw new Exception($"This game product currency does not exist.({command.CurrencyCode})");
         var game = await _game.GetAsync(command.GameId!.Value).ConfigureAwait(false);
 
-        var response = game.GameType switch
+        var response = game.Type switch
         {
             GameType.LiveDealerLobby =>
                 await _grpc.GetLiveDealerGameUrlAsync(

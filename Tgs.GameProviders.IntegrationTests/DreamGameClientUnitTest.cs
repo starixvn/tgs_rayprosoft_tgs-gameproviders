@@ -69,8 +69,6 @@ public class DreamGameClientUnitTest
                 var fakeClient = Substitute.For<IDreamGameApiClient>();
                 _ = fakeClient.GetReportAsync(configuration.ApiUrl, configuration.ApiKey, configuration.AgentName).Returns(gameReportResults);
                 _ = services.AddTransient(_ => fakeClient);
-
-                _ = services.AddFakeNatsMessageQueue();
             });
         });
 
@@ -112,8 +110,6 @@ public class DreamGameClientUnitTest
                 var fakeClient = Substitute.For<IDreamGameApiClient>();
                 _ = fakeClient.MarkReportAsync(configuration.ApiUrl, configuration.ApiKey, configuration.AgentName, data).Returns(true);
                 _ = services.AddTransient(_ => fakeClient);
-
-                _ = services.AddFakeNatsMessageQueue();
             });
         });
 

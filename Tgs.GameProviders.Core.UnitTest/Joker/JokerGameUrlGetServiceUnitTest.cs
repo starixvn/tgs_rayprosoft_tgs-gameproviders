@@ -2,11 +2,12 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.Joker;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.Joker;
 
@@ -47,31 +48,30 @@ public class JokerGameUrlGetServiceUnitTest
             }
         };
 
-        var gameModel = new GameModel(
-            2600001,
-            Guid.Parse("2EBFE118-B36B-40FA-85B5-78363470ADDC"),
-            "JOKER",
-            "t656f48j75z6a",
-            GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.Slot,
-            GamePlatformType.Desktop,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "Great_Blue",
-            "Great Blue",
-            null,
-            "JOKER");
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "Great_Blue",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.Joker,
+            GameExternalId: "t656f48j75z6a",
+            Type: GameType.Slot,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "Great Blue",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.Joker);
 
         var query = new JokerGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.Type,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI_HKD",
             PlayerCode = "4uf6k014jp5x",
             CurrencyCode = "HKD",
@@ -93,7 +93,7 @@ public class JokerGameUrlGetServiceUnitTest
             Arg.Is(query.BrandCode),
             Arg.Is(query.CurrencyCode)).Returns(agent);
 
-        _ = fakeService.GetGameAsync(Arg.Is(gameModel.GameId)).Returns((GameModel?)gameModel);
+        _ = fakeService.GetGameAsync(Arg.Is(gameInfo.GameId)).Returns(gameInfo);
 
         _ = fakeService
              .GetGameProviderLanguageCodeAsync(Arg.Is(query.Language))

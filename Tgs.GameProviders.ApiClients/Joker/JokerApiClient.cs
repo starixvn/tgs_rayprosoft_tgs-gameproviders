@@ -17,7 +17,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Core.Joker.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.Joker;
 
@@ -25,15 +24,12 @@ internal class JokerApiClient : IJokerApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<JokerApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public JokerApiClient(
         HttpClient client,
-        ITgsLog tgsLog,
         ILogger<JokerApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -376,7 +372,6 @@ internal class JokerApiClient : IJokerApiClient
             RecordedOn = DateTimeOffset.UtcNow
         };
 
-        _tgsLog.LogApi(apiLogEvent);
         _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         var responseDocument = !string.IsNullOrEmpty(responseMessage) &&

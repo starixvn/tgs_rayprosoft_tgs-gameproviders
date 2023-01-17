@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.WMCasinoTransfer;
 
@@ -30,7 +30,7 @@ public class WMCasinoTransferKickPlayerCommandServiceUnitTest
             Signature = "testsignature"
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -40,8 +40,7 @@ public class WMCasinoTransferKickPlayerCommandServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
         var command = new WMCasinoTransferKickPlayerCommand
         {

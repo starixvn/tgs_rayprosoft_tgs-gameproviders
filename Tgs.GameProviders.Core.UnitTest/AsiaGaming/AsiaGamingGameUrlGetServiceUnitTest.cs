@@ -4,13 +4,13 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.AsiaGaming;
 using Tgs.GameProviders.Core.AsiaGaming.ApplicationServices;
 using Tgs.GameProviders.Core.AsiaGaming.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.AsiaGaming;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.AsiaGaming;
 
@@ -140,28 +140,27 @@ public class AsiaGamingGameUrlGetServiceUnitTest
             OppositeBets = Array.Empty<OppositeBetSetting>()
         };
 
-        var gameModel = new GameModel(
-            400001,
-             Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
-             "AG",
-             "asiagaminglobby",
-            GameStatus.Active,
-            null,
-            "/forwardGame.do?params={PARAS}&key={KEY}",
-            null,
-            GameType.LiveDealerLobby,
-            GamePlatformType.DesktopAndMobile,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "Lobby",
-            "Lobby",
-            null,
-            "AG");
+        var gameInfo = new GameInfo(
+            GameId: 400001,
+            GameCode: "Lobby",
+            GameProviderId: Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
+            GameProviderCode: "AG",
+            GameExternalId: "asiagaminglobby",
+            Type: GameType.LiveDealerLobby,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "Lobby",
+            SubGame: false,
+            AvailableToBrand: true,
+            HasTurnoverOnTieBet: false,
+            Html5: true,
+            Description: null,
+            EndpointPath: "/forwardGame.do?params={PARAS}&key={KEY}",
+            RuleUrl: string.Empty,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: "AG");
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -171,13 +170,12 @@ public class AsiaGamingGameUrlGetServiceUnitTest
             "4ucmqplxb029",
             "4ucmqplxb029",
             Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY",
-            PlayerStatus.Enabled);
+            "CNY");
 
         var query = new AsiaGamingGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.Type,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
             PlayerCode = player.PlayerCode,
             CurrencyCode = "CNY",
@@ -190,18 +188,18 @@ public class AsiaGamingGameUrlGetServiceUnitTest
         };
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameModel.GameProviderId));
-        fakeService.GetGameAsync(query.GameId.Value).Returns(ValueTask.FromResult(gameModel));
+        fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
+        fakeService.GetGameAsync(query.GameId.Value).Returns(ValueTask.FromResult(gameInfo));
 
         fakeService
-            .GetGameProviderCurrencyCodeAsync(gameModel.GameProviderId, query.CurrencyCode)
+            .GetGameProviderCurrencyCodeAsync(gameInfo.GameProviderId, query.CurrencyCode)
             .Returns(ValueTask.FromResult(gameProviderCurrencyCode));
 
-        fakeService.GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
+        fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         fakeService.GetBrandIdAsync(query.BrandCode).Returns(ValueTask.FromResult(player.BrandId));
-        fakeService.GetGameDomainAsync(player.BrandId, gameModel.GameProviderId, query.PlatformType)
+        fakeService.GetGameDomainAsync(player.BrandId, gameInfo.GameProviderId, query.PlatformType)
             .Returns(ValueTask.FromResult(domain));
 
         fakePlayerService.CheckOrCreateAccountAsync(configuration, query.PlayerCode, gameProviderCurrencyCode)
@@ -220,7 +218,7 @@ public class AsiaGamingGameUrlGetServiceUnitTest
                     x.AgentCode == configuration.AgentCode &&
                     x.PlayerCode == query.PlayerCode &&
                     x.Lang == gameProviderLanguageCode &&
-                    x.GameId == gameModel.GameExternalId &&
+                    x.GameId == gameInfo.GameExternalId &&
                     x.ReturnUrl == query.BackUrl.AbsoluteUri &&
                     x.Currency == gameProviderCurrencyCode),
                 Arg.Any<string>())

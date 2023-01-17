@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer;
@@ -20,7 +19,7 @@ namespace Tgs.GameProviders.IntegrationTests.GameRecordList;
 
 internal class PragmaticPlayTransferGameRecordListUnitTest
 {
-    [Test]
+     [Test]
     public async Task Test_PragmaticPlayTransfer_GameRecordListAsync()
     {
         var fakeService = Substitute.For<IPragmaticPlayTransferService>();
@@ -97,7 +96,6 @@ internal class PragmaticPlayTransferGameRecordListUnitTest
             {
                 _ = services.AddSingleton(fakeApiClient);
                 _ = services.AddSingleton(fakeService);
-                _ = services.AddFakeNatsMessageQueue();
             });
         });
 

@@ -1,21 +1,34 @@
-﻿using Tgs.GameProviders.Core;
-using Tgs.GameProviders.QueryServer.Client;
-using Tgs.GameProviders.QueryServer.Models;
+﻿using Tgs.GameCommand.Client;
+using Tgs.GameCommand.Common;
+using Tgs.GameProviders.Core;
 
 namespace Tgs.GameProviders.Repositories;
 
 internal class GameRepository : IGameRepository
 {
-    private readonly IGameProvidersQueryServerClient _client;
+    private readonly IGameCommandClient _client;
 
-    public GameRepository(IGameProvidersQueryServerClient client)
+    public GameRepository(IGameCommandClient client)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public ValueTask<GameModel?> GetAsync(int gameId)
-        => _client.GameGetAsync(gameId);
+    public async ValueTask<GameInfo> GetAsync(
+        int gameId,
+        CancellationToken cancellationToken = default)
+        => await _client
+        .GameGetAsync(
+            gameId: gameId,
+            cancellationToken: cancellationToken)
+        .ConfigureAwait(false)
+        ?? throw new Exception($"This game does not exist.{gameId}");
 
-    public IAsyncEnumerable<GameModel> GetGameListAsync(Guid gameProviderId, GameType gameType)
-        => _client.GameQueryAsync(gameProviderId, gameType);
+    public IAsyncEnumerable<GameInfo> GetGameListAsync(
+        Guid gameProviderId,
+        GameType gameType,
+        CancellationToken cancellationToken = default)
+        => _client.GameQueryAsync(
+            gameProviderId: gameProviderId,
+            gameType: gameType,
+            cancellationToken: cancellationToken);
 }

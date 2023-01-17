@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.IMESports.Models;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 using static Tgs.GameProviders.Core.IMESports.Models.IMESportsGameApiError;
 
@@ -70,7 +70,7 @@ internal class IMESportsGameUrlGetService : IGetService<IMESportsGameUrlQuery, G
     private async ValueTask<IMESportsLaunchGameResponse> LaunchGameAsync(
         IMESportsGameUrlQuery query,
         IMESportsConfiguration configuration,
-        GameModel game)
+        GameInfo game)
     {
         var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
         var cultureCode = await _service.GetGameProviderLanguageCodeAsync(gameProviderId, query.Language).ConfigureAwait(false);

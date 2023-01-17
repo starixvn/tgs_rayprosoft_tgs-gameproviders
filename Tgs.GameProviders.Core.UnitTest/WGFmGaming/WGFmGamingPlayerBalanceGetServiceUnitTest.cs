@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.WGFmGaming;
 
@@ -29,18 +29,17 @@ public class WGFmGamingPlayerBalanceGetServiceUnitTest
         var gameProviderId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WGSports)).Returns(ValueTask.FromResult(gameProviderId));
 
-        var player = new PlayerModel(
-                   ResellerId: Guid.NewGuid(),
-                   ResellerCode: "GPI",
-                   LicenseeId: Guid.NewGuid(),
-                   LicenseeCode: "GPI",
-                   BrandId: Guid.NewGuid(),
-                   BrandCode: "GPI",
-                   PlayerCode: "test",
-                   Username: "test",
-                   DefaultWalletId: Guid.NewGuid(),
-                   DefaultWalletCurrencyCode: "CNY",
-                   PlayerStatus.Enabled);
+        var player = new PlayerInfo(
+            ResellerId: Guid.NewGuid(),
+            ResellerCode: "GPI",
+            LicenseeId: Guid.NewGuid(),
+            LicenseeCode: "GPI",
+            BrandId: Guid.NewGuid(),
+            BrandCode: "GPI",
+            PlayerCode: "test",
+            Username: "test",
+            DefaultWalletId: Guid.NewGuid(),
+            DefaultWalletCurrencyCode: "CNY");
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(player);
 
         var gameProviderConfigurationId = Guid.NewGuid();

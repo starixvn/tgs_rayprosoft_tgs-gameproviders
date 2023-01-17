@@ -1,9 +1,9 @@
 ﻿using ExpectedObjects;
 using NSubstitute;
+using Tgs.GameCommand.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.KY;
-using Tgs.GameProviders.QueryServer.Client;
 
 namespace Tgs.GameProviders.Repositories.UnitTest;
 
@@ -13,7 +13,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_Awc_Aelotto_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.AWC_AELOTTO;
 
@@ -35,7 +35,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_Awc_Cockfight_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.AWC_COCKFIGHT;
 
@@ -57,7 +57,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_Awc_Facait_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.AWC_FACAI;
 
@@ -79,7 +79,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_Awc_Fs_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.AWC_FS;
 
@@ -101,7 +101,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_Awc_Km_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.AWC_KM;
 
@@ -123,7 +123,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_Awc_Ludo_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.AWC_LUDO;
 
@@ -145,7 +145,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_Awc_Rcb_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.AWC_RCB;
 
@@ -167,7 +167,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_Awc_Rgs_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.AWC_PGS;
 
@@ -189,7 +189,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_Awc_Sg_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.AWC_SG;
 
@@ -211,7 +211,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_Awc_Spade_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.AWC_SPADE;
 
@@ -233,7 +233,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_Awc_Venus_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.AWC_VENUS;
 
@@ -255,7 +255,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_Awc_Yl_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.AWC_YL;
 
@@ -277,7 +277,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_AwcAws_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.AWC_AWS;
 
@@ -299,7 +299,7 @@ public class SettingRepositoryUnitTest
     [TestMethod]
     public async Task Get_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var key = GameProviderConfigurations.KY;
 

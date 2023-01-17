@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.WMCasinoTransfer;
@@ -34,7 +34,7 @@ public class WMCasinoTransferPlayerBalanceGetServiceUnitTest
             Signature = "testsignature"
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -44,8 +44,7 @@ public class WMCasinoTransferPlayerBalanceGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
         var query = new WMCasinoTransferPlayerBalanceQuery
         {

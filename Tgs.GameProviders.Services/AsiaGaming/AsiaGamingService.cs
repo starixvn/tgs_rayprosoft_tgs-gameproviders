@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.AsiaGaming;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.AsiaGaming;
 
@@ -29,7 +29,7 @@ internal class AsiaGamingService : IAsiaGamingService
     public async ValueTask<Guid> GetBrandIdAsync(string brandCode)
         => await _brandService.GetBrandIdAsync(brandCode).ConfigureAwait(false);
 
-    public async ValueTask<GameModel> GetGameAsync(int gameId)
+    public async ValueTask<GameInfo> GetGameAsync(int gameId)
         => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
     public async ValueTask<string> GetGameDomainAsync(Guid brandId, Guid gameProviderId, PlatformType platformType)

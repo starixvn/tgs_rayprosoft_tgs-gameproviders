@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.PragmaticPlay;
 
 public interface IPragmaticPlayService
 {
-    ValueTask<GameModel> GetGameAsync(int gameId);
+    ValueTask<GameInfo> GetGameAsync(int gameId);
 
-    ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId);
+    ValueTask<GameProviderInfo> GetGameProviderAsync(Guid gameProviderId);
 
     ValueTask<string> GetGameProviderLanguageAsync(Guid gameProviderId, string cultureCode);
 

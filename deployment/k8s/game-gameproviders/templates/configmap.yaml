@@ -9,25 +9,25 @@ data:
   appsettings.json: |
     {
       "GameProviders": {
-        "GameRoundsBaseUrl":"http://game-gamerounds",
-        "GameTokenBaseUrl":"http://game-token",
-        "GamePlayerTransformBaseUrl":"http://game-gameplayertransform:9090",
-        "GameProvidersQueryBaseUrl": "http://game-gameprovider-queryserver",
-        "GameInterfaceAwcBaseUrl":"http://game-gameinterface-awc-service:9090",
-        "GameInterfaceJiliBaseUrl":"http://game-gameinterface-jili-service:9090",
-        "GameInterfaceWMCasinoBaseUrl":"http://game-gameinterface-wmcasino-service:9090",
-        "GameInterfaceEvolutionBaseUrl":"http://game-gameinterface-evolution-service:9090",
-        "GameInterfaceIdnLiveBaseUrl":"http://game-gameinterface-idnlive-service:9090",
-        "GameInterfaceSkywindBaseUrl":"http://game-gameinterface-sw-service:9090",
-        "GameInterfaceWGFmGamingBaseUrl":"http://game-gameinterface-wgfm-service:9090",
-        "GameInterfaceJDBBaseUrl":"http://game-gameinterface-jdb-service:9090",
-        "GameInterfaceSBOBaseUrl":"http://game-gameinterface-sbo-service:9090",
-        "GameInterfaceBTIBaseUrl":"http://game-gameinterface-bti-service:9090",
-        "GameInterfaceHabaneroBaseUrl":"http://game-gameinterface-habanero-service:9090",
-        "GameInterfaceSabaBaseUrl":"http://game-gameinterface-saba-service:9090",
-        "GameInterfaceSM01BaseUrl": "http://game-gameinterface-sm01-service:9090",
-        "GameInterfaceTFGamingBaseUrl": "http://game-gameinterface-tfgaming-service:9090",
-        "GameInterfaceDreamGamingBaseUrl": "http://game-gameinterface-dg-service:9090"
+        "GameRoundsBaseUrl":"http://game-gamerounds/",
+        "GameTokenBaseUrl":"http://game-token/",
+        "GamePlayerTransformBaseUrl":"http://game-gameplayertransform:9090/",
+        "GameCommandClientBaseUrl": "http://game-gamecommand/",
+        "GameInterfaceAwcBaseUrl":"http://game-gameinterface-awc-service:9090/",
+        "GameInterfaceJiliBaseUrl":"http://game-gameinterface-jili-service:9090/",
+        "GameInterfaceWMCasinoBaseUrl":"http://game-gameinterface-wmcasino-service:9090/",
+        "GameInterfaceEvolutionBaseUrl":"http://game-gameinterface-evolution-service:9090/",
+        "GameInterfaceIdnLiveBaseUrl":"http://game-gameinterface-idnlive-service:9090/",
+        "GameInterfaceSkywindBaseUrl":"http://game-gameinterface-sw-service:9090/",
+        "GameInterfaceWGFmGamingBaseUrl":"http://game-gameinterface-wgfm-service:9090/",
+        "GameInterfaceJDBBaseUrl":"http://game-gameinterface-jdb-service:9090/",
+        "GameInterfaceSBOBaseUrl":"http://game-gameinterface-sbo-service:9090/",
+        "GameInterfaceBTIBaseUrl":"http://game-gameinterface-bti-service:9090/",
+        "GameInterfaceHabaneroBaseUrl":"http://game-gameinterface-habanero-service:9090/",
+        "GameInterfaceSabaBaseUrl":"http://game-gameinterface-saba-service:9090/",
+        "GameInterfaceSM01BaseUrl": "http://game-gameinterface-sm01-service:9090/",
+        "GameInterfaceTFGamingBaseUrl": "http://game-gameinterface-tfgaming-service:9090/",
+        "GameInterfaceDreamGamingBaseUrl": "http://game-gameinterface-dg-service:9090/"
       }
     }
   monitor.settings.json: |

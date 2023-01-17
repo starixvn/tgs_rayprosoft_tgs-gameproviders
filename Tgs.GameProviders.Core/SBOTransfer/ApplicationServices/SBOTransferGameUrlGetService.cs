@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SBOService.Protos;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SBOTransfer.ApplicationServices;
@@ -52,7 +52,7 @@ public class SBOTransferGameUrlGetService : IGetService<SBOTransferGameUrlQuery,
                 player.PlayerCode,
                 cultureCode,
                 query.PlatformType == PlatformType.Mobile,
-                game.GameType,
+                game.Type,
                 cancellationToken)
             .ConfigureAwait(false);
 
@@ -74,7 +74,7 @@ public class SBOTransferGameUrlGetService : IGetService<SBOTransferGameUrlQuery,
                     player.PlayerCode,
                     cultureCode,
                     query.PlatformType == PlatformType.Mobile,
-                    game.GameType,
+                    game.Type,
                     cancellationToken)
                 .ConfigureAwait(false);
         }

@@ -4,12 +4,12 @@ using Google.Protobuf.Collections;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.EvolutionService.Protos;
 using Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.EvolutionTransfer;
 
@@ -37,7 +37,7 @@ public class EvolutionTransferPlayerBalanceGetServiceUnitTest
             EcId = "babylonpega20001test123"
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -47,8 +47,7 @@ public class EvolutionTransferPlayerBalanceGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
         var query = new EvolutionTransferPlayerBalanceQuery
         {
@@ -132,7 +131,7 @@ public class EvolutionTransferPlayerBalanceGetServiceUnitTest
             EcId = "babylonpega20001test123"
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -142,8 +141,7 @@ public class EvolutionTransferPlayerBalanceGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
         var query = new EvolutionTransferPlayerBalanceQuery
         {

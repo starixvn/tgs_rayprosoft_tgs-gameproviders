@@ -5,10 +5,10 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.IMESports.Models;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.IMESports.ApplicationServices;
@@ -80,7 +80,7 @@ internal class IMESportsRoundDetailGetService : IGetService<IMESportsRoundDetail
     private async ValueTask<IMESportsHistoryResult> GetRoundResultAsync(
         IMESportsConfiguration configuration,
         RoundInfo roundInfo,
-        PlayerModel playerInfo,
+        PlayerInfo playerInfo,
         string cultureCode)
     {
         var merchant = _merchantMapper.GetBrandMerchant(configuration.BrandMerchants, playerInfo.BrandCode);

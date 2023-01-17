@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.AsiaGaming;
 using Tgs.GameProviders.Core.AsiaGaming.ApplicationServices;
 using Tgs.GameProviders.Core.AsiaGaming.Models;
@@ -12,7 +13,6 @@ using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.AsiaGaming;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.AsiaGaming;
@@ -132,7 +132,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
             OppositeBets = Array.Empty<OppositeBetSetting>()
         };
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
          "TGS",
          Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -142,36 +142,34 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
          "4ucmqplxb029",
          "4ucmqplxb029",
          Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-         "CNY",
-         PlayerStatus.Enabled);
+         "CNY");
 
-        var gameModel = new GameModel(
-            400013,
-            Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
-            "AG",
-            "AGIN_AGQ_BAC",
-            GameStatus.Active,
-            null,
-            "/forwardGame.do?params={PARAS}&key={KEY}",
-            null,
-            GameType.LiveDealer,
-            GamePlatformType.DesktopAndMobile,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "AG_Deluxe_Baccarat",
-            "AG Deluxe Baccarat",
-            null,
-            "AG");
+        var gameInfo = new GameInfo(
+            GameId: 400001,
+            GameCode: "AG_Deluxe_Baccarat",
+            GameProviderId: Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
+            GameProviderCode: GameProviderType.AsiaGaming,
+            GameExternalId: "AGIN_AGQ_BAC",
+            Type: GameType.LiveDealer,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "AG Deluxe Baccarat",
+            SubGame: false,
+            AvailableToBrand: true,
+            HasTurnoverOnTieBet: false,
+            Html5: true,
+            Description: null,
+            EndpointPath: "/forwardGame.do?params={PARAS}&key={KEY}",
+            RuleUrl: string.Empty,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.AsiaGaming);
 
         var roundInfo = new RoundInfo(
             Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
             "GN0022160907S",
             Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
             player.PlayerCode,
-            gameModel.GameId,
+            gameInfo.GameId,
             player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
@@ -217,7 +215,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
         };
 
         _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
-        _ = fakeGameRepository.GetAsync(roundInfo.GameId).Returns(ValueTask.FromResult<GameModel?>(gameModel));
+        _ = fakeGameRepository.GetAsync(roundInfo.GameId).Returns(ValueTask.FromResult<GameInfo?>(gameInfo));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
 
         var sut = new AsiaGamingRoundDetailGetService(

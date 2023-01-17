@@ -14,7 +14,6 @@ using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.VR;
 using Tgs.GameProviders.Core.VR.Models;
 using Tgs.GameProviders.Core.VR.Models.Commons;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.VR;
 
@@ -22,16 +21,13 @@ internal class VRApiClient : IVRApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<VRApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public VRApiClient(
         HttpClient client,
-        ILogger<VRApiClient> logger,
-        ITgsLog tgsLog)
+        ILogger<VRApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public ValueTask<VRErrorCodeResponse> CreatePlayerAsync(Uri apiUrl, string merchantid, string version, string deskey, VRCreatePlayerRequest source)
@@ -198,8 +194,8 @@ internal class VRApiClient : IVRApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
         {

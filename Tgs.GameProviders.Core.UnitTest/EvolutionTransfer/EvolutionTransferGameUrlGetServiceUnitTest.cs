@@ -4,12 +4,12 @@ using Google.Protobuf.Collections;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.EvolutionService.Protos;
 using Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.EvolutionTransfer;
 
@@ -38,7 +38,7 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
             EcId = "babylonpega20001test123"
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -48,34 +48,32 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
-        var gameModel = new GameModel(
-            2,
-            Guid.NewGuid(),
-            GameProviderType.EvolutionTransfer,
-            "test",
-            GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.LiveDealerLobby,
-            GamePlatformType.DesktopAndMobile,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "test",
-            "test",
-            null,
-            GameProviderType.EvolutionTransfer);
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.EvolutionTransfer,
+            GameExternalId: "1",
+            Type: GameType.LiveDealerLobby,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.EvolutionTransfer);
 
         var query = new EvolutionTransferGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.Type,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
             PlayerCode = "4ucmqplxb029",
             CurrencyCode = "CNY",
@@ -90,19 +88,19 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
         var gameProviderCurrencyCode = "CNY";
 
         var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.EvolutionTransfer)).Returns(gameModel.GameProviderId);
+        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.EvolutionTransfer)).Returns(gameInfo.GameProviderId);
         _ = fakeSettingRepository.GetEvolutionTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
         _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameModel.GameProviderId),
+             Arg.Is(gameInfo.GameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
         _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
-             Arg.Is(gameModel.GameProviderId),
+             Arg.Is(gameInfo.GameProviderId),
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
-        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameModel);
+        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
         _ = fakeToken.EncryptAsync(query.LoginRecordId).Returns(token);
         _ = fakeGameProviderRepository.GetGameProviderCurrencyCodeAsync(
-            Arg.Is(gameModel.GameProviderId),
+            Arg.Is(gameInfo.GameProviderId),
             Arg.Is(playerModel.DefaultWalletCurrencyCode)).Returns(gameProviderCurrencyCode);
 
         var response = new GameUrlReply()
@@ -163,7 +161,7 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
             EcId = "babylonpega20001test123"
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -173,34 +171,32 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
-        var gameModel = new GameModel(
-            1,
-            Guid.NewGuid(),
-            GameProviderType.EvolutionTransfer,
-            "test",
-            GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.Slot,
-            GamePlatformType.DesktopAndMobile,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "test",
-            "test",
-            null,
-            GameProviderType.EvolutionTransfer);
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.EvolutionTransfer,
+            GameExternalId: "1",
+            Type: GameType.Slot,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.EvolutionTransfer);
 
         var query = new EvolutionTransferGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.Type,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
             PlayerCode = "4ucmqplxb029",
             CurrencyCode = "CNY",
@@ -215,19 +211,19 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
         var gameProviderCurrencyCode = "CNY";
 
         var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.EvolutionTransfer)).Returns(gameModel.GameProviderId);
+        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.EvolutionTransfer)).Returns(gameInfo.GameProviderId);
         _ = fakeSettingRepository.GetEvolutionTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
         _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameModel.GameProviderId),
+             Arg.Is(gameInfo.GameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
         _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
-             Arg.Is(gameModel.GameProviderId),
+             Arg.Is(gameInfo.GameProviderId),
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
-        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameModel);
+        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
         _ = fakeToken.EncryptAsync(query.LoginRecordId).Returns(token);
         _ = fakeGameProviderRepository.GetGameProviderCurrencyCodeAsync(
-            Arg.Is(gameModel.GameProviderId),
+            Arg.Is(gameInfo.GameProviderId),
             Arg.Is(playerModel.DefaultWalletCurrencyCode)).Returns(gameProviderCurrencyCode);
 
         var response = new GameUrlReply()
@@ -243,7 +239,7 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
              platformType: (short)query.PlatformType,
              ipAddress: query.IPAddress,
              encryptedToken: token,
-             externalGameId: gameModel.GameExternalId,
+             externalGameId: gameInfo.GameExternalId,
              externalCultureCode: gameProviderCultureCode,
              externalCurrencyCode: query.CurrencyCode,
              cancellationToken: default

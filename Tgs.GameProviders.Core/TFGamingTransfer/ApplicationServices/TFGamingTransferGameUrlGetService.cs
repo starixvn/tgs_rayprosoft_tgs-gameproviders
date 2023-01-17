@@ -10,8 +10,8 @@ namespace Tgs.GameProviders.Core.TFGamingTransfer.ApplicationServices;
 internal class TFGamingTransferGameUrlGetService : IGetService<TFGamingTransferGameUrlQuery, Uri>
 {
     private readonly IBrandRepository _brand;
-    private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceTFGamingClient _client;
+    private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
 
     public TFGamingTransferGameUrlGetService(

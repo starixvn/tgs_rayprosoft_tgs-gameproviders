@@ -1,4 +1,5 @@
-﻿using Tgs.GameInterface.AwcService.Client;
+﻿using Tgs.GameCommand.Client;
+using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
@@ -15,7 +16,6 @@ using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GamePlayerTransform.Client;
 using Tgs.GameProviders;
-using Tgs.GameProviders.QueryServer.Client;
 using Tgs.GameRounds.Client;
 using Tgs.GameToken.Client;
 
@@ -29,7 +29,7 @@ public static class ServiceCollectionExtensions
         Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions,
         Action<GameTokenClientOptions, IServiceProvider> gameTokenClientOptions,
         Action<GamePlayerTransformClientOptions, IServiceProvider> gamePlayerTransformClientOptions,
-        Action<GameProvidersQueryServerClientOptions, IServiceProvider> gameProvidersQueryServerClientOptions,
+        Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
         Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions,
         Action<GameInterfaceJiliServiceClientOptions, IServiceProvider> gameInterfaceJiliServiceClientOptions,
         Action<GameInterfaceWMCasinoServiceClientOptions, IServiceProvider> gameInterfaceWMCasinoClientOptions,
@@ -50,11 +50,13 @@ public static class ServiceCollectionExtensions
             .Configure(configure)
             .Services
             .AddSingleton<RedisConnectionFactory>()
-            .AddGameProviders(
+            .AddGameProvidersRepositories()
+            .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
+            .AddGameProvidersCore(
                 gameRoundsClientOptions,
                 gameTokenClientOptions,
                 gamePlayerTransformClientOptions,
-                gameProvidersQueryServerClientOptions,
+                gameCommandClientOptions,
                 gameInterfaceAwcServiceClientOptions,
                 gameInterfaceJiliServiceClientOptions,
                 gameInterfaceWMCasinoClientOptions,

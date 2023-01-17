@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SBOService.Protos;
 using Tgs.GameProviders.Core.SBOTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.SBOTransfer;
 
@@ -40,7 +40,7 @@ public class SBOTransferGameUrlGetServiceUnitTest
         var gameProviderId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.SBOTransfer)).Returns(gameProviderId);
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -50,8 +50,7 @@ public class SBOTransferGameUrlGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(player);
 
         var gameProviderConfigurationId = Guid.NewGuid();
@@ -72,27 +71,26 @@ public class SBOTransferGameUrlGetServiceUnitTest
         };
         _ = fakeGameProviderRepository.GetSBOTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
-        var game = new GameModel(
-                   1,
-                   Guid.NewGuid(),
-                   GameProviderType.SBOTransfer,
-                   "7_1",
-                   GameStatus.Active,
-                   null,
-                   null,
-                   null,
-                   GameType.Sportsbook,
-                   GamePlatformType.DesktopAndMobile,
-                   false,
-                   true,
-                   false,
-                   true,
-                   null,
-                   "test",
-                   "test",
-                   null,
-                   GameProviderType.SBOTransfer);
-        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(game);
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.SBOTransfer,
+            GameExternalId: "1",
+            Type: GameType.Sportsbook,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.SBOTransfer);
+        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
 
         var gameProviderCultureCode = "en";
         _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
@@ -151,7 +149,7 @@ public class SBOTransferGameUrlGetServiceUnitTest
         var gameProviderId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.SBOTransfer)).Returns(gameProviderId);
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -161,8 +159,7 @@ public class SBOTransferGameUrlGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(player);
 
         var gameProviderConfigurationId = Guid.NewGuid();
@@ -183,27 +180,26 @@ public class SBOTransferGameUrlGetServiceUnitTest
         };
         _ = fakeGameProviderRepository.GetSBOTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
-        var game = new GameModel(
-                   1,
-                   Guid.NewGuid(),
-                   GameProviderType.SBOTransfer,
-                   "7_1",
-                   GameStatus.Active,
-                   null,
-                   null,
-                   null,
-                   GameType.VirtualSportsLobby,
-                   GamePlatformType.DesktopAndMobile,
-                   false,
-                   true,
-                   false,
-                   true,
-                   null,
-                   "test",
-                   "test",
-                   null,
-                   GameProviderType.SBOTransfer);
-        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(game);
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.SBOTransfer,
+            GameExternalId: "7_1",
+            Type: GameType.VirtualSportsLobby,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.SBOTransfer);
+        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
 
         var gameProviderCultureCode = "en";
         _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(

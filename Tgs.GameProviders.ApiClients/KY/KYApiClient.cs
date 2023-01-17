@@ -15,7 +15,6 @@ using Tgs.GameProviders.ApiClients.KY.Models.Commons;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.KY;
 using Tgs.GameProviders.Core.KY.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.KY;
 
@@ -23,16 +22,13 @@ internal class KYApiClient : IKYApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<KYApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public KYApiClient(
         HttpClient client,
-        ILogger<KYApiClient> logger,
-        ITgsLog tgsLog)
+        ILogger<KYApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public async ValueTask<bool> FundCheckingAsync(Uri apiUrl, string deskey, string md5key, string agentId, string orderId)
@@ -370,8 +366,8 @@ internal class KYApiClient : IKYApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
         {

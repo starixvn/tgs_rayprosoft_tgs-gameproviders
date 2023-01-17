@@ -24,8 +24,15 @@ public class EvolutionTransferPlayerFundOutGetService : IGetService<EvolutionTra
 
     public async ValueTask<PlayerFundResult> GetAsync(EvolutionTransferPlayerFundOutQuery command, CancellationToken cancellationToken = default)
     {
-        var configuration = await _setting.GetEvolutionTransferConfigurationAsync().ConfigureAwait(false);
-        var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
+        var configuration = await _setting
+            .GetEvolutionTransferConfigurationAsync(
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+                playerCode: command.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var reply = await _grpc.FundOutAsync(
             configuration.ApiUrl,

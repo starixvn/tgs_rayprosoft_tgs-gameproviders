@@ -12,7 +12,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.JDB;
 using Tgs.GameProviders.Core.JDB.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.JDB;
 
@@ -20,16 +19,13 @@ internal class JDBApiClient : IJDBApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<JDBApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public JDBApiClient(
         ILogger<JDBApiClient> logger,
-        HttpClient client,
-        ITgsLog tgsLog)
+        HttpClient client)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public ValueTask<JDBBetHistoryResponse> GetBetHistoryUrlAsync(
@@ -163,8 +159,8 @@ internal class JDBApiClient : IJDBApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) &&
             httpResponseMessage.StatusCode == HttpStatusCode.OK)

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.Joker;
 
@@ -24,7 +24,7 @@ internal class JokerService : IJokerService
         _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
     }
 
-    public ValueTask<GameModel> GetGameAsync(int gameId)
+    public ValueTask<GameInfo> GetGameAsync(int gameId)
         => _gameRepository.GetAsync(gameId);
 
     public ValueTask<Guid> GetGameProviderIdAsync()

@@ -16,7 +16,6 @@ using Tgs.GameProviders.ApiClients.Avia.Models.Commons;
 using Tgs.GameProviders.Core.Avia;
 using Tgs.GameProviders.Core.Avia.Models;
 using Tgs.GameProviders.Core.Extensions;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.Avia;
 
@@ -24,16 +23,13 @@ internal class AviaApiClient : IAviaApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<AviaApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public AviaApiClient(
         HttpClient client,
-        ILogger<AviaApiClient> logger,
-        ITgsLog tgsLog)
+        ILogger<AviaApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public async ValueTask<(bool IsPlayer, decimal? Balance)> BalanceAsync(Uri apiUrl, string authorization, string playerCode)
@@ -266,7 +262,6 @@ internal class AviaApiClient : IAviaApiClient
 
         var apiLogEvent = new ApiLogEvent
         {
-            Ip = string.Empty,
             Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
             Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
             Prefix = logPrefix,
@@ -279,8 +274,8 @@ internal class AviaApiClient : IAviaApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         _ = httpResponseMessage.EnsureSuccessStatusCode();
 

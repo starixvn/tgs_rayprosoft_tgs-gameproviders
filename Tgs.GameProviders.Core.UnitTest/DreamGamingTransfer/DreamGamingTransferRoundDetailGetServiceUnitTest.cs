@@ -3,12 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.DreamGamingService.Protos;
 using Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.DreamGamingTransfer;
@@ -67,10 +67,10 @@ public class DreamGamingTransferRoundDetailGetServiceUnitTest
 
         _ = fakeRoundService.GetAsync(query.RoundId).Returns(roundInfo);
 
-        
+
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.DreamGamingTransfer)).Returns(gameProviderId);
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -80,8 +80,7 @@ public class DreamGamingTransferRoundDetailGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
         _ = fakePlayerRepository.GetAsync(Arg.Is("4ucmqplxb029")).Returns(player);
 
@@ -101,7 +100,7 @@ public class DreamGamingTransferRoundDetailGetServiceUnitTest
 
         var gameProviderCultureCode = "en";
         _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(Arg.Is(gameProviderId), Arg.Is(query.Language)).Returns(gameProviderCultureCode);
-        
+
 
         var response = new GameHistoryDetailReply()
         {

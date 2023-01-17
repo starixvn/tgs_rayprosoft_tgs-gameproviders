@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Evolution;
 using Tgs.GameProviders.Core.Evolution.Models;
 using Tgs.GameProviders.Core.Extensions;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.Evolution;
 
@@ -18,17 +17,13 @@ internal class EvolutionApiClient : IEvolutionApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<EvolutionApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public EvolutionApiClient(
         HttpClient client,
-        ILogger<EvolutionApiClient> logger,
-        ITgsLog tgsLog
-        )
+        ILogger<EvolutionApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public ValueTask<EvolutionGameUrlResponse> GetGameUrlAsync(Uri ua2AuthenticationUrl, EvolutionGameUrlRequest request)
@@ -60,7 +55,6 @@ internal class EvolutionApiClient : IEvolutionApiClient
 
         var apiLogEvent = new ApiLogEvent
         {
-            Ip = string.Empty,
             Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
             Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
             Prefix = logPrefix,
@@ -73,8 +67,8 @@ internal class EvolutionApiClient : IEvolutionApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
         {
@@ -104,7 +98,6 @@ internal class EvolutionApiClient : IEvolutionApiClient
 
         var apiLogEvent = new ApiLogEvent
         {
-            Ip = string.Empty,
             Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
             Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
             Prefix = logPrefix,
@@ -117,8 +110,8 @@ internal class EvolutionApiClient : IEvolutionApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
         {

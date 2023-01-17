@@ -4,9 +4,9 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Saba.Models;
 using Tgs.GameProviders.Domains.RoundDetail;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Saba.ApplicationServices;

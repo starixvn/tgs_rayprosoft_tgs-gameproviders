@@ -34,11 +34,31 @@ public class AwcAwsPlayerBalanceGetService : IGetService<AwcAwsPlayerBalanceQuer
 
     public async ValueTask<decimal?> GetAsync(AwcAwsPlayerBalanceQuery command, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_AWS).ConfigureAwait(false);
-        var configuration = await _setting.GetAwcAwsConfigurationAsync().ConfigureAwait(false);
-        var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+                GameProviderType.AWC_AWS,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _setting
+            .GetAwcAwsConfigurationAsync(
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+                command.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: gameProviderId,
+                brandId: player.BrandId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configurationData = await _gameProvider
+            .GetAwcConfigurationData(
+                gameProviderConfigurationId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var response = await _grpc.GetBalanceAsync(
             apiUrl: configuration.ApiUrl,

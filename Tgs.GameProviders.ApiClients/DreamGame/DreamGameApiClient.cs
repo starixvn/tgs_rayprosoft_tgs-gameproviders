@@ -16,7 +16,6 @@ using Tgs.GameProviders.Core.DreamGame;
 using Tgs.GameProviders.Core.DreamGame.Models;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Domains;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.DreamGame;
 
@@ -24,16 +23,13 @@ internal class DreamGameApiClient : IDreamGameApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<DreamGameApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public DreamGameApiClient(
         HttpClient client,
-        ILogger<DreamGameApiClient> logger,
-        ITgsLog tgsLog)
+        ILogger<DreamGameApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public async ValueTask<string> GetAgentFixAsync(Uri videoGameApiUrl, string agentName)
@@ -336,7 +332,6 @@ internal class DreamGameApiClient : IDreamGameApiClient
 
         var apiLogEvent = new ApiLogEvent
         {
-            Ip = string.Empty,
             Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
             Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
             Prefix = logPrefix,
@@ -349,8 +344,8 @@ internal class DreamGameApiClient : IDreamGameApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         return !string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK
             ? JsonDocument.Parse(responseMessage)

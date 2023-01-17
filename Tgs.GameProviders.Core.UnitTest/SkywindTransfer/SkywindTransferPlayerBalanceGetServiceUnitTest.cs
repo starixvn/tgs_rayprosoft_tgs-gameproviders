@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SkywindService.Protos;
 using Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.SkywindTransfer;
@@ -33,7 +33,7 @@ public class SkywindTransferPlayerBalanceGetServiceUnitTest
             Password = "password"
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -43,8 +43,7 @@ public class SkywindTransferPlayerBalanceGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
         var query = new SkywindTransferPlayerBalanceQuery
         {

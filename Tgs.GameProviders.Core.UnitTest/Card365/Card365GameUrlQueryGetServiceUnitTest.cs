@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Card365;
 using Tgs.GameProviders.Core.Card365.ApplicationServices;
 using Tgs.GameProviders.Core.Card365.Model;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.Card365;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.Card365;
 
@@ -49,28 +49,27 @@ public class Card365GameUrlQueryGetServiceUnitTest
             BrandAgents = new[] { agent }
         };
 
-        var gameModel = new GameModel(
-            1900001,
-            Guid.Parse("630e822b-2635-4314-a7e4-5c7057c1a920"),
-            "365",
-            "384",
-            GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.CardGameLobby,
-            GamePlatformType.Desktop,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "CardGameLobby",
-            "CardGameLobby",
-            null,
-            "365");
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.Card365,
+            GameExternalId: "1",
+            Type: GameType.CardGameLobby,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.Card365);
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -80,13 +79,12 @@ public class Card365GameUrlQueryGetServiceUnitTest
             "4ucmqplxb029",
             "4ucmqplxb029",
             Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY",
-            PlayerStatus.Enabled);
+            "CNY");
 
         var query = new Card365GameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.Type,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
             PlayerCode = player.PlayerCode,
             CurrencyCode = "CNY",
@@ -100,15 +98,15 @@ public class Card365GameUrlQueryGetServiceUnitTest
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
 
         _ = fakeService
-             .GetGameProviderCurrencyCodeAsync(gameModel.GameProviderId, player.DefaultWalletCurrencyCode)
+             .GetGameProviderCurrencyCodeAsync(gameInfo.GameProviderId, player.DefaultWalletCurrencyCode)
              .Returns(ValueTask.FromResult(gameProviderCurrencyCode));
 
         _ = fakeService
-             .GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
+             .GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
              .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-        _ = fakePlayer.GetAsync(query.PlayerCode).Returns(Task.FromResult(player));
-        _ = fakeGameRepository.GetAsync(query.GameId!.Value).Returns(ValueTask.FromResult<GameModel?>(gameModel));
+        _ = fakePlayer.GetAsync(query.PlayerCode).Returns(ValueTask.FromResult(player));
+        _ = fakeGameRepository.GetAsync(query.GameId!.Value).Returns(ValueTask.FromResult(gameInfo));
         _ = fakeAgentMapper.GetAgent(configuration.BrandAgents, player.BrandCode).Returns(agent);
         _ = fakeTokenProvider.EncryptAsync(query.LoginRecordId).Returns(ValueTask.FromResult(token));
         _ = fakeApiClient

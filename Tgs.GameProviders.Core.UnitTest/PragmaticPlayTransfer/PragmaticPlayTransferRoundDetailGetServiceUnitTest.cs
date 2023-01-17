@@ -4,12 +4,13 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.PragmaticPlayTransfer;
@@ -36,7 +37,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
         var gameProviderLanguage = "en";
         var historyUrl = "https://tgs.prerelease-env.biz/gs2c/parentRoundHistoryDetails.do?playSessionId=2806662804&stylename=tgs_tgstfw&hash=2213f4013b94f67808ff131af8110f7d&language=en";
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -46,44 +47,41 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             "4ucmqplxb029",
             "4ucmqplxb029",
             Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY",
-            PlayerStatus.Enabled);
+            "CNY");
 
-        var gameProviderInfo = new GameProviderModel(
-            Guid.Parse("e4ecfa98-b373-4123-87e0-cb9e883d0691"),
-            GameProviderStatus.Active,
-            null,
-            true,
-            true,
-            true,
-            10,
-            5,
-            27,
-            false,
-            "PPTF",
-            "PragmaticPlay",
-            null);
+        var gameProviderInfo = new GameProviderInfo(
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.PragmaticPlayTransfer,
+            UniqueId: 1,
+            Name: GameProviderType.PragmaticPlayTransfer,
+            TransferWallet: false,
+            AutoCloseRound: true,
+            SupportTestPlayer: false,
+            AllowKickPlayer: true,
+            PlaceBetTimeout: 0,
+            SettleBetTimeout: 0,
+             Description: GameProviderType.PragmaticPlayTransfer,
+            Localization: null);
 
-        var gameModel = new GameModel(
-            2700027,
-             gameProviderInfo.GameProviderId,
-             "PPTF",
-             "vs25bkofkngdm",
-            GameStatus.Active,
-            null,
-            string.Empty,
-            null,
-            GameType.Slot,
-            GamePlatformType.Desktop,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "Book_of_Kingdoms",
-            "Book of Kingdoms",
-            null,
-            "PPTF");
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: gameProviderInfo.GameProviderId,
+            GameProviderCode: GameProviderType.PragmaticPlayTransfer,
+            GameExternalId: "1",
+            Type: GameType.Slot,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.PragmaticPlayTransfer);
 
         var data = new PragmaticPlayTransferGameRecordData
         {
@@ -109,7 +107,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             data.ExternalRoundId,
             gameProviderInfo.GameProviderId,
             player.PlayerCode,
-            gameModel.GameId,
+            gameInfo.GameId,
             player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
@@ -143,7 +141,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
         };
 
         _ = fakeRoundService.GetAsync(Arg.Is(query.RoundId)).Returns(roundInfo);
-        _ = fakeGameRepository.GetAsync(Arg.Is(roundInfo.GameId)).Returns(gameModel);
+        _ = fakeGameRepository.GetAsync(Arg.Is(roundInfo.GameId)).Returns(gameInfo);
         _ = fakeService.GetGameProviderAsync(Arg.Is(roundInfo.GameProviderId)).Returns(gameProviderInfo);
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
         _ = fakeService
@@ -159,7 +157,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
                 Arg.Is(configuration.SecretKey),
                 Arg.Is(roundInfo.PlayerCode),
                 Arg.Is(roundInfo.ExternalRoundId),
-                Arg.Is(gameModel.GameExternalId),
+                Arg.Is(gameInfo.GameExternalId),
                 Arg.Is(gameProviderLanguage))
             .Returns(historyUrl);
 

@@ -59,7 +59,7 @@ internal class SBORoundDetailGetService : IGetService<SBORoundDetailQuery, Round
         var configuration = await _service.GetSettingConfigurationAsync()
             .ConfigureAwait(false);
 
-        var portfolio = _utility.GetPortfolio(gameInfo.GameType);
+        var portfolio = _utility.GetPortfolio(gameInfo.Type);
 
         var request = new SBOGetRoundHistoryRequest
         {

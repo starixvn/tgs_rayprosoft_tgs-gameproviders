@@ -13,7 +13,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.AllBet;
 using Tgs.GameProviders.Core.AllBet.Models;
 using Tgs.GameProviders.Core.Extensions;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.AllBet;
 
@@ -22,16 +21,13 @@ internal class AllBetApiClient : IAllBetApiClient
     private readonly HttpClient _client;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
     private readonly ILogger<AllBetApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public AllBetApiClient(
         ILogger<AllBetApiClient> logger,
-        HttpClient client,
-        ITgsLog tgsLog)
+        HttpClient client)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
 
         _jsonSerializerOptions = new JsonSerializerOptions
         {
@@ -197,8 +193,8 @@ internal class AllBetApiClient : IAllBetApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) &&
             httpResponseMessage.StatusCode == HttpStatusCode.OK)

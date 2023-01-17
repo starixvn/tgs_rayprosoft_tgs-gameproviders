@@ -12,7 +12,6 @@ using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.TCG;
 using Tgs.GameProviders.Core.TCG.Models;
 using Tgs.GameProviders.Core.TCG.Models.Commons;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.TCG;
 
@@ -20,16 +19,13 @@ internal class TCGApiClient : ITCGApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<TCGApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public TCGApiClient(
         HttpClient client,
-        ILogger<TCGApiClient> logger,
-        ITgsLog tgsLog)
+        ILogger<TCGApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public ValueTask<TCGKickOutLottoPlayerResponse> KickOutLottoPlayerAsync(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TCGKickOutLottoPlayerRequest request)
@@ -144,8 +140,8 @@ internal class TCGApiClient : ITCGApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
         {

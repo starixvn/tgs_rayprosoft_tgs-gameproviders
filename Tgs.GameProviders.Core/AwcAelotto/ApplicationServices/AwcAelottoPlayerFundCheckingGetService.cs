@@ -31,11 +31,31 @@ public class AwcAelottoPlayerFundCheckingGetService : IGetService<AwcAelottoPlay
 
     public async ValueTask<PlayerFundCheckingResult> GetAsync(AwcAelottoPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_AELOTTO).ConfigureAwait(false);
-        var configuration = await _setting.GetAwcAelottoConfigurationAsync().ConfigureAwait(false);
-        var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+                gameProviderCode: GameProviderType.AWC_AELOTTO,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _setting
+            .GetAwcAelottoConfigurationAsync(
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+                command.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: gameProviderId,
+                brandId: player.BrandId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configurationData = await _gameProvider
+            .GetAwcConfigurationData(
+                gameProviderConfigurationId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var response = await _grpc.FundOrderCheckingAsync(
             apiUrl: configuration.ApiUrl,

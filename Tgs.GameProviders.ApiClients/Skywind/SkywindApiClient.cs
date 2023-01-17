@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.Skywind;
 using Tgs.GameProviders.Core.Skywind.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.Skywind;
 
@@ -18,16 +17,13 @@ public class SkywindApiClient : ISkywindApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<SkywindApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public SkywindApiClient(
         HttpClient client,
-       ILogger<SkywindApiClient> logger,
-       ITgsLog tgsLog)
+       ILogger<SkywindApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     /// <summary>
@@ -84,8 +80,7 @@ public class SkywindApiClient : ISkywindApiClient
             RecordedOn = DateTimeOffset.UtcNow
         };
 
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
         {
@@ -127,8 +122,8 @@ public class SkywindApiClient : ISkywindApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
         {

@@ -1,31 +1,40 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Repositories;
 
 internal class PlayerCacheRepository : IPlayerRepository
 {
     private readonly IMemoryCache _memoryCache;
-    private readonly IPlayerRepository _player;
+    private readonly IPlayerRepository _repository;
 
     public PlayerCacheRepository(
         IMemoryCache memoryCache,
-        IPlayerRepository player)
+        IPlayerRepository repository)
     {
         _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-        _player = player ?? throw new ArgumentNullException(nameof(player));
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
     }
 
-    public async Task<PlayerModel> GetAsync(string playerCode)
+    public async ValueTask<PlayerInfo> GetAsync(
+        string playerCode,
+        CancellationToken cancellationToken = default)
     {
-        var key = $"GameProviders:PlayerCache:{playerCode}".ToLower();
-        if (!_memoryCache.TryGetValue(key, out PlayerModel playerModel))
+        var key = $"game:gameproviders:playercache:get:{playerCode}";
+        if (!_memoryCache.TryGetValue(key, out PlayerInfo? playerModel))
         {
-            playerModel = await _player.GetAsync(playerCode).ConfigureAwait(false);
+            playerModel = await _repository.GetAsync(playerCode).ConfigureAwait(false)!;
 
-            _ = _memoryCache.Set(key, playerModel, TimeSpan.FromHours(1));
+            if (playerModel != null)
+            {
+                return _memoryCache
+                    .Set(
+                        key: key,
+                        value: playerModel,
+                        absoluteExpirationRelativeToNow: TimeSpan.FromHours(1));
+            }
         }
-        return playerModel;
+        return playerModel!;
     }
 }

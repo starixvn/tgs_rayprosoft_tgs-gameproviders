@@ -2,13 +2,14 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.JDB;
 using Tgs.GameProviders.Core.JDB.ApplicationServices;
 using Tgs.GameProviders.Core.JDB.Models;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.JDB;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.JDB;
@@ -48,7 +49,7 @@ public class JDBRoundDetailGetServiceUnitTest
             Agents = new[] { agent }
         };
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
          "TGS",
          Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -58,51 +59,48 @@ public class JDBRoundDetailGetServiceUnitTest
          "4ucmqplxb029",
          "4ucmqplxb029",
          Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-         "CNY",
-         PlayerStatus.Enabled);
+         "CNY");
 
-        var gameProviderInfo = new GameProviderModel(
-            Guid.Parse("65cc2057-cb52-44aa-8bff-dbb3d9ebdddc"),
-            GameProviderStatus.Active,
-            null,
-            true,
-            true,
-            true,
-            10,
-            5,
-            7,
-            false,
-            "JDB",
-            "JDB",
-            null);
+        var gameProviderInfo = new GameProviderInfo(
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.JDB,
+            UniqueId: 1,
+            Name: GameProviderType.JDB,
+            TransferWallet: false,
+            AutoCloseRound: true,
+            SupportTestPlayer: false,
+            AllowKickPlayer: true,
+            PlaceBetTimeout: 0,
+            SettleBetTimeout: 0,
+             Description: GameProviderType.JDB,
+            Localization: null);
 
-        var gameModel = new GameModel(
-            700010,
-            gameProviderInfo.GameProviderId,
-            "JDB",
-            "0_14034",
-            GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.Slot,
-            GamePlatformType.DesktopAndMobile,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "GoLaiFu",
-            "GoLaiFu",
-            null,
-            "JDB");
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: gameProviderInfo.GameProviderId,
+            GameProviderCode: GameProviderType.JDB,
+            GameExternalId: "0_14034",
+            Type: GameType.LiveDealerLobby,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.JDB);
 
         var roundInfo = new RoundInfo(
             Guid.Parse("015dc0ab-eecc-49da-299e-08d9d18bf7ef"),
             "5250172280339",
             gameProviderInfo.GameProviderId,
             player.PlayerCode,
-            gameModel.GameId,
+            gameInfo.GameId,
             player.DefaultWalletCurrencyCode,
             GameRoundStatus.Closed,
             Guid.NewGuid(),
@@ -151,11 +149,11 @@ public class JDBRoundDetailGetServiceUnitTest
             .Returns(agent);
 
         _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
-        _ = fakePlayerRepository.GetAsync(roundInfo.PlayerCode).Returns(Task.FromResult(player));
+        _ = fakePlayerRepository.GetAsync(roundInfo.PlayerCode).Returns(ValueTask.FromResult(player));
         _ = fakeGameProviderRepository.GetAsync(roundInfo.GameProviderId).Returns(ValueTask.FromResult(gameProviderInfo));
-        _ = fakeGameRepository.GetAsync(roundInfo.GameId).Returns(ValueTask.FromResult<GameModel?>(gameModel));
+        _ = fakeGameRepository.GetAsync(roundInfo.GameId).Returns(ValueTask.FromResult(gameInfo));
 
-        var items = gameModel.GameExternalId.Split('_');
+        var items = gameInfo.GameExternalId.Split('_');
 
         fakeApiClient
             .GetBetHistoryUrlAsync(

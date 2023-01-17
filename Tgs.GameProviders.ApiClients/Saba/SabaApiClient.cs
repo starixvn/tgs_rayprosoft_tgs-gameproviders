@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.Saba;
 using Tgs.GameProviders.Core.Saba.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.Saba;
 
@@ -19,16 +18,13 @@ internal class SabaApiClient : ISabaApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<SabaApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public SabaApiClient(
         ILogger<SabaApiClient> logger,
-        HttpClient client,
-        ITgsLog tgsLog)
+        HttpClient client)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public ValueTask<SabaCreateMemberResponse> CreateMemberAsync(Uri apiUrl, SabaCreateMemberRequest request)
@@ -125,7 +121,6 @@ internal class SabaApiClient : ISabaApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
         _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) &&
