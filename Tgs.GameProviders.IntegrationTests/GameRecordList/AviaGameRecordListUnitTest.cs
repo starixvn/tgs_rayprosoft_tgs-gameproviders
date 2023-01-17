@@ -16,7 +16,7 @@ namespace Tgs.GameProviders.IntegrationTests.GameRecordList;
 [TestFixture]
 internal class AviaGameRecordListUnitTest
 {
-     [Test]
+    [Test]
     public async Task Test_Avia_GameRecordListAsync()
     {
         var fakeClient = Substitute.For<IAviaApiClient>();

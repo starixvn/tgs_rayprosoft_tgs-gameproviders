@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Tgs.GameCommand.Client;
+﻿using Tgs.GameCommand.Client;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core;
 
@@ -32,7 +30,6 @@ public static class GameProvidersRegisterExtensions
                     .GetAsync(
                         gameProviderId: gameProviderIdInfo.GameProviderId)
                     .ConfigureAwait(false);
-
             }
         }
 

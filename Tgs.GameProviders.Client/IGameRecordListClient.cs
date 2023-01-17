@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Tgs.GameProviders.Client;
+﻿namespace Tgs.GameProviders.Client;
 
 public interface IGameRecordListClient
 {

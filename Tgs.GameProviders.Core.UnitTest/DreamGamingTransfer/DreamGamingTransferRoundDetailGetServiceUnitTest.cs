@@ -67,7 +67,6 @@ public class DreamGamingTransferRoundDetailGetServiceUnitTest
 
         _ = fakeRoundService.GetAsync(query.RoundId).Returns(roundInfo);
 
-
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.DreamGamingTransfer)).Returns(gameProviderId);
 
         var player = new PlayerInfo(
@@ -100,7 +99,6 @@ public class DreamGamingTransferRoundDetailGetServiceUnitTest
 
         var gameProviderCultureCode = "en";
         _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(Arg.Is(gameProviderId), Arg.Is(query.Language)).Returns(gameProviderCultureCode);
-
 
         var response = new GameHistoryDetailReply()
         {

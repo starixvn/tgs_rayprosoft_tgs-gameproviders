@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Tgs.GameProviders.Client;
+﻿namespace Tgs.GameProviders.Client;
 
 public class GameProvidersClientOptions
 {

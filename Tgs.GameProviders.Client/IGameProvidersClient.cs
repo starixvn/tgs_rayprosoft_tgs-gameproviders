@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Tgs.GameProviders.Domains.RoundDetail;
+﻿using Tgs.GameProviders.Domains.RoundDetail;
 
 namespace Tgs.GameProviders.Client;
 

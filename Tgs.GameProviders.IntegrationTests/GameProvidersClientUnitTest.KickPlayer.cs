@@ -13,7 +13,7 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-     [Test]
+    [Test]
     public async Task Kick_Player()
     {
         var fakeService = Substitute.For<ICommandService<KYKickPlayerCommand>>();
@@ -51,7 +51,7 @@ public partial class GameProvidersClientUnitTest
            .ConfigureAwait(false);
     }
 
-     [Test]
+    [Test]
     public void Kick_Player_HttpRequestException()
     {
         var fakeService = Substitute.For<ICommandService<KYKickPlayerCommand>>();

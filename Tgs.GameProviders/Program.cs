@@ -7,7 +7,6 @@ using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Prometheus;
-using Tgs.GameProviders;
 using Tgs.GameProviders.ViewModelMappings;
 
 var builder = WebApplication.CreateBuilder(args);

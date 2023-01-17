@@ -21,8 +21,12 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(
+    ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(
         Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(
+            Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
     ValueTask<string> GetGameProviderCultureCodeAsync(
@@ -64,10 +68,6 @@ public interface IGameProviderRepository
         CancellationToken cancellationToken = default);
 
     ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfiguration(
-        Guid gameProviderConfigurationId,
-        CancellationToken cancellationToken = default);
-
-    ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 

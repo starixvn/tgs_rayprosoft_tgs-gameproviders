@@ -19,7 +19,7 @@ namespace Tgs.GameProviders.IntegrationTests.GameRecordList;
 
 internal class PragmaticPlayTransferGameRecordListUnitTest
 {
-     [Test]
+    [Test]
     public async Task Test_PragmaticPlayTransfer_GameRecordListAsync()
     {
         var fakeService = Substitute.For<IPragmaticPlayTransferService>();

@@ -12,7 +12,7 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-     [Test]
+    [Test]
     public async Task Player_Balance()
     {
         var fakeService = Substitute.For<IGetService<KYPlayerBalanceQuery, decimal?>>();
@@ -50,7 +50,7 @@ public partial class GameProvidersClientUnitTest
         Assert.AreEqual(1, actual!);
     }
 
-     [Test]
+    [Test]
     public void Player_Balance_Exception()
     {
         var fakeService = Substitute.For<IGetService<KYPlayerBalanceQuery, decimal?>>();
@@ -85,7 +85,7 @@ public partial class GameProvidersClientUnitTest
             .AsTask());
     }
 
-     [Test]
+    [Test]
     public void Player_Balance_HttpRequestException()
     {
         var fakeService = Substitute.For<IGetService<KYPlayerBalanceQuery, decimal?>>();
