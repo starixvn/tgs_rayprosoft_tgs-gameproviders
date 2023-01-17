@@ -50,6 +50,8 @@ public static class ServiceCollectionExtensions
             .Configure(configure)
             .Services
             .AddSingleton<RedisConnectionFactory>()
+            .AddGameProvidersRepositories()
+            .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
             .AddGameProvidersCore(
                 gameRoundsClientOptions,
                 gameTokenClientOptions,
