@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SBOService.Protos;
 using Tgs.GameProviders.Core.SBOTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.SBOTransfer;
 
@@ -30,7 +30,7 @@ public class SBOTransferPlayerBalanceGetServiceUnitTest
         var gameProviderId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.SBOTransfer)).Returns(gameProviderId);
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -40,8 +40,7 @@ public class SBOTransferPlayerBalanceGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(player);
 
         var gameProviderConfigurationId = Guid.NewGuid();

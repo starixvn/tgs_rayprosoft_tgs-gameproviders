@@ -41,11 +41,11 @@ internal class AsiaGamingRoundDetailGetService : IGetService<AsiaGamingRoundDeta
             throw new Exception($"This game round number could not be found.{query.RoundId}");
         }
 
-        var gameInfo = await _gameService.GetAsync(roundInfo.GameId).ConfigureAwait(false);
-        if (gameInfo == null)
-        {
-            throw new Exception($"This game Id could not be found.{roundInfo.GameId}");
-        }
+        var gameInfo = await _gameService
+            .GetAsync(
+                roundInfo.GameId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 

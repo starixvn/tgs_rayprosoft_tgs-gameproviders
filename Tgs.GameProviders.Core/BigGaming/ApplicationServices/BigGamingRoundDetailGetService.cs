@@ -3,9 +3,9 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.BigGaming.Models;
 using Tgs.GameProviders.Domains.RoundDetail;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.BigGaming.ApplicationServices;
@@ -49,7 +49,7 @@ internal class BigGamingRoundDetailGetService : IGetService<BigGamingRoundDetail
 
         var brandMerchant = await _service.GetBrandMerchantAsync(roundInfo.CurrencyCode).ConfigureAwait(false);
 
-        if (gameInfo.GameType == GameType.LiveDealer)
+        if (gameInfo.Type == GameType.LiveDealer)
         {
             var request = new BigGamingVideoRoundQueryRequest
             {

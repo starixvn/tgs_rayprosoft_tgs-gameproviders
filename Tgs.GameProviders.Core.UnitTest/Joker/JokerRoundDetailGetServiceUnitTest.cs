@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.Joker;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.Joker;
@@ -50,7 +50,7 @@ public class JokerRoundDetailGetServiceUnitTest
         var gameProviderLanguage = "en";
         var historyUrl = "//hs.gwp6868.net/History?Signature=lpjOI3lMu5kXnhT3tSF9VPD5g9Y%3d&Key=83ztt1eowy7qy&Timestamp=1650520123495&Lang=en&TransactionOCode=xj88k7byqz9ne";
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -60,8 +60,7 @@ public class JokerRoundDetailGetServiceUnitTest
             "4uf6k014jp5x",
             "4uf6k014jp5x",
             Guid.Parse("cf99c783-acdf-48cc-b1cc-08d99a806de9"),
-            "HKD",
-            PlayerStatus.Enabled);
+            "HKD");
 
         var additionalData = @"{""OCode"":""83ztt1eowy7qy"",""Username"":""4UF6K014JP5X"",""GameCode"":""quofrdenycyyn"",""Description"":""G2a9e5244e50b"",""Type"":""Game"",""Amount"":1.20,""Result"":2.10,""Time"":""2022-04-20T15:00:10.621+08:00""}";
 

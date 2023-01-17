@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameProviders.Core.AwcVenus.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.AwcVenus;
 
@@ -45,7 +45,7 @@ public class AwcVenusKickPlayerCommandServiceUnitTest
                 }
             })));
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -55,8 +55,7 @@ public class AwcVenusKickPlayerCommandServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
         var command = new AwcVenusKickPlayerCommand
         {

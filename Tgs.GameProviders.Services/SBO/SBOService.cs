@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.SBO;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.SBO;
 
@@ -24,7 +24,7 @@ internal class SBOService : ISBOService
         _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
     }
 
-    public async ValueTask<GameModel> GetGameAsync(int gameId)
+    public async ValueTask<GameInfo> GetGameAsync(int gameId)
         => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
     public async ValueTask<string> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode)

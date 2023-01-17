@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameProviders.Core.JDBTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.JDBTransfer;
 
@@ -32,7 +32,7 @@ public class JDBTransferPlayerFundCheckingGetServiceUnitTest
         var gameProviderId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.JDBTransfer)).Returns(gameProviderId);
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -42,8 +42,7 @@ public class JDBTransferPlayerFundCheckingGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(player);
 
         var gameProviderConfigurationId = Guid.NewGuid();

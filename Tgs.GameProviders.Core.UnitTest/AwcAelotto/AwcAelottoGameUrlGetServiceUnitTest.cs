@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.AwcService.Protos;
 using Tgs.GameProviders.Core.AwcAelotto.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.AwcAelotto;
@@ -40,7 +40,7 @@ public class AwcAelottoGameUrlGetServiceUnitTest
             Cert: "testCert",
             BetLimit: null);
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -50,33 +50,31 @@ public class AwcAelottoGameUrlGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
-        var gameModel = new GameModel(
-            2900001,
-             Guid.NewGuid(),
-             "AWC_AELOTTO",
-             "LottoLobby",
-             GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.LotteryLobby,
-            GamePlatformType.DesktopAndMobile,
-            true,
-            true,
-            false,
-            true,
-            null,
-            "LottoLobby",
-            "Lotto Lobby",
-            null,
-            "AWC_AELOTTO");
+        var gameModel = new GameInfo(
+            GameId: 2900001,
+            GameCode: "LottoLobby",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: "AWC_AELOTTO",
+            GameExternalId: "LottoLobby",
+            Type: GameType.LotteryLobby,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "Lotto Lobby",
+            SubGame: true,
+            AvailableToBrand: true,
+            HasTurnoverOnTieBet: false,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: "AWC_AELOTTO");
 
         var query = new AwcAelottoGameUrlQuery
         {
-            GameType = gameModel.GameType,
+            GameType = gameModel.Type,
             GameId = gameModel.GameId,
             BrandCode = "GPI",
             PlayerCode = "4ucmqplxb029",
@@ -159,7 +157,7 @@ public class AwcAelottoGameUrlGetServiceUnitTest
             Cert: "testCert",
             BetLimit: null);
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -169,33 +167,31 @@ public class AwcAelottoGameUrlGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
-        var gameModel = new GameModel(
-            2900002,
-            Guid.NewGuid(),
-            "AWC_YEEKEE_LOTTO",
-            "YeeKeeLottoLobby",
-            GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.LotteryLobby,
-            GamePlatformType.DesktopAndMobile,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "YeeKee_Lotto_Lobby",
-            "YeeKee Lotto Lobby",
-            null,
-            "AWC_YEEKEE_LOTTO");
+        var gameModel = new GameInfo(
+            GameId: 1,
+            GameCode: "AWC_YEEKEE_LOTTO",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.AWC_AELOTTO,
+            GameExternalId: "LottoLobby",
+            Type: GameType.LotteryLobby,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "AWC YEEKEE LOTTO",
+            SubGame: true,
+            AvailableToBrand: true,
+            HasTurnoverOnTieBet: false,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: "AWC_YEEKEE_LOTTO");
 
         var query = new AwcAelottoGameUrlQuery
         {
-            GameType = gameModel.GameType,
+            GameType = gameModel.Type,
             GameId = gameModel.GameId,
             BrandCode = "GPI",
             PlayerCode = "4ucmqplxb029",

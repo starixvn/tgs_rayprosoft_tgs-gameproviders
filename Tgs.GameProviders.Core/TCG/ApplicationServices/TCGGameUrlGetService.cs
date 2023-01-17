@@ -42,7 +42,11 @@ public class TCGGameUrlGetService : IGetService<TCGGameUrlQuery, GameUrlResult>
         {
             return null;
         }
-        var getGame = await _gameService.GetAsync(command.GameId.Value).ConfigureAwait(false);
+        var getGame = await _gameService
+            .GetAsync(
+                gameId: command.GameId.Value,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         if (getGame == null)
         {

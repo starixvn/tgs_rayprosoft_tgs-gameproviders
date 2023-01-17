@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameCommand.Common;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.KY.ApplicationServices;
@@ -33,11 +33,15 @@ public class KYGameUrlGetService : IGetService<KYGameUrlQuery, GameUrlResult>
 
         if (command.GameType != GameType.CardGameLobby)
         {
-            var getGame = await _gameRepository.GetAsync(command.GameId.Value).ConfigureAwait(false);
+            var getGame = await _gameRepository
+                .GetAsync(
+                    gameId: command.GameId.Value,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
 
             if (getGame != null)
             {
-                if (getGame.GameType != GameType.CardGameLobby)
+                if (getGame.Type != GameType.CardGameLobby)
                 {
                     gameExternalID = Convert.ToInt32(getGame.GameExternalId);
                 }

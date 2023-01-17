@@ -10,7 +10,6 @@ using Tgs.GameProviders.ApiClients.DreamGame;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.DreamGame;
 using Tgs.GameProviders.Core.DreamGame.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
@@ -26,8 +25,7 @@ public class DreamGameApiClientUnitTest
     {
         var httpClient = new HttpClient();
         var faceLog = NullLogger<DreamGameApiClient>.Instance;
-        var faceTgsLog = Substitute.For<ITgsLog>();
-        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog, faceTgsLog);
+        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog);
         var actual = await client.GetAgentFixAsync(_videoGameApiUrl, _agentName);
 
         Assert.IsNotNull(actual);
@@ -48,8 +46,7 @@ public class DreamGameApiClientUnitTest
     {
         var httpClient = new HttpClient();
         var faceLog = NullLogger<DreamGameApiClient>.Instance;
-        var faceTgsLog = Substitute.For<ITgsLog>();
-        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog, faceTgsLog);
+        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog);
         var actual = client.GetGameResultAsync(_videoGameApiUrl, _agentName, "cn", "3213", "10500435001");
 
         Assert.IsNotNull(actual);
@@ -71,8 +68,7 @@ public class DreamGameApiClientUnitTest
     {
         var httpClient = new HttpClient();
         var faceLog = NullLogger<DreamGameApiClient>.Instance;
-        var faceTgsLog = Substitute.For<ITgsLog>();
-        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog, faceTgsLog);
+        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog);
         var actual = await client.GetReportAsync(_apiUrl, _apiKey, _agentName);
         Assert.IsNotNull(actual);
         Assert.AreEqual(true, actual.Any());
@@ -123,8 +119,7 @@ public class DreamGameApiClientUnitTest
     {
         var httpClient = new HttpClient();
         var faceLog = NullLogger<DreamGameApiClient>.Instance;
-        var faceTgsLog = Substitute.For<ITgsLog>();
-        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog, faceTgsLog);
+        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog);
         var actual = await client.LoginAsync(_apiUrl, _apiKey, _agentName, "4ucmqplxb029", "TgsP@ssw0rd", "A", PlatformType.Desktop);
 
         Assert.IsNotNull(actual);
@@ -150,8 +145,7 @@ public class DreamGameApiClientUnitTest
     {
         var httpClient = new HttpClient();
         var faceLog = NullLogger<DreamGameApiClient>.Instance;
-        var faceTgsLog = Substitute.For<ITgsLog>();
-        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog, faceTgsLog);
+        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog);
         var actual = await client.OfflineAsync(_apiUrl, _apiKey, _agentName, 72832718);
         Assert.IsNotNull(actual);
         Assert.AreEqual(true, actual);
@@ -172,8 +166,7 @@ public class DreamGameApiClientUnitTest
     {
         var httpClient = new HttpClient();
         var faceLog = NullLogger<DreamGameApiClient>.Instance;
-        var faceTgsLog = Substitute.For<ITgsLog>();
-        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog, faceTgsLog);
+        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog);
         var actual = await client.OnlineReportAsync(_apiUrl, _apiKey, _agentName);
 
         Assert.IsNotNull(actual);
@@ -205,8 +198,7 @@ public class DreamGameApiClientUnitTest
     {
         var httpClient = new HttpClient();
         var faceLog = NullLogger<DreamGameApiClient>.Instance;
-        var faceTgsLog = Substitute.For<ITgsLog>();
-        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog, faceTgsLog);
+        IDreamGameApiClient client = new DreamGameApiClient(httpClient, faceLog);
         var actual = await client.SignUpAsync(_apiUrl, _apiKey, _agentName, "4ucmqplxb029", "TgsP@ssw0rd", "CNY");
 
         Assert.IsNotNull(actual);

@@ -1,44 +1,77 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core;
 
 public interface IGameProviderRepository
 {
-    ValueTask<GameProviderModel> GetAsync(Guid gameProviderId);
+    ValueTask<GameProviderInfo> GetAsync(
+        Guid gameProviderId,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<AwcConfigurationData> GetAwcConfigurationData(Guid gameProviderConfigurationId);
+    ValueTask<AwcConfigurationData> GetAwcConfigurationData(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<BTiSportsConfiguration> GetBTiSportsConfiguration(Guid gameProviderConfigurationId);
+    ValueTask<BTiSportsConfiguration> GetBTiSportsConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId);
+    ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<string?> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode);
+    ValueTask<string> GetGameProviderCultureCodeAsync(
+        Guid gameProviderId,
+        string cultureCode,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<string?> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
+    ValueTask<string> GetGameProviderCurrencyCodeAsync(
+        Guid gameProviderId,
+        string currencyCode,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode);
+    ValueTask<Guid> GetGameProviderIdAsync(
+        string gameProviderCode,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfiguration(Guid gameProviderConfigurationId);
+    ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(Guid gameProviderConfigurationId);
+    ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<JiliTransferConfiguration> GetJiliTransferConfiguration(Guid gameProviderConfigurationId);
+    ValueTask<JiliTransferConfiguration> GetJiliTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<SabaTransferConfiguration> GetSabaTransferConfiguration(Guid gameProviderConfigurationId);
+    ValueTask<SabaTransferConfiguration> GetSabaTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(Guid gameProviderConfigurationId);
+    ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<SM01Configuration> GetSM01Configuration(Guid gameProviderConfigurationId);
+    ValueTask<SM01Configuration> GetSM01Configuration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<TFGamingTransferConfiguration> GetTFGamgingTransferConfiguration(Guid gameProviderConfigurationId);
+    ValueTask<TFGamingTransferConfiguration> GetTFGamgingTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfiguration(Guid gameProviderConfigurationId);
+    ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 
-    ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(Guid gameProviderConfigurationId);
+    ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 }

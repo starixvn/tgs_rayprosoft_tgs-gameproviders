@@ -1,15 +1,19 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameCommand.Common;
 
 namespace Tgs.GameProviders.Core;
 
 public interface IGameRepository
 {
-    ValueTask<GameModel?> GetAsync(int gameId);
+    ValueTask<GameInfo> GetAsync(
+        int gameId,
+        CancellationToken cancellationToken = default);
 
-    IAsyncEnumerable<GameModel> GetGameListAsync(Guid gameProviderId, GameType gameType);
+    IAsyncEnumerable<GameInfo> GetGameListAsync(
+        Guid gameProviderId,
+        GameType gameType,
+        CancellationToken cancellationToken = default);
 }

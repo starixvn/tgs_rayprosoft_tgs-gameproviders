@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.PragmaticPlay;
 using Tgs.GameProviders.Core.PragmaticPlay.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.PragmaticPlay;
 
@@ -18,18 +17,15 @@ internal class PragmaticPlayApiClient : IPragmaticPlayApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<PragmaticPlayApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
     private readonly IPragmaticPlayUtility _utility;
 
     public PragmaticPlayApiClient(
         HttpClient client,
         ILogger<PragmaticPlayApiClient> logger,
-        ITgsLog tgsLog,
         IPragmaticPlayUtility utility)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         _utility = utility ?? throw new ArgumentNullException(nameof(utility));
     }
 
@@ -137,8 +133,8 @@ internal class PragmaticPlayApiClient : IPragmaticPlayApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) &&
             httpResponseMessage.StatusCode == HttpStatusCode.OK)

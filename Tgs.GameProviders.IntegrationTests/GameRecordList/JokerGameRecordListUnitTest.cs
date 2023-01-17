@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Core.Joker.Models;
@@ -19,7 +18,7 @@ namespace Tgs.GameProviders.IntegrationTests.GameRecordList;
 [TestFixture]
 public class JokerGameRecordListUnitTest
 {
-    [Test]
+     [Test]
     public async Task Test_Joker_GameRecordListAsync()
     {
         var fakeService = Substitute.For<IJokerService>();
@@ -77,7 +76,6 @@ public class JokerGameRecordListUnitTest
                 _ = services.AddSingleton(fakeApiClient);
                 _ = services.AddSingleton(fakeService);
                 _ = services.AddSingleton(fakeAgentMapper);
-                _ = services.AddFakeNatsMessageQueue();
             });
         });
 

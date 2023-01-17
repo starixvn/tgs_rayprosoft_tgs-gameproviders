@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SkywindService.Protos;
 using Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameToken.Client;
 using Tgs.ServiceUtility;
 
@@ -57,7 +57,7 @@ public class SkywindTransferGameUrlGetServiceUnitTest
 
         _ = fakeSettingRepository.GetSkywindTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -67,8 +67,7 @@ public class SkywindTransferGameUrlGetServiceUnitTest
             PlayerCode: "test",
             Username: "test",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
 
         var cultureCode = "en";
@@ -81,27 +80,26 @@ public class SkywindTransferGameUrlGetServiceUnitTest
             Arg.Is(gameProviderId),
             Arg.Is(query.CurrencyCode)).Returns(currencyCode);
 
-        var gameModel = new GameModel(
-            1,
-            Guid.NewGuid(),
-            GameProviderType.SkywindTransfer,
-            "test",
-            GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.Slot,
-            GamePlatformType.DesktopAndMobile,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "test",
-            "test",
-            null,
-            GameProviderType.JiliTransfer);
-        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameModel);
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.SkywindTransfer,
+            GameExternalId: "10",
+            Type: GameType.Slot,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.SkywindTransfer);
+        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
 
         var request = new GameUrlRequest()
         {
@@ -110,7 +108,7 @@ public class SkywindTransferGameUrlGetServiceUnitTest
             Username = configuration.Username,
             Password = configuration.Password,
             PlayerCode = query.PlayerCode,
-            GameCode = gameModel.GameExternalId,
+            GameCode = gameInfo.GameExternalId,
             Language = cultureCode
         };
         var response = new GameUrlReply()

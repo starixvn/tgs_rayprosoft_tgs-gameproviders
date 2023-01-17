@@ -20,7 +20,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.PragmaticPlayTransfer;
 
@@ -28,16 +27,13 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<PragmaticPlayTransferApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public PragmaticPlayTransferApiClient(
         HttpClient client,
-        ILogger<PragmaticPlayTransferApiClient> logger,
-        ITgsLog tgsLog)
+        ILogger<PragmaticPlayTransferApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public async ValueTask<bool> CreatePlayerAsync(
@@ -403,8 +399,7 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
             RecordedOn = DateTimeOffset.UtcNow
         };
 
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         return !string.IsNullOrEmpty(responseMessage) &&
                httpResponseMessage.StatusCode == HttpStatusCode.OK
@@ -454,8 +449,7 @@ internal class PragmaticPlayTransferApiClient : IPragmaticPlayTransferApiClient
             RecordedOn = DateTimeOffset.UtcNow
         };
 
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         return !string.IsNullOrEmpty(responseMessage) &&
                httpResponseMessage.StatusCode == HttpStatusCode.OK

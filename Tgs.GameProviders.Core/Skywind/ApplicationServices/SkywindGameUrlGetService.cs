@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Skywind.Models;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Skywind.ApplicationServices;
@@ -45,7 +45,7 @@ public class SkywindGameUrlGetService : IGetService<SkywindGameUrlQuery, GameUrl
 
         string url;
 
-        if (getGame.GameType == GameType.LiveDealerLobby)
+        if (getGame.Type == GameType.LiveDealerLobby)
         {
             url = $"{configuration.LiveLobbyUrl}#/ticket/{encryptedToken}?lang={gameProviderCultureCode}";
         }

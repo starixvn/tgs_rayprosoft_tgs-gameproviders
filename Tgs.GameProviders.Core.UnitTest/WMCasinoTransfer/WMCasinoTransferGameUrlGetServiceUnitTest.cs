@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.WMCasinoTransfer;
@@ -35,7 +35,7 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
             Signature = "testsignature"
         };
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -45,34 +45,32 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
-        var gameModel = new GameModel(
-            1,
-            Guid.NewGuid(),
-            GameProviderType.WMCasinoTransfer,
-            "test",
-            GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.Slot,
-            GamePlatformType.DesktopAndMobile,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "test",
-            "test",
-            null,
-            GameProviderType.WMCasinoTransfer);
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.WMCasinoTransfer,
+            GameExternalId: "1",
+            Type: GameType.LiveDealer,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.WMCasinoTransfer);
 
         var query = new WMCasinoTransferGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.Type,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
             PlayerCode = "4ucmqplxb029",
             CurrencyCode = "CNY",
@@ -84,16 +82,16 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
         };
         var gameProviderCultureCode = "0";
         var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WMCasinoTransfer)).Returns(gameModel.GameProviderId);
+        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WMCasinoTransfer)).Returns(gameInfo.GameProviderId);
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
         _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameModel.GameProviderId),
+             Arg.Is(gameInfo.GameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
         _ = fakeGameProviderRepository.GetWMCasinoTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
         _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
-            Arg.Is(gameModel.GameProviderId),
+            Arg.Is(gameInfo.GameProviderId),
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
-        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameModel);
+        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
 
         var response = new GameInterfaceWMCasinoServiceGameUrlReply()
         {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.IMESports;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.IMESports;
 
@@ -27,7 +27,7 @@ internal class IMESportsService : IIMESportsService
         _playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
     }
 
-    public async ValueTask<GameModel> GetGameAsync(int gameId)
+    public async ValueTask<GameInfo> GetGameAsync(int gameId)
         => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
     public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)
@@ -51,7 +51,7 @@ internal class IMESportsService : IIMESportsService
         return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "EN";
     }
 
-    public async ValueTask<PlayerModel> GetPlayerAsync(string playerCode)
+    public async ValueTask<PlayerInfo> GetPlayerAsync(string playerCode)
         => await _playerRepository.GetAsync(playerCode).ConfigureAwait(false);
 
     public async ValueTask<IMESportsConfiguration> GetSettingConfigurationAsync()

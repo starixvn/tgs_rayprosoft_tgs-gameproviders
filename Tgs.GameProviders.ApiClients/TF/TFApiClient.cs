@@ -10,7 +10,6 @@ using Tgs.Core.Infrastructures.Security;
 using Tgs.GameProviders.ApiClients.TF.Models.Commons;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.TFGaming;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.TF;
 
@@ -18,18 +17,15 @@ internal class TFApiClient : ITFApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<TFApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
     private readonly ITokenProvider _tokenProvider;
 
     public TFApiClient(
         HttpClient client,
         ILogger<TFApiClient> logger,
-        ITgsLog tgsLog,
         ITokenProvider tokenProvider)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
         _tokenProvider = tokenProvider ?? throw new ArgumentNullException(nameof(tokenProvider));
     }
 
@@ -69,8 +65,7 @@ internal class TFApiClient : ITFApiClient
             RecordedOn = DateTimeOffset.UtcNow
         };
 
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         _ = httpResponseMessage.EnsureSuccessStatusCode();
 
@@ -125,7 +120,6 @@ internal class TFApiClient : ITFApiClient
             RecordedOn = DateTimeOffset.UtcNow
         };
 
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
     }
 }

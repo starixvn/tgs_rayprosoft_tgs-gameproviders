@@ -4,10 +4,11 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Habanero;
 using Tgs.GameProviders.Core.Habanero.ApplicationServices;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.Habanero;
 
@@ -38,28 +39,27 @@ public class HabaneroGameUrlGetServiceUnitTest
             BetHistoryUrl = new("https://app-test.insvr.com")
         };
 
-        var gameModel = new GameModel(
-            200001,
-            Guid.Parse("de301075-182b-453f-a316-28e3164b2d06"),
-            "HABA",
-            "SGTotemTowers",
-            GameStatus.Active,
-            null,
-            "?brandId={BRANDID}&token={TOKEN}&locale={CULTURE}&mode=real",
-            null,
-            GameType.Slot,
-            GamePlatformType.Desktop,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "SGTotemTowers",
-            "SGTotemTowers",
-            null,
-            "HABA");
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "SGTotemTowers",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.Habanero,
+            GameExternalId: "SGTotemTowers",
+            Type: GameType.Slot,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "SGTotemTowers",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: "?brandId={BRANDID}&token={TOKEN}&locale={CULTURE}&mode=real",
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.Habanero);
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -69,13 +69,12 @@ public class HabaneroGameUrlGetServiceUnitTest
             "4ucmqplxb029",
             "4ucmqplxb029",
             Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY",
-            PlayerStatus.Enabled);
+            "CNY");
 
         var query = new HabaneroGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.Type,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
             PlayerCode = playerCode,
             CurrencyCode = "CNY",
@@ -89,16 +88,16 @@ public class HabaneroGameUrlGetServiceUnitTest
         _ = fakeTokenProvider.EncryptAsync(query.LoginRecordId).Returns(ValueTask.FromResult(token));
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeService.GetPlayerAsync(query.PlayerCode).Returns(ValueTask.FromResult(player));
-        _ = fakeService.GetGameAsync(query.GameId!.Value).Returns(ValueTask.FromResult(gameModel));
+        _ = fakeService.GetGameAsync(query.GameId!.Value).Returns(ValueTask.FromResult(gameInfo));
 
         _ = fakeService.GetGameDomainAsync(
                  player.BrandId,
-                 gameModel.GameProviderId,
+                 gameInfo.GameProviderId,
                  query.PlatformType)
              .Returns(ValueTask.FromResult(gameDomain));
 
         _ = fakeService
-             .GetGameProviderLanguageCodeAsync(gameModel.GameProviderId, query.Language)
+             .GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
              .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         var sut = new HabaneroGameUrlGetService(fakeLogger, fakeService, fakeTokenProvider);

@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.JiliService.Client;
 using Tgs.GameInterface.JiliService.Protos;
 using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.JiliTransfer;
@@ -45,7 +45,7 @@ public class JiliTransferGameUrlGetServiceUnitTest
                 Arg.Is(GameProviderType.JiliTransfer))
             .Returns(gameProviderId);
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -55,8 +55,7 @@ public class JiliTransferGameUrlGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
         _ = fakePlayerRepository
             .GetAsync(
                 Arg.Is(query.PlayerCode))
@@ -87,27 +86,26 @@ public class JiliTransferGameUrlGetServiceUnitTest
                 Arg.Is(query.Language))
             .Returns(gameProviderCultureCode);
 
-        var gameModel = new GameModel(
-            1,
-            Guid.NewGuid(),
-            GameProviderType.JiliTransfer,
-            "test",
-            GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.Slot,
-            GamePlatformType.DesktopAndMobile,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "test",
-            "test",
-            null,
-            GameProviderType.JiliTransfer);
-        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameModel);
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "test",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.JiliTransfer,
+            GameExternalId: "1",
+            Type: GameType.Slot,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "test",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.JiliTransfer);
+        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
 
         var response = new GameInterfaceJiliServiceGameUrlReply()
         {
@@ -121,7 +119,7 @@ public class JiliTransferGameUrlGetServiceUnitTest
                 agentId: Arg.Is(configuration.AgentId),
                 agentKey: Arg.Is(configuration.AgentKey),
                 playerCode: Arg.Is(playerModel.PlayerCode),
-                externalGameId: Arg.Is(gameModel.GameExternalId),
+                externalGameId: Arg.Is(gameInfo.GameExternalId),
                 language: Arg.Is(gameProviderCultureCode)
             ).Returns(response);
 

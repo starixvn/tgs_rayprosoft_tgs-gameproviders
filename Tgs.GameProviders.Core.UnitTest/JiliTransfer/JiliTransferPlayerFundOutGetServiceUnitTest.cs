@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.JiliService.Client;
 using Tgs.GameInterface.JiliService.Protos;
 using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.JiliTransfer;
 
@@ -37,7 +37,7 @@ public class JiliTransferPlayerFundOutGetServiceUnitTest
                 Arg.Is(GameProviderType.JiliTransfer))
             .Returns(gameProviderId);
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -47,8 +47,7 @@ public class JiliTransferPlayerFundOutGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
         _ = fakePlayerRepository
         .GetAsync(
                 Arg.Is(query.PlayerCode))

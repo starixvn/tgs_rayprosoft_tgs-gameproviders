@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.SBO;
 using Tgs.GameProviders.Core.SBO.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.SBO;
 
@@ -19,16 +18,13 @@ internal class SBOApiClient : ISBOApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<SBOApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public SBOApiClient(
         HttpClient client,
-        ILogger<SBOApiClient> logger,
-        ITgsLog tgsLog)
+        ILogger<SBOApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public ValueTask<SBOCreateAgentResponse> CreateAgentAsync(
@@ -180,8 +176,8 @@ internal class SBOApiClient : ISBOApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) &&
             httpResponseMessage.StatusCode == HttpStatusCode.OK)

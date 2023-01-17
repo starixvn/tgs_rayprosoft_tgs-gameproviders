@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.SBO;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.SBO;
 
@@ -20,7 +20,7 @@ internal class SBOUtility : ISBOUtility
         => $"{agentPrefix}{brandCode.ToUpper()}{currencyCode.Replace("_", string.Empty).ToUpper()}";
 
     public string GetPortfolio(
-                GameType gameType)
+        GameType gameType)
         => !_Portfolios.TryGetValue(gameType, out var portfolio)
             ? null
             : portfolio;

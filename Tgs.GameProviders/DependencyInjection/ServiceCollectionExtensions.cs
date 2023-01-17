@@ -1,4 +1,5 @@
-﻿using Tgs.GameInterface.AwcService.Client;
+﻿using Tgs.GameCommand.Client;
+using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.HabaneroService.Client;
@@ -14,7 +15,6 @@ using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GamePlayerTransform.Client;
 using Tgs.GameProviders;
-using Tgs.GameProviders.QueryServer.Client;
 using Tgs.GameRounds.Client;
 using Tgs.GameToken.Client;
 
@@ -28,7 +28,7 @@ public static class ServiceCollectionExtensions
         Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions,
         Action<GameTokenClientOptions, IServiceProvider> gameTokenClientOptions,
         Action<GamePlayerTransformClientOptions, IServiceProvider> gamePlayerTransformClientOptions,
-        Action<GameProvidersQueryServerClientOptions, IServiceProvider> gameProvidersQueryServerClientOptions,
+        Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
         Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions,
         Action<GameInterfaceJiliServiceClientOptions, IServiceProvider> gameInterfaceJiliServiceClientOptions,
         Action<GameInterfaceWMCasinoServiceClientOptions, IServiceProvider> gameInterfaceWMCasinoClientOptions,
@@ -48,23 +48,27 @@ public static class ServiceCollectionExtensions
             .Configure(configure)
             .Services
             .AddSingleton<RedisConnectionFactory>()
-            .AddGameProviders(
-                gameRoundsClientOptions,
-                gameTokenClientOptions,
-                gamePlayerTransformClientOptions,
-                gameProvidersQueryServerClientOptions,
-                gameInterfaceAwcServiceClientOptions,
-                gameInterfaceJiliServiceClientOptions,
-                gameInterfaceWMCasinoClientOptions,
-                gameInterfaceEvolutionServiceClientOptions,
-                gameInterfaceIdnLiveClientOptions,
-                gameInterfaceSkywindClientOptions,
-                gameInterfaceWGFmGamingClientOptions,
-                gameInterfaceJDBClientOptions,
-                gameInterfaceSBOClientOptions,
-                gameInterfaceBTiClientOptions,
-                gameInterfaceHabaneroClientOptions,
-                gameInterfaceSabaClientOptions,
-                gameInterfaceSM01ClientOptions,
-                gameInterfaceTFGamingClientOptions);
+            .AddGameProvidersRepositories()
+            .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
+            .AddGameProvidersCore(
+                gameRoundsClientOptions: gameRoundsClientOptions,
+                gameTokenClientOptions: gameTokenClientOptions,
+                gamePlayerTransformClientOptions: gamePlayerTransformClientOptions,
+                gameCommandClientOptions: gameCommandClientOptions,
+                gameInterfaceAwcServiceClientOptions: gameInterfaceAwcServiceClientOptions,
+                gameInterfaceJiliServiceClientOptions: gameInterfaceJiliServiceClientOptions,
+                gameInterfaceWMCasinoClientOptions: gameInterfaceWMCasinoClientOptions,
+                gameInterfaceEvolutionServiceClientOptions: gameInterfaceEvolutionServiceClientOptions,
+                gameInterfaceIdnLiveClientOptions: gameInterfaceIdnLiveClientOptions,
+                gameInterfaceSkywindClientOptions: gameInterfaceSkywindClientOptions,
+                gameInterfaceWGFmGamingClientOptions: gameInterfaceWGFmGamingClientOptions,
+                gameInterfaceJDBClientOptions: gameInterfaceJDBClientOptions,
+                gameInterfaceSBOClientOptions: gameInterfaceSBOClientOptions,
+                gameInterfaceBTiClientOptions: gameInterfaceBTiClientOptions,
+                gameInterfaceHabaneroClientOptions: gameInterfaceHabaneroClientOptions,
+                gameInterfaceSabaClientOptions: gameInterfaceSabaClientOptions,
+                gameInterfaceSM01ClientOptions: gameInterfaceSM01ClientOptions,
+                gameInterfaceTFGamingClientOptions: gameInterfaceTFGamingClientOptions);
+
+
 }

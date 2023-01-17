@@ -38,14 +38,42 @@ public class AwcYlGameUrlGetService : IGetService<AwcYlGameUrlQuery, GameUrlResu
 
     public async ValueTask<GameUrlResult> GetAsync(AwcYlGameUrlQuery command, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_YL).ConfigureAwait(false);
-        var configuration = await _setting.GetAwcYlConfigurationAsync().ConfigureAwait(false);
-        var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
-        var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en";
-        var game = await _game.GetAsync(command.GameId.Value).ConfigureAwait(false)
-             ?? throw new Exception($"The game for this game product does not exist.({command.GameId})");
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+                gameProviderCode: GameProviderType.AWC_YL,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _setting
+            .GetAwcYlConfigurationAsync(
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+                command.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: gameProviderId,
+                brandId: player.BrandId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configurationData = await _gameProvider
+            .GetAwcConfigurationData(
+                gameProviderConfigurationId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var cultureCode = await _gameProvider
+            .GetGameProviderCultureCodeAsync(
+                gameProviderId: gameProviderId,
+                cultureCode: command.Language,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false) ?? "en";
+        var game = await _game
+            .GetAsync(
+                gameId: command.GameId.Value,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var request = new GameInterfaceAwcServiceGameUrlRequest()
         {

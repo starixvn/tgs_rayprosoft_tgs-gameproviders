@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.Joker;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.Joker;
 
@@ -43,7 +43,7 @@ public class JokerPlayerFundInGetServiceUnitTest
             }
         };
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -53,8 +53,7 @@ public class JokerPlayerFundInGetServiceUnitTest
             "4uf6k014jp5x",
             "4uf6k014jp5x",
             Guid.Parse("cf99c783-acdf-48cc-b1cc-08d99a806de9"),
-            "HKD",
-            PlayerStatus.Enabled);
+            "HKD");
 
         var success = true;
         var orderId = Guid.NewGuid().ToString();

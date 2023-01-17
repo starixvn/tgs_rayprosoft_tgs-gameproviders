@@ -15,7 +15,6 @@ using Tgs.GameProviders.ApiClients.LY.Models.Commons;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.LY;
 using Tgs.GameProviders.Core.LY.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.LY;
 
@@ -23,16 +22,13 @@ internal class LYApiClient : ILYApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<LYApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public LYApiClient(
         HttpClient client,
-        ILogger<LYApiClient> logger,
-        ITgsLog tgsLog)
+        ILogger<LYApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public async ValueTask<bool> FundCheckingAsync(Uri apiUrl, string deskey, string md5key, string agentId, string orderId)
@@ -367,8 +363,8 @@ internal class LYApiClient : ILYApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
         {

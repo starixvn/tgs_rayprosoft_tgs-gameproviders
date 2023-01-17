@@ -2,10 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Evolution.Models;
 using Tgs.GameProviders.Core.Evolution.Models.Commons.EvolutionGameUrl;
 using Tgs.GameProviders.Core.Extensions;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Evolution.ApplicationServices;
@@ -45,7 +45,7 @@ public class EvolutionGameUrlGetService : IGetService<EvolutionGameUrlQuery, Gam
             Id = getGame.GameExternalId
         };
 
-        if (getGame.GameType == GameType.LiveDealerLobby)
+        if (getGame.Type == GameType.LiveDealerLobby)
         {
             category = "baccarat_sicbo";
             table = null;

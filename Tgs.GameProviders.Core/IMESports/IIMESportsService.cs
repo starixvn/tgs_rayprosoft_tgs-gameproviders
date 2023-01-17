@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.IMESports;
 
 public interface IIMESportsService
 {
-    ValueTask<GameModel> GetGameAsync(int gameId);
+    ValueTask<GameInfo> GetGameAsync(int gameId);
 
     ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode);
 
@@ -15,7 +15,7 @@ public interface IIMESportsService
 
     ValueTask<string> GetGameProviderLanguageCodeAsync(Guid gameProviderId, string cultureCode);
 
-    ValueTask<PlayerModel> GetPlayerAsync(string playerCode);
+    ValueTask<PlayerInfo> GetPlayerAsync(string playerCode);
 
     ValueTask<IMESportsConfiguration> GetSettingConfigurationAsync();
 }

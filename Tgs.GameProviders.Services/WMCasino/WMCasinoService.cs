@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.WMCasino;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.WMCasino;
 
@@ -39,7 +39,7 @@ public class WMCasinoService : IWMCasinoService
         return !string.IsNullOrEmpty(gameProviderCultureCode) ? gameProviderCultureCode : "en_US";
     }
 
-    public async ValueTask<PlayerModel> GetPlayerAsync(string playerCode)
+    public async ValueTask<PlayerInfo> GetPlayerAsync(string playerCode)
         => await _playerService.GetAsync(playerCode).ConfigureAwait(false);
 
     public async ValueTask<WMCasinoConfiguration> GetSettingConfigurationAsync()

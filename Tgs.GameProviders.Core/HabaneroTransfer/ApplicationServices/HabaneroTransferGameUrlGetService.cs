@@ -32,16 +32,44 @@ internal class HabaneroTransferGameUrlGetService : IGetService<HabaneroTransferG
 
     public async ValueTask<Uri> GetAsync(HabaneroTransferGameUrlQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.HabaneroTransfer).ConfigureAwait(false);
-        var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetHabaneroTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
-        var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, query.Language) ?? "en";
-        var game = await _game.GetAsync(query.GameId.Value).ConfigureAwait(false);
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+                gameProviderCode: GameProviderType.HabaneroTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+                playerCode: query.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: gameProviderId,
+                brandId: player.BrandId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetHabaneroTransferConfiguration(
+                gameProviderConfigurationId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var cultureCode = await _gameProvider
+            .GetGameProviderCultureCodeAsync(
+                gameProviderId,
+                query.Language,
+                cancellationToken)
+            .ConfigureAwait(false) ?? "en";
+        var game = await _game
+            .GetAsync(
+                gameId: query.GameId.Value,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var gameProviderCurrencyCode = await _gameProvider
-                .GetGameProviderCurrencyCodeAsync(gameProviderId, player.DefaultWalletCurrencyCode)
-                .ConfigureAwait(false)
+            .GetGameProviderCurrencyCodeAsync(
+                gameProviderId, player.DefaultWalletCurrencyCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
             ?? throw new Exception($"This game product currency does not exist.({player.DefaultWalletCurrencyCode})");
 
         var response = await _client

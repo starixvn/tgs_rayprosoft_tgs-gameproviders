@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Card365;
 using Tgs.GameProviders.Core.Card365.Model;
 using Tgs.GameProviders.Core.Extensions;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.Card365;
 
@@ -18,16 +17,13 @@ internal class Card365ApiClient : ICard365ApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<Card365ApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public Card365ApiClient(
         ILogger<Card365ApiClient> logger,
-        HttpClient client,
-        ITgsLog tgsLog)
+        HttpClient client)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public ValueTask<Card365GetKeyResponse> GetAccessKeyAsync(
@@ -88,7 +84,6 @@ internal class Card365ApiClient : ICard365ApiClient
 
         var apiLogEvent = new ApiLogEvent
         {
-            Ip = string.Empty,
             Path = httpResponseMessage.RequestMessage?.RequestUri?.AbsoluteUri.NoLongerThan(512) ?? string.Empty,
             Method = httpResponseMessage.RequestMessage?.Method.ToString().NoLongerThan(8) ?? string.Empty,
             Prefix = logPrefix,
@@ -101,8 +96,8 @@ internal class Card365ApiClient : ICard365ApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) &&
             httpResponseMessage.StatusCode == HttpStatusCode.OK)

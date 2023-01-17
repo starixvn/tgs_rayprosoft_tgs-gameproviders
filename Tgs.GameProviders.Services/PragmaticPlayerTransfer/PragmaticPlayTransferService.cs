@@ -2,11 +2,11 @@
 
 using System;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.PragmaticPlayerTransfer;
 
@@ -23,7 +23,7 @@ internal class PragmaticPlayTransferService : IPragmaticPlayTransferService
         _settingService = settingService ?? throw new ArgumentNullException(nameof(settingService));
     }
 
-    public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
+    public ValueTask<GameProviderInfo> GetGameProviderAsync(Guid gameProviderId)
         => _gameProviderService.GetAsync(gameProviderId);
 
     public async ValueTask<string?> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode)

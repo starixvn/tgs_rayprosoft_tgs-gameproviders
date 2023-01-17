@@ -1,36 +1,54 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Repositories;
 
 internal class GameCacheRepository : IGameRepository
 {
-    private readonly IGameRepository _game;
     private readonly IMemoryCache _memoryCache;
+    private readonly IGameRepository _repository;
 
     public GameCacheRepository(
         IMemoryCache memoryCache,
-        IGameRepository game)
+        IGameRepository repository)
     {
         _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-        _game = game ?? throw new ArgumentNullException(nameof(game));
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
     }
 
-    public async ValueTask<GameModel?> GetAsync(int gameId)
+    public async ValueTask<GameInfo> GetAsync(
+        int gameId,
+        CancellationToken cancellationToken = default)
     {
-        var key = $"GameProviders:GameCache:{gameId}".ToLower();
-        if (!_memoryCache.TryGetValue(key, out GameModel? gameModel))
+        var key = $"game:gameproviders:gamecache:get:{gameId}";
+        if (!_memoryCache.TryGetValue(key, out GameInfo? gameModel))
         {
-            gameModel = await _game.GetAsync(gameId).ConfigureAwait(false);
+            gameModel = await _repository
+                .GetAsync(
+                    gameId: gameId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
             if (gameModel is not null)
             {
-                _ = _memoryCache.Set(key, gameModel, TimeSpan.FromHours(1));
+                return _memoryCache
+                    .Set(
+                        key: key,
+                        value: gameModel,
+                        absoluteExpirationRelativeToNow: TimeSpan.FromHours(1));
             }
         }
-        return gameModel;
+        return gameModel!;
     }
 
-    public IAsyncEnumerable<GameModel> GetGameListAsync(Guid gameProviderId, GameType gameType)
-        => _game.GetGameListAsync(gameProviderId, gameType);
+    public IAsyncEnumerable<GameInfo> GetGameListAsync(
+        Guid gameProviderId,
+        GameType gameType,
+        CancellationToken cancellationToken = default)
+        => _repository
+        .GetGameListAsync(
+            gameProviderId: gameProviderId,
+            gameType: gameType,
+            cancellationToken: cancellationToken);
 }

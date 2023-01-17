@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.SBO.Models;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 using static Tgs.GameProviders.Core.SBO.Models.SBOApiErrorCode;
 
@@ -48,7 +48,7 @@ public class SBOGameUrlGetService : IGetService<SBOGameUrlQuery, GameUrlResult>
         var gameProviderCulture =
             await _service.GetGameProviderCultureCodeAsync(game.GameProviderId, query.Language).ConfigureAwait(false);
 
-        var url = game.GameType switch
+        var url = game.Type switch
         {
             GameType.VirtualSports or GameType.VirtualSportsLobby => $"{response.Url}&lang={gameProviderCulture}",
             GameType.Sportsbook => GetSportsbookUrl(query.PlatformType, response.Url, gameProviderCulture),
@@ -74,9 +74,9 @@ public class SBOGameUrlGetService : IGetService<SBOGameUrlQuery, GameUrlResult>
     private async ValueTask<SBOLoginResponse> PlayerLoginAsync(
         SBOConfiguration configuration,
         SBOGameUrlQuery query,
-        GameModel game)
+        GameInfo game)
     {
-        var portfolio = _utility.GetPortfolio(game.GameType);
+        var portfolio = _utility.GetPortfolio(game.Type);
         var playerCode = query.PlayerCode;
 
         var loginRequest = new SBOLoginRequest

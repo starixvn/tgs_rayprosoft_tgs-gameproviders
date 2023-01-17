@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core.Avia;
 using Tgs.GameProviders.Core.Avia.ApplicationServices;
@@ -17,7 +16,7 @@ namespace Tgs.GameProviders.IntegrationTests.GameRecordList;
 [TestFixture]
 internal class AviaGameRecordListUnitTest
 {
-    [Test]
+     [Test]
     public async Task Test_Avia_GameRecordListAsync()
     {
         var fakeClient = Substitute.For<IAviaApiClient>();
@@ -30,7 +29,6 @@ internal class AviaGameRecordListUnitTest
               {
                   _ = services.AddSingleton(fakeClient);
                   _ = services.AddSingleton(fakeService);
-                  _ = services.AddFakeNatsMessageQueue();
               });
         });
         var query = new AviaGameRecordListQuery()

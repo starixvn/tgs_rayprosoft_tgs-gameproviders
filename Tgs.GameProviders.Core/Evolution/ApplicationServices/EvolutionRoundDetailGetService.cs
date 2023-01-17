@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Evolution.Models;
 using Tgs.GameProviders.Domains.RoundDetail;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Evolution.ApplicationServices;
@@ -57,7 +57,7 @@ internal class EvolutionRoundDetailGetService : IGetService<EvolutionRoundDetail
                 RoundId = roundInfo.ExternalRoundId
             }).ConfigureAwait(false);
 
-        return gameInfo.GameType == GameType.Slot
+        return gameInfo.Type == GameType.Slot
             ? new RoundDetailResult
             {
                 Data = new RoundDetailDataBase[]

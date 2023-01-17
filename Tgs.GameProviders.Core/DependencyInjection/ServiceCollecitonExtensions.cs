@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Tgs.GameCommand.Client;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
@@ -16,7 +17,6 @@ using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GamePlayerTransform.Client;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.QueryServer.Client;
 using Tgs.GameRounds.Client;
 using Tgs.GameToken.Client;
 using Tgs.GameToken.Clients.DependencyInjection;
@@ -25,12 +25,12 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollecitonExtensions
 {
-    public static IServiceCollection AddGameProviders(
+    public static IServiceCollection AddGameProvidersCore(
         this IServiceCollection services,
         Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions,
         Action<GameTokenClientOptions, IServiceProvider> gameTokenClientOptions,
         Action<GamePlayerTransformClientOptions, IServiceProvider> gamePlayerTransformClientOptions,
-        Action<GameProvidersQueryServerClientOptions, IServiceProvider> gameProvidersQueryServerClientOptions,
+        Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
         Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions,
         Action<GameInterfaceJiliServiceClientOptions, IServiceProvider> gameInterfaceJiliServiceClientOptions,
         Action<GameInterfaceWMCasinoServiceClientOptions, IServiceProvider> gameInterfaceWMCasinoClientOptions,
@@ -49,7 +49,7 @@ public static class ServiceCollecitonExtensions
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
                 ServiceLifetime.Transient)
-            .AddGameProvidersQueryServerClient(gameProvidersQueryServerClientOptions)
+            .AddGameCommandClient(gameCommandClientOptions)
             .AddGameInterfaceAwcServiceClient(gameInterfaceAwcServiceClientOptions)
             .AddGameInterfaceJiliServiceClient(gameInterfaceJiliServiceClientOptions)
             .AddGameInterfaceWMCasinoServiceClient(gameInterfaceWMCasinoClientOptions)
@@ -69,7 +69,6 @@ public static class ServiceCollecitonExtensions
             .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)
             .AddSecurity()//Tgs.Core.Infrastructures.Security
             .AddMemoryCache()
-            .AddTransient<IBrandRepository, BrandService>()
             .AddTransient<IGameActionService, GameActionService>()
             .AddTransient<IRoundService, RoundService>()
             .AddTransient<ISystemClock, SystemClock>();

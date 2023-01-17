@@ -3,12 +3,13 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.JDB;
 using Tgs.GameProviders.Core.JDB.ApplicationServices;
 using Tgs.GameProviders.Core.JDB.Models;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.JDB;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.JDB;
 
@@ -45,28 +46,27 @@ public class JDBGameUrlQueryGetServiceUnitTest
             Agents = new[] { agent }
         };
 
-        var gameModel = new GameModel(
-            700010,
-            Guid.Parse("65cc2057-cb52-44aa-8bff-dbb3d9ebdddc"),
-            "JDB",
-            "0_14034",
-            GameStatus.Active,
-            null,
-            null,
-            null,
-            GameType.Slot,
-            GamePlatformType.DesktopAndMobile,
-            false,
-            true,
-            false,
-            true,
-            null,
-            "GoLaiFu",
-            "GoLaiFu",
-            null,
-            "JDB");
+        var gameInfo = new GameInfo(
+            GameId: 1,
+            GameCode: "GoLaiFu",
+            GameProviderId: Guid.NewGuid(),
+            GameProviderCode: GameProviderType.JDB,
+            GameExternalId: "0_14034",
+            Type: GameType.Slot,
+            PlatformType: GamePlatformType.DesktopAndMobile,
+            Name: "GoLaiFu",
+            SubGame: true,
+            AvailableToBrand: false,
+            HasTurnoverOnTieBet: true,
+            Html5: true,
+            Description: null,
+            EndpointPath: null,
+            RuleUrl: null,
+            AvailableCurrencies: null,
+            Localization: null,
+            SubGameProviderCode: GameProviderType.JDB);
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
             "TGS",
             Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
@@ -76,13 +76,12 @@ public class JDBGameUrlQueryGetServiceUnitTest
             "4ucmqplxb029",
             "4ucmqplxb029",
             Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY",
-            PlayerStatus.Enabled);
+            "CNY");
 
         var query = new JDBGameUrlQuery
         {
-            GameType = gameModel.GameType,
-            GameId = gameModel.GameId,
+            GameType = gameInfo.Type,
+            GameId = gameInfo.GameId,
             BrandCode = "GPI",
             PlayerCode = player.PlayerCode,
             CurrencyCode = "CNY",
@@ -94,16 +93,16 @@ public class JDBGameUrlQueryGetServiceUnitTest
         };
 
         fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderLanguageAsync(gameModel.GameProviderId, query.Language)
+        fakeService.GetGameProviderLanguageAsync(gameInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
         fakeAgentMapper.GetAgent(configuration.Agents, player.DefaultWalletCurrencyCode)
             .Returns(agent);
 
-        fakePlayerRepository.GetAsync(query.PlayerCode).Returns(Task.FromResult(player));
-        fakeGameRepository.GetAsync(query.GameId.Value).Returns(ValueTask.FromResult<GameModel?>(gameModel));
+        fakePlayerRepository.GetAsync(query.PlayerCode).Returns(ValueTask.FromResult(player));
+        fakeGameRepository.GetAsync(query.GameId.Value).Returns(ValueTask.FromResult(gameInfo));
 
-        var items = gameModel.GameExternalId.Split('_');
+        var items = gameInfo.GameExternalId.Split('_');
 
         fakeApiClient
             .GetTokenAsync(

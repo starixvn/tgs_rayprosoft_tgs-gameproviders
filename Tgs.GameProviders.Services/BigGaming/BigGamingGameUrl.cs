@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.BigGaming;
 using Tgs.GameProviders.Core.BigGaming.Models;
 using Tgs.GameProviders.Core.BigGaming.Models.Commons;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Domains.SettingConfiguration.BigGaming;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.BigGaming;
 
@@ -18,8 +18,8 @@ internal class BigGamingGameUrl : IBigGamingGameUrl
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, string playerCode, GameModel game, string cultureCode)
-        => game.GameType
+    public async ValueTask<BigGamingResponse> GetGameUrlAsync(BigGamingBrandMerchant brandMerchant, string playerCode, GameInfo game, string cultureCode)
+        => game.Type
         switch
         {
             GameType.Fishing => await GetGameUrlFishingAsync(brandMerchant, playerCode, game.GameExternalId, cultureCode).ConfigureAwait(false),

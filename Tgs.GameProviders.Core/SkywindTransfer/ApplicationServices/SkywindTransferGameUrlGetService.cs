@@ -2,10 +2,10 @@
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SkywindService.Protos;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.QueryServer.Models;
 using Tgs.GameToken.Client;
 using Tgs.ServiceUtility;
 
@@ -41,19 +41,42 @@ public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameU
 
     public async ValueTask<GameUrlResult> GetAsync(SkywindTransferGameUrlQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.SkywindTransfer).ConfigureAwait(false);
-        var configuration = await _setting.GetSkywindTransferConfigurationAsync().ConfigureAwait(false);
-        var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+                gameProviderCode: GameProviderType.SkywindTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _setting
+            .GetSkywindTransferConfigurationAsync(
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+                playerCode: query.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
         var currencyCode = await _gameProvider
-                       .GetGameProviderCurrencyCodeAsync(gameProviderId, query.CurrencyCode)
-                       .ConfigureAwait(false)
-                   ?? throw new Exception($"This game product currency does not exist.({query.CurrencyCode})");
-        var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, query.Language) ?? "en";
-        var game = await _game.GetAsync(query.GameId.Value).ConfigureAwait(false);
+            .GetGameProviderCurrencyCodeAsync(
+                gameProviderId: gameProviderId,
+                currencyCode: query.CurrencyCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"This game product currency does not exist.({query.CurrencyCode})");
+        var cultureCode = await _gameProvider
+            .GetGameProviderCultureCodeAsync(
+                gameProviderId: gameProviderId,
+                cultureCode: query.Language,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false) ?? "en";
+        var game = await _game
+            .GetAsync(
+                gameId: query.GameId.Value,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         Uri gameUrl;
 
-        if (game.GameType == GameType.LiveDealerLobby)
+        if (game.Type == GameType.LiveDealerLobby)
         {
             var info = new ValidateTicketInfo()
             {

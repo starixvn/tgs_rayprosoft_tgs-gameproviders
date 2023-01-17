@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
-using Tgs.GameProviders.QueryServer.Models;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 
 namespace Tgs.GameProviders.Core;
 
 public interface IPlayerRepository
 {
-    Task<PlayerModel> GetAsync(string playerCode);
+    ValueTask<PlayerInfo> GetAsync(
+        string playerCode,
+        CancellationToken cancellationToken = default);
 }

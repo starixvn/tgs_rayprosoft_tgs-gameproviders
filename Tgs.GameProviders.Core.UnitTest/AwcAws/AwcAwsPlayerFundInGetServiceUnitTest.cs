@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.AwcService.Protos;
 using Tgs.GameProviders.Core.AwcAws.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.AwcAws;
 
@@ -35,7 +35,7 @@ public class AwcAwsPlayerFundInGetServiceUnitTest
             Cert: "testCert",
             BetLimit: null);
 
-        var playerModel = new PlayerModel(
+        var playerModel = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -45,8 +45,7 @@ public class AwcAwsPlayerFundInGetServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
 
         var query = new AwcAwsPlayerFundInQuery
         {

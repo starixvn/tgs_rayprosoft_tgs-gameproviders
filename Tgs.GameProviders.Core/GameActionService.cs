@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using Tgs.GameProviders.QueryServer.Client;
+using Tgs.GameCommand.Client;
 
 namespace Tgs.GameProviders.Core;
 
 internal class GameActionService : IGameActionService
 {
-    private readonly IGameProvidersQueryServerClient _gameProvidersQueryServerClient;
+    private readonly IGameCommandClient _client;
 
     public GameActionService(
-        IGameProvidersQueryServerClient gameProvidersQueryServerClient
+        IGameCommandClient client
         )
     {
-        _gameProvidersQueryServerClient = gameProvidersQueryServerClient ?? throw new ArgumentNullException(nameof(gameProvidersQueryServerClient));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
     public async IAsyncEnumerable<GameActionInfo> QueryAsync(Guid roundId)
     {
-        var viewModels = await _gameProvidersQueryServerClient.GameActionQueryAsync(roundId).ConfigureAwait(false);
+        var viewModels = await _client.GameActionQueryAsync(roundId).ConfigureAwait(false);
 
         foreach (var viewModel in viewModels)
             yield return new GameActionInfo(

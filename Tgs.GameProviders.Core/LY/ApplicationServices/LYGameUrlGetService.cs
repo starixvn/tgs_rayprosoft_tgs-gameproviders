@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Tgs.GameProviders.QueryServer.Models;
+using Tgs.GameCommand.Common;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.LY.ApplicationServices;
@@ -37,7 +37,7 @@ public class LYGameUrlGetService : IGetService<LYGameUrlQuery, GameUrlResult>
 
             if (getGame != null)
             {
-                if (getGame.GameType != GameType.CardGameLobby)
+                if (getGame.Type != GameType.CardGameLobby)
                 {
                     gameExternalID = Convert.ToInt32(getGame.GameExternalId);
                 }

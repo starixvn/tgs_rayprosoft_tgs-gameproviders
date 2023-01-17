@@ -1,11 +1,11 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using ExpectedObjects;
 using NSubstitute;
+using Tgs.GameCommand.Client;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Client;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Repositories.UnitTest;
 
@@ -15,7 +15,7 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_Awc_ConfigurationData()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
@@ -25,7 +25,7 @@ public class GameProviderRepositoryUnitTest
             BetLimit: null);
         var configurationData = JsonSerializer.Serialize(awcConfigurationData);
 
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
             GameProviderId: gameProviderId,
             GameProviderCode: "AWC_AWS",
             GameProviderConfigId: gameProviderConfigurationId,
@@ -50,7 +50,7 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_BTiSports_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
@@ -70,7 +70,7 @@ public class GameProviderRepositoryUnitTest
             .SettingGetConfigurationAsync<BTiSportsConfiguration>(Arg.Is(GameProviderConfigurations.BTiSports))
             .Returns(settingConfiguration);
 
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
             GameProviderId: gameProviderId,
             GameProviderCode: GameProviderType.BTiSports,
             GameProviderConfigId: gameProviderConfigurationId,
@@ -99,14 +99,14 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_Game_Endpoints()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var desktopEndpoint = "http://desktop.google.com";
         var mobileEndpoint = "http://mobile.google.com";
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
 
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
             GameProviderId: gameProviderId,
             GameProviderCode: "AG",
             GameProviderConfigId: gameProviderConfigurationId,
@@ -132,13 +132,12 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_GameProvider()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
 
-        _ = fakeClient.GameProviderGetAsync(gameProviderId).Returns(new GameProviderModel(
+        _ = fakeClient.GameProviderGetAsync(gameProviderId).Returns(new GameProviderInfo(
             GameProviderId: gameProviderId,
-            Status: GameProviderStatus.Active,
             Description: "KY",
             AutoCloseRound: true,
             SupportTestPlayer: true,
@@ -162,7 +161,7 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_GameProvider_CultureCode()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
         var cultureCode = "en-US";
@@ -180,7 +179,7 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_GameProvider_CurrencyCode()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
         var currencyCode = "CNY";
@@ -198,7 +197,7 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_GameProvider_Id()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderCode = "KY";
         var expected = Guid.NewGuid();
@@ -215,7 +214,7 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_JDBTransfer_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
@@ -231,7 +230,7 @@ public class GameProviderRepositoryUnitTest
             .SettingGetConfigurationAsync<JDBTransferConfiguration>(Arg.Is(GameProviderConfigurations.JDBTransfer))
             .Returns(settingConfiguration);
 
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
             GameProviderId: gameProviderId,
             GameProviderCode: GameProviderType.JDBTransfer,
             GameProviderConfigId: gameProviderConfigurationId,
@@ -258,7 +257,7 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_JiliTransfer_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
@@ -273,7 +272,7 @@ public class GameProviderRepositoryUnitTest
             .SettingGetConfigurationAsync<JiliTransferConfiguration>(Arg.Is(GameProviderConfigurations.JiliTransfer))
             .Returns(settingConfiguration);
 
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
             GameProviderId: gameProviderId,
             GameProviderCode: GameProviderType.JiliTransfer,
             GameProviderConfigId: gameProviderConfigurationId,
@@ -298,7 +297,7 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_SabaTransfer_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
@@ -312,7 +311,7 @@ public class GameProviderRepositoryUnitTest
             .SettingGetConfigurationAsync<SabaTransferConfiguration>(Arg.Is(GameProviderConfigurations.SabaTransfer))
             .Returns(settingConfiguration);
 
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
             GameProviderId: gameProviderId,
             GameProviderCode: GameProviderType.SabaTransfer,
             GameProviderConfigId: gameProviderConfigurationId,
@@ -340,7 +339,7 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_SBOTransfer_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
@@ -358,7 +357,7 @@ public class GameProviderRepositoryUnitTest
             .SettingGetConfigurationAsync<SBOTransferConfiguration>(Arg.Is(GameProviderConfigurations.SBOTransfer))
             .Returns(settingConfiguration);
 
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
             GameProviderId: gameProviderId,
             GameProviderCode: "SBOTF",
             GameProviderConfigId: gameProviderConfigurationId,
@@ -387,7 +386,7 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_SM01_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
@@ -401,7 +400,7 @@ public class GameProviderRepositoryUnitTest
             .SettingGetConfigurationAsync<SM01Configuration>(Arg.Is(GameProviderConfigurations.SM01))
             .Returns(settingConfiguration);
 
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
             GameProviderId: gameProviderId,
             GameProviderCode: GameProviderType.SM01,
             GameProviderConfigId: gameProviderConfigurationId,
@@ -428,7 +427,7 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_WGFmGaming_ConfigurationData()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
@@ -447,7 +446,7 @@ public class GameProviderRepositoryUnitTest
             .SettingGetConfigurationAsync<WGFmGamingConfiguration>(Arg.Is(GameProviderConfigurations.WGSports))
             .Returns(settingConfiguration);
 
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
             GameProviderId: gameProviderId,
             GameProviderCode: "WGFM",
             GameProviderConfigId: gameProviderConfigurationId,
@@ -475,7 +474,7 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_WGFmGaming_ConfigurationData_Is_Empty()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
@@ -494,7 +493,7 @@ public class GameProviderRepositoryUnitTest
             .SettingGetConfigurationAsync<WGFmGamingConfiguration>(Arg.Is(GameProviderConfigurations.WGSports))
             .Returns(settingConfiguration);
 
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
             GameProviderId: gameProviderId,
             GameProviderCode: "WGFM",
             GameProviderConfigId: gameProviderConfigurationId,
@@ -522,7 +521,7 @@ public class GameProviderRepositoryUnitTest
     [TestMethod]
     public async Task Get_WMCasinoTransfer_Configuration()
     {
-        var fakeClient = Substitute.For<IGameProvidersQueryServerClient>();
+        var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
@@ -535,7 +534,7 @@ public class GameProviderRepositoryUnitTest
             .SettingGetConfigurationAsync<WMCasinoTransferConfiguration>(Arg.Is(GameProviderConfigurations.WMCasinoTransfer))
             .Returns(settingConfiguration);
 
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigModel(
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
             GameProviderId: gameProviderId,
             GameProviderCode: GameProviderType.WMCasinoTransfer,
             GameProviderConfigId: gameProviderConfigurationId,

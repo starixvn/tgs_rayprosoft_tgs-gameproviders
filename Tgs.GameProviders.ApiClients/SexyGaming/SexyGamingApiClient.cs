@@ -13,7 +13,6 @@ using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.SexyGaming;
 using Tgs.GameProviders.Core.SexyGaming.Models;
 using Tgs.GameProviders.Domains;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.SexyGaming;
 
@@ -21,17 +20,14 @@ internal class SexyGamingApiClient : ISexyGamingApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<SexyGamingApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public SexyGamingApiClient(
         HttpClient client,
-        ILogger<SexyGamingApiClient> logger,
-        ITgsLog tgsLog
+        ILogger<SexyGamingApiClient> logger
         )
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public ValueTask<SexyGamingCreateMemberResponse> CreatePlayerAsync(Uri apiUrl, SexyGamingCreateMemberRequest request)
@@ -56,7 +52,7 @@ internal class SexyGamingApiClient : ISexyGamingApiClient
                      Delay = retryTime,
                      CreationTime = DateTimeOffset.UtcNow
                  };
-                 _logger.LogWarning(System.Text.Json.JsonSerializer.Serialize(data));
+                 _logger.LogInformation("{data}", System.Text.Json.JsonSerializer.Serialize(data));
              });
 
         return await retryPolicy.ExecuteAsync(async ()
@@ -82,7 +78,7 @@ internal class SexyGamingApiClient : ISexyGamingApiClient
                      Delay = retryTime,
                      CreationTime = DateTimeOffset.UtcNow
                  };
-                 _logger.LogWarning(System.Text.Json.JsonSerializer.Serialize(data));
+                 _logger.LogInformation("{data}", System.Text.Json.JsonSerializer.Serialize(data));
              });
 
         return await retryPolicy.ExecuteAsync(async ()
@@ -132,8 +128,8 @@ internal class SexyGamingApiClient : ISexyGamingApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{System.Text.Json.JsonSerializer.Serialize(apiLogEvent)}", System.Text.Json.JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", System.Text.Json.JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
         {

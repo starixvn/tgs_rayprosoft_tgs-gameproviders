@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.PragmaticPlay;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Services.PragmaticPlay;
 
@@ -24,10 +24,10 @@ internal class PragmaticPlayService : IPragmaticPlayService
         _settingRepository = settingRepository ?? throw new ArgumentNullException(nameof(settingRepository));
     }
 
-    public async ValueTask<GameModel> GetGameAsync(int gameId)
+    public async ValueTask<GameInfo> GetGameAsync(int gameId)
         => await _gameRepository.GetAsync(gameId).ConfigureAwait(false);
 
-    public ValueTask<GameProviderModel> GetGameProviderAsync(Guid gameProviderId)
+    public ValueTask<GameProviderInfo> GetGameProviderAsync(Guid gameProviderId)
         => _gameProviderRepository.GetAsync(gameProviderId);
 
     public async ValueTask<string> GetGameProviderLanguageAsync(Guid gameProviderId, string cultureCode)

@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
 using NUnit.Framework;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.SabaTransfer;
 
@@ -30,7 +30,7 @@ public class SabaTransferKickPlayerCommandServiceUnitTest
         var gameProviderId = Guid.NewGuid();
         _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.SabaTransfer)).Returns(gameProviderId);
 
-        var player = new PlayerModel(
+        var player = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -40,8 +40,7 @@ public class SabaTransferKickPlayerCommandServiceUnitTest
             PlayerCode: "4ucmqplxb029",
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY",
-            PlayerStatus.Enabled);
+            DefaultWalletCurrencyCode: "CNY");
         _ = fakePlayerRepository.GetAsync(Arg.Is(command.PlayerCode)).Returns(player);
 
         var gameProviderConfigurationId = Guid.NewGuid();

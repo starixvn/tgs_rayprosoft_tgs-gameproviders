@@ -6,12 +6,12 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
+using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.SexyGaming;
 using Tgs.GameProviders.Core.SexyGaming.ApplicationServices;
 using Tgs.GameProviders.Core.SexyGaming.Models;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains.SettingConfiguration.SexyGaming;
-using Tgs.GameProviders.QueryServer.Models;
 
 namespace Tgs.GameProviders.Core.UnitTest.SexyGaming;
 

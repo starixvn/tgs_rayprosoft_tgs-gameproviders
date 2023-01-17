@@ -1,4 +1,4 @@
-﻿using Tgs.GameProviders.QueryServer.Models;
+﻿using Tgs.GameCommand.Common;
 
 namespace Tgs.GameProviders.Core.SBO;
 

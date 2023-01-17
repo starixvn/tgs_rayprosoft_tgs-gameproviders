@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.Habanero;
 using Tgs.GameProviders.Core.Habanero.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.Habanero;
 
@@ -18,16 +17,13 @@ internal class HabaneroApiClient : IHabaneroApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<HabaneroApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public HabaneroApiClient(
         HttpClient client,
-        ILogger<HabaneroApiClient> logger,
-        ITgsLog tgsLog)
+        ILogger<HabaneroApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public ValueTask<HabaneroLogoutResponse> LogoutAsync(
@@ -80,8 +76,8 @@ internal class HabaneroApiClient : IHabaneroApiClient
             ExecutionTimeMs = (int)sw.ElapsedMilliseconds,
             RecordedOn = DateTimeOffset.UtcNow
         };
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) &&
             httpResponseMessage.StatusCode == HttpStatusCode.OK)

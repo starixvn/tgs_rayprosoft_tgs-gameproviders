@@ -2,14 +2,13 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-
+		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<IsPackable>true</IsPackable>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
-		<Version>0.0.50</Version>
+		<Version>0.0.51</Version>
 		<Authors>Raypro</Authors>
 		<Description>TGS Game Providers Client</Description>
 		<PackageProjectUrl>https://gitlab.com/rayprosoft/tgs-gameproviders</PackageProjectUrl>
@@ -23,9 +22,9 @@
 		<PackageReference Include="Microsoft.Extensions.Options" Version="7.0.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\Tgs.GameProviders.Domains\Tgs.GameProviders.Domains.csproj">
-	    <PrivateAssets>ALL</PrivateAssets>
-	  </ProjectReference>
+		<ProjectReference Include="..\Tgs.GameProviders.Domains\Tgs.GameProviders.Domains.csproj">
+			<PrivateAssets>ALL</PrivateAssets>
+		</ProjectReference>
 	</ItemGroup>
 
 	<Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
@@ -42,5 +41,5 @@
 			<BuildOutputInPackage Include="@(_ReferenceCopyLocalPaths)" TargetPath="%(_ReferenceCopyLocalPaths.DestinationSubDirectory)" />
 		</ItemGroup>
 	</Target>
-	
+
 </Project>

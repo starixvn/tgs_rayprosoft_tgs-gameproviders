@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.WMCasino;
 using Tgs.GameProviders.Core.WMCasino.Models;
-using Tgs.Logging;
 
 namespace Tgs.GameProviders.ApiClients.WMCasino;
 
@@ -18,16 +17,13 @@ public class WMCasinoApiClient : IWMCasinoApiClient
 {
     private readonly HttpClient _client;
     private readonly ILogger<WMCasinoApiClient> _logger;
-    private readonly ITgsLog _tgsLog;
 
     public WMCasinoApiClient(
         HttpClient client,
-        ILogger<WMCasinoApiClient> logger,
-        ITgsLog tgsLog)
+        ILogger<WMCasinoApiClient> logger)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _tgsLog = tgsLog ?? throw new ArgumentNullException(nameof(tgsLog));
     }
 
     public ValueTask<WMCasinoGetDateTimeReportResponse> GetDateTimeReportAsync(
@@ -99,8 +95,7 @@ public class WMCasinoApiClient : IWMCasinoApiClient
             RecordedOn = DateTimeOffset.UtcNow
         };
 
-        _tgsLog.LogApi(apiLogEvent);
-        _logger.LogInformation("{JsonSerializer.Serialize(apiLogEvent)}", JsonSerializer.Serialize(apiLogEvent));
+        _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
         if (!string.IsNullOrEmpty(responseMessage) &&
             httpResponseMessage.StatusCode == HttpStatusCode.OK)
