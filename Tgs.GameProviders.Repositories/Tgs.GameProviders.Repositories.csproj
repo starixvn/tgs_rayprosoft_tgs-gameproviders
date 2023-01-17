@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="JunitXml.TestLogger" Version="3.0.114" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Tgs.GameProviders.Core\Tgs.GameProviders.Core.csproj" />
   </ItemGroup>
 
