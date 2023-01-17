@@ -13,7 +13,7 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-     [Test]
+    [Test]
     public async Task Player_Fund_Checking()
     {
         var fakeService = Substitute.For<IGetService<KYPlayerFundCheckingQuery, PlayerFundCheckingResult>>();
@@ -64,7 +64,7 @@ public partial class GameProvidersClientUnitTest
         Assert.IsTrue(actual);
     }
 
-     [Test]
+    [Test]
     public void Player_Fund_HttpRequestException()
     {
         var fakeService = Substitute.For<IGetService<KYPlayerFundCheckingQuery, PlayerFundCheckingResult>>();

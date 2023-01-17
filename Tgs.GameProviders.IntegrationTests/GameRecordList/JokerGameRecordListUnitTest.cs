@@ -18,7 +18,7 @@ namespace Tgs.GameProviders.IntegrationTests.GameRecordList;
 [TestFixture]
 public class JokerGameRecordListUnitTest
 {
-     [Test]
+    [Test]
     public async Task Test_Joker_GameRecordListAsync()
     {
         var fakeService = Substitute.For<IJokerService>();

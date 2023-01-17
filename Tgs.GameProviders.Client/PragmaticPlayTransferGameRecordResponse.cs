@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Tgs.GameProviders.Client;
+﻿namespace Tgs.GameProviders.Client;
 
 public record PragmaticPlayTransferGameRecordResponse
 {

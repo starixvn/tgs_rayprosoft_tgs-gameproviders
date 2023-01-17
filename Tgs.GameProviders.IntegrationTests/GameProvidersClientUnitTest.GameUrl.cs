@@ -12,10 +12,9 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.IntegrationTests;
 
-
 public partial class GameProvidersClientUnitTest
 {
-     [Test]
+    [Test]
     public async Task Game_Url()
     {
         var fakeService = Substitute.For<IGetService<KYGameUrlQuery, GameUrlResult>>();
@@ -84,7 +83,7 @@ public partial class GameProvidersClientUnitTest
         Assert.AreEqual(result.Url, actual!);
     }
 
-     [Test]
+    [Test]
     public void Game_Url_HttpRequestException()
     {
         var fakeService = Substitute.For<IGetService<KYGameUrlQuery, GameUrlResult>>();

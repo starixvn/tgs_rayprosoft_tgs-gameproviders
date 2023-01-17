@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Tgs.GameProviders.Client;
 
 namespace Microsoft.Extensions.DependencyInjection;

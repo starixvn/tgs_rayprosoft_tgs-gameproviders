@@ -12,7 +12,7 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-     [Test]
+    [Test]
     public async Task Game_Url_By_BetConstruct()
     {
         var fakeService = Substitute.For<IGetService<BetConstructGameUrlQuery, GameUrlResult>>();

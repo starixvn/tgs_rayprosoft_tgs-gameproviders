@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core.DreamGame;
 using Tgs.GameProviders.Core.DreamGame.Models;

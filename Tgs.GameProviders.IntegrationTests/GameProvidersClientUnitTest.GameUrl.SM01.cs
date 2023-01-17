@@ -9,7 +9,7 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-     [Test]
+    [Test]
     public async Task Test_GameProvidersClient_GamePlatformLoginBySM01Async()
     {
         var fakeService = Substitute.For<IGetService<SM01PlatformLoginQuery, SM01PlatformLoginInfo>>();

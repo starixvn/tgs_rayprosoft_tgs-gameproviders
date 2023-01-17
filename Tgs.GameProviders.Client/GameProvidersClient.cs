@@ -1,12 +1,8 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
 
