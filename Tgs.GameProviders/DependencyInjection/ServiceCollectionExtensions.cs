@@ -1,6 +1,7 @@
 ﻿using Tgs.GameCommand.Client;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
+using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
@@ -42,33 +43,31 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceHabaneroClientOptions, IServiceProvider> gameInterfaceHabaneroClientOptions,
         Action<GameInterfaceSabaClientOptions, IServiceProvider> gameInterfaceSabaClientOptions,
         Action<GameInterfaceSM01ClientOptions, IServiceProvider> gameInterfaceSM01ClientOptions,
-        Action<GameInterfaceTFGamingClientOptions, IServiceProvider> gameInterfaceTFGamingClientOptions)
+        Action<GameInterfaceTFGamingClientOptions, IServiceProvider> gameInterfaceTFGamingClientOptions,
+        Action<GameInterfaceDreamGamingClientOptions, IServiceProvider> gameInterfaceDreamGamingClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
             .Services
             .AddSingleton<RedisConnectionFactory>()
-            .AddGameProvidersRepositories()
-            .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
             .AddGameProvidersCore(
-                gameRoundsClientOptions: gameRoundsClientOptions,
-                gameTokenClientOptions: gameTokenClientOptions,
-                gamePlayerTransformClientOptions: gamePlayerTransformClientOptions,
-                gameCommandClientOptions: gameCommandClientOptions,
-                gameInterfaceAwcServiceClientOptions: gameInterfaceAwcServiceClientOptions,
-                gameInterfaceJiliServiceClientOptions: gameInterfaceJiliServiceClientOptions,
-                gameInterfaceWMCasinoClientOptions: gameInterfaceWMCasinoClientOptions,
-                gameInterfaceEvolutionServiceClientOptions: gameInterfaceEvolutionServiceClientOptions,
-                gameInterfaceIdnLiveClientOptions: gameInterfaceIdnLiveClientOptions,
-                gameInterfaceSkywindClientOptions: gameInterfaceSkywindClientOptions,
-                gameInterfaceWGFmGamingClientOptions: gameInterfaceWGFmGamingClientOptions,
-                gameInterfaceJDBClientOptions: gameInterfaceJDBClientOptions,
-                gameInterfaceSBOClientOptions: gameInterfaceSBOClientOptions,
-                gameInterfaceBTiClientOptions: gameInterfaceBTiClientOptions,
-                gameInterfaceHabaneroClientOptions: gameInterfaceHabaneroClientOptions,
-                gameInterfaceSabaClientOptions: gameInterfaceSabaClientOptions,
-                gameInterfaceSM01ClientOptions: gameInterfaceSM01ClientOptions,
-                gameInterfaceTFGamingClientOptions: gameInterfaceTFGamingClientOptions);
-
-
+                gameRoundsClientOptions,
+                gameTokenClientOptions,
+                gamePlayerTransformClientOptions,
+                gameCommandClientOptions,
+                gameInterfaceAwcServiceClientOptions,
+                gameInterfaceJiliServiceClientOptions,
+                gameInterfaceWMCasinoClientOptions,
+                gameInterfaceEvolutionServiceClientOptions,
+                gameInterfaceIdnLiveClientOptions,
+                gameInterfaceSkywindClientOptions,
+                gameInterfaceWGFmGamingClientOptions,
+                gameInterfaceJDBClientOptions,
+                gameInterfaceSBOClientOptions,
+                gameInterfaceBTiClientOptions,
+                gameInterfaceHabaneroClientOptions,
+                gameInterfaceSabaClientOptions,
+                gameInterfaceSM01ClientOptions,
+                gameInterfaceTFGamingClientOptions,
+                gameInterfaceDreamGamingClientOptions);
 }

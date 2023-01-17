@@ -51,6 +51,18 @@ builder.Services.AddSwaggerGen(c =>
     foreach (var xmlFileName in xmlFileNames) c.IncludeXmlComments(xmlFileName);
 });
 
+builder.Services
+    .AddMessageQueue()
+    .AddNatsMessageQueue(natsConfig =>
+    {
+        _ = natsConfig
+        .ConfigQueueOptions((options, sp) =>
+        {
+            var configuration = sp.GetRequiredService<IConfiguration>();
+            options.Url = configuration.GetConnectionString("Nats")!;
+        });
+    })
+    .AddNatsGlobPatternExchange("*");
 
 builder.Services
     .AddApiClients()
@@ -149,9 +161,12 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceTFGamingBaseUrl");
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceDreamGamingBaseUrl");
     });
-    
-
 builder.Services
     .AddAutoMapper(config =>
     {
@@ -212,6 +227,8 @@ var app = builder.Build();
 
 _ = app.UseSwagger();
 _ = app.UseSwaggerUI();
+
+_ = app.UseHttpsRedirection();
 
 _ = app.UseAuthorization();
 

@@ -75,6 +75,29 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
+    public async ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<DreamGamingTransferConfiguration>(
+                key: GameProviderConfigurations.DreamGamingTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.DreamGamingTransfer})");
+
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+                  ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+
+        return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
+            ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+            : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
+    }
+
     public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
@@ -261,7 +284,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<TFGamingTransferConfiguration> GetTFGamgingTransferConfiguration(
+    public async ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfiguration(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {

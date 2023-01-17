@@ -3,6 +3,7 @@ using System.Reflection;
 using Tgs.GameCommand.Client;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
+using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
@@ -44,7 +45,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceHabaneroClientOptions, IServiceProvider> gameInterfaceHabaneroClientOptions,
         Action<GameInterfaceSabaClientOptions, IServiceProvider> gameInterfaceSabaClientOptions,
         Action<GameInterfaceSM01ClientOptions, IServiceProvider> gameInterfaceSM01ClientOptions,
-        Action<GameInterfaceTFGamingClientOptions, IServiceProvider> gameInterfaceTFGamingClientOptions)
+        Action<GameInterfaceTFGamingClientOptions, IServiceProvider> gameInterfaceTFGamingClientOptions,
+        Action<GameInterfaceDreamGamingClientOptions, IServiceProvider> gameInterfaceDreamGamingClientOptions)
         => services
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
@@ -64,6 +66,7 @@ public static class ServiceCollecitonExtensions
             .AddGameInterfaceSabaServiceClient(gameInterfaceSabaClientOptions)
             .AddGameInterfaceSM01ServiceClient(gameInterfaceSM01ClientOptions)
             .AddGameInterfaceTFGamingServiceClient(gameInterfaceTFGamingClientOptions)
+            .AddGameInterfaceDreamGamingServiceClient(gameInterfaceDreamGamingClientOptions)
             .AddGameRoundsClient(gameRoundsClientOptions)
             .AddGameTokenClient(gameTokenClientOptions)
             .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)

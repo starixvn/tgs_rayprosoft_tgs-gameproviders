@@ -63,7 +63,11 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<TFGamingTransferConfiguration> GetTFGamgingTransferConfiguration(
+    ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 

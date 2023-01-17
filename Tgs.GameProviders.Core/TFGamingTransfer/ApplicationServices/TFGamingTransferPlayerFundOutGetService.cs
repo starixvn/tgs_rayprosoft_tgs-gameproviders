@@ -31,7 +31,7 @@ public class TFGamingTransferPlayerFundOutGetService : IGetService<TFGamingTrans
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.TFGamingTransfer).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetTFGamgingTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetTFGamingTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
 
         var reply = await _client
             .FundOutAsync(

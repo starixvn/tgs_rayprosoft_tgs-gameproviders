@@ -18,6 +18,7 @@
 		<PackageReference Include="Tgs.GameCommand.Client" Version="0.0.5" />
 		<PackageReference Include="Tgs.GameInterface.AwcService.Client" Version="0.0.8" />
 		<PackageReference Include="Tgs.GameInterface.BTiService.Client" Version="0.0.2" />
+		<PackageReference Include="Tgs.GameInterface.DreamGamingService.Client" Version="0.0.4" />
 		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.7" />
 		<PackageReference Include="Tgs.GameInterface.HabaneroService.Client" Version="0.0.4" />
 		<PackageReference Include="Tgs.GameInterface.IdnLiveService.Client" Version="0.0.1" />
