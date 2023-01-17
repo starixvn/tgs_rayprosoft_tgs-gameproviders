@@ -52,19 +52,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services
-    .AddMessageQueue()
-    .AddNatsMessageQueue(natsConfig =>
-    {
-        _ = natsConfig
-        .ConfigQueueOptions((options, sp) =>
-        {
-            var configuration = sp.GetRequiredService<IConfiguration>();
-            options.Url = configuration.GetConnectionString("Nats")!;
-        });
-    })
-    .AddNatsGlobPatternExchange("*");
-
-builder.Services
     .AddApiClients()
     .AddGameProvidersService(
     (options, sp) =>
