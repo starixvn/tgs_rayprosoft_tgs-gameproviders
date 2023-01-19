@@ -10,11 +10,13 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Polly;
 using Tgs.GameProviders.ApiClients.KY.Models;
 using Tgs.GameProviders.ApiClients.KY.Models.Commons;
 using Tgs.GameProviders.Core.Extensions;
 using Tgs.GameProviders.Core.KY;
 using Tgs.GameProviders.Core.KY.Models;
+using Tgs.GameProviders.Domains;
 
 namespace Tgs.GameProviders.ApiClients.KY;
 
@@ -181,10 +183,30 @@ internal class KYApiClient : IKYApiClient
             Key = key
         };
 
-        var response = await GetAPIAsync<KYGameRecordResponse>(
-            apiRecordUrl,
-            apiKYRequest,
-            KYAction.GameRecord.ToString()).ConfigureAwait(false);
+        var retryPolicy = Policy
+            .HandleResult<KYApiResponse<KYGameRecordResponse>>(response => response?.Data.Code == 43)
+                .WaitAndRetryAsync(3,
+                retryAttempt => TimeSpan.FromSeconds(10),
+                (response, retryTime, context) =>
+                {
+                    var data = new
+                    {
+                        GameProviderCode = GameProviderType.KY,
+                        Response = response,
+                        Delay = retryTime,
+                        CreationTime = DateTimeOffset.UtcNow
+                    };
+                    _logger.LogWarning("{JsonSerializer.Serialize(data)}", JsonSerializer.Serialize(data));
+                });
+
+        var response = await retryPolicy
+            .ExecuteAsync(async () =>
+            await GetAPIAsync<KYGameRecordResponse>(
+                    apiRecordUrl,
+                    apiKYRequest,
+                    KYAction.GameRecord.ToString())
+                .ConfigureAwait(false))
+            .ConfigureAwait(false);
 
         if (response == null || response?.Data.Code != 0)
         {
