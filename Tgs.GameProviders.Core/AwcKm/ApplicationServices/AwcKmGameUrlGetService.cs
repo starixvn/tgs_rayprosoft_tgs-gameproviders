@@ -11,10 +11,10 @@ namespace Tgs.GameProviders.Core.AwcKm.ApplicationServices;
 public class AwcKmGameUrlGetService : IGetService<AwcKmGameUrlQuery, GameUrlResult>
 {
     private readonly IBrandRepository _brand;
+    private readonly IGameInterfaceAwcServiceClient _client;
     private readonly ICommandService<AwcKmCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameRepository _game;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IGameInterfaceAwcServiceGrpc _grpc;
     private readonly IPlayerRepository _player;
     private readonly ISettingRepository _setting;
 
@@ -23,7 +23,7 @@ public class AwcKmGameUrlGetService : IGetService<AwcKmGameUrlQuery, GameUrlResu
         ICommandService<AwcKmCreatePlayerCommand> createPlayerCommandService,
         IGameRepository game,
         IGameProviderRepository gameProvider,
-        IGameInterfaceAwcServiceGrpc grpc,
+        IGameInterfaceAwcServiceClient client,
         IPlayerRepository player,
         ISettingRepository setting)
     {
@@ -31,7 +31,7 @@ public class AwcKmGameUrlGetService : IGetService<AwcKmGameUrlQuery, GameUrlResu
         _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
         _game = game ?? throw new ArgumentNullException(nameof(game));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
         _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
@@ -47,7 +47,7 @@ public class AwcKmGameUrlGetService : IGetService<AwcKmGameUrlQuery, GameUrlResu
         var game = await _game.GetAsync(command.GameId.Value).ConfigureAwait(false)
              ?? throw new Exception($"The game for this game product does not exist.({command.GameId})");
 
-        var request = new GameInterfaceAwcServiceGameUrlRequest()
+        var request = new GameUrlRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
             AgentId = configurationData.AgentId,
@@ -59,7 +59,7 @@ public class AwcKmGameUrlGetService : IGetService<AwcKmGameUrlQuery, GameUrlResu
             Language = cultureCode
         };
 
-        var response = await _grpc.GameUrlByAwcKmAsync(
+        var response = await _client.GameUrlByAwcKmAsync(
             request: request,
             cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -73,7 +73,7 @@ public class AwcKmGameUrlGetService : IGetService<AwcKmGameUrlQuery, GameUrlResu
                 Language: command.Language),
                 cancellationToken).ConfigureAwait(false);
 
-            response = await _grpc.GameUrlByAwcKmAsync(
+            response = await _client.GameUrlByAwcKmAsync(
                 request: request,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
         }

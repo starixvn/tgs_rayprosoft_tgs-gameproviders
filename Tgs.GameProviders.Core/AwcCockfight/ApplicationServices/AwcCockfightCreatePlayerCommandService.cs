@@ -10,15 +10,15 @@ namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices;
 
 internal class AwcCockfightCreatePlayerCommandService : ICommandService<AwcCockfightCreatePlayerCommand>
 {
+    private readonly IGameInterfaceAwcServiceClient _client;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IGameInterfaceAwcServiceGrpc _grpc;
 
     public AwcCockfightCreatePlayerCommandService(
         IGameProviderRepository gameProvider,
-        IGameInterfaceAwcServiceGrpc grpc)
+        IGameInterfaceAwcServiceClient client)
     {
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
     public async ValueTask ExecuteAsync(AwcCockfightCreatePlayerCommand command, CancellationToken cancellationToken = default)
@@ -28,7 +28,7 @@ internal class AwcCockfightCreatePlayerCommandService : ICommandService<AwcCockf
         var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, command.CurrencyCode).ConfigureAwait(false)
             ?? throw new Exception($"This game product currency does not exist.({command.CurrencyCode})");
 
-        await _grpc.CreatePlayerByBetLimitAsync(
+        await _client.CreatePlayerByBetLimitAsync(
             apiUrl: command.Configuration.ApiUrl,
             agentId: command.ConfigurationData.AgentId,
             cert: command.ConfigurationData.Cert,

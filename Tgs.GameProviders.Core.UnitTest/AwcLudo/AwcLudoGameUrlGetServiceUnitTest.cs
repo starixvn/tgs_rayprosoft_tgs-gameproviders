@@ -23,7 +23,7 @@ public class AwcLudoGameUrlGetServiceUnitTest
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<AwcLudoCreatePlayerCommand>>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceAwcServiceGrpc = Substitute.For<IGameInterfaceAwcServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
@@ -99,7 +99,7 @@ public class AwcLudoGameUrlGetServiceUnitTest
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
         _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
 
-        var request = new GameInterfaceAwcServiceGameUrlRequest()
+        var request = new GameUrlRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
             AgentId = configurationData.AgentId,
@@ -110,20 +110,20 @@ public class AwcLudoGameUrlGetServiceUnitTest
             ExternalGameId = gameInfo.GameExternalId,
             Language = gameProviderCultureCode
         };
-        var response = new GameInterfaceAwcServiceGameUrlReply()
+        var response = new GameUrlReply()
         {
             Success = true,
             IsPlayerExist = true,
             GameUrl = gameUrl.ToString()
         };
-        _ = fakeGameInterfaceAwcServiceGrpc.GameUrlByAwcLudoAsync(request).Returns(response);
+        _ = fakeClient.GameUrlByAwcLudoAsync(request).Returns(response);
 
         var sut = new AwcLudoGameUrlGetService(
             fakeBrandService,
             fakeCreatePlayerCommandService,
             fakeGameRepository,
             fakeGameProviderRepository,
-            fakeGameInterfaceAwcServiceGrpc,
+            fakeClient,
             fakePlayerRepository,
             fakeSettingRepository);
 

@@ -23,7 +23,7 @@ public class AwcCockfightGameUrlGetServiceUnitTest
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<AwcCockfightCreatePlayerCommand>>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceAwcServiceGrpc = Substitute.For<IGameInterfaceAwcServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
@@ -92,7 +92,7 @@ public class AwcCockfightGameUrlGetServiceUnitTest
              Arg.Is(gameProviderId),
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
 
-        var request = new GameInterfaceAwcServiceGameUrlByLiveLobbyRequest()
+        var request = new GameUrlByLiveLobbyRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
             AgentId = configurationData.AgentId,
@@ -103,19 +103,19 @@ public class AwcCockfightGameUrlGetServiceUnitTest
             BetLimit = JsonSerializer.Serialize(configurationData.BetLimit),
             Language = gameProviderCultureCode
         };
-        var response = new GameInterfaceAwcServiceGameUrlReply()
+        var response = new GameUrlReply()
         {
             Success = true,
             IsPlayerExist = true,
             GameUrl = gameUrl.ToString()
         };
-        _ = fakeGameInterfaceAwcServiceGrpc.GameUrlByLiveLobbyByAwcCockfightAsync(request).Returns(response);
+        _ = fakeClient.GameUrlByLiveLobbyByAwcCockfightAsync(request).Returns(response);
 
         var sut = new AwcCockfightGameUrlGetService(
             fakeBrandService,
             fakeCreatePlayerCommandService,
             fakeGameProviderRepository,
-            fakeGameInterfaceAwcServiceGrpc,
+            fakeClient,
             fakePlayerRepository,
             fakeSettingRepository);
 

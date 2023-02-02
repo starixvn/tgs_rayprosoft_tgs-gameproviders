@@ -23,7 +23,7 @@ public class AwcAelottoGameUrlGetServiceUnitTest
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<AwcAelottoCreatePlayerCommand>>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceAwcServiceGrpc = Substitute.For<IGameInterfaceAwcServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
@@ -99,7 +99,7 @@ public class AwcAelottoGameUrlGetServiceUnitTest
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
         _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameModel);
 
-        var request = new GameInterfaceAwcServiceGameUrlRequest()
+        var request = new GameUrlRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
             AgentId = configurationData.AgentId,
@@ -110,20 +110,20 @@ public class AwcAelottoGameUrlGetServiceUnitTest
             ExternalGameId = "AE-LOTTO-004",
             Language = gameProviderCultureCode
         };
-        var response = new GameInterfaceAwcServiceGameUrlReply()
+        var response = new GameUrlReply()
         {
             Success = true,
             IsPlayerExist = true,
             GameUrl = gameUrl.ToString()
         };
-        _ = fakeGameInterfaceAwcServiceGrpc.GameUrlByAwcAeLottoAsync(request).Returns(response);
+        _ = fakeClient.GameUrlByAwcAeLottoAsync(request).Returns(response);
 
         var sut = new AwcAelottoGameUrlGetService(
             fakeBrandService,
             fakeCreatePlayerCommandService,
             fakeGameRepository,
             fakeGameProviderRepository,
-            fakeGameInterfaceAwcServiceGrpc,
+            fakeClient,
             fakePlayerRepository,
             fakeSettingRepository);
 
@@ -140,7 +140,7 @@ public class AwcAelottoGameUrlGetServiceUnitTest
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<AwcAelottoCreatePlayerCommand>>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceAwcServiceGrpc = Substitute.For<IGameInterfaceAwcServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
@@ -216,7 +216,7 @@ public class AwcAelottoGameUrlGetServiceUnitTest
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
         _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameModel);
 
-        var request = new GameInterfaceAwcServiceGameUrlRequest()
+        var request = new GameUrlRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
             AgentId = configurationData.AgentId,
@@ -227,20 +227,20 @@ public class AwcAelottoGameUrlGetServiceUnitTest
             ExternalGameId = "AE-LOTTO-021",
             Language = gameProviderCultureCode
         };
-        var response = new GameInterfaceAwcServiceGameUrlReply()
+        var response = new GameUrlReply()
         {
             Success = true,
             IsPlayerExist = true,
             GameUrl = gameUrl.ToString()
         };
-        _ = fakeGameInterfaceAwcServiceGrpc.GameUrlByAwcAeLottoAsync(request).Returns(response);
+        _ = fakeClient.GameUrlByAwcAeLottoAsync(request).Returns(response);
 
         var sut = new AwcAelottoGameUrlGetService(
             fakeBrandService,
             fakeCreatePlayerCommandService,
             fakeGameRepository,
             fakeGameProviderRepository,
-            fakeGameInterfaceAwcServiceGrpc,
+            fakeClient,
             fakePlayerRepository,
             fakeSettingRepository);
 

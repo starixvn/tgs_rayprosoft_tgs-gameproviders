@@ -22,7 +22,7 @@ public class AwcFacaiPlayerBalanceGetServiceUnitTest
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<AwcFacaiCreatePlayerCommand>>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceAwcServiceGrpc = Substitute.For<IGameInterfaceAwcServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
@@ -64,13 +64,13 @@ public class AwcFacaiPlayerBalanceGetServiceUnitTest
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
         _ = fakeGameProviderRepository.GetAwcConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
 
-        var response = new GameInterfaceAwcServiceBalanceReply()
+        var response = new BalanceReply()
         {
             Success = true,
             IsPlayerExist = true,
             Balance = 100m
         };
-        _ = fakeGameInterfaceAwcServiceGrpc.GetBalanceAsync(
+        _ = fakeClient.GetBalanceAsync(
             Arg.Is(configuration.ApiUrl),
             Arg.Is(configurationData.AgentId),
             Arg.Is(configurationData.Cert),
@@ -80,7 +80,7 @@ public class AwcFacaiPlayerBalanceGetServiceUnitTest
             fakeBrandService,
             fakeCreatePlayerCommandService,
             fakeGameProviderRepository,
-            fakeGameInterfaceAwcServiceGrpc,
+            fakeClient,
             fakePlayerRepository,
             fakeSettingRepository);
 

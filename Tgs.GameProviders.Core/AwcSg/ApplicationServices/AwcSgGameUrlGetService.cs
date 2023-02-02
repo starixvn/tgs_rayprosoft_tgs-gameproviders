@@ -12,9 +12,9 @@ namespace Tgs.GameProviders.Core.AwcSg.ApplicationServices;
 public class AwcSgGameUrlGetService : IGetService<AwcSgGameUrlQuery, GameUrlResult>
 {
     private readonly IBrandRepository _brand;
+    private readonly IGameInterfaceAwcServiceClient _client;
     private readonly ICommandService<AwcSgCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IGameInterfaceAwcServiceGrpc _grpc;
     private readonly IPlayerRepository _player;
     private readonly ISettingRepository _setting;
 
@@ -22,14 +22,14 @@ public class AwcSgGameUrlGetService : IGetService<AwcSgGameUrlQuery, GameUrlResu
         IBrandRepository brand,
         ICommandService<AwcSgCreatePlayerCommand> createPlayerCommandService,
         IGameProviderRepository gameProvider,
-        IGameInterfaceAwcServiceGrpc grpc,
+        IGameInterfaceAwcServiceClient client,
         IPlayerRepository player,
         ISettingRepository setting)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
         _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
         _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
@@ -43,7 +43,7 @@ public class AwcSgGameUrlGetService : IGetService<AwcSgGameUrlQuery, GameUrlResu
         var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
         var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en";
 
-        var request = new GameInterfaceAwcServiceGameUrlByLiveLobbyRequest()
+        var request = new GameUrlByLiveLobbyRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
             AgentId = configurationData.AgentId,
@@ -55,7 +55,7 @@ public class AwcSgGameUrlGetService : IGetService<AwcSgGameUrlQuery, GameUrlResu
             Language = cultureCode
         };
 
-        var response = await _grpc.GameUrlLiveLobbyByAwcSgAsync(
+        var response = await _client.GameUrlLiveLobbyByAwcSgAsync(
             request: request,
             cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -69,7 +69,7 @@ public class AwcSgGameUrlGetService : IGetService<AwcSgGameUrlQuery, GameUrlResu
                 Language: command.Language),
                 cancellationToken).ConfigureAwait(false);
 
-            response = await _grpc.GameUrlLiveLobbyByAwcSgAsync(
+            response = await _client.GameUrlLiveLobbyByAwcSgAsync(
                 request: request,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
         }

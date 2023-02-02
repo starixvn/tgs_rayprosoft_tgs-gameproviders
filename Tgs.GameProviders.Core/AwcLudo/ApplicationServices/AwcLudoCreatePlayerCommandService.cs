@@ -9,15 +9,15 @@ namespace Tgs.GameProviders.Core.AwcLudo.ApplicationServices;
 
 internal class AwcLudoCreatePlayerCommandService : ICommandService<AwcLudoCreatePlayerCommand>
 {
+    private readonly IGameInterfaceAwcServiceClient _client;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IGameInterfaceAwcServiceGrpc _grpc;
 
     public AwcLudoCreatePlayerCommandService(
         IGameProviderRepository gameProvider,
-        IGameInterfaceAwcServiceGrpc grpc)
+        IGameInterfaceAwcServiceClient client)
     {
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
     public async ValueTask ExecuteAsync(AwcLudoCreatePlayerCommand command, CancellationToken cancellationToken = default)
@@ -27,7 +27,7 @@ internal class AwcLudoCreatePlayerCommandService : ICommandService<AwcLudoCreate
         var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, command.CurrencyCode).ConfigureAwait(false)
             ?? throw new Exception($"This game product currency does not exist.({command.CurrencyCode})");
 
-        await _grpc.CreatePlayerAsync(
+        await _client.CreatePlayerAsync(
             apiUrl: command.Configuration.ApiUrl,
             agentId: command.ConfigurationData.AgentId,
             cert: command.ConfigurationData.Cert,

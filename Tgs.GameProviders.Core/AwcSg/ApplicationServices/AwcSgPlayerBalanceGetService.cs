@@ -10,9 +10,9 @@ namespace Tgs.GameProviders.Core.AwcSg.ApplicationServices;
 public class AwcSgPlayerBalanceGetService : IGetService<AwcSgPlayerBalanceQuery, decimal?>
 {
     private readonly IBrandRepository _brand;
+    private readonly IGameInterfaceAwcServiceClient _client;
     private readonly ICommandService<AwcSgCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IGameInterfaceAwcServiceGrpc _grpc;
     private readonly IPlayerRepository _player;
     private readonly ISettingRepository _setting;
 
@@ -20,14 +20,14 @@ public class AwcSgPlayerBalanceGetService : IGetService<AwcSgPlayerBalanceQuery,
         IBrandRepository brand,
         ICommandService<AwcSgCreatePlayerCommand> createPlayerCommandService,
         IGameProviderRepository gameProvider,
-        IGameInterfaceAwcServiceGrpc grpc,
+        IGameInterfaceAwcServiceClient client,
         IPlayerRepository player,
         ISettingRepository setting)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
         _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
         _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
@@ -40,7 +40,7 @@ public class AwcSgPlayerBalanceGetService : IGetService<AwcSgPlayerBalanceQuery,
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
         var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
 
-        var response = await _grpc.GetBalanceAsync(
+        var response = await _client.GetBalanceAsync(
             apiUrl: configuration.ApiUrl,
             agentId: configurationData.AgentId,
             cert: configurationData.Cert,
@@ -56,7 +56,7 @@ public class AwcSgPlayerBalanceGetService : IGetService<AwcSgPlayerBalanceQuery,
                 CurrencyCode: player.DefaultWalletCurrencyCode),
                 cancellationToken).ConfigureAwait(false);
 
-            response = await _grpc.GetBalanceAsync(
+            response = await _client.GetBalanceAsync(
                 apiUrl: configuration.ApiUrl,
                 agentId: configurationData.AgentId,
                 cert: configurationData.Cert,

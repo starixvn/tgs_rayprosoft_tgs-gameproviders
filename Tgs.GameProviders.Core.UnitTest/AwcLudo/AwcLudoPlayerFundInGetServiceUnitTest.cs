@@ -20,7 +20,7 @@ public class AwcLudoPlayerFundInGetServiceUnitTest
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceAwcServiceGrpc = Substitute.For<IGameInterfaceAwcServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
@@ -67,7 +67,7 @@ public class AwcLudoPlayerFundInGetServiceUnitTest
         _ = fakeGameProviderRepository.GetAwcConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
 
         var gameProviderTransactionId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
-        var reply = new GameInterfaceAwcServiceFundReply()
+        var reply = new FundReply()
         {
             Success = true,
             TransactionId = query.OrderId,
@@ -75,7 +75,7 @@ public class AwcLudoPlayerFundInGetServiceUnitTest
             CurrentBalance = 0,
             Amount = query.Amount
         };
-        _ = fakeGameInterfaceAwcServiceGrpc.FundInAsync(
+        _ = fakeClient.FundInAsync(
             Arg.Is(configuration.ApiUrl),
             Arg.Is(configurationData.AgentId),
             Arg.Is(configurationData.Cert),
@@ -86,7 +86,7 @@ public class AwcLudoPlayerFundInGetServiceUnitTest
         var sut = new AwcLudoPlayerFundInGetService(
             fakeBrandService,
             fakeGameProviderRepository,
-            fakeGameInterfaceAwcServiceGrpc,
+            fakeClient,
             fakePlayerRepository,
             fakeSettingRepository);
 

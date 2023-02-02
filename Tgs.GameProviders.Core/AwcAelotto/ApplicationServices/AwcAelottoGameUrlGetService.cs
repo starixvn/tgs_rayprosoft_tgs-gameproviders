@@ -11,10 +11,10 @@ namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices;
 public class AwcAelottoGameUrlGetService : IGetService<AwcAelottoGameUrlQuery, GameUrlResult>
 {
     private readonly IBrandRepository _brand;
+    private readonly IGameInterfaceAwcServiceClient _client;
     private readonly ICommandService<AwcAelottoCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameRepository _game;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IGameInterfaceAwcServiceGrpc _grpc;
     private readonly IPlayerRepository _player;
     private readonly ISettingRepository _setting;
 
@@ -23,7 +23,7 @@ public class AwcAelottoGameUrlGetService : IGetService<AwcAelottoGameUrlQuery, G
         ICommandService<AwcAelottoCreatePlayerCommand> createPlayerCommandService,
         IGameRepository game,
         IGameProviderRepository gameProvider,
-        IGameInterfaceAwcServiceGrpc grpc,
+        IGameInterfaceAwcServiceClient client,
         IPlayerRepository player,
         ISettingRepository setting)
     {
@@ -31,7 +31,7 @@ public class AwcAelottoGameUrlGetService : IGetService<AwcAelottoGameUrlQuery, G
         _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
         _game = game ?? throw new ArgumentNullException(nameof(game));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
         _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
@@ -53,7 +53,7 @@ public class AwcAelottoGameUrlGetService : IGetService<AwcAelottoGameUrlQuery, G
             gameExternalId = "AE-LOTTO-021";
         }
 
-        var request = new GameInterfaceAwcServiceGameUrlRequest()
+        var request = new GameUrlRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
             AgentId = configurationData.AgentId,
@@ -65,7 +65,7 @@ public class AwcAelottoGameUrlGetService : IGetService<AwcAelottoGameUrlQuery, G
             Language = cultureCode
         };
 
-        var response = await _grpc.GameUrlByAwcAeLottoAsync(
+        var response = await _client.GameUrlByAwcAeLottoAsync(
             request: request,
             cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -79,7 +79,7 @@ public class AwcAelottoGameUrlGetService : IGetService<AwcAelottoGameUrlQuery, G
                 Language: command.Language),
                 cancellationToken).ConfigureAwait(false);
 
-            response = await _grpc.GameUrlByAwcAeLottoAsync(
+            response = await _client.GameUrlByAwcAeLottoAsync(
                 request: request,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
         }

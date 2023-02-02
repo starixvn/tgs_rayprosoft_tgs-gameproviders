@@ -20,7 +20,7 @@ public class AwcSpadeKickPlayerCommandServiceUnitTest
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceAwcServiceGrpc = Substitute.For<IGameInterfaceAwcServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
@@ -65,13 +65,13 @@ public class AwcSpadeKickPlayerCommandServiceUnitTest
         var sut = new AwcSpadeKickPlayerCommandService(
             fakeBrandService,
             fakeGameProviderRepository,
-            fakeGameInterfaceAwcServiceGrpc,
+            fakeClient,
             fakePlayerRepository,
             fakeSettingRepository);
 
         await sut.ExecuteAsync(command).ConfigureAwait(false);
 
-        _ = fakeGameInterfaceAwcServiceGrpc
+        _ = fakeClient
             .Received(1)
             .KickPlayerAsync(
             Arg.Is(configuration.ApiUrl),

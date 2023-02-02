@@ -20,7 +20,7 @@ public class AwcCockfightPlayerFundCheckingGetServiceUnitTest
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceAwcServiceGrpc = Substitute.For<IGameInterfaceAwcServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
@@ -77,7 +77,7 @@ public class AwcCockfightPlayerFundCheckingGetServiceUnitTest
              Arg.Is(gameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
         _ = fakeGameProviderRepository.GetAwcConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
-        _ = fakeGameInterfaceAwcServiceGrpc.FundOrderCheckingAsync(
+        _ = fakeClient.FundOrderCheckingAsync(
             Arg.Is(configuration.ApiUrl),
             Arg.Is(configurationData.AgentId),
             Arg.Is(configurationData.Cert),
@@ -86,7 +86,7 @@ public class AwcCockfightPlayerFundCheckingGetServiceUnitTest
         var sut = new AwcCockfightPlayerFundCheckingGetService(
             fakeBrandService,
             fakeGameProviderRepository,
-            fakeGameInterfaceAwcServiceGrpc,
+            fakeClient,
             fakePlayerRepository,
             fakeSettingRepository);
 

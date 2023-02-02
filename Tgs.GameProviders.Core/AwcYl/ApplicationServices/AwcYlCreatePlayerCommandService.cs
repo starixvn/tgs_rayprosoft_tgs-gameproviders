@@ -9,15 +9,15 @@ namespace Tgs.GameProviders.Core.AwcYl.ApplicationServices;
 
 internal class AwcYlCreatePlayerCommandService : ICommandService<AwcYlCreatePlayerCommand>
 {
+    private readonly IGameInterfaceAwcServiceClient _client;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IGameInterfaceAwcServiceGrpc _grpc;
 
     public AwcYlCreatePlayerCommandService(
         IGameProviderRepository gameProvider,
-        IGameInterfaceAwcServiceGrpc grpc)
+        IGameInterfaceAwcServiceClient client)
     {
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
     public async ValueTask ExecuteAsync(AwcYlCreatePlayerCommand command, CancellationToken cancellationToken = default)
@@ -27,7 +27,7 @@ internal class AwcYlCreatePlayerCommandService : ICommandService<AwcYlCreatePlay
         var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, command.CurrencyCode).ConfigureAwait(false)
             ?? throw new Exception($"This game product currency does not exist.({command.CurrencyCode})");
 
-        await _grpc.CreatePlayerAsync(
+        await _client.CreatePlayerAsync(
             apiUrl: command.Configuration.ApiUrl,
             agentId: command.ConfigurationData.AgentId,
             cert: command.ConfigurationData.Cert,

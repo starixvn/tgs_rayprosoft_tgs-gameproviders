@@ -23,7 +23,7 @@ public class AwcSgGameUrlGetServiceUnitTest
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<AwcSgCreatePlayerCommand>>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceAwcServiceGrpc = Substitute.For<IGameInterfaceAwcServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
@@ -88,7 +88,7 @@ public class AwcSgGameUrlGetServiceUnitTest
              Arg.Is(gameProviderId),
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
 
-        var request = new GameInterfaceAwcServiceGameUrlByLiveLobbyRequest()
+        var request = new GameUrlByLiveLobbyRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
             AgentId = configurationData.AgentId,
@@ -99,19 +99,19 @@ public class AwcSgGameUrlGetServiceUnitTest
             BetLimit = JsonSerializer.Serialize(configurationData.BetLimit),
             Language = gameProviderCultureCode
         };
-        var response = new GameInterfaceAwcServiceGameUrlReply()
+        var response = new GameUrlReply()
         {
             Success = true,
             IsPlayerExist = true,
             GameUrl = gameUrl.ToString()
         };
-        _ = fakeGameInterfaceAwcServiceGrpc.GameUrlLiveLobbyByAwcSgAsync(request).Returns(response);
+        _ = fakeClient.GameUrlLiveLobbyByAwcSgAsync(request).Returns(response);
 
         var sut = new AwcSgGameUrlGetService(
             fakeBrandService,
             fakeCreatePlayerCommandService,
             fakeGameProviderRepository,
-            fakeGameInterfaceAwcServiceGrpc,
+            fakeClient,
             fakePlayerRepository,
             fakeSettingRepository);
 

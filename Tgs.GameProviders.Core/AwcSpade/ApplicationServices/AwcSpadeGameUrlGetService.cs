@@ -11,10 +11,10 @@ namespace Tgs.GameProviders.Core.AwcSpade.ApplicationServices;
 public class AwcSpadeGameUrlGetService : IGetService<AwcSpadeGameUrlQuery, GameUrlResult>
 {
     private readonly IBrandRepository _brand;
+    private readonly IGameInterfaceAwcServiceClient _client;
     private readonly ICommandService<AwcSpadeCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameRepository _game;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IGameInterfaceAwcServiceGrpc _grpc;
     private readonly IPlayerRepository _player;
     private readonly ISettingRepository _setting;
 
@@ -23,7 +23,7 @@ public class AwcSpadeGameUrlGetService : IGetService<AwcSpadeGameUrlQuery, GameU
         ICommandService<AwcSpadeCreatePlayerCommand> createPlayerCommandService,
         IGameRepository game,
         IGameProviderRepository gameProvider,
-        IGameInterfaceAwcServiceGrpc grpc,
+        IGameInterfaceAwcServiceClient client,
         IPlayerRepository player,
         ISettingRepository setting)
     {
@@ -31,7 +31,7 @@ public class AwcSpadeGameUrlGetService : IGetService<AwcSpadeGameUrlQuery, GameU
         _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
         _game = game ?? throw new ArgumentNullException(nameof(game));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
         _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
@@ -75,7 +75,7 @@ public class AwcSpadeGameUrlGetService : IGetService<AwcSpadeGameUrlQuery, GameU
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var request = new GameInterfaceAwcServiceGameUrlRequest()
+        var request = new GameUrlRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
             AgentId = configurationData.AgentId,
@@ -87,7 +87,7 @@ public class AwcSpadeGameUrlGetService : IGetService<AwcSpadeGameUrlQuery, GameU
             Language = cultureCode
         };
 
-        var response = await _grpc.GameUrlByAwcSpadeAsync(
+        var response = await _client.GameUrlByAwcSpadeAsync(
             request: request,
             cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -101,7 +101,7 @@ public class AwcSpadeGameUrlGetService : IGetService<AwcSpadeGameUrlQuery, GameU
                 Language: command.Language),
                 cancellationToken).ConfigureAwait(false);
 
-            response = await _grpc.GameUrlByAwcSpadeAsync(
+            response = await _client.GameUrlByAwcSpadeAsync(
                 request: request,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
         }

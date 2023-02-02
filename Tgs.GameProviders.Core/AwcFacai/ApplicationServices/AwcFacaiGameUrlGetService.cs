@@ -11,10 +11,10 @@ namespace Tgs.GameProviders.Core.AwcFacai.ApplicationServices;
 public class AwcFacaiGameUrlGetService : IGetService<AwcFacaiGameUrlQuery, GameUrlResult>
 {
     private readonly IBrandRepository _brand;
+    private readonly IGameInterfaceAwcServiceClient _client;
     private readonly ICommandService<AwcFacaiCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameRepository _game;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IGameInterfaceAwcServiceGrpc _grpc;
     private readonly IPlayerRepository _player;
     private readonly ISettingRepository _setting;
 
@@ -23,7 +23,7 @@ public class AwcFacaiGameUrlGetService : IGetService<AwcFacaiGameUrlQuery, GameU
         ICommandService<AwcFacaiCreatePlayerCommand> createPlayerCommandService,
         IGameRepository game,
         IGameProviderRepository gameProvider,
-        IGameInterfaceAwcServiceGrpc grpc,
+        IGameInterfaceAwcServiceClient client,
         IPlayerRepository player,
         ISettingRepository setting)
     {
@@ -31,7 +31,7 @@ public class AwcFacaiGameUrlGetService : IGetService<AwcFacaiGameUrlQuery, GameU
         _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
         _game = game ?? throw new ArgumentNullException(nameof(game));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
         _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
@@ -47,7 +47,7 @@ public class AwcFacaiGameUrlGetService : IGetService<AwcFacaiGameUrlQuery, GameU
         var game = await _game.GetAsync(command.GameId.Value).ConfigureAwait(false)
              ?? throw new Exception($"The game for this game product does not exist.({command.GameId})");
 
-        var request = new GameInterfaceAwcServiceGameUrlRequest()
+        var request = new GameUrlRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
             AgentId = configurationData.AgentId,
@@ -59,7 +59,7 @@ public class AwcFacaiGameUrlGetService : IGetService<AwcFacaiGameUrlQuery, GameU
             Language = cultureCode
         };
 
-        var response = await _grpc.GameUrlByAwcFacaiAsync(
+        var response = await _client.GameUrlByAwcFacaiAsync(
             request: request,
             cancellationToken: cancellationToken).ConfigureAwait(false);
 
@@ -73,7 +73,7 @@ public class AwcFacaiGameUrlGetService : IGetService<AwcFacaiGameUrlQuery, GameU
                 Language: command.Language),
                 cancellationToken).ConfigureAwait(false);
 
-            response = await _grpc.GameUrlByAwcFacaiAsync(
+            response = await _client.GameUrlByAwcFacaiAsync(
                 request: request,
                 cancellationToken: cancellationToken).ConfigureAwait(false);
         }
