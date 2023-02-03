@@ -115,7 +115,7 @@ public class AwcAwsController : ControllerBase,
     /// </remarks>
     [HttpGet("Balances/{brandCode}")]
     public IAsyncEnumerable<BalanceResult> BalanceAsync(
-         [FromServices] IQueryService<AwcAelottoBalancesQuery, BalanceResult> getService,
+         [FromServices] IQueryService<AwcAwsBalancesQuery, BalanceResult> getService,
          string brandCode)
         => getService.QueryAsync(new(
             BrandCode: brandCode
