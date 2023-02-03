@@ -102,6 +102,25 @@ public class AwcAelottoController : ControllerBase,
         });
 
     /// <summary>
+    /// Balances the asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="brandCode">The brand code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    ///   <b>Example</b><br />
+    ///
+    ///   Get balance/GPI
+    /// </remarks>
+    [HttpGet("Balances/{brandCode}")]
+    public IAsyncEnumerable<BalanceResult> BalanceAsync(
+         [FromServices] IQueryService<AwcAelottoBalancesQuery, BalanceResult> getService,
+         string brandCode)
+        => getService.QueryAsync(new(
+            BrandCode : brandCode
+            ));
+
+    /// <summary>
     /// Players the fund checking asynchronous.
     /// </summary>
     /// <param name="getService">The get service.</param>
