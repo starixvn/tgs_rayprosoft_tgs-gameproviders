@@ -4,5 +4,4 @@ namespace Tgs.GameProviders.Core;
 
 public record BalanceResult(
     string PlayerCode,
-    decimal Balance,
-    DateTime LastDateTime);
+    decimal Balance);
