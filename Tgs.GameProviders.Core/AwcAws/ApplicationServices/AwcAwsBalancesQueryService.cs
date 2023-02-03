@@ -58,6 +58,7 @@ internal class AwcAwsBalancesQueryService : IQueryService<AwcAwsBalancesQuery, B
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
+
         var reply = await _client
             .GetBalancesAsync(
                 apiUrl: configuration.ApiUrl,

@@ -58,6 +58,7 @@ internal class AwcAelottoBalancesQueryService : IQueryService<AwcAelottoBalances
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
+
         var reply = await _client
             .GetBalancesAsync(
                 apiUrl: configuration.ApiUrl,
