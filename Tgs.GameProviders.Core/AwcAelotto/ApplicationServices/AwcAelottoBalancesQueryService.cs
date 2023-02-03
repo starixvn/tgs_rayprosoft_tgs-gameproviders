@@ -58,7 +58,6 @@ internal class AwcAelottoBalancesQueryService : IQueryService<AwcAelottoBalances
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-
         var reply = await _client
             .GetBalancesAsync(
                 apiUrl: configuration.ApiUrl,
@@ -76,7 +75,8 @@ internal class AwcAelottoBalancesQueryService : IQueryService<AwcAelottoBalances
         {
             yield return new BalanceResult(
                 PlayerCode: item.UserId,
-                Balance: item.Balance.ToDecimal().GetValueOrDefault(0));
+                Balance: item.Balance.ToDecimal().GetValueOrDefault(0),
+                LastDateTime:item.LastModified.ToDateTime());
         }
     }
 }

@@ -58,7 +58,6 @@ internal class AwcAwsBalancesQueryService : IQueryService<AwcAwsBalancesQuery, B
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-
         var reply = await _client
             .GetBalancesAsync(
                 apiUrl: configuration.ApiUrl,
@@ -76,7 +75,8 @@ internal class AwcAwsBalancesQueryService : IQueryService<AwcAwsBalancesQuery, B
         {
             yield return new BalanceResult(
                 PlayerCode: item.UserId,
-                Balance: item.Balance.ToDecimal().GetValueOrDefault(0));
+                Balance: item.Balance.ToDecimal().GetValueOrDefault(0),
+                LastDateTime: item.LastModified.ToDateTime());
         }
     }
 }
