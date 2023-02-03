@@ -29,7 +29,7 @@ public static class ServiceCollectionExtensions
         })
         .AddHttpMessageHandler<LoggingHandler>()
         .Services
-        .AddHttpClient<IDreamGameClient, DreamGameClient>()
+        .AddHttpClient<IGameProvidersBalancesClient, GameProvidersBalancesClient>()
         .ConfigureHttpClient((sp, httpClient) =>
         {
             var options = sp.GetRequiredService<IOptions<GameProvidersClientOptions>>().Value;

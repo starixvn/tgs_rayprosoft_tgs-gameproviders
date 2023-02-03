@@ -23,18 +23,6 @@ public class DreamGameController : ControllerBase,
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    /// <summary>
-    /// Games the record list asynchronous.
-    /// </summary>
-    /// <param name="getService">The get service.</param>
-    /// <returns></returns>
-    [HttpGet("gamerecordlist")]
-    public async ValueTask<GameRecordListResult?> GameRecordListAsync(
-        [FromServices] IGetService<DreamGameGameRecordListQuery, GameRecordListResult> getService)
-    {
-        var result = await getService.GetAsync(query: new()).ConfigureAwait(false);
-        return result ?? null;
-    }
 
     /// <summary>
     /// Games the URL asynchronous.
@@ -90,18 +78,6 @@ public class DreamGameController : ControllerBase,
         {
             PlayerCode = playerCode
         });
-
-    /// <summary>
-    /// Marks the game record list asynchronous.
-    /// </summary>
-    /// <param name="service">The service.</param>
-    /// <param name="externalRoundIds">The external round ids.</param>
-    /// <returns></returns>
-    [HttpPost("markgamerecordlist")]
-    public ValueTask MarkGameRecordListAsync(
-        [FromServices] ICommandService<DreamGameMarkGameCommand> service,
-        IEnumerable<string> externalRoundIds)
-        => service.ExecuteAsync(new(externalRoundIds));
 
     /// <summary>
     /// Rounds the detail asynchronous.

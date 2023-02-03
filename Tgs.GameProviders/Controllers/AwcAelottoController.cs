@@ -92,7 +92,7 @@ public class AwcAelottoController : ControllerBase,
     ///
     ///   Get balance/4ucmqplxb029
     /// </remarks>
-    [HttpGet("Balance/{playerCode}")]
+    [HttpGet("balance/{playerCode}")]
     public ValueTask<decimal?> PlayerBalanceAsync(
          [FromServices] IGetService<AwcAelottoPlayerBalanceQuery, decimal?> getService,
          string playerCode)
@@ -112,7 +112,7 @@ public class AwcAelottoController : ControllerBase,
     ///
     ///   Get balance/GPI
     /// </remarks>
-    [HttpGet("Balances/{brandCode}")]
+    [HttpGet("balances/{brandCode}")]
     public IAsyncEnumerable<BalanceResult> BalanceAsync(
          [FromServices] IQueryService<AwcAelottoBalancesQuery, BalanceResult> getService,
          string brandCode)

@@ -93,7 +93,7 @@ public class AwcAwsController : ControllerBase,
     ///
     ///   Get balance/4ucmqplxb029
     /// </remarks>
-    [HttpGet("Balance/{playerCode}")]
+    [HttpGet("balance/{playerCode}")]
     public ValueTask<decimal?> PlayerBalanceAsync(
          [FromServices] IGetService<AwcAwsPlayerBalanceQuery, decimal?> getService,
          string playerCode)
@@ -113,7 +113,7 @@ public class AwcAwsController : ControllerBase,
     ///
     ///   Get balance/GPI
     /// </remarks>
-    [HttpGet("Balances/{brandCode}")]
+    [HttpGet("balances/{brandCode}")]
     public IAsyncEnumerable<BalanceResult> BalanceAsync(
          [FromServices] IQueryService<AwcAwsBalancesQuery, BalanceResult> getService,
          string brandCode)
