@@ -49,7 +49,7 @@ internal class AwcAwsBalancesQueryService : IQueryService<AwcAwsBalancesQuery, B
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var configuration = await _setting
-            .GetAwcAelottoConfigurationAsync(
+            .GetAwcAwsConfigurationAsync(
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var configurationData = await _gameProvider
