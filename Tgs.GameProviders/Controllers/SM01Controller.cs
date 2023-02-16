@@ -42,6 +42,7 @@ public class SM01Controller : ControllerBase
         return result == null
             ? null
             : new SM01PlatformLoginResponse(
+                result.ApiUrl,
                 result.MerchantId,
                 result.CustomerName,
                 result.Timestamp,
