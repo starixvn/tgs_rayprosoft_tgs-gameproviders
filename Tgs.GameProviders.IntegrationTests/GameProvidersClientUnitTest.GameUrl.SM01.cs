@@ -30,6 +30,7 @@ public partial class GameProvidersClientUnitTest
         };
         var result = new SM01PlatformLoginInfo
         (
+            ApiUrl: "https://cn.ucfclive.com",
             MerchantId: "SQjCxm2cX5bahBta",
             CustomerName: "4ucmqplxb029",
             Timestamp: 1670390195123,
