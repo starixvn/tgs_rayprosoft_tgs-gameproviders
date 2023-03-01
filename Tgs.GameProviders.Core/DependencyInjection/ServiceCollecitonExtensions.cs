@@ -4,6 +4,7 @@ using Tgs.GameCommand.Client;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.DreamGamingService.Client;
+using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
@@ -46,7 +47,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceSabaClientOptions, IServiceProvider> gameInterfaceSabaClientOptions,
         Action<GameInterfaceSM01ClientOptions, IServiceProvider> gameInterfaceSM01ClientOptions,
         Action<GameInterfaceTFGamingClientOptions, IServiceProvider> gameInterfaceTFGamingClientOptions,
-        Action<GameInterfaceDreamGamingClientOptions, IServiceProvider> gameInterfaceDreamGamingClientOptions)
+        Action<GameInterfaceDreamGamingClientOptions, IServiceProvider> gameInterfaceDreamGamingClientOptions,
+        Action<GameInterfaceEndorphinaClientOptions, IServiceProvider> gameInterfaceEndorphinaClientOptions)
         => services
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
@@ -67,6 +69,7 @@ public static class ServiceCollecitonExtensions
             .AddGameInterfaceSM01ServiceClient(gameInterfaceSM01ClientOptions)
             .AddGameInterfaceTFGamingServiceClient(gameInterfaceTFGamingClientOptions)
             .AddGameInterfaceDreamGamingServiceClient(gameInterfaceDreamGamingClientOptions)
+            .AddGameInterfaceEndorphinaServiceClient(gameInterfaceEndorphinaClientOptions)
             .AddGameRoundsClient(gameRoundsClientOptions)
             .AddGameTokenClient(gameTokenClientOptions)
             .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)

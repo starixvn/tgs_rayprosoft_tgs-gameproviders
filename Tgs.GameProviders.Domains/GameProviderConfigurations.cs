@@ -57,4 +57,5 @@ public static class GameProviderConfigurations
     public static readonly string WGSports = string.Format(_template, GameProviderType.WGSports);
     public static readonly string WMCasino = string.Format(_template, GameProviderType.WMCasino);
     public static readonly string WMCasinoTransfer = string.Format(_template, GameProviderType.WMCasinoTransfer);
+    public static readonly string Endorphina = string.Format(_template, GameProviderType.Endorphina);
 }

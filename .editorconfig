@@ -111,6 +111,7 @@ csharp_preferred_modifier_order = public,private,protected,internal,static,exter
 # 程式碼區塊喜好設定
 csharp_prefer_braces = when_multiline
 csharp_prefer_simple_using_statement = true
+csharp_style_namespace_declarations = file_scoped:suggestion
 
 # 運算式層級喜好設定
 csharp_prefer_simple_default_expression = true

@@ -27,7 +27,8 @@ data:
         "GameInterfaceSabaBaseUrl":"http://game-gameinterface-saba-service:9090/",
         "GameInterfaceSM01BaseUrl": "http://game-gameinterface-sm01-service:9090/",
         "GameInterfaceTFGamingBaseUrl": "http://game-gameinterface-tfgaming-service:9090/",
-        "GameInterfaceDreamGamingBaseUrl": "http://game-gameinterface-dg-service:9090/"
+        "GameInterfaceDreamGamingBaseUrl": "http://game-gameinterface-dg-service:9090/",
+        "GameInterfaceEndorphinaBaseUrl": "http://game-gameinterface-endor-service:9090/"
       }
     }
   monitor.settings.json: |
