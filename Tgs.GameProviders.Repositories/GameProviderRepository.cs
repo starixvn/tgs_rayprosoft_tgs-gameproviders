@@ -98,6 +98,28 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
+    public async ValueTask<EndorphinaConfiguration> GetEndorphinaConfiguration(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+    {
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<EndorphinaConfiguration>(
+                key: GameProviderConfigurations.Endorphina,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.Endorphina})");
+
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId:
+                gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+
+        return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
+            ? settingConfiguration
+            : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
+    }
+
     public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)

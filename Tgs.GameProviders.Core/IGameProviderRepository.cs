@@ -78,4 +78,8 @@ public interface IGameProviderRepository
     ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
+
+    ValueTask<EndorphinaConfiguration> GetEndorphinaConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 }
