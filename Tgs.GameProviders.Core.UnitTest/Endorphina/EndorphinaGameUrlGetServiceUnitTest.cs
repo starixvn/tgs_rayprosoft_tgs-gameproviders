@@ -9,6 +9,7 @@ using Tgs.GameInterface.EndorphinaService.Protos;
 using Tgs.GameProviders.Core.Endorphina.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.GameRecord.Endorphina.Session.Client;
 
 namespace Tgs.GameProviders.Core.UnitTest.Endorphina;
 
@@ -23,6 +24,7 @@ public class EndorphinaGameUrlGetServiceUnitTest
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeGameInterfaceEndorphinaClient = Substitute.For<IGameInterfaceEndorphinaClient>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeSessionClient = Substitute.For<IGameRecordEndorphinaSessionClient>();
 
         var gameId = 5500019;
 
@@ -109,7 +111,8 @@ public class EndorphinaGameUrlGetServiceUnitTest
             fakeGameProviderRepository,
             fakeGameInterfaceEndorphinaClient,
             fakePlayerRepository,
-            fakeGameRepository);
+            fakeGameRepository,
+            fakeSessionClient);
 
         var expected = "https://test.endorphina.network//icasino/sessions/launch?token=96E108A557044C5EB0D0EF5EFED9596B&sign=0A79E18AD2D92F03273AF6D44DF270FE";
 
