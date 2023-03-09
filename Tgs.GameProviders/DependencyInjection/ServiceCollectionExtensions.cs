@@ -17,6 +17,7 @@ using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GamePlayerTransform.Client;
 using Tgs.GameProviders;
+using Tgs.GameRecord.Endorphina.Session.Client;
 using Tgs.GameRounds.Client;
 using Tgs.GameToken.Client;
 
@@ -46,7 +47,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceSM01ClientOptions, IServiceProvider> gameInterfaceSM01ClientOptions,
         Action<GameInterfaceTFGamingClientOptions, IServiceProvider> gameInterfaceTFGamingClientOptions,
         Action<GameInterfaceDreamGamingClientOptions, IServiceProvider> gameInterfaceDreamGamingClientOptions,
-        Action<GameInterfaceEndorphinaClientOptions, IServiceProvider> gameInterfaceEndorphinaClientOptions)
+        Action<GameInterfaceEndorphinaClientOptions, IServiceProvider> gameInterfaceEndorphinaClientOptions,
+        Action<GameRecordEndorphinaSessionClientOptions, IServiceProvider> gameRecordEndorphinaSessionClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -74,5 +76,6 @@ public static class ServiceCollectionExtensions
                 gameInterfaceSM01ClientOptions,
                 gameInterfaceTFGamingClientOptions,
                 gameInterfaceDreamGamingClientOptions,
-                gameInterfaceEndorphinaClientOptions);
+                gameInterfaceEndorphinaClientOptions,
+                gameRecordEndorphinaSessionClientOptions);
 }
