@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameProviders.Domains;
+using Tgs.GameRecord.Endorphina.Session.Client;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Endorphina.ApplicationServices;
@@ -16,19 +17,22 @@ internal class EndorphinaGameUrlGetService : IGetService<EndorphinaGameUrlQuery,
     private readonly IGameRepository _game;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
+    private readonly IGameRecordEndorphinaSessionClient _sessionClient;
 
     public EndorphinaGameUrlGetService(
         IBrandRepository brand,
         IGameProviderRepository gameProvider,
         IGameInterfaceEndorphinaClient client,
         IPlayerRepository player,
-        IGameRepository game)
+        IGameRepository game,
+        IGameRecordEndorphinaSessionClient sessionClient)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
         _game = game ?? throw new ArgumentNullException(nameof(game));
+        _sessionClient = sessionClient ?? throw new ArgumentNullException(nameof(sessionClient));
     }
 
     public async ValueTask<Uri> GetAsync(EndorphinaGameUrlQuery query, CancellationToken cancellationToken = default)
@@ -52,6 +56,8 @@ internal class EndorphinaGameUrlGetService : IGetService<EndorphinaGameUrlQuery,
                 username: query.PlayerCode,
                 cancellationToken)
             .ConfigureAwait(false);
+
+        await _sessionClient.AddSessionAsync(response.Token, query.BrandCode, query.PlayerCode, cancellationToken).ConfigureAwait(false);
 
         var sign = ComputeHash($"{response.Token}{configuration.SecretKey}");
 

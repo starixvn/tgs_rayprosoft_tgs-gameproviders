@@ -19,6 +19,7 @@ using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GamePlayerTransform.Client;
 using Tgs.GameProviders.Core;
+using Tgs.GameRecord.Endorphina.Session.Client;
 using Tgs.GameRounds.Client;
 using Tgs.GameToken.Client;
 using Tgs.GameToken.Clients.DependencyInjection;
@@ -48,7 +49,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceSM01ClientOptions, IServiceProvider> gameInterfaceSM01ClientOptions,
         Action<GameInterfaceTFGamingClientOptions, IServiceProvider> gameInterfaceTFGamingClientOptions,
         Action<GameInterfaceDreamGamingClientOptions, IServiceProvider> gameInterfaceDreamGamingClientOptions,
-        Action<GameInterfaceEndorphinaClientOptions, IServiceProvider> gameInterfaceEndorphinaClientOptions)
+        Action<GameInterfaceEndorphinaClientOptions, IServiceProvider> gameInterfaceEndorphinaClientOptions,
+        Action<GameRecordEndorphinaSessionClientOptions, IServiceProvider> gameRecordEndorphinaClientOptions)
         => services
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
@@ -70,6 +72,7 @@ public static class ServiceCollecitonExtensions
             .AddGameInterfaceTFGamingServiceClient(gameInterfaceTFGamingClientOptions)
             .AddGameInterfaceDreamGamingServiceClient(gameInterfaceDreamGamingClientOptions)
             .AddGameInterfaceEndorphinaServiceClient(gameInterfaceEndorphinaClientOptions)
+            .AddGameRecordEndorphinaSessionClient(gameRecordEndorphinaClientOptions)
             .AddGameRoundsClient(gameRoundsClientOptions)
             .AddGameTokenClient(gameTokenClientOptions)
             .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)
