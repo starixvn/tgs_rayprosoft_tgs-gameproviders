@@ -45,6 +45,7 @@ internal class EndorphinaGameUrlGetService : IGetService<EndorphinaGameUrlQuery,
              ?? throw new Exception($"The game for this game product does not exist.({query.GameId})");
         var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, query.CurrencyCode).ConfigureAwait(false)
             ?? throw new Exception($"This game product currency does not exist.({query.CurrencyCode})");
+        var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, query.Language) ?? "en";
 
         var response = await _client
             .GameTokenAsync(
@@ -61,7 +62,7 @@ internal class EndorphinaGameUrlGetService : IGetService<EndorphinaGameUrlQuery,
 
         var sign = ComputeHash($"{response.Token}{configuration.SecretKey}");
 
-        var url = $"{configuration.ApiUrl}/icasino/sessions/launch?token={response.Token}&sign={sign}";
+        var url = $"{configuration.ApiUrl}icasino/sessions/launch?token={response.Token}&sign={sign}&lang={cultureCode}";
 
         return (response != null) ? new(url) : null;
     }

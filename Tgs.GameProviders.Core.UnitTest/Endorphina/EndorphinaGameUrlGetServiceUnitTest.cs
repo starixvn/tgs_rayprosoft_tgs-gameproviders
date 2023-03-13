@@ -32,7 +32,8 @@ public class EndorphinaGameUrlGetServiceUnitTest
         {
             PlayerCode = "4ucmqplxb029",
             GameId = gameId,
-            CurrencyCode = "CNY"
+            CurrencyCode = "CNY",
+            Language = "en-US"
         };
 
         var gameProviderId = Guid.NewGuid();
@@ -88,6 +89,8 @@ public class EndorphinaGameUrlGetServiceUnitTest
 
         _ = fakeGameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProviderId, query.CurrencyCode).Returns("CNY");
 
+        _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(gameProviderId, query.Language).Returns("en");
+
         var response = new GameTokenReply()
         {
             Token = "96E108A557044C5EB0D0EF5EFED9596B",
@@ -114,7 +117,7 @@ public class EndorphinaGameUrlGetServiceUnitTest
             fakeGameRepository,
             fakeSessionClient);
 
-        var expected = "https://test.endorphina.network//icasino/sessions/launch?token=96E108A557044C5EB0D0EF5EFED9596B&sign=0A79E18AD2D92F03273AF6D44DF270FE";
+        var expected = "https://test.endorphina.network/icasino/sessions/launch?token=96E108A557044C5EB0D0EF5EFED9596B&sign=0A79E18AD2D92F03273AF6D44DF270FE&lang=en";
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
