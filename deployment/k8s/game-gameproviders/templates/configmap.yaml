@@ -30,7 +30,7 @@ data:
         "GameInterfaceDreamGamingBaseUrl": "http://game-gameinterface-dg-service:9090/",
         "GameInterfaceEndorphinaBaseUrl": "http://game-gameinterface-endor-service:9090/",
         "GameRecordEndorphinaSessionBaseUrl": "http://game-gamerecord-endorphina-session:9090/",
-        "GameInterfaceFaChaiBaseUrl":"dns:///game-gameinterface-fachai/",
+        "GameInterfaceFaChaiBaseUrl":"dns:///game-gameinterface-fachai:9090/",
       }
     }
   monitor.settings.json: |
