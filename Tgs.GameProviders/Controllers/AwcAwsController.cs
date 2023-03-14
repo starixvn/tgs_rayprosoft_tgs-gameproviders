@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.AwcAelotto.ApplicationServices;
 using Tgs.GameProviders.Core.AwcAws.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
@@ -18,6 +17,25 @@ public class AwcAwsController : ControllerBase,
         IPlayerFundCheckingHandler<AwcAwsPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
         IRoundDetailHandler<AwcAwsRoundDetailQuery>
 {
+    /// <summary>
+    /// Balances the asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="brandCode">The brand code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    ///   <b>Example</b><br />
+    ///
+    ///   Get balance/GPI
+    /// </remarks>
+    [HttpGet("balances/{brandCode}")]
+    public IAsyncEnumerable<BalanceResult> BalanceAsync(
+         [FromServices] IQueryService<AwcAwsBalancesQuery, BalanceResult> getService,
+         string brandCode)
+        => getService.QueryAsync(new(
+            BrandCode: brandCode
+            ));
+
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
@@ -101,25 +119,6 @@ public class AwcAwsController : ControllerBase,
         {
             PlayerCode = playerCode
         });
-
-    /// <summary>
-    /// Balances the asynchronous.
-    /// </summary>
-    /// <param name="getService">The get service.</param>
-    /// <param name="brandCode">The brand code.</param>
-    /// <returns></returns>
-    /// <remarks>
-    ///   <b>Example</b><br />
-    ///
-    ///   Get balance/GPI
-    /// </remarks>
-    [HttpGet("balances/{brandCode}")]
-    public IAsyncEnumerable<BalanceResult> BalanceAsync(
-         [FromServices] IQueryService<AwcAwsBalancesQuery, BalanceResult> getService,
-         string brandCode)
-        => getService.QueryAsync(new(
-            BrandCode: brandCode
-            ));
 
     /// <summary>
     /// Players the fund checking asynchronous.

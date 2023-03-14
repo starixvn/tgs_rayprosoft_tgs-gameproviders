@@ -18,6 +18,25 @@ public class AwcAelottoController : ControllerBase,
         IRoundDetailHandler<AwcAelottoRoundDetailQuery>
 {
     /// <summary>
+    /// Balances the asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="brandCode">The brand code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    ///   <b>Example</b><br />
+    ///
+    ///   Get balance/GPI
+    /// </remarks>
+    [HttpGet("balances/{brandCode}")]
+    public IAsyncEnumerable<BalanceResult> BalanceAsync(
+         [FromServices] IQueryService<AwcAelottoBalancesQuery, BalanceResult> getService,
+         string brandCode)
+        => getService.QueryAsync(new(
+            BrandCode: brandCode
+            ));
+
+    /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
     /// <param name="getService">The get service.</param>
@@ -100,25 +119,6 @@ public class AwcAelottoController : ControllerBase,
         {
             PlayerCode = playerCode
         });
-
-    /// <summary>
-    /// Balances the asynchronous.
-    /// </summary>
-    /// <param name="getService">The get service.</param>
-    /// <param name="brandCode">The brand code.</param>
-    /// <returns></returns>
-    /// <remarks>
-    ///   <b>Example</b><br />
-    ///
-    ///   Get balance/GPI
-    /// </remarks>
-    [HttpGet("balances/{brandCode}")]
-    public IAsyncEnumerable<BalanceResult> BalanceAsync(
-         [FromServices] IQueryService<AwcAelottoBalancesQuery, BalanceResult> getService,
-         string brandCode)
-        => getService.QueryAsync(new(
-            BrandCode : brandCode
-            ));
 
     /// <summary>
     /// Players the fund checking asynchronous.

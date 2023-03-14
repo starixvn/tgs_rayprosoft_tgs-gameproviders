@@ -23,7 +23,6 @@ public class DreamGameController : ControllerBase,
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>

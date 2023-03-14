@@ -76,7 +76,7 @@ internal class AwcAelottoBalancesQueryService : IQueryService<AwcAelottoBalances
             yield return new BalanceResult(
                 PlayerCode: item.UserId,
                 Balance: item.Balance.ToDecimal().GetValueOrDefault(0),
-                LastDateTime:item.LastModified.ToDateTime());
+                LastDateTime: item.LastModified.ToDateTime());
         }
     }
 }
