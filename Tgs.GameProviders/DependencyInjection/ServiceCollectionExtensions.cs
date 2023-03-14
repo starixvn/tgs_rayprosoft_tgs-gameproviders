@@ -4,6 +4,7 @@ using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
+using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.JDBService.Client;
@@ -48,7 +49,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceTFGamingClientOptions, IServiceProvider> gameInterfaceTFGamingClientOptions,
         Action<GameInterfaceDreamGamingClientOptions, IServiceProvider> gameInterfaceDreamGamingClientOptions,
         Action<GameInterfaceEndorphinaClientOptions, IServiceProvider> gameInterfaceEndorphinaClientOptions,
-        Action<GameRecordEndorphinaSessionClientOptions, IServiceProvider> gameRecordEndorphinaSessionClientOptions)
+        Action<GameRecordEndorphinaSessionClientOptions, IServiceProvider> gameRecordEndorphinaSessionClientOptions,
+        Action<GameInterfaceFaChaiClientOptions, IServiceProvider> gameInterfaceFaChaiClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -77,5 +79,6 @@ public static class ServiceCollectionExtensions
                 gameInterfaceTFGamingClientOptions,
                 gameInterfaceDreamGamingClientOptions,
                 gameInterfaceEndorphinaClientOptions,
-                gameRecordEndorphinaSessionClientOptions);
+                gameRecordEndorphinaSessionClientOptions,
+                gameInterfaceFaChaiClientOptions);
 }

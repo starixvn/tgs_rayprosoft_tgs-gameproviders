@@ -82,4 +82,8 @@ public interface IGameProviderRepository
     ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
+
+    ValueTask<FaChaiConfiguration> GetFaChaiConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 }

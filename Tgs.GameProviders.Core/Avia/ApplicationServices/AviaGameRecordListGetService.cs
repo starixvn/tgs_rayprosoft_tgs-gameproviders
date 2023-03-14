@@ -54,7 +54,7 @@ public class AviaGameRecordListGetService : IGetService<AviaGameRecordListQuery,
         var gameProviderCode = _service.GetGameProviderCode();
         var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
 
-        var datas = GameRecords.Select(data => new GameRecordListModel()
+        var datas = GameRecords?.Select(data => new GameRecordListModel()
         {
             GameProviderCode = gameProviderCode,
             GameProviderId = gameProviderId,
