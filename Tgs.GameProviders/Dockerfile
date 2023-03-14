@@ -1,4 +1,4 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+﻿#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
@@ -6,8 +6,9 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+ARG BuildConfiguration=Release
 WORKDIR /src
-COPY ["NuGet.config", "."]
+COPY ["nuget.config", "."]
 COPY ["Tgs.GameProviders/Tgs.GameProviders.csproj", "Tgs.GameProviders/"]
 COPY ["Tgs.GameProviders.ApiClients/Tgs.GameProviders.ApiClients.csproj", "Tgs.GameProviders.ApiClients/"]
 COPY ["Tgs.GameProviders.Core/Tgs.GameProviders.Core.csproj", "Tgs.GameProviders.Core/"]
@@ -17,10 +18,11 @@ COPY ["Tgs.GameProviders.Services/Tgs.GameProviders.Services.csproj", "Tgs.GameP
 RUN dotnet restore "Tgs.GameProviders/Tgs.GameProviders.csproj"
 COPY . .
 WORKDIR "/src/Tgs.GameProviders"
-RUN dotnet build "Tgs.GameProviders.csproj" -c Release -o /app/build
+RUN dotnet build "Tgs.GameProviders.csproj" -c $BuildConfiguration -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Tgs.GameProviders.csproj" -c Release -o /app/publish /p:UseAppHost=false
+ARG BuildConfiguration
+RUN dotnet publish "Tgs.GameProviders.csproj" -c $BuildConfiguration -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

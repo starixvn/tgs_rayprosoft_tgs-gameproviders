@@ -25,8 +25,12 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
+    ValueTask<EndorphinaConfiguration> GetEndorphinaConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
     ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(
-            Guid gameProviderConfigurationId,
+                Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
     ValueTask<string> GetGameProviderCultureCodeAsync(
@@ -76,10 +80,6 @@ public interface IGameProviderRepository
         CancellationToken cancellationToken = default);
 
     ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(
-        Guid gameProviderConfigurationId,
-        CancellationToken cancellationToken = default);
-
-    ValueTask<EndorphinaConfiguration> GetEndorphinaConfiguration(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 }
