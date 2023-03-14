@@ -29,6 +29,7 @@ public static class GameProviderConfigurations
     public static readonly string Endorphina = string.Format(_template, GameProviderType.Endorphina);
     public static readonly string Evolution = string.Format(_template, GameProviderType.Evolution);
     public static readonly string EvolutionTransfer = string.Format(_template, GameProviderType.EvolutionTransfer);
+    public static readonly string FaChai = string.Format(_template, GameProviderType.FaChai);
     public static readonly string Habanero = string.Format(_template, GameProviderType.Habanero);
     public static readonly string HabaneroTransfer = string.Format(_template, GameProviderType.HabaneroTransfer);
     public static readonly string IDNLive = string.Format(_template, GameProviderType.IDNLive);

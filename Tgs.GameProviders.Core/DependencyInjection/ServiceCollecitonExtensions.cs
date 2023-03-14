@@ -6,6 +6,7 @@ using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
+using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.JDBService.Client;
@@ -50,7 +51,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceTFGamingClientOptions, IServiceProvider> gameInterfaceTFGamingClientOptions,
         Action<GameInterfaceDreamGamingClientOptions, IServiceProvider> gameInterfaceDreamGamingClientOptions,
         Action<GameInterfaceEndorphinaClientOptions, IServiceProvider> gameInterfaceEndorphinaClientOptions,
-        Action<GameRecordEndorphinaSessionClientOptions, IServiceProvider> gameRecordEndorphinaClientOptions)
+        Action<GameRecordEndorphinaSessionClientOptions, IServiceProvider> gameRecordEndorphinaClientOptions,
+        Action<GameInterfaceFaChaiClientOptions, IServiceProvider> gameInterfaceFaChaiClientOptions)
         => services
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
@@ -72,6 +74,7 @@ public static class ServiceCollecitonExtensions
             .AddGameInterfaceTFGamingServiceClient(gameInterfaceTFGamingClientOptions)
             .AddGameInterfaceDreamGamingServiceClient(gameInterfaceDreamGamingClientOptions)
             .AddGameInterfaceEndorphinaServiceClient(gameInterfaceEndorphinaClientOptions)
+            .AddGameInterfaceFaChaiClient(gameInterfaceFaChaiClientOptions)
             .AddGameRecordEndorphinaSessionClient(gameRecordEndorphinaClientOptions)
             .AddGameRoundsClient(gameRoundsClientOptions)
             .AddGameTokenClient(gameTokenClientOptions)
