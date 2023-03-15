@@ -1,12 +1,13 @@
 ﻿using Tgs.GameCommand.Client;
 using Tgs.GameCommand.Common;
+using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameProviders.Core;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public static class GameProvidersRegisterExtensions
+public static class ServiceRegisterExtensions
 {
-    public static async Task<WebApplication> UseGameProvidersRegister(this WebApplication app)
+    public static async Task<WebApplication> UseRegister(this WebApplication app)
     {
         using (var scope = app.Services.CreateScope())
         {
@@ -31,6 +32,12 @@ public static class GameProvidersRegisterExtensions
                         gameProviderId: gameProviderIdInfo.GameProviderId)
                     .ConfigureAwait(false);
             }
+
+            var gameInterfaceAwcServiceClient = scope.ServiceProvider.GetRequiredService<IGameInterfaceAwcServiceClient>();
+            _ = await gameInterfaceAwcServiceClient
+                 .CheckingServiceAsync(
+                    machineName: Environment.MachineName)
+                 .ConfigureAwait(false);
         }
 
         return app;

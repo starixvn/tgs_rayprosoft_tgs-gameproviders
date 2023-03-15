@@ -239,6 +239,6 @@ app.MapProfileViewer();
 
 app.MapHealthChecks("/healthz");
 
-_ = app.UseGameProvidersRegister();
+_ = app.UseRegister();
 
 app.Run();
