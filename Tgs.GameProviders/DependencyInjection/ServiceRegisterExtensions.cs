@@ -1,6 +1,7 @@
 ﻿using Tgs.GameCommand.Client;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameProviders.Core;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -32,12 +33,31 @@ public static class ServiceRegisterExtensions
                         gameProviderId: gameProviderIdInfo.GameProviderId)
                     .ConfigureAwait(false);
             }
+            try
+            {
+                var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceAwcServiceClient>();
+                _ = await gameInterface
+                     .CheckingServiceAsync(
+                        machineName: Environment.MachineName)
+                     .ConfigureAwait(false);
+            }
+            catch
+            {
 
-            var gameInterfaceAwcServiceClient = scope.ServiceProvider.GetRequiredService<IGameInterfaceAwcServiceClient>();
-            _ = await gameInterfaceAwcServiceClient
-                 .CheckingServiceAsync(
-                    machineName: Environment.MachineName)
-                 .ConfigureAwait(false);
+            }
+
+            try
+            {
+                var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceFaChaiClient>();
+                _ = await gameInterface
+                     .CheckingServiceAsync(
+                        machineName: Environment.MachineName)
+                     .ConfigureAwait(false);
+            }
+            catch
+            {
+
+            }
         }
 
         return app;
