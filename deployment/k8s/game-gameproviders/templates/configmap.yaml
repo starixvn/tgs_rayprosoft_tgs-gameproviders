@@ -13,7 +13,7 @@ data:
         "GameTokenBaseUrl":"http://game-token/",
         "GamePlayerTransformBaseUrl":"http://game-gameplayertransform:9090/",
         "GameCommandClientBaseUrl": "http://game-gamecommand/",
-        "GameInterfaceAwcBaseUrl":"http://game-gameinterface-awc-service:9090/",
+        "GameInterfaceAwcBaseUrl":"dns:///game-gameinterface-awc-service:9090/",
         "GameInterfaceJiliBaseUrl":"http://game-gameinterface-jili-service:9090/",
         "GameInterfaceWMCasinoBaseUrl":"http://game-gameinterface-wmcasino-service:9090/",
         "GameInterfaceEvolutionBaseUrl":"http://game-gameinterface-evolution-service:9090/",
