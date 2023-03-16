@@ -7,7 +7,6 @@ using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Prometheus;
-using Tgs.GameProviders.ViewModelMappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -167,14 +166,6 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceFaChaiBaseUrl")!;
-    });
-builder.Services
-    .AddAutoMapper(config =>
-    {
-        config.AddProfile<GameUrlMapping>();
-        config.AddProfile<PlayerFundMapping>();
-        config.AddProfile<PlayerFundCheckingMapping>();
-        config.AddProfile<RoundDetailMapping>();
     });
 
 builder.Services

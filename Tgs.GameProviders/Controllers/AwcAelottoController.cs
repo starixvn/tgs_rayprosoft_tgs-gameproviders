@@ -32,9 +32,9 @@ public class AwcAelottoController : ControllerBase,
     public IAsyncEnumerable<BalanceResult> BalanceAsync(
          [FromServices] IQueryService<AwcAelottoBalancesQuery, BalanceResult> getService,
          string brandCode)
-        => getService.QueryAsync(new(
-            BrandCode: brandCode
-            ));
+        => getService.QueryAsync(
+            query: new(BrandCode: brandCode),
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Games the URL asynchronous.
@@ -59,24 +59,28 @@ public class AwcAelottoController : ControllerBase,
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<AwcAelottoGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
     {
-        var result = await getService.GetAsync(new AwcAelottoGameUrlQuery()
-        {
-            GameType = request.GameType,
-            GameId = request.GameId,
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            LoginRecordId = request.LoginRecordId,
-            PlatformType = request.PlatformType,
-            Language = request.Language,
-            IPAddress = request.IPAddress,
-            BackUrl = request.BackUrl
-        }).ConfigureAwait(false);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
         return result == null ? null : new GameUrlResponse() { Url = result.Url };
     }
 
@@ -95,10 +99,13 @@ public class AwcAelottoController : ControllerBase,
     public ValueTask KickPlayerAsync(
         [FromServices] ICommandService<AwcAelottoKickPlayerCommand> commandService,
         string playerCode)
-        => commandService.ExecuteAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+        => commandService
+        .ExecuteAsync(
+            command: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Players the balance asynchronous.
@@ -115,10 +122,13 @@ public class AwcAelottoController : ControllerBase,
     public ValueTask<decimal?> PlayerBalanceAsync(
          [FromServices] IGetService<AwcAelottoPlayerBalanceQuery, decimal?> getService,
          string playerCode)
-        => getService.GetAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Players the fund checking asynchronous.
@@ -137,18 +147,23 @@ public class AwcAelottoController : ControllerBase,
     ///             "orderId":"72412202110271546265054ucmqplxb029"
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundChecking")]
+    [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
         [FromServices] IGetService<AwcAelottoPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
         PlayerFundCheckingRequest request)
     {
-        var result = await getService.GetAsync(new()
-        {
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            OrderId = request.OrderId,
-        }).ConfigureAwait(false);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
         return result == null ? null : new PlayerFundCheckingResponse()
         {
             OrderStatus = result.OrderStatus,
@@ -173,19 +188,23 @@ public class AwcAelottoController : ControllerBase,
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
         [FromServices] IGetService<AwcAelottoPlayerFundInQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(new()
-        {
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            OrderId = request.OrderId,
-            Amount = request.Amount,
-        }).ConfigureAwait(false);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                    Amount = request.Amount,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
         return result == null ? null : new PlayerFundResponse()
         {
             OrderId = request.OrderId
@@ -210,19 +229,23 @@ public class AwcAelottoController : ControllerBase,
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
         [FromServices] IGetService<AwcAelottoPlayerFundOutQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(new()
-        {
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            OrderId = request.OrderId,
-            Amount = request.Amount,
-        }).ConfigureAwait(false);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                    Amount = request.Amount,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
         return result == null ? null : new PlayerFundResponse()
         {
             OrderId = request.OrderId
@@ -241,16 +264,17 @@ public class AwcAelottoController : ControllerBase,
     ///
     ///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
-    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+    [HttpGet("rounddetail/{roundId:guid}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<AwcAelottoRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
-        => await getService
-        .GetAsync(new AwcAelottoRoundDetailQuery
-        {
-            RoundId = roundId,
-            Language = language
-        })
-        .ConfigureAwait(false);
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                RoundId = roundId,
+                Language = language
+            },
+            cancellationToken: HttpContext.RequestAborted);
 }

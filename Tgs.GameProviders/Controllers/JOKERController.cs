@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
 using Tgs.GameProviders.Core.Joker.Models;
@@ -19,14 +18,6 @@ public class JOKERController : ControllerBase,
     IPlayerFundCheckingHandler<JokerPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
     IRoundDetailHandler<JokerRoundDetailQuery>
 {
-    private readonly IMapper _mapper;
-
-    public JOKERController(
-        IMapper mapper)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    }
-
     /// <summary>
     /// Games the record list asynchronous.
     /// </summary>
@@ -45,7 +36,7 @@ public class JOKERController : ControllerBase,
     ///             "nextId": null
     ///         }
     /// </remarks>
-    [HttpPost("GameRecordList")]
+    [HttpPost("gamerecordlist")]
     public async ValueTask<JokerGameRecordResult?> GameRecordListAsync(
         [FromServices] IGetService<JokerGameRecordListQuery, JokerGameRecordResult> getService,
         JokerGameRecordListRequest request)
@@ -86,16 +77,29 @@ public class JOKERController : ControllerBase,
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<JokerGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
     {
         var result = await getService
-            .GetAsync(_mapper.Map<JokerGameUrlQuery>(request))
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
-
-        return result == null ? null : _mapper.Map<GameUrlResponse>(result);
+        return result == null ? null : new GameUrlResponse() { Url = result.Url };
     }
 
     /// <summary>
@@ -113,10 +117,13 @@ public class JOKERController : ControllerBase,
     public ValueTask KickPlayerAsync(
         [FromServices] ICommandService<JokerKickPlayerCommand> commandService,
         string playerCode)
-        => commandService.ExecuteAsync(new JokerKickPlayerCommand
-        {
-            PlayerCode = playerCode
-        });
+        => commandService
+        .ExecuteAsync(
+            command: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Players the balance asynchronous.
@@ -129,14 +136,17 @@ public class JOKERController : ControllerBase,
     ///
     ///   Get balance/4uf6k014jp5x
     /// </remarks>
-    [HttpGet("Balance/{playerCode}")]
+    [HttpGet("balance/{playerCode}")]
     public ValueTask<decimal?> PlayerBalanceAsync(
         [FromServices] IGetService<JokerPlayerBalanceQuery, decimal?> getService,
         string playerCode)
-        => getService.GetAsync(new JokerPlayerBalanceQuery
-        {
-            PlayerCode = playerCode
-        });
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Players the fund checking asynchronous.
@@ -155,13 +165,27 @@ public class JOKERController : ControllerBase,
     ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86"
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundChecking")]
+    [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
         [FromServices] IGetService<JokerPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
         PlayerFundCheckingRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<JokerPlayerFundCheckingQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
+        return result == null ? null : new PlayerFundCheckingResponse()
+        {
+            OrderStatus = result.OrderStatus,
+        };
     }
 
     /// <summary>
@@ -182,13 +206,27 @@ public class JOKERController : ControllerBase,
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
         [FromServices] IGetService<JokerPlayerFundInQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<JokerPlayerFundInQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                    Amount = request.Amount,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+        return result == null ? null : new PlayerFundResponse()
+        {
+            OrderId = request.OrderId
+        };
     }
 
     /// <summary>
@@ -209,13 +247,27 @@ public class JOKERController : ControllerBase,
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
         [FromServices] IGetService<JokerPlayerFundOutQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<JokerPlayerFundOutQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                    Amount = request.Amount,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+        return result == null ? null : new PlayerFundResponse()
+        {
+            OrderId = request.OrderId
+        };
     }
 
     /// <summary>
@@ -230,16 +282,17 @@ public class JOKERController : ControllerBase,
     ///
     ///     Get rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
+    [HttpGet("rounddetail/{roundId:guid}")]
     public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<JokerRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         string language)
         => getService
-            .GetAsync(
-                new JokerRoundDetailQuery
-                {
-                    RoundId = roundId,
-                    Language = language
-                });
+        .GetAsync(
+            query: new()
+            {
+                RoundId = roundId,
+                Language = language
+            },
+            cancellationToken: HttpContext.RequestAborted);
 }

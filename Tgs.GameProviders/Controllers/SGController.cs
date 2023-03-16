@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.SexyGaming.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -15,13 +14,6 @@ public class SGController : ControllerBase,
     IKickPlayerHandler<SexyGamingKickPlayerCommand>,
     IRoundDetailHandler<SexyGamingRoundDetailQuery>
 {
-    private readonly IMapper _mapper;
-
-    public SGController(IMapper mapper)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    }
-
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
@@ -45,13 +37,29 @@ public class SGController : ControllerBase,
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<SexyGamingGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<SexyGamingGameUrlQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<GameUrlResponse>(result);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+        return result == null ? null : new GameUrlResponse() { Url = result.Url };
     }
 
     /// <summary>
@@ -68,10 +76,13 @@ public class SGController : ControllerBase,
     public ValueTask KickPlayerAsync(
         [FromServices] ICommandService<SexyGamingKickPlayerCommand> commandService,
         string playerCode)
-        => commandService.ExecuteAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+        => commandService
+        .ExecuteAsync(
+            command: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Rounds the detail asynchronous.
@@ -85,17 +96,17 @@ public class SGController : ControllerBase,
     ///
     ///     Get rounddetail/10b76524-838b-492d-3f4c-08d99fcafe7b?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
-    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+    [HttpGet("rounddetail/{roundId:guid}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<SexyGamingRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
-    {
-        var result = await getService.GetAsync(new()
-        {
-            RoundId = roundId,
-            Language = language
-        }).ConfigureAwait(false);
-        return result ?? null;
-    }
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                RoundId = roundId,
+                Language = language
+            },
+            cancellationToken: HttpContext.RequestAborted);
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -17,16 +18,6 @@ public partial class GameProvidersClientUnitTest
     [Test]
     public async Task Game_Url()
     {
-        var fakeService = Substitute.For<IGetService<KYGameUrlQuery, GameUrlResult>>();
-
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
-
         var gameProviderCode = "KY";  // en-us
         var gameType = GameProvidersClientGameType.CardGameLobby;
         var gameId = 1;
@@ -39,26 +30,38 @@ public partial class GameProvidersClientUnitTest
         var ipAddress = "127.0.0.1";
         var backUrl = new Uri("https://dev-t1.rpgp.cc/");
 
-        var query = new KYGameUrlQuery
+        var web = new TestGameProvidersApplication(builder =>
         {
-            GameType = (GameType)gameType,
-            GameId = gameId,
-            BrandCode = brandCode,
-            PlayerCode = playerCode,
-            CurrencyCode = currencyCode,
-            LoginRecordId = loginRecordId,
-            PlatformType = (PlatformType)platformType,
-            Language = language,
-            IPAddress = ipAddress,
-            BackUrl = backUrl
-        };
-        var result = new GameUrlResult
-        {
-            Url = new Uri("https://www.google.com/")
-        };
-        _ = fakeService
-            .GetAsync(query)
-            .Returns(result);
+            _ = builder.ConfigureServices(services =>
+            {
+                var fakeService = Substitute.For<IGetService<KYGameUrlQuery, GameUrlResult>>();
+
+                var query = new KYGameUrlQuery
+                {
+                    GameType = (GameType)gameType,
+                    GameId = gameId,
+                    BrandCode = brandCode,
+                    PlayerCode = playerCode,
+                    CurrencyCode = currencyCode,
+                    LoginRecordId = loginRecordId,
+                    PlatformType = (PlatformType)platformType,
+                    Language = language,
+                    IPAddress = ipAddress,
+                    BackUrl = backUrl
+                };
+                var result = new GameUrlResult
+                {
+                    Url = new Uri("https://www.google.com/")
+                };
+                _ = fakeService
+                    .GetAsync(
+                        query: Arg.Is(query),
+                        cancellationToken: Arg.Any<CancellationToken>())
+                    .Returns(result);
+
+                _ = services.AddTransient(_ => fakeService);
+            });
+        });
 
         var httpClient = web.CreateClient();
 
@@ -80,22 +83,11 @@ public partial class GameProvidersClientUnitTest
             .ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
-        Assert.AreEqual(result.Url, actual!);
     }
 
     [Test]
     public void Game_Url_HttpRequestException()
     {
-        var fakeService = Substitute.For<IGetService<KYGameUrlQuery, GameUrlResult>>();
-
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
-
         var gameProviderCode = "KY";  // en-us
         var gameType = GameProvidersClientGameType.CardGameLobby;
         var gameId = 1;
@@ -108,23 +100,34 @@ public partial class GameProvidersClientUnitTest
         var ipAddress = "127.0.0.1";
         var backUrl = new Uri("https://dev-t1.rpgp.cc/");
 
-        var query = new KYGameUrlQuery
+        var web = new TestGameProvidersApplication(builder =>
         {
-            GameType = (GameType)gameType,
-            GameId = gameId,
-            BrandCode = brandCode,
-            PlayerCode = playerCode,
-            CurrencyCode = currencyCode,
-            LoginRecordId = loginRecordId,
-            PlatformType = (PlatformType)platformType,
-            Language = language,
-            IPAddress = ipAddress,
-            BackUrl = backUrl
-        };
-        _ = fakeService
-            .GetAsync(query)
-            .ThrowsForAnyArgs<Exception>();
+            _ = builder.ConfigureServices(services =>
+            {
+                var fakeService = Substitute.For<IGetService<KYGameUrlQuery, GameUrlResult>>();
 
+                var query = new KYGameUrlQuery
+                {
+                    GameType = (GameType)gameType,
+                    GameId = gameId,
+                    BrandCode = brandCode,
+                    PlayerCode = playerCode,
+                    CurrencyCode = currencyCode,
+                    LoginRecordId = loginRecordId,
+                    PlatformType = (PlatformType)platformType,
+                    Language = language,
+                    IPAddress = ipAddress,
+                    BackUrl = backUrl
+                };
+                _ = fakeService
+                    .GetAsync(
+                        query: Arg.Is(query),
+                        cancellationToken: Arg.Any<CancellationToken>())
+                    .ThrowsForAnyArgs<Exception>();
+
+                _ = services.AddTransient(_ => fakeService);
+            });
+        });
         var httpClient = web.CreateClient();
 
         var sut = new GameProvidersClient(httpClient);

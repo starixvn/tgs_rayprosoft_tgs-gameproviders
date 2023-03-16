@@ -40,7 +40,7 @@ public class WMCasinoTransferController : ControllerBase,
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<WMCasinoTransferGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
@@ -92,7 +92,7 @@ public class WMCasinoTransferController : ControllerBase,
     ///
     ///   Get balance/4ucmqplxb029
     /// </remarks>
-    [HttpGet("Balance/{playerCode}")]
+    [HttpGet("balance/{playerCode}")]
     public ValueTask<decimal?> PlayerBalanceAsync(
          [FromServices] IGetService<WMCasinoTransferPlayerBalanceQuery, decimal?> getService,
          string playerCode)
@@ -118,7 +118,7 @@ public class WMCasinoTransferController : ControllerBase,
     ///             "orderId":"72412202110271546265054ucmqplxb029"
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundChecking")]
+    [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
         [FromServices] IGetService<WMCasinoTransferPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
         PlayerFundCheckingRequest request)
@@ -154,7 +154,7 @@ public class WMCasinoTransferController : ControllerBase,
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
         [FromServices] IGetService<WMCasinoTransferPlayerFundInQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
@@ -191,7 +191,7 @@ public class WMCasinoTransferController : ControllerBase,
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
         [FromServices] IGetService<WMCasinoTransferPlayerFundOutQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
@@ -222,7 +222,7 @@ public class WMCasinoTransferController : ControllerBase,
     ///
     ///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
+    [HttpGet("rounddetail/{roundId:guid}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<WMCasinoTransferRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,

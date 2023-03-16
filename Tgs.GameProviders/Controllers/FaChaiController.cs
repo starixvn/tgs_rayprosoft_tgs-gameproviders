@@ -34,7 +34,7 @@ public class FaChaiController : ControllerBase
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<FaChaiGameUrlQuery, Uri> getService,
         GameUrlRequest request)
@@ -86,7 +86,7 @@ public class FaChaiController : ControllerBase
     ///
     ///   Get balance/4ucmqplxb029
     /// </remarks>
-    [HttpGet("Balance/{playerCode}")]
+    [HttpGet("balance/{playerCode}")]
     public ValueTask<decimal?> PlayerBalanceAsync(
          [FromServices] IGetService<FaChaiPlayerBalanceQuery, decimal?> getService,
          string playerCode)
@@ -112,7 +112,7 @@ public class FaChaiController : ControllerBase
     ///             "orderId":"7a7147218501000000010000af506b2c"
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundChecking")]
+    [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
         [FromServices] IGetService<FaChaiPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
         PlayerFundCheckingRequest request)
@@ -148,7 +148,7 @@ public class FaChaiController : ControllerBase
     ///             "amount": 100
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
         [FromServices] IGetService<FaChaiPlayerFundInQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
@@ -185,7 +185,7 @@ public class FaChaiController : ControllerBase
     ///             "amount": 1000
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
         [FromServices] IGetService<FaChaiPlayerFundOutQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
@@ -216,7 +216,7 @@ public class FaChaiController : ControllerBase
     ///
     ///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
+    [HttpGet("rounddetail/{roundId:guid}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<FaChaiRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,

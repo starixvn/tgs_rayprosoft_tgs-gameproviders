@@ -36,7 +36,7 @@ public class IDNLiveController : ControllerBase,
     ///             "backUrl": "https://dev-t4-idr.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<IDNLiveGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
@@ -69,7 +69,7 @@ public class IDNLiveController : ControllerBase,
     ///
     ///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
+    [HttpGet("rounddetail/{roundId:guid}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<IDNLiveRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.DreamGame.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -15,14 +14,6 @@ public class DreamGameController : ControllerBase,
     IKickPlayerHandler<DreamGameKickPlayerCommand>,
     IRoundDetailHandler<DreamGameRoundDetailQuery>
 {
-    private readonly IMapper _mapper;
-
-    public DreamGameController(
-        IMapper mapper)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    }
-
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
@@ -46,18 +37,29 @@ public class DreamGameController : ControllerBase,
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<DreamGameGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
     {
         var result = await getService
-            .GetAsync(_mapper.Map<DreamGameGameUrlQuery>(request))
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
-
-        return result == null ?
-            null :
-            _mapper.Map<GameUrlResponse>(result);
+        return result == null ? null : new GameUrlResponse() { Url = result.Url };
     }
 
     /// <summary>
@@ -72,11 +74,16 @@ public class DreamGameController : ControllerBase,
     ///     Delete kickplayer/4ucmqplxb029
     /// </remarks>
     [HttpDelete("kickplayer/{playerCode}")]
-    public ValueTask KickPlayerAsync([FromServices] ICommandService<DreamGameKickPlayerCommand> commandService, string playerCode)
-        => commandService.ExecuteAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+    public ValueTask KickPlayerAsync(
+        [FromServices] ICommandService<DreamGameKickPlayerCommand> commandService,
+        string playerCode)
+        => commandService
+        .ExecuteAsync(
+            command: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Rounds the detail asynchronous.
@@ -90,14 +97,17 @@ public class DreamGameController : ControllerBase,
     ///
     ///     Get rounddetail/4455978d-1aa4-ec11-bfe6-8c554ae8ab6b?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
-    public async ValueTask<RoundDetailResult?> RoundDetailAsync([FromServices] IGetService<DreamGameRoundDetailQuery, RoundDetailResult?> getService, Guid roundId, [FromQuery] string language)
-    {
-        var result = await getService.GetAsync(new()
-        {
-            RoundId = roundId,
-            Language = language
-        }).ConfigureAwait(false);
-        return result ?? null;
-    }
+    [HttpGet("rounddetail/{roundId:guid}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
+        [FromServices] IGetService<DreamGameRoundDetailQuery, RoundDetailResult?> getService,
+        Guid roundId,
+        [FromQuery] string language)
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                RoundId = roundId,
+                Language = language
+            },
+            cancellationToken: HttpContext.RequestAborted);
 }

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Saba.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -15,13 +14,6 @@ public class SABAController : ControllerBase,
     IKickPlayerHandler<SabaKickPlayerCommand>,
     IRoundDetailHandler<SabaRoundDetailQuery>
 {
-    private readonly IMapper _mapper;
-
-    public SABAController(IMapper mapper)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    }
-
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
@@ -45,18 +37,29 @@ public class SABAController : ControllerBase,
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<SabaGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
     {
-        var query = _mapper.Map<SabaGameUrlQuery>(request);
-
         var result = await getService
-            .GetAsync(query)
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
-
-        return result == null ? null : _mapper.Map<GameUrlResponse>(result);
+        return result == null ? null : new GameUrlResponse() { Url = result.Url };
     }
 
     /// <summary>
@@ -74,10 +77,13 @@ public class SABAController : ControllerBase,
     public ValueTask KickPlayerAsync(
         [FromServices] ICommandService<SabaKickPlayerCommand> commandService,
         string playerCode)
-        => commandService.ExecuteAsync(new SabaKickPlayerCommand
-        {
-            PlayerCode = playerCode
-        });
+        => commandService
+        .ExecuteAsync(
+            command: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Rounds the detail asynchronous.
@@ -91,18 +97,17 @@ public class SABAController : ControllerBase,
     ///
     ///     Get rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
-    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+    [HttpGet("rounddetail/{roundId:guid}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<SabaRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
-    {
-        var result = await getService.GetAsync(new SabaRoundDetailQuery
-        {
-            RoundId = roundId,
-            Language = language
-        }).ConfigureAwait(false);
-
-        return result ?? null;
-    }
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                RoundId = roundId,
+                Language = language
+            },
+            cancellationToken: HttpContext.RequestAborted);
 }

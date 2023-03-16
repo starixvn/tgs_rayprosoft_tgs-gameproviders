@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.TCG.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -15,13 +14,6 @@ public class TCGController : ControllerBase,
     IKickPlayerHandler<TCGKickPlayerCommand>,
     IRoundDetailHandler<TCGRoundDetailQuery>
 {
-    private readonly IMapper _mapper;
-
-    public TCGController(IMapper mapper)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    }
-
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
@@ -76,13 +68,29 @@ public class TCGController : ControllerBase,
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<TCGGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<TCGGameUrlQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<GameUrlResponse>(result);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+        return result == null ? null : new GameUrlResponse() { Url = result.Url };
     }
 
     /// <summary>
@@ -100,10 +108,13 @@ public class TCGController : ControllerBase,
     public ValueTask KickPlayerAsync(
         [FromServices] ICommandService<TCGKickPlayerCommand> commandService,
         string playerCode)
-        => commandService.ExecuteAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+        => commandService
+        .ExecuteAsync(
+            command: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Rounds the detail asynchronous.
@@ -117,17 +128,17 @@ public class TCGController : ControllerBase,
     ///
     ///     Get rounddetail/d14b1a37-d473-4439-a0a8-08d97f42d936?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
-    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+    [HttpGet("rounddetail/{roundId:guid}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<TCGRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
-    {
-        var result = await getService.GetAsync(new()
-        {
-            RoundId = roundId,
-            Language = language
-        }).ConfigureAwait(false);
-        return result ?? null;
-    }
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                RoundId = roundId,
+                Language = language
+            },
+            cancellationToken: HttpContext.RequestAborted);
 }

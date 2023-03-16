@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.WGHorse.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -19,13 +18,6 @@ public class WGVIAController : ControllerBase,
     IPlayerFundHandler<WGHorsePlayerFundInQuery, WGHorsePlayerFundOutQuery>,
     IRoundDetailHandler<WGHorseRoundDetailQuery>
 {
-    private readonly IMapper _mapper;
-
-    public WGVIAController(IMapper mapper)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    }
-
     /// <summary>
     /// Games the record list asynchronous.
     /// </summary>
@@ -43,7 +35,7 @@ public class WGVIAController : ControllerBase,
     ///             "rows": 500
     ///         }
     /// </remarks>
-    [HttpPost("GameRecordList")]
+    [HttpPost("gamerecordlist")]
     public async ValueTask<GameRecordListResult?> GameRecordListAsync(
         [FromServices] IGetService<WGHorseGameRecordListQuery, GameRecordListResult> getService,
         WGHorseGameRecordListQuery request)
@@ -75,13 +67,29 @@ public class WGVIAController : ControllerBase,
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<WGHorseGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<WGHorseGameUrlQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<GameUrlResponse>(result);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+        return result == null ? null : new GameUrlResponse() { Url = result.Url };
     }
 
     /// <summary>
@@ -99,10 +107,13 @@ public class WGVIAController : ControllerBase,
     public ValueTask KickPlayerAsync(
         [FromServices] ICommandService<WGHorseKickPlayerCommand> commandService,
         string playerCode)
-        => commandService.ExecuteAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+        => commandService
+        .ExecuteAsync(
+            command: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Players the balance asynchronous.
@@ -115,14 +126,17 @@ public class WGVIAController : ControllerBase,
     ///
     ///   Get balance/4ucmqplxb029
     /// </remarks>
-    [HttpGet("Balance/{playerCode}")]
+    [HttpGet("balance/{playerCode}")]
     public ValueTask<decimal?> PlayerBalanceAsync(
          [FromServices] IGetService<WGHorsePlayerBalanceQuery, decimal?> getService,
          string playerCode)
-        => getService.GetAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Players the fund checking asynchronous.
@@ -141,13 +155,27 @@ public class WGVIAController : ControllerBase,
     ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86"
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundChecking")]
+    [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
         [FromServices] IGetService<WGHorsePlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
         PlayerFundCheckingRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<WGHorsePlayerFundCheckingQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
+        return result == null ? null : new PlayerFundCheckingResponse()
+        {
+            OrderStatus = result.OrderStatus,
+        };
     }
 
     /// <summary>
@@ -168,13 +196,27 @@ public class WGVIAController : ControllerBase,
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
         [FromServices] IGetService<WGHorsePlayerFundInQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<WGHorsePlayerFundInQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                    Amount = request.Amount,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+        return result == null ? null : new PlayerFundResponse()
+        {
+            OrderId = request.OrderId
+        };
     }
 
     /// <summary>
@@ -195,13 +237,27 @@ public class WGVIAController : ControllerBase,
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
         [FromServices] IGetService<WGHorsePlayerFundOutQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<WGHorsePlayerFundOutQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                    Amount = request.Amount,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+        return result == null ? null : new PlayerFundResponse()
+        {
+            OrderId = request.OrderId
+        };
     }
 
     /// <summary>
@@ -216,17 +272,17 @@ public class WGVIAController : ControllerBase,
     ///
     ///     Get rounddetail/abc9d0af-9344-4fdb-46bd-08d9677dcceb?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
-    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+    [HttpGet("rounddetail/{roundId:guid}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<WGHorseRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
-    {
-        var result = await getService.GetAsync(new()
-        {
-            RoundId = roundId,
-            Language = language
-        }).ConfigureAwait(false);
-        return result ?? null;
-    }
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                RoundId = roundId,
+                Language = language
+            },
+            cancellationToken: HttpContext.RequestAborted);
 }

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.LY.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -20,13 +19,6 @@ public class LYController : ControllerBase,
     IRoundDetailHandler<LYRoundDetailQuery>
 
 {
-    private readonly IMapper _mapper;
-
-    public LYController(IMapper mapper)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    }
-
     /// <summary>
     /// Games the record list asynchronous.
     /// </summary>
@@ -44,7 +36,7 @@ public class LYController : ControllerBase,
     ///             "endTime": "2021-11-02T03:46:03.1588192+00:00"
     ///         }
     /// </remarks>
-    [HttpPost("GameRecordList")]
+    [HttpPost("gamerecordlist")]
     public async ValueTask<GameRecordListResult?> GameRecordListAsync(
         [FromServices] IGetService<LYGameRecordListQuery, GameRecordListResult> getService,
         LYGameRecordListQuery request)
@@ -76,13 +68,29 @@ public class LYController : ControllerBase,
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<LYGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<LYGameUrlQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<GameUrlResponse>(result);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+        return result == null ? null : new GameUrlResponse() { Url = result.Url };
     }
 
     /// <summary>
@@ -100,10 +108,13 @@ public class LYController : ControllerBase,
     public ValueTask KickPlayerAsync(
         [FromServices] ICommandService<LYKickPlayerCommand> commandService,
         string playerCode)
-        => commandService.ExecuteAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+        => commandService
+        .ExecuteAsync(
+            command: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Players the balance asynchronous.
@@ -116,14 +127,17 @@ public class LYController : ControllerBase,
     ///
     ///   Get balance/4ucmqplxb029
     /// </remarks>
-    [HttpGet("Balance/{playerCode}")]
+    [HttpGet("balance/{playerCode}")]
     public ValueTask<decimal?> PlayerBalanceAsync(
          [FromServices] IGetService<LYPlayerBalanceQuery, decimal?> getService,
          string playerCode)
-        => getService.GetAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Players the fund checking asynchronous.
@@ -142,13 +156,27 @@ public class LYController : ControllerBase,
     ///             "orderId":"72412202110271546265054ucmqplxb029"
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundChecking")]
+    [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
         [FromServices] IGetService<LYPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
         PlayerFundCheckingRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<LYPlayerFundCheckingQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<PlayerFundCheckingResponse>(result);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
+        return result == null ? null : new PlayerFundCheckingResponse()
+        {
+            OrderStatus = result.OrderStatus,
+        };
     }
 
     /// <summary>
@@ -169,13 +197,27 @@ public class LYController : ControllerBase,
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
         [FromServices] IGetService<LYPlayerFundInQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<LYPlayerFundInQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                    Amount = request.Amount,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+        return result == null ? null : new PlayerFundResponse()
+        {
+            OrderId = request.OrderId
+        };
     }
 
     /// <summary>
@@ -196,13 +238,27 @@ public class LYController : ControllerBase,
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
         [FromServices] IGetService<LYPlayerFundOutQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(_mapper.Map<LYPlayerFundOutQuery>(request)).ConfigureAwait(false);
-        return result == null ? null : _mapper.Map<PlayerFundResponse>(result);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                    Amount = request.Amount,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+        return result == null ? null : new PlayerFundResponse()
+        {
+            OrderId = request.OrderId
+        };
     }
 
     /// <summary>
@@ -217,17 +273,17 @@ public class LYController : ControllerBase,
     ///
     ///     Get rounddetail/b53d5576-8f61-417d-17da-08d9a5803086?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
-    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+    [HttpGet("rounddetail/{roundId:guid}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<LYRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
-    {
-        var result = await getService.GetAsync(new()
-        {
-            RoundId = roundId,
-            Language = language
-        }).ConfigureAwait(false);
-        return result ?? null;
-    }
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                RoundId = roundId,
+                Language = language
+            },
+            cancellationToken: HttpContext.RequestAborted);
 }

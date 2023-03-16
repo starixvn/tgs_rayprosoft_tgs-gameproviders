@@ -34,7 +34,7 @@ public class BTiSportsController : ControllerBase
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse> GameUrlAsync(
         [FromServices] IGetService<BTiSportsGameUrlQuery, Uri> service,
         GameUrlRequest request)
@@ -98,7 +98,7 @@ public class BTiSportsController : ControllerBase
     ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86"
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundChecking")]
+    [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
         [FromServices] IGetService<BTiSportsPlayerFundCheckingQuery, PlayerFundCheckingResult> service,
         PlayerFundCheckingRequest request)
@@ -136,7 +136,7 @@ public class BTiSportsController : ControllerBase
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
         [FromServices] IGetService<BTiSportsPlayerFundInQuery, PlayerFundResult> service,
         PlayerFundRequest request)
@@ -175,7 +175,7 @@ public class BTiSportsController : ControllerBase
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
         [FromServices] IGetService<BTiSportsPlayerFundOutQuery, PlayerFundResult> service,
         PlayerFundRequest request)
@@ -208,7 +208,7 @@ public class BTiSportsController : ControllerBase
     ///
     ///     Get rounddetail/f6dd64ee-ce12-4bef-9ddb-08d9676f4495?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
+    [HttpGet("rounddetail/{roundId:guid}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<BTiSportsRoundDetailQuery, RoundDetailResult> service,
         Guid roundId,

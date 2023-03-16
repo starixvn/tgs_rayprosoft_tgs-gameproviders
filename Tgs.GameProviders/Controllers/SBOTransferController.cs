@@ -48,7 +48,7 @@ public class SBOTransferController : ControllerBase
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse> GameUrlAsync(
         [FromServices] IGetService<SBOTransferGameUrlQuery, Uri> service,
         GameUrlRequest request)
@@ -132,7 +132,7 @@ public class SBOTransferController : ControllerBase
     ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86"
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundChecking")]
+    [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
         [FromServices] IGetService<SBOTransferPlayerFundCheckingQuery, PlayerFundCheckingResult> service,
         PlayerFundCheckingRequest request)
@@ -170,7 +170,7 @@ public class SBOTransferController : ControllerBase
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
         [FromServices] IGetService<SBOTransferPlayerFundInQuery, PlayerFundResult> service,
         PlayerFundRequest request)
@@ -209,7 +209,7 @@ public class SBOTransferController : ControllerBase
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
         [FromServices] IGetService<SBOTransferPlayerFundOutQuery, PlayerFundResult> service,
         PlayerFundRequest request)
@@ -242,7 +242,7 @@ public class SBOTransferController : ControllerBase
     ///
     ///     Get rounddetail/f6dd64ee-ce12-4bef-9ddb-08d9676f4495?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
+    [HttpGet("rounddetail/{roundId:guid}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<SBOTransferRoundDetailQuery, RoundDetailResult> service,
         Guid roundId,

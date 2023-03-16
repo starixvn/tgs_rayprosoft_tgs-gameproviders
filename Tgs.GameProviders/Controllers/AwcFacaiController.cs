@@ -59,7 +59,7 @@ public class AwcFacaiController : ControllerBase,
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<AwcFacaiGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
@@ -118,7 +118,7 @@ public class AwcFacaiController : ControllerBase,
     ///
     ///   Get balance/4ucmqplxb029
     /// </remarks>
-    [HttpGet("Balance/{playerCode}")]
+    [HttpGet("balance/{playerCode}")]
     public ValueTask<decimal?> PlayerBalanceAsync(
          [FromServices] IGetService<AwcFacaiPlayerBalanceQuery, decimal?> getService,
          string playerCode)
@@ -147,7 +147,7 @@ public class AwcFacaiController : ControllerBase,
     ///             "orderId":"72412202110271546265054ucmqplxb029"
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundChecking")]
+    [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
         [FromServices] IGetService<AwcFacaiPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
         PlayerFundCheckingRequest request)
@@ -188,7 +188,7 @@ public class AwcFacaiController : ControllerBase,
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
         [FromServices] IGetService<AwcFacaiPlayerFundInQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
@@ -229,7 +229,7 @@ public class AwcFacaiController : ControllerBase,
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
         [FromServices] IGetService<AwcFacaiPlayerFundOutQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
@@ -264,14 +264,14 @@ public class AwcFacaiController : ControllerBase,
     ///
     ///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
+    [HttpGet("rounddetail/{roundId:guid}")]
     public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<AwcFacaiRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
         => getService
         .GetAsync(
-            new AwcFacaiRoundDetailQuery
+            query: new()
             {
                 RoundId = roundId,
                 Language = language

@@ -34,7 +34,7 @@ public class EndorphinaController : ControllerBase
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<EndorphinaGameUrlQuery, Uri> getService,
         GameUrlRequest request)
@@ -86,7 +86,7 @@ public class EndorphinaController : ControllerBase
     ///
     ///   Get balance/4ucmqplxb029
     /// </remarks>
-    [HttpGet("Balance/{playerCode}")]
+    [HttpGet("balance/{playerCode}")]
     public ValueTask<decimal?> PlayerBalanceAsync(
          [FromServices] IGetService<EndorphinaPlayerBalanceQuery, decimal?> getService,
          string playerCode)
@@ -112,7 +112,7 @@ public class EndorphinaController : ControllerBase
     ///             "orderId":"1676958531344"
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundChecking")]
+    [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
         [FromServices] IGetService<EndorphinaPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
         PlayerFundCheckingRequest request)
@@ -148,7 +148,7 @@ public class EndorphinaController : ControllerBase
     ///             "amount": 100
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
         [FromServices] IGetService<EndorphinaPlayerFundInQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
@@ -185,7 +185,7 @@ public class EndorphinaController : ControllerBase
     ///             "amount": 1000
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
         [FromServices] IGetService<EndorphinaPlayerFundOutQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
@@ -216,7 +216,7 @@ public class EndorphinaController : ControllerBase
     ///
     ///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
+    [HttpGet("rounddetail/{roundId:guid}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<EndorphinaRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,

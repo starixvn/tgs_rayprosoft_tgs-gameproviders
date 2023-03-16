@@ -34,24 +34,28 @@ public class TFGamingTransferController : ControllerBase
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<TFGamingTransferGameUrlQuery, Uri> getService,
         GameUrlRequest request)
     {
-        var result = await getService.GetAsync(new TFGamingTransferGameUrlQuery()
-        {
-            GameType = request.GameType,
-            GameId = request.GameId,
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            LoginRecordId = request.LoginRecordId,
-            PlatformType = request.PlatformType,
-            Language = request.Language,
-            IPAddress = request.IPAddress,
-            BackUrl = request.BackUrl
-        }).ConfigureAwait(false);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
         return result == null ? null : new GameUrlResponse() { Url = result };
     }
 
@@ -70,10 +74,13 @@ public class TFGamingTransferController : ControllerBase
     public ValueTask KickPlayerAsync(
         [FromServices] ICommandService<TFGamingTransferKickPlayerCommand> commandService,
         string playerCode)
-        => commandService.ExecuteAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+        => commandService
+        .ExecuteAsync(
+            command: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Players the balance asynchronous.
@@ -86,14 +93,17 @@ public class TFGamingTransferController : ControllerBase
     ///
     ///   Get balance/4ucmqplxb029
     /// </remarks>
-    [HttpGet("Balance/{playerCode}")]
+    [HttpGet("balance/{playerCode}")]
     public ValueTask<decimal?> PlayerBalanceAsync(
          [FromServices] IGetService<TFGamingTransferPlayerBalanceQuery, decimal?> getService,
          string playerCode)
-        => getService.GetAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Players the fund checking asynchronous.
@@ -112,18 +122,23 @@ public class TFGamingTransferController : ControllerBase
     ///             "orderId":"72412202110271546265054ucmqplxb029"
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundChecking")]
+    [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
         [FromServices] IGetService<TFGamingTransferPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
         PlayerFundCheckingRequest request)
     {
-        var result = await getService.GetAsync(new()
-        {
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            OrderId = request.OrderId,
-        }).ConfigureAwait(false);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
         return result == null ? null : new PlayerFundCheckingResponse()
         {
             OrderStatus = result.OrderStatus,
@@ -148,19 +163,23 @@ public class TFGamingTransferController : ControllerBase
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
         [FromServices] IGetService<TFGamingTransferPlayerFundInQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(new()
-        {
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            OrderId = request.OrderId,
-            Amount = request.Amount,
-        }).ConfigureAwait(false);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                    Amount = request.Amount,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
         return result == null ? null : new PlayerFundResponse()
         {
             OrderId = request.OrderId
@@ -185,19 +204,23 @@ public class TFGamingTransferController : ControllerBase
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
         [FromServices] IGetService<TFGamingTransferPlayerFundOutQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(new()
-        {
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            OrderId = request.OrderId,
-            Amount = request.Amount,
-        }).ConfigureAwait(false);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                    Amount = request.Amount,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
         return result == null ? null : new PlayerFundResponse()
         {
             OrderId = request.OrderId
@@ -216,16 +239,17 @@ public class TFGamingTransferController : ControllerBase
     ///
     ///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
-    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+    [HttpGet("rounddetail/{roundId:guid}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<TFGamingTransferRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
-        => await getService
-        .GetAsync(new TFGamingTransferRoundDetailQuery
-        {
-            RoundId = roundId,
-            Language = language
-        })
-        .ConfigureAwait(false);
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                RoundId = roundId,
+                Language = language
+            },
+            cancellationToken: HttpContext.RequestAborted);
 }

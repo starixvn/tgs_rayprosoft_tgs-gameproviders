@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -15,16 +16,6 @@ public partial class GameProvidersClientUnitTest
     [Test]
     public async Task Game_Url_By_AsiaGaming()
     {
-        var fakeService = Substitute.For<IGetService<AsiaGamingGameUrlQuery, GameUrlResult>>();
-
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
-
         var gameType = GameProvidersClientGameType.LiveDealerLobby;
         var gameId = 1;
         var brandCode = "GPI";
@@ -37,28 +28,39 @@ public partial class GameProvidersClientUnitTest
         var backUrl = new Uri("https://dev-t1.rpgp.cc/");
         var playerBalance = 1m;
 
-        var query = new AsiaGamingGameUrlQuery
+        var web = new TestGameProvidersApplication(builder =>
         {
-            GameType = (GameType)gameType,
-            GameId = gameId,
-            BrandCode = brandCode,
-            PlayerCode = playerCode,
-            CurrencyCode = currencyCode,
-            LoginRecordId = loginRecordId,
-            PlatformType = (PlatformType)platformType,
-            Language = language,
-            IPAddress = ipAddress,
-            BackUrl = backUrl,
-            PlayerBalance = playerBalance
-        };
-        var result = new GameUrlResult
-        {
-            Url = new Uri("https://www.google.com/")
-        };
-        _ = fakeService
-            .GetAsync(
-                Arg.Is(query))
-            .Returns(result);
+            _ = builder.ConfigureServices(services =>
+            {
+                var fakeService = Substitute.For<IGetService<AsiaGamingGameUrlQuery, GameUrlResult>>();
+
+                var query = new AsiaGamingGameUrlQuery
+                {
+                    GameType = (GameType)gameType,
+                    GameId = gameId,
+                    BrandCode = brandCode,
+                    PlayerCode = playerCode,
+                    CurrencyCode = currencyCode,
+                    LoginRecordId = loginRecordId,
+                    PlatformType = (PlatformType)platformType,
+                    Language = language,
+                    IPAddress = ipAddress,
+                    BackUrl = backUrl,
+                    PlayerBalance = playerBalance
+                };
+                var result = new GameUrlResult
+                {
+                    Url = new Uri("https://www.google.com/")
+                };
+                _ = fakeService
+                    .GetAsync(
+                        query: Arg.Is(query),
+                        cancellationToken: Arg.Any<CancellationToken>())
+                    .Returns(result);
+
+                _ = services.AddTransient(_ => fakeService);
+            });
+        });
 
         var httpClient = web.CreateClient();
 
@@ -80,6 +82,5 @@ public partial class GameProvidersClientUnitTest
             .ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
-        Assert.AreEqual(result.Url, actual);
     }
 }

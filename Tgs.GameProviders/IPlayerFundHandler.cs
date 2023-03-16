@@ -7,9 +7,9 @@ namespace Tgs.GameProviders;
 
 public interface IPlayerFundHandler<TFundInQuery, TFundOutQuery> where TFundInQuery : PlayerFundQuery where TFundOutQuery : PlayerFundQuery
 {
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     ValueTask<PlayerFundResponse?> PlayerFundInAsync([FromServices] IGetService<TFundInQuery, PlayerFundResult> getService, PlayerFundRequest request);
 
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     ValueTask<PlayerFundResponse?> PlayerFundOutAsync([FromServices] IGetService<TFundOutQuery, PlayerFundResult> getService, PlayerFundRequest request);
 }

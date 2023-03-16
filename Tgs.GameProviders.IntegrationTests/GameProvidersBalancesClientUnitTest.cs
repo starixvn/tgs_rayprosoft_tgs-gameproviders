@@ -32,8 +32,8 @@ public class GameProvidersBalancesClientUnitTest
 
                 _ = fakeService
                 .QueryAsync(
-                    query,
-                    Arg.Any<CancellationToken>())
+                    query: Arg.Is(query),
+                    cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
                     new BalanceResult(
                         "test",
@@ -76,8 +76,8 @@ public class GameProvidersBalancesClientUnitTest
 
                 _ = fakeService
                 .QueryAsync(
-                    query,
-                    Arg.Any<CancellationToken>())
+                    query: Arg.Is(query),
+                    cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
                     new BalanceResult(
                         "test",
@@ -120,8 +120,8 @@ public class GameProvidersBalancesClientUnitTest
 
                 _ = fakeService
                 .QueryAsync(
-                    query,
-                    Arg.Any<CancellationToken>())
+                    query: Arg.Is(query),
+                    cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
                     new BalanceResult(
                         "test",

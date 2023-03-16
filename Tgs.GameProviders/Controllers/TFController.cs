@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.TFGaming.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -14,13 +13,6 @@ public class TFController : ControllerBase,
     IRoundDetailHandler<TFGamingRoundDetailQuery>,
     IKickPlayerHandler<TFKickPlayerCommand>
 {
-    private readonly IMapper _mapper;
-
-    public TFController(IMapper mapper)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    }
-
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
@@ -44,30 +36,29 @@ public class TFController : ControllerBase,
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<TFGamingGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
     {
-        var query = new TFGamingGameUrlQuery
-        {
-            GameType = request.GameType,
-            GameId = request.GameId,
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            LoginRecordId = request.LoginRecordId,
-            PlatformType = request.PlatformType,
-            Language = request.Language,
-            IPAddress = request.IPAddress,
-            BackUrl = request.BackUrl,
-        };
-
         var result = await getService
-            .GetAsync(query)
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
-
-        return result == null ? null : _mapper.Map<GameUrlResponse>(result);
+        return result == null ? null : new GameUrlResponse() { Url = result.Url };
     }
 
     /// <summary>
@@ -85,10 +76,13 @@ public class TFController : ControllerBase,
     public ValueTask KickPlayerAsync(
         [FromServices] ICommandService<TFKickPlayerCommand> commandService,
         string playerCode)
-        => commandService.ExecuteAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+        => commandService
+        .ExecuteAsync(
+            command: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Rounds the detail asynchronous.
@@ -102,18 +96,17 @@ public class TFController : ControllerBase,
     ///
     ///     Get rounddetail/09eeecb8-9b64-ec11-a744-ac82478e2af1
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
-    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+    [HttpGet("rounddetail/{roundId:guid}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<TFGamingRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
-    {
-        var result = await getService.GetAsync(new()
-        {
-            RoundId = roundId,
-            Language = language
-        }).ConfigureAwait(false);
-
-        return result ?? null;
-    }
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                RoundId = roundId,
+                Language = language
+            },
+            cancellationToken: HttpContext.RequestAborted);
 }

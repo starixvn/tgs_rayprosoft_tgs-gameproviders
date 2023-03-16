@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Card365.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -10,18 +9,11 @@ namespace Tgs.GameProviders.Controllers;
 
 [ApiController]
 [Route("api/365")]
-public class Card365Controller :
+public class Card365Controller : ControllerBase,
     IGameUrlHandler<Card365GameUrlQuery>,
     IKickPlayerHandler<Card365KickPlayerCommand>,
     IRoundDetailHandler<Card365RoundDetailQuery>
 {
-    private readonly IMapper _mapper;
-
-    public Card365Controller(IMapper mapper)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    }
-
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
@@ -45,18 +37,29 @@ public class Card365Controller :
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<Card365GameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
     {
         var result = await getService
-            .GetAsync(_mapper.Map<Card365GameUrlQuery>(request))
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
-
-        return result == null ?
-            null :
-            _mapper.Map<GameUrlResponse>(result);
+        return result == null ? null : new GameUrlResponse() { Url = result.Url };
     }
 
     /// <summary>
@@ -74,11 +77,13 @@ public class Card365Controller :
     public ValueTask KickPlayerAsync(
         [FromServices] ICommandService<Card365KickPlayerCommand> commandService,
         string playerCode)
-        => commandService.ExecuteAsync(
-            new Card365KickPlayerCommand
+        => commandService
+        .ExecuteAsync(
+            command: new()
             {
                 PlayerCode = playerCode
-            });
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Rounds the detail asynchronous.
@@ -92,18 +97,17 @@ public class Card365Controller :
     ///
     ///     Get rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
-    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+    [HttpGet("rounddetail/{roundId:guid}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<Card365RoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
-    {
-        var result = await getService.GetAsync(new Card365RoundDetailQuery
-        {
-            RoundId = roundId,
-            Language = language
-        }).ConfigureAwait(false);
-
-        return result ?? null;
-    }
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                RoundId = roundId,
+                Language = language
+            },
+            cancellationToken: HttpContext.RequestAborted);
 }

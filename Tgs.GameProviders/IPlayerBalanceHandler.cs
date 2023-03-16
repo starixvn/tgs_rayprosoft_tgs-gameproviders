@@ -6,6 +6,6 @@ namespace Tgs.GameProviders;
 
 public interface IPlayerBalanceHandler<TQuery> where TQuery : PlayerBalanceQuery
 {
-    [HttpGet("Balance/{playerCode}")]
+    [HttpGet("balance/{playerCode}")]
     ValueTask<decimal?> PlayerBalanceAsync([FromServices] IGetService<TQuery, decimal?> getService, string playerCode);
 }

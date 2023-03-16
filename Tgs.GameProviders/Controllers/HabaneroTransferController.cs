@@ -34,7 +34,7 @@ public class HabaneroTransferController : ControllerBase
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse> GameUrlAsync(
         [FromServices] IGetService<HabaneroTransferGameUrlQuery, Uri> service,
         GameUrlRequest request)
@@ -98,7 +98,7 @@ public class HabaneroTransferController : ControllerBase
     ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86"
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundChecking")]
+    [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
         [FromServices] IGetService<HabaneroTransferPlayerFundCheckingQuery, PlayerFundCheckingResult> service,
         PlayerFundCheckingRequest request)
@@ -136,7 +136,7 @@ public class HabaneroTransferController : ControllerBase
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
         [FromServices] IGetService<HabaneroTransferPlayerFundInQuery, PlayerFundResult> service,
         PlayerFundRequest request)
@@ -175,7 +175,7 @@ public class HabaneroTransferController : ControllerBase
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
         [FromServices] IGetService<HabaneroTransferPlayerFundOutQuery, PlayerFundResult> service,
         PlayerFundRequest request)
@@ -208,7 +208,7 @@ public class HabaneroTransferController : ControllerBase
     ///
     ///     Get rounddetail/f6dd64ee-ce12-4bef-9ddb-08d9676f4495?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
+    [HttpGet("rounddetail/{roundId:guid}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<HabaneroTransferRoundDetailQuery, RoundDetailResult> service,
         Guid roundId,

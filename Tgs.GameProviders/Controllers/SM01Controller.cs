@@ -25,7 +25,7 @@ public class SM01Controller : ControllerBase
     ///         "playerCode": "4ucmqplxb029"
     ///     }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<SM01PlatformLoginResponse?> PlatformLoginAsync(
         [FromServices] IGetService<SM01PlatformLoginQuery, SM01PlatformLoginInfo> getService,
         GameSM01PlatformLoginRequest request)
@@ -87,7 +87,7 @@ public class SM01Controller : ControllerBase
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundIn")]
+    [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
         [FromServices] IGetService<SM01PlayerFundInQuery, PlayerFundResult> service,
         PlayerFundRequest request)
@@ -126,7 +126,7 @@ public class SM01Controller : ControllerBase
     ///             "amount": 1
     ///         }
     /// </remarks>
-    [HttpPost("PlayerFundOut")]
+    [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
         [FromServices] IGetService<SM01PlayerFundOutQuery, PlayerFundResult> service,
         PlayerFundRequest request)
@@ -159,7 +159,7 @@ public class SM01Controller : ControllerBase
     ///
     ///     Get rounddetail/f6dd64ee-ce12-4bef-9ddb-08d9676f4495?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
+    [HttpGet("rounddetail/{roundId:guid}")]
     public async ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<SM01RoundDetailQuery, RoundDetailResult> service,
         Guid roundId,

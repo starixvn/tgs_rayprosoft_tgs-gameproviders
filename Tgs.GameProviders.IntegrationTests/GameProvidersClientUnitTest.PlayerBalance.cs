@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -15,26 +16,28 @@ public partial class GameProvidersClientUnitTest
     [Test]
     public async Task Player_Balance()
     {
-        var fakeService = Substitute.For<IGetService<KYPlayerBalanceQuery, decimal?>>();
+        var gameProviderCode = "KY";
+        var playerCode = "test";
 
         var web = new TestGameProvidersApplication(builder =>
         {
             _ = builder.ConfigureServices(services =>
             {
+                var fakeService = Substitute.For<IGetService<KYPlayerBalanceQuery, decimal?>>();
+
+                var query = new KYPlayerBalanceQuery
+                {
+                    PlayerCode = playerCode
+                };
+                _ = fakeService
+                    .GetAsync(
+                        query: Arg.Is(query),
+                        cancellationToken: Arg.Any<CancellationToken>())
+                    .Returns(ValueTask.FromResult<decimal?>(1));
+
                 _ = services.AddTransient(_ => fakeService);
             });
         });
-
-        var gameProviderCode = "KY";
-        var playerCode = "test";
-
-        var query = new KYPlayerBalanceQuery
-        {
-            PlayerCode = playerCode
-        };
-        _ = fakeService
-            .GetAsync(query)
-            .Returns(ValueTask.FromResult<decimal?>(1));
 
         var httpClient = web.CreateClient();
 
@@ -53,26 +56,28 @@ public partial class GameProvidersClientUnitTest
     [Test]
     public void Player_Balance_Exception()
     {
-        var fakeService = Substitute.For<IGetService<KYPlayerBalanceQuery, decimal?>>();
+        var gameProviderCode = "KY";
+        var playerCode = "test";
 
         var web = new TestGameProvidersApplication(builder =>
         {
             _ = builder.ConfigureServices(services =>
             {
+                var fakeService = Substitute.For<IGetService<KYPlayerBalanceQuery, decimal?>>();
+
+                var query = new KYPlayerBalanceQuery
+                {
+                    PlayerCode = playerCode
+                };
+                _ = fakeService
+                    .GetAsync(
+                        query: Arg.Is(query),
+                        cancellationToken: Arg.Any<CancellationToken>())
+                    .Returns(ValueTask.FromResult<decimal?>(null));
+
                 _ = services.AddTransient(_ => fakeService);
             });
         });
-
-        var gameProviderCode = "KY";
-        var playerCode = "test";
-
-        var query = new KYPlayerBalanceQuery
-        {
-            PlayerCode = playerCode
-        };
-        _ = fakeService
-            .GetAsync(query)
-            .Returns(ValueTask.FromResult<decimal?>(null));
 
         var httpClient = web.CreateClient();
 
@@ -88,26 +93,28 @@ public partial class GameProvidersClientUnitTest
     [Test]
     public void Player_Balance_HttpRequestException()
     {
-        var fakeService = Substitute.For<IGetService<KYPlayerBalanceQuery, decimal?>>();
+        var gameProviderCode = "KY";
+        var playerCode = "test";
 
         var web = new TestGameProvidersApplication(builder =>
         {
             _ = builder.ConfigureServices(services =>
             {
+                var fakeService = Substitute.For<IGetService<KYPlayerBalanceQuery, decimal?>>();
+
+                var query = new KYPlayerBalanceQuery
+                {
+                    PlayerCode = playerCode
+                };
+                _ = fakeService
+                    .GetAsync(
+                        query: Arg.Is(query),
+                        cancellationToken: Arg.Any<CancellationToken>())
+                    .ThrowsForAnyArgs<Exception>();
+
                 _ = services.AddTransient(_ => fakeService);
             });
         });
-
-        var gameProviderCode = "KY";
-        var playerCode = "test";
-
-        var query = new KYPlayerBalanceQuery
-        {
-            PlayerCode = playerCode
-        };
-        _ = fakeService
-            .GetAsync(query)
-            .ThrowsForAnyArgs<Exception>();
 
         var httpClient = web.CreateClient();
 

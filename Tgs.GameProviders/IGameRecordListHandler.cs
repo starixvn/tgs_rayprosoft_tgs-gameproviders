@@ -6,6 +6,6 @@ namespace Tgs.GameProviders;
 
 public interface IGameRecordListHandler<TQuery, TQueryViewModel>
 {
-    [HttpPost("GameRecordList")]
+    [HttpPost("gamerecordlist")]
     ValueTask<GameRecordListResult?> GameRecordListAsync([FromServices] IGetService<TQuery, GameRecordListResult> getService, TQueryViewModel request);
 }

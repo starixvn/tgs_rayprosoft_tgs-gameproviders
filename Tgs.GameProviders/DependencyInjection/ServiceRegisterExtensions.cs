@@ -43,7 +43,6 @@ public static class ServiceRegisterExtensions
             }
             catch
             {
-
             }
 
             try
@@ -56,7 +55,6 @@ public static class ServiceRegisterExtensions
             }
             catch
             {
-
             }
         }
 

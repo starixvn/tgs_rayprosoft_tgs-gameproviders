@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -16,16 +17,6 @@ public partial class GameProvidersClientUnitTest
     [Test]
     public async Task Player_Fund_Checking_By_VR()
     {
-        var fakeService = Substitute.For<IGetService<VRPlayerFundCheckingQuery, PlayerFundCheckingResult>>();
-
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
-
         var brandCode = "GPI";
         var playerCode = "test";
         var currencyCode = "CNY";
@@ -33,22 +24,34 @@ public partial class GameProvidersClientUnitTest
         var startTime = DateTimeOffset.UtcNow.AddMinutes(-1);
         var endTime = DateTimeOffset.UtcNow;
 
-        var query = new VRPlayerFundCheckingQuery
+        var web = new TestGameProvidersApplication(builder =>
         {
-            BrandCode = brandCode,
-            PlayerCode = playerCode,
-            CurrencyCode = currencyCode,
-            OrderId = orderId,
-            StartTime = startTime,
-            EndTime = endTime
-        };
-        var result = new PlayerFundCheckingResult
-        {
-            OrderStatus = true
-        };
-        _ = fakeService
-            .GetAsync(query)
-            .Returns(result);
+            _ = builder.ConfigureServices(services =>
+            {
+                var fakeService = Substitute.For<IGetService<VRPlayerFundCheckingQuery, PlayerFundCheckingResult>>();
+
+                var query = new VRPlayerFundCheckingQuery
+                {
+                    BrandCode = brandCode,
+                    PlayerCode = playerCode,
+                    CurrencyCode = currencyCode,
+                    OrderId = orderId,
+                    StartTime = startTime,
+                    EndTime = endTime
+                };
+                var result = new PlayerFundCheckingResult
+                {
+                    OrderStatus = true
+                };
+                _ = fakeService
+                    .GetAsync(
+                        query: Arg.Is(query),
+                        cancellationToken: Arg.Any<CancellationToken>())
+                    .Returns(result);
+
+                _ = services.AddTransient(_ => fakeService);
+            });
+        });
 
         var httpClient = web.CreateClient();
 
@@ -71,16 +74,6 @@ public partial class GameProvidersClientUnitTest
     [Test]
     public void Player_Fund_Checking_By_VR_HttpRequestException()
     {
-        var fakeService = Substitute.For<IGetService<VRPlayerFundCheckingQuery, PlayerFundCheckingResult>>();
-
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
-
         var brandCode = "GPI";
         var playerCode = "test";
         var currencyCode = "CNY";
@@ -88,22 +81,34 @@ public partial class GameProvidersClientUnitTest
         var startTime = DateTimeOffset.UtcNow.AddMinutes(-1);
         var endTime = DateTimeOffset.UtcNow;
 
-        var query = new VRPlayerFundCheckingQuery
+        var web = new TestGameProvidersApplication(builder =>
         {
-            BrandCode = brandCode,
-            PlayerCode = playerCode,
-            CurrencyCode = currencyCode,
-            OrderId = orderId,
-            StartTime = startTime,
-            EndTime = endTime
-        };
-        var result = new PlayerFundCheckingResult
-        {
-            OrderStatus = true
-        };
-        _ = fakeService
-            .GetAsync(query)
-            .ThrowsForAnyArgs<Exception>();
+            _ = builder.ConfigureServices(services =>
+            {
+                var fakeService = Substitute.For<IGetService<VRPlayerFundCheckingQuery, PlayerFundCheckingResult>>();
+
+                var query = new VRPlayerFundCheckingQuery
+                {
+                    BrandCode = brandCode,
+                    PlayerCode = playerCode,
+                    CurrencyCode = currencyCode,
+                    OrderId = orderId,
+                    StartTime = startTime,
+                    EndTime = endTime
+                };
+                var result = new PlayerFundCheckingResult
+                {
+                    OrderStatus = true
+                };
+                _ = fakeService
+                    .GetAsync(
+                        query: Arg.Is(query),
+                        cancellationToken: Arg.Any<CancellationToken>())
+                    .ThrowsForAnyArgs<Exception>();
+
+                _ = services.AddTransient(_ => fakeService);
+            });
+        });
 
         var httpClient = web.CreateClient();
 

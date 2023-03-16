@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Jili.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -15,13 +14,6 @@ public class JILIController : ControllerBase,
     IKickPlayerHandler<JiliKickPlayerCommand>,
     IRoundDetailHandler<JiliRoundDetailQuery>
 {
-    private readonly IMapper _mapper;
-
-    public JILIController(IMapper mapper)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    }
-
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
@@ -45,18 +37,29 @@ public class JILIController : ControllerBase,
     ///             "backUrl": "https://dev-t1.rpgp.cc/"
     ///         }
     /// </remarks>
-    [HttpPost("GameUrl")]
+    [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
         [FromServices] IGetService<JiliGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
     {
-        var query = _mapper.Map<JiliGameUrlQuery>(request);
-
         var result = await getService
-            .GetAsync(query)
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
-
-        return result == null ? null : _mapper.Map<GameUrlResponse>(result);
+        return result == null ? null : new GameUrlResponse() { Url = result.Url };
     }
 
     /// <summary>
@@ -74,10 +77,13 @@ public class JILIController : ControllerBase,
     public ValueTask KickPlayerAsync(
         [FromServices] ICommandService<JiliKickPlayerCommand> commandService,
         string playerCode)
-        => commandService.ExecuteAsync(new JiliKickPlayerCommand
-        {
-            PlayerCode = playerCode
-        });
+        => commandService
+        .ExecuteAsync(
+            command: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Rounds the detail asynchronous.
@@ -91,16 +97,17 @@ public class JILIController : ControllerBase,
     ///
     ///     Get rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
     /// </remarks>
-    [HttpGet("RoundDetail/{roundId}")]
+    [HttpGet("rounddetail/{roundId:guid}")]
     public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<JiliRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
         => getService
-            .GetAsync(
-                new JiliRoundDetailQuery
-                {
-                    RoundId = roundId,
-                    Language = language
-                });
+        .GetAsync(
+            query: new()
+            {
+                RoundId = roundId,
+                Language = language
+            },
+            cancellationToken: HttpContext.RequestAborted);
 }
