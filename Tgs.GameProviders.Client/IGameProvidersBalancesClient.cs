@@ -7,6 +7,10 @@ public interface IGameProvidersBalancesClient
         CancellationToken cancellationToken = default);
 
     public IAsyncEnumerable<BalanceResponse> AwcAwsGetBalances(
-            string brandCode,
+        string brandCode,
+        CancellationToken cancellationToken = default);
+
+    public IAsyncEnumerable<BalanceResponse> AwcFacaiGetBalances(
+        string brandCode,
         CancellationToken cancellationToken = default);
 }
