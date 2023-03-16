@@ -18,6 +18,25 @@ public class AwcFacaiController : ControllerBase,
         IRoundDetailHandler<AwcFacaiRoundDetailQuery>
 {
     /// <summary>
+    /// Balances the asynchronous.
+    /// </summary>
+    /// <param name="getService">The get service.</param>
+    /// <param name="brandCode">The brand code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    ///   <b>Example</b><br />
+    ///
+    ///   Get balance/GPI
+    /// </remarks>
+    [HttpGet("balances/{brandCode}")]
+    public IAsyncEnumerable<BalanceResult> BalanceAsync(
+         [FromServices] IQueryService<AwcFacaiBalancesQuery, BalanceResult> getService,
+         string brandCode)
+        => getService.QueryAsync(
+            query: new(BrandCode: brandCode),
+            cancellationToken: HttpContext.RequestAborted);
+
+    /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
     /// <param name="getService">The get service.</param>
@@ -45,19 +64,23 @@ public class AwcFacaiController : ControllerBase,
         [FromServices] IGetService<AwcFacaiGameUrlQuery, GameUrlResult> getService,
         GameUrlRequest request)
     {
-        var result = await getService.GetAsync(new AwcFacaiGameUrlQuery()
-        {
-            GameType = request.GameType,
-            GameId = request.GameId,
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            LoginRecordId = request.LoginRecordId,
-            PlatformType = request.PlatformType,
-            Language = request.Language,
-            IPAddress = request.IPAddress,
-            BackUrl = request.BackUrl
-        }).ConfigureAwait(false);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
         return result == null ? null : new GameUrlResponse() { Url = result.Url };
     }
 
@@ -76,10 +99,13 @@ public class AwcFacaiController : ControllerBase,
     public ValueTask KickPlayerAsync(
         [FromServices] ICommandService<AwcFacaiKickPlayerCommand> commandService,
         string playerCode)
-        => commandService.ExecuteAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+        => commandService
+        .ExecuteAsync(
+            command: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Players the balance asynchronous.
@@ -96,10 +122,13 @@ public class AwcFacaiController : ControllerBase,
     public ValueTask<decimal?> PlayerBalanceAsync(
          [FromServices] IGetService<AwcFacaiPlayerBalanceQuery, decimal?> getService,
          string playerCode)
-        => getService.GetAsync(new()
-        {
-            PlayerCode = playerCode
-        });
+        => getService
+        .GetAsync(
+            query: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Players the fund checking asynchronous.
@@ -123,13 +152,18 @@ public class AwcFacaiController : ControllerBase,
         [FromServices] IGetService<AwcFacaiPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
         PlayerFundCheckingRequest request)
     {
-        var result = await getService.GetAsync(new()
-        {
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            OrderId = request.OrderId,
-        }).ConfigureAwait(false);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
         return result == null ? null : new PlayerFundCheckingResponse()
         {
             OrderStatus = result.OrderStatus,
@@ -159,14 +193,18 @@ public class AwcFacaiController : ControllerBase,
         [FromServices] IGetService<AwcFacaiPlayerFundInQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(new()
-        {
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            OrderId = request.OrderId,
-            Amount = request.Amount,
-        }).ConfigureAwait(false);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                    Amount = request.Amount,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
         return result == null ? null : new PlayerFundResponse()
         {
             OrderId = request.OrderId
@@ -196,14 +234,18 @@ public class AwcFacaiController : ControllerBase,
         [FromServices] IGetService<AwcFacaiPlayerFundOutQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
-        var result = await getService.GetAsync(new()
-        {
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            OrderId = request.OrderId,
-            Amount = request.Amount,
-        }).ConfigureAwait(false);
+        var result = await getService
+            .GetAsync(
+                query: new()
+                {
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    OrderId = request.OrderId,
+                    Amount = request.Amount,
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
         return result == null ? null : new PlayerFundResponse()
         {
             OrderId = request.OrderId
@@ -223,15 +265,16 @@ public class AwcFacaiController : ControllerBase,
     ///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
     /// </remarks>
     [HttpGet("RoundDetail/{roundId}")]
-    public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
         [FromServices] IGetService<AwcFacaiRoundDetailQuery, RoundDetailResult?> getService,
         Guid roundId,
         [FromQuery] string language)
-        => await getService
-        .GetAsync(new AwcFacaiRoundDetailQuery
-        {
-            RoundId = roundId,
-            Language = language
-        })
-        .ConfigureAwait(false);
+        => getService
+        .GetAsync(
+            new AwcFacaiRoundDetailQuery
+            {
+                RoundId = roundId,
+                Language = language
+            },
+            cancellationToken: HttpContext.RequestAborted);
 }

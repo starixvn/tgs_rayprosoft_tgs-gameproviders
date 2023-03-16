@@ -36,8 +36,8 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
 
         var contentJson = await response.Content
         .ReadAsStringAsync(
-                            cancellationToken: cancellationToken)
-                        .ConfigureAwait(false);
+            cancellationToken: cancellationToken)
+        .ConfigureAwait(false);
 
         var balances = JsonSerializer.Deserialize<IEnumerable<BalanceResponse>>(contentJson, _SerializerOptions)
                         ?? Enumerable.Empty<BalanceResponse>();
@@ -67,8 +67,39 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
 
         var contentJson = await response.Content
         .ReadAsStringAsync(
-                            cancellationToken: cancellationToken)
-                        .ConfigureAwait(false);
+            cancellationToken: cancellationToken)
+        .ConfigureAwait(false);
+
+        var balances = JsonSerializer.Deserialize<IEnumerable<BalanceResponse>>(contentJson, _SerializerOptions)
+                        ?? Enumerable.Empty<BalanceResponse>();
+
+        if (!balances.Any())
+        {
+            yield break;
+        }
+
+        foreach (var balance in balances)
+        {
+            yield return balance;
+        }
+    }
+
+    public async IAsyncEnumerable<BalanceResponse> AwcFacaiGetBalances(
+        string brandCode,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient
+                    .GetAsync(
+                         requestUri: $"api/awc_facai/balances/{brandCode}",
+                         cancellationToken: cancellationToken)
+                    .ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        var contentJson = await response.Content
+        .ReadAsStringAsync(
+            cancellationToken: cancellationToken)
+        .ConfigureAwait(false);
 
         var balances = JsonSerializer.Deserialize<IEnumerable<BalanceResponse>>(contentJson, _SerializerOptions)
                         ?? Enumerable.Empty<BalanceResponse>();

@@ -9,6 +9,7 @@ using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.AwcAelotto.ApplicationServices;
 using Tgs.GameProviders.Core.AwcAws.ApplicationServices;
+using Tgs.GameProviders.Core.AwcFacai.ApplicationServices;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.IntegrationTests;
@@ -61,7 +62,7 @@ public class GameProvidersBalancesClientUnitTest
     }
 
     [Test]
-    public async Task Test_MarkGameRecordList()
+    public async Task AwcAws_GetBalances()
     {
         var brandCode = "GPI";
 
@@ -96,6 +97,50 @@ public class GameProvidersBalancesClientUnitTest
 
         var actual = await sut
             .AwcAwsGetBalances(
+                brandCode)
+            .ToArrayAsync()
+            .ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.IsTrue(actual.Any());
+    }
+
+    [Test]
+    public async Task AwcFacai_GetBalances()
+    {
+        var brandCode = "GPI";
+
+        var web = new TestGameProvidersApplication(builder =>
+        {
+            _ = builder.ConfigureServices(services =>
+            {
+                var fakeService = Substitute.For<IQueryService<AwcFacaiBalancesQuery, BalanceResult>>();
+
+                var query = new AwcFacaiBalancesQuery(brandCode);
+
+                _ = fakeService
+                .QueryAsync(
+                    query,
+                    Arg.Any<CancellationToken>())
+                .Returns(new BalanceResult[] {
+                    new BalanceResult(
+                        "test",
+                        1m,
+                        DateTime.Now)
+                }.ToAsyncEnumerable());
+
+                _ = services.AddTransient(_ => fakeService);
+            });
+        });
+
+        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+
+        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+
+        var sut = new GameProvidersBalancesClient(httpClient);
+
+        var actual = await sut
+            .AwcFacaiGetBalances(
                 brandCode)
             .ToArrayAsync()
             .ConfigureAwait(false);
