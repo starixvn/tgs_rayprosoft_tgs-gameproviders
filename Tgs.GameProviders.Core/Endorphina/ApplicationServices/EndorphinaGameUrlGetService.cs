@@ -58,7 +58,9 @@ internal class EndorphinaGameUrlGetService : IGetService<EndorphinaGameUrlQuery,
                 cancellationToken)
             .ConfigureAwait(false);
 
-        await _sessionClient.AddSessionAsync(response.Token, query.BrandCode, query.PlayerCode, cancellationToken).ConfigureAwait(false);
+        await _sessionClient
+            .AddSessionAsync(response.Token, query.BrandCode, query.PlayerCode, configuration.MerchantId, cancellationToken)
+            .ConfigureAwait(false);
 
         var sign = ComputeHash($"{response.Token}{configuration.SecretKey}");
 
