@@ -39,20 +39,23 @@ public class FaChaiController : ControllerBase
         [FromServices] IGetService<FaChaiGameUrlQuery, Uri> getService,
         GameUrlRequest request)
     {
-        var result = await getService.GetAsync(new FaChaiGameUrlQuery()
-        {
-            GameType = request.GameType,
-            GameId = request.GameId,
-            BrandCode = request.BrandCode,
-            PlayerCode = request.PlayerCode,
-            CurrencyCode = request.CurrencyCode,
-            LoginRecordId = request.LoginRecordId,
-            PlatformType = request.PlatformType,
-            Language = request.Language,
-            IPAddress = request.IPAddress,
-            BackUrl = request.BackUrl
-        }).ConfigureAwait(false);
-        return result == null ? null : new GameUrlResponse() { Url = result };
+        var result = await getService.GetAsync(
+                query: new FaChaiGameUrlQuery()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+        return new GameUrlResponse() { Url = result };
     }
 
     /// <summary>
