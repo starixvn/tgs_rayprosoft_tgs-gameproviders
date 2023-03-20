@@ -72,7 +72,7 @@ public class FaChaiGameUrlGetService : IGetService<FaChaiGameUrlQuery, Uri>
                 currency: configuration.Currency,
                 playerCode: player.PlayerCode,
                 gameId: int.Parse(game.GameExternalId),
-                languageId: int.Parse(cultureCode),
+                languageId: int.Parse(string.IsNullOrEmpty(cultureCode) ? "1" : cultureCode),
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
