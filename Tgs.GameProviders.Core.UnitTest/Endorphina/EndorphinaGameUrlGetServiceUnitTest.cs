@@ -118,7 +118,7 @@ public class EndorphinaGameUrlGetServiceUnitTest
             fakeGameRepository,
             fakeSessionClient);
 
-        var expected = "https://test.endorphina.network/icasino/sessions/launch?token=96E108A557044C5EB0D0EF5EFED9596B&sign=0A79E18AD2D92F03273AF6D44DF270FE&lang=en&exit=http://localhost/";
+        var expected = "https://test.endorphina.network/icasino/sessions/launch?token=96E108A557044C5EB0D0EF5EFED9596B&sign=0A79E18AD2D92F03273AF6D44DF270FE&lang=en&exit=http://localhost/en-US/slots/ENDOR";
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
