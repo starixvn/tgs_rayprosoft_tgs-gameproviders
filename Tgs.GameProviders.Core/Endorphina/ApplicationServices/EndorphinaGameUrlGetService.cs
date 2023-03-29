@@ -64,7 +64,7 @@ internal class EndorphinaGameUrlGetService : IGetService<EndorphinaGameUrlQuery,
 
         var sign = ComputeHash($"{response.Token}{configuration.SecretKey}");
 
-        var url = $"{configuration.ApiUrl}icasino/sessions/launch?token={response.Token}&sign={sign}&lang={cultureCode}";
+        var url = $"{configuration.ApiUrl}icasino/sessions/launch?token={response.Token}&sign={sign}&lang={cultureCode}&exit={query.BackUrl}";
 
         return (response != null) ? new(url) : null;
     }
