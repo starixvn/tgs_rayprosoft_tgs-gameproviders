@@ -41,6 +41,7 @@ public static class GameProviderConfigurations
     public static readonly string Joker = string.Format(_template, GameProviderType.Joker);
     public static readonly string KY = string.Format(_template, GameProviderType.KY);
     public static readonly string LY = string.Format(_template, GameProviderType.LY);
+    public static readonly string OBet = string.Format(_template, GameProviderType.OBet);
     public static readonly string PragmaticPlay = string.Format(_template, GameProviderType.PragmaticPlay);
     public static readonly string PragmaticPlayTransfer = string.Format(_template, GameProviderType.PragmaticPlayTransfer);
     public static readonly string Saba = string.Format(_template, GameProviderType.Saba);

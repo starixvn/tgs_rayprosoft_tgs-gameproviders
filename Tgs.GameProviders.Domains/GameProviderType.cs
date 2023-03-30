@@ -40,6 +40,7 @@ public static class GameProviderType
     public static readonly string KY = "KY";
     public static readonly string LY = "LY";
     public static readonly string MainWallet = "DEFAULT";
+    public static readonly string OBet = "OBET";
     public static readonly string PragmaticPlay = "PP";
     public static readonly string PragmaticPlayTransfer = "PPTF";
     public static readonly string RedTiger = "RT";
