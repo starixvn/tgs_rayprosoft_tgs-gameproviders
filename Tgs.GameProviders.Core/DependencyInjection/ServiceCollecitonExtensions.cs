@@ -19,6 +19,7 @@ using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.TFGamingService.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
+using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GamePlayerTransform.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameRecord.Endorphina.Session.Client;
@@ -54,7 +55,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceEndorphinaClientOptions, IServiceProvider> gameInterfaceEndorphinaClientOptions,
         Action<GameRecordEndorphinaSessionClientOptions, IServiceProvider> gameRecordEndorphinaClientOptions,
         Action<GameInterfaceFaChaiClientOptions, IServiceProvider> gameInterfaceFaChaiClientOptions,
-        Action<GameInterfaceOBetClientOptions, IServiceProvider> gameInterfaceOBetClientOptions)
+        Action<GameInterfaceOBetClientOptions, IServiceProvider> gameInterfaceOBetClientOptions,
+        Action<GameInterfaceYeeBetClientOptions, IServiceProvider> gameInterfaceYeeBetClientOptions)
         => services
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
@@ -78,6 +80,7 @@ public static class ServiceCollecitonExtensions
             .AddGameInterfaceEndorphinaServiceClient(gameInterfaceEndorphinaClientOptions)
             .AddGameInterfaceFaChaiClient(gameInterfaceFaChaiClientOptions)
             .AddGameInterfaceOBetClient(gameInterfaceOBetClientOptions)
+            .AddGameInterfaceYeeBetClient(gameInterfaceYeeBetClientOptions)
             .AddGameRecordEndorphinaSessionClient(gameRecordEndorphinaClientOptions)
             .AddGameRoundsClient(gameRoundsClientOptions)
             .AddGameTokenClient(gameTokenClientOptions)

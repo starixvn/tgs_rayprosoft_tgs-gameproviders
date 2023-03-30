@@ -40,6 +40,7 @@ data:
         "GameRecordEndorphinaSessionBaseUrl": "http://game-gamerecord-endorphina-session:9090/",
         "GameInterfaceFaChaiBaseUrl":"dns:///game-gameinterface-fachai:9090/",
         "GameInterfaceOBetBaseUrl":"http://game-gameinterface-obet:9090/",
+        "GameInterfaceYeeBetBaseUrl":"http://game-gameinterface-yeebet:9090/"
       }
     }
   otel-collector-config.yaml: |

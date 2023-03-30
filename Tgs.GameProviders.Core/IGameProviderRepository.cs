@@ -90,4 +90,8 @@ public interface IGameProviderRepository
     ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
+
+    ValueTask<YeeBetConfiguration> GetYeeBetConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 }
