@@ -27,8 +27,7 @@ internal class SkywindTransferCreatePlayerCommandService : ICommandService<Skywi
 
         var gameProviderCurrencyCode = await _gameProvider
                 .GetGameProviderCurrencyCodeAsync(gameProviderId, command.CurrencyCode)
-                .ConfigureAwait(false)
-            ?? throw new Exception($"This game product currency does not exist.({command.CurrencyCode})");
+                .ConfigureAwait(false);
 
         var request = new PlayerCreateRequest()
         {

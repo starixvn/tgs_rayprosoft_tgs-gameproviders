@@ -29,8 +29,12 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
+    ValueTask<FaChaiConfiguration> GetFaChaiConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
     ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(
-                Guid gameProviderConfigurationId,
+                    Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
     ValueTask<string> GetGameProviderCultureCodeAsync(
@@ -59,8 +63,12 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<SabaTransferConfiguration> GetSabaTransferConfiguration(
+    ValueTask<OBetConfiguration> GetOBetConfigurationAsync(
         Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<SabaTransferConfiguration> GetSabaTransferConfiguration(
+            Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
     ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(
@@ -80,10 +88,6 @@ public interface IGameProviderRepository
         CancellationToken cancellationToken = default);
 
     ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(
-        Guid gameProviderConfigurationId,
-        CancellationToken cancellationToken = default);
-
-    ValueTask<FaChaiConfiguration> GetFaChaiConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 }

@@ -2,6 +2,6 @@
 
 public record Card365BrandAgent
 {
-    public string BrandCode { get; init; }
-    public string AgentId { get; init; }
+    public string BrandCode { get; init; } = default!;
+    public string AgentId { get; init; } = default!;
 }

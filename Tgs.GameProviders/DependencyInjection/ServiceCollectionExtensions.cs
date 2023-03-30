@@ -9,6 +9,7 @@ using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.JiliService.Client;
+using Tgs.GameInterface.OBet.Client;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SkywindService.Client;
@@ -50,7 +51,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceDreamGamingClientOptions, IServiceProvider> gameInterfaceDreamGamingClientOptions,
         Action<GameInterfaceEndorphinaClientOptions, IServiceProvider> gameInterfaceEndorphinaClientOptions,
         Action<GameRecordEndorphinaSessionClientOptions, IServiceProvider> gameRecordEndorphinaSessionClientOptions,
-        Action<GameInterfaceFaChaiClientOptions, IServiceProvider> gameInterfaceFaChaiClientOptions)
+        Action<GameInterfaceFaChaiClientOptions, IServiceProvider> gameInterfaceFaChaiClientOptions,
+        Action<GameInterfaceOBetClientOptions, IServiceProvider> gameInterfaceOBetClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -59,26 +61,27 @@ public static class ServiceCollectionExtensions
             .AddGameProvidersRepositories()
             .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
             .AddGameProvidersCore(
-                gameRoundsClientOptions,
-                gameTokenClientOptions,
-                gamePlayerTransformClientOptions,
-                gameCommandClientOptions,
-                gameInterfaceAwcServiceClientOptions,
-                gameInterfaceJiliServiceClientOptions,
-                gameInterfaceWMCasinoClientOptions,
-                gameInterfaceEvolutionServiceClientOptions,
-                gameInterfaceIdnLiveClientOptions,
-                gameInterfaceSkywindClientOptions,
-                gameInterfaceWGFmGamingClientOptions,
-                gameInterfaceJDBClientOptions,
-                gameInterfaceSBOClientOptions,
-                gameInterfaceBTiClientOptions,
-                gameInterfaceHabaneroClientOptions,
-                gameInterfaceSabaClientOptions,
-                gameInterfaceSM01ClientOptions,
-                gameInterfaceTFGamingClientOptions,
-                gameInterfaceDreamGamingClientOptions,
-                gameInterfaceEndorphinaClientOptions,
-                gameRecordEndorphinaSessionClientOptions,
-                gameInterfaceFaChaiClientOptions);
+                gameRoundsClientOptions: gameRoundsClientOptions,
+                gameTokenClientOptions: gameTokenClientOptions,
+                gamePlayerTransformClientOptions: gamePlayerTransformClientOptions,
+                gameCommandClientOptions: gameCommandClientOptions,
+                gameInterfaceAwcServiceClientOptions: gameInterfaceAwcServiceClientOptions,
+                gameInterfaceJiliServiceClientOptions: gameInterfaceJiliServiceClientOptions,
+                gameInterfaceWMCasinoClientOptions: gameInterfaceWMCasinoClientOptions,
+                gameInterfaceEvolutionServiceClientOptions: gameInterfaceEvolutionServiceClientOptions,
+                gameInterfaceIdnLiveClientOptions: gameInterfaceIdnLiveClientOptions,
+                gameInterfaceSkywindClientOptions: gameInterfaceSkywindClientOptions,
+                gameInterfaceWGFmGamingClientOptions: gameInterfaceWGFmGamingClientOptions,
+                gameInterfaceJDBClientOptions: gameInterfaceJDBClientOptions,
+                gameInterfaceSBOClientOptions: gameInterfaceSBOClientOptions,
+                gameInterfaceBTiClientOptions: gameInterfaceBTiClientOptions,
+                gameInterfaceHabaneroClientOptions: gameInterfaceHabaneroClientOptions,
+                gameInterfaceSabaClientOptions: gameInterfaceSabaClientOptions,
+                gameInterfaceSM01ClientOptions: gameInterfaceSM01ClientOptions,
+                gameInterfaceTFGamingClientOptions: gameInterfaceTFGamingClientOptions,
+                gameInterfaceDreamGamingClientOptions: gameInterfaceDreamGamingClientOptions,
+                gameInterfaceEndorphinaClientOptions: gameInterfaceEndorphinaClientOptions,
+                gameRecordEndorphinaClientOptions: gameRecordEndorphinaSessionClientOptions,
+                gameInterfaceFaChaiClientOptions: gameInterfaceFaChaiClientOptions,
+                gameInterfaceOBetClientOptions: gameInterfaceOBetClientOptions);
 }

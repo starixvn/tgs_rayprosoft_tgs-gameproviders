@@ -93,7 +93,9 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public async ValueTask<EndorphinaConfiguration> GetEndorphinaConfiguration(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+    public async ValueTask<EndorphinaConfiguration> GetEndorphinaConfiguration(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
         if (!_memoryCache.TryGetValue(key, out EndorphinaConfiguration? configurationData))
@@ -183,8 +185,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
                     gameProviderId,
                     currencyCode,
                     cancellationToken)
-                .ConfigureAwait(false)
-                ?? string.Empty;
+                .ConfigureAwait(false);
 
             if (!string.IsNullOrWhiteSpace(gameProviderCurrencyCode))
             {
@@ -195,7 +196,8 @@ internal class GameProviderCacheRepository : IGameProviderRepository
                         absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
             }
         }
-        return gameProviderCurrencyCode ?? string.Empty;
+        return gameProviderCurrencyCode
+            ?? throw new Exception($"This game product currency does not exist.({currencyCode})");
     }
 
     public async ValueTask<Guid> GetGameProviderIdAsync(
@@ -278,6 +280,29 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         {
             configurationData = await _repository
                 .GetJiliTransferConfiguration(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<OBetConfiguration> GetOBetConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out OBetConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetOBetConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
