@@ -22,7 +22,7 @@ public class YeeBetController : ControllerBase
     ///
     ///     Post
     ///         {
-    ///             "gameType": 16,
+    ///             "gameType": 6,
     ///             "gameId": 3000001,
     ///             "brandCode": "GPI",
     ///             "playerCode": "4ucmqplxb029",
