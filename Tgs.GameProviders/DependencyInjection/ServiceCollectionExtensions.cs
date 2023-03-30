@@ -17,6 +17,7 @@ using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.TFGamingService.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
+using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GamePlayerTransform.Client;
 using Tgs.GameProviders;
 using Tgs.GameRecord.Endorphina.Session.Client;
@@ -52,7 +53,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceEndorphinaClientOptions, IServiceProvider> gameInterfaceEndorphinaClientOptions,
         Action<GameRecordEndorphinaSessionClientOptions, IServiceProvider> gameRecordEndorphinaSessionClientOptions,
         Action<GameInterfaceFaChaiClientOptions, IServiceProvider> gameInterfaceFaChaiClientOptions,
-        Action<GameInterfaceOBetClientOptions, IServiceProvider> gameInterfaceOBetClientOptions)
+        Action<GameInterfaceOBetClientOptions, IServiceProvider> gameInterfaceOBetClientOptions,
+        Action<GameInterfaceYeeBetClientOptions, IServiceProvider> gameInterfaceYeeBetClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -83,5 +85,6 @@ public static class ServiceCollectionExtensions
                 gameInterfaceEndorphinaClientOptions: gameInterfaceEndorphinaClientOptions,
                 gameRecordEndorphinaClientOptions: gameRecordEndorphinaSessionClientOptions,
                 gameInterfaceFaChaiClientOptions: gameInterfaceFaChaiClientOptions,
-                gameInterfaceOBetClientOptions: gameInterfaceOBetClientOptions);
+                gameInterfaceOBetClientOptions: gameInterfaceOBetClientOptions,
+                gameInterfaceYeeBetClientOptions: gameInterfaceYeeBetClientOptions);
 }
