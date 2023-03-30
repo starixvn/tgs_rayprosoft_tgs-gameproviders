@@ -43,8 +43,7 @@ public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferG
         var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en-US";
         var currencyCode = await _gameProvider
                 .GetGameProviderCurrencyCodeAsync(gameProviderId, command.CurrencyCode)
-                .ConfigureAwait(false)
-            ?? throw new Exception($"This game product currency does not exist.({command.CurrencyCode})");
+                .ConfigureAwait(false);
         var game = await _game.GetAsync(command.GameId!.Value).ConfigureAwait(false);
 
         var response = game.Type switch

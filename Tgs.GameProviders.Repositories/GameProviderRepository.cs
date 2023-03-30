@@ -182,7 +182,7 @@ internal class GameProviderRepository : IGameProviderRepository
             currencyCode: currencyCode,
             cancellationToken: cancellationToken)
         .ConfigureAwait(false)
-        ?? string.Empty;
+        ?? throw new Exception($"This game product currency does not exist.({currencyCode})");
 
     public async ValueTask<Guid> GetGameProviderIdAsync(
         string gameProviderCode,
@@ -250,6 +250,29 @@ internal class GameProviderRepository : IGameProviderRepository
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.JiliTransfer})");
+
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+
+        return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
+            ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+            : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
+    }
+
+    public async ValueTask<OBetConfiguration> GetOBetConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<OBetConfiguration>(
+                key: GameProviderConfigurations.OBet,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.OBet})");
 
         var gameProviderConfig = await _client
             .GameProviderConfigurationGetAsync(

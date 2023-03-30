@@ -24,8 +24,7 @@ internal class AwcFsCreatePlayerCommandService : ICommandService<AwcFsCreatePlay
     {
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_FS).ConfigureAwait(false);
         var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language).ConfigureAwait(false) ?? "en";
-        var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, command.CurrencyCode).ConfigureAwait(false)
-            ?? throw new Exception($"This game product currency does not exist.({command.CurrencyCode})");
+        var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, command.CurrencyCode).ConfigureAwait(false);
 
         await _client.CreatePlayerAsync(
             apiUrl: command.Configuration.ApiUrl,

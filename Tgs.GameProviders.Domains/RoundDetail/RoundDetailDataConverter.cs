@@ -33,7 +33,7 @@ public class RoundDetailDataConverter : JsonConverter<RoundDetailDataBase>
         switch (value)
         {
             case null:
-                JsonSerializer.Serialize(writer, (RoundDetailDataBase)null, options);
+                JsonSerializer.Serialize(writer, (RoundDetailDataBase?)null, options);
                 break;
 
             default:
