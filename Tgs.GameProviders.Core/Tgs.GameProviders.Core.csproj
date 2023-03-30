@@ -37,7 +37,6 @@
 		<PackageReference Include="Tgs.GameRounds.Client" Version="0.0.36" />
 		<PackageReference Include="Tgs.GameToken.Client" Version="0.0.2" />
 		<PackageReference Include="TGS.ServiceUtility" Version="0.2.0" />
-		<PackageReference Include="Tgs.Logging" Version="0.0.19" />
 	</ItemGroup>
 
 	<ItemGroup>

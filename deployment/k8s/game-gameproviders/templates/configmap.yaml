@@ -8,6 +8,14 @@ metadata:
 data:
   appsettings.json: |
     {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft": "Warning",
+          "Tgs.GameProviders.Core": "Information",
+          "Tgs.GameProviders.ApiClients": "Information"
+        }
+      },
       "GameProviders": {
         "GameRoundsBaseUrl":"http://game-gamerounds/",
         "GameTokenBaseUrl":"http://game-token/",
