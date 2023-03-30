@@ -112,7 +112,7 @@ public class YeeBetController : ControllerBase
     ///             "brandCode": "GPI",
     ///             "playerCode": "4ucmqplxb029",
     ///             "currencyCode": "CNY",
-    ///             "orderId":"7a7147218501000000010000af506b2c"
+    ///             "orderId":"1640526045735424000"
     ///         }
     /// </remarks>
     [HttpPost("playerfundchecking")]
@@ -147,7 +147,7 @@ public class YeeBetController : ControllerBase
     ///             "brandCode": "GPI",
     ///             "playerCode": "4ucmqplxb029",
     ///             "currencyCode": "CNY",
-    ///             "orderId":"7a3f35bf271247b998f6750d448ed757",
+    ///             "orderId":"1640526045735424000",
     ///             "amount": 100
     ///         }
     /// </remarks>
@@ -184,7 +184,7 @@ public class YeeBetController : ControllerBase
     ///             "brandCode": "GPI",
     ///             "playerCode": "4ucmqplxb029",
     ///             "currencyCode": "CNY",
-    ///             "orderId":"7a7147218501000000010000af506b2c",
+    ///             "orderId":"1640520550106664960",
     ///             "amount": 1000
     ///         }
     /// </remarks>
