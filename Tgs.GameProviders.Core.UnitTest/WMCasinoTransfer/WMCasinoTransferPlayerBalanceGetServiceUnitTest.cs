@@ -22,9 +22,8 @@ public class WMCasinoTransferPlayerBalanceGetServiceUnitTest
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<WMCasinoTransferCreatePlayerCommand>>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceWMCasinoServiceGrpc = Substitute.For<IGameInterfaceWMCasinoServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceWMCasinoServiceClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeSettingRepository = Substitute.For<ISettingRepository>();
         var fakeLogger = NullLogger<WMCasinoTransferPlayerBalanceGetService>.Instance;
 
         var configuration = new WMCasinoTransferConfiguration
@@ -60,7 +59,7 @@ public class WMCasinoTransferPlayerBalanceGetServiceUnitTest
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
         _ = fakeGameProviderRepository.GetWMCasinoTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
-        var response = new GameInterfaceWMCasinoServiceBalanceReply()
+        var response = new BalanceReply()
         {
             Success = true,
             IsPlayerExist = true,
@@ -69,7 +68,7 @@ public class WMCasinoTransferPlayerBalanceGetServiceUnitTest
 
         var user = $"wmtf_{query.PlayerCode}_{playerModel.BrandCode}";
 
-        _ = fakeGameInterfaceWMCasinoServiceGrpc.GetBalanceAsync(
+        _ = fakeClient.GetBalanceAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
             vendorId: Arg.Is(configuration.VendorId),
             signature: Arg.Is(configuration.Signature),
@@ -79,9 +78,8 @@ public class WMCasinoTransferPlayerBalanceGetServiceUnitTest
             fakeBrandService,
             fakeCreatePlayerCommandService,
             fakeGameProviderRepository,
-            fakeGameInterfaceWMCasinoServiceGrpc,
+            fakeClient,
             fakePlayerRepository,
-            fakeSettingRepository,
             fakeLogger);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);

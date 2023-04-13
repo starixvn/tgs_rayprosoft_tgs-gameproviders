@@ -11,40 +11,54 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 public class WMCasinoTransferPlayerBalanceGetService : IGetService<WMCasinoTransferPlayerBalanceQuery, decimal?>
 {
     private readonly IBrandRepository _brand;
+    private readonly IGameInterfaceWMCasinoServiceClient _client;
     private readonly ICommandService<WMCasinoTransferCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IGameInterfaceWMCasinoServiceGrpc _grpc;
     private readonly ILogger<WMCasinoTransferPlayerBalanceGetService> _logger;
     private readonly IPlayerRepository _player;
-    private readonly ISettingRepository _setting;
 
     public WMCasinoTransferPlayerBalanceGetService(
         IBrandRepository brand,
         ICommandService<WMCasinoTransferCreatePlayerCommand> createPlayerCommandService,
         IGameProviderRepository gameProvider,
-        IGameInterfaceWMCasinoServiceGrpc grpc,
+        IGameInterfaceWMCasinoServiceClient client,
         IPlayerRepository player,
-        ISettingRepository setting,
         ILogger<WMCasinoTransferPlayerBalanceGetService> logger)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
         _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
-        _setting = setting ?? throw new ArgumentNullException(nameof(setting));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async ValueTask<decimal?> GetAsync(WMCasinoTransferPlayerBalanceQuery command, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.WMCasinoTransfer).ConfigureAwait(false);
-        var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetWMCasinoTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+                gameProviderCode: GameProviderType.WMCasinoTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+                playerCode: command.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: gameProviderId,
+                brandId: player.BrandId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetWMCasinoTransferConfiguration(
+                gameProviderConfigurationId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var user = $"wmtf_{command.PlayerCode}_{player.BrandCode}";
-        var response = await _grpc.GetBalanceAsync(
+        var response = await _client.GetBalanceAsync(
             apiUrl: configuration.ApiUrl,
             vendorId: configuration.VendorId,
             signature: configuration.Signature,
@@ -62,7 +76,7 @@ public class WMCasinoTransferPlayerBalanceGetService : IGetService<WMCasinoTrans
                 CurrencyCode: player.DefaultWalletCurrencyCode),
                 cancellationToken).ConfigureAwait(false);
 
-            response = await _grpc.GetBalanceAsync(
+            response = await _client.GetBalanceAsync(
                 apiUrl: configuration.ApiUrl,
                 vendorId: configuration.VendorId,
                 signature: configuration.Signature,
