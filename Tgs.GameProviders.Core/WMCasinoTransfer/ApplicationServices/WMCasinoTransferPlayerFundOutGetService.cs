@@ -10,33 +10,47 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 public class WMCasinoTransferPlayerFundOutGetService : IGetService<WMCasinoTransferPlayerFundOutQuery, PlayerFundResult>
 {
     private readonly IBrandRepository _brand;
+    private readonly IGameInterfaceWMCasinoServiceClient _client;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IGameInterfaceWMCasinoServiceGrpc _grpc;
     private readonly IPlayerRepository _player;
-    private readonly ISettingRepository _setting;
 
     public WMCasinoTransferPlayerFundOutGetService(
         IBrandRepository brand,
         IGameProviderRepository gameProvider,
-        IGameInterfaceWMCasinoServiceGrpc grpc,
-        IPlayerRepository player,
-        ISettingRepository setting)
+        IGameInterfaceWMCasinoServiceClient client,
+        IPlayerRepository player)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
-        _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
 
     public async ValueTask<PlayerFundResult> GetAsync(WMCasinoTransferPlayerFundOutQuery command, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.WMCasinoTransfer).ConfigureAwait(false);
-        var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetWMCasinoTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+                gameProviderCode: GameProviderType.WMCasinoTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+                playerCode: command.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: gameProviderId,
+                brandId: player.BrandId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetWMCasinoTransferConfiguration(
+                gameProviderConfigurationId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        var agentBalance = await _grpc.GetAgentBalanceAsync(
+        var agentBalance = await _client.GetAgentBalanceAsync(
             apiUrl: configuration.ApiUrl,
             vendorId: configuration.VendorId,
             signature: configuration.Signature,
@@ -49,7 +63,7 @@ public class WMCasinoTransferPlayerFundOutGetService : IGetService<WMCasinoTrans
 
         var user = $"wmtf_{player.PlayerCode}_{player.BrandCode}";
 
-        var reply = await _grpc.FundOutAsync(
+        var reply = await _client.FundOutAsync(
             apiUrl: configuration.ApiUrl,
             vendorId: configuration.VendorId,
             signature: configuration.Signature,

@@ -19,9 +19,8 @@ public class WMCasinoTransferKickPlayerCommandServiceUnitTest
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceWMCasinoServiceGrpc = Substitute.For<IGameInterfaceWMCasinoServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceWMCasinoServiceClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
         var configuration = new WMCasinoTransferConfiguration
         {
@@ -59,15 +58,14 @@ public class WMCasinoTransferKickPlayerCommandServiceUnitTest
         var sut = new WMCasinoTransferKickPlayerCommandService(
             fakeBrandService,
             fakeGameProviderRepository,
-            fakeGameInterfaceWMCasinoServiceGrpc,
-            fakePlayerRepository,
-            fakeSettingRepository);
+            fakeClient,
+            fakePlayerRepository);
 
         await sut.ExecuteAsync(command).ConfigureAwait(false);
 
         var user = $"wmtf_{playerModel.PlayerCode}_{playerModel.BrandCode}";
 
-        _ = fakeGameInterfaceWMCasinoServiceGrpc
+        _ = fakeClient
             .Received(1)
             .KickPlayerAsync(
             Arg.Is(configuration.ApiUrl),

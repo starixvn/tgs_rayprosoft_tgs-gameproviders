@@ -19,9 +19,8 @@ public class WMCasinoTransferPlayerFundInGetServiceUnitTest
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceWMCasinoServiceGrpc = Substitute.For<IGameInterfaceWMCasinoServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceWMCasinoServiceClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
         var configuration = new WMCasinoTransferConfiguration
         {
@@ -61,7 +60,7 @@ public class WMCasinoTransferPlayerFundInGetServiceUnitTest
         _ = fakeGameProviderRepository.GetWMCasinoTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var gameProviderTransactionId = "2147649635";
-        var reply = new GameInterfaceWMCasinoServiceFundReply()
+        var reply = new FundReply()
         {
             Success = true,
             TransactionId = query.OrderId,
@@ -71,7 +70,7 @@ public class WMCasinoTransferPlayerFundInGetServiceUnitTest
 
         var user = $"wmtf_{playerModel.PlayerCode}_{playerModel.BrandCode}";
 
-        _ = fakeGameInterfaceWMCasinoServiceGrpc.FundInAsync(
+        _ = fakeClient.FundInAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
             vendorId: Arg.Is(configuration.VendorId),
             signature: Arg.Is(configuration.Signature),
@@ -82,9 +81,8 @@ public class WMCasinoTransferPlayerFundInGetServiceUnitTest
         var sut = new WMCasinoTransferPlayerFundInGetService(
             fakeBrandService,
             fakeGameProviderRepository,
-            fakeGameInterfaceWMCasinoServiceGrpc,
-            fakePlayerRepository,
-            fakeSettingRepository);
+            fakeClient,
+            fakePlayerRepository);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 

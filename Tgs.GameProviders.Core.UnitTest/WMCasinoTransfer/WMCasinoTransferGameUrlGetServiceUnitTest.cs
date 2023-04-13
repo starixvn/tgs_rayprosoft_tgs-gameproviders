@@ -22,9 +22,8 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<WMCasinoTransferCreatePlayerCommand>>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceWMCasinoServiceGrpc = Substitute.For<IGameInterfaceWMCasinoServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceWMCasinoServiceClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
         var gameUrl = new Uri("http://www.google.com");
 
@@ -93,7 +92,7 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
         _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
 
-        var response = new GameInterfaceWMCasinoServiceGameUrlReply()
+        var response = new GameUrlReply()
         {
             Success = true,
             IsPlayerExist = true,
@@ -102,7 +101,7 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
 
         var user = $"wmtf_{playerModel.PlayerCode}_{playerModel.BrandCode}";
 
-        _ = fakeGameInterfaceWMCasinoServiceGrpc.GameUrlAsync(
+        _ = fakeClient.GameUrlAsync(
              apiUrl: Arg.Is(configuration.ApiUrl),
              vendorId: Arg.Is(configuration.VendorId),
              signature: Arg.Is(configuration.Signature),
@@ -115,9 +114,8 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
             fakeBrandService,
             fakeCreatePlayerCommandService,
             fakeGameProviderRepository,
-            fakeGameInterfaceWMCasinoServiceGrpc,
-            fakePlayerRepository,
-            fakeSettingRepository);
+            fakeClient,
+            fakePlayerRepository);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 

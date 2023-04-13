@@ -8,24 +8,28 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 
 internal class WMCasinoTransferCreatePlayerCommandService : ICommandService<WMCasinoTransferCreatePlayerCommand>
 {
-    private readonly IGameInterfaceWMCasinoServiceGrpc _grpc;
+    private readonly IGameInterfaceWMCasinoServiceClient _client;
     private readonly IPlayerRepository _player;
 
     public WMCasinoTransferCreatePlayerCommandService(
         IPlayerRepository player,
-        IGameInterfaceWMCasinoServiceGrpc grpc)
+        IGameInterfaceWMCasinoServiceClient client)
     {
         _player = player ?? throw new ArgumentNullException(nameof(player));
-        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
     public async ValueTask ExecuteAsync(WMCasinoTransferCreatePlayerCommand command, CancellationToken cancellationToken = default)
     {
-        var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+                playerCode: command.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var user = $"wmtf_{command.PlayerCode}_{player.BrandCode}";
 
-        await _grpc.CreatePlayerAsync(
+        await _client.CreatePlayerAsync(
             apiUrl: command.Configuration.ApiUrl,
             vendorId: command.Configuration.VendorId,
             signature: command.Configuration.Signature,
