@@ -10,7 +10,7 @@ using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.JDBService.Client;
-using Tgs.GameInterface.JiliService.Client;
+using Tgs.GameInterface.Jili.Client;
 using Tgs.GameInterface.OBet.Client;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameInterface.SBOService.Client;
@@ -38,7 +38,7 @@ public static class ServiceCollecitonExtensions
         Action<GamePlayerTransformClientOptions, IServiceProvider> gamePlayerTransformClientOptions,
         Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
         Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions,
-        Action<GameInterfaceJiliServiceClientOptions, IServiceProvider> gameInterfaceJiliServiceClientOptions,
+        Action<GameInterfaceJiliClientOptions, IServiceProvider> gameInterfaceJiliClientOptions,
         Action<GameInterfaceWMCasinoServiceClientOptions, IServiceProvider> gameInterfaceWMCasinoClientOptions,
         Action<GameInterfaceEvoOptions, IServiceProvider> gameInterfaceEvolutionServiceClientOptions,
         Action<GameInterfaceIdnLiveClientOptions, IServiceProvider> gameInterfaceIdnLiveClientOptions,
@@ -63,7 +63,7 @@ public static class ServiceCollecitonExtensions
                 ServiceLifetime.Transient)
             .AddGameCommandClient(gameCommandClientOptions)
             .AddGameInterfaceAwcServiceClient(gameInterfaceAwcServiceClientOptions)
-            .AddGameInterfaceJiliServiceClient(gameInterfaceJiliServiceClientOptions)
+            .AddGameInterfaceJiliServiceClient(gameInterfaceJiliClientOptions)
             .AddGameInterfaceWMCasinoServiceClient(gameInterfaceWMCasinoClientOptions)
             .AddGameInterfaceEvoClient(gameInterfaceEvolutionServiceClientOptions)
             .AddGameInterfaceIdnLiveServiceClient(gameInterfaceIdnLiveClientOptions)

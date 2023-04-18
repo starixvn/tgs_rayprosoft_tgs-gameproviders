@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameCommand.Common;
-using Tgs.GameInterface.JiliService.Client;
+using Tgs.GameInterface.Jili.Client;
 using Tgs.GameInterface.JiliService.Protos;
 using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
@@ -22,7 +22,7 @@ public class JiliTransferGameUrlGetServiceUnitTest
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<JiliTransferCreatePlayerCommand>>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceJiliServiceGrpc = Substitute.For<IGameInterfaceJiliServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceJiliClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
 
         var query = new JiliTransferGameUrlQuery
@@ -107,13 +107,13 @@ public class JiliTransferGameUrlGetServiceUnitTest
             SubGameProviderCode: GameProviderType.JiliTransfer);
         _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
 
-        var response = new GameInterfaceJiliServiceGameUrlReply()
+        var response = new GameUrlReply()
         {
             Success = true,
             IsPlayerExist = true,
             GameUrl = new Uri("http://www.google.com/").ToString()
         };
-        _ = fakeGameInterfaceJiliServiceGrpc
+        _ = fakeClient
             .GetGameUrlAsync(
                 apiUrl: Arg.Is(configuration.ApiUrl),
                 agentId: Arg.Is(configuration.AgentId),
@@ -128,7 +128,7 @@ public class JiliTransferGameUrlGetServiceUnitTest
             fakeCreatePlayerCommandService,
             fakeGameRepository,
             fakeGameProviderRepository,
-            fakeGameInterfaceJiliServiceGrpc,
+            fakeClient,
             fakePlayerRepository);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
