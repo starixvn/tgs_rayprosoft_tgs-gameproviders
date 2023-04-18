@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameCommand.Common;
-using Tgs.GameInterface.JiliService.Client;
+using Tgs.GameInterface.Jili.Client;
 using Tgs.GameInterface.JiliService.Protos;
 using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
@@ -21,7 +21,7 @@ public class JiliTransferPlayerBalanceGetServiceUnitTest
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<JiliTransferCreatePlayerCommand>>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceJiliServiceGrpc = Substitute.For<IGameInterfaceJiliServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceJiliClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
 
         var query = new JiliTransferPlayerBalanceQuery
@@ -69,13 +69,13 @@ public class JiliTransferPlayerBalanceGetServiceUnitTest
                 Arg.Is(gameProviderConfigurationId))
             .Returns(configuration);
 
-        var response = new GameInterfaceJiliServiceBalanceReply()
+        var response = new BalanceReply()
         {
             Success = true,
             IsPlayerExist = true,
             Balance = 100m
         };
-        _ = fakeGameInterfaceJiliServiceGrpc.GetBalanceAsync(
+        _ = fakeClient.GetBalanceAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
             agentId: Arg.Is(configuration.AgentId),
             agentKey: Arg.Is(configuration.AgentKey),
@@ -85,7 +85,7 @@ public class JiliTransferPlayerBalanceGetServiceUnitTest
             fakeBrandService,
             fakeCreatePlayerCommandService,
             fakeGameProviderRepository,
-            fakeGameInterfaceJiliServiceGrpc,
+            fakeClient,
             fakePlayerRepository);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Tgs.GameInterface.JiliService.Client;
+using Tgs.GameInterface.Jili.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
@@ -10,33 +10,50 @@ namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 public class JiliTransferPlayerBalanceGetService : IGetService<JiliTransferPlayerBalanceQuery, decimal?>
 {
     private readonly IBrandRepository _brand;
+    private readonly IGameInterfaceJiliClient _client;
     private readonly ICommandService<JiliTransferCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly IGameInterfaceJiliServiceGrpc _grpc;
     private readonly IPlayerRepository _player;
 
     public JiliTransferPlayerBalanceGetService(
         IBrandRepository brand,
         ICommandService<JiliTransferCreatePlayerCommand> createPlayerCommandService,
         IGameProviderRepository gameProvider,
-        IGameInterfaceJiliServiceGrpc grpc,
+        IGameInterfaceJiliClient client,
         IPlayerRepository player)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
         _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _grpc = grpc ?? throw new ArgumentNullException(nameof(grpc));
+        _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
     public async ValueTask<decimal?> GetAsync(JiliTransferPlayerBalanceQuery command, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.JiliTransfer).ConfigureAwait(false);
-        var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetJiliTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+                gameProviderCode: GameProviderType.JiliTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+                playerCode: command.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: gameProviderId,
+                brandId: player.BrandId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetJiliTransferConfiguration(
+                gameProviderConfigurationId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        var response = await _grpc.GetBalanceAsync(
+        var response = await _client.GetBalanceAsync(
             apiUrl: configuration.ApiUrl,
             agentId: configuration.AgentId,
             agentKey: configuration.AgentKey,
@@ -50,7 +67,7 @@ public class JiliTransferPlayerBalanceGetService : IGetService<JiliTransferPlaye
                 PlayerCode: player.PlayerCode),
                 cancellationToken).ConfigureAwait(false);
 
-            response = await _grpc.GetBalanceAsync(
+            response = await _client.GetBalanceAsync(
                apiUrl: configuration.ApiUrl,
                agentId: configuration.AgentId,
                agentKey: configuration.AgentKey,

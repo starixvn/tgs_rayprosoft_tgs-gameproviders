@@ -4,7 +4,7 @@ using NSubstitute;
 using NSubstitute.ReceivedExtensions;
 using NUnit.Framework;
 using Tgs.GameCommand.Common;
-using Tgs.GameInterface.JiliService.Client;
+using Tgs.GameInterface.Jili.Client;
 using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
@@ -19,7 +19,7 @@ public class JiliTransferKickPlayerCommandServiceUnitTest
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceJiliServiceGrpc = Substitute.For<IGameInterfaceJiliServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceJiliClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
 
         var command = new JiliTransferKickPlayerCommand
@@ -70,12 +70,12 @@ public class JiliTransferKickPlayerCommandServiceUnitTest
         var sut = new JiliTransferKickPlayerCommandService(
             fakeBrandService,
             fakeGameProviderRepository,
-            fakeGameInterfaceJiliServiceGrpc,
+            fakeClient,
             fakePlayerRepository);
 
         await sut.ExecuteAsync(command).ConfigureAwait(false);
 
-        _ = fakeGameInterfaceJiliServiceGrpc
+        _ = fakeClient
             .Received(1)
             .KickPlayerAsync(
             Arg.Is(configuration.ApiUrl),

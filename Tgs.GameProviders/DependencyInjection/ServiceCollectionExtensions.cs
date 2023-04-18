@@ -8,7 +8,7 @@ using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.JDBService.Client;
-using Tgs.GameInterface.JiliService.Client;
+using Tgs.GameInterface.Jili.Client;
 using Tgs.GameInterface.OBet.Client;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameInterface.SBOService.Client;
@@ -36,7 +36,7 @@ public static class ServiceCollectionExtensions
         Action<GamePlayerTransformClientOptions, IServiceProvider> gamePlayerTransformClientOptions,
         Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
         Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions,
-        Action<GameInterfaceJiliServiceClientOptions, IServiceProvider> gameInterfaceJiliServiceClientOptions,
+        Action<GameInterfaceJiliClientOptions, IServiceProvider> gameInterfaceJiliClientOptions,
         Action<GameInterfaceWMCasinoServiceClientOptions, IServiceProvider> gameInterfaceWMCasinoClientOptions,
         Action<GameInterfaceEvoOptions, IServiceProvider> gameInterfaceEvolutionServiceClientOptions,
         Action<GameInterfaceIdnLiveClientOptions, IServiceProvider> gameInterfaceIdnLiveClientOptions,
@@ -68,7 +68,7 @@ public static class ServiceCollectionExtensions
                 gamePlayerTransformClientOptions: gamePlayerTransformClientOptions,
                 gameCommandClientOptions: gameCommandClientOptions,
                 gameInterfaceAwcServiceClientOptions: gameInterfaceAwcServiceClientOptions,
-                gameInterfaceJiliServiceClientOptions: gameInterfaceJiliServiceClientOptions,
+                gameInterfaceJiliClientOptions: gameInterfaceJiliClientOptions,
                 gameInterfaceWMCasinoClientOptions: gameInterfaceWMCasinoClientOptions,
                 gameInterfaceEvolutionServiceClientOptions: gameInterfaceEvolutionServiceClientOptions,
                 gameInterfaceIdnLiveClientOptions: gameInterfaceIdnLiveClientOptions,

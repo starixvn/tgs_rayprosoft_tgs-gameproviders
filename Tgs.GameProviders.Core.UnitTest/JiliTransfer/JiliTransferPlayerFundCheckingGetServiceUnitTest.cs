@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameCommand.Common;
-using Tgs.GameInterface.JiliService.Client;
+using Tgs.GameInterface.Jili.Client;
 using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
@@ -18,7 +18,7 @@ public class JiliTransferPlayerFundCheckingGetServiceUnitTest
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeGameInterfaceJiliServiceGrpc = Substitute.For<IGameInterfaceJiliServiceGrpc>();
+        var fakeClient = Substitute.For<IGameInterfaceJiliClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
 
         var query = new JiliTransferPlayerFundCheckingQuery
@@ -69,7 +69,7 @@ public class JiliTransferPlayerFundCheckingGetServiceUnitTest
                 Arg.Is(gameProviderConfigurationId))
             .Returns(configuration);
 
-        _ = fakeGameInterfaceJiliServiceGrpc.FundOrderCheckingAsync(
+        _ = fakeClient.FundOrderCheckingAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
             agentId: Arg.Is(configuration.AgentId),
             agentKey: Arg.Is(configuration.AgentKey),
@@ -78,7 +78,7 @@ public class JiliTransferPlayerFundCheckingGetServiceUnitTest
         var sut = new JiliTransferPlayerFundCheckingGetService(
             fakeBrandService,
             fakeGameProviderRepository,
-            fakeGameInterfaceJiliServiceGrpc,
+            fakeClient,
             fakePlayerRepository);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
