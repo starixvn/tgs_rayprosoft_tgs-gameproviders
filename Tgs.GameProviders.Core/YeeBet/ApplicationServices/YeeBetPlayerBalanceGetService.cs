@@ -70,7 +70,7 @@ public class YeeBetPlayerBalanceGetService : IGetService<YeeBetPlayerBalanceQuer
         if (!reply.IsPlayerExist)
         {
             await _client
-                .PlayerCreateAsync(
+                .PlayerCreateByBetLimitAsync(
                     apiUrl: configuration.ApiUrl,
                     appId: configuration.AppId,
                     secretKey: configuration.SecretKey,
@@ -78,6 +78,7 @@ public class YeeBetPlayerBalanceGetService : IGetService<YeeBetPlayerBalanceQuer
                     currency: gameProviderCurrencyCode,
                     playerCode: player.PlayerCode,
                     languageId: 2,//英文
+                    quotas: configuration.BetLimit,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
