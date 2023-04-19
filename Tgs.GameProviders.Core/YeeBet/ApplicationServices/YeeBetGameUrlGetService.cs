@@ -13,16 +13,19 @@ public class YeeBetGameUrlGetService : IGetService<YeeBetGameUrlQuery, Uri>
     private readonly IGameInterfaceYeeBetClient _client;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
+    private readonly ICommandService<YeeBetPlayerCreateCommand> _playerCreateService;
 
     public YeeBetGameUrlGetService(
         IGameProviderRepository gameProvider,
         IPlayerRepository player,
         IBrandRepository brand,
-        IGameInterfaceYeeBetClient client)
+        IGameInterfaceYeeBetClient client,
+        ICommandService<YeeBetPlayerCreateCommand> playerCreateService)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
         _client = client ?? throw new ArgumentNullException(nameof(client));
+        _playerCreateService = playerCreateService ?? throw new ArgumentNullException(nameof(playerCreateService));
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
@@ -33,28 +36,49 @@ public class YeeBetGameUrlGetService : IGetService<YeeBetGameUrlQuery, Uri>
                 gameProviderCode: GameProviderType.YeeBet,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
+
         var player = await _player
             .GetAsync(
                 playerCode: query.PlayerCode,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
+
         var gameProviderConfigurationId = await _brand
             .GetBrandGameProviderConfigurationIdAsync(
                 gameProviderId: gameProviderId,
                 brandId: player.BrandId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
+
         var configuration = await _gameProvider
             .GetYeeBetConfigurationAsync(
                 gameProviderConfigurationId: gameProviderConfigurationId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
+
         var cultureCode = await _gameProvider
             .GetGameProviderCultureCodeAsync(
                 gameProviderId: gameProviderId,
                 cultureCode: query.Language,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false) ?? "2";
+
+        var isPlayerExist = await _client
+            .PlayerUpdateBetLimitAsync(
+                apiUrl: configuration.ApiUrl,
+                appId: configuration.AppId,
+                secretKey: configuration.SecretKey,
+                playerCode: player.PlayerCode,
+                quotas: configuration.BetLimit,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        if (!isPlayerExist)
+        {
+            await _playerCreateService
+                .ExecuteAsync(new YeeBetPlayerCreateCommand(player.PlayerCode), cancellationToken)
+                .ConfigureAwait(false);
+        }
 
         var response = await _client
             .GameUrlAsync(

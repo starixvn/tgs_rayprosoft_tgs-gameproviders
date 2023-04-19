@@ -8,6 +8,7 @@ using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GameProviders.Core.YeeBet.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
+using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.YeeBet;
 
@@ -21,6 +22,7 @@ public class YeeBetGameUrlGetServiceUnitTest
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeBrandRepository = Substitute.For<IBrandRepository>();
         var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
+        var fakePlayerCreateService = Substitute.For<ICommandService<YeeBetPlayerCreateCommand>>();
 
         var query = new YeeBetGameUrlQuery
         {
@@ -105,7 +107,8 @@ public class YeeBetGameUrlGetServiceUnitTest
             fakeGameProviderRepository,
             fakePlayerRepository,
             fakeBrandRepository,
-            fakeClient);
+            fakeClient,
+            fakePlayerCreateService);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 

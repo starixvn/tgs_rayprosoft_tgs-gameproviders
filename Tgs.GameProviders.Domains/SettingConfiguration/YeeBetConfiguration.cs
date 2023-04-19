@@ -5,5 +5,7 @@ public record YeeBetConfiguration
     public Uri ApiUrl { get; init; } = default!;
     public string AppId { get; init; } = default!;
     public string SecretKey { get; init; } = default!;
+
+    public IEnumerable<int> BetLimit { get; init; } = Array.Empty<int>();
     public string? SetCurrency { get; init; }
 }

@@ -13,16 +13,19 @@ public class YeeBetPlayerBalanceGetService : IGetService<YeeBetPlayerBalanceQuer
     private readonly IGameInterfaceYeeBetClient _client;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
+    private readonly ICommandService<YeeBetPlayerCreateCommand> _playerCreateService;
 
     public YeeBetPlayerBalanceGetService(
         IGameProviderRepository gameProvider,
         IPlayerRepository player,
         IBrandRepository brand,
-        IGameInterfaceYeeBetClient client)
+        IGameInterfaceYeeBetClient client,
+        ICommandService<YeeBetPlayerCreateCommand> playerCreateService)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
         _client = client ?? throw new ArgumentNullException(nameof(client));
+        _playerCreateService = playerCreateService ?? throw new ArgumentNullException(nameof(playerCreateService));
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
@@ -50,14 +53,6 @@ public class YeeBetPlayerBalanceGetService : IGetService<YeeBetPlayerBalanceQuer
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var currencyCode = string.IsNullOrWhiteSpace(configuration.SetCurrency)
-            ? player.DefaultWalletCurrencyCode
-            : configuration.SetCurrency;
-
-        var gameProviderCurrencyCode = await _gameProvider
-            .GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode, cancellationToken)
-            .ConfigureAwait(false);
-
         var reply = await _client
             .PlayerBalanceAsync(
                 apiUrl: configuration.ApiUrl,
@@ -69,16 +64,8 @@ public class YeeBetPlayerBalanceGetService : IGetService<YeeBetPlayerBalanceQuer
 
         if (!reply.IsPlayerExist)
         {
-            await _client
-                .PlayerCreateAsync(
-                    apiUrl: configuration.ApiUrl,
-                    appId: configuration.AppId,
-                    secretKey: configuration.SecretKey,
-                    clientType: 1,//1 pc ,2 手機 ,3 ipad
-                    currency: gameProviderCurrencyCode,
-                    playerCode: player.PlayerCode,
-                    languageId: 2,//英文
-                    cancellationToken: cancellationToken)
+            await _playerCreateService
+                .ExecuteAsync(new YeeBetPlayerCreateCommand(player.PlayerCode), cancellationToken)
                 .ConfigureAwait(false);
 
             reply = await _client
