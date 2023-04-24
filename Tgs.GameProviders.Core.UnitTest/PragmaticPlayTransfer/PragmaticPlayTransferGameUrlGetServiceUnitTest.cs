@@ -117,7 +117,7 @@ internal class PragmaticPlayTransferGameUrlGetServiceUnitTest
         var gameUrlReply = new GameUrlReply
         {
             IsPlayerExist = false,
-            GameUrl = null
+            GameUrl = string.Empty
         };
         _ = fakeClient
             .GameUrlAsync(

@@ -63,13 +63,17 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             {
                 ExternalRoundId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()
             }));
+        _ = fakeRoundService
+            .GetAsync(
+                Arg.Is(query.RoundId))
+            .Returns(roundInfo);
 
         var gameProviderId = Guid.NewGuid();
         _ = fakeGameProviderRepository
             .GetGameProviderIdAsync(
                 gameProviderCode: Arg.Is(GameProviderType.PragmaticPlayTransfer),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(gameProviderId);
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderId);
 
         var player = new PlayerInfo(
             ResellerId: Guid.NewGuid(),

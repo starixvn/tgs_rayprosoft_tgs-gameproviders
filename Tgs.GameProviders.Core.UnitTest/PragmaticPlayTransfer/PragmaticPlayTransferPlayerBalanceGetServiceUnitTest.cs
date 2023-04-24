@@ -196,6 +196,6 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
             .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(playerBalanceReply.Balance, actual);
+        Assert.AreEqual(playerBalanceReply.Balance.ToDecimal().GetValueOrDefault(0), actual);
     }
 }
