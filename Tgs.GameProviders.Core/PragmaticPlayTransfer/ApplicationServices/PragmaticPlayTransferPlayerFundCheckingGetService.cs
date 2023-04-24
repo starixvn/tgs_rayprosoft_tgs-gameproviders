@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
@@ -9,14 +10,20 @@ namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 internal class PragmaticPlayTransferPlayerFundCheckingGetService
     : IGetService<PragmaticPlayTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
 {
-    private readonly IPragmaticPlayTransferApiClient _client;
-    private readonly IPragmaticPlayTransferService _service;
+    private readonly IBrandRepository _brand;
+    private readonly IGameInterfacePragmaticPlayClient _client;
+    private readonly IGameProviderRepository _gameProvider;
+    private readonly IPlayerRepository _player;
 
     public PragmaticPlayTransferPlayerFundCheckingGetService(
-        IPragmaticPlayTransferService service,
-        IPragmaticPlayTransferApiClient client)
+        IGameProviderRepository gameProvider,
+        IPlayerRepository player,
+        IBrandRepository brand,
+        IGameInterfacePragmaticPlayClient client)
     {
-        _service = service ?? throw new ArgumentNullException(nameof(service));
+        _player = player ?? throw new ArgumentNullException(nameof(player));
+        _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+        _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
@@ -24,23 +31,37 @@ internal class PragmaticPlayTransferPlayerFundCheckingGetService
         PragmaticPlayTransferPlayerFundCheckingQuery query,
         CancellationToken cancellationToken = default)
     {
-        var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-        if (configuration is null)
-        {
-            throw new Exception($"The {GameProviderType.PragmaticPlayTransfer} configuration does not exist.");
-        }
-
-        var isExist = await _client
-            .FundOrderCheckingAsync(
-                configuration.ApiUrl,
-                configuration.SecureLogin,
-                configuration.SecretKey,
-                query.OrderId)
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+                gameProviderCode: GameProviderType.PragmaticPlayTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+                playerCode: query.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: gameProviderId,
+                brandId: player.BrandId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetPragmaticPlayTransferConfigurationAsync(
+                gameProviderConfigurationId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return new PlayerFundCheckingResult
-        {
-            OrderStatus = isExist
-        };
+        var response = await _client
+            .FundStatusAsync(
+                apiUrl: configuration.ApiUrl,
+                secureLogin: configuration.SecureLogin,
+                secretKey: configuration.SecretKey,
+                orderId: query.OrderId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        return new() { OrderStatus = response };
     }
 }

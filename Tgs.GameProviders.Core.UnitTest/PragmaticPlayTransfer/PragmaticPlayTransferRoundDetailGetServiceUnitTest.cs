@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Globalization;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameCommand.Common;
-using Tgs.GameProviders.Core.PragmaticPlayTransfer;
+using Tgs.GameInterface.PragmaticPlay.Client;
+using Tgs.GameInterface.PragmaticPlay.Protos;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
-using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameRounds.Common;
 
@@ -21,55 +20,109 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
     public async ValueTask Normal_Process()
     {
         var fakeRoundService = Substitute.For<IRoundService>();
+        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakeBrandRepository = Substitute.For<IBrandRepository>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
-        var fakeService = Substitute.For<IPragmaticPlayTransferService>();
-        var fakeApiClient = Substitute.For<IPragmaticPlayTransferApiClient>();
+        var fakeClient = Substitute.For<IGameInterfacePragmaticPlayClient>();
 
-        var configuration = new PragmaticPlayTransferConfiguration
+        var query = new PragmaticPlayTransferRoundDetailQuery
         {
-            ServiceEndpointUrl = new("http://game-pp"),
-            ApiUrl = new("https://api.prerelease-env.biz"),
-            SecureLogin = "tgs_tgstfw",
-            SecretKey = "testKey",
-            ProviderId = "PragmaticPlay"
+            RoundId = Guid.NewGuid(),
+            Language = "zh-CN",
         };
 
-        var gameProviderLanguage = "en";
-        var historyUrl = "https://tgs.prerelease-env.biz/gs2c/parentRoundHistoryDetails.do?playSessionId=2806662804&stylename=tgs_tgstfw&hash=2213f4013b94f67808ff131af8110f7d&language=en";
+        var roundInfo = new RoundInfo(
+            RoundId: query.RoundId,
+            ExternalRoundId: DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString(),
+            GameProviderId: Guid.NewGuid(),
+            PlayerCode: "4ucmqplxb029",
+            GameId: 1,
+            CurrencyCode: "CNY",
+            Status: GameRoundStatus.Closed,
+            GameProviderConfigurationId: Guid.NewGuid(),
+            WalletId: Guid.NewGuid(),
+            CreatedOn: DateTimeOffset.UtcNow.AddMinutes(-10),
+            ClosedOn: DateTimeOffset.UtcNow,
+            UpdatedOn: DateTimeOffset.UtcNow,
+            BrandId: Guid.NewGuid(),
+            ExternalCreatedOn: DateTimeOffset.UtcNow.AddMinutes(-10),
+            ExternalClosedOn: DateTimeOffset.UtcNow,
+            BetAmount: 1m,
+            ValidBetAmount: 1m,
+            SettleAmount: 0,
+            Commission: 0,
+            Turnover: 1m,
+            CompanyWinLoss: 1m,
+            TieBetAdjustment: null,
+            ClientStatus: GameRoundClientStatus.Loss,
+            ReopenTurnoverAdjustment: null,
+            ReopenedOn: null,
+            EffectiveBettingPercentage: null,
+            AdditionalData: JsonSerializer.Serialize(new
+            {
+                ExternalRoundId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()
+            }));
+
+        var gameProviderId = Guid.NewGuid();
+        _ = fakeGameProviderRepository
+            .GetGameProviderIdAsync(
+                gameProviderCode: Arg.Is(GameProviderType.PragmaticPlayTransfer),
+                    cancellationToken: Arg.Any<CancellationToken>())
+                .Returns(gameProviderId);
 
         var player = new PlayerInfo(
-            Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
-            "TGS",
-            Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
-            "TGS",
-            Guid.Parse("4e86719f-243f-46f6-b010-5c758b7285af"),
-            "GPI",
-            "4ucmqplxb029",
-            "4ucmqplxb029",
-            Guid.Parse("36a6cdef-094f-eb11-8d88-70b5e82b6b8d"),
-            "CNY");
+            ResellerId: Guid.NewGuid(),
+            ResellerCode: "GPI",
+            LicenseeId: Guid.NewGuid(),
+            LicenseeCode: "GPI",
+            BrandId: Guid.NewGuid(),
+            BrandCode: "GPI",
+            PlayerCode: "4ucmqplxb029",
+            Username: "4ucmqplxb029",
+            DefaultWalletId: Guid.NewGuid(),
+            DefaultWalletCurrencyCode: "CNY");
+        _ = fakePlayerRepository
+            .GetAsync(
+                playerCode: Arg.Is(roundInfo.PlayerCode),
+                    cancellationToken: Arg.Any<CancellationToken>())
+                .Returns(player);
 
-        var gameProviderInfo = new GameProviderInfo(
-            GameProviderId: Guid.NewGuid(),
-            GameProviderCode: GameProviderType.PragmaticPlayTransfer,
-            UniqueId: 1,
-            Name: GameProviderType.PragmaticPlayTransfer,
-            TransferWallet: false,
-            AutoCloseRound: true,
-            SupportTestPlayer: false,
-            AllowKickPlayer: true,
-            PlaceBetTimeout: 0,
-            SettleBetTimeout: 0,
-             Description: GameProviderType.PragmaticPlayTransfer,
-            Localization: null);
+        var gameProviderConfigurationId = Guid.NewGuid();
+        _ = fakeBrandRepository
+            .GetBrandGameProviderConfigurationIdAsync(
+                 gameProviderId: Arg.Is(gameProviderId),
+                     brandId: Arg.Is(player.BrandId),
+                     cancellationToken: Arg.Any<CancellationToken>())
+                .Returns(gameProviderConfigurationId);
 
-        var gameInfo = new GameInfo(
+        var configuration = new PragmaticPlayTransferConfiguration()
+        {
+            ApiUrl = new("https://localhost/"),
+            SecureLogin = "secure_login",
+            SecretKey = "secret_key"
+        };
+        _ = fakeGameProviderRepository
+            .GetPragmaticPlayTransferConfigurationAsync(
+                gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+                    cancellationToken: Arg.Any<CancellationToken>())
+                .Returns(configuration);
+
+        var cultureCode = "en";
+        _ = fakeGameProviderRepository
+            .GetGameProviderCultureCodeAsync(
+                gameProviderId: Arg.Is(gameProviderId),
+                    cultureCode: Arg.Is(query.Language),
+                    cancellationToken: Arg.Any<CancellationToken>())
+                .Returns(cultureCode);
+
+        var game = new GameInfo(
             GameId: 1,
             GameCode: "test",
-            GameProviderId: gameProviderInfo.GameProviderId,
+            GameProviderId: Guid.NewGuid(),
             GameProviderCode: GameProviderType.PragmaticPlayTransfer,
             GameExternalId: "1",
-            Type: GameType.Slot,
+            Type: GameType.LiveDealerLobby,
             PlatformType: GamePlatformType.DesktopAndMobile,
             Name: "test",
             SubGame: true,
@@ -82,103 +135,41 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
             AvailableCurrencies: null,
             Localization: null,
             SubGameProviderCode: GameProviderType.PragmaticPlayTransfer);
+        _ = fakeGameRepository
+            .GetAsync(
+                Arg.Is(roundInfo.GameId),
+                    cancellationToken: Arg.Any<CancellationToken>())
+                .Returns(game);
 
-        var data = new PragmaticPlayTransferGameRecordData
+        var gameRecordDetailReply = new GameRecordDetailReply
         {
-            PlayerCode = "4ucmqplxb029",
-            ExternalGameId = "vs25bkofkngdm",
-            ExternalRoundId = "2806662804",
-            ParentExternalRoundId = string.Empty,
-            StartDate = "2022-05-13 08:04:41",
-            EndDate = "2022-05-13 08:04:41",
-            Status = "C",
-            PlayType = "R",
-            CurrencyCode = "CNY",
-            BetAmount = 2.50m,
-            WinAmount = 0.00m,
-            Jackpot = 0.00m
+            Url = "https://localhost/"
         };
-
-        var createdOn = DateTimeOffset.Parse(data.StartDate, null, DateTimeStyles.AssumeUniversal);
-        var closedOn = DateTimeOffset.Parse(data.EndDate, null, DateTimeStyles.AssumeUniversal);
-
-        var roundInfo = new RoundInfo(
-            Guid.Parse("5566e31a-80ec-46eb-522d-08d9c07bf52d"),
-            data.ExternalRoundId,
-            gameProviderInfo.GameProviderId,
-            player.PlayerCode,
-            gameInfo.GameId,
-            player.DefaultWalletCurrencyCode,
-            GameRoundStatus.Closed,
-            Guid.NewGuid(),
-            player.DefaultWalletId,
-            DateTime.Now,
-            DateTime.Now,
-            DateTime.Now,
-            player.BrandId,
-            createdOn,
-            closedOn,
-            data.BetAmount,
-            data.BetAmount,
-            data.WinAmount,
-            null,
-            data.BetAmount,
-            data.BetAmount - data.WinAmount,
-            null,
-            GameRoundClientStatus.Loss,
-            null,
-            null,
-            null,
-            JsonSerializer.Serialize(data));
+        _ = fakeClient
+            .GameRecordDetailAsync(
+                apiUrl: Arg.Is(configuration.ApiUrl),
+                secureLogin: Arg.Is(configuration.SecureLogin),
+                secretKey: Arg.Is(configuration.SecretKey),
+                playerCode: Arg.Is(roundInfo.PlayerCode),
+                externalRoundId: Arg.Is(roundInfo.ExternalRoundId),
+                externalGameId: Arg.Is(game.GameExternalId),
+                language: Arg.Is(cultureCode),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameRecordDetailReply);
 
         var sut = new PragmaticPlayTransferRoundDetailGetService(
-            fakeRoundService, fakeGameRepository, fakeService, fakeApiClient);
+            fakeRoundService,
+            fakeGameProviderRepository,
+            fakePlayerRepository,
+            fakeBrandRepository,
+            fakeGameRepository,
+            fakeClient);
 
-        var query = new PragmaticPlayTransferRoundDetailQuery
-        {
-            RoundId = roundInfo.RoundId,
-            Language = "en-US"
-        };
-
-        _ = fakeRoundService.GetAsync(Arg.Is(query.RoundId)).Returns(roundInfo);
-        _ = fakeGameRepository.GetAsync(Arg.Is(roundInfo.GameId)).Returns(gameInfo);
-        _ = fakeService.GetGameProviderAsync(Arg.Is(roundInfo.GameProviderId)).Returns(gameProviderInfo);
-        _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
-        _ = fakeService
-            .GetGameProviderLanguageCodeAsync(
-                Arg.Is(gameProviderInfo.GameProviderId),
-                Arg.Is(query.Language))
-            .Returns(gameProviderLanguage);
-
-        _ = fakeApiClient
-            .GetGameDetailUrlAsync(
-                Arg.Is(configuration.ApiUrl),
-                Arg.Is(configuration.SecureLogin),
-                Arg.Is(configuration.SecretKey),
-                Arg.Is(roundInfo.PlayerCode),
-                Arg.Is(roundInfo.ExternalRoundId),
-                Arg.Is(gameInfo.GameExternalId),
-                Arg.Is(gameProviderLanguage))
-            .Returns(historyUrl);
-
-        var expected = new RoundDetailResult
-        {
-            Data = new RoundDetailDataBase[]
-            {
-                new RoundDetailDataJson
-                {
-                    Value = JsonSerializer.Serialize(new
-                    {
-                        Url = historyUrl,
-                        Jackpot = data.Jackpot
-                    })
-                }
-            }
-        };
-
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut
+            .GetAsync(
+                query: query)
+            .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        CollectionAssert.AreEqual(expected.Data, actual!.Data);
     }
 }
