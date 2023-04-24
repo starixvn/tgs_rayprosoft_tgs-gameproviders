@@ -1,104 +1,116 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 
-internal class PragmaticPlayTransferGameUrlGetService : IGetService<PragmaticPlayTransferGameUrlQuery, GameUrlResult>
+internal class PragmaticPlayTransferGameUrlGetService : IGetService<PragmaticPlayTransferGameUrlQuery, Uri>
 {
-    private readonly IPragmaticPlayTransferApiClient _client;
-    private readonly IGameRepository _gameRepository;
-    private readonly IPlayerRepository _playerService;
-    private readonly IPragmaticPlayTransferGamePlayer _pragmaticPlayTransferGamePlayer;
-    private readonly IPragmaticPlayTransferService _service;
+    private readonly IBrandRepository _brand;
+    private readonly IGameInterfacePragmaticPlayClient _client;
+    private readonly IGameRepository _game;
+    private readonly IGameProviderRepository _gameProvider;
+    private readonly IPlayerRepository _player;
 
     public PragmaticPlayTransferGameUrlGetService(
-        IPlayerRepository playerService,
-        IGameRepository gameRepository,
-        IPragmaticPlayTransferService service,
-        IPragmaticPlayTransferApiClient client,
-        IPragmaticPlayTransferGamePlayer pragmaticPlayTransferGamePlayer)
+        IGameProviderRepository gameProvider,
+        IPlayerRepository player,
+        IBrandRepository brand,
+        IGameRepository game,
+        IGameInterfacePragmaticPlayClient client)
     {
-        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
-        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
-        _service = service ?? throw new ArgumentNullException(nameof(service));
+        _player = player ?? throw new ArgumentNullException(nameof(player));
+        _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+        _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
+        _game = game ?? throw new ArgumentNullException(nameof(game));
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _pragmaticPlayTransferGamePlayer = pragmaticPlayTransferGamePlayer ?? throw new ArgumentNullException(nameof(pragmaticPlayTransferGamePlayer));
     }
 
-    public async ValueTask<GameUrlResult> GetAsync(
+    public async ValueTask<Uri> GetAsync(
         PragmaticPlayTransferGameUrlQuery query,
         CancellationToken cancellationToken = default)
     {
-        var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-        if (configuration is null)
-            return null;
-
-        var game = await _gameRepository.GetAsync(query.GameId!.Value).ConfigureAwait(false);
-        if (game is null)
-            return null;
-
-        var culture = await _service.GetGameProviderLanguageCodeAsync(game.GameProviderId, query.Language).ConfigureAwait(false);
-
-        var platform = query.PlatformType == PlatformType.Mobile ? "MOBILE" : "WEB";
-
-        var (isPlayerExist, url) = await _client
-            .GetGameUrlAsync(
-                configuration.ApiUrl,
-                configuration.SecureLogin,
-                configuration.SecretKey,
-                query.PlayerCode,
-                game.GameExternalId,
-                culture,
-                platform,
-                query.BackUrl?.OriginalString)
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+                gameProviderCode: GameProviderType.PragmaticPlayTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+                playerCode: query.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: gameProviderId,
+                brandId: player.BrandId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetPragmaticPlayTransferConfigurationAsync(
+                gameProviderConfigurationId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var cultureCode = await _gameProvider
+            .GetGameProviderCultureCodeAsync(
+                gameProviderId: gameProviderId,
+                cultureCode: query.Language,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false) ?? "en";
+        var game = await _game
+            .GetAsync(
+                gameId: query.GameId!.Value,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        if (isPlayerExist)
-        {
-            return new GameUrlResult
-            {
-                Url = new Uri(url)
-            };
-        }
-
-        var playerInfo = await _playerService.GetAsync(query.PlayerCode).ConfigureAwait(false);
-        var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
-        var gameProviderCurrencyCode = await _service
-            .GetGameProviderCurrencyCodeAsync(gameProviderId, playerInfo.DefaultWalletCurrencyCode)
+        var response = await _client
+            .GameUrlAsync(
+                apiUrl: configuration.ApiUrl,
+                secureLogin: configuration.SecureLogin,
+                secretKey: configuration.SecretKey,
+                playerCode: query.PlayerCode,
+                externalGameId: game.GameExternalId,
+                language: cultureCode,
+                isMobile: query.PlatformType == PlatformType.Mobile,
+                lobbyUrl: query.BackUrl?.OriginalString,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        if (string.IsNullOrEmpty(gameProviderCurrencyCode))
+        if (!response.IsPlayerExist)
         {
-            throw new Exception($"Cannot find matched {GameProviderType.PragmaticPlayTransfer} currency of '{playerInfo.DefaultWalletCurrencyCode}'");
-        }
+            var currencyCode = await _gameProvider
+                .GetGameProviderCurrencyCodeAsync(
+                    gameProviderId: gameProviderId,
+                    currencyCode: player.DefaultWalletCurrencyCode,
+                    cancellationToken)
+                .ConfigureAwait(false);
 
-        var created = await _pragmaticPlayTransferGamePlayer
-            .CreatePlayerAsync(query.PlayerCode, gameProviderCurrencyCode, configuration)
-            .ConfigureAwait(false);
+            await _client.PlayerCreateAsync(
+                apiUrl: configuration.ApiUrl,
+                secureLogin: configuration.SecureLogin,
+                secretKey: configuration.SecretKey,
+                playerCode: query.PlayerCode,
+                currencyCode: currencyCode,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
 
-        if (created)
-        {
-            (isPlayerExist, url) = await _client
-                .GetGameUrlAsync(
-                    configuration.ApiUrl,
-                    configuration.SecureLogin,
-                    configuration.SecretKey,
-                    query.PlayerCode,
-                    game.GameExternalId,
-                    culture,
-                    platform,
-                    query.BackUrl?.OriginalString)
+            response = await _client
+                .GameUrlAsync(
+                    apiUrl: configuration.ApiUrl,
+                    secureLogin: configuration.SecureLogin,
+                    secretKey: configuration.SecretKey,
+                    playerCode: query.PlayerCode,
+                    externalGameId: game.GameExternalId,
+                    language: cultureCode,
+                    isMobile: query.PlatformType == PlatformType.Mobile,
+                    lobbyUrl: query.BackUrl?.OriginalString,
+                    cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        return !isPlayerExist
-            ? throw new Exception($"Failed to create this player.({query.PlayerCode})")
-            : new GameUrlResult
-            {
-                Url = new Uri(url)
-            };
+        return response.IsPlayerExist ? new Uri(response.GameUrl) : throw new Exception($"player does not exist.({player.PlayerCode})");
     }
 }

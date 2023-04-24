@@ -12,6 +12,7 @@ using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.Jili.Client;
 using Tgs.GameInterface.OBet.Client;
+using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SkywindService.Client;
@@ -56,7 +57,8 @@ public static class ServiceCollecitonExtensions
         Action<GameRecordEndorphinaSessionClientOptions, IServiceProvider> gameRecordEndorphinaClientOptions,
         Action<GameInterfaceFaChaiClientOptions, IServiceProvider> gameInterfaceFaChaiClientOptions,
         Action<GameInterfaceOBetClientOptions, IServiceProvider> gameInterfaceOBetClientOptions,
-        Action<GameInterfaceYeeBetClientOptions, IServiceProvider> gameInterfaceYeeBetClientOptions)
+        Action<GameInterfaceYeeBetClientOptions, IServiceProvider> gameInterfaceYeeBetClientOptions,
+        Action<GameInterfacePragmaticPlayClientOptions, IServiceProvider> gameInterfacePragmaticPlayClientOptions)
         => services
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
@@ -82,6 +84,7 @@ public static class ServiceCollecitonExtensions
             .AddGameInterfaceOBetClient(gameInterfaceOBetClientOptions)
             .AddGameInterfaceYeeBetClient(gameInterfaceYeeBetClientOptions)
             .AddGameRecordEndorphinaSessionClient(gameRecordEndorphinaClientOptions)
+            .AddGameInterfacePragmaticPlayClient(gameInterfacePragmaticPlayClientOptions)
             .AddGameRoundsClient(gameRoundsClientOptions)
             .AddGameTokenClient(gameTokenClientOptions)
             .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)

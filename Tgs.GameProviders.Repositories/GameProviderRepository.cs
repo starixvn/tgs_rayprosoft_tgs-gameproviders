@@ -286,6 +286,29 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
+    public async ValueTask<PragmaticPlayTransferConfiguration> GetPragmaticPlayTransferConfigurationAsync
+        (Guid gameProviderConfigurationId, 
+        CancellationToken cancellationToken = default)
+    {
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<PragmaticPlayTransferConfiguration>(
+                key: GameProviderConfigurations.PragmaticPlayTransfer,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.PragmaticPlayTransfer})");
+
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+
+        return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
+            ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+            : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
+    }
+
     public async ValueTask<SabaTransferConfiguration> GetSabaTransferConfiguration(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)

@@ -11,50 +11,8 @@ namespace Tgs.GameProviders.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class PPTFController : ControllerBase,
-    IGameUrlHandler<PragmaticPlayTransferGameUrlQuery>,
-    IKickPlayerHandler<PragmaticPlayTransferKickPlayerCommand>,
-    IPlayerBalanceHandler<PragmaticPlayTransferPlayerBalanceQuery>,
-    IPlayerFundCheckingHandler<PragmaticPlayTransferPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-    IPlayerFundHandler<PragmaticPlayTransferPlayerFundInQuery, PragmaticPlayTransferPlayerFundOutQuery>,
-    IRoundDetailHandler<PragmaticPlayTransferRoundDetailQuery>
+public class PPTFController : ControllerBase
 {
-    /// <summary>
-    /// Games the record list asynchronous.
-    /// </summary>
-    /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Post
-    ///         {
-    ///             "startTime": "2021-12-01T00:00:00+00:00",
-    ///             "dataType": "RNG"
-    ///         }
-    /// </remarks>
-    [HttpPost("gamerecordlist")]
-    public ValueTask<PragmaticPlayTransferGameRecordResult> GameRecordListAsync(
-        [FromServices]
-        IGetService<PragmaticPlayTransferRngGameRecordsQuery, PragmaticPlayTransferGameRecordResult> rngService,
-        [FromServices]
-        IGetService<PragmaticPlayTransferLiveDealerGameRecordsQuery, PragmaticPlayTransferGameRecordResult> liveDealerService,
-        [FromServices]
-        IGetService<PragmaticPlayTransferFishingGameRecordsQuery, PragmaticPlayTransferGameRecordResult> fishingService,
-        [FromServices]
-        IGetService<PragmaticPlayTransferVirtualSportsGameRecordsQuery, PragmaticPlayTransferGameRecordResult> sportsService,
-        PragmaticPlayTransferGameRecordListRequest request)
-        => request.DataType switch
-        {
-            PragmaticPlayTransferGameDataType.RNG => rngService.GetAsync(new PragmaticPlayTransferRngGameRecordsQuery(request.StartTime)),
-            var o when o == PragmaticPlayTransferGameDataType.LiveDealer
-                => liveDealerService.GetAsync(new PragmaticPlayTransferLiveDealerGameRecordsQuery(request.StartTime)),
-            var o when o == PragmaticPlayTransferGameDataType.Fishing
-                => fishingService.GetAsync(new PragmaticPlayTransferFishingGameRecordsQuery(request.StartTime)),
-            var o when o == PragmaticPlayTransferGameDataType.VirtualSports
-                => sportsService.GetAsync(new PragmaticPlayTransferVirtualSportsGameRecordsQuery(request.StartTime)),
-            _ => throw new ArgumentException($"Invalid data type: {request.DataType}")
-        };
-
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
@@ -80,7 +38,7 @@ public class PPTFController : ControllerBase,
     /// </remarks>
     [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
-        [FromServices] IGetService<PragmaticPlayTransferGameUrlQuery, GameUrlResult> getService,
+        [FromServices] IGetService<PragmaticPlayTransferGameUrlQuery, Uri> getService,
         GameUrlRequest request)
     {
         var result = await getService
@@ -100,7 +58,7 @@ public class PPTFController : ControllerBase,
                 },
                 cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
-        return result == null ? null : new GameUrlResponse() { Url = result.Url };
+        return result == null ? null : new GameUrlResponse() { Url = result };
     }
 
     /// <summary>
@@ -138,8 +96,8 @@ public class PPTFController : ControllerBase,
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal?> PlayerBalanceAsync(
-        [FromServices] IGetService<PragmaticPlayTransferPlayerBalanceQuery, decimal?> getService,
+    public ValueTask<decimal> PlayerBalanceAsync(
+        [FromServices] IGetService<PragmaticPlayTransferPlayerBalanceQuery, decimal> getService,
         string playerCode)
         => getService
         .GetAsync(
@@ -167,7 +125,7 @@ public class PPTFController : ControllerBase,
     ///         }
     /// </remarks>
     [HttpPost("playerfundchecking")]
-    public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
+    public async ValueTask<PlayerFundCheckingResponse> PlayerFundCheckingAsync(
         [FromServices] IGetService<PragmaticPlayTransferPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
         PlayerFundCheckingRequest request)
     {
@@ -208,7 +166,7 @@ public class PPTFController : ControllerBase,
     ///         }
     /// </remarks>
     [HttpPost("playerfundin")]
-    public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
+    public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
         [FromServices] IGetService<PragmaticPlayTransferPlayerFundInQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
@@ -249,7 +207,7 @@ public class PPTFController : ControllerBase,
     ///         }
     /// </remarks>
     [HttpPost("playerfundout")]
-    public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
+    public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
         [FromServices] IGetService<PragmaticPlayTransferPlayerFundOutQuery, PlayerFundResult> getService,
         PlayerFundRequest request)
     {
@@ -284,8 +242,8 @@ public class PPTFController : ControllerBase,
     ///     Get rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
     /// </remarks>
     [HttpGet("rounddetail/{roundId:guid}")]
-    public ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<PragmaticPlayTransferRoundDetailQuery, RoundDetailResult?> getService,
+    public ValueTask<RoundDetailResult> RoundDetailAsync(
+        [FromServices] IGetService<PragmaticPlayTransferRoundDetailQuery, RoundDetailResult> getService,
         Guid roundId,
         string language)
         => getService

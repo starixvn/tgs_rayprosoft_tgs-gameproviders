@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameCommand.Common;
-using Tgs.GameProviders.Core.PragmaticPlayTransfer;
+using Tgs.GameInterface.PragmaticPlay.Client;
+using Tgs.GameInterface.PragmaticPlay.Protos;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
@@ -15,24 +17,79 @@ internal class PragmaticPlayTransferGameUrlGetServiceUnitTest
     [Test]
     public void Create_Player()
     {
-        var fakePragmaticPlayTransferApiClient = Substitute.For<IPragmaticPlayTransferGamePlayer>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeService = Substitute.For<IPragmaticPlayTransferService>();
-        var fakeApiClient = Substitute.For<IPragmaticPlayTransferApiClient>();
+        var fakeBrandRepository = Substitute.For<IBrandRepository>();
+        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeClient = Substitute.For<IGameInterfacePragmaticPlayClient>();
 
-        var gameProviderLanguageCode = "en";
+        var query = new PragmaticPlayTransferGameUrlQuery
+        {
+            GameType = GameType.LiveDealerLobby,
+            GameId = 1,
+            BrandCode = "GPI",
+            PlayerCode = "4ucmqplxb029",
+            CurrencyCode = "CNY",
+            LoginRecordId = Guid.NewGuid(),
+            PlatformType = PlatformType.Desktop,
+            Language = "zh-CN",
+            IPAddress = "127.0.0.1",
+            BackUrl = new("https://dev-t1.rpgp.cc/")
+        };
+
+        var gameProviderId = Guid.NewGuid();
+        _ = fakeGameProviderRepository
+            .GetGameProviderIdAsync(
+                gameProviderCode: Arg.Is(GameProviderType.PragmaticPlayTransfer),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderId);
+
+        var player = new PlayerInfo(
+            ResellerId: Guid.NewGuid(),
+            ResellerCode: "GPI",
+            LicenseeId: Guid.NewGuid(),
+            LicenseeCode: "GPI",
+            BrandId: Guid.NewGuid(),
+            BrandCode: "GPI",
+            PlayerCode: "4ucmqplxb029",
+            Username: "4ucmqplxb029",
+            DefaultWalletId: Guid.NewGuid(),
+            DefaultWalletCurrencyCode: "CNY");
+        _ = fakePlayerRepository
+            .GetAsync(
+                playerCode: Arg.Is(query.PlayerCode),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(player);
+
+        var gameProviderConfigurationId = Guid.NewGuid();
+        _ = fakeBrandRepository
+            .GetBrandGameProviderConfigurationIdAsync(
+                 gameProviderId: Arg.Is(gameProviderId),
+                 brandId: Arg.Is(player.BrandId),
+                 cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderConfigurationId);
 
         var configuration = new PragmaticPlayTransferConfiguration()
         {
-            ServiceEndpointUrl = new("http://game-pp"),
-            ApiUrl = new("https://api.prerelease-env.biz"),
-            SecureLogin = "tgs_tgstfw",
-            SecretKey = "testKey",
-            ProviderId = "PragmaticPlay"
+            ApiUrl = new("https://localhost/"),
+            SecureLogin = "secure_login",
+            SecretKey = "secret_key"
         };
+        _ = fakeGameProviderRepository
+            .GetPragmaticPlayTransferConfigurationAsync(
+                gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(configuration);
 
-        var gameInfo = new GameInfo(
+        var cultureCode = "en";
+        _ = fakeGameProviderRepository
+            .GetGameProviderCultureCodeAsync(
+                gameProviderId: Arg.Is(gameProviderId),
+                cultureCode: Arg.Is(query.Language),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(cultureCode);
+
+        var game = new GameInfo(
             GameId: 1,
             GameCode: "test",
             GameProviderId: Guid.NewGuid(),
@@ -51,108 +108,134 @@ internal class PragmaticPlayTransferGameUrlGetServiceUnitTest
             AvailableCurrencies: null,
             Localization: null,
             SubGameProviderCode: GameProviderType.PragmaticPlayTransfer);
+        _ = fakeGameRepository
+            .GetAsync(
+                Arg.Is(query.GameId.Value),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(game);
 
-        var query = new PragmaticPlayTransferGameUrlQuery
+        var gameUrlReply = new GameUrlReply
         {
-            GameType = gameInfo.Type,
-            GameId = gameInfo.GameId,
-            BrandCode = "GPI",
-            PlayerCode = "4ucmqplxb029",
-            CurrencyCode = "CNY",
-            LoginRecordId = Guid.NewGuid(),
-            PlatformType = PlatformType.Desktop,
-            Language = "en-US",
-            IPAddress = "127.0.0.1",
-            BackUrl = new("https://dev-t1.rpgp.cc/")
+            IsPlayerExist = false,
+            GameUrl = string.Empty
         };
+        _ = fakeClient
+            .GameUrlAsync(
+                apiUrl: Arg.Is(configuration.ApiUrl),
+                secureLogin: Arg.Is(configuration.SecureLogin),
+                secretKey: Arg.Is(configuration.SecretKey),
+                playerCode: Arg.Is(query.PlayerCode),
+                externalGameId: Arg.Is(game.GameExternalId),
+                language: Arg.Is(cultureCode),
+                isMobile: Arg.Is(query.PlatformType == PlatformType.Mobile),
+                lobbyUrl: Arg.Is(query.BackUrl?.OriginalString),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameUrlReply);
+
+        var currencyCode = "CNY";
+        _ = fakeGameProviderRepository
+            .GetGameProviderCurrencyCodeAsync(
+                gameProviderId: gameProviderId,
+                currencyCode: player.DefaultWalletCurrencyCode,
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(currencyCode);
 
         var sut = new PragmaticPlayTransferGameUrlGetService(
+            fakeGameProviderRepository,
             fakePlayerRepository,
+            fakeBrandRepository,
             fakeGameRepository,
-            fakeService,
-            fakeApiClient,
-            fakePragmaticPlayTransferApiClient);
-
-        _ = fakeGameRepository.GetAsync(Arg.Is(gameInfo.GameId)).Returns(gameInfo);
-        _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
-        _ = fakeService
-             .GetGameProviderLanguageCodeAsync(Arg.Is(gameInfo.GameProviderId), Arg.Is(query.Language))
-             .Returns(gameProviderLanguageCode);
-
-        var player = new PlayerInfo(
-                Guid.NewGuid(),
-                "TGS",
-                Guid.NewGuid(),
-                "TGS",
-                Guid.NewGuid(),
-                "GPI",
-                query.PlayerCode,
-                query.PlayerCode,
-                Guid.NewGuid(),
-                "CNY");
-        _ = fakePlayerRepository
-            .GetAsync(
-                Arg.Is(query.PlayerCode))
-            .Returns(player);
-
-        var gameProviderId = Guid.NewGuid();
-        _ = fakeService
-            .GetGameProviderIdAsync()
-            .Returns(gameProviderId);
-
-        var gameProviderCurrencyCode = "1";
-        _ = fakeService
-            .GetGameProviderCurrencyCodeAsync(
-                Arg.Is(gameProviderId),
-                Arg.Is(player.DefaultWalletCurrencyCode))
-            .Returns(gameProviderCurrencyCode);
-
-        _ = fakeApiClient
-            .GetGameUrlAsync(
-                 Arg.Is(configuration.ApiUrl),
-                 Arg.Is(configuration.SecureLogin),
-                 Arg.Is(configuration.SecretKey),
-                 Arg.Is(query.PlayerCode),
-                 Arg.Is(gameInfo.GameExternalId),
-                 Arg.Is(gameProviderLanguageCode),
-                 Arg.Any<string>(),
-                 Arg.Is(query.BackUrl.OriginalString))
-             .Returns(ValueTask.FromResult<(bool IsPlayerExist, string Url)>(new(false, string.Empty)));
+            fakeClient);
 
         _ = Assert.ThrowsAsync<Exception>(() => sut.GetAsync(query).AsTask());
 
-        _ = fakePragmaticPlayTransferApiClient
+        _ = fakeClient
             .Received(1)
-            .CreatePlayerAsync(
-                query.PlayerCode,
-                gameProviderCurrencyCode,
-                Arg.Any<PragmaticPlayTransferConfiguration>()
-            );
+            .PlayerCreateAsync(
+                apiUrl: Arg.Is(configuration.ApiUrl),
+                secureLogin: Arg.Is(configuration.SecureLogin),
+                secretKey: Arg.Is(configuration.SecretKey),
+                playerCode: Arg.Is(query.PlayerCode),
+                currencyCode: Arg.Is(currencyCode),
+                Arg.Any<CancellationToken>());
     }
 
     [Test]
     public async Task Normal_Process()
     {
-        var fakePragmaticPlayTransferApiClient = Substitute.For<IPragmaticPlayTransferGamePlayer>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeService = Substitute.For<IPragmaticPlayTransferService>();
-        var fakeApiClient = Substitute.For<IPragmaticPlayTransferApiClient>();
+        var fakeBrandRepository = Substitute.For<IBrandRepository>();
+        var fakeGameRepository = Substitute.For<IGameRepository>();
+        var fakeClient = Substitute.For<IGameInterfacePragmaticPlayClient>();
 
-        var gameUrl = new Uri("https://tgs.prerelease-env.biz/gs2c/openGame.do?tc=97YBxmEGn5PCQv1zxvHGDlfRWeqGsKxLc2K1HsdyJKiIDck46D5azpqgW0Be3PrO&stylename=tgs_tgstfw&dummy=");
+        var query = new PragmaticPlayTransferGameUrlQuery
+        {
+            GameType = GameType.LiveDealerLobby,
+            GameId = 1,
+            BrandCode = "GPI",
+            PlayerCode = "4ucmqplxb029",
+            CurrencyCode = "CNY",
+            LoginRecordId = Guid.NewGuid(),
+            PlatformType = PlatformType.Desktop,
+            Language = "zh-CN",
+            IPAddress = "127.0.0.1",
+            BackUrl = new("https://dev-t1.rpgp.cc/")
+        };
 
-        var gameProviderLanguageCode = "en";
+        var gameProviderId = Guid.NewGuid();
+        _ = fakeGameProviderRepository
+            .GetGameProviderIdAsync(
+                gameProviderCode: Arg.Is(GameProviderType.PragmaticPlayTransfer),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderId);
+
+        var player = new PlayerInfo(
+            ResellerId: Guid.NewGuid(),
+            ResellerCode: "GPI",
+            LicenseeId: Guid.NewGuid(),
+            LicenseeCode: "GPI",
+            BrandId: Guid.NewGuid(),
+            BrandCode: "GPI",
+            PlayerCode: "4ucmqplxb029",
+            Username: "4ucmqplxb029",
+            DefaultWalletId: Guid.NewGuid(),
+            DefaultWalletCurrencyCode: "CNY");
+        _ = fakePlayerRepository
+            .GetAsync(
+                playerCode: Arg.Is(query.PlayerCode),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(player);
+
+        var gameProviderConfigurationId = Guid.NewGuid();
+        _ = fakeBrandRepository
+            .GetBrandGameProviderConfigurationIdAsync(
+                 gameProviderId: Arg.Is(gameProviderId),
+                 brandId: Arg.Is(player.BrandId),
+                 cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderConfigurationId);
 
         var configuration = new PragmaticPlayTransferConfiguration()
         {
-            ServiceEndpointUrl = new("http://game-pp"),
-            ApiUrl = new("https://api.prerelease-env.biz"),
-            SecureLogin = "tgs_tgstfw",
-            SecretKey = "testKey",
-            ProviderId = "PragmaticPlay"
+            ApiUrl = new("https://localhost/"),
+            SecureLogin = "secure_login",
+            SecretKey = "secret_key"
         };
+        _ = fakeGameProviderRepository
+            .GetPragmaticPlayTransferConfigurationAsync(
+                gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(configuration);
 
-        var gameInfo = new GameInfo(
+        var cultureCode = "en";
+        _ = fakeGameProviderRepository
+            .GetGameProviderCultureCodeAsync(
+                gameProviderId: Arg.Is(gameProviderId),
+                cultureCode: Arg.Is(query.Language),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(cultureCode);
+
+        var game = new GameInfo(
             GameId: 1,
             GameCode: "test",
             GameProviderId: Guid.NewGuid(),
@@ -171,49 +254,51 @@ internal class PragmaticPlayTransferGameUrlGetServiceUnitTest
             AvailableCurrencies: null,
             Localization: null,
             SubGameProviderCode: GameProviderType.PragmaticPlayTransfer);
+        _ = fakeGameRepository
+            .GetAsync(
+                Arg.Is(query.GameId.Value),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(game);
 
-        var query = new PragmaticPlayTransferGameUrlQuery
+        var gameUrlReply = new GameUrlReply
         {
-            GameType = gameInfo.Type,
-            GameId = gameInfo.GameId,
-            BrandCode = "GPI",
-            PlayerCode = "4ucmqplxb029",
-            CurrencyCode = "CNY",
-            LoginRecordId = Guid.NewGuid(),
-            PlatformType = PlatformType.Desktop,
-            Language = "en-US",
-            IPAddress = "127.0.0.1",
-            BackUrl = new("https://dev-t1.rpgp.cc/")
+            IsPlayerExist = true,
+            GameUrl = "https://localhost/"
         };
+        _ = fakeClient
+            .GameUrlAsync(
+                apiUrl: Arg.Is(configuration.ApiUrl),
+                secureLogin: Arg.Is(configuration.SecureLogin),
+                secretKey: Arg.Is(configuration.SecretKey),
+                playerCode: Arg.Is(query.PlayerCode),
+                externalGameId: Arg.Is(game.GameExternalId),
+                language: Arg.Is(cultureCode),
+                isMobile: Arg.Is(query.PlatformType == PlatformType.Mobile),
+                lobbyUrl: Arg.Is(query.BackUrl?.OriginalString),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameUrlReply);
+
+        var currencyCode = "CNY";
+        _ = fakeGameProviderRepository
+            .GetGameProviderCurrencyCodeAsync(
+                gameProviderId: gameProviderId,
+                currencyCode: player.DefaultWalletCurrencyCode,
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(currencyCode);
 
         var sut = new PragmaticPlayTransferGameUrlGetService(
+            fakeGameProviderRepository,
             fakePlayerRepository,
+            fakeBrandRepository,
             fakeGameRepository,
-            fakeService,
-            fakeApiClient,
-            fakePragmaticPlayTransferApiClient);
+            fakeClient);
 
-        _ = fakeGameRepository.GetAsync(Arg.Is(gameInfo.GameId)).Returns(gameInfo);
-        _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
-        _ = fakeService
-             .GetGameProviderLanguageCodeAsync(Arg.Is(gameInfo.GameProviderId), Arg.Is(query.Language))
-             .Returns(gameProviderLanguageCode);
-
-        _ = fakeApiClient
-            .GetGameUrlAsync(
-                 Arg.Is(configuration.ApiUrl),
-                 Arg.Is(configuration.SecureLogin),
-                 Arg.Is(configuration.SecretKey),
-                 Arg.Is(query.PlayerCode),
-                 Arg.Is(gameInfo.GameExternalId),
-                 Arg.Is(gameProviderLanguageCode),
-                 Arg.Any<string>(),
-                 Arg.Is(query.BackUrl.OriginalString))
-             .Returns(ValueTask.FromResult<(bool IsPlayerExist, string Url)>(new(true, gameUrl.OriginalString)));
-
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut
+            .GetAsync(
+                query: query)
+            .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual.Url);
+        Assert.AreEqual(new Uri(gameUrlReply.GameUrl), actual);
     }
 }

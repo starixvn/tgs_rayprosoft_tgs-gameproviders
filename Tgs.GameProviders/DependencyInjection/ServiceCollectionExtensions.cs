@@ -10,6 +10,7 @@ using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.Jili.Client;
 using Tgs.GameInterface.OBet.Client;
+using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SkywindService.Client;
@@ -54,7 +55,8 @@ public static class ServiceCollectionExtensions
         Action<GameRecordEndorphinaSessionClientOptions, IServiceProvider> gameRecordEndorphinaSessionClientOptions,
         Action<GameInterfaceFaChaiClientOptions, IServiceProvider> gameInterfaceFaChaiClientOptions,
         Action<GameInterfaceOBetClientOptions, IServiceProvider> gameInterfaceOBetClientOptions,
-        Action<GameInterfaceYeeBetClientOptions, IServiceProvider> gameInterfaceYeeBetClientOptions)
+        Action<GameInterfaceYeeBetClientOptions, IServiceProvider> gameInterfaceYeeBetClientOptions,
+        Action<GameInterfacePragmaticPlayClientOptions, IServiceProvider> gameInterfacePragmaticPlayClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -86,5 +88,6 @@ public static class ServiceCollectionExtensions
                 gameRecordEndorphinaClientOptions: gameRecordEndorphinaSessionClientOptions,
                 gameInterfaceFaChaiClientOptions: gameInterfaceFaChaiClientOptions,
                 gameInterfaceOBetClientOptions: gameInterfaceOBetClientOptions,
-                gameInterfaceYeeBetClientOptions: gameInterfaceYeeBetClientOptions);
+                gameInterfaceYeeBetClientOptions: gameInterfaceYeeBetClientOptions,
+                gameInterfacePragmaticPlayClientOptions: gameInterfacePragmaticPlayClientOptions);
 }

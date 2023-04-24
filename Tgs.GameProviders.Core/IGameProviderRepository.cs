@@ -94,4 +94,8 @@ public interface IGameProviderRepository
     ValueTask<YeeBetConfiguration> GetYeeBetConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
+
+    ValueTask<PragmaticPlayTransferConfiguration> GetPragmaticPlayTransferConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 }

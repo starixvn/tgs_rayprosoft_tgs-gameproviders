@@ -12,8 +12,6 @@ public interface IGameRecordListClient
 
     ValueTask<GameRecordResponse?> LYGameRecordListAsync(string brandCode, string currencyCode, DateTimeOffset startTime, DateTimeOffset endTime, CancellationToken cancellationToken = default);
 
-    ValueTask<PragmaticPlayTransferGameRecordResponse?> PragmaticPlayTransferGameRecordListAsync(PragmaticPlayTransferGameDataType dataType, DateTimeOffset startTime, CancellationToken cancellationToken = default);
-
     ValueTask<GameRecordResponse?> VRGameRecordListAsync(string brandCode, bool isUpdateTime, DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows, CancellationToken cancellationToken = default);
 
     ValueTask<GameRecordResponse?> WGHorseGameRecordListAsync(DateTimeOffset startTime, DateTimeOffset endTime, int page, int rows, CancellationToken cancellationToken = default);

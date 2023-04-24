@@ -1,8 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
-using Tgs.GameProviders.Core.PragmaticPlayTransfer;
+using Tgs.GameCommand.Common;
+using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.PragmaticPlayTransfer;
@@ -12,50 +16,84 @@ internal class PragmaticPlayTransferPlayerFundCheckingGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeService = Substitute.For<IPragmaticPlayTransferService>();
-        var fakeApiClient = Substitute.For<IPragmaticPlayTransferApiClient>();
-
-        var configuration = new PragmaticPlayTransferConfiguration
-        {
-            ServiceEndpointUrl = new("http://game-pp"),
-            ApiUrl = new("https://api.prerelease-env.biz"),
-            SecureLogin = "tgs_tgstfw",
-            SecretKey = "testKey",
-            ProviderId = "PragmaticPlay"
-        };
+        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+        var fakeBrandRepository = Substitute.For<IBrandRepository>();
+        var fakeClient = Substitute.For<IGameInterfacePragmaticPlayClient>();
 
         var query = new PragmaticPlayTransferPlayerFundCheckingQuery
         {
             BrandCode = "GPI",
             PlayerCode = "4ucmqplxb029",
             CurrencyCode = "CNY",
-            OrderId = "4c3415e7138942e1b9b48a5fd10e1d47"
+            OrderId = Guid.NewGuid().ToString("N")
         };
 
-        _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
+        var gameProviderId = Guid.NewGuid();
+        _ = fakeGameProviderRepository
+            .GetGameProviderIdAsync(
+                gameProviderCode: Arg.Is(GameProviderType.PragmaticPlayTransfer),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderId);
 
-        _ = fakeApiClient
-            .FundOrderCheckingAsync(
-                Arg.Is(configuration.ApiUrl),
-                Arg.Is(configuration.SecureLogin),
-                Arg.Is(configuration.SecretKey),
-                Arg.Is(query.OrderId))
+        var player = new PlayerInfo(
+            ResellerId: Guid.NewGuid(),
+            ResellerCode: "GPI",
+            LicenseeId: Guid.NewGuid(),
+            LicenseeCode: "GPI",
+            BrandId: Guid.NewGuid(),
+            BrandCode: "GPI",
+            PlayerCode: "4ucmqplxb029",
+            Username: "4ucmqplxb029",
+            DefaultWalletId: Guid.NewGuid(),
+            DefaultWalletCurrencyCode: "CNY");
+        _ = fakePlayerRepository
+            .GetAsync(
+                playerCode: Arg.Is(query.PlayerCode),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(player);
+
+        var gameProviderConfigurationId = Guid.NewGuid();
+        _ = fakeBrandRepository
+            .GetBrandGameProviderConfigurationIdAsync(
+                 gameProviderId: Arg.Is(gameProviderId),
+                 brandId: Arg.Is(player.BrandId),
+                 cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderConfigurationId);
+
+        var configuration = new PragmaticPlayTransferConfiguration()
+        {
+            ApiUrl = new("https://localhost/"),
+            SecureLogin = "secure_login",
+            SecretKey = "secret_key"
+        };
+        _ = fakeGameProviderRepository
+            .GetPragmaticPlayTransferConfigurationAsync(
+                gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(configuration);
+
+        _ = fakeClient
+            .FundStatusAsync(
+                apiUrl: Arg.Is(configuration.ApiUrl),
+                secureLogin: Arg.Is(configuration.SecureLogin),
+                secretKey: Arg.Is(configuration.SecretKey),
+                orderId: Arg.Is(query.OrderId),
+                cancellationToken: Arg.Any<CancellationToken>())
             .Returns(true);
 
         var sut = new PragmaticPlayTransferPlayerFundCheckingGetService(
-            fakeService,
-            fakeApiClient);
+            fakeGameProviderRepository,
+            fakePlayerRepository,
+            fakeBrandRepository,
+            fakeClient);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut
+            .GetAsync(
+                query)
+            .ConfigureAwait(false);
 
-        Assert.AreEqual(true, actual.OrderStatus);
-
-        _ = fakeApiClient
-            .Received(1)
-            .FundOrderCheckingAsync(
-                Arg.Is(configuration.ApiUrl),
-                Arg.Is(configuration.SecureLogin),
-                Arg.Is(configuration.SecretKey),
-                Arg.Is(query.OrderId));
+        Assert.NotNull(actual);
+        Assert.IsTrue(actual.OrderStatus);
     }
 }

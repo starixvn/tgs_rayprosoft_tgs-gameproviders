@@ -1,10 +1,9 @@
 ﻿#nullable enable
 
 using System;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Tgs.GameProviders.Core.PragmaticPlayTransfer.Models;
+using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
@@ -12,88 +11,95 @@ using Tgs.ServiceUtility;
 namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 
 internal class PragmaticPlayTransferRoundDetailGetService
-    : IGetService<PragmaticPlayTransferRoundDetailQuery, RoundDetailResult?>
+    : IGetService<PragmaticPlayTransferRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IPragmaticPlayTransferApiClient _client;
-    private readonly IGameRepository _gameRepository;
-    private readonly IRoundService _roundService;
-    private readonly IPragmaticPlayTransferService _service;
+    private readonly IBrandRepository _brand;
+    private readonly IGameInterfacePragmaticPlayClient _client;
+    private readonly IGameRepository _game;
+    private readonly IGameProviderRepository _gameProvider;
+    private readonly IPlayerRepository _player;
+    private readonly IRoundService _round;
 
     public PragmaticPlayTransferRoundDetailGetService(
-        IRoundService roundService,
-        IGameRepository gameRepository,
-        IPragmaticPlayTransferService service,
-        IPragmaticPlayTransferApiClient client)
+        IRoundService round,
+        IGameProviderRepository gameProvider,
+        IPlayerRepository player,
+        IBrandRepository brand,
+        IGameRepository game,
+        IGameInterfacePragmaticPlayClient client)
     {
-        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
-        _gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
-        _service = service ?? throw new ArgumentNullException(nameof(service));
+        _player = player ?? throw new ArgumentNullException(nameof(player));
+        _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+        _game = game ?? throw new ArgumentNullException(nameof(game));
+        _round = round ?? throw new ArgumentNullException(nameof(round));
+        _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async ValueTask<RoundDetailResult?> GetAsync(
+    public async ValueTask<RoundDetailResult> GetAsync(
         PragmaticPlayTransferRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo is null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _round
+            .GetAsync(
+                query.RoundId)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"This game round number could not be found.{query.RoundId}");
 
-        var gameProviderInfo = await _service.GetGameProviderAsync(roundInfo.GameProviderId).ConfigureAwait(false);
-        if (gameProviderInfo is null)
-        {
-            throw new Exception($"This game manufacturer does not exist.{roundInfo.GameProviderId}");
-        }
-
-        var gameInfo = await _gameRepository.GetAsync(roundInfo.GameId).ConfigureAwait(false);
-        if (gameInfo is null)
-        {
-            throw new Exception($"This game does not exist.{roundInfo.GameId}");
-        }
-
-        var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-        if (configuration is null)
-        {
-            throw new Exception($"The {GameProviderType.PragmaticPlayTransfer} configuration does not exist.");
-        }
-
-        var gameProviderCultureCode = await _service
-            .GetGameProviderLanguageCodeAsync(gameProviderInfo.GameProviderId, query.Language)
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+                gameProviderCode: GameProviderType.PragmaticPlayTransfer,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-
-        var url = await _client
-            .GetGameDetailUrlAsync(
-                configuration.ApiUrl,
-                configuration.SecureLogin,
-                configuration.SecretKey,
-                roundInfo.PlayerCode,
-                roundInfo.ExternalRoundId,
-                gameInfo.GameExternalId,
-                gameProviderCultureCode)
+        var player = await _player
+            .GetAsync(
+                playerCode: roundInfo.PlayerCode,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: gameProviderId,
+                brandId: player.BrandId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetPragmaticPlayTransferConfigurationAsync(
+                gameProviderConfigurationId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var cultureCode = await _gameProvider
+            .GetGameProviderCultureCodeAsync(
+                gameProviderId: gameProviderId,
+                cultureCode: query.Language,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false) ?? "en";
 
-        var jackpot = 0m;
-        if (!string.IsNullOrEmpty(roundInfo.AdditionalData))
-        {
-            var record = JsonSerializer.Deserialize<PragmaticPlayTransferGameRecordData>(roundInfo.AdditionalData);
-            jackpot = record?.Jackpot ?? 0m;
-        }
+        var gmae = await _game
+            .GetAsync(
+                roundInfo.GameId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"This game does not exist.{roundInfo.GameId}");
 
-        var result = new
-        {
-            Url = url ?? string.Empty,
-            Jackpot = jackpot
-        };
+        var reply = await _client
+            .GameRecordDetailAsync(
+                apiUrl: configuration.ApiUrl,
+                secureLogin: configuration.SecureLogin,
+                secretKey: configuration.SecretKey,
+                playerCode: roundInfo.PlayerCode,
+                externalRoundId: roundInfo.ExternalRoundId,
+                externalGameId: gmae.GameExternalId,
+                language: cultureCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         return new RoundDetailResult
         {
             Data = new RoundDetailDataBase[]
             {
-                new RoundDetailDataJson
+                new RoundDetailDataUrl
                 {
-                    Value = JsonSerializer.Serialize(result)
+                    Url = reply.Url
                 }
             }
         };

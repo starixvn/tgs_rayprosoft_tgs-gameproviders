@@ -174,6 +174,11 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceYeeBetBaseUrl")!;
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfacePragmaticPlayBaseUrl")!;
     });
 
 builder.Services
