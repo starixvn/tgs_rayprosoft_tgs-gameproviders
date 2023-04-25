@@ -13,7 +13,6 @@ using Tgs.GameProviders.ApiClients.Joker;
 using Tgs.GameProviders.ApiClients.KY;
 using Tgs.GameProviders.ApiClients.LY;
 using Tgs.GameProviders.ApiClients.PragmaticPlay;
-using Tgs.GameProviders.ApiClients.PragmaticPlayTransfer;
 using Tgs.GameProviders.ApiClients.Saba;
 using Tgs.GameProviders.ApiClients.SBO;
 using Tgs.GameProviders.ApiClients.SexyGaming;
@@ -38,7 +37,6 @@ using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Core.KY;
 using Tgs.GameProviders.Core.LY;
 using Tgs.GameProviders.Core.PragmaticPlay;
-using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 using Tgs.GameProviders.Core.Saba;
 using Tgs.GameProviders.Core.SBO;
 using Tgs.GameProviders.Core.SexyGaming;
@@ -92,7 +90,6 @@ public static class ServiceCollectionExtensions
         _ = services.AddHttpClient<IJDBApiClient, JDBApiClient>();
         _ = services.AddHttpClient<IDreamGameApiClient, DreamGameApiClient>();
         _ = services.AddHttpClient<IJokerApiClient, JokerApiClient>();
-        _ = services.AddHttpClient<IPragmaticPlayTransferApiClient, PragmaticPlayTransferApiClient>();
 
         return services;
     }

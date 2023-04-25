@@ -8,15 +8,15 @@
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' or &#xD;&#xA;				   '$(Configuration)|$(Platform)'=='Release|AnyCPU' or&#xD;&#xA;				   '$(Configuration)|$(Platform)'=='dev|AnyCPU' or &#xD;&#xA;				   '$(Configuration)|$(Platform)'=='staging|AnyCPU'or&#xD;&#xA;				   '$(Configuration)|$(Platform)'=='prod|AnyCPU'">
+	<PropertyGroup>
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 		<NoWarn>$(NoWarn);1591;0063</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="EFCore.NamingConventions" Version="7.0.2" />
-		<PackageReference Include="FluentdForward.OpenTelemetry.Exporter.Logs" Version="0.2.0" />
-		<PackageReference Include="FluentdForward.OpenTelemetry.MessagePack" Version="0.2.0" />
+		<PackageReference Include="FluentdForward.OpenTelemetry.Exporter.Logs" Version="0.3.0" />
+		<PackageReference Include="FluentdForward.OpenTelemetry.MessagePack" Version="0.3.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
 		<PackageReference Include="OpenTelemetry" Version="1.4.0" />
 		<PackageReference Include="OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta2" />
