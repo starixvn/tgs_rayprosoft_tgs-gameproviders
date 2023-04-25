@@ -287,7 +287,7 @@ internal class GameProviderRepository : IGameProviderRepository
     }
 
     public async ValueTask<PragmaticPlayTransferConfiguration> GetPragmaticPlayTransferConfigurationAsync
-        (Guid gameProviderConfigurationId, 
+        (Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
         var settingConfiguration = await _client
@@ -305,7 +305,7 @@ internal class GameProviderRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
 
         return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
-            ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+            ? settingConfiguration
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
