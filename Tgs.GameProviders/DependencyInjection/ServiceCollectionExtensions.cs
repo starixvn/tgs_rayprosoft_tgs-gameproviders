@@ -7,6 +7,7 @@ using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.IdnLiveService.Client;
+using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.Jili.Client;
 using Tgs.GameInterface.OBet.Client;
@@ -56,7 +57,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceFaChaiClientOptions, IServiceProvider> gameInterfaceFaChaiClientOptions,
         Action<GameInterfaceOBetClientOptions, IServiceProvider> gameInterfaceOBetClientOptions,
         Action<GameInterfaceYeeBetClientOptions, IServiceProvider> gameInterfaceYeeBetClientOptions,
-        Action<GameInterfacePragmaticPlayClientOptions, IServiceProvider> gameInterfacePragmaticPlayClientOptions)
+        Action<GameInterfacePragmaticPlayClientOptions, IServiceProvider> gameInterfacePragmaticPlayClientOptions,
+        Action<GameInterfaceInplayMatrixClientOptions, IServiceProvider> gameInterfaceInplayMatrixClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -89,5 +91,6 @@ public static class ServiceCollectionExtensions
                 gameInterfaceFaChaiClientOptions: gameInterfaceFaChaiClientOptions,
                 gameInterfaceOBetClientOptions: gameInterfaceOBetClientOptions,
                 gameInterfaceYeeBetClientOptions: gameInterfaceYeeBetClientOptions,
-                gameInterfacePragmaticPlayClientOptions: gameInterfacePragmaticPlayClientOptions);
+                gameInterfacePragmaticPlayClientOptions: gameInterfacePragmaticPlayClientOptions,
+                gameInterfaceInplayMatrixClientOptions: gameInterfaceInplayMatrixClientOptions);
 }

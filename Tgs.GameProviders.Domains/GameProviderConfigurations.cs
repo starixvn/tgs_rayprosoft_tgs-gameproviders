@@ -34,6 +34,7 @@ public static class GameProviderConfigurations
     public static readonly string HabaneroTransfer = string.Format(_template, GameProviderType.HabaneroTransfer);
     public static readonly string IDNLive = string.Format(_template, GameProviderType.IDNLive);
     public static readonly string IMESports = string.Format(_template, GameProviderType.IMESports);
+    public static readonly string InplayMatrix_ESports = string.Format(_template, GameProviderType.InplayMatrix_ESports);
     public static readonly string JDB = string.Format(_template, GameProviderType.JDB);
     public static readonly string JDBTransfer = string.Format(_template, GameProviderType.JDBTransfer);
     public static readonly string Jili = string.Format(_template, GameProviderType.Jili);

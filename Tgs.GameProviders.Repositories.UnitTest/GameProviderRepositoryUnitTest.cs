@@ -212,6 +212,47 @@ public class GameProviderRepositoryUnitTest
     }
 
     [TestMethod]
+    public async Task Get_InplayMatrixESports_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new InplayMatrixESportsConfiguration()
+        {
+            ApiUrl = new("http://operatorapi.staging.imaegisapi.com/"),
+            ReportUrl = new("http://operatorapi-report.staging.imaegisapi.com/"),
+            Password = "1q2w3e4r"
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<InplayMatrixESportsConfiguration>(Arg.Is(GameProviderConfigurations.InplayMatrix_ESports))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.InplayMatrix_ESports,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "InplayMatrix_ESports-GPI",
+            Description: "InplayMatrix_ESports-GPI Configuration",
+            ClientId: "InplayMatrix_ESports-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"MerchantCode\":\"OfL5H2hKOIP9tHp9ZIoqYeggJtFC39zQ\",\"MerchantPrefix\":\"IM1S3\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetInplayMatrixESportsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual("OfL5H2hKOIP9tHp9ZIoqYeggJtFC39zQ", actual.MerchantCode);
+        Assert.AreEqual("IM1S3", actual.MerchantPrefix);
+    }
+
+    [TestMethod]
     public async Task Get_JDBTransfer_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();

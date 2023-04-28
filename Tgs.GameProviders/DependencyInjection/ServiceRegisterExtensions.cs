@@ -2,6 +2,7 @@
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.FaChai.Client;
+using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.OBet.Client;
 using Tgs.GameProviders.Core;
 
@@ -61,6 +62,18 @@ public static class ServiceRegisterExtensions
             try
             {
                 var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceOBetClient>();
+                _ = await gameInterface
+                     .CheckingServiceAsync(
+                        machineName: Environment.MachineName)
+                     .ConfigureAwait(false);
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceInplayMatrixClient>();
                 _ = await gameInterface
                      .CheckingServiceAsync(
                         machineName: Environment.MachineName)
