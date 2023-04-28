@@ -32,6 +32,7 @@ public static class GameProviderType
     public static readonly string HabaneroTransfer = "HABATF";
     public static readonly string IDNLive = "IDNLIVE";
     public static readonly string IMESports = "IMES";
+    public static readonly string InplayMatrix_ESports = "IM_ESP";
     public static readonly string JDB = "JDB";
     public static readonly string JDBTransfer = "JDBTF";
     public static readonly string Jili = "JILI";

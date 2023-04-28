@@ -217,8 +217,31 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(
+    public async ValueTask<InplayMatrixESportsConfiguration> GetInplayMatrixESportsConfigurationAsync(
         Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<InplayMatrixESportsConfiguration>(
+                key: GameProviderConfigurations.InplayMatrix_ESports,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.InplayMatrix_ESports})");
+
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+
+        return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
+            ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+            : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
+    }
+
+    public async ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(
+            Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
         var settingConfiguration = await _client

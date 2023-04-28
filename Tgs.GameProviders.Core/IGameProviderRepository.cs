@@ -98,4 +98,8 @@ public interface IGameProviderRepository
     ValueTask<PragmaticPlayTransferConfiguration> GetPragmaticPlayTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
+
+    ValueTask<InplayMatrixESportsConfiguration> GetInplayMatrixESportsConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 }
