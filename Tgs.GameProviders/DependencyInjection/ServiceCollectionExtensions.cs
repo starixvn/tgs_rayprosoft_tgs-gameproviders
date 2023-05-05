@@ -1,6 +1,7 @@
 ﻿using Tgs.GameCommand.Client;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
+using Tgs.GameInterface.Cards365.Client;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
@@ -58,7 +59,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceOBetClientOptions, IServiceProvider> gameInterfaceOBetClientOptions,
         Action<GameInterfaceYeeBetClientOptions, IServiceProvider> gameInterfaceYeeBetClientOptions,
         Action<GameInterfacePragmaticPlayClientOptions, IServiceProvider> gameInterfacePragmaticPlayClientOptions,
-        Action<GameInterfaceInplayMatrixClientOptions, IServiceProvider> gameInterfaceInplayMatrixClientOptions)
+        Action<GameInterfaceInplayMatrixClientOptions, IServiceProvider> gameInterfaceInplayMatrixClientOptions,
+        Action<GameInterfaceCards365ClientOptions, IServiceProvider> gameInterfaceCards365ClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -92,5 +94,6 @@ public static class ServiceCollectionExtensions
                 gameInterfaceOBetClientOptions: gameInterfaceOBetClientOptions,
                 gameInterfaceYeeBetClientOptions: gameInterfaceYeeBetClientOptions,
                 gameInterfacePragmaticPlayClientOptions: gameInterfacePragmaticPlayClientOptions,
-                gameInterfaceInplayMatrixClientOptions: gameInterfaceInplayMatrixClientOptions);
+                gameInterfaceInplayMatrixClientOptions: gameInterfaceInplayMatrixClientOptions,
+                gameInterfaceCards365ClientOptions: gameInterfaceCards365ClientOptions);
 }

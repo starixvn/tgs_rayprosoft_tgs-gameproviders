@@ -3,6 +3,7 @@ using System.Reflection;
 using Tgs.GameCommand.Client;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
+using Tgs.GameInterface.Cards365.Client;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
@@ -60,7 +61,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceOBetClientOptions, IServiceProvider> gameInterfaceOBetClientOptions,
         Action<GameInterfaceYeeBetClientOptions, IServiceProvider> gameInterfaceYeeBetClientOptions,
         Action<GameInterfacePragmaticPlayClientOptions, IServiceProvider> gameInterfacePragmaticPlayClientOptions,
-        Action<GameInterfaceInplayMatrixClientOptions, IServiceProvider> gameInterfaceInplayMatrixClientOptions)
+        Action<GameInterfaceInplayMatrixClientOptions, IServiceProvider> gameInterfaceInplayMatrixClientOptions,
+        Action<GameInterfaceCards365ClientOptions, IServiceProvider> gameInterfaceCards365ClientOptions)
         => services
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
@@ -88,6 +90,7 @@ public static class ServiceCollecitonExtensions
             .AddGameRecordEndorphinaSessionClient(gameRecordEndorphinaClientOptions)
             .AddGameInterfacePragmaticPlayClient(gameInterfacePragmaticPlayClientOptions)
             .AddGameInterfaceInplayMatrixClient(gameInterfaceInplayMatrixClientOptions)
+            .AddGameInterfaceCards365Client(gameInterfaceCards365ClientOptions)
             .AddGameRoundsClient(gameRoundsClientOptions)
             .AddGameTokenClient(gameTokenClientOptions)
             .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)

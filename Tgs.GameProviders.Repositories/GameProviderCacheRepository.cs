@@ -70,6 +70,29 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
+    public async ValueTask<Cards365TransferConfiguration> GetCards365TransferConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out Cards365TransferConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetCards365TransferConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
     public async ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)

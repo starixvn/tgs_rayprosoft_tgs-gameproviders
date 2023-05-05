@@ -21,8 +21,12 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(
+    ValueTask<Cards365TransferConfiguration> GetCards365TransferConfigurationAsync(
         Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(
+            Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
     ValueTask<EndorphinaConfiguration> GetEndorphinaConfiguration(
@@ -55,6 +59,10 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
+    ValueTask<InplayMatrixESportsConfiguration> GetInplayMatrixESportsConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
     ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
@@ -67,8 +75,12 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
+    ValueTask<PragmaticPlayTransferConfiguration> GetPragmaticPlayTransferConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
     ValueTask<SabaTransferConfiguration> GetSabaTransferConfiguration(
-            Guid gameProviderConfigurationId,
+        Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
     ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(
@@ -92,14 +104,6 @@ public interface IGameProviderRepository
         CancellationToken cancellationToken = default);
 
     ValueTask<YeeBetConfiguration> GetYeeBetConfigurationAsync(
-        Guid gameProviderConfigurationId,
-        CancellationToken cancellationToken = default);
-
-    ValueTask<PragmaticPlayTransferConfiguration> GetPragmaticPlayTransferConfigurationAsync(
-        Guid gameProviderConfigurationId,
-        CancellationToken cancellationToken = default);
-
-    ValueTask<InplayMatrixESportsConfiguration> GetInplayMatrixESportsConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 }

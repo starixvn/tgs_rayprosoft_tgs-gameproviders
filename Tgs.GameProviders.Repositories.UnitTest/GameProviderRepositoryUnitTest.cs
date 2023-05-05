@@ -370,7 +370,6 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetSabaTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
 
-        var json = JsonSerializer.Serialize(actual);
         Assert.IsNotNull(actual);
         Assert.AreEqual("tg", actual.OperatorId);
         Assert.AreEqual("um5vspnzkx", actual.VendorId);
@@ -596,5 +595,49 @@ public class GameProviderRepositoryUnitTest
         Assert.IsNotNull(actual);
         Assert.AreEqual("hpg02twapi", actual.VendorId);
         Assert.AreEqual("89448b444ed2e922ddc3aa0753370238", actual.Signature);
+    }
+
+    [TestMethod]
+    public async Task Get_Cards365Transfer_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new Cards365TransferConfiguration()
+        {
+            ApiUrl = new("https://localhost/"),
+            Website = "website",
+            Cert = "cert"
+
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<Cards365TransferConfiguration>(Arg.Is(GameProviderConfigurations.Cards365Transfer))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.Cards365Transfer,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "365TF-GPI",
+            Description: "365TF-GPI Configuration",
+            ClientId: "365TF-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"Extension1\":\"cardp101\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetCards365TransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new("https://localhost/"), actual.ApiUrl);
+        Assert.AreEqual("website", actual.Website);
+        Assert.AreEqual("cert", actual.Cert);
+        Assert.AreEqual("cardp101", actual.Extension1);
     }
 }
