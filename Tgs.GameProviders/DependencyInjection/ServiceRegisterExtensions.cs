@@ -1,6 +1,7 @@
 ﻿using Tgs.GameCommand.Client;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.Cards365.Client;
 using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.OBet.Client;
@@ -35,6 +36,7 @@ public static class ServiceRegisterExtensions
                         gameProviderId: gameProviderIdInfo.GameProviderId)
                     .ConfigureAwait(false);
             }
+
             try
             {
                 var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceAwcServiceClient>();
@@ -74,6 +76,18 @@ public static class ServiceRegisterExtensions
             try
             {
                 var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceInplayMatrixClient>();
+                _ = await gameInterface
+                     .CheckingServiceAsync(
+                        machineName: Environment.MachineName)
+                     .ConfigureAwait(false);
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceCards365Client>();
                 _ = await gameInterface
                      .CheckingServiceAsync(
                         machineName: Environment.MachineName)

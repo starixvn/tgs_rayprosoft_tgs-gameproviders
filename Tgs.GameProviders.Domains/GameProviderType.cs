@@ -22,6 +22,7 @@ public static class GameProviderType
     public static readonly string BigGaming = "BG";
     public static readonly string BTiSports = "BTI";
     public static readonly string Card365 = "365";
+    public static readonly string Cards365Transfer = "365TF";
     public static readonly string DreamGame = "DG";
     public static readonly string DreamGamingTransfer = "DGTF";
     public static readonly string Endorphina = "ENDOR";

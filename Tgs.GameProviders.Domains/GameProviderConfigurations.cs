@@ -24,6 +24,7 @@ public static class GameProviderConfigurations
     public static readonly string BigGaming = string.Format(_template, GameProviderType.BigGaming);
     public static readonly string BTiSports = string.Format(_template, GameProviderType.BTiSports);
     public static readonly string Card365 = string.Format(_template, GameProviderType.Card365);
+    public static readonly string Cards365Transfer = string.Format(_template, GameProviderType.Cards365Transfer);
     public static readonly string DreamGame = string.Format(_template, GameProviderType.DreamGame);
     public static readonly string DreamGamingTransfer = string.Format(_template, GameProviderType.DreamGamingTransfer);
     public static readonly string Endorphina = string.Format(_template, GameProviderType.Endorphina);
