@@ -12,6 +12,7 @@ using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.Jili.Client;
 using Tgs.GameInterface.OBet.Client;
+using Tgs.GameInterface.Pinnacle.Client;
 using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameInterface.SBOService.Client;
@@ -60,7 +61,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceYeeBetClientOptions, IServiceProvider> gameInterfaceYeeBetClientOptions,
         Action<GameInterfacePragmaticPlayClientOptions, IServiceProvider> gameInterfacePragmaticPlayClientOptions,
         Action<GameInterfaceInplayMatrixClientOptions, IServiceProvider> gameInterfaceInplayMatrixClientOptions,
-        Action<GameInterfaceCards365ClientOptions, IServiceProvider> gameInterfaceCards365ClientOptions)
+        Action<GameInterfaceCards365ClientOptions, IServiceProvider> gameInterfaceCards365ClientOptions,
+        Action<GameInterfacePinnacleClientOptions, IServiceProvider> gameInterfacePinnacleClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -95,5 +97,6 @@ public static class ServiceCollectionExtensions
                 gameInterfaceYeeBetClientOptions: gameInterfaceYeeBetClientOptions,
                 gameInterfacePragmaticPlayClientOptions: gameInterfacePragmaticPlayClientOptions,
                 gameInterfaceInplayMatrixClientOptions: gameInterfaceInplayMatrixClientOptions,
-                gameInterfaceCards365ClientOptions: gameInterfaceCards365ClientOptions);
+                gameInterfaceCards365ClientOptions: gameInterfaceCards365ClientOptions,
+                gameInterfacePinnacleClientOptions: gameInterfacePinnacleClientOptions);
 }

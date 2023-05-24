@@ -14,6 +14,7 @@ using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.Jili.Client;
 using Tgs.GameInterface.OBet.Client;
+using Tgs.GameInterface.Pinnacle.Client;
 using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameInterface.SBOService.Client;
@@ -62,7 +63,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceYeeBetClientOptions, IServiceProvider> gameInterfaceYeeBetClientOptions,
         Action<GameInterfacePragmaticPlayClientOptions, IServiceProvider> gameInterfacePragmaticPlayClientOptions,
         Action<GameInterfaceInplayMatrixClientOptions, IServiceProvider> gameInterfaceInplayMatrixClientOptions,
-        Action<GameInterfaceCards365ClientOptions, IServiceProvider> gameInterfaceCards365ClientOptions)
+        Action<GameInterfaceCards365ClientOptions, IServiceProvider> gameInterfaceCards365ClientOptions,
+        Action<GameInterfacePinnacleClientOptions, IServiceProvider> gameInterfacePinnacleClientOptions)
         => services
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
@@ -91,6 +93,7 @@ public static class ServiceCollecitonExtensions
             .AddGameInterfacePragmaticPlayClient(gameInterfacePragmaticPlayClientOptions)
             .AddGameInterfaceInplayMatrixClient(gameInterfaceInplayMatrixClientOptions)
             .AddGameInterfaceCards365Client(gameInterfaceCards365ClientOptions)
+            .AddGameInterfacePinnacleClient(gameInterfacePinnacleClientOptions)
             .AddGameRoundsClient(gameRoundsClientOptions)
             .AddGameTokenClient(gameTokenClientOptions)
             .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)
