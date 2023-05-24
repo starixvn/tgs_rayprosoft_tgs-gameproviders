@@ -24,7 +24,11 @@ internal class PlayerCacheRepository : IPlayerRepository
         var key = $"game:gameproviders:playercache:get:{playerCode}";
         if (!_memoryCache.TryGetValue(key, out PlayerInfo? playerModel))
         {
-            playerModel = await _repository.GetAsync(playerCode).ConfigureAwait(false)!;
+            playerModel = await _repository
+                .GetAsync(
+                    playerCode: playerCode,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false)!;
 
             if (playerModel != null)
             {

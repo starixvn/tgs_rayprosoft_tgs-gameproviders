@@ -22,7 +22,10 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public ValueTask<GameProviderInfo> GetAsync(
         Guid gameProviderId,
         CancellationToken cancellationToken = default)
-         => _repository.GetAsync(gameProviderId);
+         => _repository
+        .GetAsync(
+             gameProviderId: gameProviderId,
+             cancellationToken: cancellationToken);
 
     public async ValueTask<AwcConfigurationData> GetAwcConfigurationData(
         Guid gameProviderConfigurationId,
@@ -165,7 +168,10 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
-        => _repository.GetGameEndpointsAsync(gameProviderConfigurationId);
+        => _repository
+        .GetGameEndpointsAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken);
 
     public async ValueTask<string> GetGameProviderCultureCodeAsync(
         Guid gameProviderId,
@@ -349,6 +355,29 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         {
             configurationData = await _repository
                 .GetOBetConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<PinnacleConfiguration> GetPinnacleConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out PinnacleConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetPinnacleConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);

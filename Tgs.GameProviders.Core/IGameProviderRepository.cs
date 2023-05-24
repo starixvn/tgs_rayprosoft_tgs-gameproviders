@@ -26,7 +26,7 @@ public interface IGameProviderRepository
         CancellationToken cancellationToken = default);
 
     ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(
-            Guid gameProviderConfigurationId,
+        Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
     ValueTask<EndorphinaConfiguration> GetEndorphinaConfiguration(
@@ -38,7 +38,7 @@ public interface IGameProviderRepository
         CancellationToken cancellationToken = default);
 
     ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(
-                    Guid gameProviderConfigurationId,
+        Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
     ValueTask<string> GetGameProviderCultureCodeAsync(
@@ -72,6 +72,10 @@ public interface IGameProviderRepository
         CancellationToken cancellationToken = default);
 
     ValueTask<OBetConfiguration> GetOBetConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<PinnacleConfiguration> GetPinnacleConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 

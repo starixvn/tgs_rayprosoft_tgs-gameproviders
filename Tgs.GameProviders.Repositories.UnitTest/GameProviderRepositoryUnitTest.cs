@@ -97,6 +97,49 @@ public class GameProviderRepositoryUnitTest
     }
 
     [TestMethod]
+    public async Task Get_Cards365Transfer_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new Cards365TransferConfiguration()
+        {
+            ApiUrl = new("https://localhost/"),
+            Website = "website",
+            Cert = "cert"
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<Cards365TransferConfiguration>(Arg.Is(GameProviderConfigurations.Cards365Transfer))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.Cards365Transfer,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "365TF-GPI",
+            Description: "365TF-GPI Configuration",
+            ClientId: "365TF-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"Extension1\":\"cardp101\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetCards365TransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new("https://localhost/"), actual.ApiUrl);
+        Assert.AreEqual("website", actual.Website);
+        Assert.AreEqual("cert", actual.Cert);
+        Assert.AreEqual("cardp101", actual.Extension1);
+    }
+
+    [TestMethod]
     public async Task Get_Game_Endpoints()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -333,6 +376,50 @@ public class GameProviderRepositoryUnitTest
 
         Assert.IsNotNull(actual);
         Assert.AreEqual("ConfigurationData-AgentId", actual.AgentId);
+    }
+
+    [TestMethod]
+    public async Task Get_Pinnacle_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new PinnacleConfiguration()
+        {
+            ApiUrl = new("https://paapistg.oreo88.com/"),
+            AgentKey = "8d0e9ac0-99d8-48c7-8307-bc328c4181f6",
+            SecretKey = "zenDIdY7Knuzmeen"
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<PinnacleConfiguration>(
+                key: Arg.Is(GameProviderConfigurations.Pinnacle),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderConfigurations.Pinnacle,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderConfigurations.Pinnacle}-GPI",
+            Description: $"{GameProviderConfigurations.Pinnacle}-GPI Configuration",
+            ClientId: $"{GameProviderConfigurations.Pinnacle}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"AgentCode\":\"V0201\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetPinnacleConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual("V0201", actual.AgentCode);
+        Assert.AreEqual("8d0e9ac0-99d8-48c7-8307-bc328c4181f6", actual.AgentKey);
+        Assert.AreEqual("zenDIdY7Knuzmeen", actual.SecretKey);
     }
 
     [TestMethod]
@@ -595,49 +682,5 @@ public class GameProviderRepositoryUnitTest
         Assert.IsNotNull(actual);
         Assert.AreEqual("hpg02twapi", actual.VendorId);
         Assert.AreEqual("89448b444ed2e922ddc3aa0753370238", actual.Signature);
-    }
-
-    [TestMethod]
-    public async Task Get_Cards365Transfer_Configuration()
-    {
-        var fakeClient = Substitute.For<IGameCommandClient>();
-
-        var gameProviderId = Guid.NewGuid();
-        var gameProviderConfigurationId = Guid.NewGuid();
-
-        var settingConfiguration = new Cards365TransferConfiguration()
-        {
-            ApiUrl = new("https://localhost/"),
-            Website = "website",
-            Cert = "cert"
-
-        };
-        _ = fakeClient
-            .SettingGetConfigurationAsync<Cards365TransferConfiguration>(Arg.Is(GameProviderConfigurations.Cards365Transfer))
-            .Returns(settingConfiguration);
-
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
-            GameProviderId: gameProviderId,
-            GameProviderCode: GameProviderType.Cards365Transfer,
-            GameProviderConfigId: gameProviderConfigurationId,
-            Name: "365TF-GPI",
-            Description: "365TF-GPI Configuration",
-            ClientId: "365TF-GPI",
-            SecretKey: Guid.NewGuid().ToString("N"),
-            Status: GameProviderConfigStatus.Active,
-            DesktopEndpoint: string.Empty,
-            MobileEndpoint: string.Empty,
-            ConfigurationData: "{\"Extension1\":\"cardp101\"}",
-            IsDefault: false));
-
-        var repository = new GameProviderRepository(fakeClient);
-
-        var actual = await repository.GetCards365TransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
-
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new("https://localhost/"), actual.ApiUrl);
-        Assert.AreEqual("website", actual.Website);
-        Assert.AreEqual("cert", actual.Cert);
-        Assert.AreEqual("cardp101", actual.Extension1);
     }
 }
