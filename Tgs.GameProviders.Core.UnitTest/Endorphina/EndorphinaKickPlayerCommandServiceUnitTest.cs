@@ -54,7 +54,7 @@ public class EndorphinaKickPlayerCommandServiceUnitTest
             MerchantId = "1494",
             SecretKey = "9BC9E97FFCD74B16B87BD6FA82C8C2AF",
         };
-        _ = fakeGameProviderRepository.GetEndorphinaConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetEndorphinaConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var sut = new EndorphinaKickPlayerCommandService(
             fakeBrandService,

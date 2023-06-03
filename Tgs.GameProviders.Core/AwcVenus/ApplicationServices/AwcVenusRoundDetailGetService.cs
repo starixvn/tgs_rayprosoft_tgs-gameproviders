@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices;
 
 internal class AwcVenusRoundDetailGetService : IGetService<AwcVenusRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public AwcVenusRoundDetailGetService(IRoundService roundService)
+    public AwcVenusRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

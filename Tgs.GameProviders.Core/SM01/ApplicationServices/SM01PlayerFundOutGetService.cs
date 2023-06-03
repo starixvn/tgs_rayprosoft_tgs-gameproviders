@@ -45,7 +45,7 @@ public class SM01PlayerFundOutGetService : IGetService<SM01PlayerFundOutQuery, P
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var configuration = await _gameProvider
-            .GetSM01Configuration(
+            .GetSM01ConfigurationAsync(
                 gameProviderConfigurationId: gameProviderConfigurationId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);

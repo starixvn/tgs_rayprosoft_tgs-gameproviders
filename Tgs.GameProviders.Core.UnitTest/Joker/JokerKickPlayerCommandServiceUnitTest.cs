@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameCommand.Common;
-using Tgs.GameProviders.Core.Joker;
+using Tgs.GameInterface.Joker.Client;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.Domains.SettingConfiguration.Joker;
 
 namespace Tgs.GameProviders.Core.UnitTest.Joker;
 
@@ -16,75 +17,78 @@ public class JokerKickPlayerCommandServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeService = Substitute.For<IJokerService>();
-        var fakeAgentMapper = Substitute.For<IJokerAgentMapper>();
-        var fakeApiClient = Substitute.For<IJokerApiClient>();
+        var fakeBrand = Substitute.For<IBrandRepository>();
+        var fakeGameProvider = Substitute.For<IGameProviderRepository>();
+        var fakeClient = Substitute.For<IGameInterfaceJokerClient>();
         var fakePlayer = Substitute.For<IPlayerRepository>();
-
-        var agent = new JokerAgent
-        {
-            AgentId = "TGVY",
-            CurrencyCode = "HKD",
-            SecretKey = "s5ghrn77baoto",
-            Status = true
-        };
-
-        var configuration = new JokerConfiguration
-        {
-            ServiceEndpointUrl = new("http://game-joker"),
-            ApiUrl = new("https://w.api788.net"),
-            GameLaunchUrl = new Uri("http://www.gwp6868.net/"),
-            BrandMerchants = new JokerBrandMerchant[]
-            {
-                new()
-                {
-                    BrandCode = "Default",
-                    Agents = new[] { agent }
-                }
-            }
-        };
-
-        var player = new PlayerInfo(
-            Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
-            "TGS",
-            Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
-            "TGS",
-            Guid.Parse("9f1ecf19-38cd-474f-b0d2-93638dc07d21"),
-            "GPI_HKD",
-            "4uf6k014jp5x",
-            "4uf6k014jp5x",
-            Guid.Parse("cf99c783-acdf-48cc-b1cc-08d99a806de9"),
-            "HKD");
 
         var command = new JokerKickPlayerCommand
         {
-            PlayerCode = player.PlayerCode
+            PlayerCode = "4ucmqplxb029"
         };
 
-        _ = fakePlayer.GetAsync(Arg.Is(player.PlayerCode)).Returns(player);
-        _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
+        var gameProviderId = Guid.NewGuid();
+        _ = fakeGameProvider
+        .GetGameProviderIdAsync(
+            gameProviderCode: Arg.Is(GameProviderType.Joker),
+            cancellationToken: Arg.Any<CancellationToken>())
+        .Returns(gameProviderId);
 
-        _ = fakeAgentMapper
-            .GetAgentByCurrencyCode(
-                Arg.Is(configuration.BrandMerchants),
-                Arg.Is(player.BrandCode),
-                Arg.Is(player.DefaultWalletCurrencyCode))
-            .Returns(agent);
+        var playerModel = new PlayerInfo(
+            ResellerId: Guid.NewGuid(),
+            ResellerCode: "GPI",
+            LicenseeId: Guid.NewGuid(),
+            LicenseeCode: "GPI",
+            BrandId: Guid.NewGuid(),
+            BrandCode: "GPI",
+            PlayerCode: "4ucmqplxb029",
+            Username: "4ucmqplxb029",
+            DefaultWalletId: Guid.NewGuid(),
+            DefaultWalletCurrencyCode: "CNY");
+        _ = fakePlayer
+            .GetAsync(
+                playerCode: Arg.Is(command.PlayerCode),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(playerModel);
+
+        var gameProviderConfigurationId = Guid.NewGuid();
+        _ = fakeBrand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: Arg.Is(gameProviderId),
+                brandId: Arg.Is(playerModel.BrandId),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderConfigurationId);
+
+        var configuration = new JokerConfiguration
+        {
+            ApiUrl = new("http://localhost/"),
+            GameLaunchUrl = new Uri("http://localhost/"),
+            AppId = "appId",
+            SecretKey = "secretKey"
+        };
+        _ = fakeGameProvider
+            .GetJokerConfigurationAsync(
+                gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(configuration);
 
         var sut = new JokerKickPlayerCommandService(
-            fakeApiClient,
-            fakeService,
-            fakeAgentMapper,
+            fakeBrand,
+            fakeGameProvider,
+            fakeClient,
             fakePlayer);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut
+           .ExecuteAsync(
+               command: command)
+           .ConfigureAwait(false);
 
-        _ = fakeApiClient
+        _ = fakeClient
             .Received(1)
-            .KickPlayerAsync(
-                Arg.Is(configuration.ApiUrl),
-                Arg.Is(player.PlayerCode),
-                Arg.Is(agent.AgentId),
-                Arg.Is(agent.SecretKey));
+            .PlayerLogoutAsync(
+                apiUrl: Arg.Is(configuration.ApiUrl),
+                appId: Arg.Is(configuration.AppId),
+                secretKey: Arg.Is(configuration.SecretKey),
+                playerCode: Arg.Is(command.PlayerCode));
     }
 }

@@ -16,13 +16,13 @@ internal class HabaneroTransferRoundDetailGetService : IGetService<HabaneroTrans
     private readonly IBrandRepository _brand;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public HabaneroTransferRoundDetailGetService(
         IBrandRepository brand,
         IGameProviderRepository gameProvider,
         IPlayerRepository player,
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
@@ -41,7 +41,7 @@ internal class HabaneroTransferRoundDetailGetService : IGetService<HabaneroTrans
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.HabaneroTransfer).ConfigureAwait(false);
         var player = await _player.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetHabaneroTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetHabaneroTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
         var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, query.Language) ?? "en";
 
         var hash = Sha256Hash($"{roundInfo.ExternalRoundId.ToLower()}{configuration.BrandId.ToLower()}{configuration.ApiKey.ToLower()}");

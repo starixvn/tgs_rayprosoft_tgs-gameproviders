@@ -16,5 +16,6 @@ public static class ServiceCollectionExtensions
         .AddTransient<IPlayerRepository, PlayerRepository>()
         .Decorate<IPlayerRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<PlayerCacheRepository>(sp, innerRepository))
         .AddTransient<ISettingRepository, SettingRepository>()
-        .Decorate<ISettingRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<SettingCacheRepository>(sp, innerRepository));
+        .Decorate<ISettingRepository>((innerRepository, sp) => ActivatorUtilities.CreateInstance<SettingCacheRepository>(sp, innerRepository))
+        .AddTransient<IRoundRepository, RoundRepository>();
 }

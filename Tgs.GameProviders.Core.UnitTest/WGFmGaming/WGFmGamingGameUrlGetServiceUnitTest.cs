@@ -64,7 +64,7 @@ public class WGFmGamingGameUrlGetServiceUnitTest
             IV = "IV",
             Version = 2
         };
-        _ = fakeGameProviderRepository.GetWGFmGamingConfiguration(
+        _ = fakeGameProviderRepository.GetWGFmGamingConfigurationAsync(
             Arg.Is(gameProviderConfigurationId)
             ).Returns(ValueTask.FromResult(configuration));
 
@@ -162,7 +162,7 @@ public class WGFmGamingGameUrlGetServiceUnitTest
             IV = "IV",
             Version = 1
         };
-        _ = fakeGameProviderRepository.GetWGFmGamingConfiguration(
+        _ = fakeGameProviderRepository.GetWGFmGamingConfigurationAsync(
             Arg.Is(gameProviderConfigurationId)
             ).Returns(ValueTask.FromResult(configuration));
 

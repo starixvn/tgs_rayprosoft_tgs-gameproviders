@@ -31,7 +31,7 @@ public class JDBTransferKickPlayerCommandService : ICommandService<JDBTransferKi
         var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.JDBTransfer).ConfigureAwait(false);
         var player = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProviderRepository.GetJDBTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProviderRepository.GetJDBTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         await _client.PlayerKickAsync(
             configuration.ApiUrl,

@@ -44,6 +44,7 @@ public static class GameProviderConfigurations
     public static readonly string KY = string.Format(_template, GameProviderType.KY);
     public static readonly string LY = string.Format(_template, GameProviderType.LY);
     public static readonly string OBet = string.Format(_template, GameProviderType.OBet);
+    public static readonly string Pinnacle = string.Format(_template, GameProviderType.Pinnacle);
     public static readonly string PragmaticPlay = string.Format(_template, GameProviderType.PragmaticPlay);
     public static readonly string PragmaticPlayTransfer = string.Format(_template, GameProviderType.PragmaticPlayTransfer);
     public static readonly string Saba = string.Format(_template, GameProviderType.Saba);
@@ -63,5 +64,4 @@ public static class GameProviderConfigurations
     public static readonly string WMCasino = string.Format(_template, GameProviderType.WMCasino);
     public static readonly string WMCasinoTransfer = string.Format(_template, GameProviderType.WMCasinoTransfer);
     public static readonly string YeeBet = string.Format(_template, GameProviderType.YeeBet);
-    public static readonly string Pinnacle = string.Format(_template, GameProviderType.Pinnacle);
 }

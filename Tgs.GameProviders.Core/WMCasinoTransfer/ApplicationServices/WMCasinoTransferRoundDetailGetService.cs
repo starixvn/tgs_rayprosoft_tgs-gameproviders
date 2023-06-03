@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 
 internal class WMCasinoTransferRoundDetailGetService : IGetService<WMCasinoTransferRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public WMCasinoTransferRoundDetailGetService(IRoundService roundService)
+    public WMCasinoTransferRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

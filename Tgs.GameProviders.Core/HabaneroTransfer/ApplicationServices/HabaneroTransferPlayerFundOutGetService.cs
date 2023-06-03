@@ -31,7 +31,7 @@ internal class HabaneroTransferPlayerFundOutGetService : IGetService<HabaneroTra
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.HabaneroTransfer).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetHabaneroTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetHabaneroTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         var gameProviderCurrencyCode = await _gameProvider
             .GetGameProviderCurrencyCodeAsync(gameProviderId, player.DefaultWalletCurrencyCode)

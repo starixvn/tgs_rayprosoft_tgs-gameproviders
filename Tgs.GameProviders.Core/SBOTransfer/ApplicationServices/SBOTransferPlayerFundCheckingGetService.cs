@@ -31,7 +31,7 @@ public class SBOTransferPlayerFundCheckingGetService : IGetService<SBOTransferPl
         var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SBOTransfer).ConfigureAwait(false);
         var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProviderRepository.GetSBOTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProviderRepository.GetSBOTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         var response = await _client.FundStatusAsync(
             configuration.ApiUrl,

@@ -45,7 +45,7 @@ public class SBOTransferPlayerBalanceGetService : IGetService<SBOTransferPlayerB
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var configuration = await _gameProviderRepository
-            .GetSBOTransferConfiguration(
+            .GetSBOTransferConfigurationAsync(
                 gameProviderConfigurationId: gameProviderConfigurationId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);

@@ -11,12 +11,12 @@ namespace Tgs.GameProviders.Core.SexyGaming.ApplicationServices;
 internal class SexyGamingRoundDetailGetService : IGetService<SexyGamingRoundDetailQuery, RoundDetailResult>
 {
     private readonly IGameRepository _gameRepository;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
     private readonly ISexyGamingRoundDetailAnalyzeService _sexyGamingRoundDetailAnalyzeService;
 
     public SexyGamingRoundDetailGetService(
         IGameRepository gameRepository,
-        IRoundService roundService,
+        IRoundRepository roundService,
         ISexyGamingRoundDetailAnalyzeService sexyGamingRoundDetailAnalyzeService
         )
     {

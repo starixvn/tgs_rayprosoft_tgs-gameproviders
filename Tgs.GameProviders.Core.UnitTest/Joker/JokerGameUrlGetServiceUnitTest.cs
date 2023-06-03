@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameCommand.Common;
-using Tgs.GameProviders.Core.Joker;
+using Tgs.GameInterface.Joker.Client;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.Domains.SettingConfiguration.Joker;
 
 namespace Tgs.GameProviders.Core.UnitTest.Joker;
 
@@ -17,46 +18,88 @@ public class JokerGameUrlGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeService = Substitute.For<IJokerService>();
-        var fakeAgentMapper = Substitute.For<IJokerAgentMapper>();
-        var fakeApiClient = Substitute.For<IJokerApiClient>();
+        var fakeBrand = Substitute.For<IBrandRepository>();
+        var fakeGame = Substitute.For<IGameRepository>();
+        var fakeGameProvider = Substitute.For<IGameProviderRepository>();
+        var fakeClient = Substitute.For<IGameInterfaceJokerClient>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
 
-        var gameUrl = new Uri("http://www.gwp6868.net?token=game_token&game=t656f48j75z6a&mobile=false&lang=en");
-        var gameToken = "game_token";
-        var gameProviderLanguageCode = "en";
-
-        var agent = new JokerAgent
+        var query = new JokerGameUrlQuery
         {
-            AgentId = "TGVY",
-            CurrencyCode = "HKD",
-            SecretKey = "s5ghrn77baoto",
-            Status = true
+            GameType = GameType.Slot,
+            GameId = 1,
+            BrandCode = "GPI",
+            PlayerCode = "4ucmqplxb029",
+            CurrencyCode = "CNY",
+            LoginRecordId = Guid.NewGuid(),
+            PlatformType = PlatformType.Desktop,
+            Language = "en-US",
+            IPAddress = "127.0.0.1",
+            BackUrl = new("https://dev-t1.rpgp.cc/")
         };
+
+        var gameProviderId = Guid.NewGuid();
+        _ = fakeGameProvider
+        .GetGameProviderIdAsync(
+            gameProviderCode: Arg.Is(GameProviderType.Joker),
+            cancellationToken: Arg.Any<CancellationToken>())
+        .Returns(gameProviderId);
+
+        var playerModel = new PlayerInfo(
+            ResellerId: Guid.NewGuid(),
+            ResellerCode: "GPI",
+            LicenseeId: Guid.NewGuid(),
+            LicenseeCode: "GPI",
+            BrandId: Guid.NewGuid(),
+            BrandCode: "GPI",
+            PlayerCode: "4ucmqplxb029",
+            Username: "4ucmqplxb029",
+            DefaultWalletId: Guid.NewGuid(),
+            DefaultWalletCurrencyCode: "CNY");
+        _ = fakePlayer
+            .GetAsync(
+                playerCode: Arg.Is(query.PlayerCode),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(playerModel);
+
+        var gameProviderConfigurationId = Guid.NewGuid();
+        _ = fakeBrand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: Arg.Is(gameProviderId),
+                brandId: Arg.Is(playerModel.BrandId),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderConfigurationId);
 
         var configuration = new JokerConfiguration
         {
-            ServiceEndpointUrl = new("http://game-joker"),
-            ApiUrl = new("https://w.api788.net"),
-            GameLaunchUrl = new Uri("http://www.gwp6868.net/"),
-            BrandMerchants = new JokerBrandMerchant[]
-            {
-                new()
-                {
-                    BrandCode = "Default",
-                    Agents = new[] { agent }
-                }
-            }
+            ApiUrl = new("http://localhost/"),
+            GameLaunchUrl = new Uri("http://localhost/"),
+            AppId = "appId",
+            SecretKey = "secretKey"
         };
+        _ = fakeGameProvider
+            .GetJokerConfigurationAsync(
+                gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(configuration);
+
+        var gameProviderCultureCode = "en";
+        _ = fakeGameProvider
+            .GetGameProviderCultureCodeAsync(
+                gameProviderId: Arg.Is(gameProviderId),
+                cultureCode: Arg.Is(query.Language),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderCultureCode);
 
         var gameInfo = new GameInfo(
             GameId: 1,
-            GameCode: "Great_Blue",
-            GameProviderId: Guid.NewGuid(),
+            GameCode: "test",
+            GameProviderId: gameProviderId,
             GameProviderCode: GameProviderType.Joker,
-            GameExternalId: "t656f48j75z6a",
+            GameExternalId: "1",
             Type: GameType.Slot,
             PlatformType: GamePlatformType.DesktopAndMobile,
-            Name: "Great Blue",
+            Name: "test",
             SubGame: true,
             AvailableToBrand: false,
             HasTurnoverOnTieBet: true,
@@ -67,49 +110,42 @@ public class JokerGameUrlGetServiceUnitTest
             AvailableCurrencies: null,
             Localization: null,
             SubGameProviderCode: GameProviderType.Joker);
+        _ = fakeGame
+            .GetAsync(
+                Arg.Is(query.GameId.Value),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameInfo);
 
-        var query = new JokerGameUrlQuery
-        {
-            GameType = gameInfo.Type,
-            GameId = gameInfo.GameId,
-            BrandCode = "GPI_HKD",
-            PlayerCode = "4uf6k014jp5x",
-            CurrencyCode = "HKD",
-            LoginRecordId = Guid.NewGuid(),
-            PlatformType = PlatformType.Desktop,
-            Language = "en-US",
-            IPAddress = "127.0.0.1",
-            BackUrl = new("https://dev-t1.rpgp.cc/")
-        };
-
-        var sut = new JokerGameUrlGetService(
-            fakeApiClient,
-            fakeAgentMapper,
-            fakeService);
-
-        _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
-        _ = fakeAgentMapper.GetAgentByCurrencyCode(
-            Arg.Is(configuration.BrandMerchants),
-            Arg.Is(query.BrandCode),
-            Arg.Is(query.CurrencyCode)).Returns(agent);
-
-        _ = fakeService.GetGameAsync(Arg.Is(gameInfo.GameId)).Returns(gameInfo);
-
-        _ = fakeService
-             .GetGameProviderLanguageCodeAsync(Arg.Is(query.Language))
-             .Returns(gameProviderLanguageCode);
-
-        _ = fakeApiClient
-             .GetGameTokenAsync(
-                 Arg.Is(configuration.ApiUrl),
-                 Arg.Is(query.PlayerCode),
-                 Arg.Is(agent.AgentId),
-                 Arg.Is(agent.SecretKey))
+        var gameToken = "game_token";
+        _ = fakeClient
+             .GameTokenAsync(
+                 apiUrl: Arg.Is(configuration.ApiUrl),
+                 appId: Arg.Is(configuration.AppId),
+                 secretKey: Arg.Is(configuration.SecretKey),
+                 playerCode: Arg.Is(query.PlayerCode))
              .Returns(gameToken);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var sut = new JokerGameUrlGetService(
+            fakeBrand,
+            fakeGame,
+            fakeGameProvider,
+            fakeClient,
+            fakePlayer);
+
+        var actual = await sut
+            .GetAsync(
+                query)
+            .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual.Url);
+
+        var queryStrings = HttpUtility.ParseQueryString(string.Empty);
+        queryStrings.Add("token", gameToken);
+        queryStrings.Add("game", gameInfo.GameExternalId);
+        queryStrings.Add("mobile", (query.PlatformType == PlatformType.Mobile).ToString().ToLower());
+        queryStrings.Add("lang", (!string.IsNullOrEmpty(gameProviderCultureCode)) ? "en" : gameProviderCultureCode);
+
+        var url = $"{configuration.GameLaunchUrl.OriginalString}?{queryStrings}";
+        Assert.AreEqual(new Uri(url), actual.Url);
     }
 }

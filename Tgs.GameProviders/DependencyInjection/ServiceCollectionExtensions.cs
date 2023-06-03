@@ -11,6 +11,7 @@ using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.Jili.Client;
+using Tgs.GameInterface.Joker.Client;
 using Tgs.GameInterface.OBet.Client;
 using Tgs.GameInterface.Pinnacle.Client;
 using Tgs.GameInterface.PragmaticPlay.Client;
@@ -62,7 +63,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfacePragmaticPlayClientOptions, IServiceProvider> gameInterfacePragmaticPlayClientOptions,
         Action<GameInterfaceInplayMatrixClientOptions, IServiceProvider> gameInterfaceInplayMatrixClientOptions,
         Action<GameInterfaceCards365ClientOptions, IServiceProvider> gameInterfaceCards365ClientOptions,
-        Action<GameInterfacePinnacleClientOptions, IServiceProvider> gameInterfacePinnacleClientOptions)
+        Action<GameInterfacePinnacleClientOptions, IServiceProvider> gameInterfacePinnacleClientOptions,
+        Action<GameInterfaceJokerClientOptions, IServiceProvider> gameInterfaceJokerClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -98,5 +100,6 @@ public static class ServiceCollectionExtensions
                 gameInterfacePragmaticPlayClientOptions: gameInterfacePragmaticPlayClientOptions,
                 gameInterfaceInplayMatrixClientOptions: gameInterfaceInplayMatrixClientOptions,
                 gameInterfaceCards365ClientOptions: gameInterfaceCards365ClientOptions,
-                gameInterfacePinnacleClientOptions: gameInterfacePinnacleClientOptions);
+                gameInterfacePinnacleClientOptions: gameInterfacePinnacleClientOptions,
+                gameInterfaceJokerClientOptions: gameInterfaceJokerClientOptions);
 }

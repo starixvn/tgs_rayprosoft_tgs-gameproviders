@@ -32,7 +32,7 @@ public class DreamGamingTransferKickPlayerCommandService : ICommandService<Dream
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.DreamGamingTransfer).ConfigureAwait(false);
         var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetDreamGamingTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetDreamGamingTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         var playerOnlines = await _client.PlayerOnlineAsync(
             apiUrl: configuration.ApiUrl,

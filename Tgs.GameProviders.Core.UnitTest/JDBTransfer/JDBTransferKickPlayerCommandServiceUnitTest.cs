@@ -56,7 +56,7 @@ public class JDBTransferKickPlayerCommandServiceUnitTest
             AesIV = "AesIV",
             AesKey = "AesKey"
         };
-        _ = fakeGameProviderRepository.GetJDBTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetJDBTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var sut = new JDBTransferKickPlayerCommandService(
             fakeGameInterfaceJDBClient,

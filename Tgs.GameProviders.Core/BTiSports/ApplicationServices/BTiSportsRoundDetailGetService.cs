@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.BTiSports.ApplicationServices;
 
 internal class BTiSportsRoundDetailGetService : IGetService<BTiSportsRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public BTiSportsRoundDetailGetService(IRoundService roundService)
+    public BTiSportsRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

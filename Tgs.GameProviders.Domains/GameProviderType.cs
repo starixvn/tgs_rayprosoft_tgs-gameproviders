@@ -43,6 +43,7 @@ public static class GameProviderType
     public static readonly string LY = "LY";
     public static readonly string MainWallet = "DEFAULT";
     public static readonly string OBet = "OBET";
+    public static readonly string Pinnacle = "PINNACLE";
     public static readonly string PragmaticPlay = "PP";
     public static readonly string PragmaticPlayTransfer = "PPTF";
     public static readonly string RedTiger = "RT";
@@ -63,5 +64,4 @@ public static class GameProviderType
     public static readonly string WMCasino = "WM";
     public static readonly string WMCasinoTransfer = "WMTF";
     public static readonly string YeeBet = "YEEBET";
-    public static readonly string Pinnacle = "PINNACLE";
 }

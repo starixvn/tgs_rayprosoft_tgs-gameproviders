@@ -55,7 +55,7 @@ public class DreamGamingTransferGameUrlGetServiceUnitTest
             ApiKey = "d39da9da731b427b9349b80d9d97f2e4",
             AgentName = "DGTE0105IH",
         };
-        _ = fakeGameProviderRepository.GetDreamGamingTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetDreamGamingTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var response = new GameUrlReply()
         {

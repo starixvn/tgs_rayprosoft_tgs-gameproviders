@@ -24,7 +24,7 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<AsiaGamingRoundDetailGetService>.Instance;
-        var fakeRoundService = Substitute.For<IRoundService>();
+        var fakeRoundService = Substitute.For<IRoundRepository>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeService = Substitute.For<IAsiaGamingService>();
 

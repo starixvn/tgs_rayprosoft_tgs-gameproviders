@@ -45,7 +45,7 @@ public class WMCasinoTransferPlayerFundInGetService : IGetService<WMCasinoTransf
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var configuration = await _gameProvider
-            .GetWMCasinoTransferConfiguration(
+            .GetWMCasinoTransferConfigurationAsync(
                 gameProviderConfigurationId: gameProviderConfigurationId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);

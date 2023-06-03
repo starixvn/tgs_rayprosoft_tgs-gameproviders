@@ -31,7 +31,7 @@ public class DreamGamingTransferGameUrlGetService : IGetService<DreamGamingTrans
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.DreamGamingTransfer).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetDreamGamingTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetDreamGamingTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
         var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, query.Language) ?? "en";
 
         var response = await _client

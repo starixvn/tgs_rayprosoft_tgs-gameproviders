@@ -19,7 +19,7 @@ public class DreamGamingTransferRoundDetailGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeRoundService = Substitute.For<IRoundService>();
+        var fakeRoundService = Substitute.For<IRoundRepository>();
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
@@ -95,7 +95,7 @@ public class DreamGamingTransferRoundDetailGetServiceUnitTest
             ApiKey = "d39da9da731b427b9349b80d9d97f2e4",
             AgentName = "DGTE0105IH",
         };
-        _ = fakeGameProviderRepository.GetDreamGamingTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetDreamGamingTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var gameProviderCultureCode = "en";
         _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(Arg.Is(gameProviderId), Arg.Is(query.Language)).Returns(gameProviderCultureCode);

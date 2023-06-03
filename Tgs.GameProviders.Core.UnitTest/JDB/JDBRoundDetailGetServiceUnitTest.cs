@@ -21,7 +21,7 @@ public class JDBRoundDetailGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeRoundService = Substitute.For<IRoundService>();
+        var fakeRoundService = Substitute.For<IRoundRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeService = Substitute.For<IJDBService>();

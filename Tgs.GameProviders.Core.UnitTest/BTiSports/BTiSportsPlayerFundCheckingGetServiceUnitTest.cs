@@ -63,7 +63,7 @@ public class BTiSportsPlayerFundCheckingGetServiceUnitTest
             AgentPassword = "IM60Ho7Y4B9C",
             SportsbookURL = new("https://prod20240-108707434.1x2aaa.com")
         };
-        _ = fakeGameProviderRepository.GetBTiSportsConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetBTiSportsConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         _ = fakeGameInterfaceBTiClient.FundStatusAsync(
                 Arg.Is(configuration.ApiUrl),

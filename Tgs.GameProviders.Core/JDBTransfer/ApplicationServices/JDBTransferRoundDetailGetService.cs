@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.JDBTransfer.ApplicationServices;
 
 public class JDBTransferRoundDetailGetService : IGetService<JDBTransferRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public JDBTransferRoundDetailGetService(IRoundService roundService)
+    public JDBTransferRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

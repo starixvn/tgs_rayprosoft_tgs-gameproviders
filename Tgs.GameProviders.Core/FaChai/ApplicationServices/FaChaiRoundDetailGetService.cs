@@ -8,10 +8,10 @@ namespace Tgs.GameProviders.Core.FaChai.ApplicationServices;
 
 internal class FaChaiRoundDetailGetService : IGetService<FaChaiRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public FaChaiRoundDetailGetService(
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

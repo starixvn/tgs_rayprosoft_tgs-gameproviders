@@ -17,12 +17,12 @@ internal class SabaRoundDetailGetService : IGetService<SabaRoundDetailQuery, Rou
     private readonly IGameActionService _gameActionService;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
     private readonly ILogger<SabaRoundDetailGetService> _logger;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
     private readonly ISabaService _service;
 
     public SabaRoundDetailGetService(
         ILogger<SabaRoundDetailGetService> logger,
-        IRoundService roundService,
+        IRoundRepository roundService,
         IGameActionService gameActionService,
         ISabaService service,
         ISabaApiClient client)

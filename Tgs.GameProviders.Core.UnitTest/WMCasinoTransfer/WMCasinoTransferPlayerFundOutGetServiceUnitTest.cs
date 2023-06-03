@@ -57,7 +57,7 @@ public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
         _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
              Arg.Is(gameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetWMCasinoTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetWMCasinoTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var agentBalanceReply = new AgentBalanceReply
         {
@@ -123,7 +123,7 @@ public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
         _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
              Arg.Is(gameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetWMCasinoTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetWMCasinoTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var gameProviderTransactionId = "2147647425";
         var agentBalanceReply = new AgentBalanceReply

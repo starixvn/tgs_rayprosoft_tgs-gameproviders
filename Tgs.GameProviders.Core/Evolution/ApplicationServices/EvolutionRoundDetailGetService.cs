@@ -13,14 +13,14 @@ internal class EvolutionRoundDetailGetService : IGetService<EvolutionRoundDetail
     private readonly IEvolutionApiClient _client;
     private readonly IEvolutionRoundDetailAnalyzeService _evolutionRoundDetailAnalyzeService;
     private readonly IGameRepository _gameRepository;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
     private readonly IEvolutionService _service;
 
     public EvolutionRoundDetailGetService(
       IEvolutionApiClient client,
       IEvolutionRoundDetailAnalyzeService evolutionRoundDetailAnalyzeService,
       IGameRepository gameRepository,
-      IRoundService roundService,
+      IRoundRepository roundService,
       IEvolutionService service
         )
     {

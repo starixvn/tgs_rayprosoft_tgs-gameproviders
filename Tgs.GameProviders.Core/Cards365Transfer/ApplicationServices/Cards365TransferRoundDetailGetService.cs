@@ -8,10 +8,10 @@ namespace Tgs.GameProviders.Core.Cards365Transfer.ApplicationServices;
 
 internal class Cards365TransferRoundDetailGetService : IGetService<Cards365TransferRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public Cards365TransferRoundDetailGetService(
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

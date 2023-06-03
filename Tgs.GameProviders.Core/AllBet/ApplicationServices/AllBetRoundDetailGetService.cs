@@ -16,11 +16,11 @@ namespace Tgs.GameProviders.Core.AllBet.ApplicationServices;
 internal class AllBetRoundDetailGetService : IGetService<AllBetRoundDetailQuery, RoundDetailResult>
 {
     private readonly ILogger<AllBetRoundDetailGetService> _logger;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public AllBetRoundDetailGetService(
         ILogger<AllBetRoundDetailGetService> logger,
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));

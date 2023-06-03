@@ -14,13 +14,13 @@ namespace Tgs.GameProviders.Core.Habanero.ApplicationServices;
 internal class HabaneroRoundDetailGetService : IGetService<HabaneroRoundDetailQuery, RoundDetailResult>
 {
     private readonly ILogger<HabaneroRoundDetailGetService> _logger;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
     private readonly IHabaneroService _service;
 
     public HabaneroRoundDetailGetService(
         ILogger<HabaneroRoundDetailGetService> logger,
         IHabaneroService service,
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _service = service ?? throw new ArgumentNullException(nameof(service));

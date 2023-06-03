@@ -13,6 +13,7 @@ using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.Jili.Client;
+using Tgs.GameInterface.Joker.Client;
 using Tgs.GameInterface.OBet.Client;
 using Tgs.GameInterface.Pinnacle.Client;
 using Tgs.GameInterface.PragmaticPlay.Client;
@@ -64,7 +65,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfacePragmaticPlayClientOptions, IServiceProvider> gameInterfacePragmaticPlayClientOptions,
         Action<GameInterfaceInplayMatrixClientOptions, IServiceProvider> gameInterfaceInplayMatrixClientOptions,
         Action<GameInterfaceCards365ClientOptions, IServiceProvider> gameInterfaceCards365ClientOptions,
-        Action<GameInterfacePinnacleClientOptions, IServiceProvider> gameInterfacePinnacleClientOptions)
+        Action<GameInterfacePinnacleClientOptions, IServiceProvider> gameInterfacePinnacleClientOptions,
+        Action<GameInterfaceJokerClientOptions, IServiceProvider> gameInterfaceJokerClientOptions)
         => services
             .RegisterAllServiceUtilityTypes(
                 Assembly.GetExecutingAssembly(),
@@ -97,9 +99,10 @@ public static class ServiceCollecitonExtensions
             .AddGameRoundsClient(gameRoundsClientOptions)
             .AddGameTokenClient(gameTokenClientOptions)
             .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)
+            .AddGameInterfaceJokerClient(gameInterfaceJokerClientOptions)
             .AddSecurity()//Tgs.Core.Infrastructures.Security
             .AddMemoryCache()
             .AddTransient<IGameActionService, GameActionService>()
-            .AddTransient<IRoundService, RoundService>()
+            .AddTransient<IRoundRepository, RoundRepository>()
             .AddTransient<ISystemClock, SystemClock>();
 }

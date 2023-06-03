@@ -22,7 +22,7 @@ public class JiliRoundDetailGetServiceUnitTest
     public async ValueTask Normal_Process()
     {
         var fakeLogger = NullLogger<JiliRoundDetailGetService>.Instance;
-        var fakeRoundService = Substitute.For<IRoundService>();
+        var fakeRoundService = Substitute.For<IRoundRepository>();
         var fakePlayer = Substitute.For<IPlayerRepository>();
         var fakeService = Substitute.For<IJiliService>();
         var fakeMerchantMapper = Substitute.For<IJiliMerchantMapper>();

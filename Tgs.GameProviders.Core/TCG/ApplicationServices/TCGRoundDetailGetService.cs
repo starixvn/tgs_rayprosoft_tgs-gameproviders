@@ -8,10 +8,10 @@ namespace Tgs.GameProviders.Core.TCG.ApplicationServices;
 
 internal class TCGRoundDetailGetService : IGetService<TCGRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public TCGRoundDetailGetService(
-        IRoundService roundService
+        IRoundRepository roundService
         )
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));

@@ -58,7 +58,7 @@ public class JDBTransferPlayerFundCheckingGetServiceUnitTest
             AesIV = "AesIV",
             AesKey = "AesKey"
         };
-        _ = fakeGameProviderRepository.GetJDBTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetJDBTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         _ = fakeGameInterfaceJDBClient.FundStatusAsync(
                 Arg.Is(configuration.ApiUrl),

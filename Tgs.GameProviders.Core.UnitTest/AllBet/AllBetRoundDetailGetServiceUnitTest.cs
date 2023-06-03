@@ -20,7 +20,7 @@ public class AllBetRoundDetailGetServiceUnitTest
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<AllBetRoundDetailGetService>.Instance;
-        var fakeRoundService = Substitute.For<IRoundService>();
+        var fakeRoundService = Substitute.For<IRoundRepository>();
 
         var player = new PlayerInfo(
          Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),

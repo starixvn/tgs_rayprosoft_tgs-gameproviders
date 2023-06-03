@@ -44,7 +44,8 @@ data:
         "GameInterfacePragmaticPlayBaseUrl":"http://game-gameinterface-pp:9090/",
         "GameInterfaceInplayMatrixBaseUrl":"dns:///game-gameinterface-im:9090/",
         "GameInterfaceCards365BaseUrl":"dns:///game-gameinterface-cards365:9090/",
-        "GameInterfacePinnacleBaseUrl":"dns:///game-gameinterface-pinnacle:9090/"
+        "GameInterfacePinnacleBaseUrl":"dns:///game-gameinterface-pinnacle:9090/",
+        "GameInterfaceJokerBaseUrl":"dns:///game-gameinterface-joker:9090/"
       }
     }
   otel-collector-config.yaml: |

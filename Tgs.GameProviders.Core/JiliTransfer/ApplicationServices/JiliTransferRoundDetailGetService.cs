@@ -14,10 +14,10 @@ internal class JiliTransferRoundDetailGetService : IGetService<JiliTransferRound
     private readonly IGameInterfaceJiliClient _client;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public JiliTransferRoundDetailGetService(
-        IRoundService roundService,
+        IRoundRepository roundService,
         IGameProviderRepository gameProvider,
         IPlayerRepository player,
         IBrandRepository brand,
@@ -55,7 +55,7 @@ internal class JiliTransferRoundDetailGetService : IGetService<JiliTransferRound
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var configuration = await _gameProvider
-            .GetJiliTransferConfiguration(
+            .GetJiliTransferConfigurationAsync(
                 gameProviderConfigurationId: gameProviderConfigurationId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);

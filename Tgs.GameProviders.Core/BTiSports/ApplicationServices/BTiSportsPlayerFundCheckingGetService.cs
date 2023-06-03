@@ -31,7 +31,7 @@ public class BTiSportsPlayerFundCheckingGetService : IGetService<BTiSportsPlayer
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.BTiSports).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetBTiSportsConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetBTiSportsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         var response = await _client
             .FundStatusAsync(

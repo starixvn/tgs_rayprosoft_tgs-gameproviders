@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 
 public class WGFmGamingRoundDetailGetService : IGetService<WGFmGamingRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public WGFmGamingRoundDetailGetService(IRoundService roundService)
+    public WGFmGamingRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

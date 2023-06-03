@@ -8,10 +8,10 @@ namespace Tgs.GameProviders.Core.Endorphina.ApplicationServices;
 
 internal class EndorphinaRoundDetailGetService : IGetService<EndorphinaRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public EndorphinaRoundDetailGetService(
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

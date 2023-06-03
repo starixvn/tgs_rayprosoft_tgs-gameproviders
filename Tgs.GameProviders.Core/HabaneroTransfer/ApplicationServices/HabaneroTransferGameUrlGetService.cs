@@ -49,7 +49,7 @@ internal class HabaneroTransferGameUrlGetService : IGetService<HabaneroTransferG
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var configuration = await _gameProvider
-            .GetHabaneroTransferConfiguration(
+            .GetHabaneroTransferConfigurationAsync(
                 gameProviderConfigurationId: gameProviderConfigurationId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);

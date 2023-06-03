@@ -16,12 +16,12 @@ internal class AsiaGamingRoundDetailGetService : IGetService<AsiaGamingRoundDeta
 {
     private readonly IGameRepository _gameService;
     private readonly ILogger<AsiaGamingRoundDetailGetService> _logger;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
     private readonly IAsiaGamingService _service;
 
     public AsiaGamingRoundDetailGetService(
         ILogger<AsiaGamingRoundDetailGetService> logger,
-        IRoundService roundService,
+        IRoundRepository roundService,
         IGameRepository gameService,
         IAsiaGamingService service)
     {

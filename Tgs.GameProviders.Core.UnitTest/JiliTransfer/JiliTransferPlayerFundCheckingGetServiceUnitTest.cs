@@ -65,7 +65,7 @@ public class JiliTransferPlayerFundCheckingGetServiceUnitTest
             AgentId = "testAgentId"
         };
         _ = fakeGameProviderRepository
-            .GetJiliTransferConfiguration(
+            .GetJiliTransferConfigurationAsync(
                 Arg.Is(gameProviderConfigurationId))
             .Returns(configuration);
 

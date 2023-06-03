@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<Version>0.0.61</Version>
+		<Version>0.0.62</Version>
 		<Authors>Raypro</Authors>
 		<Description>TGS Game Providers Client</Description>
 		<PackageProjectUrl>https://gitlab.com/rayprosoft/tgs-gameproviders</PackageProjectUrl>

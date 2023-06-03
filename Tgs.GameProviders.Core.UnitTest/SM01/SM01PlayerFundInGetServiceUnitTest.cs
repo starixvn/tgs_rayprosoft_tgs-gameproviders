@@ -58,7 +58,7 @@ public class SM01PlayerFundInGetServiceUnitTest
             MerchantId = "SQjCxm2cX5bahBta",
             MerchantKey = "XGKGkcmYNnfex8AecKzCEbD4GMExA2cb",
         };
-        _ = fakeGameProviderRepository.GetSM01Configuration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetSM01ConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var reply = new FundReply()
         {

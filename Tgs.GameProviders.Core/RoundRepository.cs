@@ -1,26 +1,29 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameRounds.Client;
 
 namespace Tgs.GameProviders.Core;
 
-internal class RoundService : IRoundService
+internal class RoundRepository : IRoundRepository
 {
     private readonly IGameRoundsClient _client;
 
-    public RoundService(IGameRoundsClient client)
+    public RoundRepository(IGameRoundsClient client)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async ValueTask<RoundInfo> GetAsync(Guid roundId)
+    public async ValueTask<RoundInfo> GetAsync(
+        Guid roundId,
+        CancellationToken cancellationToken = default)
     {
-        var response = await _client.GetGameRoundAsync(roundId).ConfigureAwait(false);
-
-        if (!response.Success)
-        {
-            return null;
-        }
+        var response = await _client
+            .GetGameRoundAsync(
+                roundId: roundId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new NullReferenceException($"This game round number could not be found.({roundId})");
 
         return new RoundInfo(
                 response.Data.RoundId,

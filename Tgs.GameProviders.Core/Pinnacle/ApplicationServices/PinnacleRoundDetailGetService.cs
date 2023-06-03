@@ -8,10 +8,10 @@ namespace Tgs.GameProviders.Core.Pinnacle.ApplicationServices;
 
 internal class PinnacleRoundDetailGetService : IGetService<PinnacleRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public PinnacleRoundDetailGetService(
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

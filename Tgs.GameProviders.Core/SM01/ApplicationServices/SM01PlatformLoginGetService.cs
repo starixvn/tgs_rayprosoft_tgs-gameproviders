@@ -31,7 +31,7 @@ internal class SM01PlatformLoginGetService : IGetService<SM01PlatformLoginQuery,
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.SM01, cancellationToken).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode, cancellationToken).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId, cancellationToken).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetSM01Configuration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetSM01ConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         var loginInfo = await _client
             .PlatformLoginAsync(configuration.ApiUrl, configuration.MerchantId, configuration.MerchantKey, query.PlayerCode, cancellationToken)

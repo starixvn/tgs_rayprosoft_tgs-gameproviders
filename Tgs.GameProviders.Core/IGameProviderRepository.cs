@@ -17,7 +17,7 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<BTiSportsConfiguration> GetBTiSportsConfiguration(
+    ValueTask<BTiSportsConfiguration> GetBTiSportsConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
@@ -25,11 +25,11 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(
+    ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<EndorphinaConfiguration> GetEndorphinaConfiguration(
+    ValueTask<EndorphinaConfiguration> GetEndorphinaConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
@@ -55,7 +55,7 @@ public interface IGameProviderRepository
         string gameProviderCode,
         CancellationToken cancellationToken = default);
 
-    ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfiguration(
+    ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
@@ -63,16 +63,20 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(
+    ValueTask<JDBTransferConfiguration> GetJDBTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<JiliTransferConfiguration> GetJiliTransferConfiguration(
+    ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<JokerConfiguration> GetJokerConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
     ValueTask<OBetConfiguration> GetOBetConfigurationAsync(
-        Guid gameProviderConfigurationId,
+            Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
     ValueTask<PinnacleConfiguration> GetPinnacleConfigurationAsync(
@@ -83,27 +87,27 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<SabaTransferConfiguration> GetSabaTransferConfiguration(
+    ValueTask<SabaTransferConfiguration> GetSabaTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(
+    ValueTask<SBOTransferConfiguration> GetSBOTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<SM01Configuration> GetSM01Configuration(
+    ValueTask<SM01Configuration> GetSM01ConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfiguration(
+    ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfiguration(
+    ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(
+    ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 

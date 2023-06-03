@@ -10,13 +10,13 @@ namespace Tgs.GameProviders.Core.Skywind.ApplicationServices;
 internal class SkywindRoundDetailGetService : IGetService<SkywindRoundDetailQuery, RoundDetailResult>
 {
     private readonly ISkywindApiClient _client;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
     private readonly ISkywindService _service;
     private readonly ISkywindAccessToken _skywindAccessToken;
 
     public SkywindRoundDetailGetService(
         ISkywindApiClient client,
-        IRoundService roundService,
+        IRoundRepository roundService,
         ISkywindService service,
         ISkywindAccessToken skywindAccessToken
         )

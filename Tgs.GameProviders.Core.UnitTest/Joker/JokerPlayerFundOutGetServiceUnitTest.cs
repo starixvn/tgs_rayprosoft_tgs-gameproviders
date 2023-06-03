@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 using Tgs.GameCommand.Common;
-using Tgs.GameProviders.Core.Joker;
+using Tgs.GameInterface.Joker.Client;
+using Tgs.GameInterface.Joker.Protos;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
+using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.Domains.SettingConfiguration.Joker;
 
 namespace Tgs.GameProviders.Core.UnitTest.Joker;
 
@@ -16,85 +19,91 @@ public class JokerPlayerFundOutGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeService = Substitute.For<IJokerService>();
-        var fakeAgentMapper = Substitute.For<IJokerAgentMapper>();
-        var fakeApiClient = Substitute.For<IJokerApiClient>();
-
-        var agent = new JokerAgent
-        {
-            AgentId = "TGVY",
-            CurrencyCode = "HKD",
-            SecretKey = "s5ghrn77baoto",
-            Status = true
-        };
-
-        var configuration = new JokerConfiguration
-        {
-            ServiceEndpointUrl = new("http://game-joker"),
-            ApiUrl = new("https://w.api788.net"),
-            GameLaunchUrl = new Uri("http://www.gwp6868.net/"),
-            BrandMerchants = new JokerBrandMerchant[]
-            {
-                new()
-                {
-                    BrandCode = "Default",
-                    Agents = new[] { agent }
-                }
-            }
-        };
-
-        var player = new PlayerInfo(
-            Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
-            "TGS",
-            Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
-            "TGS",
-            Guid.Parse("9f1ecf19-38cd-474f-b0d2-93638dc07d21"),
-            "GPI_HKD",
-            "4uf6k014jp5x",
-            "4uf6k014jp5x",
-            Guid.Parse("cf99c783-acdf-48cc-b1cc-08d99a806de9"),
-            "HKD");
-
-        var success = true;
-        var orderId = Guid.NewGuid().ToString("N");
-        var fundOutAmount = 10m;
-
-        _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
-
-        _ = fakeAgentMapper
-            .GetAgentByCurrencyCode(
-                Arg.Is(configuration.BrandMerchants),
-                Arg.Is(player.BrandCode),
-                Arg.Is(player.DefaultWalletCurrencyCode))
-            .Returns(agent);
-
-        _ = fakeApiClient
-            .FundOutAsync(
-                Arg.Is(configuration.ApiUrl),
-                Arg.Is(player.PlayerCode),
-                Arg.Is(orderId),
-                Arg.Is(fundOutAmount),
-                Arg.Is(agent.AgentId),
-                Arg.Is(agent.SecretKey))
-            .Returns(success);
+        var fakeBrand = Substitute.For<IBrandRepository>();
+        var fakeGameProvider = Substitute.For<IGameProviderRepository>();
+        var fakeClient = Substitute.For<IGameInterfaceJokerClient>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
 
         var query = new JokerPlayerFundOutQuery
         {
-            Amount = fundOutAmount,
-            BrandCode = player.BrandCode,
-            CurrencyCode = player.DefaultWalletCurrencyCode,
-            OrderId = orderId,
-            PlayerCode = player.PlayerCode
+            BrandCode = "GPI",
+            PlayerCode = "4ucmqplxb029",
+            CurrencyCode = "CNY",
+            OrderId = Guid.NewGuid().ToString("N"),
+            Amount = 1
         };
 
-        var sut = new JokerPlayerFundOutGetService(
-            fakeApiClient,
-            fakeService,
-            fakeAgentMapper);
+        var gameProviderId = Guid.NewGuid();
+        _ = fakeGameProvider
+        .GetGameProviderIdAsync(
+            gameProviderCode: Arg.Is(GameProviderType.Joker),
+            cancellationToken: Arg.Any<CancellationToken>())
+        .Returns(gameProviderId);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var playerModel = new PlayerInfo(
+            ResellerId: Guid.NewGuid(),
+            ResellerCode: "GPI",
+            LicenseeId: Guid.NewGuid(),
+            LicenseeCode: "GPI",
+            BrandId: Guid.NewGuid(),
+            BrandCode: "GPI",
+            PlayerCode: "4ucmqplxb029",
+            Username: "4ucmqplxb029",
+            DefaultWalletId: Guid.NewGuid(),
+            DefaultWalletCurrencyCode: "CNY");
+        _ = fakePlayer
+            .GetAsync(
+                playerCode: Arg.Is(query.PlayerCode),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(playerModel);
+
+        var gameProviderConfigurationId = Guid.NewGuid();
+        _ = fakeBrand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: Arg.Is(gameProviderId),
+                brandId: Arg.Is(playerModel.BrandId),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderConfigurationId);
+
+        var configuration = new JokerConfiguration
+        {
+            ApiUrl = new("http://localhost/"),
+            GameLaunchUrl = new Uri("http://localhost/"),
+            AppId = "appId",
+            SecretKey = "secretKey"
+        };
+        _ = fakeGameProvider
+            .GetJokerConfigurationAsync(
+                gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(configuration);
+        var reply = new FundReply
+        {
+            RequestId = query.OrderId,
+            Res = JsonSerializer.Serialize(new { RequestId = query.OrderId })
+        };
+        _ = fakeClient
+            .FundOutAsync(
+                apiUrl: Arg.Is(configuration.ApiUrl),
+                appId: Arg.Is(configuration.AppId),
+                secretKey: Arg.Is(configuration.SecretKey),
+                playerCode: Arg.Is(query.PlayerCode),
+                transactionId: Arg.Is(query.OrderId),
+                amount: Arg.Is(query.Amount))
+            .Returns(reply);
+
+        var sut = new JokerPlayerFundOutGetService(
+            fakeBrand,
+            fakeGameProvider,
+            fakeClient,
+            fakePlayer);
+
+        var actual = await sut
+            .GetAsync(
+               query: query)
+            .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(orderId, actual.OrderId);
+        Assert.AreEqual(reply.RequestId, actual.OrderId);
     }
 }

@@ -17,7 +17,7 @@ public class DreamGameRoundDetailGetServiceUnitTest
     {
         var fakeService = Substitute.For<IDreamGameService>();
         var fakeClient = Substitute.For<IDreamGameApiClient>();
-        var fakeRoundService = Substitute.For<IRoundService>();
+        var fakeRoundService = Substitute.For<IRoundRepository>();
 
         var query = new DreamGameRoundDetailQuery()
         {

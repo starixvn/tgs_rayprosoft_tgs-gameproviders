@@ -40,7 +40,7 @@ internal class EndorphinaGameUrlGetService : IGetService<EndorphinaGameUrlQuery,
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.Endorphina).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetEndorphinaConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetEndorphinaConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
         var game = await _game.GetAsync(query.GameId.Value).ConfigureAwait(false)
              ?? throw new Exception($"The game for this game product does not exist.({query.GameId})");
         var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, query.CurrencyCode).ConfigureAwait(false)

@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.AwcFacai.ApplicationServices;
 
 internal class AwcFacaiRoundDetailGetService : IGetService<AwcFacaiRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public AwcFacaiRoundDetailGetService(IRoundService roundService)
+    public AwcFacaiRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

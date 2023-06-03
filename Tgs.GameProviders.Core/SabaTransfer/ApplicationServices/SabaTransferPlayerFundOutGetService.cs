@@ -32,7 +32,7 @@ public class SabaTransferPlayerFundOutGetService : IGetService<SabaTransferPlaye
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.SabaTransfer).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetSabaTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetSabaTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
         var gameProviderCurrencyCode = await _gameProvider
                     .GetGameProviderCurrencyCodeAsync(gameProviderId, player.DefaultWalletCurrencyCode)
                     .ConfigureAwait(false)

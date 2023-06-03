@@ -10,10 +10,10 @@ namespace Tgs.GameProviders.Core.LY.ApplicationServices;
 
 internal class LYRoundDetailGetService : IGetService<LYRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public LYRoundDetailGetService(
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

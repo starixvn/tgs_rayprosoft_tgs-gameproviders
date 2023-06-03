@@ -65,7 +65,7 @@ public class JiliTransferPlayerBalanceGetServiceUnitTest
             AgentId = "testAgentId"
         };
         _ = fakeGameProviderRepository
-            .GetJiliTransferConfiguration(
+            .GetJiliTransferConfigurationAsync(
                 Arg.Is(gameProviderConfigurationId))
             .Returns(configuration);
 

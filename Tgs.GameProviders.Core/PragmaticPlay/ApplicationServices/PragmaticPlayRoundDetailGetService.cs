@@ -14,13 +14,13 @@ internal class PragmaticPlayRoundDetailGetService : IGetService<PragmaticPlayRou
     private readonly IPragmaticPlayApiClient _client;
     private readonly IGameActionService _gameActionService;
     private readonly ILogger<PragmaticPlayRoundDetailGetService> _logger;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
     private readonly IPragmaticPlayService _service;
     private readonly IPragmaticPlayUtility _utility;
 
     public PragmaticPlayRoundDetailGetService(
         ILogger<PragmaticPlayRoundDetailGetService> logger,
-        IRoundService roundService,
+        IRoundRepository roundService,
         IGameActionService gameActionService,
         IPragmaticPlayService service,
         IPragmaticPlayUtility utility,

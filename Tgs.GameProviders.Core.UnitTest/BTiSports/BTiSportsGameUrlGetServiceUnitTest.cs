@@ -70,7 +70,7 @@ public class BTiSportsGameUrlGetServiceUnitTest
             AgentPassword = "IM60Ho7Y4B9C",
             SportsbookURL = new("https://prod20240-108707434.1x2aaa.com")
         };
-        _ = fakeGameProviderRepository.GetBTiSportsConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetBTiSportsConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var cultureCode = "zh";
         _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(gameProviderId, query.Language).Returns(cultureCode);

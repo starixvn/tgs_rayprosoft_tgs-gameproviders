@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 
 internal class SkywindTransferRoundDetailGetService : IGetService<SkywindTransferRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public SkywindTransferRoundDetailGetService(IRoundService roundService)
+    public SkywindTransferRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

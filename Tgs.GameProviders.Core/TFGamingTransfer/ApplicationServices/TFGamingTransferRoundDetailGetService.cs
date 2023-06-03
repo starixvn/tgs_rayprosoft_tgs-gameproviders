@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.TFGamingTransfer.ApplicationServices;
 
 internal class TFGamingTransferRoundDetailGetService : IGetService<TFGamingTransferRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public TFGamingTransferRoundDetailGetService(IRoundService roundService)
+    public TFGamingTransferRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }
