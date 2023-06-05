@@ -10,13 +10,7 @@ namespace Tgs.GameProviders.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class JOKERController : ControllerBase,
-    IGameUrlHandler<JokerGameUrlQuery>,
-    IKickPlayerHandler<JokerKickPlayerCommand>,
-    IPlayerBalanceHandler<JokerPlayerBalanceQuery>,
-    IPlayerFundHandler<JokerPlayerFundInQuery, JokerPlayerFundOutQuery>,
-    IPlayerFundCheckingHandler<JokerPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-    IRoundDetailHandler<JokerRoundDetailQuery>
+public class JOKERController : ControllerBase
 {
     /// <summary>
     /// Games the record list asynchronous.
@@ -137,8 +131,8 @@ public class JOKERController : ControllerBase,
     ///   Get balance/4uf6k014jp5x
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal?> PlayerBalanceAsync(
-        [FromServices] IGetService<JokerPlayerBalanceQuery, decimal?> getService,
+    public ValueTask<decimal> PlayerBalanceAsync(
+        [FromServices] IGetService<JokerPlayerBalanceQuery, decimal> getService,
         string playerCode)
         => getService
         .GetAsync(
