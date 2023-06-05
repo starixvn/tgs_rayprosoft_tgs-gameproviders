@@ -41,44 +41,48 @@ internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQu
         var reply = await _client
             .GameRecordAsync(
                 apiUrl: configuration.ApiUrl,
-                appId: configuration.AppId,
-                secretKey: configuration.SecretKey,
+                appId: agent.AgentId,
+                secretKey: agent.SecretKey,
                 startTime: query.StartTime,
                 endTime: query.EndTime,
-                nextId: query.NextId,
+                nextId: query.NextId ?? string.Empty,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var gameProviderCode = GameProviderType.Joker;
-        var gameProviderId = await _gameProvider
-            .GetGameProviderIdAsync(
-                gameProviderCode: gameProviderCode,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-
-        var gameRecords = reply.Items.Select(data =>
+        var gameRecords = Enumerable.Empty<GameRecordListModel>();
+        if (reply.Items.Any())
         {
-            return new GameRecordListModel
+            var gameProviderCode = GameProviderType.Joker;
+            var gameProviderId = await _gameProvider
+                .GetGameProviderIdAsync(
+                    gameProviderCode: gameProviderCode,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            gameRecords = reply.Items.Select(data =>
             {
-                GameProviderCode = gameProviderCode,
-                GameProviderId = gameProviderId,
-                PlayerCode = data.PlayerCode.ToLower(),
-                Status = GameRoundStatus.Closed,
-                ClientStatus = GetClientStatus(data.WinLoss.ToDecimal().GetValueOrDefault(0)),
-                ExternalRoundId = data.ExternalRoundId,
-                ExternalGameId = data.ExternalGameId,
-                ExternalCreatedOn = data.ExternalCreatedOn.ToDateTimeOffset(),
-                ExternalClosedOn = data.ExternalClosedOn.ToDateTimeOffset(),
-                BetAmount = data.Bet.ToDecimal().GetValueOrDefault(0),
-                ValidBetAmount = data.Bet.ToDecimal().GetValueOrDefault(0),
-                SettleAmount = data.Settle.ToDecimal().GetValueOrDefault(0),
-                PlayerWinLoss = data.WinLoss.ToDecimal().GetValueOrDefault(0),
-                Commission = 0,
-                Turnover = data.Bet.ToDecimal().GetValueOrDefault(0),
-                TieBetAdjustment = null,
-                AdditionalData = data.AdditionalData
-            };
-        });
+                return new GameRecordListModel
+                {
+                    GameProviderCode = gameProviderCode,
+                    GameProviderId = gameProviderId,
+                    PlayerCode = data.PlayerCode.ToLower(),
+                    Status = GameRoundStatus.Closed,
+                    ClientStatus = GetClientStatus(data.WinLoss.ToDecimal().GetValueOrDefault(0)),
+                    ExternalRoundId = data.ExternalRoundId,
+                    ExternalGameId = data.ExternalGameId,
+                    ExternalCreatedOn = data.ExternalCreatedOn.ToDateTimeOffset(),
+                    ExternalClosedOn = data.ExternalClosedOn.ToDateTimeOffset(),
+                    BetAmount = data.Bet.ToDecimal().GetValueOrDefault(0),
+                    ValidBetAmount = data.Bet.ToDecimal().GetValueOrDefault(0),
+                    SettleAmount = data.Settle.ToDecimal().GetValueOrDefault(0),
+                    PlayerWinLoss = data.WinLoss.ToDecimal().GetValueOrDefault(0),
+                    Commission = 0,
+                    Turnover = data.Bet.ToDecimal().GetValueOrDefault(0),
+                    TieBetAdjustment = null,
+                    AdditionalData = data.AdditionalData
+                };
+            });
+        }
         return new JokerGameRecordResult
         {
             Success = true,
