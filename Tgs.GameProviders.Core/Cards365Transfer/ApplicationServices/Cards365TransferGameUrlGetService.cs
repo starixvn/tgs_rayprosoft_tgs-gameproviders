@@ -62,7 +62,6 @@ public class Cards365TransferGameUrlGetService : IGetService<Cards365TransferGam
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false) ?? "EN";
 
-
         var gameUrl = await _client
             .GameUrlAsync(
                 apiUrl: configuration.ApiUrl,

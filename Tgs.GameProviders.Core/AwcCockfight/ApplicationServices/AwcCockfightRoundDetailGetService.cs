@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.AwcCockfight.ApplicationServices;
 
 internal class AwcCockfightRoundDetailGetService : IGetService<AwcCockfightRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public AwcCockfightRoundDetailGetService(IRoundService roundService)
+    public AwcCockfightRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

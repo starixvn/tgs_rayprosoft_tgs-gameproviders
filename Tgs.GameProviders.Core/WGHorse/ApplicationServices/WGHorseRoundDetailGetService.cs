@@ -8,10 +8,10 @@ namespace Tgs.GameProviders.Core.WGHorse.ApplicationServices;
 
 internal class WGHorseRoundDetailGetService : IGetService<WGHorseRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public WGHorseRoundDetailGetService(
-        IRoundService roundService
+        IRoundRepository roundService
         )
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));

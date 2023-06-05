@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameInterface.Joker.Client;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
 
@@ -9,67 +9,52 @@ namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
 internal class JokerRoundDetailGetService : IGetService<JokerRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IJokerAgentMapper _agentMapper;
-    private readonly IJokerApiClient _client;
-    private readonly IPlayerRepository _playerService;
-    private readonly IRoundService _roundService;
-    private readonly IJokerService _service;
+    private readonly IGameInterfaceJokerClient _client;
+    private readonly IGameProviderRepository _gameProvider;
+    private readonly IRoundRepository _round;
 
     public JokerRoundDetailGetService(
-        IJokerApiClient client,
-        IJokerService service,
-        IJokerAgentMapper agentMapper,
-        IPlayerRepository playerService,
-        IRoundService roundService)
+        IGameProviderRepository gameProvider,
+        IGameInterfaceJokerClient client,
+        IRoundRepository round)
     {
+        _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _service = service ?? throw new ArgumentNullException(nameof(service));
-        _agentMapper = agentMapper ?? throw new ArgumentNullException(nameof(agentMapper));
-        _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
-        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
+        _round = round ?? throw new ArgumentNullException(nameof(round));
     }
 
     public async ValueTask<RoundDetailResult> GetAsync(
         JokerRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
-
-        var playerModel = await _playerService.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
-        var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
-
-        var agent = _agentMapper.GetAgentByCurrencyCode(
-            configuration!.BrandMerchants,
-            playerModel.BrandCode,
-            roundInfo.CurrencyCode);
-
-        if (agent == null)
-        {
-            throw new Exception($"The agent does not exist of brand '{playerModel.BrandCode}' and currency '{roundInfo.CurrencyCode}'");
-        }
-
-        var gameProviderCultureCode = await _service
-            .GetGameProviderLanguageCodeAsync(query.Language)
+        var roundInfo = await _round
+            .GetAsync(
+                roundId: query.RoundId,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var document = JsonDocument.Parse(roundInfo.AdditionalData);
-        var type = document.RootElement.GetProperty("Type").GetString();
-        if (!Enum.TryParse<JokerDataType>(type, true, out var dataType))
-        {
-            dataType = JokerDataType.Game;
-        }
+        var configuration = await _gameProvider
+            .GetJokerConfigurationAsync(
+                gameProviderConfigurationId: roundInfo.GameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        var cultureCode = await _gameProvider
+            .GetGameProviderCultureCodeAsync(
+                gameProviderId: roundInfo.GameProviderId,
+                cultureCode: query.Language,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false) ?? "en";
 
         var url = await _client
-            .GetGameDetailUrlAsync(configuration.ApiUrl,
-                gameProviderCultureCode,
-                roundInfo.ExternalRoundId,
-                dataType,
-                agent.AgentId,
-                agent.SecretKey).ConfigureAwait(false);
+            .GameRecordDetailsAsync(
+                apiUrl: configuration.ApiUrl,
+                appId: configuration.AppId,
+                secretKey: configuration.SecretKey,
+                externalRoundId: roundInfo.ExternalRoundId,
+                language: cultureCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         return new RoundDetailResult
         {

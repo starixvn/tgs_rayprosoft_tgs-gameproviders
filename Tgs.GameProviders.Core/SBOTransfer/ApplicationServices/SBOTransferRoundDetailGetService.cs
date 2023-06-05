@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.SBOTransfer.ApplicationServices;
 
 public class SBOTransferRoundDetailGetService : IGetService<SBOTransferRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public SBOTransferRoundDetailGetService(IRoundService roundService)
+    public SBOTransferRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

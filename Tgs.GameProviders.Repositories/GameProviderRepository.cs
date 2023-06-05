@@ -52,7 +52,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonSerializer.Deserialize<AwcConfigurationData>(data.ConfigurationData, _SerializerOptions)!;
     }
 
-    public async ValueTask<BTiSportsConfiguration> GetBTiSportsConfiguration(
+    public async ValueTask<BTiSportsConfiguration> GetBTiSportsConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -98,7 +98,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(
+    public async ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -121,7 +121,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<EndorphinaConfiguration> GetEndorphinaConfiguration(
+    public async ValueTask<EndorphinaConfiguration> GetEndorphinaConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -217,7 +217,7 @@ internal class GameProviderRepository : IGameProviderRepository
         .ConfigureAwait(false)
         ?? throw new Exception($"Game Provider does not exist.({gameProviderCode})");
 
-    public async ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfiguration(
+    public async ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -263,7 +263,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(
+    public async ValueTask<JDBTransferConfiguration> GetJDBTransferConfigurationAsync(
             Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -286,7 +286,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<JiliTransferConfiguration> GetJiliTransferConfiguration(
+    public async ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -296,6 +296,29 @@ internal class GameProviderRepository : IGameProviderRepository
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.JiliTransfer})");
+
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+
+        return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
+            ? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})")
+            : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
+    }
+
+    public async ValueTask<JokerConfiguration> GetJokerConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<JokerConfiguration>(
+                key: GameProviderConfigurations.Joker,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.Joker})");
 
         var gameProviderConfig = await _client
             .GameProviderConfigurationGetAsync(
@@ -378,7 +401,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<SabaTransferConfiguration> GetSabaTransferConfiguration(
+    public async ValueTask<SabaTransferConfiguration> GetSabaTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -401,7 +424,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(
+    public async ValueTask<SBOTransferConfiguration> GetSBOTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -424,7 +447,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<SM01Configuration> GetSM01Configuration(
+    public async ValueTask<SM01Configuration> GetSM01ConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -447,7 +470,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfiguration(
+    public async ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -470,7 +493,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfiguration(
+    public async ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -493,7 +516,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
     }
 
-    public async ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(
+    public async ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {

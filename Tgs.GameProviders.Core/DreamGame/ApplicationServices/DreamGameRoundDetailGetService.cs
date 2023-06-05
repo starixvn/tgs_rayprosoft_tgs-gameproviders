@@ -9,12 +9,12 @@ namespace Tgs.GameProviders.Core.DreamGame.ApplicationServices;
 internal class DreamGameRoundDetailGetService : IGetService<DreamGameRoundDetailQuery, RoundDetailResult>
 {
     private readonly IDreamGameApiClient _client;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
     private readonly IDreamGameService _service;
 
     public DreamGameRoundDetailGetService(
         IDreamGameApiClient client,
-        IRoundService roundService,
+        IRoundRepository roundService,
         IDreamGameService service
         )
     {

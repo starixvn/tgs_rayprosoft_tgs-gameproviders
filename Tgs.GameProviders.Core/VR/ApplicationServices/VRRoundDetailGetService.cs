@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.VR.ApplicationServices;
 
 internal class VRRoundDetailGetService : IGetService<VRRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public VRRoundDetailGetService(IRoundService roundService)
+    public VRRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

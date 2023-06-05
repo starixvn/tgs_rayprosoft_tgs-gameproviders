@@ -66,7 +66,7 @@ public class JDBTransferGameUrlGetServiceUnitTest
             AesIV = "AesIV",
             AesKey = "AesKey"
         };
-        _ = fakeGameProviderRepository.GetJDBTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetJDBTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var gameInfo = new GameInfo(
             GameId: 1,

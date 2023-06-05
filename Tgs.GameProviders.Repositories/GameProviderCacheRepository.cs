@@ -50,7 +50,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public async ValueTask<BTiSportsConfiguration> GetBTiSportsConfiguration(
+    public async ValueTask<BTiSportsConfiguration> GetBTiSportsConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -58,7 +58,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out BTiSportsConfiguration? configurationData))
         {
             configurationData = await _repository
-                .GetBTiSportsConfiguration(
+                .GetBTiSportsConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -96,7 +96,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public async ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfiguration(
+    public async ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -104,7 +104,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out DreamGamingTransferConfiguration? configurationData))
         {
             configurationData = await _repository
-                .GetDreamGamingTransferConfiguration(
+                .GetDreamGamingTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -119,7 +119,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public async ValueTask<EndorphinaConfiguration> GetEndorphinaConfiguration(
+    public async ValueTask<EndorphinaConfiguration> GetEndorphinaConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -127,7 +127,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out EndorphinaConfiguration? configurationData))
         {
             configurationData = await _repository
-                .GetEndorphinaConfiguration(
+                .GetEndorphinaConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -254,7 +254,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider does not exist.({gameProviderCode})");
     }
 
-    public async ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfiguration(
+    public async ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -262,7 +262,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out HabaneroTransferConfiguration? configurationData))
         {
             configurationData = await _repository
-                .GetHabaneroTransferConfiguration(
+                .GetHabaneroTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -300,7 +300,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public async ValueTask<JDBTransferConfiguration> GetJDBTransferConfiguration(
+    public async ValueTask<JDBTransferConfiguration> GetJDBTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -308,7 +308,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out JDBTransferConfiguration? configurationData))
         {
             configurationData = await _repository
-                .GetJDBTransferConfiguration(
+                .GetJDBTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -323,7 +323,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public async ValueTask<JiliTransferConfiguration> GetJiliTransferConfiguration(
+    public async ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -331,7 +331,30 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out JiliTransferConfiguration? configurationData))
         {
             configurationData = await _repository
-                .GetJiliTransferConfiguration(
+                .GetJiliTransferConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<JokerConfiguration> GetJokerConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out JokerConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetJokerConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -415,7 +438,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public async ValueTask<SabaTransferConfiguration> GetSabaTransferConfiguration(
+    public async ValueTask<SabaTransferConfiguration> GetSabaTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -423,7 +446,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out SabaTransferConfiguration? configurationData))
         {
             configurationData = await _repository
-                .GetSabaTransferConfiguration(
+                .GetSabaTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -438,7 +461,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public async ValueTask<SBOTransferConfiguration> GetSBOTransferConfiguration(
+    public async ValueTask<SBOTransferConfiguration> GetSBOTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -446,7 +469,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out SBOTransferConfiguration? configurationData))
         {
             configurationData = await _repository
-                .GetSBOTransferConfiguration(
+                .GetSBOTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -461,7 +484,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public async ValueTask<SM01Configuration> GetSM01Configuration(
+    public async ValueTask<SM01Configuration> GetSM01ConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -469,7 +492,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out SM01Configuration? configurationData))
         {
             configurationData = await _repository
-                .GetSM01Configuration(
+                .GetSM01ConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -484,7 +507,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public async ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfiguration(
+    public async ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -492,7 +515,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out TFGamingTransferConfiguration? configurationData))
         {
             configurationData = await _repository
-                .GetTFGamingTransferConfiguration(
+                .GetTFGamingTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -507,7 +530,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public async ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfiguration(
+    public async ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -515,7 +538,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out WGFmGamingConfiguration? configurationData))
         {
             configurationData = await _repository
-                .GetWGFmGamingConfiguration(
+                .GetWGFmGamingConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -530,7 +553,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public async ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfiguration(
+    public async ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
@@ -538,7 +561,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
         if (!_memoryCache.TryGetValue(key, out WMCasinoTransferConfiguration? configurationData))
         {
             configurationData = await _repository
-                .GetWMCasinoTransferConfiguration(
+                .GetWMCasinoTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);

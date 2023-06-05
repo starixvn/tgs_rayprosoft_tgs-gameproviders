@@ -45,7 +45,7 @@ public class JiliTransferPlayerFundCheckingGetService : IGetService<JiliTransfer
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var configuration = await _gameProvider
-            .GetJiliTransferConfiguration(
+            .GetJiliTransferConfigurationAsync(
                 gameProviderConfigurationId: gameProviderConfigurationId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);

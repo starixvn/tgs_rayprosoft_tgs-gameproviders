@@ -8,10 +8,10 @@ namespace Tgs.GameProviders.Core.InplayMatrixESports.ApplicationServices;
 
 internal class InplayMatrixESportsRoundDetailGetService : IGetService<InplayMatrixESportsRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public InplayMatrixESportsRoundDetailGetService(
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

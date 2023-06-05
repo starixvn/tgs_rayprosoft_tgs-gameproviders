@@ -5,7 +5,6 @@ using OpenTelemetry.Instrumentation.AspNetCore;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using Tgs.GameInterface.Cards365.Client;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -195,7 +194,12 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfacePinnacleBaseUrl")!;
-    });
+    },
+(options, sp) =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceJokerBaseUrl")!;
+});
 
 builder.Services
     .AddOpenTelemetry()

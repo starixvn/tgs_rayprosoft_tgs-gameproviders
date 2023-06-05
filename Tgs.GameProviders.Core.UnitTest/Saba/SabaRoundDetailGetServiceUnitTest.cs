@@ -25,7 +25,7 @@ public class SabaRoundDetailGetServiceUnitTest
         var fakeService = Substitute.For<ISabaService>();
         var fakeApiClient = Substitute.For<ISabaApiClient>();
         var fakeGameActionService = Substitute.For<IGameActionService>();
-        var fakeRoundService = Substitute.For<IRoundService>();
+        var fakeRoundService = Substitute.For<IRoundRepository>();
 
         var configuration = new SabaConfiguration
         {

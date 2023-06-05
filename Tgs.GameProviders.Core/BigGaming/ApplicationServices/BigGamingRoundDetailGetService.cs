@@ -15,14 +15,14 @@ internal class BigGamingRoundDetailGetService : IGetService<BigGamingRoundDetail
     private readonly IBigGamingRoundDetailAnalyzeService _bigGamingRoundDetailAnalyzeService;
     private readonly IBigGamingApiClient _client;
     private readonly IGameRepository _gameRepository;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
     private readonly IBigGamingService _service;
 
     public BigGamingRoundDetailGetService(
         IBigGamingRoundDetailAnalyzeService bigGamingRoundDetailAnalyzeService,
         IBigGamingApiClient client,
         IGameRepository gameRepository,
-        IRoundService roundService,
+        IRoundRepository roundService,
         IBigGamingService service
         )
     {

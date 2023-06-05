@@ -8,10 +8,10 @@ namespace Tgs.GameProviders.Core.YeeBet.ApplicationServices;
 
 internal class YeeBetRoundDetailGetService : IGetService<YeeBetRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public YeeBetRoundDetailGetService(
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

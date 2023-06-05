@@ -1,55 +1,70 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameInterface.Joker.Client;
+using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
 internal class JokerPlayerFundInGetService : IGetService<JokerPlayerFundInQuery, PlayerFundResult>
 {
-    private readonly IJokerAgentMapper _agentMapper;
-    private readonly IJokerApiClient _client;
-    private readonly IJokerService _service;
+    private readonly IBrandRepository _brand;
+    private readonly IGameInterfaceJokerClient _client;
+    private readonly IGameProviderRepository _gameProvider;
+    private readonly IPlayerRepository _player;
 
     public JokerPlayerFundInGetService(
-        IJokerApiClient client,
-        IJokerService service,
-        IJokerAgentMapper agentMapper)
+        IBrandRepository brand,
+        IGameProviderRepository gameProvider,
+        IGameInterfaceJokerClient client,
+        IPlayerRepository player)
     {
+        _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+        _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _service = service ?? throw new ArgumentNullException(nameof(service));
-        _agentMapper = agentMapper ?? throw new ArgumentNullException(nameof(agentMapper));
+        _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
     public async ValueTask<PlayerFundResult> GetAsync(
         JokerPlayerFundInQuery query,
         CancellationToken cancellationToken = default)
     {
-        var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+                gameProviderCode: GameProviderType.Joker,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+                playerCode: query.PlayerCode,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: gameProviderId,
+                brandId: player.BrandId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetJokerConfigurationAsync(
+                gameProviderConfigurationId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        var agent = _agentMapper.GetAgentByCurrencyCode(
-            configuration.BrandMerchants,
-            query.BrandCode,
-            query.CurrencyCode);
+        var reply = await _client
+            .FundInAsync(
+                apiUrl: configuration.ApiUrl,
+                appId: configuration.AppId,
+                secretKey: configuration.SecretKey,
+                playerCode: query.PlayerCode,
+                transactionId: query.OrderId,
+                amount: query.Amount)
+            .ConfigureAwait(false);
 
-        if (agent == null)
+        return new PlayerFundResult
         {
-            throw new Exception($"The agent does not exist of brand '{query.BrandCode}' and currency '{query.CurrencyCode}'");
-        }
-
-        var success = await _client.FundInAsync(
-            configuration.ApiUrl,
-            query.PlayerCode,
-            query.OrderId,
-            query.Amount,
-            agent.AgentId,
-            agent.SecretKey).ConfigureAwait(false);
-
-        return success
-            ? new PlayerFundResult
-            {
-                OrderId = query.OrderId
-            }
-            : null;
+            OrderId = reply.RequestId
+        };
     }
 }

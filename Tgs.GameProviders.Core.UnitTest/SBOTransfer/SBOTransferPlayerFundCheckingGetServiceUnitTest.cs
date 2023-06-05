@@ -61,7 +61,7 @@ public class SBOTransferPlayerFundCheckingGetServiceUnitTest
             MaxPerMatch = 20000,
             CasinoTableLimit = 1
         };
-        _ = fakeGameProviderRepository.GetSBOTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetSBOTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         _ = fakeGameInterfaceSBOClient.FundStatusAsync(
                 Arg.Is(configuration.ApiUrl),

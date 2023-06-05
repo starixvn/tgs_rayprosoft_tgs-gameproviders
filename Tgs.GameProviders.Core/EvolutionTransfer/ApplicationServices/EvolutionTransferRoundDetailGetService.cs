@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
 
 internal class EvolutionTransferRoundDetailGetService : IGetService<EvolutionTransferRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public EvolutionTransferRoundDetailGetService(IRoundService roundService)
+    public EvolutionTransferRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

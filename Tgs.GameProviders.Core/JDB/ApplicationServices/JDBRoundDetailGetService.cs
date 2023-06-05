@@ -15,11 +15,11 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
     private readonly IGameProviderRepository _gameProviderRepository;
     private readonly IGameRepository _gameRepository;
     private readonly IPlayerRepository _playerRepository;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
     private readonly IJDBService _service;
 
     public JDBRoundDetailGetService(
-        IRoundService roundService,
+        IRoundRepository roundService,
         IPlayerRepository playerRepository,
         IGameProviderRepository gameProviderRepository,
         IGameRepository gameRepository,

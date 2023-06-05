@@ -12,11 +12,11 @@ namespace Tgs.GameProviders.Core.WMCasino.ApplicationServices;
 internal class WMCasinoRoundDetailGetService : IGetService<WMCasinoRoundDetailQuery, RoundDetailResult>
 {
     private readonly ILogger<WMCasinoRoundDetailGetService> _logger;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public WMCasinoRoundDetailGetService(
         ILogger<WMCasinoRoundDetailGetService> logger,
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));

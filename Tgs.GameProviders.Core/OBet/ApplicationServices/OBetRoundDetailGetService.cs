@@ -8,10 +8,10 @@ namespace Tgs.GameProviders.Core.OBet.ApplicationServices;
 
 internal class OBetRoundDetailGetService : IGetService<OBetRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public OBetRoundDetailGetService(
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

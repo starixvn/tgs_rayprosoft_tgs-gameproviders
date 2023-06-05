@@ -14,13 +14,13 @@ internal class SBORoundDetailGetService : IGetService<SBORoundDetailQuery, Round
     private readonly ISBOApiClient _client;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
     private readonly ILogger<SBORoundDetailGetService> _logger;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
     private readonly ISBOService _service;
     private readonly ISBOUtility _utility;
 
     public SBORoundDetailGetService(
         ILogger<SBORoundDetailGetService> logger,
-        IRoundService roundService,
+        IRoundRepository roundService,
         ISBOService service,
         ISBOUtility utility,
         ISBOApiClient client)

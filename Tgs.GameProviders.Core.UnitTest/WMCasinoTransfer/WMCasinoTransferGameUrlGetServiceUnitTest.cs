@@ -86,7 +86,7 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
         _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
              Arg.Is(gameInfo.GameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetWMCasinoTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetWMCasinoTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
         _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
             Arg.Is(gameInfo.GameProviderId),
             Arg.Is(query.Language)).Returns(gameProviderCultureCode);

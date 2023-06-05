@@ -13,12 +13,12 @@ internal class JiliRoundDetailGetService : IGetService<JiliRoundDetailQuery, Rou
     private readonly ILogger<JiliRoundDetailGetService> _logger;
     private readonly IJiliMerchantMapper _merchantMapper;
     private readonly IPlayerRepository _playerService;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
     private readonly IJiliService _service;
 
     public JiliRoundDetailGetService(
         ILogger<JiliRoundDetailGetService> logger,
-        IRoundService roundService,
+        IRoundRepository roundService,
         IPlayerRepository playerService,
         IJiliService service,
         IJiliMerchantMapper merchantMapper,

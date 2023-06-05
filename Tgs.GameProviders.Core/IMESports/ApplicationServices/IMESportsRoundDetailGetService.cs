@@ -21,12 +21,12 @@ internal class IMESportsRoundDetailGetService : IGetService<IMESportsRoundDetail
     private readonly JsonSerializerOptions _jsonSerialzierOptions;
     private readonly ILogger<IMESportsRoundDetailGetService> _logger;
     private readonly IIMESportsMerchantMapper _merchantMapper;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
     private readonly IIMESportsService _service;
 
     public IMESportsRoundDetailGetService(
         ILogger<IMESportsRoundDetailGetService> logger,
-        IRoundService roundService,
+        IRoundRepository roundService,
         IIMESportsService service,
         IIMESportsMerchantMapper merchantMapper,
         IIMESportsApiClient client)

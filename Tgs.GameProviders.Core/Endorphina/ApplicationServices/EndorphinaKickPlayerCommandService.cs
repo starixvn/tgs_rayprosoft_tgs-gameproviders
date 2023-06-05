@@ -31,7 +31,7 @@ internal class EndorphinaKickPlayerCommandService : ICommandService<EndorphinaKi
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.Endorphina).ConfigureAwait(false);
         var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetEndorphinaConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProvider.GetEndorphinaConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         await _client.PlayerKickAsync(
             apiUrl: configuration.ApiUrl,

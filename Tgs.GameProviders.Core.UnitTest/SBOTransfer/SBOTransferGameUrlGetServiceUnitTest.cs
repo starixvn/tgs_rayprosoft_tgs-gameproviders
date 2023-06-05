@@ -69,7 +69,7 @@ public class SBOTransferGameUrlGetServiceUnitTest
             MaxPerMatch = 20000,
             CasinoTableLimit = 1
         };
-        _ = fakeGameProviderRepository.GetSBOTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetSBOTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var gameInfo = new GameInfo(
             GameId: 1,
@@ -178,7 +178,7 @@ public class SBOTransferGameUrlGetServiceUnitTest
             MaxPerMatch = 20000,
             CasinoTableLimit = 1
         };
-        _ = fakeGameProviderRepository.GetSBOTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetSBOTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var gameInfo = new GameInfo(
             GameId: 1,

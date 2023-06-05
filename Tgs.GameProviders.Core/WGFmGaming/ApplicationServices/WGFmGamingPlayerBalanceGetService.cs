@@ -31,7 +31,7 @@ public class WGFmGamingPlayerBalanceGetService : IGetService<WGFmGamingPlayerBal
         var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
         var player = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProviderRepository.GetWGFmGamingConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configurationData = await _gameProviderRepository.GetWGFmGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         (bool IsPlayer, decimal balance) = await _client.PlayerBalanceAsync(
             configurationData.ApiUrl,

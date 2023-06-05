@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.Avia.ApplicationServices;
 
 internal class AviaRoundDetailGetService : IGetService<AviaRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public AviaRoundDetailGetService(IRoundService roundService)
+    public AviaRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

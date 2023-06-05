@@ -20,7 +20,7 @@ public class HabaneroRoundDetailGetServiceUnitTest
     public async ValueTask Normal_Process()
     {
         var fakeLogger = NullLogger<HabaneroRoundDetailGetService>.Instance;
-        var fakeRoundService = Substitute.For<IRoundService>();
+        var fakeRoundService = Substitute.For<IRoundRepository>();
         var fakeService = Substitute.For<IHabaneroService>();
 
         var externalRoundId = "1639679431950180036";

@@ -13,11 +13,11 @@ internal class Card365RoundDetailGetService : IGetService<Card365RoundDetailQuer
 {
     private readonly JsonSerializerOptions _jsonSerializerOptions;
     private readonly ILogger<Card365RoundDetailGetService> _logger;
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public Card365RoundDetailGetService(
         ILogger<Card365RoundDetailGetService> logger,
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));

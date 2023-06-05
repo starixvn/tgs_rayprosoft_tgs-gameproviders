@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Linq;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
-using Tgs.GameCommand.Common;
-using Tgs.GameProviders.Core.Joker;
+using Tgs.GameInterface.Joker.Client;
+using Tgs.GameInterface.Joker.Protos;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameProviders.Domains.SettingConfiguration.Joker;
 using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.Joker;
@@ -16,129 +18,97 @@ namespace Tgs.GameProviders.Core.UnitTest.Joker;
 public class JokerRoundDetailGetServiceUnitTest
 {
     [Test]
-    public async ValueTask Normal_Process()
+    public async Task Normal_Process()
     {
-        var fakeRoundService = Substitute.For<IRoundService>();
-        var fakePlayer = Substitute.For<IPlayerRepository>();
-        var fakeService = Substitute.For<IJokerService>();
-        var fakeAgentMapper = Substitute.For<IJokerAgentMapper>();
-        var fakeApiClient = Substitute.For<IJokerApiClient>();
-
-        var agent = new JokerAgent
-        {
-            AgentId = "TGVY",
-            CurrencyCode = "HKD",
-            SecretKey = "s5ghrn77baoto",
-            Status = true
-        };
-
-        var configuration = new JokerConfiguration
-        {
-            ServiceEndpointUrl = new("http://game-joker"),
-            ApiUrl = new("https://w.api788.net"),
-            GameLaunchUrl = new Uri("http://www.gwp6868.net/"),
-            BrandMerchants = new JokerBrandMerchant[]
-            {
-                new()
-                {
-                    BrandCode = "Default",
-                    Agents = new[] { agent }
-                }
-            }
-        };
-
-        var gameProviderLanguage = "en";
-        var historyUrl = "//hs.gwp6868.net/History?Signature=lpjOI3lMu5kXnhT3tSF9VPD5g9Y%3d&Key=83ztt1eowy7qy&Timestamp=1650520123495&Lang=en&TransactionOCode=xj88k7byqz9ne";
-
-        var player = new PlayerInfo(
-            Guid.Parse("b5a2c708-ab70-4316-9f4d-5d2ad0e77460"),
-            "TGS",
-            Guid.Parse("66c5fef5-217b-4929-9a08-72c2479a8f4e"),
-            "TGS",
-            Guid.Parse("9f1ecf19-38cd-474f-b0d2-93638dc07d21"),
-            "GPI_HKD",
-            "4uf6k014jp5x",
-            "4uf6k014jp5x",
-            Guid.Parse("cf99c783-acdf-48cc-b1cc-08d99a806de9"),
-            "HKD");
-
-        var additionalData = @"{""OCode"":""83ztt1eowy7qy"",""Username"":""4UF6K014JP5X"",""GameCode"":""quofrdenycyyn"",""Description"":""G2a9e5244e50b"",""Type"":""Game"",""Amount"":1.20,""Result"":2.10,""Time"":""2022-04-20T15:00:10.621+08:00""}";
-
-        var roundInfo = new RoundInfo(
-            Guid.Parse("4a3cf6e9-8001-0000-0001-000020dd98d5"),
-            "83ztt1eowy7qy",
-            Guid.Parse("2ebfe118-b36b-40fa-85b5-78363470addc"),
-            player.PlayerCode,
-            2600025,
-            player.DefaultWalletCurrencyCode,
-            GameRoundStatus.Closed,
-            Guid.NewGuid(),
-            player.DefaultWalletId,
-            DateTime.Now,
-            DateTime.Now,
-            DateTime.Now,
-            player.BrandId,
-            DateTimeOffset.Parse("2022-04-20T15:00:10.621+08:00"),
-            DateTimeOffset.Parse("2022-04-20T15:00:10.621+08:00"),
-            1.2m,
-            1.2m,
-            2.1m,
-            null,
-            1.2m,
-            -0.9m,
-            null,
-            GameRoundClientStatus.Win,
-            null,
-            null,
-            null,
-            additionalData);
-
-        var sut = new JokerRoundDetailGetService(fakeApiClient, fakeService, fakeAgentMapper, fakePlayer, fakeRoundService);
+        var fakeRound = Substitute.For<IRoundRepository>();
+        var fakeGameProvider = Substitute.For<IGameProviderRepository>();
+        var fakeClient = Substitute.For<IGameInterfaceJokerClient>();
 
         var query = new JokerRoundDetailQuery
         {
-            RoundId = roundInfo.RoundId,
+            RoundId = Guid.NewGuid(),
             Language = "en-US"
         };
 
-        _ = fakeRoundService.GetAsync(Arg.Is(query.RoundId)).Returns(roundInfo);
-        _ = fakePlayer.GetAsync(Arg.Is(roundInfo.PlayerCode)).Returns(player);
-        _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
-        _ = fakeService
-            .GetGameProviderLanguageCodeAsync(Arg.Is(query.Language))
-            .Returns(gameProviderLanguage);
+        var roundInfo = new RoundInfo(
+            RoundId: query.RoundId,
+            ExternalRoundId: "GN0022160907S",
+            GameProviderId: Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
+            PlayerCode: "4ucmqplxb029",
+            GameId: 1,
+            CurrencyCode: "CNY",
+            Status: GameRoundStatus.Closed,
+            GameProviderConfigurationId: Guid.NewGuid(),
+            WalletId: Guid.NewGuid(),
+            CreatedOn: DateTime.Now.AddMinutes(-1),
+            ClosedOn: DateTime.Now,
+            UpdatedOn: DateTime.Now,
+            BrandId: Guid.NewGuid(),
+            ExternalCreatedOn: DateTime.Now.AddMinutes(-1),
+            ExternalClosedOn: DateTime.Now,
+            BetAmount: 20m,
+            ValidBetAmount: 20m,
+            SettleAmount: 45m,
+            Commission: null,
+            Turnover: 20m,
+            CompanyWinLoss: -25m,
+            TieBetAdjustment: null,
+            ClientStatus: GameRoundClientStatus.Win,
+            ReopenTurnoverAdjustment: null,
+            ReopenedOn: null,
+            EffectiveBettingPercentage: null,
+            AdditionalData: JsonSerializer.Serialize(new { }));
+        _ = fakeRound
+            .GetAsync(
+                roundId: Arg.Is(query.RoundId),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(roundInfo);
 
-        _ = fakeAgentMapper
-            .GetAgentByCurrencyCode(
-                Arg.Is(configuration.BrandMerchants),
-                Arg.Is(player.BrandCode),
-                Arg.Is(roundInfo.CurrencyCode))
-            .Returns(agent);
-
-        _ = fakeApiClient
-            .GetGameDetailUrlAsync(
-                Arg.Is(configuration.ApiUrl),
-                Arg.Is(gameProviderLanguage),
-                Arg.Is(roundInfo.ExternalRoundId),
-                Arg.Any<JokerDataType>(),
-                Arg.Is(agent.AgentId),
-                Arg.Is(agent.SecretKey))
-            .Returns(historyUrl);
-
-        var expected = new RoundDetailResult
+        var configuration = new JokerConfiguration
         {
-            Data = new RoundDetailDataBase[]
-            {
-                new RoundDetailDataUrl
-                {
-                    Url = historyUrl
-                }
-            }
+            ApiUrl = new("http://localhost/"),
+            GameLaunchUrl = new Uri("http://localhost/"),
+            AppId = "appId",
+            SecretKey = "secretKey"
         };
+        _ = fakeGameProvider
+            .GetJokerConfigurationAsync(
+                gameProviderConfigurationId: Arg.Is(roundInfo.GameProviderConfigurationId),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(configuration);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var gameProviderCultureCode = "en";
+        _ = fakeGameProvider
+            .GetGameProviderCultureCodeAsync(
+                gameProviderId: Arg.Is(roundInfo.GameProviderId),
+                cultureCode: Arg.Is(query.Language),
+                cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderCultureCode);
+
+        var reply = new GameRecordDetailsReply
+        {
+            Url = "http://localhost/"
+        };
+        _ = fakeClient
+            .GameRecordDetailsAsync(
+                apiUrl: Arg.Is(configuration.ApiUrl),
+                appId: Arg.Is(configuration.AppId),
+                secretKey: Arg.Is(configuration.SecretKey),
+                externalRoundId: Arg.Is(roundInfo.ExternalRoundId),
+                language: Arg.Is(gameProviderCultureCode))
+            .Returns(reply.Url);
+
+        var sut = new JokerRoundDetailGetService(
+            fakeGameProvider,
+            fakeClient,
+            fakeRound);
+
+        var actual = await sut
+            .GetAsync(
+               query: query)
+            .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        CollectionAssert.AreEqual(expected.Data, actual.Data);
+        Assert.AreEqual(reply.Url, (actual.Data!.Single() as RoundDetailDataUrl)!.Url.ToString());
     }
 }

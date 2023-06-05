@@ -57,7 +57,7 @@ public class WMCasinoTransferPlayerBalanceGetServiceUnitTest
         _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
              Arg.Is(gameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetWMCasinoTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetWMCasinoTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var response = new BalanceReply()
         {

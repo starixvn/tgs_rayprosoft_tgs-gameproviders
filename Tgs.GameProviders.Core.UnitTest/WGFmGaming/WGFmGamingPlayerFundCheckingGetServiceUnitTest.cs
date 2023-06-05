@@ -57,7 +57,7 @@ public class WGFmGamingPlayerFundCheckingGetServiceUnitTest
             PartnerKey = "PartnerKey",
             IV = "IV"
         };
-        _ = fakeGameProviderRepository.GetWGFmGamingConfiguration(
+        _ = fakeGameProviderRepository.GetWGFmGamingConfigurationAsync(
             Arg.Is(gameProviderConfigurationId)
             ).Returns(ValueTask.FromResult(configuration));
 

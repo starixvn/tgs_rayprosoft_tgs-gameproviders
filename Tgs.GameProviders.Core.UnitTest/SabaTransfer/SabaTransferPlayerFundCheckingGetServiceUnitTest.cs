@@ -58,7 +58,7 @@ public class SabaTransferPlayerFundCheckingGetServiceUnitTest
             VendorId = "um5vspnzkx",
             OddsType = 2
         };
-        _ = fakeGameProviderRepository.GetSabaTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetSabaTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         _ = fakeGameInterfaceSabaClient
                 .FundStatusAsync(

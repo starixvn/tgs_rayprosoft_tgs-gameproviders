@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameInterface.Joker.Client;
 using Tgs.GameProviders.Core.Joker.Models;
 using Tgs.GameProviders.Domains;
 using Tgs.GameRounds.Common;
@@ -13,15 +13,18 @@ namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQuery, JokerGameRecordResult>
 {
     private readonly IJokerAgentMapper _agentMapper;
-    private readonly IJokerApiClient _client;
+    private readonly IGameInterfaceJokerClient _client;
+    private readonly IGameProviderRepository _gameProvider;
     private readonly IJokerService _service;
 
     public JokerGameRecordListGetService(
-        IJokerApiClient client,
+        IGameInterfaceJokerClient client,
+        IGameProviderRepository gameProvider,
         IJokerService service,
         IJokerAgentMapper agentMapper)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
+        _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _agentMapper = agentMapper ?? throw new ArgumentNullException(nameof(agentMapper));
     }
@@ -32,119 +35,59 @@ internal class JokerGameRecordListGetService : IGetService<JokerGameRecordListQu
     {
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-        var agent = _agentMapper.GetAgentById(configuration!.BrandMerchants, query.BrandCode, query.AgentId);
+        var agent = _agentMapper.GetAgentById(configuration!.BrandMerchants, query.BrandCode, query.AgentId)
+            ?? throw new Exception($"The agent does not exist of brand '{query.BrandCode}' and agent id '{query.AgentId}'");
 
-        if (agent == null)
-        {
-            throw new Exception($"The agent does not exist of brand '{query.BrandCode}' and agent id '{query.AgentId}'");
-        }
-
-        var (success, response) = await _client
-            .GetGameRecordAsync(
-                configuration.ApiUrl,
-                query.StartTime,
-                query.EndTime,
-                query.NextId,
-                agent.AgentId,
-                agent.SecretKey)
+        var reply = await _client
+            .GameRecordAsync(
+                apiUrl: configuration.ApiUrl,
+                appId: agent.AgentId,
+                secretKey: agent.SecretKey,
+                startTime: query.StartTime,
+                endTime: query.EndTime,
+                nextId: query.NextId ?? string.Empty,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        if (!success)
+        var gameRecords = Enumerable.Empty<GameRecordListModel>();
+        if (reply.Items.Any())
         {
-            return new JokerGameRecordResult
+            var gameProviderCode = GameProviderType.Joker;
+            var gameProviderId = await _gameProvider
+                .GetGameProviderIdAsync(
+                    gameProviderCode: gameProviderCode,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            gameRecords = reply.Items.Select(data =>
             {
-                Success = false
-            };
+                return new GameRecordListModel
+                {
+                    GameProviderCode = gameProviderCode,
+                    GameProviderId = gameProviderId,
+                    PlayerCode = data.PlayerCode.ToLower(),
+                    Status = GameRoundStatus.Closed,
+                    ClientStatus = GetClientStatus(data.WinLoss.ToDecimal().GetValueOrDefault(0)),
+                    ExternalRoundId = data.ExternalRoundId,
+                    ExternalGameId = data.ExternalGameId,
+                    ExternalCreatedOn = data.ExternalCreatedOn.ToDateTimeOffset(),
+                    ExternalClosedOn = data.ExternalClosedOn.ToDateTimeOffset(),
+                    BetAmount = data.Bet.ToDecimal().GetValueOrDefault(0),
+                    ValidBetAmount = data.Bet.ToDecimal().GetValueOrDefault(0),
+                    SettleAmount = data.Settle.ToDecimal().GetValueOrDefault(0),
+                    PlayerWinLoss = data.WinLoss.ToDecimal().GetValueOrDefault(0),
+                    Commission = 0,
+                    Turnover = data.Bet.ToDecimal().GetValueOrDefault(0),
+                    TieBetAdjustment = null,
+                    AdditionalData = data.AdditionalData
+                };
+            });
         }
-
-        var gameProviderCode = GameProviderType.Joker;
-        var gameProviderId = await _service.GetGameProviderIdAsync().ConfigureAwait(false);
-
-        var gameRecords = response.Data.Game.Select(data =>
-        {
-            var playerWinLoss = data.SettleAmount - data.BetAmount;
-
-            return new GameRecordListModel
-            {
-                GameProviderCode = gameProviderCode,
-                GameProviderId = gameProviderId,
-                PlayerCode = data.Username.ToLower(),
-                Status = GameRoundStatus.Closed,
-                ClientStatus = GetClientStatus(playerWinLoss),
-                ExternalRoundId = data.TransactionId,
-                ExternalGameId = data.GameExternalId,
-                ExternalCreatedOn = data.Time,
-                ExternalClosedOn = data.Time,
-                BetAmount = data.BetAmount,
-                ValidBetAmount = data.BetAmount,
-                PlayerWinLoss = playerWinLoss,
-                Commission = 0,
-                Turnover = data.BetAmount,
-                SettleAmount = data.SettleAmount,
-                TieBetAdjustment = null,
-                AdditionalData = JsonSerializer.Serialize(data)
-            };
-        });
-
-        var jackpotRecords = response.Data.Jackpot.Select(data =>
-        {
-            var playerWinLoss = data.SettleAmount - data.BetAmount;
-
-            return new GameRecordListModel
-            {
-                GameProviderCode = gameProviderCode,
-                GameProviderId = gameProviderId,
-                PlayerCode = data.Username,
-                Status = GameRoundStatus.Closed,
-                ClientStatus = GetClientStatus(playerWinLoss),
-                ExternalRoundId = data.TransactionId,
-                ExternalGameId = data.GameExternalId,
-                ExternalCreatedOn = data.Time,
-                ExternalClosedOn = data.Time,
-                BetAmount = data.BetAmount,
-                ValidBetAmount = data.BetAmount,
-                PlayerWinLoss = playerWinLoss,
-                Commission = 0,
-                Turnover = data.BetAmount,
-                SettleAmount = data.SettleAmount,
-                TieBetAdjustment = null,
-                AdditionalData = JsonSerializer.Serialize(data)
-            };
-        });
-
-        var competitionRecords = response.Data.Competition.Select(data =>
-        {
-            var playerWinLoss = data.SettleAmount - data.BetAmount;
-
-            return new GameRecordListModel
-            {
-                GameProviderCode = gameProviderCode,
-                GameProviderId = gameProviderId,
-                PlayerCode = data.Username,
-                Status = GameRoundStatus.Closed,
-                ClientStatus = GetClientStatus(playerWinLoss),
-                ExternalRoundId = data.TransactionId,
-                ExternalGameId = data.GameExternalId,
-                ExternalCreatedOn = data.Time,
-                ExternalClosedOn = data.Time,
-                BetAmount = data.BetAmount,
-                ValidBetAmount = data.BetAmount,
-                PlayerWinLoss = playerWinLoss,
-                Commission = 0,
-                Turnover = data.BetAmount,
-                SettleAmount = data.SettleAmount,
-                TieBetAdjustment = null,
-                AdditionalData = JsonSerializer.Serialize(data)
-            };
-        });
-
-        var records = gameRecords.Concat(jackpotRecords).Concat(competitionRecords).ToArray();
-
         return new JokerGameRecordResult
         {
             Success = true,
-            NextId = response.NextId,
-            Datas = records
+            NextId = reply.NextId,
+            Datas = gameRecords.ToArray()
         };
     }
 

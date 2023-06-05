@@ -57,7 +57,7 @@ public class WMCasinoTransferPlayerFundInGetServiceUnitTest
         _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
              Arg.Is(gameProviderId),
              Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetWMCasinoTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetWMCasinoTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var gameProviderTransactionId = "2147649635";
         var reply = new FundReply()

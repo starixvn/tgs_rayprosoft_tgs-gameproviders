@@ -14,10 +14,10 @@ namespace Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices
         private readonly IGameInterfaceDreamGamingClient _client;
         private readonly IGameProviderRepository _gameProvider;
         private readonly IPlayerRepository _player;
-        private readonly IRoundService _roundService;
+        private readonly IRoundRepository _roundService;
 
         public DreamGamingTransferRoundDetailGetService(
-            IRoundService roundService,
+            IRoundRepository roundService,
             IGameInterfaceDreamGamingClient client,
             IBrandRepository brand,
             IGameProviderRepository gameProvider,
@@ -42,7 +42,7 @@ namespace Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices
             var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.DreamGamingTransfer).ConfigureAwait(false);
             var player = await _player.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
             var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-            var configuration = await _gameProvider.GetDreamGamingTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+            var configuration = await _gameProvider.GetDreamGamingTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
             var gameProviderCultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, query.Language).ConfigureAwait(false);
 
             var reply = await _client

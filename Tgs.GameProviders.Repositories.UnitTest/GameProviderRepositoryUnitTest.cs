@@ -86,7 +86,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetBTiSportsConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetBTiSportsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual(new Uri("https://prod20240-108707434.1x2aaa.com/"), actual.SportsbookURL);
@@ -330,7 +330,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetJDBTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetJDBTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual("ConfigurationData-Agent", actual.Agent);
@@ -372,10 +372,50 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetJiliTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetJiliTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual("ConfigurationData-AgentId", actual.AgentId);
+    }
+
+    [TestMethod]
+    public async Task Get_Joker_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new JokerConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            GameLaunchUrl = new("http://localhost/")
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<JokerConfiguration>(Arg.Is(GameProviderConfigurations.Joker))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.WMCasinoTransfer,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.Joker}-GPI",
+            Description: $"{GameProviderType.Joker}-GPI Configuration",
+            ClientId: $"{GameProviderType.Joker}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"AppId\":\"TGVY\",\"SecretKey\":\"s5ghrn77baoto\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetJokerConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual("TGVY", actual.AppId);
+        Assert.AreEqual("s5ghrn77baoto", actual.SecretKey);
     }
 
     [TestMethod]
@@ -455,7 +495,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetSabaTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetSabaTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual("tg", actual.OperatorId);
@@ -500,7 +540,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetSBOTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetSBOTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual("STAG_GPI", actual.Agent);
@@ -543,7 +583,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetSM01Configuration(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetSM01ConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual(new Uri("https://cn.ucfclive.com"), actual.ApiUrl);
@@ -589,7 +629,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetWGFmGamingConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetWGFmGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual("ConfigurationDataPartnerCode", actual.PartnerCode);
@@ -636,7 +676,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetWGFmGamingConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetWGFmGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual("SettingConfigurationPartnerCode", actual.PartnerCode);
@@ -677,7 +717,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetWMCasinoTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetWMCasinoTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
         Assert.AreEqual("hpg02twapi", actual.VendorId);

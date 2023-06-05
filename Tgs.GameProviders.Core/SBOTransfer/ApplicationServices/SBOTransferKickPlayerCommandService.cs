@@ -31,7 +31,7 @@ public class SBOTransferKickPlayerCommandService : ICommandService<SBOTransferKi
         var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SBOTransfer).ConfigureAwait(false);
         var player = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProviderRepository.GetSBOTransferConfiguration(gameProviderConfigurationId).ConfigureAwait(false);
+        var configuration = await _gameProviderRepository.GetSBOTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         await _client.PlayerKickAsync(
             configuration.ApiUrl,

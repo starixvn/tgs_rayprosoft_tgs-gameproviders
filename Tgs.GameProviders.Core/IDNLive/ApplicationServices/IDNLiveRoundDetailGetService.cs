@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.IDNLive.ApplicationServices;
 
 internal class IDNLiveRoundDetailGetService : IGetService<IDNLiveRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public IDNLiveRoundDetailGetService(IRoundService roundService)
+    public IDNLiveRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

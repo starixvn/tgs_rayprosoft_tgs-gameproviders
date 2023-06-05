@@ -19,7 +19,7 @@ internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
     [Test]
     public async ValueTask Normal_Process()
     {
-        var fakeRoundService = Substitute.For<IRoundService>();
+        var fakeRoundService = Substitute.For<IRoundRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeBrandRepository = Substitute.For<IBrandRepository>();

@@ -16,7 +16,6 @@ using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Core.KY;
 using Tgs.GameProviders.Core.LY;
 using Tgs.GameProviders.Core.PragmaticPlay;
-using Tgs.GameProviders.Core.PragmaticPlayTransfer;
 using Tgs.GameProviders.Core.Saba;
 using Tgs.GameProviders.Core.SBO;
 using Tgs.GameProviders.Core.SexyGaming;

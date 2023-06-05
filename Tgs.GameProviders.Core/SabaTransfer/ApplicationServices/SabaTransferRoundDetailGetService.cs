@@ -8,9 +8,9 @@ namespace Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
 
 public class SabaTransferRoundDetailGetService : IGetService<SabaTransferRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public SabaTransferRoundDetailGetService(IRoundService roundService)
+    public SabaTransferRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

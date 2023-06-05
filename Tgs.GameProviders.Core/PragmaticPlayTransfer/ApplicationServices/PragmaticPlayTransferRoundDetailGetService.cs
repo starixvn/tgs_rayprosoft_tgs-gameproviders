@@ -18,10 +18,10 @@ internal class PragmaticPlayTransferRoundDetailGetService
     private readonly IGameRepository _game;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
-    private readonly IRoundService _round;
+    private readonly IRoundRepository _round;
 
     public PragmaticPlayTransferRoundDetailGetService(
-        IRoundService round,
+        IRoundRepository round,
         IGameProviderRepository gameProvider,
         IPlayerRepository player,
         IBrandRepository brand,

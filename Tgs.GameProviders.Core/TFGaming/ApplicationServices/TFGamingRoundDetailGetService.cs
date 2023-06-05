@@ -10,9 +10,9 @@ namespace Tgs.GameProviders.Core.TFGaming.ApplicationServices;
 
 internal class TFGamingRoundDetailGetService : IGetService<TFGamingRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public TFGamingRoundDetailGetService(IRoundService roundService)
+    public TFGamingRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

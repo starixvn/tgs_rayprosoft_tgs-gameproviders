@@ -51,7 +51,7 @@ public class JiliTransferGameUrlGetService : IGetService<JiliTransferGameUrlQuer
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var configuration = await _gameProvider
-            .GetJiliTransferConfiguration(
+            .GetJiliTransferConfigurationAsync(
                 gameProviderConfigurationId: gameProviderConfigurationId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);

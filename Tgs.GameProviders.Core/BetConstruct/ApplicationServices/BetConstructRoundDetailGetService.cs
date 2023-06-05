@@ -8,10 +8,10 @@ namespace Tgs.GameProviders.Core.BetConstruct.ApplicationServices;
 
 internal class BetConstructRoundDetailGetService : IGetService<BetConstructRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
     public BetConstructRoundDetailGetService(
-        IRoundService roundService)
+        IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

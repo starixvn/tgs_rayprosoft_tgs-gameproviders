@@ -56,7 +56,7 @@ public class JDBTransferPlayerBalanceGetServiceUnitTest
             AesIV = "AesIV",
             AesKey = "AesKey"
         };
-        _ = fakeGameProviderRepository.GetJDBTransferConfiguration(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+        _ = fakeGameProviderRepository.GetJDBTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
         var response = new PlayerBalanceReply()
         {

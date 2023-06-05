@@ -10,9 +10,9 @@ namespace Tgs.GameProviders.Core.KY.ApplicationServices;
 
 internal class KYRoundDetailGetService : IGetService<KYRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundService _roundService;
+    private readonly IRoundRepository _roundService;
 
-    public KYRoundDetailGetService(IRoundService roundService)
+    public KYRoundDetailGetService(IRoundRepository roundService)
     {
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }

@@ -45,7 +45,7 @@ internal class SM01PlayerBalanceGetService : IGetService<SM01PlayerBalanceQuery,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var configuration = await _gameProvider
-            .GetSM01Configuration(
+            .GetSM01ConfigurationAsync(
                 gameProviderConfigurationId: gameProviderConfigurationId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
