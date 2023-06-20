@@ -73,7 +73,14 @@ public class OBetGameUrlGetServiceUnitTest
         {
             ApiUrl = new("http://localhost/"),
             ApiKey = "apiKey",
-            AgentId = "agentId"
+            AgentId = "agentId",
+            MaxBetGrpHdp = 269m,
+            MaxBetGrpBasketBall = 169m,
+            MaxBetGrpOthersSport = 69m,
+            MaxBetGrp1x2 = 299m,
+            MaxBetGrpMixParlay = 199m,
+            MaxBetGrpOthersOdds = 109m,
+            MaxBetGrpSpecial = 59m
         };
         _ = fakeGameProviderRepository
             .GetOBetConfigurationAsync(
@@ -116,5 +123,22 @@ public class OBetGameUrlGetServiceUnitTest
 
         Assert.NotNull(actual);
         Assert.AreEqual(new Uri(gameUrlReply.GameUrl), actual);
+
+        await fakeClient
+            .Received(1)
+            .PlayerUpdateBetLimitAsync(
+                apiUrl: Arg.Is(configuration.ApiUrl),
+                apiKey: Arg.Is(configuration.ApiKey),
+                agentId: Arg.Is(configuration.AgentId),
+                playerCode: Arg.Is(player.PlayerCode),
+                maxBetGrpHdp: Arg.Is(configuration.MaxBetGrpHdp),
+                maxBetGrpBasketBall: Arg.Is(configuration.MaxBetGrpBasketBall),
+                maxBetGrpOthersSport: Arg.Is(configuration.MaxBetGrpOthersSport),
+                maxBetGrp1x2: Arg.Is(configuration.MaxBetGrp1x2),
+                maxBetGrpMixParlay: Arg.Is(configuration.MaxBetGrpMixParlay),
+                maxBetGrpOthersOdds: Arg.Is(configuration.MaxBetGrpOthersOdds),
+                maxBetGrpSpecial: Arg.Is(configuration.MaxBetGrpSpecial),
+                Arg.Any<CancellationToken>())
+            .ConfigureAwait(false);
     }
 }

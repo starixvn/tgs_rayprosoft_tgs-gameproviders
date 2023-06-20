@@ -20,7 +20,8 @@ internal class OBetRoundDetailGetService : IGetService<OBetRoundDetailQuery, Rou
     {
         var roundInfo = await _roundService
             .GetAsync(
-                query.RoundId)
+                roundId: query.RoundId,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false)
             ?? throw new Exception($"This game round number could not be found.{query.RoundId}");
         return new RoundDetailResult()
