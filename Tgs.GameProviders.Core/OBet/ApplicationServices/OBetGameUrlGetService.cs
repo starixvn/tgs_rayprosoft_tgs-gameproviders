@@ -56,6 +56,22 @@ public class OBetGameUrlGetService : IGetService<OBetGameUrlQuery, Uri>
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false) ?? "en";
 
+        await _client
+            .PlayerUpdateBetLimitAsync(
+                apiUrl: configuration.ApiUrl,
+                apiKey: configuration.ApiKey,
+                agentId: configuration.AgentId,
+                playerCode: player.PlayerCode,
+                maxBetGrpHdp: configuration.MaxBetGrpHdp,
+                maxBetGrpBasketBall: configuration.MaxBetGrpBasketBall,
+                maxBetGrpOthersSport: configuration.MaxBetGrpOthersSport,
+                maxBetGrp1x2: configuration.MaxBetGrp1x2,
+                maxBetGrpMixParlay: configuration.MaxBetGrpMixParlay,
+                maxBetGrpOthersOdds: configuration.MaxBetGrpOthersOdds,
+                maxBetGrpSpecial: configuration.MaxBetGrpSpecial,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
         var response = await _client
             .GameUrlAsync(
                 apiUrl: configuration.ApiUrl,
@@ -66,29 +82,6 @@ public class OBetGameUrlGetService : IGetService<OBetGameUrlQuery, Uri>
                 isMobile: query.PlatformType == PlatformType.Mobile,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-
-        if (!response.IsPlayerExist)
-        {
-            await _client
-                .PlayerCreateAsync(
-                   apiUrl: configuration.ApiUrl,
-                   apiKey: configuration.ApiKey,
-                   agentId: configuration.AgentId,
-                   playerCode: player.PlayerCode,
-                   cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
-
-            response = await _client
-                .GameUrlAsync(
-                    apiUrl: configuration.ApiUrl,
-                    apiKey: configuration.ApiKey,
-                    agentId: configuration.AgentId,
-                    playerCode: player.PlayerCode,
-                    lang: string.IsNullOrEmpty(cultureCode) ? "en" : cultureCode,
-                    isMobile: query.PlatformType == PlatformType.Mobile,
-                    cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
-        }
 
         return response.IsPlayerExist ? new Uri(response.GameUrl) : throw new Exception($"player does not exist.({player.PlayerCode})");
     }

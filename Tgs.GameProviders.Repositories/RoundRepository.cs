@@ -16,14 +16,16 @@ internal class RoundRepository : IRoundRepository
         Guid roundId,
         CancellationToken cancellationToken = default)
     {
-        var response = await _client.GetGameRoundAsync(roundId).ConfigureAwait(false);
+        var response = await _client
+            .GetGameRoundAsync(
+                roundId: roundId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"This game round number could not be found.{roundId}");
 
-        if (!response.Success)
-        {
-            return null;
-        }
-
-        return new RoundInfo(
+        return response.Data is null
+            ? throw new Exception($"This game round number could not be found.{roundId}")
+            : new RoundInfo(
                 response.Data.RoundId,
                 response.Data.ExternalRoundId,
                 response.Data.GameProviderId,
