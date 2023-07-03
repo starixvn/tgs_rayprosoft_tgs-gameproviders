@@ -103,6 +103,5 @@ public static class ServiceCollecitonExtensions
             .AddSecurity()//Tgs.Core.Infrastructures.Security
             .AddMemoryCache()
             .AddTransient<IGameActionService, GameActionService>()
-            .AddTransient<IRoundRepository, RoundRepository>()
             .AddTransient<ISystemClock, SystemClock>();
 }

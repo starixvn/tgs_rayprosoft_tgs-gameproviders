@@ -82,10 +82,10 @@ public class WGHorseGameRecordListGetService : IGetService<WGHorseGameRecordList
     }
 
     private static DateTimeOffset GetDateTimeOffsetUTC8(string dateTime)
-        => new DateTimeOffset(DateTime.Parse(dateTime), TimeSpan.FromHours(+8));
+        => new(DateTime.Parse(dateTime), TimeSpan.FromHours(+8));
 
     private static DateTimeOffset GetTomorrowDateUTC8(DateTimeOffset dateTime)
-        => new DateTimeOffset(DateTime.Parse(dateTime.AddDays(1).Date.ToLongDateString()), TimeSpan.FromHours(+8));
+        => new(DateTime.Parse(dateTime.AddDays(1).Date.ToLongDateString()), TimeSpan.FromHours(+8));
 
     private static bool IsDraw(string source)
         => source.Contains("和局", StringComparison.OrdinalIgnoreCase);

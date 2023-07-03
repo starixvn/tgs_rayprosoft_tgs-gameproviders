@@ -23,36 +23,33 @@ internal class RoundRepository : IRoundRepository
             .ConfigureAwait(false)
             ?? throw new Exception($"This game round number could not be found.{roundId}");
 
-        return response.Data is null
-            ? throw new Exception($"This game round number could not be found.{roundId}")
-            : new RoundInfo(
-                response.Data.RoundId,
-                response.Data.ExternalRoundId,
-                response.Data.GameProviderId,
-                response.Data.PlayerCode,
-                response.Data.GameId,
-                response.Data.CurrencyCode,
-                response.Data.Status,
-                response.Data.GameProviderConfigurationId,
-                response.Data.WalletId,
-                response.Data.CreatedOn,
-                response.Data.ClosedOn,
-                response.Data.UpdatedOn,
-                response.Data.BrandId,
-                response.Data.ExternalCreatedOn,
-                response.Data.ExternalClosedOn,
-                response.Data.BetAmount,
-                response.Data.ValidBetAmount,
-                response.Data.SettleAmount,
-                response.Data.Commission,
-                response.Data.Turnover,
-                response.Data.CompanyWinLoss,
-                response.Data.TieBetAdjustment,
-                response.Data.ClientStatus,
-                response.Data.ReopenTurnoverAdjustment,
-                response.Data.ReopenedOn,
-                response.Data.EffectiveBettingPercentage,
-                response.Data.AdditionalData
-                 );
+        return new RoundInfo(
+            RoundId: response.RoundId,
+            ExternalRoundId: response.ExternalRoundId,
+            GameProviderId: response.GameProviderId,
+            PlayerCode: response.PlayerCode,
+            GameId: response.GameId,
+            CurrencyCode: response.CurrencyCode,
+            Status: response.Status,
+            GameProviderConfigurationId: response.GameProviderConfigurationId,
+            WalletId: response.WalletId,
+            CreatedOn: response.CreatedOn,
+            ClosedOn: response.ClosedOn,
+            UpdatedOn: response.UpdatedOn,
+            BrandId: response.BrandId,
+            ExternalCreatedOn: response.ExternalCreatedOn,
+            ExternalClosedOn: response.ExternalClosedOn,
+            BetAmount: response.BetAmount,
+            ValidBetAmount: response.ValidBetAmount,
+            SettleAmount: response.SettleAmount,
+            Commission: response.Commission,
+            Turnover: response.Turnover,
+            CompanyWinLoss: response.CompanyWinLoss,
+            TieBetAdjustment: response.TieBetAdjustment,
+            ClientStatus: response.ClientStatus,
+            ReopenTurnoverAdjustment: response.ReopenTurnoverAdjustment,
+            ReopenedOn: response.ReopenedOn,
+            EffectiveBettingPercentage: response.EffectiveBettingPercentage,
+            AdditionalData: response.AdditionalData);
     }
 }
