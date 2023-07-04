@@ -248,7 +248,7 @@ _ = app.MapControllers();
 
 app.MapHealthChecks("/healthz");
 
-_ = app.initialMemory();
+_ = app.InitialMemory();
 _ = app.InitialConnectionAwc();
 _ = app.InitialConnectionCards365();
 _ = app.InitialConnectionFaChai();

@@ -104,7 +104,7 @@ public static class ServiceRegisterExtensions
         return app;
     }
 
-    public static async Task<WebApplication> initialMemory(this WebApplication app)
+    public static async Task<WebApplication> InitialMemory(this WebApplication app)
     {
         using (var scope = app.Services.CreateScope())
         {
