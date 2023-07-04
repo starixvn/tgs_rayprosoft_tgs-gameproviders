@@ -13,7 +13,98 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceRegisterExtensions
 {
-    public static async Task<WebApplication> UseRegister(this WebApplication app)
+    public static async Task<WebApplication> InitialConnectionAwc(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceAwcServiceClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> InitialConnectionCards365(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceCards365Client>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> InitialConnectionFaChai(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceFaChaiClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> InitialConnectionInplayMatrix(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceInplayMatrixClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> InitialConnectionJoker(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceJokerClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> InitialConnectionOBet(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceOBetClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> InitialConnectionPinnacle(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfacePinnacleClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> initialMemory(this WebApplication app)
     {
         using (var scope = app.Services.CreateScope())
         {
@@ -38,92 +129,7 @@ public static class ServiceRegisterExtensions
                         gameProviderId: gameProviderIdInfo.GameProviderId)
                     .ConfigureAwait(false);
             }
-
-            try
-            {
-                var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceAwcServiceClient>();
-                _ = await gameInterface
-                     .CheckingServiceAsync(
-                        machineName: Environment.MachineName)
-                     .ConfigureAwait(false);
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceFaChaiClient>();
-                _ = await gameInterface
-                     .CheckingServiceAsync(
-                        machineName: Environment.MachineName)
-                     .ConfigureAwait(false);
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceOBetClient>();
-                _ = await gameInterface
-                     .CheckingServiceAsync(
-                        machineName: Environment.MachineName)
-                     .ConfigureAwait(false);
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceInplayMatrixClient>();
-                _ = await gameInterface
-                     .CheckingServiceAsync(
-                        machineName: Environment.MachineName)
-                     .ConfigureAwait(false);
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceCards365Client>();
-                _ = await gameInterface
-                     .CheckingServiceAsync(
-                        machineName: Environment.MachineName)
-                     .ConfigureAwait(false);
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfacePinnacleClient>();
-                _ = await gameInterface
-                     .CheckingServiceAsync(
-                        machineName: Environment.MachineName)
-                     .ConfigureAwait(false);
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceJokerClient>();
-                _ = await gameInterface
-                     .CheckingServiceAsync(
-                        machineName: Environment.MachineName)
-                     .ConfigureAwait(false);
-            }
-            catch
-            {
-            }
         }
-
         return app;
     }
 }
