@@ -1,7 +1,9 @@
 ﻿using Tgs.GameCommand.Client;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.Cards365.Client;
+using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.Joker.Client;
@@ -26,11 +28,37 @@ public static class ServiceRegisterExtensions
         return app;
     }
 
+    public static async Task<WebApplication> InitialConnectionBTi(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceBTiClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
     public static async Task<WebApplication> InitialConnectionCards365(this WebApplication app)
     {
         using (var scope = app.Services.CreateScope())
         {
             var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceCards365Client>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> InitialConnectionDreamGaming(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceDreamGamingClient>();
             _ = await gameInterface
                 .CheckingServiceAsync(
                 machineName: Environment.MachineName)

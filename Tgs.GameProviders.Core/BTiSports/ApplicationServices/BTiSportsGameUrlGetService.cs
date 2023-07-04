@@ -28,11 +28,33 @@ public class BTiSportsGameUrlGetService : IGetService<BTiSportsGameUrlQuery, Uri
 
     public async ValueTask<Uri> GetAsync(BTiSportsGameUrlQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.BTiSports).ConfigureAwait(false);
-        var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetBTiSportsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
-        var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, query.Language) ?? "en";
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.BTiSports,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetBTiSportsConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var cultureCode = await _gameProvider
+            .GetGameProviderCultureCodeAsync(
+            gameProviderId: gameProviderId,
+            cultureCode: query.Language,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false) ?? "en";
 
         var response = await _client
             .GameAuthTokenAsync(
@@ -46,8 +68,11 @@ public class BTiSportsGameUrlGetService : IGetService<BTiSportsGameUrlQuery, Uri
         if (!response.IsPlayerExist)
         {
             var gameProviderCurrencyCode = await _gameProvider
-                    .GetGameProviderCurrencyCodeAsync(gameProviderId, player.DefaultWalletCurrencyCode)
-                    .ConfigureAwait(false)
+                .GetGameProviderCurrencyCodeAsync(
+                gameProviderId,
+                player.DefaultWalletCurrencyCode,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false)
                 ?? throw new Exception($"This game product currency does not exist.({player.DefaultWalletCurrencyCode})");
 
             await _client

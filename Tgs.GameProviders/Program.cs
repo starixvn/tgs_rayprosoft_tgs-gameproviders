@@ -250,10 +250,14 @@ app.MapHealthChecks("/healthz");
 
 _ = app.InitialMemory();
 _ = app.InitialConnectionAwc();
+_ = app.InitialConnectionBTi();
 _ = app.InitialConnectionCards365();
+_ = app.InitialConnectionDreamGaming();
 _ = app.InitialConnectionFaChai();
+_ = app.InitialConnectionInplayMatrix();
 _ = app.InitialConnectionJoker();
 _ = app.InitialConnectionOBet();
 _ = app.InitialConnectionPinnacle();
+
 
 app.Run();

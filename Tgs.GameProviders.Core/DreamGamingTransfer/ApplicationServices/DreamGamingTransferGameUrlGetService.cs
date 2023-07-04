@@ -28,11 +28,33 @@ public class DreamGamingTransferGameUrlGetService : IGetService<DreamGamingTrans
 
     public async ValueTask<Uri> GetAsync(DreamGamingTransferGameUrlQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.DreamGamingTransfer).ConfigureAwait(false);
-        var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetDreamGamingTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
-        var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, query.Language) ?? "en";
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.DreamGamingTransfer,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetDreamGamingTransferConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var cultureCode = await _gameProvider
+            .GetGameProviderCultureCodeAsync(
+            gameProviderId: gameProviderId,
+            cultureCode: query.Language,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false) ?? "en";
 
         var response = await _client
             .GameUrlAsync(
