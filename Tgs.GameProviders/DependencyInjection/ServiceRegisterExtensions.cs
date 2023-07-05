@@ -9,6 +9,7 @@ using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.InplayMatrix.Client;
+using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.Joker.Client;
 using Tgs.GameInterface.OBet.Client;
 using Tgs.GameInterface.Pinnacle.Client;
@@ -127,6 +128,19 @@ public static class ServiceRegisterExtensions
         using (var scope = app.Services.CreateScope())
         {
             var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceInplayMatrixClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> InitialConnectionJDB(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceJDBClient>();
             _ = await gameInterface
                 .CheckingServiceAsync(
                 machineName: Environment.MachineName)

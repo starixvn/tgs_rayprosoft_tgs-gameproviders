@@ -28,7 +28,7 @@ data:
         "GameInterfaceIdnLiveBaseUrl":"http://game-gameinterface-idnlive-service:9090/",
         "GameInterfaceSkywindBaseUrl":"http://game-gameinterface-sw-service:9090/",
         "GameInterfaceWGFmGamingBaseUrl":"http://game-gameinterface-wgfm-service:9090/",
-        "GameInterfaceJDBBaseUrl":"http://game-gameinterface-jdb-service:9090/",
+        "GameInterfaceJDBBaseUrl":"dns:///game-gameinterface-jdb-service:9090/",
         "GameInterfaceSBOBaseUrl":"http://game-gameinterface-sbo-service:9090/",
         "GameInterfaceBTIBaseUrl":"dns:///game-gameinterface-bti-service:9090/",
         "GameInterfaceHabaneroBaseUrl":"dns:///game-gameinterface-habanero-service:9090/",
