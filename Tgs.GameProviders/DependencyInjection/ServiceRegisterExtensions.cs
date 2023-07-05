@@ -4,6 +4,7 @@ using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.Cards365.Client;
 using Tgs.GameInterface.DreamGamingService.Client;
+using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameInterface.HabaneroService.Client;
@@ -61,6 +62,19 @@ public static class ServiceRegisterExtensions
         using (var scope = app.Services.CreateScope())
         {
             var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceDreamGamingClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> InitialConnectionEndorphina(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceEndorphinaClient>();
             _ = await gameInterface
                 .CheckingServiceAsync(
                 machineName: Environment.MachineName)

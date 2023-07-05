@@ -253,6 +253,7 @@ _ = app.InitialConnectionAwc();
 _ = app.InitialConnectionBTi();
 _ = app.InitialConnectionCards365();
 _ = app.InitialConnectionDreamGaming();
+_ = app.InitialConnectionEndorphina();
 _ = app.InitialConnectionEvolution();
 _ = app.InitialConnectionHabanero();
 _ = app.InitialConnectionFaChai();
