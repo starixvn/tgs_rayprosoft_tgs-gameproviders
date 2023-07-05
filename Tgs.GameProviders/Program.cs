@@ -254,6 +254,7 @@ _ = app.InitialConnectionBTi();
 _ = app.InitialConnectionCards365();
 _ = app.InitialConnectionDreamGaming();
 _ = app.InitialConnectionEvolution();
+_ = app.InitialConnectionHabanero();
 _ = app.InitialConnectionFaChai();
 _ = app.InitialConnectionInplayMatrix();
 _ = app.InitialConnectionJoker();

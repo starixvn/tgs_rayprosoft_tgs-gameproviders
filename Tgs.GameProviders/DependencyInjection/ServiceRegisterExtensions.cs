@@ -6,6 +6,7 @@ using Tgs.GameInterface.Cards365.Client;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.FaChai.Client;
+using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.Joker.Client;
 using Tgs.GameInterface.OBet.Client;
@@ -86,6 +87,19 @@ public static class ServiceRegisterExtensions
         using (var scope = app.Services.CreateScope())
         {
             var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceFaChaiClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> InitialConnectionHabanero(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceHabaneroClient>();
             _ = await gameInterface
                 .CheckingServiceAsync(
                 machineName: Environment.MachineName)
