@@ -14,6 +14,7 @@ using Tgs.GameInterface.Jili.Client;
 using Tgs.GameInterface.Joker.Client;
 using Tgs.GameInterface.OBet.Client;
 using Tgs.GameInterface.Pinnacle.Client;
+using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameProviders.Core;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -194,6 +195,19 @@ public static class ServiceRegisterExtensions
         using (var scope = app.Services.CreateScope())
         {
             var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfacePinnacleClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> InitialConnectionPragmaticPlay(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfacePragmaticPlayClient>();
             _ = await gameInterface
                 .CheckingServiceAsync(
                 machineName: Environment.MachineName)

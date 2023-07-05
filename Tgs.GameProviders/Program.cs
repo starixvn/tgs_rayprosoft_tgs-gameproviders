@@ -263,5 +263,6 @@ _ = app.InitialConnectionJili();
 _ = app.InitialConnectionJoker();
 _ = app.InitialConnectionOBet();
 _ = app.InitialConnectionPinnacle();
+_ = app.InitialConnectionPragmaticPlay();
 
 app.Run();
