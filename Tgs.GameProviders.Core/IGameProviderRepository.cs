@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameCommand.Common;
@@ -41,7 +42,7 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<string> GetGameProviderCultureCodeAsync(
+    ValueTask<string?> GetGameProviderCultureCodeAsync(
         Guid gameProviderId,
         string cultureCode,
         CancellationToken cancellationToken = default);

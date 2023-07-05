@@ -49,7 +49,7 @@ public class SkywindTransferPlayerFundInGetServiceUnitTest
             .GetGameProviderCurrencyCodeAsync(
                 Arg.Is(gameProviderId),
                 Arg.Is(query.CurrencyCode))
-            .Returns(ValueTask.FromResult<string?>(gameProviderCurrencyCode));
+            .Returns(ValueTask.FromResult(gameProviderCurrencyCode));
 
         var request = new FundRequest()
         {

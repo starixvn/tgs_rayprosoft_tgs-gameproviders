@@ -139,7 +139,7 @@ public class PPTFController : ControllerBase
                 cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
 
-        return result == null ? null : new PlayerFundCheckingResponse()
+        return new PlayerFundCheckingResponse()
         {
             OrderStatus = result.OrderStatus,
         };
@@ -180,9 +180,9 @@ public class PPTFController : ControllerBase
                 },
                 cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
-        return result == null ? null : new PlayerFundResponse()
+        return new PlayerFundResponse()
         {
-            OrderId = request.OrderId
+            OrderId = result.OrderId
         };
     }
 
@@ -221,9 +221,9 @@ public class PPTFController : ControllerBase
                 },
                 cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
-        return result == null ? null : new PlayerFundResponse()
+        return new PlayerFundResponse()
         {
-            OrderId = request.OrderId
+            OrderId = result.OrderId
         };
     }
 

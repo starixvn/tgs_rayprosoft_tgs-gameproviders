@@ -37,14 +37,37 @@ public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferG
     public async ValueTask<GameUrlResult> GetAsync(EvolutionTransferGameUrlQuery command, CancellationToken cancellationToken = default)
     {
         var encryptedToken = await _tokenProvider.EncryptAsync(command.LoginRecordId).ConfigureAwait(false);
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.EvolutionTransfer).ConfigureAwait(false);
-        var configuration = await _setting.GetEvolutionTransferConfigurationAsync().ConfigureAwait(false);
-        var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en-US";
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.EvolutionTransfer,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _setting
+            .GetEvolutionTransferConfigurationAsync(
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+            playerCode: command.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var cultureCode = await _gameProvider
+            .GetGameProviderCultureCodeAsync(
+            gameProviderId,
+            command.Language,
+            cancellationToken)
+            .ConfigureAwait(false) ?? "en-US";
         var currencyCode = await _gameProvider
-                .GetGameProviderCurrencyCodeAsync(gameProviderId, command.CurrencyCode)
-                .ConfigureAwait(false);
-        var game = await _game.GetAsync(command.GameId!.Value).ConfigureAwait(false);
+            .GetGameProviderCurrencyCodeAsync(
+            gameProviderId: gameProviderId,
+            currencyCode: command.CurrencyCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var game = await _game
+            .GetAsync(
+            gameId: command.GameId!.Value,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var response = game.Type switch
         {
@@ -73,7 +96,7 @@ public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferG
                 cancellationToken).ConfigureAwait(false)
         };
 
-        var path = response.Entry.Substring(1, response.Entry.Length - 1);
+        var path = response.Entry[1..];
 
         return (response != null) ? new() { Url = new($"{configuration.ApiUrl}{path}") } : null;
     }

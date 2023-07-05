@@ -183,7 +183,7 @@ internal class GameProviderRepository : IGameProviderRepository
             : (data.DesktopEndpoint, data.MobileEndpoint);
     }
 
-    public async ValueTask<string> GetGameProviderCultureCodeAsync(
+    public async ValueTask<string?> GetGameProviderCultureCodeAsync(
         Guid gameProviderId,
         string cultureCode,
         CancellationToken cancellationToken = default)
@@ -192,8 +192,7 @@ internal class GameProviderRepository : IGameProviderRepository
             gameProviderId,
             cultureCode,
             cancellationToken)
-        .ConfigureAwait(false)
-        ?? string.Empty;
+        .ConfigureAwait(false);
 
     public async ValueTask<string> GetGameProviderCurrencyCodeAsync(
         Guid gameProviderId,

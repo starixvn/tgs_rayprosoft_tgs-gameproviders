@@ -93,7 +93,7 @@ builder.Services
     (options, sp) =>
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
-        options.Url = configuration.GetValue<Uri>("GameProviders:GameInterfaceEvolutionBaseUrl")!;
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceEvolutionBaseUrl")!;
     },
     (options, sp) =>
     {
@@ -253,11 +253,11 @@ _ = app.InitialConnectionAwc();
 _ = app.InitialConnectionBTi();
 _ = app.InitialConnectionCards365();
 _ = app.InitialConnectionDreamGaming();
+_ = app.InitialConnectionEvolution();
 _ = app.InitialConnectionFaChai();
 _ = app.InitialConnectionInplayMatrix();
 _ = app.InitialConnectionJoker();
 _ = app.InitialConnectionOBet();
 _ = app.InitialConnectionPinnacle();
-
 
 app.Run();

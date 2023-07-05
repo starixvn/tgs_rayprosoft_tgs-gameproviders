@@ -173,7 +173,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
 
-    public async ValueTask<string> GetGameProviderCultureCodeAsync(
+    public async ValueTask<string?> GetGameProviderCultureCodeAsync(
         Guid gameProviderId,
         string cultureCode,
         CancellationToken cancellationToken = default)
@@ -186,8 +186,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
                     gameProviderId,
                     cultureCode,
                     cancellationToken)
-                .ConfigureAwait(false)
-                ?? string.Empty;
+                .ConfigureAwait(false);
 
             if (!string.IsNullOrWhiteSpace(gameProviderCultureCode))
             {
@@ -198,7 +197,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
                         absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
             }
         }
-        return gameProviderCultureCode ?? string.Empty;
+        return gameProviderCultureCode;
     }
 
     public async ValueTask<string> GetGameProviderCurrencyCodeAsync(
