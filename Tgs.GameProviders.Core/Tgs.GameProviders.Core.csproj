@@ -34,7 +34,7 @@
 		<PackageReference Include="Tgs.GameInterface.SkywindService.Client" Version="0.0.4" />
 		<PackageReference Include="Tgs.GameInterface.SM01Service.Client" Version="0.0.7" />
 		<PackageReference Include="Tgs.GameInterface.TFGamingService.Client" Version="0.0.5" />
-		<PackageReference Include="Tgs.GameInterface.WGFmGamingService.Client" Version="0.0.4" />
+		<PackageReference Include="Tgs.GameInterface.WGFmGamingService.Client" Version="0.0.5" />
 		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="1.0.6" />
 		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="0.0.6" />
 		<PackageReference Include="Tgs.GamePlayerTransform.Client" Version="0.0.6" />
