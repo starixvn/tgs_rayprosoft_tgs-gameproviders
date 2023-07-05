@@ -264,5 +264,6 @@ _ = app.InitialConnectionJoker();
 _ = app.InitialConnectionOBet();
 _ = app.InitialConnectionPinnacle();
 _ = app.InitialConnectionPragmaticPlay();
+_ = app.InitialConnectionSBO();
 
 app.Run();
