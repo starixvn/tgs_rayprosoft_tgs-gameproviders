@@ -247,7 +247,6 @@ _ = app.InitialConnectionEndorphina();
 _ = app.InitialConnectionEvolution();
 _ = app.InitialConnectionHabanero();
 _ = app.InitialConnectionFaChai();
-_ = app.InitialConnectionInplayMatrix();
 _ = app.InitialConnectionJDB();
 _ = app.InitialConnectionJili();
 _ = app.InitialConnectionJoker();
