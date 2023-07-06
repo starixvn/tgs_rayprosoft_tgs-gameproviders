@@ -35,8 +35,7 @@
 		<PackageReference Include="Tgs.GameInterface.TFGamingService.Client" Version="0.0.6" />
 		<PackageReference Include="Tgs.GameInterface.WGFmGamingService.Client" Version="0.0.5" />
 		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="1.0.7" />
-		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="0.0.6" />
-		<PackageReference Include="Tgs.GamePlayerTransform.Client" Version="0.0.6" />
+		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="0.0.7" />
 		<PackageReference Include="Tgs.GameRecord.Endorphina.Session.Client" Version="0.0.3" />
 		<PackageReference Include="Tgs.GameRounds.Client" Version="0.0.39" />
 		<PackageReference Include="Tgs.GameToken.Client" Version="0.0.2" />

@@ -68,11 +68,6 @@ builder.Services
     (options, sp) =>
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
-        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GamePlayerTransformBaseUrl")!;
-    },
-    (options, sp) =>
-    {
-        var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameCommandClientBaseUrl")!;
     },
     (options, sp) =>
@@ -190,11 +185,11 @@ builder.Services
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfacePinnacleBaseUrl")!;
     },
-(options, sp) =>
-{
-    var configuration = sp.GetRequiredService<IConfiguration>();
-    options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceJokerBaseUrl")!;
-});
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceJokerBaseUrl")!;
+    });
 
 builder.Services
     .AddOpenTelemetry()
@@ -263,5 +258,7 @@ _ = app.InitialConnectionSBO();
 _ = app.InitialConnectionSkywind();
 _ = app.InitialConnectionTFGaming();
 _ = app.InitialConnectionWGFmGaming();
+_ = app.InitialConnectionWMCasino();
+_ = app.InitialConnectionYeeBet();
 
 app.Run();

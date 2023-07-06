@@ -19,7 +19,6 @@ data:
       "GameProviders": {
         "GameRoundsBaseUrl":"http://game-gamerounds/",
         "GameTokenBaseUrl":"http://game-token/",
-        "GamePlayerTransformBaseUrl":"http://game-gameplayertransform:9090/",
         "GameCommandClientBaseUrl": "http://game-gamecommand/",
         "GameInterfaceAwcBaseUrl":"dns:///game-gameinterface-awc-service:9090/",
         "GameInterfaceJiliBaseUrl":"dns:///game-gameinterface-jili:9090/",

@@ -24,7 +24,6 @@ using Tgs.GameInterface.TFGamingService.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.YeeBet.Client;
-using Tgs.GamePlayerTransform.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameRecord.Endorphina.Session.Client;
 using Tgs.GameRounds.Client;
@@ -39,7 +38,6 @@ public static class ServiceCollecitonExtensions
         this IServiceCollection services,
         Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions,
         Action<GameTokenClientOptions, IServiceProvider> gameTokenClientOptions,
-        Action<GamePlayerTransformClientOptions, IServiceProvider> gamePlayerTransformClientOptions,
         Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
         Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions,
         Action<GameInterfaceJiliClientOptions, IServiceProvider> gameInterfaceJiliClientOptions,
@@ -95,7 +93,6 @@ public static class ServiceCollecitonExtensions
             .AddGameInterfacePinnacleClient(gameInterfacePinnacleClientOptions)
             .AddGameRoundsClient(gameRoundsClientOptions)
             .AddGameTokenClient(gameTokenClientOptions)
-            .AddGamePlayerTransformClient(gamePlayerTransformClientOptions)
             .AddGameInterfaceJokerClient(gameInterfaceJokerClientOptions)
             .AddSecurity()//Tgs.Core.Infrastructures.Security
             .AddMemoryCache()

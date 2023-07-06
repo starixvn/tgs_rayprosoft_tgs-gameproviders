@@ -22,7 +22,6 @@ using Tgs.GameInterface.TFGamingService.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.YeeBet.Client;
-using Tgs.GamePlayerTransform.Client;
 using Tgs.GameProviders;
 using Tgs.GameRecord.Endorphina.Session.Client;
 using Tgs.GameRounds.Client;
@@ -37,7 +36,6 @@ public static class ServiceCollectionExtensions
         Action<RedisOptions, IServiceProvider> configure,
         Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions,
         Action<GameTokenClientOptions, IServiceProvider> gameTokenClientOptions,
-        Action<GamePlayerTransformClientOptions, IServiceProvider> gamePlayerTransformClientOptions,
         Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
         Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions,
         Action<GameInterfaceJiliClientOptions, IServiceProvider> gameInterfaceJiliClientOptions,
@@ -73,7 +71,6 @@ public static class ServiceCollectionExtensions
             .AddGameProvidersCore(
                 gameRoundsClientOptions: gameRoundsClientOptions,
                 gameTokenClientOptions: gameTokenClientOptions,
-                gamePlayerTransformClientOptions: gamePlayerTransformClientOptions,
                 gameCommandClientOptions: gameCommandClientOptions,
                 gameInterfaceAwcServiceClientOptions: gameInterfaceAwcServiceClientOptions,
                 gameInterfaceJiliClientOptions: gameInterfaceJiliClientOptions,
