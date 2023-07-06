@@ -17,6 +17,7 @@ using Tgs.GameInterface.Pinnacle.Client;
 using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SkywindService.Client;
+using Tgs.GameInterface.TFGamingService.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameProviders.Core;
 
@@ -237,6 +238,19 @@ public static class ServiceRegisterExtensions
         using (var scope = app.Services.CreateScope())
         {
             var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceSkywindClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> InitialConnectionTFGaming(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceTFGamingClient>();
             _ = await gameInterface
                 .CheckingServiceAsync(
                 machineName: Environment.MachineName)

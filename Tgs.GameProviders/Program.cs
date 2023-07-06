@@ -266,6 +266,7 @@ _ = app.InitialConnectionPinnacle();
 _ = app.InitialConnectionPragmaticPlay();
 _ = app.InitialConnectionSBO();
 _ = app.InitialConnectionSkywind();
+_ = app.InitialConnectionTFGaming();
 _ = app.InitialConnectionWGFmGaming();
 
 app.Run();
