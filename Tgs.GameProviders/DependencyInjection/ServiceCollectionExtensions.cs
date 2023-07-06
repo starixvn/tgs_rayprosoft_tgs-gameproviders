@@ -7,7 +7,6 @@ using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameInterface.HabaneroService.Client;
-using Tgs.GameInterface.IdnLiveService.Client;
 using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.Jili.Client;
@@ -44,7 +43,6 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceJiliClientOptions, IServiceProvider> gameInterfaceJiliClientOptions,
         Action<GameInterfaceWMCasinoServiceClientOptions, IServiceProvider> gameInterfaceWMCasinoClientOptions,
         Action<GameInterfaceEvolutionClientOptions, IServiceProvider> gameInterfaceEvolutionServiceClientOptions,
-        Action<GameInterfaceIdnLiveClientOptions, IServiceProvider> gameInterfaceIdnLiveClientOptions,
         Action<GameInterfaceSkywindClientOptions, IServiceProvider> gameInterfaceSkywindClientOptions,
         Action<GameInterfaceWGFmGamingClientOptions, IServiceProvider> gameInterfaceWGFmGamingClientOptions,
         Action<GameInterfaceJDBClientOptions, IServiceProvider> gameInterfaceJDBClientOptions,
@@ -81,7 +79,6 @@ public static class ServiceCollectionExtensions
                 gameInterfaceJiliClientOptions: gameInterfaceJiliClientOptions,
                 gameInterfaceWMCasinoClientOptions: gameInterfaceWMCasinoClientOptions,
                 gameInterfaceEvolutionServiceClientOptions: gameInterfaceEvolutionServiceClientOptions,
-                gameInterfaceIdnLiveClientOptions: gameInterfaceIdnLiveClientOptions,
                 gameInterfaceSkywindClientOptions: gameInterfaceSkywindClientOptions,
                 gameInterfaceWGFmGamingClientOptions: gameInterfaceWGFmGamingClientOptions,
                 gameInterfaceJDBClientOptions: gameInterfaceJDBClientOptions,
