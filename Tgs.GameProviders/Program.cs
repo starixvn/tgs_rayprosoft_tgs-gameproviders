@@ -265,6 +265,7 @@ _ = app.InitialConnectionOBet();
 _ = app.InitialConnectionPinnacle();
 _ = app.InitialConnectionPragmaticPlay();
 _ = app.InitialConnectionSBO();
+_ = app.InitialConnectionSkywind();
 _ = app.InitialConnectionWGFmGaming();
 
 app.Run();
