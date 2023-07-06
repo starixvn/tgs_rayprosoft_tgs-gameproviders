@@ -65,7 +65,7 @@ public class WMCasinoTransferPlayerBalanceGetService : IGetService<WMCasinoTrans
             user: user,
             cancellationToken: cancellationToken).ConfigureAwait(false);
 
-        _logger.LogInformation("GameInterfaceWMCasinoServiceBalanceReply response Success:{Success}, IsPlayerExist:{IsPlayerExist}", response.Success, response.IsPlayerExist);
+        _logger.LogDebug("GameInterfaceWMCasinoServiceBalanceReply response Success:{Success}, IsPlayerExist:{IsPlayerExist}", response.Success, response.IsPlayerExist);
 
         if (response.Success && !response.IsPlayerExist)
         {
