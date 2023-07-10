@@ -28,7 +28,6 @@ using Tgs.GameProviders.Core;
 using Tgs.GameRecord.Endorphina.Session.Client;
 using Tgs.GameRounds.Client;
 using Tgs.GameToken.Client;
-using Tgs.GameToken.Clients.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

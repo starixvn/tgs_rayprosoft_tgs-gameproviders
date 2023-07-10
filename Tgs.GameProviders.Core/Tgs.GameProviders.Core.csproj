@@ -9,7 +9,7 @@
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
 		<PackageReference Include="Scrutor" Version="4.2.2" />
-		<PackageReference Include="StackExchange.Redis" Version="2.6.116" />
+		<PackageReference Include="StackExchange.Redis" Version="2.6.122" />
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 		<PackageReference Include="Tgs.Core.Infrastructures.Security" Version="0.0.2" />
 		<PackageReference Include="Tgs.GameCommand.Client" Version="0.0.8" />
@@ -38,7 +38,7 @@
 		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="0.0.7" />
 		<PackageReference Include="Tgs.GameRecord.Endorphina.Session.Client" Version="0.0.3" />
 		<PackageReference Include="Tgs.GameRounds.Client" Version="0.0.39" />
-		<PackageReference Include="Tgs.GameToken.Client" Version="0.0.2" />
+		<PackageReference Include="Tgs.GameToken.Client" Version="0.0.3" />
 		<PackageReference Include="TGS.ServiceUtility" Version="0.2.0" />
 	</ItemGroup>
 
