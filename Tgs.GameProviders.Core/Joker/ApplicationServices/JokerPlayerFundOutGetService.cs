@@ -59,7 +59,8 @@ internal class JokerPlayerFundOutGetService : IGetService<JokerPlayerFundOutQuer
                 secretKey: configuration.SecretKey,
                 playerCode: query.PlayerCode,
                 transactionId: query.OrderId,
-                amount: query.Amount)
+                amount: query.Amount,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return new PlayerFundResult

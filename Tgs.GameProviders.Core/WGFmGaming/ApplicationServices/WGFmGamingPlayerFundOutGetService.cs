@@ -26,26 +26,45 @@ public class WGFmGamingPlayerFundOutGetService : IGetService<WGFmGamingPlayerFun
         _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
     }
 
-    public async ValueTask<PlayerFundResult> GetAsync(WGFmGamingPlayerFundOutQuery command, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerFundResult> GetAsync(WGFmGamingPlayerFundOutQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
-        var player = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProviderRepository.GetWGFmGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProviderRepository
+            .GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.WGFmGaming,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _playerRepository
+            .GetAsync(
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brandRepository
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configurationData = await _gameProviderRepository
+            .GetWGFmGamingConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        await _client.FundOutAsync(
-           configurationData.ApiUrl,
-           configurationData.PartnerCode,
-           configurationData.PartnerKey,
-           configurationData.IV,
-           command.PlayerCode,
-           command.OrderId,
-           command.Amount,
-           cancellationToken).ConfigureAwait(false);
+        await _client
+            .FundOutAsync(
+            apiUrl: configurationData.ApiUrl,
+            partnerCode: configurationData.PartnerCode,
+            partnerKey: configurationData.PartnerKey,
+            partnerIV: configurationData.IV,
+            playerCode: player.PlayerCode,
+            orderId: query.OrderId,
+            amount: query.Amount,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         return new PlayerFundResult()
         {
-            OrderId = command.OrderId
+            OrderId = query.OrderId
         };
     }
 }

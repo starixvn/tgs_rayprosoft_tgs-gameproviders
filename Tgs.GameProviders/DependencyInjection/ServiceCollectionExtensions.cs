@@ -20,6 +20,7 @@ using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.TFGamingService.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
+using Tgs.GameInterface.WGViaGaming.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GameProviders;
@@ -60,7 +61,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceInplayMatrixClientOptions, IServiceProvider> gameInterfaceInplayMatrixClientOptions,
         Action<GameInterfaceCards365ClientOptions, IServiceProvider> gameInterfaceCards365ClientOptions,
         Action<GameInterfacePinnacleClientOptions, IServiceProvider> gameInterfacePinnacleClientOptions,
-        Action<GameInterfaceJokerClientOptions, IServiceProvider> gameInterfaceJokerClientOptions)
+        Action<GameInterfaceJokerClientOptions, IServiceProvider> gameInterfaceJokerClientOptions,
+        Action<GameInterfaceWGViaGamingClientOptions, IServiceProvider> gameInterfaceWGViaGamingClientOptions)
         => services
             .AddOptions<RedisOptions>()
             .Configure(configure)
@@ -95,5 +97,6 @@ public static class ServiceCollectionExtensions
                 gameInterfaceInplayMatrixClientOptions: gameInterfaceInplayMatrixClientOptions,
                 gameInterfaceCards365ClientOptions: gameInterfaceCards365ClientOptions,
                 gameInterfacePinnacleClientOptions: gameInterfacePinnacleClientOptions,
-                gameInterfaceJokerClientOptions: gameInterfaceJokerClientOptions);
+                gameInterfaceJokerClientOptions: gameInterfaceJokerClientOptions,
+                gameInterfaceWGViaGamingClientOptions: gameInterfaceWGViaGamingClientOptions);
 }

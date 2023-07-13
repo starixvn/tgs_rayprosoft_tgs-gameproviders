@@ -28,17 +28,36 @@ public class WGFmGamingKickPlayerCommandService : ICommandService<WGFmGamingKick
 
     public async ValueTask ExecuteAsync(WGFmGamingKickPlayerCommand command, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
-        var player = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProviderRepository.GetWGFmGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProviderRepository
+            .GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.WGFmGaming,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _playerRepository
+            .GetAsync(
+            playerCode: command.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brandRepository
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configurationData = await _gameProviderRepository
+            .GetWGFmGamingConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        await _client.PlayerKickAsync(
-            configurationData.ApiUrl,
-            configurationData.PartnerCode,
-            configurationData.PartnerKey,
-            configurationData.IV,
-            command.PlayerCode,
-            cancellationToken).ConfigureAwait(false);
+        await _client
+            .PlayerKickAsync(
+            apiUrl: configurationData.ApiUrl,
+            partnerCode: configurationData.PartnerCode,
+            partnerKey: configurationData.PartnerKey,
+            partnerIV: configurationData.IV,
+            playerCode: command.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
     }
 }

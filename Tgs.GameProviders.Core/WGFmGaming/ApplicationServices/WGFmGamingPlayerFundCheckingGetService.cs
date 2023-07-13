@@ -28,18 +28,35 @@ public class WGFmGamingPlayerFundCheckingGetService : IGetService<WGFmGamingPlay
 
     public async ValueTask<PlayerFundCheckingResult> GetAsync(WGFmGamingPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
-        var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProviderRepository.GetWGFmGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProviderRepository
+            .GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.WGFmGaming,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _playerRepository
+            .GetAsync(
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brandRepository
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configurationData = await _gameProviderRepository
+            .GetWGFmGamingConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var response = await _client.FundStatusAsync(
-            configurationData.ApiUrl,
-            configurationData.PartnerCode,
-            configurationData.PartnerKey,
-            configurationData.IV,
-            query.OrderId,
-            cancellationToken).ConfigureAwait(false);
+            apiUrl: configurationData.ApiUrl,
+            partnerCode: configurationData.PartnerCode,
+            partnerKey: configurationData.PartnerKey,
+            partnerIV: configurationData.IV,
+            orderId: query.OrderId,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
 
         return new() { OrderStatus = response };
     }

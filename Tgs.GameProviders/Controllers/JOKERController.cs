@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
-using Tgs.GameProviders.Core.Joker.Models;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
@@ -12,42 +11,6 @@ namespace Tgs.GameProviders.Controllers;
 [ApiController]
 public class JOKERController : ControllerBase
 {
-    /// <summary>
-    /// Games the record list asynchronous.
-    /// </summary>
-    /// <param name="getService">The get service.</param>
-    /// <param name="request">The request.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Post
-    ///         {
-    ///             "brandCode": "Default",
-    ///             "agentId": "TGVY",
-    ///             "startTime": "2021-12-01T00:00:00+00:00",
-    ///             "endTime": "2021-12-13T00:00:00+00:00",
-    ///             "nextId": null
-    ///         }
-    /// </remarks>
-    [HttpPost("gamerecordlist")]
-    public async ValueTask<JokerGameRecordResult?> GameRecordListAsync(
-        [FromServices] IGetService<JokerGameRecordListQuery, JokerGameRecordResult> getService,
-        JokerGameRecordListRequest request)
-    {
-        var result = await getService
-            .GetAsync(
-                new JokerGameRecordListQuery(
-                    request.BrandCode,
-                    request.AgentId,
-                    request.StartTime,
-                    request.EndTime,
-                    request.NextId))
-            .ConfigureAwait(false);
-
-        return result ?? null;
-    }
-
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>

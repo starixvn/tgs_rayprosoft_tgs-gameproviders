@@ -59,8 +59,8 @@ public static class GameProviderConfigurations
     public static readonly string TFGaming = string.Format(_template, GameProviderType.TFGaming);
     public static readonly string TFGamingTransfer = string.Format(_template, GameProviderType.TFGamingTransfer);
     public static readonly string VR = string.Format(_template, GameProviderType.VR);
-    public static readonly string WGHorse = string.Format(_template, GameProviderType.WGHorse);
-    public static readonly string WGSports = string.Format(_template, GameProviderType.WGSports);
+    public static readonly string WGViaGaming = string.Format(_template, GameProviderType.WGViaGaming);
+    public static readonly string WGFmGaming = string.Format(_template, GameProviderType.WGFmGaming);
     public static readonly string WMCasino = string.Format(_template, GameProviderType.WMCasino);
     public static readonly string WMCasinoTransfer = string.Format(_template, GameProviderType.WMCasinoTransfer);
     public static readonly string YeeBet = string.Format(_template, GameProviderType.YeeBet);

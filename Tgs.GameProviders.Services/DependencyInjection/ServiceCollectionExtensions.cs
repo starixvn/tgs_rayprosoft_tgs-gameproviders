@@ -12,7 +12,6 @@ using Tgs.GameProviders.Core.Habanero;
 using Tgs.GameProviders.Core.IMESports;
 using Tgs.GameProviders.Core.JDB;
 using Tgs.GameProviders.Core.Jili;
-using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Core.KY;
 using Tgs.GameProviders.Core.LY;
 using Tgs.GameProviders.Core.PragmaticPlay;
@@ -23,7 +22,6 @@ using Tgs.GameProviders.Core.Skywind;
 using Tgs.GameProviders.Core.TCG;
 using Tgs.GameProviders.Core.TFGaming;
 using Tgs.GameProviders.Core.VR;
-using Tgs.GameProviders.Core.WGHorse;
 using Tgs.GameProviders.Core.WMCasino;
 using Tgs.GameProviders.Services.AllBet;
 using Tgs.GameProviders.Services.AsiaGaming;
@@ -37,7 +35,6 @@ using Tgs.GameProviders.Services.Habanero;
 using Tgs.GameProviders.Services.IMESports;
 using Tgs.GameProviders.Services.JDB;
 using Tgs.GameProviders.Services.Jili;
-using Tgs.GameProviders.Services.Joker;
 using Tgs.GameProviders.Services.KY;
 using Tgs.GameProviders.Services.LY;
 using Tgs.GameProviders.Services.PragmaticPlay;
@@ -48,7 +45,6 @@ using Tgs.GameProviders.Services.Skywind;
 using Tgs.GameProviders.Services.TCG;
 using Tgs.GameProviders.Services.TFGaming;
 using Tgs.GameProviders.Services.VR;
-using Tgs.GameProviders.Services.WGHorse;
 using Tgs.GameProviders.Services.WMCasino;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -67,10 +63,6 @@ public static class ServiceCollectionExtensions
 
         _ = services
             .AddTransient<IVRGamePlayer, VRGamePlayer>();
-
-        _ = services
-            .AddTransient<IWGHorseService, WGHorseService>()
-            .AddTransient<IWGHorseGamePlayer, WGHorseGamePlayer>();
 
         _ = services
             .AddTransient<IBigGamingService, BigGamingService>()
@@ -162,11 +154,6 @@ public static class ServiceCollectionExtensions
 
         _ = services
             .AddTransient<IDreamGameService, DreamGameService>();
-
-        _ = services
-            .AddTransient<IJokerAgentMapper, JokerAgentMapper>()
-            .AddTransient<IJokerService, JokerService>()
-            .AddTransient<IJokerGamePlayer, JokerGamePlayer>();
 
         return services;
     }

@@ -36,7 +36,7 @@ public class WGFmGamingGameUrlGetServiceUnitTest
         };
 
         var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WGSports)).Returns(ValueTask.FromResult(gameProviderId));
+        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WGFmGaming)).Returns(ValueTask.FromResult(gameProviderId));
 
         var player = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
@@ -134,7 +134,7 @@ public class WGFmGamingGameUrlGetServiceUnitTest
         };
 
         var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WGSports)).Returns(ValueTask.FromResult(gameProviderId));
+        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WGFmGaming)).Returns(ValueTask.FromResult(gameProviderId));
 
         var player = new PlayerInfo(
             ResellerId: Guid.NewGuid(),

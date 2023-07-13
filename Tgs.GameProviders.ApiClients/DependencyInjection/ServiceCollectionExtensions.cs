@@ -9,7 +9,6 @@ using Tgs.GameProviders.ApiClients.Habanero;
 using Tgs.GameProviders.ApiClients.IMESports;
 using Tgs.GameProviders.ApiClients.JDB;
 using Tgs.GameProviders.ApiClients.Jili;
-using Tgs.GameProviders.ApiClients.Joker;
 using Tgs.GameProviders.ApiClients.KY;
 using Tgs.GameProviders.ApiClients.LY;
 using Tgs.GameProviders.ApiClients.PragmaticPlay;
@@ -20,7 +19,6 @@ using Tgs.GameProviders.ApiClients.Skywind;
 using Tgs.GameProviders.ApiClients.TCG;
 using Tgs.GameProviders.ApiClients.TF;
 using Tgs.GameProviders.ApiClients.VR;
-using Tgs.GameProviders.ApiClients.WGHorse;
 using Tgs.GameProviders.ApiClients.WMCasino;
 using Tgs.GameProviders.Core.AllBet;
 using Tgs.GameProviders.Core.AsiaGaming;
@@ -33,7 +31,6 @@ using Tgs.GameProviders.Core.Habanero;
 using Tgs.GameProviders.Core.IMESports;
 using Tgs.GameProviders.Core.JDB;
 using Tgs.GameProviders.Core.Jili;
-using Tgs.GameProviders.Core.Joker;
 using Tgs.GameProviders.Core.KY;
 using Tgs.GameProviders.Core.LY;
 using Tgs.GameProviders.Core.PragmaticPlay;
@@ -44,7 +41,6 @@ using Tgs.GameProviders.Core.Skywind;
 using Tgs.GameProviders.Core.TCG;
 using Tgs.GameProviders.Core.TFGaming;
 using Tgs.GameProviders.Core.VR;
-using Tgs.GameProviders.Core.WGHorse;
 using Tgs.GameProviders.Core.WMCasino;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -68,7 +64,6 @@ public static class ServiceCollectionExtensions
 
         _ = services.AddHttpClient<IKYApiClient, KYApiClient>();
         _ = services.AddHttpClient<IVRApiClient, VRApiClient>();
-        _ = services.AddHttpClient<IWGHorseApiClient, WGHorseApiClient>();
         _ = services.AddHttpClient<IBigGamingApiClient, BigGamingApiClient>();
         _ = services.AddHttpClient<IEvolutionApiClient, EvolutionApiClient>();
         _ = services.AddHttpClient<ISexyGamingApiClient, SexyGamingApiClient>();
@@ -89,7 +84,6 @@ public static class ServiceCollectionExtensions
         _ = services.AddHttpClient<ICard365ApiClient, Card365ApiClient>();
         _ = services.AddHttpClient<IJDBApiClient, JDBApiClient>();
         _ = services.AddHttpClient<IDreamGameApiClient, DreamGameApiClient>();
-        _ = services.AddHttpClient<IJokerApiClient, JokerApiClient>();
 
         return services;
     }

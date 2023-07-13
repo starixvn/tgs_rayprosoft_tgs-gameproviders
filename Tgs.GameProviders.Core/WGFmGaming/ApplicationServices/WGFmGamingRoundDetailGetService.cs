@@ -17,18 +17,19 @@ public class WGFmGamingRoundDetailGetService : IGetService<WGFmGamingRoundDetail
 
     public async ValueTask<RoundDetailResult> GetAsync(WGFmGamingRoundDetailQuery query, CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
-
-        return new()
-        {
-            Data = new RoundDetailDataBase[]
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        return roundInfo == null
+            ? throw new Exception($"This game round number could not be found.{query.RoundId}")
+            : new()
             {
-                new RoundDetailDataJson { Value = roundInfo.AdditionalData }
-            }
-        };
+                Data = new RoundDetailDataBase[]
+                {
+                    new RoundDetailDataJson { Value = roundInfo.AdditionalData }
+                }
+            };
     }
 }

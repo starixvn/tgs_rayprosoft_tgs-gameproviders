@@ -27,7 +27,7 @@ public class WGFmGamingPlayerBalanceGetServiceUnitTest
         };
 
         var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WGSports)).Returns(ValueTask.FromResult(gameProviderId));
+        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WGFmGaming)).Returns(ValueTask.FromResult(gameProviderId));
 
         var player = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
@@ -75,6 +75,6 @@ public class WGFmGamingPlayerBalanceGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(balance, actual.Value);
+        Assert.AreEqual(balance, actual);
     }
 }

@@ -610,7 +610,7 @@ public class GameProviderRepositoryUnitTest
             Version = 2
         };
         _ = fakeClient
-            .SettingGetConfigurationAsync<WGFmGamingConfiguration>(Arg.Is(GameProviderConfigurations.WGSports))
+            .SettingGetConfigurationAsync<WGFmGamingConfiguration>(Arg.Is(GameProviderConfigurations.WGFmGaming))
             .Returns(settingConfiguration);
 
         _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
@@ -657,7 +657,7 @@ public class GameProviderRepositoryUnitTest
             Version = 2
         };
         _ = fakeClient
-            .SettingGetConfigurationAsync<WGFmGamingConfiguration>(Arg.Is(GameProviderConfigurations.WGSports))
+            .SettingGetConfigurationAsync<WGFmGamingConfiguration>(Arg.Is(GameProviderConfigurations.WGFmGaming))
             .Returns(settingConfiguration);
 
         _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
@@ -683,6 +683,51 @@ public class GameProviderRepositoryUnitTest
         Assert.AreEqual("SettingConfigurationPartnerKey", actual.PartnerKey);
         Assert.AreEqual("SettingConfigurationPartnerIV", actual.IV);
         Assert.AreEqual(2, actual.Version);
+    }
+
+    [TestMethod]
+    public async Task Get_WGViaGaming_ConfigurationData()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new WGViaGamingConfiguration()
+        {
+            AmountMaximum = 999999999999,
+            AmountFormat = "12,2",
+            ApiUrl = new("https://localhost/"),
+            PartnerCode = "SettingConfigurationPartnerCode",
+            PartnerKey = "SettingConfigurationPartnerKey",
+            IV = "SettingConfigurationPartnerIV",
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<WGViaGamingConfiguration>(Arg.Is(GameProviderConfigurations.WGViaGaming))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: "WGVIA",
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "WGVIA-GPI",
+            Description: "WGVIA-GPI Configuration",
+            ClientId: "WGVIA-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: string.Empty,
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetWGViaGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual("SettingConfigurationPartnerCode", actual.PartnerCode);
+        Assert.AreEqual("SettingConfigurationPartnerKey", actual.PartnerKey);
+        Assert.AreEqual("SettingConfigurationPartnerIV", actual.IV);
     }
 
     [TestMethod]
