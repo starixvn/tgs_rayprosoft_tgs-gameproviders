@@ -28,20 +28,39 @@ public class WGFmGamingPlayerFundInGetService : IGetService<WGFmGamingPlayerFund
 
     public async ValueTask<PlayerFundResult> GetAsync(WGFmGamingPlayerFundInQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.WGSports).ConfigureAwait(false);
-        var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProviderRepository.GetWGFmGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProviderRepository
+            .GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.WGFmGaming,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _playerRepository
+            .GetAsync(
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brandRepository
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configurationData = await _gameProviderRepository
+            .GetWGFmGamingConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        await _client.FundInAsync(
-           configurationData.ApiUrl,
-           configurationData.PartnerCode,
-           configurationData.PartnerKey,
-           configurationData.IV,
-           query.PlayerCode,
-           query.OrderId,
-           query.Amount,
-           cancellationToken).ConfigureAwait(false);
+        await _client
+            .FundInAsync(
+            apiUrl: configurationData.ApiUrl,
+            partnerCode: configurationData.PartnerCode,
+            partnerKey: configurationData.PartnerKey,
+            partnerIV: configurationData.IV,
+            playerCode: query.PlayerCode,
+            orderId: query.OrderId,
+            amount: query.Amount,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         return new PlayerFundResult()
         {

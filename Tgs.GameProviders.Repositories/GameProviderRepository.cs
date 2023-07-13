@@ -498,10 +498,33 @@ internal class GameProviderRepository : IGameProviderRepository
     {
         var settingConfiguration = await _client
             .SettingGetConfigurationAsync<WGFmGamingConfiguration>(
-                key: GameProviderConfigurations.WGSports,
+                key: GameProviderConfigurations.WGFmGaming,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false)
-            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.WGSports})");
+            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.WGFmGaming})");
+
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+                gameProviderConfigId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+
+        return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
+            ? settingConfiguration
+            : JsonMergeUtils.MergeModel(settingConfiguration, gameProviderConfig.ConfigurationData, _SerializerOptions);
+    }
+
+    public async ValueTask<WGViaGamingConfiguration> GetWGViaGamingConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<WGViaGamingConfiguration>(
+                key: GameProviderConfigurations.WGViaGaming,
+                cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"This game product setting does not exist.({GameProviderConfigurations.WGViaGaming})");
 
         var gameProviderConfig = await _client
             .GameProviderConfigurationGetAsync(

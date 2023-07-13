@@ -87,7 +87,7 @@ internal class SettingRepository : ISettingRepository
 
     public ValueTask<WGFmGamingConfiguration> GetWGSportsConfigurationAsync(
         CancellationToken cancellationToken = default)
-        => GetAsync<WGFmGamingConfiguration>(GameProviderConfigurations.WGSports, cancellationToken);
+        => GetAsync<WGFmGamingConfiguration>(GameProviderConfigurations.WGFmGaming, cancellationToken);
 
     private async ValueTask<TConfiguration> GetAsync<TConfiguration>(
         string key,

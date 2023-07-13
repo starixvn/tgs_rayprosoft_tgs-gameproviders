@@ -189,6 +189,11 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceJokerBaseUrl")!;
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceWGViaGamingBaseUrl")!;
     });
 
 builder.Services
@@ -257,6 +262,7 @@ _ = app.InitialConnectionSBO();
 _ = app.InitialConnectionSkywind();
 _ = app.InitialConnectionTFGaming();
 _ = app.InitialConnectionWGFmGaming();
+_ = app.InitialConnectionWGViaGaming();
 _ = app.InitialConnectionWMCasino();
 _ = app.InitialConnectionYeeBet();
 

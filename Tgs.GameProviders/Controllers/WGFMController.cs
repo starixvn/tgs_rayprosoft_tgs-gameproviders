@@ -14,7 +14,7 @@ public class WGFMController : ControllerBase
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
     /// <remarks>
@@ -35,11 +35,11 @@ public class WGFMController : ControllerBase
     ///         }
     /// </remarks>
     [HttpPost("gameurl")]
-    public async ValueTask<GameUrlResponse?> GameUrlAsync(
-        [FromServices] IGetService<WGFmGamingGameUrlQuery, Uri> getService,
+    public async ValueTask<GameUrlResponse> GameUrlAsync(
+        [FromServices] IGetService<WGFmGamingGameUrlQuery, Uri> service,
         GameUrlRequest request)
     {
-        var result = await getService
+        var result = await service
             .GetAsync(
                 query: new()
                 {
@@ -56,13 +56,13 @@ public class WGFMController : ControllerBase
                 },
                 cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
-        return result == null ? null : new GameUrlResponse() { Url = result };
+        return new GameUrlResponse() { Url = result };
     }
 
     /// <summary>
     /// Kicks the player asynchronous.
     /// </summary>
-    /// <param name="commandService">The command service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="playerCode">The player code.</param>
     /// <returns></returns>
     /// <remarks>
@@ -72,20 +72,24 @@ public class WGFMController : ControllerBase
     /// </remarks>
     [HttpDelete("kickplayer/{playerCode}")]
     public ValueTask KickPlayerAsync(
-        [FromServices] ICommandService<WGFmGamingKickPlayerCommand> commandService,
+        [FromServices] ICommandService<WGFmGamingKickPlayerCommand> service,
         string playerCode)
-        => commandService
+
+    {
+        var command = new WGFmGamingKickPlayerCommand
+        {
+            PlayerCode = playerCode
+        };
+        return service
         .ExecuteAsync(
-            command: new()
-            {
-                PlayerCode = playerCode
-            },
+            command: command,
             cancellationToken: HttpContext.RequestAborted);
+    }
 
     /// <summary>
     /// Players the balance asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="playerCode">The player code.</param>
     /// <returns></returns>
     /// <remarks>
@@ -94,21 +98,24 @@ public class WGFMController : ControllerBase
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal?> PlayerBalanceAsync(
-         [FromServices] IGetService<WGFmGamingPlayerBalanceQuery, decimal?> getService,
-         string playerCode)
-        => getService
+    public ValueTask<decimal> PlayerBalanceAsync(
+        [FromServices] IGetService<WGFmGamingPlayerBalanceQuery, decimal> service,
+        string playerCode)
+    {
+        var query = new WGFmGamingPlayerBalanceQuery
+        {
+            PlayerCode = playerCode
+        };
+        return service
         .GetAsync(
-            query: new()
-            {
-                PlayerCode = playerCode
-            },
+            query: query,
             cancellationToken: HttpContext.RequestAborted);
+    }
 
     /// <summary>
     /// Players the fund checking asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
     /// <remarks>
@@ -124,22 +131,23 @@ public class WGFMController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<WGFmGamingPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<WGFmGamingPlayerFundCheckingQuery, PlayerFundCheckingResult> service,
         PlayerFundCheckingRequest request)
     {
-        var result = await getService
+        var query = new WGFmGamingPlayerFundCheckingQuery()
+        {
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            OrderId = request.OrderId,
+        };
+        var result = await service
             .GetAsync(
-                query: new()
-                {
-                    BrandCode = request.BrandCode,
-                    PlayerCode = request.PlayerCode,
-                    CurrencyCode = request.CurrencyCode,
-                    OrderId = request.OrderId,
-                },
-                cancellationToken: HttpContext.RequestAborted)
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
 
-        return result == null ? null : new PlayerFundCheckingResponse()
+        return new PlayerFundCheckingResponse()
         {
             OrderStatus = result.OrderStatus,
         };
@@ -148,7 +156,7 @@ public class WGFMController : ControllerBase
     /// <summary>
     /// Players the fund in asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
     /// <remarks>
@@ -164,32 +172,35 @@ public class WGFMController : ControllerBase
     ///         }
     /// </remarks>
     [HttpPost("playerfundin")]
-    public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
-        [FromServices] IGetService<WGFmGamingPlayerFundInQuery, PlayerFundResult> getService,
+    public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
+        [FromServices] IGetService<WGFmGamingPlayerFundInQuery, PlayerFundResult> service,
         PlayerFundRequest request)
     {
-        var result = await getService
-            .GetAsync(
-                query: new()
-                {
-                    BrandCode = request.BrandCode,
-                    PlayerCode = request.PlayerCode,
-                    CurrencyCode = request.CurrencyCode,
-                    OrderId = request.OrderId,
-                    Amount = request.Amount,
-                },
-                cancellationToken: HttpContext.RequestAborted)
-            .ConfigureAwait(false);
-        return result == null ? null : new PlayerFundResponse()
+        var query = new WGFmGamingPlayerFundInQuery()
         {
-            OrderId = request.OrderId
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            OrderId = request.OrderId,
+            Amount = request.Amount,
+        };
+
+        var result = await service
+            .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
+        return new PlayerFundResponse()
+        {
+            OrderId = result.OrderId
         };
     }
 
     /// <summary>
     /// Players the fund out asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
     /// <remarks>
@@ -206,31 +217,34 @@ public class WGFMController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
-        [FromServices] IGetService<WGFmGamingPlayerFundOutQuery, PlayerFundResult> getService,
+        [FromServices] IGetService<WGFmGamingPlayerFundOutQuery, PlayerFundResult> service,
         PlayerFundRequest request)
     {
-        var result = await getService
-            .GetAsync(
-                query: new()
-                {
-                    BrandCode = request.BrandCode,
-                    PlayerCode = request.PlayerCode,
-                    CurrencyCode = request.CurrencyCode,
-                    OrderId = request.OrderId,
-                    Amount = request.Amount,
-                },
-                cancellationToken: HttpContext.RequestAborted)
-            .ConfigureAwait(false);
-        return result == null ? null : new PlayerFundResponse()
+        var query = new WGFmGamingPlayerFundOutQuery()
         {
-            OrderId = request.OrderId
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            OrderId = request.OrderId,
+            Amount = request.Amount,
+        };
+
+        var result = await service
+            .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
+        return new PlayerFundResponse()
+        {
+            OrderId = result.OrderId
         };
     }
 
     /// <summary>
     /// Rounds the detail asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="roundId">The round identifier.</param>
     /// <param name="language">The language.</param>
     /// <returns></returns>
@@ -240,16 +254,19 @@ public class WGFMController : ControllerBase
     ///     Get rounddetail/f6dd64ee-ce12-4bef-9ddb-08d9676f4495?language=zh-CN
     /// </remarks>
     [HttpGet("rounddetail/{roundId:guid}")]
-    public ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<WGFmGamingRoundDetailQuery, RoundDetailResult?> getService,
+    public ValueTask<RoundDetailResult> RoundDetailAsync(
+        [FromServices] IGetService<WGFmGamingRoundDetailQuery, RoundDetailResult> service,
         Guid roundId,
         [FromQuery] string language)
-        => getService
-        .GetAsync(
-            query: new()
-            {
-                RoundId = roundId,
-                Language = language
-            },
+    {
+        var query = new WGFmGamingRoundDetailQuery
+        {
+            RoundId = roundId,
+            Language = language
+        };
+        return service
+            .GetAsync(
+            query: query,
             cancellationToken: HttpContext.RequestAborted);
+    }
 }

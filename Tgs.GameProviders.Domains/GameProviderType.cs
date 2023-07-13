@@ -59,8 +59,8 @@ public static class GameProviderType
     public static readonly string TFGaming = "TF";
     public static readonly string TFGamingTransfer = "TFTF";
     public static readonly string VR = "VR";
-    public static readonly string WGHorse = "WGVIA";
-    public static readonly string WGSports = "WGFM";
+    public static readonly string WGViaGaming = "WGVIA";
+    public static readonly string WGFmGaming = "WGFM";
     public static readonly string WMCasino = "WM";
     public static readonly string WMCasinoTransfer = "WMTF";
     public static readonly string YeeBet = "YEEBET";

@@ -22,6 +22,7 @@ using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.TFGamingService.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
+using Tgs.GameInterface.WGViaGaming.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GameProviders.Core;
@@ -61,40 +62,42 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceInplayMatrixClientOptions, IServiceProvider> gameInterfaceInplayMatrixClientOptions,
         Action<GameInterfaceCards365ClientOptions, IServiceProvider> gameInterfaceCards365ClientOptions,
         Action<GameInterfacePinnacleClientOptions, IServiceProvider> gameInterfacePinnacleClientOptions,
-        Action<GameInterfaceJokerClientOptions, IServiceProvider> gameInterfaceJokerClientOptions)
+        Action<GameInterfaceJokerClientOptions, IServiceProvider> gameInterfaceJokerClientOptions,
+        Action<GameInterfaceWGViaGamingClientOptions, IServiceProvider> gameInterfaceWGViaGamingClientOptions)
         => services
-            .RegisterAllServiceUtilityTypes(
-                Assembly.GetExecutingAssembly(),
-                ServiceLifetime.Transient)
-            .AddGameCommandClient(gameCommandClientOptions)
-            .AddGameInterfaceAwcServiceClient(gameInterfaceAwcServiceClientOptions)
-            .AddGameInterfaceJiliServiceClient(gameInterfaceJiliClientOptions)
-            .AddGameInterfaceWMCasinoServiceClient(gameInterfaceWMCasinoClientOptions)
-            .AddGameInterfaceEvoClient(gameInterfaceEvolutionServiceClientOptions)
-            .AddGameInterfaceSkywindServiceClient(gameInterfaceSkywindClientOptions)
-            .AddGameInterfaceWGFmGamingServiceClient(gameInterfaceWGFmGamingClientOptions)
-            .AddGameInterfaceJDBServiceClient(gameInterfaceJDBClientOptions)
-            .AddGameInterfaceSBOServiceClient(gameInterfaceSBOClientOptions)
-            .AddGameInterfaceBTiServiceClient(gameInterfaceBTiClientOptions)
-            .AddGameInterfaceHabaneroServiceClient(gameInterfaceHabaneroClientOptions)
-            .AddGameInterfaceSabaServiceClient(gameInterfaceSabaClientOptions)
-            .AddGameInterfaceSM01ServiceClient(gameInterfaceSM01ClientOptions)
-            .AddGameInterfaceTFGamingServiceClient(gameInterfaceTFGamingClientOptions)
-            .AddGameInterfaceDreamGamingServiceClient(gameInterfaceDreamGamingClientOptions)
-            .AddGameInterfaceEndorphinaServiceClient(gameInterfaceEndorphinaClientOptions)
-            .AddGameInterfaceFaChaiClient(gameInterfaceFaChaiClientOptions)
-            .AddGameInterfaceOBetClient(gameInterfaceOBetClientOptions)
-            .AddGameInterfaceYeeBetClient(gameInterfaceYeeBetClientOptions)
-            .AddGameRecordEndorphinaSessionClient(gameRecordEndorphinaClientOptions)
-            .AddGameInterfacePragmaticPlayClient(gameInterfacePragmaticPlayClientOptions)
-            .AddGameInterfaceInplayMatrixClient(gameInterfaceInplayMatrixClientOptions)
-            .AddGameInterfaceCards365Client(gameInterfaceCards365ClientOptions)
-            .AddGameInterfacePinnacleClient(gameInterfacePinnacleClientOptions)
-            .AddGameRoundsClient(gameRoundsClientOptions)
-            .AddGameTokenClient(gameTokenClientOptions)
-            .AddGameInterfaceJokerClient(gameInterfaceJokerClientOptions)
-            .AddSecurity()//Tgs.Core.Infrastructures.Security
-            .AddMemoryCache()
-            .AddTransient<IGameActionService, GameActionService>()
-            .AddTransient<ISystemClock, SystemClock>();
+        .RegisterAllServiceUtilityTypes(
+            Assembly.GetExecutingAssembly(),
+            ServiceLifetime.Transient)
+        .AddGameCommandClient(gameCommandClientOptions)
+        .AddGameInterfaceAwcServiceClient(gameInterfaceAwcServiceClientOptions)
+        .AddGameInterfaceJiliServiceClient(gameInterfaceJiliClientOptions)
+        .AddGameInterfaceWMCasinoServiceClient(gameInterfaceWMCasinoClientOptions)
+        .AddGameInterfaceEvoClient(gameInterfaceEvolutionServiceClientOptions)
+        .AddGameInterfaceSkywindServiceClient(gameInterfaceSkywindClientOptions)
+        .AddGameInterfaceWGFmGamingServiceClient(gameInterfaceWGFmGamingClientOptions)
+        .AddGameInterfaceWGViaGamingClient(gameInterfaceWGViaGamingClientOptions)
+        .AddGameInterfaceJDBServiceClient(gameInterfaceJDBClientOptions)
+        .AddGameInterfaceSBOServiceClient(gameInterfaceSBOClientOptions)
+        .AddGameInterfaceBTiServiceClient(gameInterfaceBTiClientOptions)
+        .AddGameInterfaceHabaneroServiceClient(gameInterfaceHabaneroClientOptions)
+        .AddGameInterfaceSabaServiceClient(gameInterfaceSabaClientOptions)
+        .AddGameInterfaceSM01ServiceClient(gameInterfaceSM01ClientOptions)
+        .AddGameInterfaceTFGamingServiceClient(gameInterfaceTFGamingClientOptions)
+        .AddGameInterfaceDreamGamingServiceClient(gameInterfaceDreamGamingClientOptions)
+        .AddGameInterfaceEndorphinaServiceClient(gameInterfaceEndorphinaClientOptions)
+        .AddGameInterfaceFaChaiClient(gameInterfaceFaChaiClientOptions)
+        .AddGameInterfaceOBetClient(gameInterfaceOBetClientOptions)
+        .AddGameInterfaceYeeBetClient(gameInterfaceYeeBetClientOptions)
+        .AddGameRecordEndorphinaSessionClient(gameRecordEndorphinaClientOptions)
+        .AddGameInterfacePragmaticPlayClient(gameInterfacePragmaticPlayClientOptions)
+        .AddGameInterfaceInplayMatrixClient(gameInterfaceInplayMatrixClientOptions)
+        .AddGameInterfaceCards365Client(gameInterfaceCards365ClientOptions)
+        .AddGameInterfacePinnacleClient(gameInterfacePinnacleClientOptions)
+        .AddGameRoundsClient(gameRoundsClientOptions)
+        .AddGameTokenClient(gameTokenClientOptions)
+        .AddGameInterfaceJokerClient(gameInterfaceJokerClientOptions)
+        .AddSecurity()//Tgs.Core.Infrastructures.Security
+        .AddMemoryCache()
+        .AddTransient<IGameActionService, GameActionService>()
+        .AddTransient<ISystemClock, SystemClock>();
 }
