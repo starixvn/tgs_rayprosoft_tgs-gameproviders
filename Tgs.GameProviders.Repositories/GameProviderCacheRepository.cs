@@ -368,8 +368,31 @@ internal class GameProviderCacheRepository : IGameProviderRepository
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public async ValueTask<OBetConfiguration> GetOBetConfigurationAsync(
+    public async ValueTask<LEGamingConfiguration> GetLEGamingConfigurationAsync(
         Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out LEGamingConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetLEGamingConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<OBetConfiguration> GetOBetConfigurationAsync(
+            Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";

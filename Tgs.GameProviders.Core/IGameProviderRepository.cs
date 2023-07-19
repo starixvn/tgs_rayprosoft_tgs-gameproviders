@@ -1,4 +1,5 @@
 ﻿#nullable enable
+
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -76,8 +77,12 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
+    ValueTask<LEGamingConfiguration> GetLEGamingConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
     ValueTask<OBetConfiguration> GetOBetConfigurationAsync(
-            Guid gameProviderConfigurationId,
+                Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
     ValueTask<PinnacleConfiguration> GetPinnacleConfigurationAsync(
@@ -104,12 +109,12 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<WGViaGamingConfiguration> GetWGViaGamingConfigurationAsync(
+    ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationAsync(
-        Guid gameProviderConfigurationId,
+    ValueTask<WGViaGamingConfiguration> GetWGViaGamingConfigurationAsync(
+            Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
     ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync(

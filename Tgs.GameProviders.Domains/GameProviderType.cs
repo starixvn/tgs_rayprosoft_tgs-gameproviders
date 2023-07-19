@@ -40,7 +40,7 @@ public static class GameProviderType
     public static readonly string JiliTransfer = "JILITF";
     public static readonly string Joker = "JOKER";
     public static readonly string KY = "KY";
-    public static readonly string LY = "LY";
+    public static readonly string LEGaming = "LY";
     public static readonly string MainWallet = "DEFAULT";
     public static readonly string OBet = "OBET";
     public static readonly string Pinnacle = "PINNACLE";
@@ -59,8 +59,8 @@ public static class GameProviderType
     public static readonly string TFGaming = "TF";
     public static readonly string TFGamingTransfer = "TFTF";
     public static readonly string VR = "VR";
-    public static readonly string WGViaGaming = "WGVIA";
     public static readonly string WGFmGaming = "WGFM";
+    public static readonly string WGViaGaming = "WGVIA";
     public static readonly string WMCasino = "WM";
     public static readonly string WMCasinoTransfer = "WMTF";
     public static readonly string YeeBet = "YEEBET";

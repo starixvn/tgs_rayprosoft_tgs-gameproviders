@@ -42,7 +42,7 @@ public static class GameProviderConfigurations
     public static readonly string JiliTransfer = string.Format(_template, GameProviderType.JiliTransfer);
     public static readonly string Joker = string.Format(_template, GameProviderType.Joker);
     public static readonly string KY = string.Format(_template, GameProviderType.KY);
-    public static readonly string LY = string.Format(_template, GameProviderType.LY);
+    public static readonly string LEGaming = string.Format(_template, GameProviderType.LEGaming);
     public static readonly string OBet = string.Format(_template, GameProviderType.OBet);
     public static readonly string Pinnacle = string.Format(_template, GameProviderType.Pinnacle);
     public static readonly string PragmaticPlay = string.Format(_template, GameProviderType.PragmaticPlay);
@@ -59,8 +59,8 @@ public static class GameProviderConfigurations
     public static readonly string TFGaming = string.Format(_template, GameProviderType.TFGaming);
     public static readonly string TFGamingTransfer = string.Format(_template, GameProviderType.TFGamingTransfer);
     public static readonly string VR = string.Format(_template, GameProviderType.VR);
-    public static readonly string WGViaGaming = string.Format(_template, GameProviderType.WGViaGaming);
     public static readonly string WGFmGaming = string.Format(_template, GameProviderType.WGFmGaming);
+    public static readonly string WGViaGaming = string.Format(_template, GameProviderType.WGViaGaming);
     public static readonly string WMCasino = string.Format(_template, GameProviderType.WMCasino);
     public static readonly string WMCasinoTransfer = string.Format(_template, GameProviderType.WMCasinoTransfer);
     public static readonly string YeeBet = string.Format(_template, GameProviderType.YeeBet);

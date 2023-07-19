@@ -1,54 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.LY.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.Core.LEGaming.ApplicationServices;
 
 namespace Tgs.GameProviders.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class LYController : ControllerBase,
-    IGameRecordListHandler<LYGameRecordListQuery, LYGameRecordListQuery>,
-    IGameUrlHandler<LYGameUrlQuery>,
-    IKickPlayerHandler<LYKickPlayerCommand>,
-    IPlayerBalanceHandler<LYPlayerBalanceQuery>,
-    IPlayerFundCheckingHandler<LYPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-    IPlayerFundHandler<LYPlayerFundInQuery, LYPlayerFundOutQuery>,
-    IRoundDetailHandler<LYRoundDetailQuery>
-
+public class LYController : ControllerBase
 {
-    /// <summary>
-    /// Games the record list asynchronous.
-    /// </summary>
-    /// <param name="getService">The get service.</param>
-    /// <param name="request">The request.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Post
-    ///         {
-    ///             "brandCode": "Default",
-    ///             "currencyCode": "HKD",
-    ///             "startTime": "2021-11-02T03:36:03.1588192+00:00",
-    ///             "endTime": "2021-11-02T03:46:03.1588192+00:00"
-    ///         }
-    /// </remarks>
-    [HttpPost("gamerecordlist")]
-    public async ValueTask<GameRecordListResult?> GameRecordListAsync(
-        [FromServices] IGetService<LYGameRecordListQuery, GameRecordListResult> getService,
-        LYGameRecordListQuery request)
-    {
-        var result = await getService.GetAsync(request).ConfigureAwait(false);
-        return result ?? null;
-    }
-
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
     /// <remarks>
@@ -70,10 +36,10 @@ public class LYController : ControllerBase,
     /// </remarks>
     [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
-        [FromServices] IGetService<LYGameUrlQuery, GameUrlResult> getService,
+        [FromServices] IGetService<LEGamingGameUrlQuery, string> service,
         GameUrlRequest request)
     {
-        var result = await getService
+        var result = await service
             .GetAsync(
                 query: new()
                 {
@@ -90,13 +56,13 @@ public class LYController : ControllerBase,
                 },
                 cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
-        return result == null ? null : new GameUrlResponse() { Url = result.Url };
+        return result == null ? null : new GameUrlResponse() { Url = new(result) };
     }
 
     /// <summary>
     /// Kicks the player asynchronous.
     /// </summary>
-    /// <param name="commandService">The command service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="playerCode">The player code.</param>
     /// <returns></returns>
     /// <remarks>
@@ -106,20 +72,23 @@ public class LYController : ControllerBase,
     /// </remarks>
     [HttpDelete("kickplayer/{playerCode}")]
     public ValueTask KickPlayerAsync(
-        [FromServices] ICommandService<LYKickPlayerCommand> commandService,
+        [FromServices] ICommandService<LEGamingKickPlayerCommand> service,
         string playerCode)
-        => commandService
+    {
+        var command = new LEGamingKickPlayerCommand
+        {
+            PlayerCode = playerCode
+        };
+        return service
         .ExecuteAsync(
-            command: new()
-            {
-                PlayerCode = playerCode
-            },
+            command: command,
             cancellationToken: HttpContext.RequestAborted);
+    }
 
     /// <summary>
     /// Players the balance asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="playerCode">The player code.</param>
     /// <returns></returns>
     /// <remarks>
@@ -128,21 +97,24 @@ public class LYController : ControllerBase,
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal?> PlayerBalanceAsync(
-         [FromServices] IGetService<LYPlayerBalanceQuery, decimal?> getService,
+    public ValueTask<decimal> PlayerBalanceAsync(
+         [FromServices] IGetService<LEGamingPlayerBalanceQuery, decimal> service,
          string playerCode)
-        => getService
+    {
+        var query = new LEGamingPlayerBalanceQuery
+        {
+            PlayerCode = playerCode
+        };
+        return service
         .GetAsync(
-            query: new()
-            {
-                PlayerCode = playerCode
-            },
+            query: query,
             cancellationToken: HttpContext.RequestAborted);
+    }
 
     /// <summary>
     /// Players the fund checking asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
     /// <remarks>
@@ -158,31 +130,32 @@ public class LYController : ControllerBase,
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<LYPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<LEGamingPlayerFundCheckingQuery, bool> service,
         PlayerFundCheckingRequest request)
     {
-        var result = await getService
+        var query = new LEGamingPlayerFundCheckingQuery()
+        {
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            OrderId = request.OrderId,
+        };
+        var result = await service
             .GetAsync(
-                query: new()
-                {
-                    BrandCode = request.BrandCode,
-                    PlayerCode = request.PlayerCode,
-                    CurrencyCode = request.CurrencyCode,
-                    OrderId = request.OrderId,
-                },
-                cancellationToken: HttpContext.RequestAborted)
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
 
-        return result == null ? null : new PlayerFundCheckingResponse()
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 
     /// <summary>
     /// Players the fund in asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
     /// <remarks>
@@ -199,31 +172,34 @@ public class LYController : ControllerBase,
     /// </remarks>
     [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
-        [FromServices] IGetService<LYPlayerFundInQuery, PlayerFundResult> getService,
+        [FromServices] IGetService<LEGamingPlayerFundInQuery, PlayerFundResult> service,
         PlayerFundRequest request)
     {
-        var result = await getService
-            .GetAsync(
-                query: new()
-                {
-                    BrandCode = request.BrandCode,
-                    PlayerCode = request.PlayerCode,
-                    CurrencyCode = request.CurrencyCode,
-                    OrderId = request.OrderId,
-                    Amount = request.Amount,
-                },
-                cancellationToken: HttpContext.RequestAborted)
-            .ConfigureAwait(false);
-        return result == null ? null : new PlayerFundResponse()
+        var query = new LEGamingPlayerFundInQuery()
         {
-            OrderId = request.OrderId
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            OrderId = request.OrderId,
+            Amount = request.Amount,
+        };
+
+        var result = await service
+            .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
+        return new PlayerFundResponse()
+        {
+            OrderId = result.OrderId
         };
     }
 
     /// <summary>
     /// Players the fund out asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
     /// <remarks>
@@ -240,31 +216,34 @@ public class LYController : ControllerBase,
     /// </remarks>
     [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
-        [FromServices] IGetService<LYPlayerFundOutQuery, PlayerFundResult> getService,
+        [FromServices] IGetService<LEGamingPlayerFundOutQuery, PlayerFundResult> service,
         PlayerFundRequest request)
     {
-        var result = await getService
-            .GetAsync(
-                query: new()
-                {
-                    BrandCode = request.BrandCode,
-                    PlayerCode = request.PlayerCode,
-                    CurrencyCode = request.CurrencyCode,
-                    OrderId = request.OrderId,
-                    Amount = request.Amount,
-                },
-                cancellationToken: HttpContext.RequestAborted)
-            .ConfigureAwait(false);
-        return result == null ? null : new PlayerFundResponse()
+        var query = new LEGamingPlayerFundOutQuery()
         {
-            OrderId = request.OrderId
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            OrderId = request.OrderId,
+            Amount = request.Amount,
+        };
+
+        var result = await service
+            .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
+        return new PlayerFundResponse()
+        {
+            OrderId = result.OrderId
         };
     }
 
     /// <summary>
     /// Rounds the detail asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="roundId">The round identifier.</param>
     /// <param name="language">The language.</param>
     /// <returns></returns>
@@ -275,15 +254,19 @@ public class LYController : ControllerBase,
     /// </remarks>
     [HttpGet("rounddetail/{roundId:guid}")]
     public ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<LYRoundDetailQuery, RoundDetailResult?> getService,
+        [FromServices] IGetService<LEGamingRoundDetailQuery, RoundDetailResult?> service,
         Guid roundId,
         [FromQuery] string language)
-        => getService
-        .GetAsync(
-            query: new()
-            {
-                RoundId = roundId,
-                Language = language
-            },
+
+    {
+        var query = new LEGamingRoundDetailQuery
+        {
+            RoundId = roundId,
+            Language = language
+        };
+        return service
+            .GetAsync(
+            query: query,
             cancellationToken: HttpContext.RequestAborted);
+    }
 }

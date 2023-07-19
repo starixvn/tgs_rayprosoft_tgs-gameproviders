@@ -194,6 +194,11 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceWGViaGamingBaseUrl")!;
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceLEGamingBaseUrl")!;
     });
 
 builder.Services
@@ -255,6 +260,7 @@ _ = app.InitialConnectionFaChai();
 _ = app.InitialConnectionJDB();
 _ = app.InitialConnectionJili();
 _ = app.InitialConnectionJoker();
+_ = app.InitialConnectionLEGaming();
 _ = app.InitialConnectionOBet();
 _ = app.InitialConnectionPinnacle();
 _ = app.InitialConnectionPragmaticPlay();

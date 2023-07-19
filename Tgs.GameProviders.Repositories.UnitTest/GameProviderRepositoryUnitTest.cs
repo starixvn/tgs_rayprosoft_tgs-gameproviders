@@ -639,6 +639,54 @@ public class GameProviderRepositoryUnitTest
     }
 
     [TestMethod]
+    public async Task Get_LEGaming_ConfigurationData()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new LEGamingConfiguration()
+        {
+            AmountMaximum = 999999999999,
+            AmountFormat = "12,2",
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+            Deskey = "deskey",
+            Md5key = "md5key"
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<LEGamingConfiguration>(Arg.Is(GameProviderConfigurations.LEGaming))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: "LY",
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "LY-GPI",
+            Description: "LY-GPI Configuration",
+            ClientId: "LY-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"CurrencyCode\":\"HKD\",\"AgentId\":\"200995\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetLEGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("deskey", actual.Deskey);
+        Assert.AreEqual("md5key", actual.Md5key);
+        Assert.AreEqual("HKD", actual.CurrencyCode);
+        Assert.AreEqual("200995", actual.AgentId);
+    }
+
+    [TestMethod]
     public async Task Get_WGFmGaming_ConfigurationData_Is_Empty()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();

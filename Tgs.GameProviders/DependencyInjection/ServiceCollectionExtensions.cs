@@ -11,6 +11,7 @@ using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.Jili.Client;
 using Tgs.GameInterface.Joker.Client;
+using Tgs.GameInterface.LEGaming.Client;
 using Tgs.GameInterface.OBet.Client;
 using Tgs.GameInterface.Pinnacle.Client;
 using Tgs.GameInterface.PragmaticPlay.Client;
@@ -62,41 +63,43 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceCards365ClientOptions, IServiceProvider> gameInterfaceCards365ClientOptions,
         Action<GameInterfacePinnacleClientOptions, IServiceProvider> gameInterfacePinnacleClientOptions,
         Action<GameInterfaceJokerClientOptions, IServiceProvider> gameInterfaceJokerClientOptions,
-        Action<GameInterfaceWGViaGamingClientOptions, IServiceProvider> gameInterfaceWGViaGamingClientOptions)
+        Action<GameInterfaceWGViaGamingClientOptions, IServiceProvider> gameInterfaceWGViaGamingClientOptions,
+        Action<GameInterfaceLEGamingClientOptions, IServiceProvider> gameInterfaceLEGamingClientOptions)
         => services
-            .AddOptions<RedisOptions>()
-            .Configure(configure)
-            .Services
-            .AddSingleton<RedisConnectionFactory>()
-            .AddGameProvidersRepositories()
-            .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
-            .AddGameProvidersCore(
-                gameRoundsClientOptions: gameRoundsClientOptions,
-                gameTokenClientOptions: gameTokenClientOptions,
-                gameCommandClientOptions: gameCommandClientOptions,
-                gameInterfaceAwcServiceClientOptions: gameInterfaceAwcServiceClientOptions,
-                gameInterfaceJiliClientOptions: gameInterfaceJiliClientOptions,
-                gameInterfaceWMCasinoClientOptions: gameInterfaceWMCasinoClientOptions,
-                gameInterfaceEvolutionServiceClientOptions: gameInterfaceEvolutionServiceClientOptions,
-                gameInterfaceSkywindClientOptions: gameInterfaceSkywindClientOptions,
-                gameInterfaceWGFmGamingClientOptions: gameInterfaceWGFmGamingClientOptions,
-                gameInterfaceJDBClientOptions: gameInterfaceJDBClientOptions,
-                gameInterfaceSBOClientOptions: gameInterfaceSBOClientOptions,
-                gameInterfaceBTiClientOptions: gameInterfaceBTiClientOptions,
-                gameInterfaceHabaneroClientOptions: gameInterfaceHabaneroClientOptions,
-                gameInterfaceSabaClientOptions: gameInterfaceSabaClientOptions,
-                gameInterfaceSM01ClientOptions: gameInterfaceSM01ClientOptions,
-                gameInterfaceTFGamingClientOptions: gameInterfaceTFGamingClientOptions,
-                gameInterfaceDreamGamingClientOptions: gameInterfaceDreamGamingClientOptions,
-                gameInterfaceEndorphinaClientOptions: gameInterfaceEndorphinaClientOptions,
-                gameRecordEndorphinaClientOptions: gameRecordEndorphinaSessionClientOptions,
-                gameInterfaceFaChaiClientOptions: gameInterfaceFaChaiClientOptions,
-                gameInterfaceOBetClientOptions: gameInterfaceOBetClientOptions,
-                gameInterfaceYeeBetClientOptions: gameInterfaceYeeBetClientOptions,
-                gameInterfacePragmaticPlayClientOptions: gameInterfacePragmaticPlayClientOptions,
-                gameInterfaceInplayMatrixClientOptions: gameInterfaceInplayMatrixClientOptions,
-                gameInterfaceCards365ClientOptions: gameInterfaceCards365ClientOptions,
-                gameInterfacePinnacleClientOptions: gameInterfacePinnacleClientOptions,
-                gameInterfaceJokerClientOptions: gameInterfaceJokerClientOptions,
-                gameInterfaceWGViaGamingClientOptions: gameInterfaceWGViaGamingClientOptions);
+        .AddOptions<RedisOptions>()
+        .Configure(configure)
+        .Services
+        .AddSingleton<RedisConnectionFactory>()
+        .AddGameProvidersRepositories()
+        .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
+        .AddGameProvidersCore(
+            gameRoundsClientOptions: gameRoundsClientOptions,
+            gameTokenClientOptions: gameTokenClientOptions,
+            gameCommandClientOptions: gameCommandClientOptions,
+            gameInterfaceAwcServiceClientOptions: gameInterfaceAwcServiceClientOptions,
+            gameInterfaceJiliClientOptions: gameInterfaceJiliClientOptions,
+            gameInterfaceWMCasinoClientOptions: gameInterfaceWMCasinoClientOptions,
+            gameInterfaceEvolutionServiceClientOptions: gameInterfaceEvolutionServiceClientOptions,
+            gameInterfaceSkywindClientOptions: gameInterfaceSkywindClientOptions,
+            gameInterfaceWGFmGamingClientOptions: gameInterfaceWGFmGamingClientOptions,
+            gameInterfaceJDBClientOptions: gameInterfaceJDBClientOptions,
+            gameInterfaceSBOClientOptions: gameInterfaceSBOClientOptions,
+            gameInterfaceBTiClientOptions: gameInterfaceBTiClientOptions,
+            gameInterfaceHabaneroClientOptions: gameInterfaceHabaneroClientOptions,
+            gameInterfaceSabaClientOptions: gameInterfaceSabaClientOptions,
+            gameInterfaceSM01ClientOptions: gameInterfaceSM01ClientOptions,
+            gameInterfaceTFGamingClientOptions: gameInterfaceTFGamingClientOptions,
+            gameInterfaceDreamGamingClientOptions: gameInterfaceDreamGamingClientOptions,
+            gameInterfaceEndorphinaClientOptions: gameInterfaceEndorphinaClientOptions,
+            gameRecordEndorphinaClientOptions: gameRecordEndorphinaSessionClientOptions,
+            gameInterfaceFaChaiClientOptions: gameInterfaceFaChaiClientOptions,
+            gameInterfaceOBetClientOptions: gameInterfaceOBetClientOptions,
+            gameInterfaceYeeBetClientOptions: gameInterfaceYeeBetClientOptions,
+            gameInterfacePragmaticPlayClientOptions: gameInterfacePragmaticPlayClientOptions,
+            gameInterfaceInplayMatrixClientOptions: gameInterfaceInplayMatrixClientOptions,
+            gameInterfaceCards365ClientOptions: gameInterfaceCards365ClientOptions,
+            gameInterfacePinnacleClientOptions: gameInterfacePinnacleClientOptions,
+            gameInterfaceJokerClientOptions: gameInterfaceJokerClientOptions,
+            gameInterfaceWGViaGamingClientOptions: gameInterfaceWGViaGamingClientOptions,
+            gameInterfaceLEGamingClientOptions: gameInterfaceLEGamingClientOptions);
 }
