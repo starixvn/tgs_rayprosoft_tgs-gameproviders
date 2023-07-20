@@ -61,12 +61,6 @@ public class AwcVenusPlayerBalanceGetService : IGetService<AwcVenusPlayerBalance
 
         if (response.Success && !response.IsPlayerExist)
         {
-            var cultureCode = await _gameProvider
-                .GetGameProviderCultureCodeAsync(
-                gameProviderId: gameProviderId,
-                cultureCode: "en-US",
-                cancellationToken: cancellationToken)
-                .ConfigureAwait(false) ?? "en";
             var currency = await _gameProvider
                 .GetGameProviderCurrencyCodeAsync(
                 gameProviderId: gameProviderId,
@@ -75,14 +69,14 @@ public class AwcVenusPlayerBalanceGetService : IGetService<AwcVenusPlayerBalance
                 .ConfigureAwait(false);
 
             await _client
-                .CreatePlayerAsync(
+                .CreatePlayerByBetLimitAsync(
                 apiUrl: configuration.ApiUrl,
                 agentId: configuration.AgentId,
                 cert: configuration.Cert,
                 playerCode: query.PlayerCode,
                 userName: query.PlayerCode,
                 currency: currency,
-                language: cultureCode,
+                betLimit: configuration.BetLimit.ToJsonString(),
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 

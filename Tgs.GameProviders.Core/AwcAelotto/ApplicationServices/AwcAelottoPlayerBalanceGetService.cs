@@ -61,12 +61,6 @@ public class AwcAelottoPlayerBalanceGetService : IGetService<AwcAelottoPlayerBal
 
         if (response.Success && !response.IsPlayerExist)
         {
-            var cultureCode = await _gameProvider
-                .GetGameProviderCultureCodeAsync(
-                gameProviderId: gameProviderId,
-                cultureCode: "en-US",
-                cancellationToken: cancellationToken)
-                .ConfigureAwait(false) ?? "en";
             var currency = await _gameProvider
                 .GetGameProviderCurrencyCodeAsync(
                 gameProviderId: gameProviderId,
@@ -82,7 +76,6 @@ public class AwcAelottoPlayerBalanceGetService : IGetService<AwcAelottoPlayerBal
                 playerCode: query.PlayerCode,
                 userName: query.PlayerCode,
                 currency: currency,
-                language: cultureCode,
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
@@ -98,6 +91,6 @@ public class AwcAelottoPlayerBalanceGetService : IGetService<AwcAelottoPlayerBal
 
         return !response.Success
             ? throw new Exception($"This game product has failed to withdraw the balance..{response.Message}")
-            : response.Balance;
+            : response.Balance.ToDecimal().GetValueOrDefault(0);
     }
 }

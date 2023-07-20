@@ -85,14 +85,14 @@ public class AwcRcbGameUrlGetService : IGetService<AwcRcbGameUrlQuery, GameUrlRe
                 .ConfigureAwait(false);
 
             await _client
-                .CreatePlayerAsync(
+                .CreatePlayerByBetLimitAsync(
                 apiUrl: configuration.ApiUrl,
                 agentId: configuration.AgentId,
                 cert: configuration.Cert,
                 playerCode: query.PlayerCode,
                 userName: query.PlayerCode,
                 currency: currency,
-                language: cultureCode,
+                betLimit: configuration.BetLimit.ToJsonString(),
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 

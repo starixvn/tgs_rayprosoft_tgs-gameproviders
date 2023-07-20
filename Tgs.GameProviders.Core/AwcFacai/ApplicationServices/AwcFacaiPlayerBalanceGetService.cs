@@ -61,12 +61,6 @@ public class AwcFacaiPlayerBalanceGetService : IGetService<AwcFacaiPlayerBalance
 
         if (response.Success && !response.IsPlayerExist)
         {
-            var cultureCode = await _gameProvider
-                .GetGameProviderCultureCodeAsync(
-                gameProviderId: gameProviderId,
-                cultureCode: "en-US",
-                cancellationToken: cancellationToken)
-                .ConfigureAwait(false) ?? "en";
             var currency = await _gameProvider
                 .GetGameProviderCurrencyCodeAsync(
                 gameProviderId: gameProviderId,
@@ -82,7 +76,6 @@ public class AwcFacaiPlayerBalanceGetService : IGetService<AwcFacaiPlayerBalance
                 playerCode: query.PlayerCode,
                 userName: query.PlayerCode,
                 currency: currency,
-                language: cultureCode,
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 

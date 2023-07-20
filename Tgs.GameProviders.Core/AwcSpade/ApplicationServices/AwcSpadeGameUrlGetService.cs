@@ -100,7 +100,6 @@ public class AwcSpadeGameUrlGetService : IGetService<AwcSpadeGameUrlQuery, GameU
                 playerCode: query.PlayerCode,
                 userName: query.PlayerCode,
                 currency: currency,
-                language: cultureCode,
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 

@@ -107,7 +107,6 @@ public class AwcAelottoGameUrlGetService : IGetService<AwcAelottoGameUrlQuery, G
                 playerCode: query.PlayerCode,
                 userName: query.PlayerCode,
                 currency: currency,
-                language: cultureCode,
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 

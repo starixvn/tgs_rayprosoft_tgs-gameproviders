@@ -100,7 +100,6 @@ public class AwcLudoGameUrlGetService : IGetService<AwcLudoGameUrlQuery, GameUrl
                 playerCode: query.PlayerCode,
                 userName: query.PlayerCode,
                 currency: currency,
-                language: cultureCode,
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 

@@ -100,7 +100,6 @@ public class AwcAwsGameUrlGetService : IGetService<AwcAwsGameUrlQuery, GameUrlRe
                 playerCode: query.PlayerCode,
                 userName: query.PlayerCode,
                 currency: currency,
-                language: cultureCode,
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
