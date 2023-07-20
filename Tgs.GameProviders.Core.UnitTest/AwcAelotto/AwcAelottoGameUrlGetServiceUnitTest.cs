@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
@@ -7,9 +8,7 @@ using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.AwcService.Protos;
 using Tgs.GameProviders.Core.AwcAelotto.ApplicationServices;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.AwcAelotto;
 
@@ -19,28 +18,34 @@ public class AwcAelottoGameUrlGetServiceUnitTest
     [Test]
     public async Task Normal_Process_SubGP_AWC_AELOTTO()
     {
-        var fakeBrandService = Substitute.For<IBrandRepository>();
-        var fakeCreatePlayerCommandService = Substitute.For<ICommandService<AwcAelottoCreatePlayerCommand>>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+        var fakeBrand = Substitute.For<IBrandRepository>();
+        var fakeGame = Substitute.For<IGameRepository>();
+        var fakeGameProvider = Substitute.For<IGameProviderRepository>();
         var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeSettingRepository = Substitute.For<ISettingRepository>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
 
-        var gameUrl = new Uri("http://www.google.com");
-
-        var configuration = new AwcAelottoConfiguration
+        var query = new AwcAelottoGameUrlQuery
         {
-            ApiUrl = new("https://tttint.onlinegames22.com/"),
-            ApiRecordUrl = new("https://tttint.onlinegames22.com/")
+            GameType = GameType.LotteryLobby,
+            GameId = 2900001,
+            BrandCode = "GPI",
+            PlayerCode = "4ucmqplxb029",
+            CurrencyCode = "CNY",
+            LoginRecordId = Guid.NewGuid(),
+            PlatformType = PlatformType.Desktop,
+            Language = "en-US",
+            IPAddress = "127.0.0.1",
+            BackUrl = new("https://dev-t1.rpgp.cc/")
         };
 
-        var configurationData = new AwcConfigurationData(
-            AgentId: "testAgentId",
-            Cert: "testCert",
-            BetLimit: null);
+        var gameProviderId = Guid.NewGuid();
+        _ = fakeGameProvider
+            .GetGameProviderIdAsync(
+            gameProviderCode: Arg.Is(GameProviderType.AWC_AELOTTO),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderId);
 
-        var playerModel = new PlayerInfo(
+        var player = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -51,16 +56,50 @@ public class AwcAelottoGameUrlGetServiceUnitTest
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
             DefaultWalletCurrencyCode: "CNY");
+        _ = fakePlayer
+            .GetAsync(
+            Arg.Is(query.PlayerCode),
+            Arg.Any<CancellationToken>())
+            .Returns(player);
 
-        var gameModel = new GameInfo(
-            GameId: 2900001,
-            GameCode: "LottoLobby",
-            GameProviderId: Guid.NewGuid(),
-            GameProviderCode: "AWC_AELOTTO",
-            GameExternalId: "LottoLobby",
-            Type: GameType.LotteryLobby,
+        var gameProviderConfigurationId = Guid.NewGuid();
+        _ = fakeBrand
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: Arg.Is(gameProviderId),
+            brandId: Arg.Is(player.BrandId),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderConfigurationId);
+
+        var configuration = new AwcAelottoConfiguration
+        {
+            ApiUrl = new("https://tttint.onlinegames22.com/"),
+            ApiRecordUrl = new("https://tttint.onlinegames22.com/"),
+            AgentId = "testAgentId",
+            Cert = "testCert",
+        };
+        _ = fakeGameProvider
+            .GetAwcAelottoConfigurationAsync(
+            gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(configuration);
+
+        var gameProviderCultureCode = "en";
+        _ = fakeGameProvider
+            .GetGameProviderCultureCodeAsync(
+            gameProviderId: Arg.Is(gameProviderId),
+            cultureCode: Arg.Is(query.Language),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderCultureCode);
+
+        var game = new GameInfo(
+            GameId: 2800003,
+            GameCode: "Thai_Shiny_Lottery",
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AWC_AELOTTO,
+            GameExternalId: "AE-LOTTO-001",
+            Type: GameType.Lottery,
             PlatformType: GamePlatformType.DesktopAndMobile,
-            Name: "Lotto Lobby",
+            Name: "Thai Shiny Lottery",
             SubGame: true,
             AvailableToBrand: true,
             HasTurnoverOnTieBet: false,
@@ -70,46 +109,25 @@ public class AwcAelottoGameUrlGetServiceUnitTest
             RuleUrl: null,
             AvailableCurrencies: null,
             Localization: null,
-            SubGameProviderCode: "AWC_AELOTTO");
-
-        var query = new AwcAelottoGameUrlQuery
-        {
-            GameType = gameModel.Type,
-            GameId = gameModel.GameId,
-            BrandCode = "GPI",
-            PlayerCode = "4ucmqplxb029",
-            CurrencyCode = "CNY",
-            LoginRecordId = Guid.NewGuid(),
-            PlatformType = PlatformType.Desktop,
-            Language = "en-US",
-            IPAddress = "127.0.0.1",
-            BackUrl = new("https://dev-t1.rpgp.cc/")
-        };
-        var gameProviderCultureCode = "en";
-        var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.AWC_AELOTTO)).Returns(gameModel.GameProviderId);
-        _ = fakeSettingRepository.GetAwcAelottoConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
-        _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameModel.GameProviderId),
-             Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetAwcConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
-        _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
-             Arg.Is(gameModel.GameProviderId),
-            Arg.Is(query.Language)).Returns(gameProviderCultureCode);
-        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameModel);
+            SubGameProviderCode: GameProviderType.AWC_AELOTTO);
+        _ = fakeGame
+            .GetAsync(
+            Arg.Is(query.GameId.Value),
+            Arg.Any<CancellationToken>())
+            .Returns(game);
 
         var request = new GameUrlRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
-            AgentId = configurationData.AgentId,
-            Cert = configurationData.Cert,
+            AgentId = configuration.AgentId,
+            Cert = configuration.Cert,
             PlayerCode = query.PlayerCode,
             BackUrl = query.BackUrl.ToString(),
             IsMobileLogin = query.PlatformType == PlatformType.Mobile,
             ExternalGameId = "AE-LOTTO-004",
             Language = gameProviderCultureCode
         };
+        var gameUrl = new Uri("http://www.google.com");
         var response = new GameUrlReply()
         {
             Success = true,
@@ -119,13 +137,11 @@ public class AwcAelottoGameUrlGetServiceUnitTest
         _ = fakeClient.GameUrlByAwcAeLottoAsync(request).Returns(response);
 
         var sut = new AwcAelottoGameUrlGetService(
-            fakeBrandService,
-            fakeCreatePlayerCommandService,
-            fakeGameRepository,
-            fakeGameProviderRepository,
+            fakeBrand,
+            fakeGame,
+            fakeGameProvider,
             fakeClient,
-            fakePlayerRepository,
-            fakeSettingRepository);
+            fakePlayer);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
@@ -136,28 +152,34 @@ public class AwcAelottoGameUrlGetServiceUnitTest
     [Test]
     public async Task Normal_Process_SubGP_AWC_YEEKEE_LOTTO()
     {
-        var fakeBrandService = Substitute.For<IBrandRepository>();
-        var fakeCreatePlayerCommandService = Substitute.For<ICommandService<AwcAelottoCreatePlayerCommand>>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+        var fakeBrand = Substitute.For<IBrandRepository>();
+        var fakeGame = Substitute.For<IGameRepository>();
+        var fakeGameProvider = Substitute.For<IGameProviderRepository>();
         var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeSettingRepository = Substitute.For<ISettingRepository>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
 
-        var gameUrl = new Uri("http://www.google.com");
-
-        var configuration = new AwcAelottoConfiguration
+        var query = new AwcAelottoGameUrlQuery
         {
-            ApiUrl = new("https://tttint.onlinegames22.com/"),
-            ApiRecordUrl = new("https://tttint.onlinegames22.com/")
+            GameType = GameType.LotteryLobby,
+            GameId = 2900001,
+            BrandCode = "GPI",
+            PlayerCode = "4ucmqplxb029",
+            CurrencyCode = "CNY",
+            LoginRecordId = Guid.NewGuid(),
+            PlatformType = PlatformType.Desktop,
+            Language = "en-US",
+            IPAddress = "127.0.0.1",
+            BackUrl = new("https://dev-t1.rpgp.cc/")
         };
 
-        var configurationData = new AwcConfigurationData(
-            AgentId: "testAgentId",
-            Cert: "testCert",
-            BetLimit: null);
+        var gameProviderId = Guid.NewGuid();
+        _ = fakeGameProvider
+            .GetGameProviderIdAsync(
+            gameProviderCode: Arg.Is(GameProviderType.AWC_AELOTTO),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderId);
 
-        var playerModel = new PlayerInfo(
+        var player = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -168,16 +190,50 @@ public class AwcAelottoGameUrlGetServiceUnitTest
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
             DefaultWalletCurrencyCode: "CNY");
+        _ = fakePlayer
+            .GetAsync(
+            Arg.Is(query.PlayerCode),
+            Arg.Any<CancellationToken>())
+            .Returns(player);
 
-        var gameModel = new GameInfo(
-            GameId: 1,
-            GameCode: "AWC_YEEKEE_LOTTO",
-            GameProviderId: Guid.NewGuid(),
+        var gameProviderConfigurationId = Guid.NewGuid();
+        _ = fakeBrand
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: Arg.Is(gameProviderId),
+            brandId: Arg.Is(player.BrandId),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderConfigurationId);
+
+        var configuration = new AwcAelottoConfiguration
+        {
+            ApiUrl = new("https://tttint.onlinegames22.com/"),
+            ApiRecordUrl = new("https://tttint.onlinegames22.com/"),
+            AgentId = "testAgentId",
+            Cert = "testCert",
+        };
+        _ = fakeGameProvider
+            .GetAwcAelottoConfigurationAsync(
+            gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(configuration);
+
+        var gameProviderCultureCode = "en";
+        _ = fakeGameProvider
+            .GetGameProviderCultureCodeAsync(
+            gameProviderId: Arg.Is(gameProviderId),
+            cultureCode: Arg.Is(query.Language),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderCultureCode);
+
+        var game = new GameInfo(
+            GameId: 2800015,
+            GameCode: "YeeKee_Lotto",
+            GameProviderId: gameProviderId,
             GameProviderCode: GameProviderType.AWC_AELOTTO,
-            GameExternalId: "LottoLobby",
-            Type: GameType.LotteryLobby,
+            GameExternalId: "AE-LOTTO-021",
+            Type: GameType.Lottery,
             PlatformType: GamePlatformType.DesktopAndMobile,
-            Name: "AWC YEEKEE LOTTO",
+            Name: "YeeKee Lotto",
             SubGame: true,
             AvailableToBrand: true,
             HasTurnoverOnTieBet: false,
@@ -188,45 +244,24 @@ public class AwcAelottoGameUrlGetServiceUnitTest
             AvailableCurrencies: null,
             Localization: null,
             SubGameProviderCode: "AWC_YEEKEE_LOTTO");
-
-        var query = new AwcAelottoGameUrlQuery
-        {
-            GameType = gameModel.Type,
-            GameId = gameModel.GameId,
-            BrandCode = "GPI",
-            PlayerCode = "4ucmqplxb029",
-            CurrencyCode = "CNY",
-            LoginRecordId = Guid.NewGuid(),
-            PlatformType = PlatformType.Desktop,
-            Language = "en-US",
-            IPAddress = "127.0.0.1",
-            BackUrl = new("https://dev-t1.rpgp.cc/")
-        };
-        var gameProviderCultureCode = "en";
-        var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.AWC_AELOTTO)).Returns(gameModel.GameProviderId);
-        _ = fakeSettingRepository.GetAwcAelottoConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
-        _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameModel.GameProviderId),
-             Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetAwcConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
-        _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
-             Arg.Is(gameModel.GameProviderId),
-            Arg.Is(query.Language)).Returns(gameProviderCultureCode);
-        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameModel);
+        _ = fakeGame
+            .GetAsync(
+            Arg.Is(query.GameId.Value),
+            Arg.Any<CancellationToken>())
+            .Returns(game);
 
         var request = new GameUrlRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
-            AgentId = configurationData.AgentId,
-            Cert = configurationData.Cert,
+            AgentId = configuration.AgentId,
+            Cert = configuration.Cert,
             PlayerCode = query.PlayerCode,
             BackUrl = query.BackUrl.ToString(),
             IsMobileLogin = query.PlatformType == PlatformType.Mobile,
             ExternalGameId = "AE-LOTTO-021",
             Language = gameProviderCultureCode
         };
+        var gameUrl = new Uri("http://www.google.com");
         var response = new GameUrlReply()
         {
             Success = true,
@@ -236,13 +271,11 @@ public class AwcAelottoGameUrlGetServiceUnitTest
         _ = fakeClient.GameUrlByAwcAeLottoAsync(request).Returns(response);
 
         var sut = new AwcAelottoGameUrlGetService(
-            fakeBrandService,
-            fakeCreatePlayerCommandService,
-            fakeGameRepository,
-            fakeGameProviderRepository,
+            fakeBrand,
+            fakeGame,
+            fakeGameProvider,
             fakeClient,
-            fakePlayerRepository,
-            fakeSettingRepository);
+            fakePlayer);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 

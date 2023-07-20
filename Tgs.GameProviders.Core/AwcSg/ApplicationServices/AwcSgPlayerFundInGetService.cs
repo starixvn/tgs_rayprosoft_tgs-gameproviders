@@ -13,38 +13,53 @@ public class AwcSgPlayerFundInGetService : IGetService<AwcSgPlayerFundInQuery, P
     private readonly IGameInterfaceAwcServiceClient _client;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
-    private readonly ISettingRepository _setting;
 
     public AwcSgPlayerFundInGetService(
         IBrandRepository brand,
         IGameProviderRepository gameProvider,
         IGameInterfaceAwcServiceClient client,
-        IPlayerRepository player,
-        ISettingRepository setting)
+        IPlayerRepository player)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
-        _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
 
     public async ValueTask<PlayerFundResult> GetAsync(AwcSgPlayerFundInQuery command, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_SG).ConfigureAwait(false);
-        var configuration = await _setting.GetAwcSgConfigurationAsync().ConfigureAwait(false);
-        var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.AWC_SG,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+            playerCode: command.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetAwcSgConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        var reply = await _client.FundInAsync(
-           apiUrl: configuration.ApiUrl,
-           agentId: configurationData.AgentId,
-           cert: configurationData.Cert,
-           playerCode: player.PlayerCode,
-           transactionId: command.OrderId,
-           amount: command.Amount,
-           cancellationToken: cancellationToken).ConfigureAwait(false);
+        var reply = await _client
+            .FundInAsync(
+            apiUrl: configuration.ApiUrl,
+            agentId: configuration.AgentId,
+            cert: configuration.Cert,
+            playerCode: player.PlayerCode,
+            transactionId: command.OrderId,
+            amount: command.Amount,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         return (reply.Success) ? new() { OrderId = reply.GameProviderTransactionId } : null;
     }

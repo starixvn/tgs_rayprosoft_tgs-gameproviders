@@ -13,35 +13,50 @@ public class AwcFacaiKickPlayerCommandService : ICommandService<AwcFacaiKickPlay
     private readonly IGameInterfaceAwcServiceClient _client;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
-    private readonly ISettingRepository _setting;
 
     public AwcFacaiKickPlayerCommandService(
         IBrandRepository brand,
         IGameProviderRepository gameProvider,
         IGameInterfaceAwcServiceClient client,
-        IPlayerRepository player,
-        ISettingRepository setting)
+        IPlayerRepository player)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
-        _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
 
     public async ValueTask ExecuteAsync(AwcFacaiKickPlayerCommand command, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_FACAI).ConfigureAwait(false);
-        var configuration = await _setting.GetAwcFacaiConfigurationAsync().ConfigureAwait(false);
-        var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.AWC_FACAI,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+            playerCode: command.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetAwcFacaiConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        await _client.KickPlayerAsync(
+        await _client
+            .KickPlayerAsync(
             apiUrl: configuration.ApiUrl,
-            agentId: configurationData.AgentId,
-            cert: configurationData.Cert,
+            agentId: configuration.AgentId,
+            cert: configuration.Cert,
             playerCode: player.PlayerCode,
-            cancellationToken: cancellationToken).ConfigureAwait(false);
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
     }
 }

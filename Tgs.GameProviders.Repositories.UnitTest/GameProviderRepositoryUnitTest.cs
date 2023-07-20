@@ -1,10 +1,8 @@
-﻿using System.Text.Json;
-using ExpectedObjects;
+﻿using System.Text.Json.Nodes;
 using NSubstitute;
 using Tgs.GameCommand.Client;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Repositories.UnitTest;
@@ -13,38 +11,677 @@ namespace Tgs.GameProviders.Repositories.UnitTest;
 public class GameProviderRepositoryUnitTest
 {
     [TestMethod]
-    public async Task Get_Awc_ConfigurationData()
+    public async Task Get_AwcAelotto_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
 
         var gameProviderId = Guid.NewGuid();
         var gameProviderConfigurationId = Guid.NewGuid();
-        var awcConfigurationData = new AwcConfigurationData(
-            AgentId: "testAgentId",
-            Cert: "testCert",
-            BetLimit: null);
-        var configurationData = JsonSerializer.Serialize(awcConfigurationData);
+
+        var settingConfiguration = new AwcAelottoConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AwcAelottoConfiguration>(Arg.Is(GameProviderConfigurations.AWC_AELOTTO))
+            .Returns(settingConfiguration);
 
         _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
             GameProviderId: gameProviderId,
-            GameProviderCode: "AWC_AWS",
+            GameProviderCode: GameProviderType.AWC_AELOTTO,
             GameProviderConfigId: gameProviderConfigurationId,
-            Name: "AWC_AWS-GPI",
-            Description: "AWC_AWS-GPI Configuration",
-            ClientId: "AWC_AWS-GPI",
+            Name: $"{GameProviderType.AWC_AELOTTO}-GPI",
+            Description: $"{GameProviderType.AWC_AELOTTO}-GPI Configuration",
+            ClientId: $"{GameProviderType.AWC_AELOTTO}-GPI",
             SecretKey: Guid.NewGuid().ToString("N"),
             Status: GameProviderConfigStatus.Active,
             DesktopEndpoint: string.Empty,
             MobileEndpoint: string.Empty,
-            ConfigurationData: configurationData,
+            ConfigurationData: new JsonObject
+            {
+                ["agentId"] = "agentId",
+                ["cert"] = "cert",
+            }.ToJsonString(),
             IsDefault: false));
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcAelottoConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         Assert.IsNotNull(actual);
-        awcConfigurationData.ToExpectedObject().ShouldEqual(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("agentId", actual.AgentId);
+        Assert.AreEqual("cert", actual.Cert);
+    }
+
+    [TestMethod]
+    public async Task Get_AwcAws_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new AwcAwsConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AwcAwsConfiguration>(Arg.Is(GameProviderConfigurations.AWC_AWS))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AWC_AWS,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.AWC_AWS}-GPI",
+            Description: $"{GameProviderType.AWC_AWS}-GPI Configuration",
+            ClientId: $"{GameProviderType.AWC_AWS}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["agentId"] = "agentId",
+                ["cert"] = "cert",
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetAwcAwsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("agentId", actual.AgentId);
+        Assert.AreEqual("cert", actual.Cert);
+    }
+
+    [TestMethod]
+    public async Task Get_AwcCockfight_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new AwcCockfightConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AwcCockfightConfiguration>(Arg.Is(GameProviderConfigurations.AWC_COCKFIGHT))
+            .Returns(settingConfiguration);
+
+        var betLimit = new JsonObject
+        {
+            ["SV388"] = new JsonObject
+            {
+                ["LIVE"] = new JsonObject
+                {
+                    ["maxbet"] = 2400,
+                    ["minbet"] = 1,
+                    ["mindraw"] = 1,
+                    ["matchlimit"] = 4800,
+                    ["maxdraw"] = 1200
+                }
+            }
+        };
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AWC_COCKFIGHT,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.AWC_COCKFIGHT}-GPI",
+            Description: $"{GameProviderType.AWC_COCKFIGHT}-GPI Configuration",
+            ClientId: $"{GameProviderType.AWC_COCKFIGHT}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["agentId"] = "agentId",
+                ["cert"] = "cert",
+                ["betLimit"] = betLimit
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetAwcCockfightConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("agentId", actual.AgentId);
+        Assert.AreEqual("cert", actual.Cert);
+        Assert.AreEqual(betLimit.ToJsonString(), actual.BetLimit.ToJsonString());
+    }
+
+    [TestMethod]
+    public async Task Get_AwcFacai_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new AwcFacaiConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AwcFacaiConfiguration>(Arg.Is(GameProviderConfigurations.AWC_FACAI))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AWC_FACAI,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.AWC_FACAI}-GPI",
+            Description: $"{GameProviderType.AWC_FACAI}-GPI Configuration",
+            ClientId: $"{GameProviderType.AWC_FACAI}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["agentId"] = "agentId",
+                ["cert"] = "cert"
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetAwcFacaiConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("agentId", actual.AgentId);
+        Assert.AreEqual("cert", actual.Cert);
+    }
+
+    [TestMethod]
+    public async Task Get_AwcFs_ConfigurationAsync()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new AwcFsConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AwcFsConfiguration>(Arg.Is(GameProviderConfigurations.AWC_FS))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AWC_FS,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.AWC_FS}-GPI",
+            Description: $"{GameProviderType.AWC_FS}-GPI Configuration",
+            ClientId: $"{GameProviderType.AWC_FS}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["agentId"] = "agentId",
+                ["cert"] = "cert"
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetAwcFsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("agentId", actual.AgentId);
+        Assert.AreEqual("cert", actual.Cert);
+    }
+
+    [TestMethod]
+    public async Task Get_AwcKm_ConfigurationAsync()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new AwcKmConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AwcKmConfiguration>(Arg.Is(GameProviderConfigurations.AWC_KM))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AWC_KM,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.AWC_KM}-GPI",
+            Description: $"{GameProviderType.AWC_KM}-GPI Configuration",
+            ClientId: $"{GameProviderType.AWC_KM}-GPI-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["agentId"] = "agentId",
+                ["cert"] = "cert"
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetAwcKmConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("agentId", actual.AgentId);
+        Assert.AreEqual("cert", actual.Cert);
+    }
+
+    [TestMethod]
+    public async Task Get_AwcLudo_ConfigurationAsync()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new AwcLudoConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AwcLudoConfiguration>(Arg.Is(GameProviderConfigurations.AWC_LUDO))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AWC_LUDO,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.AWC_LUDO}-GPI",
+            Description: $"{GameProviderType.AWC_LUDO}-GPI Configuration",
+            ClientId: $"{GameProviderType.AWC_LUDO}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["agentId"] = "agentId",
+                ["cert"] = "cert"
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetAwcLudoConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("agentId", actual.AgentId);
+        Assert.AreEqual("cert", actual.Cert);
+    }
+
+    [TestMethod]
+    public async Task Get_AwcPgs_ConfigurationAsync()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new AwcPgsConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AwcPgsConfiguration>(Arg.Is(GameProviderConfigurations.AWC_PGS))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AWC_PGS,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.AWC_PGS}-GPI",
+            Description: $"{GameProviderType.AWC_PGS}-GPI Configuration",
+            ClientId: $"{GameProviderType.AWC_PGS}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["agentId"] = "agentId",
+                ["cert"] = "cert"
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetAwcPgsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("agentId", actual.AgentId);
+        Assert.AreEqual("cert", actual.Cert);
+    }
+
+    [TestMethod]
+    public async Task Get_AwcRcb_ConfigurationAsync()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new AwcRcbConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AwcRcbConfiguration>(Arg.Is(GameProviderConfigurations.AWC_RCB))
+            .Returns(settingConfiguration);
+
+        var betLimit = new JsonObject
+        {
+            ["HORSEBOOK"] = new JsonObject
+            {
+                ["LIVE"] = new JsonObject
+                {
+                    ["minbet"] = 10,
+                    ["maxbet"] = 3000,
+                    ["maxBetSumPerHorse"] = 10000,
+                    ["minorMinbet"] = 10,
+                    ["minorMaxbet"] = 1000,
+                    ["minorMaxBetSumPerHorse"] = 10000
+                }
+            }
+        };
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AWC_RCB,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.AWC_RCB}-GPI",
+            Description: $"{GameProviderType.AWC_RCB}-GPI Configuration",
+            ClientId: $"{GameProviderType.AWC_RCB}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["agentId"] = "agentId",
+                ["cert"] = "cert",
+                ["betLimit"] = betLimit
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetAwcRcbConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("agentId", actual.AgentId);
+        Assert.AreEqual("cert", actual.Cert);
+        Assert.AreEqual(betLimit.ToJsonString(), actual.BetLimit.ToJsonString());
+    }
+
+    [TestMethod]
+    public async Task Get_AwcSg_ConfigurationAsync()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new AwcSgConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AwcSgConfiguration>(Arg.Is(GameProviderConfigurations.AWC_SG))
+            .Returns(settingConfiguration);
+
+        var betLimit = new JsonObject
+        {
+            ["SEXYBCRT"] = new JsonObject
+            {
+                ["LIVE"] = new JsonArray
+                {
+                    280301,
+                    280302,
+                    280303
+                }
+            }
+        };
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AWC_SG,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.AWC_SG}-GPI",
+            Description: $"{GameProviderType.AWC_SG}-GPI Configuration",
+            ClientId: $"{GameProviderType.AWC_SG}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["agentId"] = "agentId",
+                ["cert"] = "cert",
+                ["betLimit"] = betLimit
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetAwcSgConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("agentId", actual.AgentId);
+        Assert.AreEqual("cert", actual.Cert);
+        Assert.AreEqual(betLimit.ToJsonString(), actual.BetLimit.ToJsonString());
+    }
+
+    [TestMethod]
+    public async Task Get_AwcSpade_ConfigurationAsync()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new AwcSpadeConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AwcSpadeConfiguration>(Arg.Is(GameProviderConfigurations.AWC_SPADE))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AWC_SPADE,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.AWC_SPADE}-GPI",
+            Description: $"{GameProviderType.AWC_SPADE}-GPI Configuration",
+            ClientId: $"{GameProviderType.AWC_SPADE}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["agentId"] = "agentId",
+                ["cert"] = "cert"
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetAwcSpadeConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("agentId", actual.AgentId);
+        Assert.AreEqual("cert", actual.Cert);
+    }
+
+    [TestMethod]
+    public async Task Get_AwcVenus_ConfigurationAsync()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new AwcVenusConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AwcVenusConfiguration>(Arg.Is(GameProviderConfigurations.AWC_VENUS))
+            .Returns(settingConfiguration);
+
+        var betLimit = new JsonObject
+        {
+            ["VENUS"] = new JsonObject
+            {
+                ["LIVE"] = new JsonObject
+                {
+                    ["limitId"] = new JsonArray {
+                    280303,
+                    280304,
+                    280305
+                    }
+                }
+            }
+        };
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AWC_VENUS,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.AWC_VENUS}-GPI",
+            Description: $"{GameProviderType.AWC_VENUS}-GPI Configuration",
+            ClientId: $"{GameProviderType.AWC_VENUS}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["agentId"] = "agentId",
+                ["cert"] = "cert",
+                ["betLimit"] = betLimit
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetAwcVenusConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("agentId", actual.AgentId);
+        Assert.AreEqual("cert", actual.Cert);
+        Assert.AreEqual(betLimit.ToJsonString(), actual.BetLimit.ToJsonString());
+    }
+
+    [TestMethod]
+    public async Task Get_AwcYl_ConfigurationAsync()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new AwcYlConfiguration()
+        {
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AwcYlConfiguration>(Arg.Is(GameProviderConfigurations.AWC_YL))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AWC_YL,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.AWC_YL}-GPI",
+            Description: $"{GameProviderType.AWC_YL}-GPI Configuration",
+            ClientId: $"{GameProviderType.AWC_YL}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["agentId"] = "agentId",
+                ["cert"] = "cert"
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetAwcYlConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("agentId", actual.AgentId);
+        Assert.AreEqual("cert", actual.Cert);
     }
 
     [TestMethod]
@@ -419,6 +1056,54 @@ public class GameProviderRepositoryUnitTest
     }
 
     [TestMethod]
+    public async Task Get_LEGaming_ConfigurationData()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new LEGamingConfiguration()
+        {
+            AmountMaximum = 999999999999,
+            AmountFormat = "12,2",
+            ApiUrl = new("http://localhost/"),
+            ApiRecordUrl = new("http://localhost:8090/"),
+            Deskey = "deskey",
+            Md5key = "md5key"
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<LEGamingConfiguration>(Arg.Is(GameProviderConfigurations.LEGaming))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: "LY",
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "LY-GPI",
+            Description: "LY-GPI Configuration",
+            ClientId: "LY-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"CurrencyCode\":\"HKD\",\"AgentId\":\"200995\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetLEGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual(new("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.AreEqual("deskey", actual.Deskey);
+        Assert.AreEqual("md5key", actual.Md5key);
+        Assert.AreEqual("HKD", actual.CurrencyCode);
+        Assert.AreEqual("200995", actual.AgentId);
+    }
+
+    [TestMethod]
     public async Task Get_Pinnacle_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -636,54 +1321,6 @@ public class GameProviderRepositoryUnitTest
         Assert.AreEqual("ConfigurationDataPartnerKey", actual.PartnerKey);
         Assert.AreEqual("ConfigurationDataPartnerIV", actual.IV);
         Assert.AreEqual(1, actual.Version);
-    }
-
-    [TestMethod]
-    public async Task Get_LEGaming_ConfigurationData()
-    {
-        var fakeClient = Substitute.For<IGameCommandClient>();
-
-        var gameProviderId = Guid.NewGuid();
-        var gameProviderConfigurationId = Guid.NewGuid();
-
-        var settingConfiguration = new LEGamingConfiguration()
-        {
-            AmountMaximum = 999999999999,
-            AmountFormat = "12,2",
-            ApiUrl = new("http://localhost/"),
-            ApiRecordUrl = new("http://localhost:8090/"),
-            Deskey = "deskey",
-            Md5key = "md5key"
-        };
-        _ = fakeClient
-            .SettingGetConfigurationAsync<LEGamingConfiguration>(Arg.Is(GameProviderConfigurations.LEGaming))
-            .Returns(settingConfiguration);
-
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
-            GameProviderId: gameProviderId,
-            GameProviderCode: "LY",
-            GameProviderConfigId: gameProviderConfigurationId,
-            Name: "LY-GPI",
-            Description: "LY-GPI Configuration",
-            ClientId: "LY-GPI",
-            SecretKey: Guid.NewGuid().ToString("N"),
-            Status: GameProviderConfigStatus.Active,
-            DesktopEndpoint: string.Empty,
-            MobileEndpoint: string.Empty,
-            ConfigurationData: "{\"CurrencyCode\":\"HKD\",\"AgentId\":\"200995\"}",
-            IsDefault: false));
-
-        var repository = new GameProviderRepository(fakeClient);
-
-        var actual = await repository.GetLEGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
-
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("deskey", actual.Deskey);
-        Assert.AreEqual("md5key", actual.Md5key);
-        Assert.AreEqual("HKD", actual.CurrencyCode);
-        Assert.AreEqual("200995", actual.AgentId);
     }
 
     [TestMethod]

@@ -11,77 +11,89 @@ public class AwcAwsPlayerBalanceGetService : IGetService<AwcAwsPlayerBalanceQuer
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceAwcServiceClient _client;
-    private readonly ICommandService<AwcAwsCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
-    private readonly ISettingRepository _setting;
 
     public AwcAwsPlayerBalanceGetService(
         IBrandRepository brand,
-        ICommandService<AwcAwsCreatePlayerCommand> createPlayerCommandService,
         IGameProviderRepository gameProvider,
         IGameInterfaceAwcServiceClient client,
-        IPlayerRepository player,
-        ISettingRepository setting)
+        IPlayerRepository player)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
-        _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
-        _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
 
-    public async ValueTask<decimal?> GetAsync(AwcAwsPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+    public async ValueTask<decimal?> GetAsync(AwcAwsPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
-                GameProviderType.AWC_AWS,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-        var configuration = await _setting
-            .GetAwcAwsConfigurationAsync(
-                cancellationToken: cancellationToken)
+            gameProviderCode: GameProviderType.AWC_AWS,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var player = await _player
             .GetAsync(
-                command.PlayerCode,
-                cancellationToken: cancellationToken)
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand
             .GetBrandGameProviderConfigurationIdAsync(
-                gameProviderId: gameProviderId,
-                brandId: player.BrandId,
-                cancellationToken: cancellationToken)
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configurationData = await _gameProvider
-            .GetAwcConfigurationData(
-                gameProviderConfigurationId: gameProviderConfigurationId,
-                cancellationToken: cancellationToken)
+        var configuration = await _gameProvider
+            .GetAwcAwsConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client.GetBalanceAsync(
+        var response = await _client
+            .GetBalanceAsync(
             apiUrl: configuration.ApiUrl,
-            agentId: configurationData.AgentId,
-            cert: configurationData.Cert,
+            agentId: configuration.AgentId,
+            cert: configuration.Cert,
             playerCode: player.PlayerCode,
-            cancellationToken: cancellationToken).ConfigureAwait(false);
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         if (response.Success && !response.IsPlayerExist)
         {
-            await _createPlayerCommandService.ExecuteAsync(new AwcAwsCreatePlayerCommand(
-                Configuration: configuration,
-                ConfigurationData: configurationData,
-                PlayerCode: player.PlayerCode,
-                CurrencyCode: player.DefaultWalletCurrencyCode),
-                cancellationToken).ConfigureAwait(false);
+            var cultureCode = await _gameProvider
+                .GetGameProviderCultureCodeAsync(
+                gameProviderId: gameProviderId,
+                cultureCode: "en-US",
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false) ?? "en";
+            var currency = await _gameProvider
+                .GetGameProviderCurrencyCodeAsync(
+                gameProviderId: gameProviderId,
+                currencyCode: player.DefaultWalletCurrencyCode,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
 
-            response = await _client.GetBalanceAsync(
+            await _client
+                .CreatePlayerAsync(
                 apiUrl: configuration.ApiUrl,
-                agentId: configurationData.AgentId,
-                cert: configurationData.Cert,
+                agentId: configuration.AgentId,
+                cert: configuration.Cert,
+                playerCode: query.PlayerCode,
+                userName: query.PlayerCode,
+                currency: currency,
+                language: cultureCode,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            response = await _client
+                .GetBalanceAsync(
+                apiUrl: configuration.ApiUrl,
+                agentId: configuration.AgentId,
+                cert: configuration.Cert,
                 playerCode: player.PlayerCode,
-                cancellationToken: cancellationToken).ConfigureAwait(false);
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
         }
 
         return !response.Success

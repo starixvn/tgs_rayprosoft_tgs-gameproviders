@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
@@ -8,9 +9,7 @@ using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.AwcService.Protos;
 using Tgs.GameProviders.Core.AwcVenus.ApplicationServices;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.AwcVenus;
 
@@ -20,46 +19,10 @@ public class AwcVenusGameUrlGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeBrandService = Substitute.For<IBrandRepository>();
-        var fakeCreatePlayerCommandService = Substitute.For<ICommandService<AwcVenusCreatePlayerCommand>>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+        var fakeBrand = Substitute.For<IBrandRepository>();
+        var fakeGameProvider = Substitute.For<IGameProviderRepository>();
         var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeSettingRepository = Substitute.For<ISettingRepository>();
-
-        var gameUrl = new Uri("http://www.google.com");
-
-        var configuration = new AwcVenusConfiguration
-        {
-            ApiUrl = new("https://tttint.onlinegames22.com/"),
-            ApiRecordUrl = new("https://tttint.onlinegames22.com/")
-        };
-
-        var configurationData = new AwcConfigurationData(
-            AgentId: "testAgentId",
-            Cert: "testCert",
-            BetLimit: JsonDocument.Parse(JsonSerializer.Serialize(new
-            {
-                VENUS = new
-                {
-                    LIVE = new
-                    {
-                        limitId = new[] { "280303", "280304", "280305" }
-                    }
-                }
-            })));
-
-        var playerModel = new PlayerInfo(
-            ResellerId: Guid.NewGuid(),
-            ResellerCode: "GPI",
-            LicenseeId: Guid.NewGuid(),
-            LicenseeCode: "GPI",
-            BrandId: Guid.NewGuid(),
-            BrandCode: "GPI",
-            PlayerCode: "4ucmqplxb029",
-            Username: "4ucmqplxb029",
-            DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY");
+        var fakePlayer = Substitute.For<IPlayerRepository>();
 
         var query = new AwcVenusGameUrlQuery
         {
@@ -74,31 +37,86 @@ public class AwcVenusGameUrlGetServiceUnitTest
             IPAddress = "127.0.0.1",
             BackUrl = new("https://dev-t1.rpgp.cc/")
         };
-        var gameProviderCultureCode = "en";
-        var gameProviderConfigurationId = Guid.NewGuid();
+
         var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.AWC_VENUS)).Returns(gameProviderId);
-        _ = fakeSettingRepository.GetAwcVenusConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
-        _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameProviderId),
-             Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetAwcConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
-        _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
-             Arg.Is(gameProviderId),
-            Arg.Is(query.Language)).Returns(gameProviderCultureCode);
+        _ = fakeGameProvider
+            .GetGameProviderIdAsync(
+            gameProviderCode: Arg.Is(GameProviderType.AWC_VENUS),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderId);
+
+        var player = new PlayerInfo(
+            ResellerId: Guid.NewGuid(),
+            ResellerCode: "GPI",
+            LicenseeId: Guid.NewGuid(),
+            LicenseeCode: "GPI",
+            BrandId: Guid.NewGuid(),
+            BrandCode: "GPI",
+            PlayerCode: "4ucmqplxb029",
+            Username: "4ucmqplxb029",
+            DefaultWalletId: Guid.NewGuid(),
+            DefaultWalletCurrencyCode: "CNY");
+        _ = fakePlayer
+            .GetAsync(
+            Arg.Is(query.PlayerCode),
+            Arg.Any<CancellationToken>())
+            .Returns(player);
+
+        var gameProviderConfigurationId = Guid.NewGuid();
+        _ = fakeBrand
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: Arg.Is(gameProviderId),
+            brandId: Arg.Is(player.BrandId),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderConfigurationId);
+
+        var configuration = new AwcVenusConfiguration
+        {
+            ApiUrl = new("https://tttint.onlinegames22.com/"),
+            ApiRecordUrl = new("https://tttint.onlinegames22.com/"),
+            AgentId = "testAgentId",
+            Cert = "testCert",
+            BetLimit = new JsonObject
+            {
+                ["VENUS"] = new JsonObject
+                {
+                    ["LIVE"] = new JsonObject
+                    {
+                        ["limitId"] = new JsonArray {
+                            280303,
+                            280304,
+                            280305
+                        }
+                    }
+                }
+            }
+        };
+        _ = fakeGameProvider
+            .GetAwcVenusConfigurationAsync(
+            gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(configuration);
+
+        var gameProviderCultureCode = "en";
+        _ = fakeGameProvider
+            .GetGameProviderCultureCodeAsync(
+            gameProviderId: Arg.Is(gameProviderId),
+            cultureCode: Arg.Is(query.Language),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderCultureCode);
 
         var request = new GameUrlByLiveLobbyRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
-            AgentId = configurationData.AgentId,
-            Cert = configurationData.Cert,
+            AgentId = configuration.AgentId,
+            Cert = configuration.Cert,
             PlayerCode = query.PlayerCode,
             BackUrl = query.BackUrl.ToString(),
             IsMobileLogin = query.PlatformType == PlatformType.Mobile,
-            BetLimit = JsonSerializer.Serialize(configurationData.BetLimit),
+            BetLimit = configuration.BetLimit.ToJsonString(),
             Language = gameProviderCultureCode
         };
+        var gameUrl = new Uri("http://www.google.com");
         var response = new GameUrlReply()
         {
             Success = true,
@@ -108,12 +126,10 @@ public class AwcVenusGameUrlGetServiceUnitTest
         _ = fakeClient.GameUrlLiveLobbyByAwcVenusAsync(request).Returns(response);
 
         var sut = new AwcVenusGameUrlGetService(
-            fakeBrandService,
-            fakeCreatePlayerCommandService,
-            fakeGameProviderRepository,
+            fakeBrand,
+            fakeGameProvider,
             fakeClient,
-            fakePlayerRepository,
-            fakeSettingRepository);
+            fakePlayer);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 

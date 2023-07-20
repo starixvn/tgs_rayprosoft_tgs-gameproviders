@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Repositories;
@@ -27,15 +26,291 @@ internal class GameProviderCacheRepository : IGameProviderRepository
              gameProviderId: gameProviderId,
              cancellationToken: cancellationToken);
 
-    public async ValueTask<AwcConfigurationData> GetAwcConfigurationData(
+    public async ValueTask<AwcAelottoConfiguration> GetAwcAelottoConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcConfigurationData? configurationData))
+        if (!_memoryCache.TryGetValue(key, out AwcAelottoConfiguration? configurationData))
         {
             configurationData = await _repository
-                .GetAwcConfigurationData(
+                .GetAwcAelottoConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<AwcAwsConfiguration> GetAwcAwsConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out AwcAwsConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetAwcAwsConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<AwcCockfightConfiguration> GetAwcCockfightConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out AwcCockfightConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetAwcCockfightConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<AwcFacaiConfiguration> GetAwcFacaiConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out AwcFacaiConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetAwcFacaiConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<AwcFsConfiguration> GetAwcFsConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out AwcFsConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetAwcFsConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<AwcKmConfiguration> GetAwcKmConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out AwcKmConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetAwcKmConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<AwcLudoConfiguration> GetAwcLudoConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out AwcLudoConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetAwcLudoConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<AwcPgsConfiguration> GetAwcPgsConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out AwcPgsConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetAwcPgsConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<AwcRcbConfiguration> GetAwcRcbConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out AwcRcbConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetAwcRcbConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<AwcSgConfiguration> GetAwcSgConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out AwcSgConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetAwcSgConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<AwcSpadeConfiguration> GetAwcSpadeConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out AwcSpadeConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetAwcSpadeConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<AwcVenusConfiguration> GetAwcVenusConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out AwcVenusConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetAwcVenusConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<AwcYlConfiguration> GetAwcYlConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out AwcYlConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetAwcYlConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);

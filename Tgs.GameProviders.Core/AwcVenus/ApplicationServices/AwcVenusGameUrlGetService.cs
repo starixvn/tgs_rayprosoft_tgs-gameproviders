@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.AwcService.Client;
@@ -13,65 +12,95 @@ public class AwcVenusGameUrlGetService : IGetService<AwcVenusGameUrlQuery, GameU
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceAwcServiceClient _client;
-    private readonly ICommandService<AwcVenusCreatePlayerCommand> _createPlayerCommandService;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
-    private readonly ISettingRepository _setting;
 
     public AwcVenusGameUrlGetService(
         IBrandRepository brand,
-        ICommandService<AwcVenusCreatePlayerCommand> createPlayerCommandService,
         IGameProviderRepository gameProvider,
         IGameInterfaceAwcServiceClient client,
-        IPlayerRepository player,
-        ISettingRepository setting)
+        IPlayerRepository player)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
-        _createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _player = player ?? throw new ArgumentNullException(nameof(player));
-        _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
 
-    public async ValueTask<GameUrlResult> GetAsync(AwcVenusGameUrlQuery command, CancellationToken cancellationToken = default)
+    public async ValueTask<GameUrlResult> GetAsync(AwcVenusGameUrlQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.AWC_VENUS).ConfigureAwait(false);
-        var configuration = await _setting.GetAwcVenusConfigurationAsync().ConfigureAwait(false);
-        var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configurationData = await _gameProvider.GetAwcConfigurationData(gameProviderConfigurationId).ConfigureAwait(false);
-        var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, command.Language) ?? "en";
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.AWC_VENUS,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetAwcVenusConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var cultureCode = await _gameProvider
+            .GetGameProviderCultureCodeAsync(
+            gameProviderId: gameProviderId,
+            cultureCode: query.Language,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false) ?? "en";
 
         var request = new GameUrlByLiveLobbyRequest()
         {
             ApiUrl = configuration.ApiUrl.ToString(),
-            AgentId = configurationData.AgentId,
-            Cert = configurationData.Cert,
-            PlayerCode = command.PlayerCode,
-            BackUrl = command.BackUrl.ToString(),
-            IsMobileLogin = command.PlatformType == PlatformType.Mobile,
-            BetLimit = JsonSerializer.Serialize(configurationData.BetLimit),
+            AgentId = configuration.AgentId,
+            Cert = configuration.Cert,
+            PlayerCode = query.PlayerCode,
+            BackUrl = query.BackUrl.ToString(),
+            IsMobileLogin = query.PlatformType == PlatformType.Mobile,
+            BetLimit = configuration.BetLimit.ToJsonString(),
             Language = cultureCode
         };
 
-        var response = await _client.GameUrlLiveLobbyByAwcVenusAsync(
+        var response = await _client
+            .GameUrlLiveLobbyByAwcVenusAsync(
             request: request,
-            cancellationToken: cancellationToken).ConfigureAwait(false);
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         if (response.Success && !response.IsPlayerExist)
         {
-            await _createPlayerCommandService.ExecuteAsync(new AwcVenusCreatePlayerCommand(
-                Configuration: configuration,
-                ConfigurationData: configurationData,
-                PlayerCode: player.PlayerCode,
-                CurrencyCode: player.DefaultWalletCurrencyCode,
-                Language: command.Language),
-                cancellationToken).ConfigureAwait(false);
+            var currency = await _gameProvider
+                .GetGameProviderCurrencyCodeAsync(
+                gameProviderId: gameProviderId,
+                currencyCode: player.DefaultWalletCurrencyCode,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
 
-            response = await _client.GameUrlLiveLobbyByAwcVenusAsync(
+            await _client
+                .CreatePlayerAsync(
+                apiUrl: configuration.ApiUrl,
+                agentId: configuration.AgentId,
+                cert: configuration.Cert,
+                playerCode: query.PlayerCode,
+                userName: query.PlayerCode,
+                currency: currency,
+                language: cultureCode,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            response = await _client
+                .GameUrlLiveLobbyByAwcVenusAsync(
                 request: request,
-                cancellationToken: cancellationToken).ConfigureAwait(false);
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
         }
 
         return (response != null) ? new() { Url = new(response.GameUrl) } : null;

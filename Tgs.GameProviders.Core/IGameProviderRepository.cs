@@ -4,7 +4,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameCommand.Common;
-using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core;
@@ -15,7 +14,55 @@ public interface IGameProviderRepository
         Guid gameProviderId,
         CancellationToken cancellationToken = default);
 
-    ValueTask<AwcConfigurationData> GetAwcConfigurationData(
+    ValueTask<AwcAelottoConfiguration> GetAwcAelottoConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<AwcAwsConfiguration> GetAwcAwsConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<AwcCockfightConfiguration> GetAwcCockfightConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<AwcFacaiConfiguration> GetAwcFacaiConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<AwcFsConfiguration> GetAwcFsConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<AwcKmConfiguration> GetAwcKmConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<AwcLudoConfiguration> GetAwcLudoConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<AwcPgsConfiguration> GetAwcPgsConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<AwcRcbConfiguration> GetAwcRcbConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<AwcSgConfiguration> GetAwcSgConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<AwcSpadeConfiguration> GetAwcSpadeConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<AwcVenusConfiguration> GetAwcVenusConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
+    ValueTask<AwcYlConfiguration> GetAwcYlConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 

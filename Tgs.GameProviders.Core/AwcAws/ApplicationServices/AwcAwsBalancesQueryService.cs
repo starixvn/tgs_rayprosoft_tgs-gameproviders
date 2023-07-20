@@ -14,23 +14,20 @@ internal class AwcAwsBalancesQueryService : IQueryService<AwcAwsBalancesQuery, B
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceAwcServiceClient _client;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly ISettingRepository _setting;
 
     public AwcAwsBalancesQueryService(
         IBrandRepository brand,
         IGameInterfaceAwcServiceClient client,
-        IGameProviderRepository gameProvider,
-        ISettingRepository setting)
+        IGameProviderRepository gameProvider)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
 
     public async IAsyncEnumerable<BalanceResult> QueryAsync(
         AwcAwsBalancesQuery query,
-       [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -48,12 +45,8 @@ internal class AwcAwsBalancesQueryService : IQueryService<AwcAwsBalancesQuery, B
                 brandId: brandId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _setting
+        var configuration = await _gameProvider
             .GetAwcAwsConfigurationAsync(
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-        var configurationData = await _gameProvider
-            .GetAwcConfigurationData(
                 gameProviderConfigurationId: gameProviderConfigurationId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -61,8 +54,8 @@ internal class AwcAwsBalancesQueryService : IQueryService<AwcAwsBalancesQuery, B
         var reply = await _client
             .GetBalancesAsync(
                 apiUrl: configuration.ApiUrl,
-                agentId: configurationData.AgentId,
-                cert: configurationData.Cert,
+                agentId: configuration.AgentId,
+                cert: configuration.Cert,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 

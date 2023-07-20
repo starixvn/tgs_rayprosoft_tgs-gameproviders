@@ -14,18 +14,15 @@ internal class AwcAelottoBalancesQueryService : IQueryService<AwcAelottoBalances
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceAwcServiceClient _client;
     private readonly IGameProviderRepository _gameProvider;
-    private readonly ISettingRepository _setting;
 
     public AwcAelottoBalancesQueryService(
         IBrandRepository brand,
         IGameInterfaceAwcServiceClient client,
-        IGameProviderRepository gameProvider,
-        ISettingRepository setting)
+        IGameProviderRepository gameProvider)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
 
     public async IAsyncEnumerable<BalanceResult> QueryAsync(
@@ -48,12 +45,8 @@ internal class AwcAelottoBalancesQueryService : IQueryService<AwcAelottoBalances
                 brandId: brandId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _setting
+        var configuration = await _gameProvider
             .GetAwcAelottoConfigurationAsync(
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-        var configurationData = await _gameProvider
-            .GetAwcConfigurationData(
                 gameProviderConfigurationId: gameProviderConfigurationId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -61,8 +54,8 @@ internal class AwcAelottoBalancesQueryService : IQueryService<AwcAelottoBalances
         var reply = await _client
             .GetBalancesAsync(
                 apiUrl: configuration.ApiUrl,
-                agentId: configurationData.AgentId,
-                cert: configurationData.Cert,
+                agentId: configuration.AgentId,
+                cert: configuration.Cert,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
@@ -7,9 +8,7 @@ using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.AwcService.Protos;
 using Tgs.GameProviders.Core.AwcFacai.ApplicationServices;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.Domains.ConfigurationData;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.AwcFacai;
 
@@ -19,25 +18,24 @@ public class AwcFacaiPlayerBalanceGetServiceUnitTest
     [Test]
     public async Task Normal_Process()
     {
-        var fakeBrandService = Substitute.For<IBrandRepository>();
-        var fakeCreatePlayerCommandService = Substitute.For<ICommandService<AwcFacaiCreatePlayerCommand>>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+        var fakeBrand = Substitute.For<IBrandRepository>();
+        var fakeGameProvider = Substitute.For<IGameProviderRepository>();
         var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeSettingRepository = Substitute.For<ISettingRepository>();
+        var fakePlayer = Substitute.For<IPlayerRepository>();
 
-        var configuration = new AwcFacaiConfiguration
+        var query = new AwcFacaiPlayerBalanceQuery
         {
-            ApiUrl = new("https://tttint.onlinegames22.com/"),
-            ApiRecordUrl = new("https://tttint.onlinegames22.com/")
+            PlayerCode = "4ucmqplxb029"
         };
 
-        var configurationData = new AwcConfigurationData(
-            AgentId: "testAgentId",
-            Cert: "testCert",
-            BetLimit: null);
+        var gameProviderId = Guid.NewGuid();
+        _ = fakeGameProvider
+            .GetGameProviderIdAsync(
+            gameProviderCode: Arg.Is(GameProviderType.AWC_FACAI),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderId);
 
-        var playerModel = new PlayerInfo(
+        var player = new PlayerInfo(
             ResellerId: Guid.NewGuid(),
             ResellerCode: "GPI",
             LicenseeId: Guid.NewGuid(),
@@ -48,21 +46,32 @@ public class AwcFacaiPlayerBalanceGetServiceUnitTest
             Username: "4ucmqplxb029",
             DefaultWalletId: Guid.NewGuid(),
             DefaultWalletCurrencyCode: "CNY");
-
-        var query = new AwcFacaiPlayerBalanceQuery
-        {
-            PlayerCode = "4ucmqplxb029"
-        };
+        _ = fakePlayer
+            .GetAsync(
+            Arg.Is(query.PlayerCode),
+            Arg.Any<CancellationToken>())
+            .Returns(player);
 
         var gameProviderConfigurationId = Guid.NewGuid();
-        var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.AWC_FACAI)).Returns(gameProviderId);
-        _ = fakeSettingRepository.GetAwcFacaiConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
-        _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameProviderId),
-             Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetAwcConfigurationData(Arg.Is(gameProviderConfigurationId)).Returns(configurationData);
+        _ = fakeBrand
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: Arg.Is(gameProviderId),
+            brandId: Arg.Is(player.BrandId),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(gameProviderConfigurationId);
+
+        var configuration = new AwcFacaiConfiguration
+        {
+            ApiUrl = new("https://tttint.onlinegames22.com/"),
+            ApiRecordUrl = new("https://tttint.onlinegames22.com/"),
+            AgentId = "testAgentId",
+            Cert = "testCert",
+        };
+        _ = fakeGameProvider
+            .GetAwcFacaiConfigurationAsync(
+            gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(configuration);
 
         var response = new BalanceReply()
         {
@@ -72,17 +81,15 @@ public class AwcFacaiPlayerBalanceGetServiceUnitTest
         };
         _ = fakeClient.GetBalanceAsync(
             Arg.Is(configuration.ApiUrl),
-            Arg.Is(configurationData.AgentId),
-            Arg.Is(configurationData.Cert),
+            Arg.Is(configuration.AgentId),
+            Arg.Is(configuration.Cert),
             Arg.Is(query.PlayerCode)).Returns(response);
 
         var sut = new AwcFacaiPlayerBalanceGetService(
-            fakeBrandService,
-            fakeCreatePlayerCommandService,
-            fakeGameProviderRepository,
+            fakeBrand,
+            fakeGameProvider,
             fakeClient,
-            fakePlayerRepository,
-            fakeSettingRepository);
+            fakePlayer);
 
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 

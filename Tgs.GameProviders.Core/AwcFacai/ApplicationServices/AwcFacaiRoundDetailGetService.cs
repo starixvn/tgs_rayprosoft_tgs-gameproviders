@@ -8,16 +8,21 @@ namespace Tgs.GameProviders.Core.AwcFacai.ApplicationServices;
 
 internal class AwcFacaiRoundDetailGetService : IGetService<AwcFacaiRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundRepository _roundService;
+    private readonly IRoundRepository _round;
 
-    public AwcFacaiRoundDetailGetService(IRoundRepository roundService)
+    public AwcFacaiRoundDetailGetService(IRoundRepository round)
     {
-        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
+        _round = round ?? throw new ArgumentNullException(nameof(round));
     }
 
     public async ValueTask<RoundDetailResult> GetAsync(AwcFacaiRoundDetailQuery query, CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+        var roundInfo = await _round
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
         return roundInfo == null
             ? throw new Exception($"This game round number could not be found.{query.RoundId}")
             : (new RoundDetailResult()
