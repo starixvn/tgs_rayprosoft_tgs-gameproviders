@@ -6,7 +6,7 @@ public static class GameProviderConfigurations
 
     public static readonly string AllBet = string.Format(_template, GameProviderType.AllBet);
     public static readonly string AsiaGaming = string.Format(_template, GameProviderType.AsiaGaming);
-    public static readonly string Avia = string.Format(_template, GameProviderType.Avia);
+    public static readonly string AVIAGaming = string.Format(_template, GameProviderType.AVIAGaming);
     public static readonly string AWC_AELOTTO = string.Format(_template, GameProviderType.AWC_AELOTTO);
     public static readonly string AWC_AWS = string.Format(_template, GameProviderType.AWC_AWS);
     public static readonly string AWC_COCKFIGHT = string.Format(_template, GameProviderType.AWC_COCKFIGHT);

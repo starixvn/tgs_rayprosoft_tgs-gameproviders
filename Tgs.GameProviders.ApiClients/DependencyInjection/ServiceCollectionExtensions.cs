@@ -1,6 +1,5 @@
 ﻿using Tgs.GameProviders.ApiClients.AllBet;
 using Tgs.GameProviders.ApiClients.AsiaGaming;
-using Tgs.GameProviders.ApiClients.Avia;
 using Tgs.GameProviders.ApiClients.BigGaming;
 using Tgs.GameProviders.ApiClients.Card365;
 using Tgs.GameProviders.ApiClients.DreamGame;
@@ -21,7 +20,6 @@ using Tgs.GameProviders.ApiClients.VR;
 using Tgs.GameProviders.ApiClients.WMCasino;
 using Tgs.GameProviders.Core.AllBet;
 using Tgs.GameProviders.Core.AsiaGaming;
-using Tgs.GameProviders.Core.Avia;
 using Tgs.GameProviders.Core.BigGaming;
 using Tgs.GameProviders.Core.Card365;
 using Tgs.GameProviders.Core.DreamGame;
@@ -74,7 +72,6 @@ public static class ServiceCollectionExtensions
         _ = services.AddHttpClient<IIMESportsApiClient, IMESportsApiClient>();
         _ = services.AddHttpClient<ISabaApiClient, SabaApiClient>();
         _ = services.AddHttpClient<IAllBetApiClient, AllBetApiClient>();
-        _ = services.AddHttpClient<IAviaApiClient, AviaApiClient>();
         _ = services.AddHttpClient<IJiliApiClient, JiliApiClient>();
         _ = services.AddHttpClient<ITFApiClient, TFApiClient>();
         _ = services.AddHttpClient<IHabaneroApiClient, HabaneroApiClient>();

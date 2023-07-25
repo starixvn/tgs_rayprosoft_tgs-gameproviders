@@ -4,7 +4,7 @@ public static class GameProviderType
 {
     public static readonly string AllBet = "AB";
     public static readonly string AsiaGaming = "AG";
-    public static readonly string Avia = "AVIA";
+    public static readonly string AVIAGaming = "AVIA";
     public static readonly string AWC_AELOTTO = "AWC_AELOTTO";
     public static readonly string AWC_AWS = "AWC_AWS";
     public static readonly string AWC_COCKFIGHT = "AWC_COCKFIGHT";

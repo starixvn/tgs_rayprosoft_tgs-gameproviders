@@ -1,4 +1,5 @@
 ﻿using Tgs.GameCommand.Client;
+using Tgs.GameInterface.AVIAGaming.Client;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.Cards365.Client;
@@ -64,7 +65,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfacePinnacleClientOptions, IServiceProvider> gameInterfacePinnacleClientOptions,
         Action<GameInterfaceJokerClientOptions, IServiceProvider> gameInterfaceJokerClientOptions,
         Action<GameInterfaceWGViaGamingClientOptions, IServiceProvider> gameInterfaceWGViaGamingClientOptions,
-        Action<GameInterfaceLEGamingClientOptions, IServiceProvider> gameInterfaceLEGamingClientOptions)
+        Action<GameInterfaceLEGamingClientOptions, IServiceProvider> gameInterfaceLEGamingClientOptions,
+        Action<GameInterfaceAVIAGamingClientOptions, IServiceProvider> gameInterfaceAVIAGamingClientOptions)
         => services
         .AddOptions<RedisOptions>()
         .Configure(configure)
@@ -101,5 +103,6 @@ public static class ServiceCollectionExtensions
             gameInterfacePinnacleClientOptions: gameInterfacePinnacleClientOptions,
             gameInterfaceJokerClientOptions: gameInterfaceJokerClientOptions,
             gameInterfaceWGViaGamingClientOptions: gameInterfaceWGViaGamingClientOptions,
-            gameInterfaceLEGamingClientOptions: gameInterfaceLEGamingClientOptions);
+            gameInterfaceLEGamingClientOptions: gameInterfaceLEGamingClientOptions,
+            gameInterfaceAVIAGamingClientOptions: gameInterfaceAVIAGamingClientOptions);
 }

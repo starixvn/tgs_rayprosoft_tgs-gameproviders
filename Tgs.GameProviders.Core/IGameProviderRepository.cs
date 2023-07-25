@@ -14,6 +14,10 @@ public interface IGameProviderRepository
         Guid gameProviderId,
         CancellationToken cancellationToken = default);
 
+    ValueTask<AVIAGamingConfiguration> GetAVIAGamingConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
     ValueTask<AwcAelottoConfiguration> GetAwcAelottoConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);

@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Tgs.GameProviders.Domains.SettingConfiguration;
+﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
 public record AwcLudoConfiguration
 {

@@ -11,6 +11,51 @@ namespace Tgs.GameProviders.Repositories.UnitTest;
 public class GameProviderRepositoryUnitTest
 {
     [TestMethod]
+    public async Task Get_AVIAGaming_ConfigurationAsync()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new AVIAGamingConfiguration()
+        {
+            AmountMaximum = 10000000,
+            AmountFormat = "10,2",
+            ApiUrl = new Uri("http://localhost/"),
+            Authorization = "authorization",
+            PlayerPassword = "TgsP@ssw0rd",
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<AVIAGamingConfiguration>(Arg.Is(GameProviderConfigurations.AVIAGaming))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.AVIAGaming,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.AVIAGaming}-GPI",
+            Description: $"{GameProviderType.AVIAGaming}-GPI Configuration",
+            ClientId: $"{GameProviderType.AVIAGaming}-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject { }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetAVIAGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+
+        Assert.IsNotNull(actual);
+        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.AreEqual("authorization", actual.Authorization);
+        Assert.AreEqual("TgsP@ssw0rd", actual.PlayerPassword);
+    }
+
+    [TestMethod]
     public async Task Get_AwcAelotto_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();

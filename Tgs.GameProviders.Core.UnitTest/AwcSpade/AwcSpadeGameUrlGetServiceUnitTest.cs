@@ -16,7 +16,7 @@ namespace Tgs.GameProviders.Core.UnitTest.AwcSpade;
 public class AwcSpadeGameUrlGetServiceUnitTest
 {
     [Test]
-    public async Task Create_Player()
+    public void Create_Player()
     {
         var fakeBrand = Substitute.For<IBrandRepository>();
         var fakeGame = Substitute.For<IGameRepository>();

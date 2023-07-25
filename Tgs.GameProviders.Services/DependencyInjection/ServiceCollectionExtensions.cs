@@ -2,7 +2,6 @@
 using StackExchange.Redis;
 using Tgs.GameProviders.Core.AllBet;
 using Tgs.GameProviders.Core.AsiaGaming;
-using Tgs.GameProviders.Core.Avia;
 using Tgs.GameProviders.Core.BetConstruct;
 using Tgs.GameProviders.Core.BigGaming;
 using Tgs.GameProviders.Core.Card365;
@@ -24,7 +23,6 @@ using Tgs.GameProviders.Core.VR;
 using Tgs.GameProviders.Core.WMCasino;
 using Tgs.GameProviders.Services.AllBet;
 using Tgs.GameProviders.Services.AsiaGaming;
-using Tgs.GameProviders.Services.Avia;
 using Tgs.GameProviders.Services.BetConstruct;
 using Tgs.GameProviders.Services.BigGaming;
 using Tgs.GameProviders.Services.Card365;
@@ -127,10 +125,6 @@ public static class ServiceCollectionExtensions
             .AddTransient<IAllBetService, AllBetService>()
             .AddTransient<IAllBetAgentMapper, AllBetAgentMapper>()
             .AddTransient<IAllBetGamePlayer, AllBetGamePlayer>();
-
-        _ = services
-            .AddTransient<IAviaService, AviaService>()
-            .AddTransient<IAviaGamePlayerService, AviaGamePlayer>();
 
         _ = services
             .AddTransient<IJiliService, JiliService>()

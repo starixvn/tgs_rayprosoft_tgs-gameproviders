@@ -27,8 +27,16 @@ internal class GameProviderRepository : IGameProviderRepository
         .ConfigureAwait(false)
         ?? throw new Exception($"Game Provider does not exist.({gameProviderId})");
 
-    public ValueTask<AwcAelottoConfiguration> GetAwcAelottoConfigurationAsync(
+    public ValueTask<AVIAGamingConfiguration> GetAVIAGamingConfigurationAsync(
         Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+        => GetConfigurationAsync<AVIAGamingConfiguration>(
+            gameProviderConfiguration: GameProviderConfigurations.AVIAGaming,
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken);
+
+    public ValueTask<AwcAelottoConfiguration> GetAwcAelottoConfigurationAsync(
+            Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
         => GetConfigurationAsync<AwcAelottoConfiguration>(
             gameProviderConfiguration: GameProviderConfigurations.AWC_AELOTTO,
@@ -147,8 +155,44 @@ internal class GameProviderRepository : IGameProviderRepository
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
 
-    public ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(
+    public async ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(
+        string gameProviderConfiguration,
         Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var settingConfiguration = await _client
+            .SettingGetConfigurationAsync<TConfiguration>(
+            key: gameProviderConfiguration,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"This game product setting does not exist.({gameProviderConfiguration})");
+
+        var gameProviderConfig = await _client
+            .GameProviderConfigurationGetAsync(
+            gameProviderConfigId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false)
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+
+        return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
+            ? settingConfiguration
+            : JsonMergeUtils.MergeModel(
+                original: settingConfiguration,
+                patch: gameProviderConfig.ConfigurationData,
+                options: new JsonSerializerOptions()
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    PropertyNameCaseInsensitive = true,
+                    Converters =
+                    {
+                        new JsonStringEnumConverter()
+                    }
+                }
+                );
+    }
+
+    public ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(
+            Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
         => GetConfigurationAsync<DreamGamingTransferConfiguration>(
             gameProviderConfiguration: GameProviderConfigurations.DreamGamingTransfer,
@@ -297,6 +341,7 @@ internal class GameProviderRepository : IGameProviderRepository
             gameProviderConfiguration: GameProviderConfigurations.SabaTransfer,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
+
     public ValueTask<SBOTransferConfiguration> GetSBOTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
@@ -336,6 +381,7 @@ internal class GameProviderRepository : IGameProviderRepository
             gameProviderConfiguration: GameProviderConfigurations.WGViaGaming,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
+
     public ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
@@ -351,42 +397,4 @@ internal class GameProviderRepository : IGameProviderRepository
             gameProviderConfiguration: GameProviderConfigurations.YeeBet,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
-
-    public async ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(
-        string gameProviderConfiguration,
-        Guid gameProviderConfigurationId,
-        CancellationToken cancellationToken = default)
-    {
-        var settingConfiguration = await _client
-            .SettingGetConfigurationAsync<TConfiguration>(
-            key: gameProviderConfiguration,
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false)
-            ?? throw new Exception($"This game product setting does not exist.({gameProviderConfiguration})");
-
-        var gameProviderConfig = await _client
-            .GameProviderConfigurationGetAsync(
-            gameProviderConfigId: gameProviderConfigurationId,
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false)
-            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
-
-
-
-        return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
-            ? settingConfiguration
-            : JsonMergeUtils.MergeModel(
-                original: settingConfiguration,
-                patch: gameProviderConfig.ConfigurationData,
-                options: new JsonSerializerOptions()
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    PropertyNameCaseInsensitive = true,
-                    Converters =
-                    {
-                        new JsonStringEnumConverter()
-                    }
-                }
-                );
-    }
 }

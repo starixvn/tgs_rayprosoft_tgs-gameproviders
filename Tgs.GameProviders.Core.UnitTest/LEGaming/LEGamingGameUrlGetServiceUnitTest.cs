@@ -89,7 +89,7 @@ public class LEGamingGameUrlGetServiceUnitTest
             GameId: 1,
             GameCode: "test",
             GameProviderId: gameProviderId,
-            GameProviderCode: GameProviderType.Joker,
+            GameProviderCode: GameProviderType.LEGaming,
             GameExternalId: "0",
             Type: GameType.CardGameLobby,
             PlatformType: GamePlatformType.DesktopAndMobile,
@@ -103,7 +103,7 @@ public class LEGamingGameUrlGetServiceUnitTest
             RuleUrl: null,
             AvailableCurrencies: null,
             Localization: null,
-            SubGameProviderCode: GameProviderType.Joker);
+            SubGameProviderCode: GameProviderType.LEGaming);
         _ = fakeGame
             .GetAsync(
                 Arg.Is(query.GameId.Value),

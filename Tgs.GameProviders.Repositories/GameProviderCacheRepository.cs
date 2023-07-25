@@ -26,6 +26,29 @@ internal class GameProviderCacheRepository : IGameProviderRepository
              gameProviderId: gameProviderId,
              cancellationToken: cancellationToken);
 
+    public async ValueTask<AVIAGamingConfiguration> GetAVIAGamingConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!_memoryCache.TryGetValue(key, out AVIAGamingConfiguration? configurationData))
+        {
+            configurationData = await _repository
+                .GetAVIAGamingConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return _memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
     public async ValueTask<AwcAelottoConfiguration> GetAwcAelottoConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)

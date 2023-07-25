@@ -199,6 +199,11 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceLEGamingBaseUrl")!;
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceAVIAGamingBaseUrl")!;
     });
 
 builder.Services
@@ -249,6 +254,7 @@ _ = app.MapControllers();
 app.MapHealthChecks("/healthz");
 
 _ = app.InitialMemory();
+_ = app.InitialConnectionAVIAGaming();
 _ = app.InitialConnectionAwc();
 _ = app.InitialConnectionBTi();
 _ = app.InitialConnectionCards365();

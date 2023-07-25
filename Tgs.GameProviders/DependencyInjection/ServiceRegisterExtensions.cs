@@ -1,5 +1,6 @@
 ﻿using Tgs.GameCommand.Client;
 using Tgs.GameCommand.Common;
+using Tgs.GameInterface.AVIAGaming.Client;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.Cards365.Client;
@@ -31,6 +32,19 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceRegisterExtensions
 {
+    public static async Task<WebApplication> InitialConnectionAVIAGaming(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceAVIAGamingClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
     public static async Task<WebApplication> InitialConnectionAwc(this WebApplication app)
     {
         using (var scope = app.Services.CreateScope())
