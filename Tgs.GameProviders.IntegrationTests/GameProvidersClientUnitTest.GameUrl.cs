@@ -8,14 +8,14 @@ using NSubstitute.ExceptionExtensions;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
-using Tgs.ServiceUtility;
 using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
+using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Game_Url()
     {
         var gameProviderCode = "KY";  // en-us
@@ -78,10 +78,10 @@ public partial class GameProvidersClientUnitTest
                 backUrl: backUrl)
             .ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
+        Assert.NotNull(actual);
     }
 
-    [Test]
+    [Fact]
     public void Game_Url_HttpRequestException()
     {
         var gameProviderCode = "KY";  // en-us

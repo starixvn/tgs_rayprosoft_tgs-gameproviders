@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SkywindService.Protos;
@@ -11,10 +10,9 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.SkywindTransfer;
 
-[TestFixture]
 public class SkywindTransferPlayerBalanceGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeCreatePlayerCommandService = Substitute.For<ICommandService<SkywindTransferCreatePlayerCommand>>();
@@ -50,8 +48,6 @@ public class SkywindTransferPlayerBalanceGetServiceUnitTest
             PlayerCode = "4ucmqplxb029"
         };
 
-        var gameProviderConfigurationId = Guid.NewGuid();
-        var gameProviderId = Guid.NewGuid();
 
         _ = fakeSettingRepository.GetSkywindTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
@@ -81,6 +77,6 @@ public class SkywindTransferPlayerBalanceGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(response.Balance.ToDecimal(), actual.Value);
+        Assert.Equal(response.Balance.ToDecimal(), actual.Balance);
     }
 }

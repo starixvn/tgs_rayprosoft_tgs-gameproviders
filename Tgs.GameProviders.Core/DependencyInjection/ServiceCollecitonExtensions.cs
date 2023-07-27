@@ -107,6 +107,5 @@ public static class ServiceCollecitonExtensions
         .AddGameTokenClient(gameTokenClientOptions)
         .AddSecurity()//Tgs.Core.Infrastructures.Security
         .AddMemoryCache()
-        .AddTransient<IGameActionService, GameActionService>()
-        .AddTransient<ISystemClock, SystemClock>();
+        .AddTransient<IGameActionService, GameActionService>();
 }

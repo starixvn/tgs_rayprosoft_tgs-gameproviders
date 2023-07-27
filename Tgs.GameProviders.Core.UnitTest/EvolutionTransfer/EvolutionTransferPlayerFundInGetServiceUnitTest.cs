@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.EvolutionService.Protos;
@@ -10,10 +9,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.EvolutionTransfer;
 
-[TestFixture]
 public class EvolutionTransferPlayerFundInGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameInterfaceEvolutionServiceGrpc = Substitute.For<IGameInterfaceEvolutionClient>();
@@ -81,6 +79,6 @@ public class EvolutionTransferPlayerFundInGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(query.OrderId, actual.OrderId);
+        Assert.Equal(query.OrderId, actual.OrderId);
     }
 }

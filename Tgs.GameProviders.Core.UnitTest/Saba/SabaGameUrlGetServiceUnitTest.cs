@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Saba;
 using Tgs.GameProviders.Core.Saba.ApplicationServices;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.Saba;
 
-[TestFixture]
 public class SabaGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process_At_Real_Environment()
     {
         var fakeLogger = NullLogger<SabaGameUrlGetService>.Instance;
@@ -108,10 +106,10 @@ public class SabaGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual.Url);
+        Assert.Equal(gameUrl, actual.Url);
     }
 
-    [Test]
+    [Fact]
     public async Task Normal_Process_At_Test_Environment()
     {
         var fakeLogger = NullLogger<SabaGameUrlGetService>.Instance;
@@ -206,6 +204,6 @@ public class SabaGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual.Url);
+        Assert.Equal(gameUrl, actual.Url);
     }
 }

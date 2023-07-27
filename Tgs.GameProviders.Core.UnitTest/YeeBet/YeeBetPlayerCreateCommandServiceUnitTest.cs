@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GameProviders.Core.YeeBet.ApplicationServices;
@@ -10,10 +9,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.YeeBet;
 
-[TestFixture]
 public class YeeBetPlayerCreateCommandServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Create_Player_By_Configuration_SetCurrency()
     {
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
@@ -93,7 +91,7 @@ public class YeeBetPlayerCreateCommandServiceUnitTest
                 quotas: Arg.Is(configuration.BetLimit));
     }
 
-    [Test]
+    [Fact]
     public async Task Create_Player_By_Default_Wallet_Id()
     {
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();

@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
 
-public class SabaTransferPlayerBalanceGetService : IGetService<SabaTransferPlayerBalanceQuery, decimal?>
+public class SabaTransferPlayerBalanceGetService : IGetService<SabaTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceSabaClient _client;
@@ -26,7 +26,7 @@ public class SabaTransferPlayerBalanceGetService : IGetService<SabaTransferPlaye
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
     }
 
-    public async ValueTask<decimal?> GetAsync(SabaTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(SabaTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.SabaTransfer).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
@@ -71,6 +71,12 @@ public class SabaTransferPlayerBalanceGetService : IGetService<SabaTransferPlaye
                 .ConfigureAwait(false);
         }
 
-        return reply.IsPlayerExist ? reply.Balance : 0;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

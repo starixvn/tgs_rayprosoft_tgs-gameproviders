@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.OBet.Client;
 using Tgs.GameInterface.OBet.Protos;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.OBet;
 
-[TestFixture]
 public class OBetPlayerBalanceGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
@@ -96,6 +94,6 @@ public class OBetPlayerBalanceGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(168M, actual);
+        Assert.Equal(168M, actual.Balance);
     }
 }

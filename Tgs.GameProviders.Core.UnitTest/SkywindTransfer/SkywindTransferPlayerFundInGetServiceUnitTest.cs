@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SkywindService.Protos;
 using Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
@@ -10,10 +9,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.SkywindTransfer;
 
-[TestFixture]
 public class SkywindTransferPlayerFundInGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
@@ -82,6 +80,6 @@ public class SkywindTransferPlayerFundInGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(query.OrderId, actual.OrderId);
+        Assert.Equal(query.OrderId, actual.OrderId);
     }
 }

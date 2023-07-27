@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.WGViaGaming.Client;
 using Tgs.GameProviders.Core.WGViaGaming.ApplicationServices;
@@ -11,10 +10,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.WGViaGaming;
 
-[TestFixture]
 public class WGViaGamingPlayerFundInGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeClient = Substitute.For<IGameInterfaceWGViaGamingClient>();
@@ -87,7 +85,7 @@ public class WGViaGamingPlayerFundInGetServiceUnitTest
            .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(query.OrderId, actual.OrderId);
+        Assert.Equal(query.OrderId, actual.OrderId);
 
         _ = fakeClient
             .Received(1)

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.SBO;
 using Tgs.GameProviders.Core.SBO.Models;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class SBOApiClientUnitTest
 {
     private const string AgentPrefix = "STGTGS";
@@ -17,7 +15,7 @@ public class SBOApiClientUnitTest
     private const string PlayerCurrencyCode = "CNY";
     private readonly Uri _apiUrl = new("https://ex-api-demo-yy.568win.com");
 
-    [Test]
+    [Fact]
     public async Task CreateAgentAsync()
     {
         var agentId =
@@ -35,7 +33,7 @@ public class SBOApiClientUnitTest
         _ = await client.CreateAgentAsync(_apiUrl, request).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task CreatePlayerAsync()
     {
         var playerCode = "4udwxysersic";
@@ -55,7 +53,7 @@ public class SBOApiClientUnitTest
         _ = await client.CreatePlayerAsync(_apiUrl, request).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task GetGameUrlAsync()
     {
         var playerCode = "4ucmqplxb029";
@@ -72,7 +70,7 @@ public class SBOApiClientUnitTest
         _ = await client.LoginAsync(_apiUrl, request).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task GetSportsBookRoundHistoryAsync()
     {
         var request = new SBOGetRoundHistoryRequest
@@ -88,7 +86,7 @@ public class SBOApiClientUnitTest
         _ = await client.GetRoundHistoryAsync(_apiUrl, request).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task GetVirtualSportsRoundHistoryAsync()
     {
         var request = new SBOGetRoundHistoryRequest
@@ -104,7 +102,7 @@ public class SBOApiClientUnitTest
         _ = await client.GetRoundHistoryAsync(_apiUrl, request).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task KickAsync()
     {
         var playerCode = "4ucmqplxb029";

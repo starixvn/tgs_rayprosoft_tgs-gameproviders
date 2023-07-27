@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.Jili;
 using Tgs.GameProviders.Core.Jili.Models;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class JiliApiClientUnitTest
 {
     private const string AgentId = "PG_Seamless";
     private const string AgentKey = "0d90dda822b6df548460da8f551c1a76c01b6a9e";
     private readonly Uri _apiUrl = new("https://uat-wb-api.jlfafafa2.com");
 
-    [Test]
+    [Fact]
     public async Task GetGameDetailUrlAsync()
     {
         var language = "en-US";
@@ -27,8 +25,8 @@ public class JiliApiClientUnitTest
             .ConfigureAwait(false);
     }
 
-    [Test]
-    public async ValueTask KickMemberAsync()
+    [Fact]
+    public async Task KickMemberAsync()
     {
         var jiliPlayerId = "GPI_4ucmqplxb029";
 
@@ -39,8 +37,8 @@ public class JiliApiClientUnitTest
             .ConfigureAwait(false);
     }
 
-    [Test]
-    public async ValueTask LoginWithoutRedirectAsync()
+    [Fact]
+    public async Task LoginWithoutRedirectAsync()
     {
         var request = new JiliLoginWithoutRedirectRequest
         {

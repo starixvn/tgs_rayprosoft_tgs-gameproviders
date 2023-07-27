@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ExpectedObjects;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Habanero;
 using Tgs.GameProviders.Core.Habanero.ApplicationServices;
@@ -13,11 +13,10 @@ using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.Habanero;
 
-[TestFixture]
 public class HabaneroRoundDetailGetServiceUnitTest
 {
-    [Test]
-    public async ValueTask Normal_Process()
+    [Fact]
+    public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<HabaneroRoundDetailGetService>.Instance;
         var fakeRoundService = Substitute.For<IRoundRepository>();
@@ -142,6 +141,6 @@ public class HabaneroRoundDetailGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        CollectionAssert.AreEqual(expected.Data, actual.Data);
+        expected.Data.ToExpectedObject().ShouldEqual(actual.Data);
     }
 }

@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
@@ -11,10 +10,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.PragmaticPlayTransfer;
 
-[TestFixture]
 public class PragmaticPlayTransferKickPlayerCommandServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();

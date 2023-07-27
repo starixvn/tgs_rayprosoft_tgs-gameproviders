@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.VR;
 using Tgs.GameProviders.Core.VR.Models;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class VRApiClientUnitTest
 {
     private const string Deskey = "PLFNNVZ68DF4V88XZ8B0688660Z2LBP2";
@@ -15,9 +13,9 @@ public class VRApiClientUnitTest
     private const string Version = "1.0";
     private readonly Uri _apiUrl = new("https://pmws.vrbetapi.com/");
 
-    [Test()]
-    [TestCase("4ucmqplxb029", "397FE4DF0A2FF0E2820367F0E29CFCAC8F86", 1)]
-    [TestCase("4ucmqplxb029", "397FE4DF0A2FF0E2820367F0E29CFCAC8F87", 0)]
+    [Theory]
+    [InlineData("4ucmqplxb029", "397FE4DF0A2FF0E2820367F0E29CFCAC8F86", 1)]
+    [InlineData("4ucmqplxb029", "397FE4DF0A2FF0E2820367F0E29CFCAC8F87", 0)]
     public async Task FundCheckingAsync(string playerCode, string orderId, int totalRecords)
     {
         var data = new VRFundCheckingRequest()
@@ -34,14 +32,14 @@ public class VRApiClientUnitTest
 
         _ = client.FundCheckingAsync(_apiUrl, MerchantId, Version, Deskey, data).Returns(ValueTask.FromResult<VRFundCheckingResponse>(new() { TotalRecords = totalRecords }));
         var response = await client.FundCheckingAsync(_apiUrl, MerchantId, Version, Deskey, data).ConfigureAwait(false);
-        Assert.AreEqual(totalRecords, response.TotalRecords);
+        Assert.Equal(totalRecords, response.TotalRecords);
     }
 
     /// <summary>
     /// Funds the in asynchronous.(GP->TGS)
     /// </summary>
     /// <returns></returns>
-    [Test]
+    [Fact]
     public async Task FundInAsync()
     {
         var data = new VRFnudRequest
@@ -62,7 +60,7 @@ public class VRApiClientUnitTest
     /// Funds the out asynchronous.(TGS->GP)
     /// </summary>
     /// <returns></returns>
-    [Test]
+    [Fact]
     public async Task FundOutAsync()
     {
         var data = new VRFnudRequest
@@ -79,7 +77,7 @@ public class VRApiClientUnitTest
         _ = await client.FundAsync(_apiUrl, MerchantId, Version, Deskey, VRAction.FundOut, data).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task GetBalanceAsync()
     {
         var data = new VRGetBalanceRequest
@@ -92,7 +90,7 @@ public class VRApiClientUnitTest
         _ = await client.GetBalanceAsync(_apiUrl, MerchantId, Version, Deskey, data).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task GetGameRecordAsync()
     {
         var date = DateTimeOffset.UtcNow;
@@ -111,7 +109,7 @@ public class VRApiClientUnitTest
         _ = await client.GetGameRecordAsync(_apiUrl, MerchantId, Version, Deskey, data).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public void GetGameURL()
     {
         var data = new VRGameUrlRequest()
@@ -128,7 +126,7 @@ public class VRApiClientUnitTest
         _ = client.GetGameURL(_apiUrl, MerchantId, Version, Deskey, data);
     }
 
-    [Test]
+    [Fact]
     public async Task KickAsync()
     {
         var data = new VRKickRequest

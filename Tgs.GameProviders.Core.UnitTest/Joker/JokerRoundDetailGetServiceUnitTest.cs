@@ -4,7 +4,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameInterface.Joker.Client;
 using Tgs.GameInterface.Joker.Protos;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
@@ -14,10 +13,9 @@ using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.Joker;
 
-[TestFixture]
 public class JokerRoundDetailGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeRound = Substitute.For<IRoundRepository>();
@@ -109,6 +107,6 @@ public class JokerRoundDetailGetServiceUnitTest
             .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(reply.Url, (actual.Data!.Single() as RoundDetailDataUrl)!.Url.ToString());
+        Assert.Equal(reply.Url, (actual.Data!.Single() as RoundDetailDataUrl)!.Url.ToString());
     }
 }

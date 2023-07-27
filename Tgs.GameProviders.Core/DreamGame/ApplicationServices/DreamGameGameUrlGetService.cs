@@ -2,25 +2,22 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.DreamGame.ApplicationServices;
 
 public class DreamGameGameUrlGetService : IGetService<DreamGameGameUrlQuery, GameUrlResult>
 {
-    private readonly IDreamGameApiClient _client;
-    private readonly IGetService<DreamGameCreatePlayerQuery, int> _createPlayerService;
+    private readonly IGameInterfaceDreamGamingClient _client;
     private readonly IDreamGameService _service;
 
     public DreamGameGameUrlGetService(
         IDreamGameService service,
-        IDreamGameApiClient client,
-        IGetService<DreamGameCreatePlayerQuery, int> createPlayerService
-        )
+        IGameInterfaceDreamGamingClient client)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _client = client ?? throw new ArgumentNullException(nameof(client));
-        _createPlayerService = createPlayerService ?? throw new ArgumentNullException(nameof(createPlayerService));
     }
 
     public async ValueTask<GameUrlResult> GetAsync(DreamGameGameUrlQuery query, CancellationToken cancellationToken = default)
@@ -34,54 +31,18 @@ public class DreamGameGameUrlGetService : IGetService<DreamGameGameUrlQuery, Gam
             throw new Exception($"Currency limit red does not exist.({query.CurrencyCode})");
         }
 
-        var loginResult = await _client
-            .LoginAsync(
-                configuration.ApiUrl,
-                configuration.ApiKey,
-                configuration.AgentName,
-                query.PlayerCode,
-                configuration.PlayerPassword,
-                tableLimit,
-                query.PlatformType,
-                gameProviderCultureCode)
+        var response = await _client
+            .GameUrlAsync(
+                apiUrl: configuration.ApiUrl,
+                apiKey: configuration.ApiKey,
+                agentName: configuration.AgentName,
+                username: query.PlayerCode,
+                password: configuration.PlayerPassword,
+                isMobile: query.PlatformType == PlatformType.Mobile,
+                lang: gameProviderCultureCode,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        if (!loginResult.Success && loginResult.CodeId is 102)
-        {
-            var codeId = await _createPlayerService.GetAsync(new DreamGameCreatePlayerQuery(
-                configuration.ApiUrl,
-                configuration.ApiKey,
-                configuration.AgentName,
-                query.PlayerCode,
-                configuration.PlayerPassword,
-                query.CurrencyCode,
-                gameProviderCurrencyCode,
-                configuration.BetLimits
-                )).ConfigureAwait(false);
-            loginResult = codeId is 0 or 116
-                ? await _client
-                    .LoginAsync(
-                        configuration.ApiUrl,
-                        configuration.ApiKey,
-                        configuration.AgentName,
-                        query.PlayerCode,
-                        configuration.PlayerPassword,
-                        tableLimit,
-                        query.PlatformType,
-                        gameProviderCultureCode)
-                    .ConfigureAwait(false)
-                : throw new Exception($"The manufacturer responded incorrectly.({codeId})");
-        }
-        else
-        {
-            if (!loginResult.Success)
-            {
-                throw new Exception($"The manufacturer responded incorrectly.({loginResult.CodeId})");
-            }
-        }
-
-        return (loginResult.Success) ?
-            new() { Url = loginResult.Url } :
-            throw new Exception($"The manufacturer responded incorrectly.({loginResult.CodeId})"); ;
+        return new() { Url = new(response.GameUrl) };
     }
 }

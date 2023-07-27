@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.TFGaming;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class TFApiClientUnitTest
 {
-    [Test]
+    [Fact]
     public async Task GetGameUrlAsync()
     {
         var client = Substitute.For<ITFApiClient>();
@@ -23,7 +21,7 @@ public class TFApiClientUnitTest
             .ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task KickAsync()
     {
         var client = Substitute.For<ITFApiClient>();

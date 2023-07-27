@@ -97,18 +97,22 @@ public class KYController : ControllerBase
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal> PlayerBalanceAsync(
-         [FromServices] IGetService<KaiyuanPlayerBalanceQuery, decimal> service,
+    public async ValueTask<decimal> PlayerBalanceAsync(
+         [FromServices] IGetService<KaiyuanPlayerBalanceQuery, PlayerBalanceResult> service,
          string playerCode)
     {
         var query = new KaiyuanPlayerBalanceQuery
         {
             PlayerCode = playerCode
         };
-        return service
-        .GetAsync(
+
+        var result = await service
+         .GetAsync(
             query: query,
-            cancellationToken: HttpContext.RequestAborted);
+            cancellationToken: HttpContext.RequestAborted)
+         .ConfigureAwait(false);
+
+        return result.FreeBalance;
     }
 
     /// <summary>

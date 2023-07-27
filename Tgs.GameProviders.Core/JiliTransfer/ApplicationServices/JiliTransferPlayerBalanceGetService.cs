@@ -2,12 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.Jili.Client;
+using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 
-public class JiliTransferPlayerBalanceGetService : IGetService<JiliTransferPlayerBalanceQuery, decimal?>
+public class JiliTransferPlayerBalanceGetService : IGetService<JiliTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceJiliClient _client;
@@ -29,7 +30,7 @@ public class JiliTransferPlayerBalanceGetService : IGetService<JiliTransferPlaye
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<decimal?> GetAsync(JiliTransferPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(JiliTransferPlayerBalanceQuery command, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -53,21 +54,21 @@ public class JiliTransferPlayerBalanceGetService : IGetService<JiliTransferPlaye
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client.GetBalanceAsync(
+        var reply = await _client.GetBalanceAsync(
             apiUrl: configuration.ApiUrl,
             agentId: configuration.AgentId,
             agentKey: configuration.AgentKey,
             playerCode: player.PlayerCode,
             cancellationToken: cancellationToken).ConfigureAwait(false);
 
-        if (response.Success && !response.IsPlayerExist)
+        if (reply.Success && !reply.IsPlayerExist)
         {
             await _createPlayerCommandService.ExecuteAsync(new JiliTransferCreatePlayerCommand(
                 Configuration: configuration,
                 PlayerCode: player.PlayerCode),
                 cancellationToken).ConfigureAwait(false);
 
-            response = await _client.GetBalanceAsync(
+            reply = await _client.GetBalanceAsync(
                apiUrl: configuration.ApiUrl,
                agentId: configuration.AgentId,
                agentKey: configuration.AgentKey,
@@ -75,8 +76,12 @@ public class JiliTransferPlayerBalanceGetService : IGetService<JiliTransferPlaye
                cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        return !response.Success
-            ? throw new Exception($"This game product has failed to withdraw the balance..{response.Message}")
-            : response.Balance;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

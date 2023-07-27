@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.LEGaming.Client;
 using Tgs.GameInterface.LEGaming.Protos;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.LEGaming;
 
-[TestFixture]
 public class LEGamingPlayerBalanceGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_ProcessAsync()
     {
         var fakeClient = Substitute.For<IGameInterfaceLEGamingClient>();
@@ -103,7 +101,6 @@ public class LEGamingPlayerBalanceGetServiceUnitTest
             query: query)
             .ConfigureAwait(false);
 
-        Assert.NotNull(actual);
-        Assert.AreEqual(99m, actual);
+        Assert.Equal(99m, actual.Balance);
     }
 }

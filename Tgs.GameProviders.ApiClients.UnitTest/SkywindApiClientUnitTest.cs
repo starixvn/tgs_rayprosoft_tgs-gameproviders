@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.Skywind;
 using Tgs.GameProviders.Core.Skywind.Models;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class SkywindApiClientUnitTest
 {
     private const string Password = "3VSNMGFvbzBJacJT";
@@ -15,7 +13,7 @@ public class SkywindApiClientUnitTest
     private const string Username = "PG_merchant_api_stg";
     private readonly Uri _apiUrl = new("https://api.gcpstg.m27613.com/v1");
 
-    [Test]
+    [Fact]
     public async Task GetAccessTokenAsync()
     {
         var client = Substitute.For<ISkywindApiClient>();
@@ -27,7 +25,7 @@ public class SkywindApiClientUnitTest
         });
     }
 
-    [Test]
+    [Fact]
     public async Task GetGameUrlAsync()
     {
         var client = Substitute.For<ISkywindApiClient>();
@@ -47,7 +45,7 @@ public class SkywindApiClientUnitTest
         _ = await client.GetGameUrlAsync(_apiUrl, loginResponse?.AccessToken, request);
     }
 
-    [Test]
+    [Fact]
     public async Task GetGamHistoryRoundDetailsAsync()
     {
         var client = Substitute.For<ISkywindApiClient>();

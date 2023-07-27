@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.OBet.ApplicationServices;
 
-public class OBetPlayerBalanceGetService : IGetService<OBetPlayerBalanceQuery, decimal?>
+public class OBetPlayerBalanceGetService : IGetService<OBetPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceOBetClient _client;
@@ -26,7 +26,7 @@ public class OBetPlayerBalanceGetService : IGetService<OBetPlayerBalanceQuery, d
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<decimal?> GetAsync(OBetPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(OBetPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -80,6 +80,12 @@ public class OBetPlayerBalanceGetService : IGetService<OBetPlayerBalanceQuery, d
                .ConfigureAwait(false);
         }
 
-        return reply.IsPlayerExist ? reply.Balance : null;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

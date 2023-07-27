@@ -13,7 +13,6 @@ public class VRController : ControllerBase,
     IGameRecordListHandler<VRGameRecordListQuery, VRGameRecordListQuery>,
     IGameUrlHandler<VRGameUrlQuery>,
     IKickPlayerHandler<VRKickPlayerCommand>,
-    IPlayerBalanceHandler<VRPlayerBalanceQuery>,
     IPlayerFundCheckingHandler<VRPlayerFundCheckingQuery, VRPlayerFundCheckingRequest>,
     IPlayerFundHandler<VRPlayerFundInQuery, VRPlayerFundOutQuery>,
     IRoundDetailHandler<VRRoundDetailQuery>
@@ -120,7 +119,7 @@ public class VRController : ControllerBase,
     /// <summary>
     /// Players the balance asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="playerCode">The player code.</param>
     /// <returns></returns>
     /// <remarks>
@@ -129,16 +128,23 @@ public class VRController : ControllerBase,
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal?> PlayerBalanceAsync(
-         [FromServices] IGetService<VRPlayerBalanceQuery, decimal?> getService,
+    public async ValueTask<decimal> PlayerBalanceAsync(
+         [FromServices] IGetService<VRPlayerBalanceQuery, PlayerBalanceResult> service,
          string playerCode)
-        => getService
-        .GetAsync(
-            query: new()
-            {
-                PlayerCode = playerCode
-            },
-            cancellationToken: HttpContext.RequestAborted);
+    {
+        var query = new VRPlayerBalanceQuery
+        {
+            PlayerCode = playerCode
+        };
+
+        var result = await service
+         .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+         .ConfigureAwait(false);
+
+        return result.FreeBalance;
+    }
 
     /// <summary>
     /// Players the fund checking asynchronous.

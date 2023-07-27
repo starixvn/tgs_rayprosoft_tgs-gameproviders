@@ -2,12 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.AwcLudo.ApplicationServices;
 
-public class AwcLudoPlayerBalanceGetService : IGetService<AwcLudoPlayerBalanceQuery, decimal?>
+public class AwcLudoPlayerBalanceGetService : IGetService<AwcLudoPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceAwcServiceClient _client;
@@ -26,7 +27,7 @@ public class AwcLudoPlayerBalanceGetService : IGetService<AwcLudoPlayerBalanceQu
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<decimal?> GetAsync(AwcLudoPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(AwcLudoPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -96,8 +97,12 @@ public class AwcLudoPlayerBalanceGetService : IGetService<AwcLudoPlayerBalanceQu
                 .ConfigureAwait(false);
         }
 
-        return !response.Success
+        return !response.IsPlayerExist
             ? throw new Exception($"This game product has failed to withdraw the balance..{response.Message}")
-            : response.Balance;
+            : new PlayerBalanceResult
+            {
+                FreeBalance = response.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

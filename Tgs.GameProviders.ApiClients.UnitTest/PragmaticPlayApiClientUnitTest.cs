@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.PragmaticPlay;
 using Tgs.GameProviders.Core.PragmaticPlay.Models;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class PragmaticPlayApiClientUnitTest
 {
     private const string SecretKey = "testKey";
     private const string SecurityLogin = "tgs_tgs";
     private readonly Uri _apiUrl = new("https://api.prerelease-env.biz");
 
-    [Test]
+    [Fact]
     public async Task GetGameUrlAsync()
     {
         //var playerCode = "4ucmqplxb029";
@@ -34,7 +32,7 @@ public class PragmaticPlayApiClientUnitTest
         _ = await client.GetGameUrlAsync(_apiUrl, SecretKey, request).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task GetRoundHistoryAsync()
     {
         var request = new PragmaticPlayOpenHistoryExtendedRequest
@@ -50,7 +48,7 @@ public class PragmaticPlayApiClientUnitTest
         _ = await client.GetRoundHistoryAsync(_apiUrl, SecretKey, request).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task KickPlayerAsync()
     {
         var playerCode = "4ucmqplxb029";

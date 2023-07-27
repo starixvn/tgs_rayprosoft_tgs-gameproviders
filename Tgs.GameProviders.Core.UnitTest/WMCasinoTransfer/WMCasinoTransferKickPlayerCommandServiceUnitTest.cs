@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
@@ -11,10 +10,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.WMCasinoTransfer;
 
-[TestFixture]
 public class WMCasinoTransferKickPlayerCommandServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();

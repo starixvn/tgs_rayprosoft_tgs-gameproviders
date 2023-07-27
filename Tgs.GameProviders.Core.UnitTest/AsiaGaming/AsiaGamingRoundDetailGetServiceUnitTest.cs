@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
+using ExpectedObjects;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.AsiaGaming;
 using Tgs.GameProviders.Core.AsiaGaming.ApplicationServices;
@@ -17,10 +17,9 @@ using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.AsiaGaming;
 
-[TestFixture]
 public class AsiaGamingRoundDetailGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<AsiaGamingRoundDetailGetService>.Instance;
@@ -227,6 +226,6 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        CollectionAssert.AreEqual(expected.Data, actual.Data);
+        expected.Data.ToExpectedObject().ShouldEqual(actual.Data);
     }
 }

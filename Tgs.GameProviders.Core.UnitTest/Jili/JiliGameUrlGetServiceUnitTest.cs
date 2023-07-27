@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Jili;
@@ -13,10 +12,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration.Jili;
 
 namespace Tgs.GameProviders.Core.UnitTest.Jili;
 
-[TestFixture]
 public class JiliGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameRepository = Substitute.For<IGameRepository>();
@@ -117,6 +115,6 @@ public class JiliGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual.Url);
+        Assert.Equal(gameUrl, actual.Url);
     }
 }

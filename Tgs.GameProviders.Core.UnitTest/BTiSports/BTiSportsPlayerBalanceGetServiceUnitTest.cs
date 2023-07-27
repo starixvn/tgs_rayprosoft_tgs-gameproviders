@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.BTiService.Protos;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.BTiSports;
 
-[TestFixture]
 public class BTiSportsPlayerBalanceGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
@@ -85,6 +83,6 @@ public class BTiSportsPlayerBalanceGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(response.Balance.ToDecimal(), actual.Value);
+        Assert.Equal(response.Balance.ToDecimal(), actual.Balance);
     }
 }

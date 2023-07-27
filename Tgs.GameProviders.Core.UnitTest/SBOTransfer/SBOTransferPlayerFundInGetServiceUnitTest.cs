@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SBOService.Protos;
@@ -11,10 +10,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.SBOTransfer;
 
-[TestFixture]
 public class SBOTransferPlayerFundInGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameInterfaceSBOClient = Substitute.For<IGameInterfaceSBOClient>();

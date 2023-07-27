@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ExpectedObjects;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.JDB;
 using Tgs.GameProviders.Core.JDB.ApplicationServices;
@@ -14,10 +14,9 @@ using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.JDB;
 
-[TestFixture]
 public class JDBRoundDetailGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
@@ -155,7 +154,7 @@ public class JDBRoundDetailGetServiceUnitTest
 
         var items = gameInfo.GameExternalId.Split('_');
 
-        fakeApiClient
+        _ = fakeApiClient
             .GetBetHistoryUrlAsync(
                 configuration.ApiUrl,
                 configuration.ClientDomain,
@@ -192,6 +191,6 @@ public class JDBRoundDetailGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        CollectionAssert.AreEqual(expected.Data, actual.Data);
+        expected.Data.ToExpectedObject().ShouldEqual(actual.Data);
     }
 }

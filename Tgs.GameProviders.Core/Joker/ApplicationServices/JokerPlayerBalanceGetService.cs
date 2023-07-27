@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
-internal class JokerPlayerBalanceGetService : IGetService<JokerPlayerBalanceQuery, decimal>
+internal class JokerPlayerBalanceGetService : IGetService<JokerPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceJokerClient _client;
@@ -26,7 +26,7 @@ internal class JokerPlayerBalanceGetService : IGetService<JokerPlayerBalanceQuer
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<decimal> GetAsync(
+    public async ValueTask<PlayerBalanceResult> GetAsync(
         JokerPlayerBalanceQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -82,6 +82,12 @@ internal class JokerPlayerBalanceGetService : IGetService<JokerPlayerBalanceQuer
                .ConfigureAwait(false);
         }
 
-        return reply.Balance;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

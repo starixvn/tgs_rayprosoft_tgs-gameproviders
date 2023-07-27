@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Google.Protobuf.Collections;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.EvolutionService.Client;
@@ -13,10 +12,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.EvolutionTransfer;
 
-[TestFixture]
 public class EvolutionTransferGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Can_Get_Game_Url_With_Live_Dealer_Lobby()
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
@@ -136,10 +134,10 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
         var url = new Uri($"{configuration.ApiUrl}{path}");
 
         Assert.NotNull(actual);
-        Assert.AreEqual(url, actual.Url);
+        Assert.Equal(url, actual.Url);
     }
 
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
@@ -260,6 +258,6 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
         var url = new Uri($"{configuration.ApiUrl}{path}");
 
         Assert.NotNull(actual);
-        Assert.AreEqual(url, actual.Url);
+        Assert.Equal(url, actual.Url);
     }
 }

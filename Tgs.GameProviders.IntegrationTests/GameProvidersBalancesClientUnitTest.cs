@@ -14,10 +14,9 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.IntegrationTests;
 
-[TestFixture]
 public class GameProvidersBalancesClientUnitTest
 {
-    [Test]
+    [Fact]
     public async Task AwcAelotto_GetBalances()
     {
         var brandCode = "GPI";
@@ -57,11 +56,11 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync()
             .ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.IsTrue(actual.Any());
+        Assert.NotNull(actual);
+        Assert.True(actual.Any());
     }
 
-    [Test]
+    [Fact]
     public async Task AwcAws_GetBalances()
     {
         var brandCode = "GPI";
@@ -101,11 +100,11 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync()
             .ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.IsTrue(actual.Any());
+        Assert.NotNull(actual);
+        Assert.True(actual.Any());
     }
 
-    [Test]
+    [Fact]
     public async Task AwcFacai_GetBalances()
     {
         var brandCode = "GPI";
@@ -145,7 +144,7 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync()
             .ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.IsTrue(actual.Any());
+        Assert.NotNull(actual);
+        Assert.True(actual.Any());
     }
 }

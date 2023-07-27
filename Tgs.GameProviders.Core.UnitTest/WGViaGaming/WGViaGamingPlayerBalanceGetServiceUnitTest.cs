@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.WGViaGaming.Client;
 using Tgs.GameInterface.WGViaGaming.Protos;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.WGViaGaming;
 
-[TestFixture]
 public class WGViaGamingPlayerBalanceGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public void Create_Player()
     {
         var fakeClient = Substitute.For<IGameInterfaceWGViaGamingClient>();
@@ -119,7 +117,7 @@ public class WGViaGamingPlayerBalanceGetServiceUnitTest
             cancellationToken: Arg.Any<CancellationToken>());
     }
 
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeClient = Substitute.For<IGameInterfaceWGViaGamingClient>();
@@ -202,7 +200,6 @@ public class WGViaGamingPlayerBalanceGetServiceUnitTest
             query: query)
             .ConfigureAwait(false);
 
-        Assert.NotNull(actual);
-        Assert.AreEqual(1, actual);
+        Assert.Equal(1, actual.Balance);
     }
 }

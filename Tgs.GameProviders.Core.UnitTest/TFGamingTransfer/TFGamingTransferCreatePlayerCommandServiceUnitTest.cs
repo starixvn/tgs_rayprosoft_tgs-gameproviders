@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SM01Service.Protos;
 using Tgs.GameInterface.TFGamingService.Client;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.TFGamingTransfer;
 
-[TestFixture]
 public class TFGamingTransferCreatePlayerCommandServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();

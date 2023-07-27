@@ -12,7 +12,6 @@ namespace Tgs.GameProviders.Controllers;
 public class AwcYlController : ControllerBase,
         IGameUrlHandler<AwcYlGameUrlQuery>,
         IKickPlayerHandler<AwcYlKickPlayerCommand>,
-        IPlayerBalanceHandler<AwcYlPlayerBalanceQuery>,
         IPlayerFundHandler<AwcYlPlayerFundInQuery, AwcYlPlayerFundOutQuery>,
         IPlayerFundCheckingHandler<AwcYlPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
         IRoundDetailHandler<AwcYlRoundDetailQuery>
@@ -91,7 +90,7 @@ public class AwcYlController : ControllerBase,
     /// <summary>
     /// Players the balance asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="playerCode">The player code.</param>
     /// <returns></returns>
     /// <remarks>
@@ -100,16 +99,22 @@ public class AwcYlController : ControllerBase,
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal?> PlayerBalanceAsync(
-         [FromServices] IGetService<AwcYlPlayerBalanceQuery, decimal?> getService,
+    public async ValueTask<decimal> PlayerBalanceAsync(
+         [FromServices] IGetService<AwcYlPlayerBalanceQuery, PlayerBalanceResult> service,
          string playerCode)
-        => getService
-        .GetAsync(
-            query: new()
-            {
-                PlayerCode = playerCode
-            },
-            cancellationToken: HttpContext.RequestAborted);
+    {
+        var query = new AwcYlPlayerBalanceQuery
+        {
+            PlayerCode = playerCode
+        };
+        var result = await service
+         .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+         .ConfigureAwait(false);
+
+        return result.FreeBalance;
+    }
 
     /// <summary>
     /// Players the fund checking asynchronous.

@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.Kaiyuan.Client;
 using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
@@ -11,10 +10,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.Kaiyuan;
 
-[TestFixture]
 public class KaiyuanPlayerFundInGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeClient = Substitute.For<IGameInterfaceKaiyuanClient>();
@@ -103,6 +101,6 @@ public class KaiyuanPlayerFundInGetServiceUnitTest
            .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(orderId, actual.OrderId);
+        Assert.Equal(orderId, actual.OrderId);
     }
 }

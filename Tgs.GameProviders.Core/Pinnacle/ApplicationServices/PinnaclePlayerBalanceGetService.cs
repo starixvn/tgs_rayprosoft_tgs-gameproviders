@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Pinnacle.ApplicationServices;
 
-public class PinnaclePlayerBalanceGetService : IGetService<PinnaclePlayerBalanceQuery, decimal>
+public class PinnaclePlayerBalanceGetService : IGetService<PinnaclePlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfacePinnacleClient _client;
@@ -26,7 +26,7 @@ public class PinnaclePlayerBalanceGetService : IGetService<PinnaclePlayerBalance
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<decimal> GetAsync(PinnaclePlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(PinnaclePlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -83,6 +83,12 @@ public class PinnaclePlayerBalanceGetService : IGetService<PinnaclePlayerBalance
                .ConfigureAwait(false);
         }
 
-        return reply.Balance;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

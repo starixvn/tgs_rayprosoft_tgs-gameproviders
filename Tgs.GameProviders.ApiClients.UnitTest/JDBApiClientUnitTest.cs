@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.JDB;
 using Tgs.GameProviders.Core.JDB.Models;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class JDBApiClientUnitTest
 {
     private const string AesIv = "756edb2fc85fe908";
@@ -16,7 +14,7 @@ public class JDBApiClientUnitTest
     private const string ClientDomain = "VB3";
     private readonly Uri _apiUrl = new("http://api.jdb711.com");
 
-    [Test]
+    [Fact]
     public async Task GetBetHistoryAsync()
     {
         var playerCode = "4ucmqplxb029";
@@ -43,7 +41,7 @@ public class JDBApiClientUnitTest
             .ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task GetTokenAsync()
     {
         var playerCode = "4ucmqplxb029";
@@ -71,7 +69,7 @@ public class JDBApiClientUnitTest
             .ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task LogoutAsync()
     {
         var playerCode = "4ucmqplxb029";

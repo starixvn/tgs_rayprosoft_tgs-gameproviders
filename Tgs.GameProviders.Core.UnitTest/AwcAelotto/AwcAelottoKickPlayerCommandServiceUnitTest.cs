@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameProviders.Core.AwcAelotto.ApplicationServices;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.AwcAelotto;
 
-[TestFixture]
 public class AwcAelottoKickPlayerCommandServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeBrand = Substitute.For<IBrandRepository>();

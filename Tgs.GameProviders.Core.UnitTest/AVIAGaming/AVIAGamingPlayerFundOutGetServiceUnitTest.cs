@@ -3,7 +3,6 @@ using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AVIAGaming.Client;
 using Tgs.GameInterface.AVIAGaming.Protos;
@@ -13,10 +12,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.AVIAGaming;
 
-[TestFixture]
 public class AVIAGamingPlayerFundOutGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeClient = Substitute.For<IGameInterfaceAVIAGamingClient>();
@@ -114,6 +112,6 @@ public class AVIAGamingPlayerFundOutGetServiceUnitTest
             .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(fundReply.OrderId, actual.OrderId);
+        Assert.Equal(fundReply.OrderId, actual.OrderId);
     }
 }

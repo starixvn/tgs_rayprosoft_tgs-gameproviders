@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EndorphinaService.Protos;
@@ -13,10 +12,9 @@ using Tgs.GameRecord.Endorphina.Session.Client;
 
 namespace Tgs.GameProviders.Core.UnitTest.Endorphina;
 
-[TestFixture]
 public class EndorphinaGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
@@ -123,6 +121,6 @@ public class EndorphinaGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(new Uri(expected), actual);
+        Assert.Equal(new Uri(expected), actual);
     }
 }

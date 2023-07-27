@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SBOTransfer.ApplicationServices;
 
-public class SBOTransferPlayerBalanceGetService : IGetService<SBOTransferPlayerBalanceQuery, decimal?>
+public class SBOTransferPlayerBalanceGetService : IGetService<SBOTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brandRepository;
     private readonly IGameInterfaceSBOClient _client;
@@ -26,7 +26,7 @@ public class SBOTransferPlayerBalanceGetService : IGetService<SBOTransferPlayerB
         _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
     }
 
-    public async ValueTask<decimal?> GetAsync(SBOTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(SBOTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProviderRepository
             .GetGameProviderIdAsync(
@@ -80,6 +80,12 @@ public class SBOTransferPlayerBalanceGetService : IGetService<SBOTransferPlayerB
                 .ConfigureAwait(false);
         }
 
-        return reply.IsPlayerExist ? reply.Balance : null;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.JDB;
 using Tgs.GameProviders.Core.JDB.ApplicationServices;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration.JDB;
 
 namespace Tgs.GameProviders.Core.UnitTest.JDB;
 
-[TestFixture]
 public class JDBKickPlayerCommandServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<JDBKickPlayerCommandService>.Instance;

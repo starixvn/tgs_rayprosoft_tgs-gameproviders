@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.JDBTransfer.ApplicationServices;
 
-public class JDBTransferPlayerBalanceGetService : IGetService<JDBTransferPlayerBalanceQuery, decimal?>
+public class JDBTransferPlayerBalanceGetService : IGetService<JDBTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brandRepository;
     private readonly IGameInterfaceJDBClient _client;
@@ -26,7 +26,7 @@ public class JDBTransferPlayerBalanceGetService : IGetService<JDBTransferPlayerB
         _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
     }
 
-    public async ValueTask<decimal?> GetAsync(JDBTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(JDBTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.JDBTransfer).ConfigureAwait(false);
         var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
@@ -69,6 +69,12 @@ public class JDBTransferPlayerBalanceGetService : IGetService<JDBTransferPlayerB
                 .ConfigureAwait(false);
         }
 
-        return reply.IsPlayerExist ? reply.Balance : null;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

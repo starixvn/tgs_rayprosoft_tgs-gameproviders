@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
+using Tgs.GameInterface.DreamGamingService.Client;
+using Tgs.GameInterface.DreamGamingService.Protos;
 using Tgs.GameProviders.Core.DreamGame;
 using Tgs.GameProviders.Core.DreamGame.ApplicationServices;
 using Tgs.GameProviders.Domains.SettingConfiguration;
@@ -9,14 +11,13 @@ using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.DreamGame;
 
-[TestFixture]
 public class DreamGameRoundDetailGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeService = Substitute.For<IDreamGameService>();
-        var fakeClient = Substitute.For<IDreamGameApiClient>();
+        var fakeClient = Substitute.For<IGameInterfaceDreamGamingClient>();
         var fakeRoundService = Substitute.For<IRoundRepository>();
 
         var query = new DreamGameRoundDetailQuery()
@@ -66,9 +67,21 @@ public class DreamGameRoundDetailGetServiceUnitTest
 
         _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
         _ = fakeService.GetSettingConfigurationAsync().Returns(configuration);
-        _ = fakeService.GetGameProviderLanguageCodeAsync(query.Language).Returns(ValueTask.FromResult("cn"));
-        _ = fakeClient.GetAgentFixAsync(configuration.VideoGameApiUrl, configuration.AgentName).Returns(ValueTask.FromResult("123"));
+        var gameProviderCultureCode = "en";
+        _ = fakeService.GetGameProviderLanguageCodeAsync(query.Language).Returns(ValueTask.FromResult(gameProviderCultureCode));
+        var response = new GameHistoryDetailReply()
+        {
+            GameResult = "https://ag.dg66.info/ag/result/result.html?language=en&agentFix=3213&id=13540803433"
+        };
 
+        _ = fakeClient
+            .GameHistoryDetailAsync(
+                Arg.Is(configuration.VideoGameApiUrl),
+                Arg.Is(configuration.AgentName),
+                gameProviderCultureCode,
+                roundInfo.ExternalRoundId,
+                Arg.Any<CancellationToken>())
+            .Returns(response);
         var sut = new DreamGameRoundDetailGetService(
             fakeClient,
             fakeRoundService,
@@ -77,14 +90,5 @@ public class DreamGameRoundDetailGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-
-        _ = fakeClient
-            .Received(1)
-            .GetGameResultAsync(
-            configuration.VideoGameApiUrl,
-            configuration.AgentName,
-            "cn",
-            "123",
-            roundInfo.ExternalRoundId);
     }
 }

@@ -1,16 +1,14 @@
 ﻿using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.EvolutionTransfer;
 
-[TestFixture]
 public class EvolutionTransferKickPlayerCommandServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameInterfaceEvolutionServiceGrpc = Substitute.For<IGameInterfaceEvolutionClient>();

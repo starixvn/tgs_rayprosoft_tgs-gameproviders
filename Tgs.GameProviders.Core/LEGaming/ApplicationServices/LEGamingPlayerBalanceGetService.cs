@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.LEGaming.ApplicationServices;
 
-public class LEGamingPlayerBalanceGetService : IGetService<LEGamingPlayerBalanceQuery, decimal>
+public class LEGamingPlayerBalanceGetService : IGetService<LEGamingPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceLEGamingClient _client;
@@ -26,7 +26,7 @@ public class LEGamingPlayerBalanceGetService : IGetService<LEGamingPlayerBalance
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async ValueTask<decimal> GetAsync(LEGamingPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(LEGamingPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -60,6 +60,10 @@ public class LEGamingPlayerBalanceGetService : IGetService<LEGamingPlayerBalance
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return reply.FreeBalance.ToDecimal().GetValueOrDefault(0);
+        return new PlayerBalanceResult
+        {
+            FreeBalance = reply.FreeBalance.ToDecimal().GetValueOrDefault(0),
+            OccupyBalance = 0
+        };
     }
 }

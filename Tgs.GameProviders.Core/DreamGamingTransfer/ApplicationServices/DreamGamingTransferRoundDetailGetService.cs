@@ -32,18 +32,40 @@ namespace Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices
 
         public async ValueTask<RoundDetailResult> GetAsync(DreamGamingTransferRoundDetailQuery query, CancellationToken cancellationToken = default)
         {
-            var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
+            var roundInfo = await _roundService
+                .GetAsync(
+                roundId: query.RoundId,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false)
+                ?? throw new Exception($"This game round number could not be found.{query.RoundId}");
 
-            if (roundInfo == null)
-            {
-                throw new Exception($"This game round number could not be found.{query.RoundId}");
-            }
-
-            var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.DreamGamingTransfer).ConfigureAwait(false);
-            var player = await _player.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
-            var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-            var configuration = await _gameProvider.GetDreamGamingTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
-            var gameProviderCultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, query.Language).ConfigureAwait(false);
+            var gameProviderId = await _gameProvider
+                .GetGameProviderIdAsync(
+                gameProviderCode: GameProviderType.DreamGamingTransfer,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+            var player = await _player
+                .GetAsync(
+                playerCode: roundInfo.PlayerCode,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+            var gameProviderConfigurationId = await _brand
+                .GetBrandGameProviderConfigurationIdAsync(
+                gameProviderId: gameProviderId,
+                brandId: player.BrandId,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+            var configuration = await _gameProvider
+                .GetDreamGamingTransferConfigurationAsync(
+                gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+            var gameProviderCultureCode = await _gameProvider
+                .GetGameProviderCultureCodeAsync(
+                gameProviderId,
+                query.Language,
+                cancellationToken)
+                .ConfigureAwait(false) ?? "cn";
 
             var reply = await _client
                 .GameHistoryDetailAsync(

@@ -73,13 +73,23 @@ public class BTiSportsController : ControllerBase
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal?> PlayerBalanceAsync(
-         [FromServices] IGetService<BTiSportsPlayerBalanceQuery, decimal?> service,
+    public async ValueTask<decimal> PlayerBalanceAsync(
+         [FromServices] IGetService<BTiSportsPlayerBalanceQuery, PlayerBalanceResult> service,
          string playerCode)
-        => service.GetAsync(new()
+    {
+        var query = new BTiSportsPlayerBalanceQuery
         {
             PlayerCode = playerCode
-        });
+        };
+
+        var result = await service
+         .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+         .ConfigureAwait(false);
+
+        return result.FreeBalance;
+    }
 
     /// <summary>
     /// Players the fund checking asynchronous.

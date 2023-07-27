@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.DreamGamingService.Protos;
@@ -13,10 +12,9 @@ using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.DreamGamingTransfer;
 
-[TestFixture]
 public class DreamGamingTransferRoundDetailGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeRoundService = Substitute.For<IRoundRepository>();

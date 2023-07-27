@@ -7,14 +7,14 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
-using Tgs.ServiceUtility;
 using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
+using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Player_Fund_Out()
     {
         var gameProviderCode = "KY";
@@ -66,10 +66,10 @@ public partial class GameProvidersClientUnitTest
                 amount)
             .ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
+        Assert.NotNull(actual);
     }
 
-    [Test]
+    [Fact]
     public void Player_Fund_Out_HttpRequestException()
     {
         var gameProviderCode = "KY";

@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.Saba;
 using Tgs.GameProviders.Core.Saba.ApplicationServices;
 using Tgs.GameProviders.Core.Saba.Models;
@@ -9,10 +8,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.Saba;
 
-[TestFixture]
 public class SabaKickPlayerCommandServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process_At_Real_Environment()
     {
         var fakeLogger = NullLogger<SabaKickPlayerCommandService>.Instance;
@@ -57,7 +55,7 @@ public class SabaKickPlayerCommandServiceUnitTest
                 });
     }
 
-    [Test]
+    [Fact]
     public async Task Normal_Process_At_Test_Environment()
     {
         var fakeLogger = NullLogger<SabaKickPlayerCommandService>.Instance;

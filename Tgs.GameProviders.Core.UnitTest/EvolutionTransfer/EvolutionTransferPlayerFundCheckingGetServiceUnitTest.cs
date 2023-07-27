@@ -2,8 +2,6 @@
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using NSubstitute;
-using NUnit.Framework;
-using Tgs.GameCommand.Common;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.EvolutionService.Protos;
 using Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
@@ -11,10 +9,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.EvolutionTransfer;
 
-[TestFixture]
 public class EvolutionTransferPlayerFundCheckingGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameInterfaceEvolutionServiceGrpc = Substitute.For<IGameInterfaceEvolutionClient>();
@@ -30,18 +27,6 @@ public class EvolutionTransferPlayerFundCheckingGetServiceUnitTest
             ExternalLobbyApiToken = "test123",
             EcId = "babylonpega20001test123"
         };
-
-        var playerModel = new PlayerInfo(
-            ResellerId: Guid.NewGuid(),
-            ResellerCode: "GPI",
-            LicenseeId: Guid.NewGuid(),
-            LicenseeCode: "GPI",
-            BrandId: Guid.NewGuid(),
-            BrandCode: "GPI",
-            PlayerCode: "4ucmqplxb029",
-            Username: "4ucmqplxb029",
-            DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY");
 
         var query = new EvolutionTransferPlayerFundCheckingQuery
         {
@@ -82,6 +67,6 @@ public class EvolutionTransferPlayerFundCheckingGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(true, actual.OrderStatus);
+        Assert.True(actual.OrderStatus);
     }
 }

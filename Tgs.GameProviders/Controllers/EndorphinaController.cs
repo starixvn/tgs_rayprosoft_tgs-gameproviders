@@ -78,7 +78,7 @@ public class EndorphinaController : ControllerBase
     /// <summary>
     /// Players the balance asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="playerCode">The player code.</param>
     /// <returns></returns>
     /// <remarks>
@@ -87,13 +87,23 @@ public class EndorphinaController : ControllerBase
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal?> PlayerBalanceAsync(
-         [FromServices] IGetService<EndorphinaPlayerBalanceQuery, decimal?> getService,
+    public async ValueTask<decimal> PlayerBalanceAsync(
+         [FromServices] IGetService<EndorphinaPlayerBalanceQuery, PlayerBalanceResult> service,
          string playerCode)
-        => getService.GetAsync(new()
+    {
+        var query = new EndorphinaPlayerBalanceQuery
         {
             PlayerCode = playerCode
-        });
+        };
+
+        var result = await service
+         .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+         .ConfigureAwait(false);
+
+        return result.FreeBalance;
+    }
 
     /// <summary>
     /// Players the fund checking asynchronous.

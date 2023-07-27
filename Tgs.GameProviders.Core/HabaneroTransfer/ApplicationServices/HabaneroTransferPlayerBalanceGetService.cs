@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.HabaneroTransfer.ApplicationServices;
 
-internal class HabaneroTransferPlayerBalanceGetService : IGetService<HabaneroTransferPlayerBalanceQuery, decimal?>
+internal class HabaneroTransferPlayerBalanceGetService : IGetService<HabaneroTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceHabaneroClient _client;
@@ -26,7 +26,7 @@ internal class HabaneroTransferPlayerBalanceGetService : IGetService<HabaneroTra
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<decimal?> GetAsync(HabaneroTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(HabaneroTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.HabaneroTransfer).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
@@ -50,7 +50,7 @@ internal class HabaneroTransferPlayerBalanceGetService : IGetService<HabaneroTra
                     .ConfigureAwait(false)
                 ?? throw new Exception($"This game product currency does not exist.({player.DefaultWalletCurrencyCode})");
 
-            var response = await _client
+            var gameTokenReply = await _client
                 .GameTokenAsync(
                     apiUrl: configuration.ApiUrl,
                     brandId: configuration.BrandId,
@@ -65,20 +65,26 @@ internal class HabaneroTransferPlayerBalanceGetService : IGetService<HabaneroTra
                     cancellationToken)
                 .ConfigureAwait(false);
 
-            if (response.IsPlayerExist)
+            if (gameTokenReply.IsPlayerExist)
             {
                 reply = await _client
-                            .PlayerBalanceAsync(
-                                apiUrl: configuration.ApiUrl,
-                                brandId: configuration.BrandId,
-                                apiKey: configuration.ApiKey,
-                                username: player.PlayerCode,
-                                password: "HabaTfP@ssw0rd",
-                                cancellationToken: cancellationToken)
-                            .ConfigureAwait(false);
+                    .PlayerBalanceAsync(
+                    apiUrl: configuration.ApiUrl,
+                    brandId: configuration.BrandId,
+                    apiKey: configuration.ApiKey,
+                    username: player.PlayerCode,
+                    password: "HabaTfP@ssw0rd",
+                    cancellationToken: cancellationToken)
+                    .ConfigureAwait(false);
             }
         }
 
-        return reply.IsPlayerExist ? reply.Balance : null;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

@@ -2,12 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.WGFmGamingService.Client;
+using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 
-public class WGFmGamingPlayerBalanceGetService : IGetService<WGFmGamingPlayerBalanceQuery, decimal>
+public class WGFmGamingPlayerBalanceGetService : IGetService<WGFmGamingPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brandRepository;
     private readonly IGameInterfaceWGFmGamingClient _client;
@@ -26,7 +27,7 @@ public class WGFmGamingPlayerBalanceGetService : IGetService<WGFmGamingPlayerBal
         _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
     }
 
-    public async ValueTask<decimal> GetAsync(WGFmGamingPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(WGFmGamingPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProviderRepository
             .GetGameProviderIdAsync(
@@ -93,7 +94,11 @@ public class WGFmGamingPlayerBalanceGetService : IGetService<WGFmGamingPlayerBal
         }
 
         return !IsPlayer
-            ? throw new Exception($"This game product has failed to get the balance.")
-            : Balance;
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = Balance,
+                OccupyBalance = 0
+            };
     }
 }

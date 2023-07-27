@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SBOService.Protos;
@@ -11,10 +10,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.SBOTransfer;
 
-[TestFixture]
 public class SBOTransferGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process_SportsBook()
     {
         var fakeGameInterfaceSBOClient = Substitute.For<IGameInterfaceSBOClient>();
@@ -120,10 +118,10 @@ public class SBOTransferGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual);
+        Assert.Equal(new Uri("http://localhost/"), actual);
     }
 
-    [Test]
+    [Fact]
     public async Task Normal_Process_VirtualSports()
     {
         var fakeGameInterfaceSBOClient = Substitute.For<IGameInterfaceSBOClient>();
@@ -228,6 +226,6 @@ public class SBOTransferGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual);
+        Assert.Equal(new Uri("http://localhost/"), actual);
     }
 }

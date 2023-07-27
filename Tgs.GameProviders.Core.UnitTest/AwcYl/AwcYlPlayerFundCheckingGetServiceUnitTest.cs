@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameProviders.Core.AwcYl.ApplicationServices;
@@ -11,10 +10,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.AwcYl;
 
-[TestFixture]
 public class AwcYlPlayerFundCheckingGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeBrand = Substitute.For<IBrandRepository>();
@@ -93,6 +91,6 @@ public class AwcYlPlayerFundCheckingGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(true, actual.OrderStatus);
+        Assert.True(actual.OrderStatus);
     }
 }

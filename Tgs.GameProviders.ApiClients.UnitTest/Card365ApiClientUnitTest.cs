@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.Card365;
 using Tgs.GameProviders.Core.Card365.Model;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class Card365ApiClientUnitTest
 {
     private const string AgentId = "card0201";
@@ -15,7 +13,7 @@ public class Card365ApiClientUnitTest
     private const string WebSite = "card365pega";
     private readonly Uri _apiUrl = new("https://g5ky3i.365gaming.cc/api");
 
-    [Test]
+    [Fact]
     public async Task GetAccessKeyAsync()
     {
         var playerCode = "4ucmqplxb029";
@@ -40,7 +38,7 @@ public class Card365ApiClientUnitTest
              .ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task LogoutAsync()
     {
         var playerCode = "4ucmqplxb029";

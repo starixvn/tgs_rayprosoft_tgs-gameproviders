@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using NUnit.Framework;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class BigGamingGameRecordUnitTest
 {
     private Dictionary<int, string> _pokerMapper;
@@ -17,47 +15,47 @@ public class BigGamingGameRecordUnitTest
         InitoPoker();
     }
 
-    [Test]
+    [Fact]
     public void 牛牛()
     {
         var expected = "{\"banker\":\"\\u2660J,\\u266310,\\u26609,\\u2663K,\\u26639\",\"player1\":\"\\u26604,\\u26659,\\u2663J,\\u26652,\\u2666K\",\"player2\":\"\\u26668,\\u2665Q,\\u26656,\\u26657,\\u2666J\",\"player3\":\"\\u26607,\\u26666,\\u26602,\\u26636,\\u26654\"}";
 
         var result = GetBullBullGameHistory(Convert.FromBase64String("CyQJJyMEFiUPNC8ZExQyBy0CIBE="));
 
-        Assert.AreEqual(expected, result);
+        Assert.Equal(expected, result);
     }
 
-    [Test]
+    [Fact]
     public void 多彩百家乐()
     {
         var expected = "{\"player\":\"White:4,Green:5,Orange:11\",\"banker\":\"Green:1,Purple:4,Blue:10\"}";
 
         var result = GetFullColorBaccaratGameHistory(Convert.FromBase64String("MAEFGhYr"));
 
-        Assert.AreEqual(expected, result);
+        Assert.Equal(expected, result);
     }
 
-    [Test]
+    [Fact]
     public void 百家樂()
     {
         var expected = "{\"player\":\"\\u26665,\\u266510,\\u266310\",\"banker\":\"\\u2666K,\\u26604,00\"}";
 
         var result = GetBaccaratGameHistory(Convert.FromBase64String("LDQXBCQA"));
 
-        Assert.AreEqual(expected, result);
+        Assert.Equal(expected, result);
     }
 
-    [Test]
+    [Fact]
     public void 炸金花()
     {
         var expected = "{\"dragon\":\"\\u26658,\\u26653,\\u26661\",\"phoenix\":\"\\u26664,\\u26607,\\u26601\"}";
 
         var result = GetWinThreeCardsGameHistory(Convert.FromBase64String("FRAoKwcB"));
 
-        Assert.AreEqual(expected, result);
+        Assert.Equal(expected, result);
     }
 
-    [Test]
+    [Fact]
     public void 炸金花進制轉換()
     {
         var 下注闲1平倍 = Convert.ToString(3489660929, 16);
@@ -74,16 +72,16 @@ public class BigGamingGameRecordUnitTest
         _ = Convert.ToUInt32(下注闲3翻倍, 16);
     }
 
-    [Test]
+    [Fact]
     public void 骰宝()
     {
         var value = 196870;
         var 骰宝1 = value >> 16;
         var 骰宝2 = (value & 0xFF00) >> 8;
         var 骰宝3 = value & 0xFF;
-        Assert.AreEqual(3, 骰宝1);
-        Assert.AreEqual(1, 骰宝2);
-        Assert.AreEqual(6, 骰宝3);
+        Assert.Equal(3, 骰宝1);
+        Assert.Equal(1, 骰宝2);
+        Assert.Equal(6, 骰宝3);
     }
 
     private static string GetCard(int cardIndex) => cardIndex switch

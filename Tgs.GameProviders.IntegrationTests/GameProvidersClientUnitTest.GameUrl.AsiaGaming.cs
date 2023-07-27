@@ -13,7 +13,7 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Game_Url_By_AsiaGaming()
     {
         var gameType = GameProvidersClientGameType.LiveDealerLobby;
@@ -81,6 +81,6 @@ public partial class GameProvidersClientUnitTest
                 playerBalance: playerBalance)
             .ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
+        Assert.NotNull(actual);
     }
 }

@@ -85,25 +85,32 @@ public class JOKERController : ControllerBase
     /// <summary>
     /// Players the balance asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="playerCode">The player code.</param>
     /// <returns></returns>
     /// <remarks>
     ///   <b>Example</b><br />
     ///
-    ///   Get balance/4uf6k014jp5x
+    ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal> PlayerBalanceAsync(
-        [FromServices] IGetService<JokerPlayerBalanceQuery, decimal> getService,
+    public async ValueTask<decimal> PlayerBalanceAsync(
+        [FromServices] IGetService<JokerPlayerBalanceQuery, PlayerBalanceResult> service,
         string playerCode)
-        => getService
-        .GetAsync(
-            query: new()
-            {
-                PlayerCode = playerCode
-            },
-            cancellationToken: HttpContext.RequestAborted);
+    {
+        var query = new JokerPlayerBalanceQuery
+        {
+            PlayerCode = playerCode
+        };
+
+        var result = await service
+         .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+         .ConfigureAwait(false);
+
+        return result.FreeBalance;
+    }
 
     /// <summary>
     /// Players the fund checking asynchronous.

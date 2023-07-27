@@ -14,7 +14,7 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Player_Fund_Checking_By_VR()
     {
         var brandCode = "GPI";
@@ -67,11 +67,10 @@ public partial class GameProvidersClientUnitTest
                  endTime: endTime)
             .ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.IsTrue(actual);
+        Assert.True(actual);
     }
 
-    [Test]
+    [Fact]
     public void Player_Fund_Checking_By_VR_HttpRequestException()
     {
         var brandCode = "GPI";

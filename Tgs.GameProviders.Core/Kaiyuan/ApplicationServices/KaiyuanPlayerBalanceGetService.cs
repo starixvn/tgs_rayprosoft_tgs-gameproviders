@@ -2,12 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.Kaiyuan.Client;
+using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 
-public class KaiyuanPlayerBalanceGetService : IGetService<KaiyuanPlayerBalanceQuery, decimal>
+public class KaiyuanPlayerBalanceGetService : IGetService<KaiyuanPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceKaiyuanClient _client;
@@ -26,7 +27,7 @@ public class KaiyuanPlayerBalanceGetService : IGetService<KaiyuanPlayerBalanceQu
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async ValueTask<decimal> GetAsync(KaiyuanPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(KaiyuanPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -60,6 +61,10 @@ public class KaiyuanPlayerBalanceGetService : IGetService<KaiyuanPlayerBalanceQu
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return reply.FreeBalance.ToDecimal().GetValueOrDefault(0);
+        return new PlayerBalanceResult
+        {
+            FreeBalance = reply.FreeBalance.ToDecimal().GetValueOrDefault(0),
+            OccupyBalance = reply.LockBalance.ToDecimal().GetValueOrDefault(0),
+        };
     }
 }

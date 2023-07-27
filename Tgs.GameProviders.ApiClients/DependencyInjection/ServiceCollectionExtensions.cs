@@ -2,7 +2,6 @@
 using Tgs.GameProviders.ApiClients.AsiaGaming;
 using Tgs.GameProviders.ApiClients.BigGaming;
 using Tgs.GameProviders.ApiClients.Card365;
-using Tgs.GameProviders.ApiClients.DreamGame;
 using Tgs.GameProviders.ApiClients.Evolution;
 using Tgs.GameProviders.ApiClients.Habanero;
 using Tgs.GameProviders.ApiClients.IMESports;
@@ -21,7 +20,6 @@ using Tgs.GameProviders.Core.AllBet;
 using Tgs.GameProviders.Core.AsiaGaming;
 using Tgs.GameProviders.Core.BigGaming;
 using Tgs.GameProviders.Core.Card365;
-using Tgs.GameProviders.Core.DreamGame;
 using Tgs.GameProviders.Core.Evolution;
 using Tgs.GameProviders.Core.Habanero;
 using Tgs.GameProviders.Core.IMESports;
@@ -74,7 +72,6 @@ public static class ServiceCollectionExtensions
         _ = services.AddHttpClient<IHabaneroApiClient, HabaneroApiClient>();
         _ = services.AddHttpClient<ICard365ApiClient, Card365ApiClient>();
         _ = services.AddHttpClient<IJDBApiClient, JDBApiClient>();
-        _ = services.AddHttpClient<IDreamGameApiClient, DreamGameApiClient>();
 
         return services;
     }

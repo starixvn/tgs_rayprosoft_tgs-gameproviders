@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.AwcService.Protos;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.AwcPgs;
 
-[TestFixture]
 public class AwcPgsPlayerBalanceGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Create_Player()
     {
         var fakeBrand = Substitute.For<IBrandRepository>();
@@ -99,7 +97,12 @@ public class AwcPgsPlayerBalanceGetServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        _ = await sut.GetAsync(query: query).ConfigureAwait(false);
+        _ = await Assert.ThrowsAsync<Exception>(
+            () => sut
+            .GetAsync(
+                query)
+            .AsTask())
+             .ConfigureAwait(false);
 
         _ = fakeClient
             .Received(1)
@@ -114,7 +117,7 @@ public class AwcPgsPlayerBalanceGetServiceUnitTest
             .ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeBrand = Substitute.For<IBrandRepository>();
@@ -193,6 +196,6 @@ public class AwcPgsPlayerBalanceGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(response.Balance.ToDecimal(), actual.Value);
+        Assert.Equal(response.Balance.ToDecimal(), actual.Balance);
     }
 }

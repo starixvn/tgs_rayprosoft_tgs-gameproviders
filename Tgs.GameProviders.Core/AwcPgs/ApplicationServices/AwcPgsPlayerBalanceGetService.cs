@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.AwcPgs.ApplicationServices;
 
-public class AwcPgsPlayerBalanceGetService : IGetService<AwcPgsPlayerBalanceQuery, decimal?>
+public class AwcPgsPlayerBalanceGetService : IGetService<AwcPgsPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceAwcServiceClient _client;
@@ -26,7 +26,7 @@ public class AwcPgsPlayerBalanceGetService : IGetService<AwcPgsPlayerBalanceQuer
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<decimal?> GetAsync(AwcPgsPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(AwcPgsPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -89,8 +89,12 @@ public class AwcPgsPlayerBalanceGetService : IGetService<AwcPgsPlayerBalanceQuer
                 .ConfigureAwait(false);
         }
 
-        return !response.Success
+        return !response.IsPlayerExist
             ? throw new Exception($"This game product has failed to withdraw the balance..{response.Message}")
-            : response.Balance;
+            : new PlayerBalanceResult
+            {
+                FreeBalance = response.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

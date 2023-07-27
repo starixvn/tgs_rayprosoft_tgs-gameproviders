@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.WMCasinoService.Protos;
@@ -12,10 +11,9 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.WMCasinoTransfer;
 
-[TestFixture]
 public class WMCasinoTransferGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
@@ -120,6 +118,6 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual.Url);
+        Assert.Equal(gameUrl, actual.Url);
     }
 }

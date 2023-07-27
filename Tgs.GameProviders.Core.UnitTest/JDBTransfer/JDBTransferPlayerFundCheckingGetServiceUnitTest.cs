@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameProviders.Core.JDBTransfer.ApplicationServices;
@@ -10,10 +9,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.JDBTransfer;
 
-[TestFixture]
 public class JDBTransferPlayerFundCheckingGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameInterfaceJDBClient = Substitute.For<IGameInterfaceJDBClient>();
@@ -77,6 +75,6 @@ public class JDBTransferPlayerFundCheckingGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.IsTrue(actual.OrderStatus);
+        Assert.True(actual.OrderStatus);
     }
 }

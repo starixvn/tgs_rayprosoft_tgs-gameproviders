@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.Pinnacle.Client;
 using Tgs.GameInterface.Pinnacle.Protos;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.Pinnacle;
 
-[TestFixture]
 public class PinnaclePlayerFundOutGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
@@ -103,6 +101,6 @@ public class PinnaclePlayerFundOutGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(query.OrderId, actual.OrderId);
+        Assert.Equal(query.OrderId, actual.OrderId);
     }
 }

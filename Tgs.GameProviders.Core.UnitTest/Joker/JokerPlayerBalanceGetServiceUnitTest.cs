@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.Joker.Client;
 using Tgs.GameInterface.Joker.Protos;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.Joker;
 
-[TestFixture]
 public class JokerPlayerBalanceGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeBrand = Substitute.For<IBrandRepository>();
@@ -97,7 +95,6 @@ public class JokerPlayerBalanceGetServiceUnitTest
                query: query)
             .ConfigureAwait(false);
 
-        Assert.NotNull(actual);
-        Assert.AreEqual(reply.Balance.ToDecimal().GetValueOrDefault(0), actual);
+        Assert.Equal(reply.Balance.ToDecimal().GetValueOrDefault(0), actual.Balance);
     }
 }

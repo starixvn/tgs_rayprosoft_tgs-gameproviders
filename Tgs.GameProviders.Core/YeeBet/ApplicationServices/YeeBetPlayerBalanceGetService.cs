@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.YeeBet.ApplicationServices;
 
-public class YeeBetPlayerBalanceGetService : IGetService<YeeBetPlayerBalanceQuery, decimal?>
+public class YeeBetPlayerBalanceGetService : IGetService<YeeBetPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceYeeBetClient _client;
@@ -29,7 +29,7 @@ public class YeeBetPlayerBalanceGetService : IGetService<YeeBetPlayerBalanceQuer
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<decimal?> GetAsync(YeeBetPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(YeeBetPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -78,6 +78,12 @@ public class YeeBetPlayerBalanceGetService : IGetService<YeeBetPlayerBalanceQuer
                .ConfigureAwait(false);
         }
 
-        return reply.IsPlayerExist ? reply.Balance : null;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

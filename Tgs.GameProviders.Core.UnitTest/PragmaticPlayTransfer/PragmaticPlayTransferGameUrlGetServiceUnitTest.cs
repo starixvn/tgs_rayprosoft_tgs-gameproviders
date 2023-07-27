@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameInterface.PragmaticPlay.Protos;
@@ -12,9 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.PragmaticPlayTransfer;
 
-internal class PragmaticPlayTransferGameUrlGetServiceUnitTest
+public class PragmaticPlayTransferGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public void Create_Player()
     {
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
@@ -160,7 +159,7 @@ internal class PragmaticPlayTransferGameUrlGetServiceUnitTest
                 Arg.Any<CancellationToken>());
     }
 
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
@@ -299,6 +298,6 @@ internal class PragmaticPlayTransferGameUrlGetServiceUnitTest
             .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(new Uri(gameUrlReply.GameUrl), actual);
+        Assert.Equal(new Uri(gameUrlReply.GameUrl), actual);
     }
 }

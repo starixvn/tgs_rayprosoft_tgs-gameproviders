@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.AllBet;
 using Tgs.GameProviders.Core.AllBet.Models;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class AllBetApiClientUnitTest
 {
     private const string AgentId = "ygpg1a";
@@ -16,7 +14,7 @@ public class AllBetApiClientUnitTest
     private const string Suffix = "mkb";
     private readonly Uri _apiUrl = new("https://sw2.apidemo.net:8443");
 
-    [Test]
+    [Fact]
     public async Task CheckOrCreateMemberAsync()
     {
         var playerCode = "4udvxng80u8y";
@@ -32,7 +30,7 @@ public class AllBetApiClientUnitTest
         _ = await client.CheckOrCreateMemberAsync(_apiUrl, PropertyId, ApiKey, request).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task LoginAsync()
     {
         var playerCode = "4udvxng80u8y";
@@ -48,7 +46,7 @@ public class AllBetApiClientUnitTest
         _ = await client.LoginAsync(_apiUrl, PropertyId, ApiKey, request).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task LogoutAsync()
     {
         var playerCode = "4udvxng80u8y";

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
-using NUnit.Framework.Internal;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.JDB;
 using Tgs.GameProviders.Core.JDB.ApplicationServices;
@@ -13,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration.JDB;
 
 namespace Tgs.GameProviders.Core.UnitTest.JDB;
 
-[TestFixture]
 public class JDBGameUrlQueryGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
@@ -134,6 +131,6 @@ public class JDBGameUrlQueryGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual.Url);
+        Assert.Equal(gameUrl, actual.Url);
     }
 }

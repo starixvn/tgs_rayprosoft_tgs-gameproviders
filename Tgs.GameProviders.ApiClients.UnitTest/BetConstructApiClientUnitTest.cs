@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using Tgs.GameProviders.ApiClients.BetConstruct;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class BetConstructApiClientUnitTest
 {
-    [Test]
+    [Fact]
     public void Test_BetPlaced_Hash_String()
     {
         var authToken = "your_client_security_token";
@@ -49,10 +47,10 @@ public class BetConstructApiClientUnitTest
 
         var actual = string.Join("", dict.Select(x => $"{x.Key}{x.Value}")) + sharedKey;
 
-        Assert.AreEqual(expected, actual);
+        Assert.Equal(expected, actual);
     }
 
-    [Test]
+    [Fact]
     public void Test_BetPlaced_Hash_String_With_Diff_Shared_Key()
     {
         var authToken = "your_client_security_token";
@@ -94,10 +92,10 @@ public class BetConstructApiClientUnitTest
 
         var hash = utility.MD5Hash(plainText);
 
-        Assert.AreEqual(expected, hash);
+        Assert.Equal(expected, hash);
     }
 
-    [Test]
+    [Fact]
     public void Test_GetClientBalance_Hash_String()
     {
         var authToken = "your_client_security_token";
@@ -122,10 +120,10 @@ public class BetConstructApiClientUnitTest
 
         var actual = string.Join("", dict.Select(x => $"{x.Key}{x.Value}").ToArray()) + sharedKey;
 
-        Assert.AreEqual(expected, actual);
+        Assert.Equal(expected, actual);
     }
 
-    [Test]
+    [Fact]
     public void Test_GetClientDetails()
     {
         var authToken = "ZYE5oSH5I1hzmrgnQnh3R6";
@@ -153,7 +151,7 @@ public class BetConstructApiClientUnitTest
         var hash = utility.MD5Hash(plainText);
     }
 
-    [Test]
+    [Fact]
     public void Test_GetClientDetails_Hash_String()
     {
         var authToken = "your_client_security_token";
@@ -178,10 +176,10 @@ public class BetConstructApiClientUnitTest
 
         var actual = string.Join("", dict.Select(x => $"{x.Key}{x.Value}").ToArray()) + sharedKey;
 
-        Assert.AreEqual(expected, actual);
+        Assert.Equal(expected, actual);
     }
 
-    [Test]
+    [Fact]
     public void TestBetPlacedHash()
     {
         var authToken = "ZYE5oSH5I1hzmrgnQnh3R6";
@@ -223,6 +221,6 @@ public class BetConstructApiClientUnitTest
 
         var actual = utility.MD5Hash(plainText);
 
-        Assert.AreEqual(expected, actual);
+        Assert.Equal(expected, actual);
     }
 }

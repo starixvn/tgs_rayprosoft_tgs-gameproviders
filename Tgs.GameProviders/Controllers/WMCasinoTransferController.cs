@@ -12,7 +12,6 @@ namespace Tgs.GameProviders.Controllers;
 public class WMCasinoTransferController : ControllerBase,
         IGameUrlHandler<WMCasinoTransferGameUrlQuery>,
         IKickPlayerHandler<WMCasinoTransferKickPlayerCommand>,
-        IPlayerBalanceHandler<WMCasinoTransferPlayerBalanceQuery>,
         IPlayerFundHandler<WMCasinoTransferPlayerFundInQuery, WMCasinoTransferPlayerFundOutQuery>,
         IPlayerFundCheckingHandler<WMCasinoTransferPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
         IRoundDetailHandler<WMCasinoTransferRoundDetailQuery>
@@ -84,7 +83,7 @@ public class WMCasinoTransferController : ControllerBase,
     /// <summary>
     /// Players the balance asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="playerCode">The player code.</param>
     /// <returns></returns>
     /// <remarks>
@@ -93,13 +92,23 @@ public class WMCasinoTransferController : ControllerBase,
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal?> PlayerBalanceAsync(
-         [FromServices] IGetService<WMCasinoTransferPlayerBalanceQuery, decimal?> getService,
+    public async ValueTask<decimal> PlayerBalanceAsync(
+         [FromServices] IGetService<WMCasinoTransferPlayerBalanceQuery, PlayerBalanceResult> service,
          string playerCode)
-        => getService.GetAsync(new()
+    {
+        var query = new WMCasinoTransferPlayerBalanceQuery
         {
             PlayerCode = playerCode
-        });
+        };
+
+        var result = await service
+         .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+         .ConfigureAwait(false);
+
+        return result.FreeBalance;
+    }
 
     /// <summary>
     /// Players the fund checking asynchronous.

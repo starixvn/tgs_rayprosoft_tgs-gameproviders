@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SkywindService.Protos;
@@ -13,10 +12,9 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.SkywindTransfer;
 
-[TestFixture]
 public class SkywindTransferGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeCreatePlayerCommand = Substitute.For<ICommandService<SkywindTransferCreatePlayerCommand>>();
@@ -131,6 +129,6 @@ public class SkywindTransferGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.Url);
+        Assert.Equal(new Uri("http://localhost/"), actual.Url);
     }
 }

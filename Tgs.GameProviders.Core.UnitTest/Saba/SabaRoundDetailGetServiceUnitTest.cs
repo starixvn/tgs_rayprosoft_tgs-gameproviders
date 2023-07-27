@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using ExpectedObjects;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Saba;
 using Tgs.GameProviders.Core.Saba.ApplicationServices;
@@ -15,10 +15,9 @@ using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.Saba;
 
-[TestFixture]
 public class SabaRoundDetailGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<SabaRoundDetailGetService>.Instance;
@@ -197,6 +196,6 @@ public class SabaRoundDetailGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        CollectionAssert.AreEqual(expected.Data, actual.Data);
+        expected.Data.ToExpectedObject().ShouldEqual(actual.Data);
     }
 }

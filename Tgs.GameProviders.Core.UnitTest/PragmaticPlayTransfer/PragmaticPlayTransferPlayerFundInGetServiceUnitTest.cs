@@ -3,7 +3,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameInterface.PragmaticPlay.Protos;
@@ -13,9 +12,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.PragmaticPlayTransfer;
 
-internal class PragmaticPlayTransferPlayerFundInGetServiceUnitTest
+public class PragmaticPlayTransferPlayerFundInGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
@@ -112,6 +111,6 @@ internal class PragmaticPlayTransferPlayerFundInGetServiceUnitTest
             .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(query.OrderId, actual.OrderId);
+        Assert.Equal(query.OrderId, actual.OrderId);
     }
 }

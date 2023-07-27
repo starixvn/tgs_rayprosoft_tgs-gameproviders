@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GameInterface.YeeBet.Protos;
@@ -13,10 +12,9 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.YeeBet;
 
-[TestFixture]
 public class YeeBetPlayerBalanceGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
@@ -99,6 +97,6 @@ public class YeeBetPlayerBalanceGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(168M, actual);
+        Assert.Equal(168M, actual.Balance);
     }
 }

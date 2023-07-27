@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.Evolution;
 using Tgs.GameProviders.Core.Evolution.Models;
 using Tgs.GameProviders.Core.Evolution.Models.Commons.EvolutionGameUrl;
@@ -9,7 +8,6 @@ using Tgs.GameProviders.Core.Extensions;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class EvolutionGameRecordUnitTest
 {
     private readonly Uri _apiUrl = new("https://babylonqm.uat1.evo-test.com/");
@@ -17,7 +15,7 @@ public class EvolutionGameRecordUnitTest
     private readonly string _gameHistoryApiToken = "test123";
     private readonly Uri _ua2AuthenticationUrl = new("https://babylonqm.uat1.evo-test.com/ua/v1/babylonqm0000001/test123");
 
-    [Test]
+    [Fact]
     public async Task GetGameUrlAsync()
     {
         var request = new EvolutionGameUrlRequest()
@@ -60,7 +58,7 @@ public class EvolutionGameRecordUnitTest
         _ = await client.GetGameUrlAsync(_ua2AuthenticationUrl, request);
     }
 
-    [Test]
+    [Fact]
     public async Task GetGamHistoryRoundAsync()
     {
         var request = new EvolutionGamHistoryRoundRequest()

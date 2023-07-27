@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
@@ -11,10 +10,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.SabaTransfer;
 
-[TestFixture]
 public class SabaTransferKickPlayerCommandServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameInterfaceSabaClient = Substitute.For<IGameInterfaceSabaClient>();

@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.Kaiyuan.Client;
 using Tgs.GameInterface.Kaiyuan.Protos;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.Kaiyuan;
 
-[TestFixture]
 public class KaiyuanPlayerBalanceGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_ProcessAsync()
     {
         var fakeClient = Substitute.For<IGameInterfaceKaiyuanClient>();
@@ -103,7 +101,8 @@ public class KaiyuanPlayerBalanceGetServiceUnitTest
             query: query)
             .ConfigureAwait(false);
 
-        Assert.NotNull(actual);
-        Assert.AreEqual(99m, actual);
+        Assert.Equal(100m, actual.Balance);
+        Assert.Equal(99m, actual.FreeBalance);
+        Assert.Equal(1m, actual.OccupyBalance);
     }
 }

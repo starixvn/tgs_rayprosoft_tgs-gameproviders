@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.SM01Service.Protos;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.SM01;
 
-[TestFixture]
 public class SM01PlatformLoginGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
@@ -80,9 +78,9 @@ public class SM01PlatformLoginGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(response.MerchantId, actual.MerchantId);
-        Assert.AreEqual(response.CustomerName, actual.CustomerName);
-        Assert.AreEqual(response.Timestamp, actual.Timestamp);
-        Assert.AreEqual(response.Sign, actual.Sign);
+        Assert.Equal(response.MerchantId, actual.MerchantId);
+        Assert.Equal(response.CustomerName, actual.CustomerName);
+        Assert.Equal(response.Timestamp, actual.Timestamp);
+        Assert.Equal(response.Sign, actual.Sign);
     }
 }

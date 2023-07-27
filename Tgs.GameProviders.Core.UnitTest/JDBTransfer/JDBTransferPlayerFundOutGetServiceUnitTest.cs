@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.JDBService.Protos;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.JDBTransfer;
 
-[TestFixture]
 public class JDBTransferPlayerFundOutGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameInterfaceJDBClient = Substitute.For<IGameInterfaceJDBClient>();
@@ -91,6 +89,6 @@ public class JDBTransferPlayerFundOutGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(query.OrderId, actual.OrderId);
+        Assert.Equal(query.OrderId, actual.OrderId);
     }
 }

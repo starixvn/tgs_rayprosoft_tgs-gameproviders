@@ -3,7 +3,6 @@ using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.AwcService.Protos;
@@ -13,10 +12,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.AwcSg;
 
-[TestFixture]
 public class AwcSgGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public void Create_Player()
     {
         var fakeBrand = Substitute.For<IBrandRepository>();
@@ -157,7 +155,7 @@ public class AwcSgGameUrlGetServiceUnitTest
             .ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeBrand = Substitute.For<IBrandRepository>();
@@ -273,6 +271,6 @@ public class AwcSgGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual.Url);
+        Assert.Equal(gameUrl, actual.Url);
     }
 }

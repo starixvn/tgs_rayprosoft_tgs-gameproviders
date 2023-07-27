@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.InplayMatrix.Common;
@@ -14,10 +13,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.InplayMatrixESports;
 
-[TestFixture]
 public class InplayMatrixESportsGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
@@ -152,6 +150,6 @@ public class InplayMatrixESportsGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(new Uri(gameUrlReply.GameUrl), actual);
+        Assert.Equal(new Uri(gameUrlReply.GameUrl), actual);
     }
 }

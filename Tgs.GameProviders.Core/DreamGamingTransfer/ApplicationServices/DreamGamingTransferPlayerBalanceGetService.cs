@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices;
 
-public class DreamGamingTransferPlayerBalanceGetService : IGetService<DreamGamingTransferPlayerBalanceQuery, decimal?>
+public class DreamGamingTransferPlayerBalanceGetService : IGetService<DreamGamingTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceDreamGamingClient _client;
@@ -26,13 +26,35 @@ public class DreamGamingTransferPlayerBalanceGetService : IGetService<DreamGamin
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<decimal?> GetAsync(DreamGamingTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(DreamGamingTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.DreamGamingTransfer).ConfigureAwait(false);
-        var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetDreamGamingTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
-        var gameProviderCurrencyCode = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, player.DefaultWalletCurrencyCode).ConfigureAwait(false);
+        var gameProviderId = await _gameProvider
+            .GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.DreamGamingTransfer,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _player
+            .GetAsync(
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brand
+            .GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProvider
+            .GetDreamGamingTransferConfigurationAsync(
+            gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderCurrencyCode = await _gameProvider
+            .GetGameProviderCurrencyCodeAsync(
+            gameProviderId: gameProviderId,
+            currencyCode: player.DefaultWalletCurrencyCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var reply = await _client
             .PlayerBalanceAsync(
@@ -68,6 +90,12 @@ public class DreamGamingTransferPlayerBalanceGetService : IGetService<DreamGamin
                .ConfigureAwait(false);
         }
 
-        return reply.IsPlayerExist ? reply.Balance : null;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

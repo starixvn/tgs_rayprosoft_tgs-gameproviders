@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.AwcAelotto.ApplicationServices;
 
-public class AwcAelottoPlayerBalanceGetService : IGetService<AwcAelottoPlayerBalanceQuery, decimal?>
+public class AwcAelottoPlayerBalanceGetService : IGetService<AwcAelottoPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceAwcServiceClient _client;
@@ -26,7 +26,7 @@ public class AwcAelottoPlayerBalanceGetService : IGetService<AwcAelottoPlayerBal
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<decimal?> GetAsync(AwcAelottoPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(AwcAelottoPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -91,6 +91,10 @@ public class AwcAelottoPlayerBalanceGetService : IGetService<AwcAelottoPlayerBal
 
         return !response.Success
             ? throw new Exception($"This game product has failed to withdraw the balance..{response.Message}")
-            : response.Balance.ToDecimal().GetValueOrDefault(0);
+            : new PlayerBalanceResult
+            {
+                FreeBalance = response.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

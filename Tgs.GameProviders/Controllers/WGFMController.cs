@@ -98,18 +98,22 @@ public class WGFMController : ControllerBase
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal> PlayerBalanceAsync(
-        [FromServices] IGetService<WGFmGamingPlayerBalanceQuery, decimal> service,
+    public async ValueTask<decimal> PlayerBalanceAsync(
+        [FromServices] IGetService<WGFmGamingPlayerBalanceQuery, PlayerBalanceResult> service,
         string playerCode)
     {
         var query = new WGFmGamingPlayerBalanceQuery
         {
             PlayerCode = playerCode
         };
-        return service
-        .GetAsync(
+
+        var result = await service
+         .GetAsync(
             query: query,
-            cancellationToken: HttpContext.RequestAborted);
+            cancellationToken: HttpContext.RequestAborted)
+         .ConfigureAwait(false);
+
+        return result.FreeBalance;
     }
 
     /// <summary>

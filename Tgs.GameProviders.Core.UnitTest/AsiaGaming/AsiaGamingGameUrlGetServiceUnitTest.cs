@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.AsiaGaming;
 using Tgs.GameProviders.Core.AsiaGaming.ApplicationServices;
@@ -14,10 +13,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration.AsiaGaming;
 
 namespace Tgs.GameProviders.Core.UnitTest.AsiaGaming;
 
-[TestFixture]
 public class AsiaGamingGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<AsiaGamingGameUrlGetService>.Instance;
@@ -239,6 +237,6 @@ public class AsiaGamingGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual.Url);
+        Assert.Equal(gameUrl, actual.Url);
     }
 }

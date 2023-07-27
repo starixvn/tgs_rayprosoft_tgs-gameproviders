@@ -2,23 +2,20 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.DreamGame.ApplicationServices;
 
 public class DreamGameKickPlayerCommandService : ICommandService<DreamGameKickPlayerCommand>
 {
-    private readonly IDreamGameApiClient _client;
-    private readonly ILogger<DreamGameKickPlayerCommandService> _logger;
+    private readonly IGameInterfaceDreamGamingClient _client;
     private readonly IDreamGameService _service;
 
     public DreamGameKickPlayerCommandService(
-        ILogger<DreamGameKickPlayerCommandService> logger,
-        IDreamGameApiClient client,
+        IGameInterfaceDreamGamingClient client,
         IDreamGameService service)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _service = service ?? throw new ArgumentNullException(nameof(service));
     }
@@ -27,17 +24,24 @@ public class DreamGameKickPlayerCommandService : ICommandService<DreamGameKickPl
     {
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 
-        var onlineReportResults = await _client.OnlineReportAsync(configuration.ApiUrl, configuration.ApiKey, configuration.AgentName).ConfigureAwait(false);
+        var playerOnlines = await _client.PlayerOnlineAsync(
+            apiUrl: configuration.ApiUrl,
+            apiKey: configuration.ApiKey,
+            agentName: configuration.AgentName,
+            cancellationToken: cancellationToken)
+            .ToArrayAsync(cancellationToken)
+            .ConfigureAwait(false);
 
-        if (onlineReportResults != null)
-        {
-            var memberId = onlineReportResults.Where(x => x.Username.Contains(command.PlayerCode, StringComparison.OrdinalIgnoreCase)).Select(x => (int?)x.MemberId).FirstOrDefault();
-            if (memberId.HasValue)
-            {
-                _ = await _client.OfflineAsync(configuration.ApiUrl, configuration.ApiKey, configuration.AgentName, memberId.Value).ConfigureAwait(false);
-            }
-        }
+        var playerOnline = playerOnlines.FirstOrDefault(p => p.PlayerCode == command.PlayerCode);
 
-        _logger.LogInformation("LogOn:{logOn}  playerCode:{playerCode}", DateTime.Now.ToString("o"), command.PlayerCode);
+        if (playerOnline == null)
+            return;
+
+        await _client.PlayerKickAsync(
+            apiUrl: configuration.ApiUrl,
+            apiKey: configuration.ApiKey,
+            agentName: configuration.AgentName,
+            memberId: playerOnline.MemberId,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 }

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.AsiaGaming;
 using Tgs.GameProviders.Core.AsiaGaming.Models;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class AsiaGamingApiClientUnitTest
 {
     private const string AgentCode = "JH2_AGIN";
@@ -18,7 +16,7 @@ public class AsiaGamingApiClientUnitTest
     private readonly Uri _loginApiUrl = new("http://gi.aggdemo.com:81");
     private readonly Uri _serviceApiUrl = new("https://swapi.etwlt.com");
 
-    [Test]
+    [Fact]
     public async Task CheckOrCreateMemberAsync()
     {
         var playerCode = "4ucmqplxb029";
@@ -37,7 +35,7 @@ public class AsiaGamingApiClientUnitTest
             .ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task CreateGameSessionAsync()
     {
         var playerCode = "4ucmqplxb029";

@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.WGViaGaming.ApplicationServices;
 
-public class WGViaGamingPlayerBalanceGetService : IGetService<WGViaGamingPlayerBalanceQuery, decimal>
+public class WGViaGamingPlayerBalanceGetService : IGetService<WGViaGamingPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brandRepository;
     private readonly IGameInterfaceWGViaGamingClient _client;
@@ -27,7 +27,7 @@ public class WGViaGamingPlayerBalanceGetService : IGetService<WGViaGamingPlayerB
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async ValueTask<decimal> GetAsync(WGViaGamingPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(WGViaGamingPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProviderRepository
             .GetGameProviderIdAsync(
@@ -94,7 +94,11 @@ public class WGViaGamingPlayerBalanceGetService : IGetService<WGViaGamingPlayerB
         }
 
         return !reply.IsPlayerExist
-            ? throw new Exception($"This game product has failed to get the balance.")
-            : reply.Balance;
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

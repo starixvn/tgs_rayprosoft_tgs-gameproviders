@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.Joker.Client;
 using Tgs.GameProviders.Core.Joker.ApplicationServices;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.Joker;
 
-[TestFixture]
 public class JokerGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeBrand = Substitute.For<IBrandRepository>();
@@ -146,6 +144,6 @@ public class JokerGameUrlGetServiceUnitTest
         queryStrings.Add("lang", (!string.IsNullOrEmpty(gameProviderCultureCode)) ? "en" : gameProviderCultureCode);
 
         var url = $"{configuration.GameLaunchUrl.OriginalString}?{queryStrings}";
-        Assert.AreEqual(new Uri(url), actual.Url);
+        Assert.Equal(new Uri(url), actual.Url);
     }
 }

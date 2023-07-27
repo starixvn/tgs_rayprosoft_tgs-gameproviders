@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Google.Protobuf.Collections;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.EvolutionService.Client;
@@ -13,18 +12,15 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.EvolutionTransfer;
 
-[TestFixture]
 public class EvolutionTransferPlayerBalanceGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Can_Get_Balance_When_Player_Is_Not_Exists()
     {
-        var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakeGameInterfaceEvolutionServiceGrpc = Substitute.For<IGameInterfaceEvolutionClient>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeSettingRepository = Substitute.For<ISettingRepository>();
-        var fakeToken = Substitute.For<ITokenProvider>();
 
         var configuration = new EvolutionTransferConfiguration
         {
@@ -104,15 +100,23 @@ public class EvolutionTransferPlayerBalanceGetServiceUnitTest
             fakePlayerRepository,
             fakeSettingRepository);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        _ = await Assert.ThrowsAsync<Exception>(
+            () => sut
+            .GetAsync(
+                query)
+            .AsTask())
+             .ConfigureAwait(false);
 
-        Assert.NotNull(actual);
-
-        await fakeGameInterfaceEvolutionServiceGrpc.Received(2).GetBalanceAsync(Arg.Is(configuration.ApiUrl),
-            Arg.Is(configuration.EcId), Arg.Is(query.PlayerCode));
+        _ = await fakeGameInterfaceEvolutionServiceGrpc
+            .Received(2)
+            .GetBalanceAsync(
+            Arg.Is(configuration.ApiUrl),
+            Arg.Is(configuration.EcId),
+            Arg.Is(query.PlayerCode))
+            .ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
@@ -175,6 +179,6 @@ public class EvolutionTransferPlayerBalanceGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(response.Balance.ToDecimal(), actual.Value);
+        Assert.Equal(response.Balance.ToDecimal(), actual.Balance);
     }
 }

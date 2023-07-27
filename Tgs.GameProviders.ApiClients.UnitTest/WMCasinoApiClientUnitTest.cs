@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.WMCasino;
 using Tgs.GameProviders.Core.WMCasino.Models;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class WMCasinoApiClientUnitTest
 {
     private const string AgentId = "hpgtwapi";
@@ -16,7 +14,7 @@ public class WMCasinoApiClientUnitTest
     private const string Signature = "97ffc7ab86c2f54be533e90da6f6ab9f";
     private readonly Uri _apiUrl = new("https://api.a45.me/api/wallet/Gateway.php");
 
-    [Test]
+    [Fact]
     public async Task CreatePlayerAsync()
     {
         var playerCode = "4ucmqplxb029";
@@ -35,7 +33,7 @@ public class WMCasinoApiClientUnitTest
         _ = await client.MemberRegisterAsync(_apiUrl, request).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task GetGameUrlAsync()
     {
         var playerCode = "4ucmqplxb029";
@@ -53,7 +51,7 @@ public class WMCasinoApiClientUnitTest
         _ = await client.LoginGameAsync(_apiUrl, request).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task KickAsync()
     {
         var playerCode = "4ucmqplxb029";

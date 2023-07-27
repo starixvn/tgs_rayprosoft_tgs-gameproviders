@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Card365;
@@ -13,10 +12,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration.Card365;
 
 namespace Tgs.GameProviders.Core.UnitTest.Card365;
 
-[TestFixture]
 public class Card365GameUrlQueryGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeService = Substitute.For<ICard365Service>();
@@ -139,6 +137,6 @@ public class Card365GameUrlQueryGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual.Url);
+        Assert.Equal(gameUrl, actual.Url);
     }
 }

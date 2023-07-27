@@ -88,7 +88,7 @@ public class WGVIAController : ControllerBase
     /// <summary>
     /// Players the balance asynchronous.
     /// </summary>
-    /// <param name="service">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="playerCode">The player code.</param>
     /// <returns></returns>
     /// <remarks>
@@ -97,18 +97,22 @@ public class WGVIAController : ControllerBase
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal> PlayerBalanceAsync(
-         [FromServices] IGetService<WGViaGamingPlayerBalanceQuery, decimal> service,
+    public async ValueTask<decimal> PlayerBalanceAsync(
+         [FromServices] IGetService<WGViaGamingPlayerBalanceQuery, PlayerBalanceResult> service,
          string playerCode)
     {
         var query = new WGViaGamingPlayerBalanceQuery
         {
             PlayerCode = playerCode
         };
-        return service
-        .GetAsync(
+
+        var result = await service
+         .GetAsync(
             query: query,
-            cancellationToken: HttpContext.RequestAborted);
+            cancellationToken: HttpContext.RequestAborted)
+         .ConfigureAwait(false);
+
+        return result.FreeBalance;
     }
 
     /// <summary>

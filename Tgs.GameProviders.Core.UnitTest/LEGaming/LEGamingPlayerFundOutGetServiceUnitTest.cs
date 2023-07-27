@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.LEGaming.Client;
 using Tgs.GameProviders.Core.LEGaming.ApplicationServices;
@@ -11,10 +10,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.LEGaming;
 
-[TestFixture]
 public class LEGamingPlayerFundOutGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeClient = Substitute.For<IGameInterfaceLEGamingClient>();
@@ -103,6 +101,6 @@ public class LEGamingPlayerFundOutGetServiceUnitTest
            .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(orderId, actual.OrderId);
+        Assert.Equal(orderId, actual.OrderId);
     }
 }

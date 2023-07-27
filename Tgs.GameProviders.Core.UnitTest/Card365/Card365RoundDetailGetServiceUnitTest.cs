@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Text.Json;
 using System.Threading.Tasks;
+using ExpectedObjects;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Card365.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -11,10 +11,9 @@ using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.Card365;
 
-[TestFixture]
-internal class Card365RoundDetailGetServiceUnitTest
+public class Card365RoundDetailGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<Card365RoundDetailGetService>.Instance;
@@ -91,6 +90,6 @@ internal class Card365RoundDetailGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        CollectionAssert.AreEqual(expected.Data, actual.Data);
+        expected.Data.ToExpectedObject().ShouldEqual(actual.Data);
     }
 }

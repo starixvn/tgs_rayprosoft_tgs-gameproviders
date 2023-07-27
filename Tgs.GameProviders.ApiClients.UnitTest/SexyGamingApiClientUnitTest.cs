@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.SexyGaming;
 using Tgs.GameProviders.Core.SexyGaming.Models;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class SexyGamingApiClientUnitTest
 {
     private const string AgentId = "tgs";
@@ -59,7 +57,7 @@ public class SexyGamingApiClientUnitTest
             { 281401, "PTV" } //VND
         };
 
-    [Test]
+    [Fact]
     public async Task CreatePlayerAsync()
     {
         var playerCode = "4ucmqplxb029";
@@ -91,7 +89,7 @@ public class SexyGamingApiClientUnitTest
         _ = await client.CreatePlayerAsync(_apiUrl, request);
     }
 
-    [Test]
+    [Fact]
     public async Task GetGamingGameUrlAsync()
     {
         var request = new SexyGamingGameUrlRequest()
@@ -108,7 +106,7 @@ public class SexyGamingApiClientUnitTest
         _ = await client.GetGamingGameUrlAsync(_apiUrl, request);
     }
 
-    [Test]
+    [Fact]
     public async Task GetGamingLoginGameAsync()
     {
         var request = new SexyGamingLoginGameRequest()
@@ -125,7 +123,7 @@ public class SexyGamingApiClientUnitTest
         _ = await client.GetGamingLoginGameAsync(_apiUrl, request);
     }
 
-    [Test]
+    [Fact]
     public async Task LogoutAsync()
     {
         var request = new SexyGamingLogoutRequest()

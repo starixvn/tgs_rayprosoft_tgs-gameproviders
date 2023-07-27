@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
@@ -10,10 +9,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.WGFmGaming;
 
-[TestFixture]
 public class WGFmGamingGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeGameInterfaceWGFmGamingClient = Substitute.For<IGameInterfaceWGFmGamingClient>();
@@ -108,10 +106,10 @@ public class WGFmGamingGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual);
+        Assert.Equal(gameUrl, actual);
     }
 
-    [Test]
+    [Fact]
     public async Task Normal_Process_Version_1()
     {
         var fakeGameInterfaceWGFmGamingClient = Substitute.For<IGameInterfaceWGFmGamingClient>();
@@ -206,6 +204,6 @@ public class WGFmGamingGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual);
+        Assert.Equal(gameUrl, actual);
     }
 }

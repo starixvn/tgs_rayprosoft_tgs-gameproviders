@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.AVIAGaming.Client;
 using Tgs.GameInterface.AVIAGaming.Protos;
@@ -12,10 +11,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.AVIAGaming;
 
-[TestFixture]
 public class AVIAGamingGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Create_PlayerAsync()
     {
         var fakeClient = Substitute.For<IGameInterfaceAVIAGamingClient>();
@@ -135,7 +133,7 @@ public class AVIAGamingGameUrlGetServiceUnitTest
             .ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeClient = Substitute.For<IGameInterfaceAVIAGamingClient>();
@@ -236,6 +234,6 @@ public class AVIAGamingGameUrlGetServiceUnitTest
             .ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameurl.GameUrl, actual);
+        Assert.Equal(gameurl.GameUrl, actual);
     }
 }

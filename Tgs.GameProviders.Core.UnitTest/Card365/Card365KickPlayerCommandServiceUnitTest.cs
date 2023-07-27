@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.Card365;
 using Tgs.GameProviders.Core.Card365.ApplicationServices;
@@ -13,10 +12,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration.Card365;
 
 namespace Tgs.GameProviders.Core.UnitTest.Card365;
 
-[TestFixture]
 public class Card365KickPlayerCommandServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<Card365KickPlayerCommandService>.Instance;

@@ -7,14 +7,14 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
-using Tgs.ServiceUtility;
 using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
+using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Kick_Player()
     {
         var gameProviderCode = "KY";
@@ -55,7 +55,7 @@ public partial class GameProvidersClientUnitTest
            .ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public void Kick_Player_HttpRequestException()
     {
         var gameProviderCode = "KY";

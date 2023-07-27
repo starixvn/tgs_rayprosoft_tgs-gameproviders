@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Cards365Transfer.ApplicationServices;
 
-public class Cards365TransferPlayerBalanceGetService : IGetService<Cards365TransferPlayerBalanceQuery, decimal>
+public class Cards365TransferPlayerBalanceGetService : IGetService<Cards365TransferPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceCards365Client _client;
@@ -26,7 +26,7 @@ public class Cards365TransferPlayerBalanceGetService : IGetService<Cards365Trans
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<decimal> GetAsync(Cards365TransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(Cards365TransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -89,6 +89,12 @@ public class Cards365TransferPlayerBalanceGetService : IGetService<Cards365Trans
                .ConfigureAwait(false);
         }
 
-        return reply.Balance;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

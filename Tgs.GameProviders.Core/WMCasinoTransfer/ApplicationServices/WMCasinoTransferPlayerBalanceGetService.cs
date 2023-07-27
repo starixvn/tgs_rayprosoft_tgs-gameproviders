@@ -3,12 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.GameInterface.WMCasinoService.Client;
+using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 
-public class WMCasinoTransferPlayerBalanceGetService : IGetService<WMCasinoTransferPlayerBalanceQuery, decimal?>
+public class WMCasinoTransferPlayerBalanceGetService : IGetService<WMCasinoTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceWMCasinoServiceClient _client;
@@ -33,7 +34,7 @@ public class WMCasinoTransferPlayerBalanceGetService : IGetService<WMCasinoTrans
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async ValueTask<decimal?> GetAsync(WMCasinoTransferPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(WMCasinoTransferPlayerBalanceQuery command, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -58,16 +59,16 @@ public class WMCasinoTransferPlayerBalanceGetService : IGetService<WMCasinoTrans
             .ConfigureAwait(false);
 
         var user = $"wmtf_{command.PlayerCode}_{player.BrandCode}";
-        var response = await _client.GetBalanceAsync(
+        var reply = await _client.GetBalanceAsync(
             apiUrl: configuration.ApiUrl,
             vendorId: configuration.VendorId,
             signature: configuration.Signature,
             user: user,
             cancellationToken: cancellationToken).ConfigureAwait(false);
 
-        _logger.LogDebug("GameInterfaceWMCasinoServiceBalanceReply response Success:{Success}, IsPlayerExist:{IsPlayerExist}", response.Success, response.IsPlayerExist);
+        _logger.LogDebug("GameInterfaceWMCasinoServiceBalanceReply response Success:{Success}, IsPlayerExist:{IsPlayerExist}", reply.Success, reply.IsPlayerExist);
 
-        if (response.Success && !response.IsPlayerExist)
+        if (reply.Success && !reply.IsPlayerExist)
         {
             await _createPlayerCommandService.ExecuteAsync(new WMCasinoTransferCreatePlayerCommand(
                 Configuration: configuration,
@@ -76,7 +77,7 @@ public class WMCasinoTransferPlayerBalanceGetService : IGetService<WMCasinoTrans
                 CurrencyCode: player.DefaultWalletCurrencyCode),
                 cancellationToken).ConfigureAwait(false);
 
-            response = await _client.GetBalanceAsync(
+            reply = await _client.GetBalanceAsync(
                 apiUrl: configuration.ApiUrl,
                 vendorId: configuration.VendorId,
                 signature: configuration.Signature,
@@ -84,8 +85,12 @@ public class WMCasinoTransferPlayerBalanceGetService : IGetService<WMCasinoTrans
                 cancellationToken: cancellationToken).ConfigureAwait(false);
         }
 
-        return !response.Success
-            ? throw new Exception($"This game product has failed to get the balance..{response.Message}")
-            : response.Balance;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

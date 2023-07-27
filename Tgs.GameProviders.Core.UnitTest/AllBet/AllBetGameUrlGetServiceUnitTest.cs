@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.AllBet;
 using Tgs.GameProviders.Core.AllBet.ApplicationServices;
@@ -13,10 +12,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration.AllBet;
 
 namespace Tgs.GameProviders.Core.UnitTest.AllBet;
 
-[TestFixture]
 public class AllBetGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<AllBetGameUrlGetService>.Instance;
@@ -137,6 +135,6 @@ public class AllBetGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual.Url);
+        Assert.Equal(gameUrl, actual.Url);
     }
 }

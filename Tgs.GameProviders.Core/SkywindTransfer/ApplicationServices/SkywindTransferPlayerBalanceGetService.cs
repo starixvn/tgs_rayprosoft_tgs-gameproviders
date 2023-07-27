@@ -3,11 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SkywindService.Protos;
+using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 
-public class SkywindTransferPlayerBalanceGetService : IGetService<SkywindTransferPlayerBalanceQuery, decimal?>
+public class SkywindTransferPlayerBalanceGetService : IGetService<SkywindTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IGameInterfaceSkywindClient _client;
     private readonly ICommandService<SkywindTransferCreatePlayerCommand> _createPlayerCommandService;
@@ -26,7 +27,7 @@ public class SkywindTransferPlayerBalanceGetService : IGetService<SkywindTransfe
         _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
 
-    public async ValueTask<decimal?> GetAsync(SkywindTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(SkywindTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
         var configuration = await _setting.GetSkywindTransferConfigurationAsync().ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
@@ -40,13 +41,13 @@ public class SkywindTransferPlayerBalanceGetService : IGetService<SkywindTransfe
             PlayerCode = query.PlayerCode
         };
 
-        var response = await _client
+        var reply = await _client
                 .PlayerBalanceAsync(
                     request: request,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-        if (!response.IsPlayer)
+        if (!reply.IsPlayer)
         {
             await _createPlayerCommandService.ExecuteAsync(new SkywindTransferCreatePlayerCommand(
                 Configuration: configuration,
@@ -54,15 +55,19 @@ public class SkywindTransferPlayerBalanceGetService : IGetService<SkywindTransfe
                 CurrencyCode: player.DefaultWalletCurrencyCode),
                 cancellationToken).ConfigureAwait(false);
 
-            response = await _client
-                    .PlayerBalanceAsync(
-                        request: request,
-                        cancellationToken: cancellationToken)
-                    .ConfigureAwait(false);
+            reply = await _client
+                .PlayerBalanceAsync(
+                request: request,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
         }
 
-        return !response.IsPlayer
-            ? throw new Exception($"This game product has failed to withdraw the balanc.")
-            : response.Balance;
+        return !reply.IsPlayer
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

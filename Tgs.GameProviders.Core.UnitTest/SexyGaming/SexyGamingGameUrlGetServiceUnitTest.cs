@@ -4,7 +4,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.SexyGaming;
@@ -15,10 +14,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration.SexyGaming;
 
 namespace Tgs.GameProviders.Core.UnitTest.SexyGaming;
 
-[TestFixture]
 public class SexyGamingGameUrlGetServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var faceLogger = NullLogger<SexyGamingGameUrlGetService>.Instance;
@@ -95,6 +93,6 @@ public class SexyGamingGameUrlGetServiceUnitTest
         var actual = await fakeService.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.AreEqual(gameUrl, actual.Url);
+        Assert.Equal(gameUrl, actual.Url);
     }
 }

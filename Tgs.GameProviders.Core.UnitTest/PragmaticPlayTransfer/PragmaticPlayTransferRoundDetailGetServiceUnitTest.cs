@@ -3,7 +3,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameInterface.PragmaticPlay.Protos;
@@ -14,10 +13,10 @@ using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.PragmaticPlayTransfer;
 
-internal class PragmaticPlayTransferRoundDetailGetServiceUnitTest
+public class PragmaticPlayTransferRoundDetailGetServiceUnitTest
 {
-    [Test]
-    public async ValueTask Normal_Process()
+    [Fact]
+    public async Task Normal_Process()
     {
         var fakeRoundService = Substitute.For<IRoundRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();

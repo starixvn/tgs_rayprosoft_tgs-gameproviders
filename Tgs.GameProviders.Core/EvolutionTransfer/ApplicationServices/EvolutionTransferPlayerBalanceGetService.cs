@@ -2,12 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.EvolutionService.Client;
+using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
 
-public class EvolutionTransferPlayerBalanceGetService : IGetService<EvolutionTransferPlayerBalanceQuery, decimal?>
+public class EvolutionTransferPlayerBalanceGetService : IGetService<EvolutionTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IGameProviderRepository _gameProvider;
     private readonly IGameInterfaceEvolutionClient _grpc;
@@ -26,45 +27,51 @@ public class EvolutionTransferPlayerBalanceGetService : IGetService<EvolutionTra
         _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
 
-    public async ValueTask<decimal?> GetAsync(EvolutionTransferPlayerBalanceQuery command, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResult> GetAsync(EvolutionTransferPlayerBalanceQuery command, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.EvolutionTransfer).ConfigureAwait(false);
         var configuration = await _setting.GetEvolutionTransferConfigurationAsync().ConfigureAwait(false);
         var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
 
-        var response = await _grpc.GetBalanceAsync(
+        var reply = await _grpc.GetBalanceAsync(
             configuration.ApiUrl,
             configuration.EcId,
             player.PlayerCode,
             cancellationToken).ConfigureAwait(false);
 
-        if (response.Result)
+        if (!reply.IsPlayerExist)
         {
-            return response.Balance;
-        }
-
-        var currencyCode = await _gameProvider
+            var currencyCode = await _gameProvider
                 .GetGameProviderCurrencyCodeAsync(gameProviderId, player.DefaultWalletCurrencyCode)
                 .ConfigureAwait(false)
-            ?? throw new Exception($"This game product currency does not exist.({player.DefaultWalletCurrencyCode})");
+                ?? throw new Exception($"This game product currency does not exist.({player.DefaultWalletCurrencyCode})");
 
-        _ = await _grpc.GetLiveDealerGameUrlAsync(
-            configuration.Ua2AuthenticationUrl,
-            player.BrandCode,
-            player.PlayerCode,
-            (short)PlatformType.Desktop,
-            "127.0.0.1",
-            Guid.NewGuid().ToString(),
-            "cn",
-            currencyCode,
-            cancellationToken).ConfigureAwait(false);
+            _ = await _grpc.GetLiveDealerGameUrlAsync(
+                ua2AuthenticationUrl: configuration.Ua2AuthenticationUrl,
+                brandCode: player.BrandCode,
+                playerCode: player.PlayerCode,
+                platformType: (short)PlatformType.Desktop,
+                ipAddress: "127.0.0.1",
+                encryptedToken: Guid.NewGuid().ToString(),
+                externalCultureCode: "cn",
+                externalCurrencyCode: currencyCode,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
 
-        response = await _grpc.GetBalanceAsync(
-            configuration.ApiUrl,
-            configuration.EcId,
-            player.PlayerCode,
-            cancellationToken).ConfigureAwait(false);
+            reply = await _grpc
+                .GetBalanceAsync(
+                apiUrl: configuration.ApiUrl,
+                agentId: configuration.EcId,
+                playerCode: player.PlayerCode,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+        }
 
-        return response.Balance;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

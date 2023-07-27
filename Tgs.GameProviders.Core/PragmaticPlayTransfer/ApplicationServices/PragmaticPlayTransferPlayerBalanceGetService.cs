@@ -2,12 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.PragmaticPlay.Client;
+using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 
-internal class PragmaticPlayTransferPlayerBalanceGetService : IGetService<PragmaticPlayTransferPlayerBalanceQuery, decimal>
+internal class PragmaticPlayTransferPlayerBalanceGetService : IGetService<PragmaticPlayTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfacePragmaticPlayClient _client;
@@ -26,7 +27,7 @@ internal class PragmaticPlayTransferPlayerBalanceGetService : IGetService<Pragma
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async ValueTask<decimal> GetAsync(
+    public async ValueTask<PlayerBalanceResult> GetAsync(
         PragmaticPlayTransferPlayerBalanceQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -52,7 +53,7 @@ internal class PragmaticPlayTransferPlayerBalanceGetService : IGetService<Pragma
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client
+        var reply = await _client
             .PlayerBalanceAsync(
                 configuration.ApiUrl,
                 configuration.SecureLogin,
@@ -61,7 +62,7 @@ internal class PragmaticPlayTransferPlayerBalanceGetService : IGetService<Pragma
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        if (!response.IsPlayerExist)
+        if (!reply.IsPlayerExist)
         {
             var currencyCode = await _gameProvider
                 .GetGameProviderCurrencyCodeAsync(
@@ -79,7 +80,7 @@ internal class PragmaticPlayTransferPlayerBalanceGetService : IGetService<Pragma
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            response = await _client
+            reply = await _client
                .PlayerBalanceAsync(
                    configuration.ApiUrl,
                    configuration.SecureLogin,
@@ -89,6 +90,12 @@ internal class PragmaticPlayTransferPlayerBalanceGetService : IGetService<Pragma
             .ConfigureAwait(false);
         }
 
-        return response.IsPlayerExist ? response.Balance : throw new Exception($"player does not exist.({player.PlayerCode})");
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.{player.PlayerCode}")
+            : new PlayerBalanceResult
+            {
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
+                OccupyBalance = 0
+            };
     }
 }

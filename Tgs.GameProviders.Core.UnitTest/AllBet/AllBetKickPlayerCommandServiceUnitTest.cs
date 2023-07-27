@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Core.AllBet;
 using Tgs.GameProviders.Core.AllBet.ApplicationServices;
@@ -13,10 +12,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration.AllBet;
 
 namespace Tgs.GameProviders.Core.UnitTest.AllBet;
 
-[TestFixture]
 public class AllBetKickPlayerCommandServiceUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Normal_Process()
     {
         var fakeLogger = NullLogger<AllBetKickPlayerCommandService>.Instance;

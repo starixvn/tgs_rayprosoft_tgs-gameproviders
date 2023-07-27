@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using NSubstitute;
-using NUnit.Framework;
 using Tgs.GameProviders.Core.IMESports;
 using Tgs.GameProviders.Core.IMESports.Models;
 
 namespace Tgs.GameProviders.ApiClients.UnitTest;
 
-[TestFixture]
 public class IMESportsApiClientUnitTest
 {
     private const string MerchantCode = "Ogt3HBRFebTqJczcN28CliP3BHqDWIYo";
@@ -15,7 +13,7 @@ public class IMESportsApiClientUnitTest
     private const int ProductWallet = 401;
     private readonly Uri _apiUrl = new("http://operatorapi.staging.imaegisapi.com");
 
-    [Test]
+    [Fact]
     public async Task GetDesktopGameGameUrlAsync()
     {
         var playerCode = "4ucmqplxb029";
@@ -36,7 +34,7 @@ public class IMESportsApiClientUnitTest
         _ = await client.LaunchDesktopGameAsync(_apiUrl, request).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task GetMobileGameGameUrlAsync()
     {
         var playerCode = "4ucmqplxb029";
@@ -57,7 +55,7 @@ public class IMESportsApiClientUnitTest
         _ = await client.LaunchMobileGameAsync(_apiUrl, request).ConfigureAwait(false);
     }
 
-    [Test]
+    [Fact]
     public async Task GetRoundHistoryAsync()
     {
         var request = new IMESportsGetRoundHistoryRequest
@@ -75,7 +73,7 @@ public class IMESportsApiClientUnitTest
         _ = await client.GetRoundHistoryAsync(_apiUrl, request);
     }
 
-    [Test]
+    [Fact]
     public async Task RegisterPlayerAsync()
     {
         var playerCode = "4ucmqplxb029";

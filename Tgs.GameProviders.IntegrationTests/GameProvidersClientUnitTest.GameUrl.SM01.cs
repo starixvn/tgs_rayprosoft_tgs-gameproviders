@@ -10,7 +10,7 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-    [Test]
+    [Fact]
     public async Task Game_Url_By_SM01()
     {
         var playerCode = "test";
@@ -52,10 +52,10 @@ public partial class GameProvidersClientUnitTest
                 playerCode: playerCode)
             .ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(result.MerchantId, actual.MerchantId);
-        Assert.AreEqual(result.CustomerName, actual.CustomerName);
-        Assert.AreEqual(result.Timestamp, actual.Timestamp);
-        Assert.AreEqual(result.Sign, actual.Sign);
+        Assert.NotNull(actual);
+        Assert.Equal(result.MerchantId, actual.MerchantId);
+        Assert.Equal(result.CustomerName, actual.CustomerName);
+        Assert.Equal(result.Timestamp, actual.Timestamp);
+        Assert.Equal(result.Sign, actual.Sign);
     }
 }
