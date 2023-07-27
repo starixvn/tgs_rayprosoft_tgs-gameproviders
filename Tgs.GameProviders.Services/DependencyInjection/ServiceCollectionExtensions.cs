@@ -11,7 +11,6 @@ using Tgs.GameProviders.Core.Habanero;
 using Tgs.GameProviders.Core.IMESports;
 using Tgs.GameProviders.Core.JDB;
 using Tgs.GameProviders.Core.Jili;
-using Tgs.GameProviders.Core.KY;
 using Tgs.GameProviders.Core.PragmaticPlay;
 using Tgs.GameProviders.Core.Saba;
 using Tgs.GameProviders.Core.SBO;
@@ -32,7 +31,6 @@ using Tgs.GameProviders.Services.Habanero;
 using Tgs.GameProviders.Services.IMESports;
 using Tgs.GameProviders.Services.JDB;
 using Tgs.GameProviders.Services.Jili;
-using Tgs.GameProviders.Services.KY;
 using Tgs.GameProviders.Services.PragmaticPlay;
 using Tgs.GameProviders.Services.Saba;
 using Tgs.GameProviders.Services.SBO;
@@ -51,9 +49,6 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
          Func<IServiceProvider, IDatabase> redisDatabaseResolver)
     {
-        _ = services
-            .AddTransient<IKYService, KYService>();
-
         _ = services
             .AddTransient<IVRService, VRService>();
 

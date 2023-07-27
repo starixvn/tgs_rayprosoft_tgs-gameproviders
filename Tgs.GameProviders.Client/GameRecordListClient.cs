@@ -58,37 +58,6 @@ internal class GameRecordListClient : IGameRecordListClient
 
         return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
     }
-
-    public async ValueTask<GameRecordResponse?> KYGameRecordListAsync(
-        string brandCode,
-        string currencyCode,
-        DateTimeOffset startTime,
-        DateTimeOffset endTime,
-        CancellationToken cancellationToken = default)
-    {
-        var source = new
-        {
-            BrandCode = brandCode,
-            CurrencyCode = currencyCode,
-            StartTime = startTime,
-            EndTime = endTime
-        };
-        var requestContent = new StringContent(JsonSerializer.Serialize(source, _SerializerOptions));
-        requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-        var response = await _httpClient
-            .PostAsync(
-                requestUri: string.Format(_GameRecordListPath, GameProviderType.KY),
-                content: requestContent,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-
-        _ = response.EnsureSuccessStatusCode();
-
-        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-
-        return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
-    }
     public async ValueTask<GameRecordResponse?> VRGameRecordListAsync(
         string brandCode,
         bool isUpdateTime,

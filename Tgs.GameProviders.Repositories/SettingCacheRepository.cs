@@ -22,7 +22,7 @@ internal class SettingCacheRepository : ISettingRepository
 
     public ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(
         string key,
-        CancellationToken cancellationToken = default) where TConfiguration : PluggableConfigurationBase
+        CancellationToken cancellationToken = default)
         => _setting
         .GetConfigurationAsync<TConfiguration>(
             key: key,

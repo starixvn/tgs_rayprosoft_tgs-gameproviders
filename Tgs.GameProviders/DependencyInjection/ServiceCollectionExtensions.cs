@@ -12,6 +12,7 @@ using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameInterface.Jili.Client;
 using Tgs.GameInterface.Joker.Client;
+using Tgs.GameInterface.Kaiyuan.Client;
 using Tgs.GameInterface.LEGaming.Client;
 using Tgs.GameInterface.OBet.Client;
 using Tgs.GameInterface.Pinnacle.Client;
@@ -66,7 +67,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceJokerClientOptions, IServiceProvider> gameInterfaceJokerClientOptions,
         Action<GameInterfaceWGViaGamingClientOptions, IServiceProvider> gameInterfaceWGViaGamingClientOptions,
         Action<GameInterfaceLEGamingClientOptions, IServiceProvider> gameInterfaceLEGamingClientOptions,
-        Action<GameInterfaceAVIAGamingClientOptions, IServiceProvider> gameInterfaceAVIAGamingClientOptions)
+        Action<GameInterfaceAVIAGamingClientOptions, IServiceProvider> gameInterfaceAVIAGamingClientOptions,
+        Action<GameInterfaceKaiyuanClientOptions, IServiceProvider> gameInterfaceKaiyuanClientOptions)
         => services
         .AddOptions<RedisOptions>()
         .Configure(configure)
@@ -104,5 +106,6 @@ public static class ServiceCollectionExtensions
             gameInterfaceJokerClientOptions: gameInterfaceJokerClientOptions,
             gameInterfaceWGViaGamingClientOptions: gameInterfaceWGViaGamingClientOptions,
             gameInterfaceLEGamingClientOptions: gameInterfaceLEGamingClientOptions,
-            gameInterfaceAVIAGamingClientOptions: gameInterfaceAVIAGamingClientOptions);
+            gameInterfaceAVIAGamingClientOptions: gameInterfaceAVIAGamingClientOptions,
+            gameInterfaceKaiyuanClientOptions: gameInterfaceKaiyuanClientOptions);
 }

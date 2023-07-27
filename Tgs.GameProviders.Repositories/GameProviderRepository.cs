@@ -301,7 +301,13 @@ internal class GameProviderRepository : IGameProviderRepository
             gameProviderConfiguration: GameProviderConfigurations.Joker,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
-
+    public ValueTask<KaiyuanConfiguration> GetKaiyuanConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+        => GetConfigurationAsync<KaiyuanConfiguration>(
+            gameProviderConfiguration: GameProviderConfigurations.Kaiyuan,
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken);
     public ValueTask<LEGamingConfiguration> GetLEGamingConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)

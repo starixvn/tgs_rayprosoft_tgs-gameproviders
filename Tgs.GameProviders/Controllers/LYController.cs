@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.LEGaming.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
-using Tgs.GameProviders.Core.LEGaming.ApplicationServices;
 
 namespace Tgs.GameProviders.Controllers;
 

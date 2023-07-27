@@ -128,6 +128,10 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
+    ValueTask<KaiyuanConfiguration> GetKaiyuanConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
     ValueTask<LEGamingConfiguration> GetLEGamingConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);

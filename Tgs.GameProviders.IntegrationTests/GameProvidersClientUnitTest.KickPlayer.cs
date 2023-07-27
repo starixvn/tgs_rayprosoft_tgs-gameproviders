@@ -7,8 +7,8 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.KY.ApplicationServices;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 
 namespace Tgs.GameProviders.IntegrationTests;
 
@@ -24,9 +24,9 @@ public partial class GameProvidersClientUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<ICommandService<KYKickPlayerCommand>>();
+                var fakeService = Substitute.For<ICommandService<KaiyuanKickPlayerCommand>>();
 
-                var command = new KYKickPlayerCommand
+                var command = new KaiyuanKickPlayerCommand
                 {
                     PlayerCode = playerCode
                 };
@@ -65,9 +65,9 @@ public partial class GameProvidersClientUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<ICommandService<KYKickPlayerCommand>>();
+                var fakeService = Substitute.For<ICommandService<KaiyuanKickPlayerCommand>>();
 
-                var command = new KYKickPlayerCommand
+                var command = new KaiyuanKickPlayerCommand
                 {
                     PlayerCode = playerCode
                 };

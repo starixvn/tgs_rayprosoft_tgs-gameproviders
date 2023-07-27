@@ -4,10 +4,9 @@ using Tgs.GameCommand.Common;
 
 namespace Tgs.GameProviders.Repositories.UnitTest;
 
-[TestClass]
 public class PlayerRepositoryUintTest
 {
-    [TestMethod]
+    [Fact]
     public async Task Get_Player()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -30,7 +29,7 @@ public class PlayerRepositoryUintTest
 
         var actual = await repository.GetAsync(playerCode).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(playerCode, actual.PlayerCode);
+        Assert.NotNull(actual);
+        Assert.Equal(playerCode, actual.PlayerCode);
     }
 }

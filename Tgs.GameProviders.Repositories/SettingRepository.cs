@@ -18,7 +18,7 @@ internal class SettingRepository : ISettingRepository
 
     public ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(
         string key,
-        CancellationToken cancellationToken = default) where TConfiguration : PluggableConfigurationBase
+        CancellationToken cancellationToken = default)
         => GetAsync<TConfiguration>(key, cancellationToken);
 
     public ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync(

@@ -204,6 +204,11 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceAVIAGamingBaseUrl")!;
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceKaiyuanBaseUrl")!;
     });
 
 builder.Services
@@ -266,6 +271,7 @@ _ = app.InitialConnectionFaChai();
 _ = app.InitialConnectionJDB();
 _ = app.InitialConnectionJili();
 _ = app.InitialConnectionJoker();
+_ = app.InitialConnectionKaiyuan();
 _ = app.InitialConnectionLEGaming();
 _ = app.InitialConnectionOBet();
 _ = app.InitialConnectionPinnacle();

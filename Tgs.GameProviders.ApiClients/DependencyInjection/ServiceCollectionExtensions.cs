@@ -8,7 +8,6 @@ using Tgs.GameProviders.ApiClients.Habanero;
 using Tgs.GameProviders.ApiClients.IMESports;
 using Tgs.GameProviders.ApiClients.JDB;
 using Tgs.GameProviders.ApiClients.Jili;
-using Tgs.GameProviders.ApiClients.KY;
 using Tgs.GameProviders.ApiClients.PragmaticPlay;
 using Tgs.GameProviders.ApiClients.Saba;
 using Tgs.GameProviders.ApiClients.SBO;
@@ -28,7 +27,6 @@ using Tgs.GameProviders.Core.Habanero;
 using Tgs.GameProviders.Core.IMESports;
 using Tgs.GameProviders.Core.JDB;
 using Tgs.GameProviders.Core.Jili;
-using Tgs.GameProviders.Core.KY;
 using Tgs.GameProviders.Core.PragmaticPlay;
 using Tgs.GameProviders.Core.Saba;
 using Tgs.GameProviders.Core.SBO;
@@ -58,7 +56,6 @@ public static class ServiceCollectionExtensions
         _ = services
             .AddScoped<ISexyGamingRoundDetailAnalyzeService, SexyGamingRoundDetailAnalyzeService>();
 
-        _ = services.AddHttpClient<IKYApiClient, KYApiClient>();
         _ = services.AddHttpClient<IVRApiClient, VRApiClient>();
         _ = services.AddHttpClient<IBigGamingApiClient, BigGamingApiClient>();
         _ = services.AddHttpClient<IEvolutionApiClient, EvolutionApiClient>();

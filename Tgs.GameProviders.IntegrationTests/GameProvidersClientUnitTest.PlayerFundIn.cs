@@ -7,8 +7,8 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.KY.ApplicationServices;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 
 namespace Tgs.GameProviders.IntegrationTests;
 
@@ -28,9 +28,9 @@ public partial class GameProvidersClientUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<IGetService<KYPlayerFundInQuery, PlayerFundResult>>();
+                var fakeService = Substitute.For<IGetService<KaiyuanPlayerFundInQuery, PlayerFundResult>>();
 
-                var query = new KYPlayerFundInQuery
+                var query = new KaiyuanPlayerFundInQuery
                 {
                     BrandCode = brandCode,
                     PlayerCode = playerCode,
@@ -83,9 +83,9 @@ public partial class GameProvidersClientUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<IGetService<KYPlayerFundInQuery, PlayerFundResult>>();
+                var fakeService = Substitute.For<IGetService<KaiyuanPlayerFundInQuery, PlayerFundResult>>();
 
-                var query = new KYPlayerFundInQuery
+                var query = new KaiyuanPlayerFundInQuery
                 {
                     BrandCode = brandCode,
                     PlayerCode = playerCode,

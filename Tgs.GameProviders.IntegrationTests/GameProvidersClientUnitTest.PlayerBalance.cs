@@ -6,8 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Tgs.GameProviders.Client;
-using Tgs.GameProviders.Core.KY.ApplicationServices;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 
 namespace Tgs.GameProviders.IntegrationTests;
 
@@ -23,9 +23,9 @@ public partial class GameProvidersClientUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<IGetService<KYPlayerBalanceQuery, decimal?>>();
+                var fakeService = Substitute.For<IGetService<KaiyuanPlayerBalanceQuery, decimal>>();
 
-                var query = new KYPlayerBalanceQuery
+                var query = new KaiyuanPlayerBalanceQuery
                 {
                     PlayerCode = playerCode
                 };
@@ -33,7 +33,7 @@ public partial class GameProvidersClientUnitTest
                     .GetAsync(
                         query: Arg.Is(query),
                         cancellationToken: Arg.Any<CancellationToken>())
-                    .Returns(ValueTask.FromResult<decimal?>(1));
+                    .Returns(ValueTask.FromResult(1m));
 
                 _ = services.AddTransient(_ => fakeService);
             });
@@ -54,43 +54,6 @@ public partial class GameProvidersClientUnitTest
     }
 
     [Test]
-    public void Player_Balance_Exception()
-    {
-        var gameProviderCode = "KY";
-        var playerCode = "test";
-
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IGetService<KYPlayerBalanceQuery, decimal?>>();
-
-                var query = new KYPlayerBalanceQuery
-                {
-                    PlayerCode = playerCode
-                };
-                _ = fakeService
-                    .GetAsync(
-                        query: Arg.Is(query),
-                        cancellationToken: Arg.Any<CancellationToken>())
-                    .Returns(ValueTask.FromResult<decimal?>(null));
-
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
-
-        var httpClient = web.CreateClient();
-
-        var sut = new GameProvidersClient(httpClient);
-
-        _ = Assert.ThrowsAsync<Exception>(() => sut
-            .PlayerBalanceAsync(
-                gameProviderCode: gameProviderCode,
-                playerCode: playerCode)
-            .AsTask());
-    }
-
-    [Test]
     public void Player_Balance_HttpRequestException()
     {
         var gameProviderCode = "KY";
@@ -100,9 +63,9 @@ public partial class GameProvidersClientUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<IGetService<KYPlayerBalanceQuery, decimal?>>();
+                var fakeService = Substitute.For<IGetService<KaiyuanPlayerBalanceQuery, decimal>>();
 
-                var query = new KYPlayerBalanceQuery
+                var query = new KaiyuanPlayerBalanceQuery
                 {
                     PlayerCode = playerCode
                 };

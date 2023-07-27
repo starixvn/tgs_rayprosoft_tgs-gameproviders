@@ -8,7 +8,7 @@ public interface ISettingRepository
 {
     ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(
         string key,
-        CancellationToken cancellationToken = default) where TConfiguration : PluggableConfigurationBase;
+        CancellationToken cancellationToken = default);
 
     ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync(
         CancellationToken cancellationToken = default);

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.AVIAGaming.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
-using Tgs.GameProviders.Core.AVIAGaming.ApplicationServices;
 
 namespace Tgs.GameProviders.Controllers;
 

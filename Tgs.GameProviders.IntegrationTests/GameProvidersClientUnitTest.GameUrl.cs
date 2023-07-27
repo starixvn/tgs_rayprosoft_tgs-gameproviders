@@ -8,8 +8,8 @@ using NSubstitute.ExceptionExtensions;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.KY.ApplicationServices;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 
 namespace Tgs.GameProviders.IntegrationTests;
 
@@ -34,9 +34,9 @@ public partial class GameProvidersClientUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<IGetService<KYGameUrlQuery, GameUrlResult>>();
+                var fakeService = Substitute.For<IGetService<KaiyuanGameUrlQuery, string>>();
 
-                var query = new KYGameUrlQuery
+                var query = new KaiyuanGameUrlQuery
                 {
                     GameType = (GameType)gameType,
                     GameId = gameId,
@@ -49,15 +49,11 @@ public partial class GameProvidersClientUnitTest
                     IPAddress = ipAddress,
                     BackUrl = backUrl
                 };
-                var result = new GameUrlResult
-                {
-                    Url = new Uri("https://www.google.com/")
-                };
                 _ = fakeService
                     .GetAsync(
                         query: Arg.Is(query),
                         cancellationToken: Arg.Any<CancellationToken>())
-                    .Returns(result);
+                    .Returns("http://localhost:8088/");
 
                 _ = services.AddTransient(_ => fakeService);
             });
@@ -104,9 +100,9 @@ public partial class GameProvidersClientUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<IGetService<KYGameUrlQuery, GameUrlResult>>();
+                var fakeService = Substitute.For<IGetService<KaiyuanGameUrlQuery, GameUrlResult>>();
 
-                var query = new KYGameUrlQuery
+                var query = new KaiyuanGameUrlQuery
                 {
                     GameType = (GameType)gameType,
                     GameId = gameId,

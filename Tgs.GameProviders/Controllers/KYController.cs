@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.KY.ApplicationServices;
+using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
@@ -9,19 +9,12 @@ namespace Tgs.GameProviders.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class KYController : ControllerBase,
-    IGameRecordListHandler<KYGameRecordListQuery, KYGameRecordListQuery>,
-    IGameUrlHandler<KYGameUrlQuery>,
-    IKickPlayerHandler<KYKickPlayerCommand>,
-    IPlayerBalanceHandler<KYPlayerBalanceQuery>,
-    IPlayerFundCheckingHandler<KYPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-    IPlayerFundHandler<KYPlayerFundInQuery, KYPlayerFundOutQuery>,
-    IRoundDetailHandler<KYRoundDetailQuery>
+public class KYController : ControllerBase
 {
     /// <summary>
-    /// Games the record list asynchronous.
+    /// Games the URL asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
     /// <remarks>
@@ -29,51 +22,11 @@ public class KYController : ControllerBase,
     ///
     ///     Post
     ///         {
-    ///             "brandCode": "Default",
-    ///             "currencyCode": "CNY",
-    ///             "startTime": "2021-08-12T05:50:00+00:00",
-    ///             "endTime": "2021-08-12T06:00:00+00:00"
-    ///         }
-    /// </remarks>
-    [HttpPost("gamerecordlist")]
-    public async ValueTask<GameRecordListResult?> GameRecordListAsync(
-        [FromServices] IGetService<KYGameRecordListQuery, GameRecordListResult> getService,
-        KYGameRecordListQuery request)
-    {
-        var result = await getService.GetAsync(request).ConfigureAwait(false);
-        return result ?? null;
-    }
-
-    /// <summary>
-    /// Games the URL asynchronous.
-    /// </summary>
-    /// <param name="getService">The get service.</param>
-    /// <param name="request">The request.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Post Fishing
-    ///         {
-    ///             "gameType": 9,
-    ///             "gameId": 1000031,
-    ///             "brandCode": "GPI",
-    ///             "playerCode": "4ucmqplxb029",
-    ///             "currencyCode": "CNY",
-    ///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    ///             "platformType": 0,
-    ///             "language": "zh-CN",
-    ///             "ipAddress": "127.0.0.1",
-    ///             "backUrl": "https://dev-t1.rpgp.cc/"
-    ///         }
-    ///
-    ///    Post CardGameLobby
-    ///         {
     ///             "gameType": 8,
-    ///             "gameId": 1000032,
+    ///             "gameId": 2000001,
     ///             "brandCode": "GPI",
     ///             "playerCode": "4ucmqplxb029",
-    ///             "currencyCode": "CNY",
+    ///             "currencyCode": "HKD",
     ///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     ///             "platformType": 0,
     ///             "language": "zh-CN",
@@ -83,10 +36,10 @@ public class KYController : ControllerBase,
     /// </remarks>
     [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
-        [FromServices] IGetService<KYGameUrlQuery, GameUrlResult> getService,
+        [FromServices] IGetService<KaiyuanGameUrlQuery, string> service,
         GameUrlRequest request)
     {
-        var result = await getService
+        var result = await service
             .GetAsync(
                 query: new()
                 {
@@ -103,13 +56,13 @@ public class KYController : ControllerBase,
                 },
                 cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
-        return result == null ? null : new GameUrlResponse() { Url = result.Url };
+        return result == null ? null : new GameUrlResponse() { Url = new(result) };
     }
 
     /// <summary>
     /// Kicks the player asynchronous.
     /// </summary>
-    /// <param name="commandService">The command service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="playerCode">The player code.</param>
     /// <returns></returns>
     /// <remarks>
@@ -119,20 +72,23 @@ public class KYController : ControllerBase,
     /// </remarks>
     [HttpDelete("kickplayer/{playerCode}")]
     public ValueTask KickPlayerAsync(
-        [FromServices] ICommandService<KYKickPlayerCommand> commandService,
+        [FromServices] ICommandService<KaiyuanKickPlayerCommand> service,
         string playerCode)
-        => commandService
+    {
+        var command = new KaiyuanKickPlayerCommand
+        {
+            PlayerCode = playerCode
+        };
+        return service
         .ExecuteAsync(
-            command: new()
-            {
-                PlayerCode = playerCode
-            },
+            command: command,
             cancellationToken: HttpContext.RequestAborted);
+    }
 
     /// <summary>
     /// Players the balance asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="playerCode">The player code.</param>
     /// <returns></returns>
     /// <remarks>
@@ -141,21 +97,24 @@ public class KYController : ControllerBase,
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public ValueTask<decimal?> PlayerBalanceAsync(
-         [FromServices] IGetService<KYPlayerBalanceQuery, decimal?> getService,
+    public ValueTask<decimal> PlayerBalanceAsync(
+         [FromServices] IGetService<KaiyuanPlayerBalanceQuery, decimal> service,
          string playerCode)
-        => getService
+    {
+        var query = new KaiyuanPlayerBalanceQuery
+        {
+            PlayerCode = playerCode
+        };
+        return service
         .GetAsync(
-            query: new()
-            {
-                PlayerCode = playerCode
-            },
+            query: query,
             cancellationToken: HttpContext.RequestAborted);
+    }
 
     /// <summary>
     /// Players the fund checking asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
     /// <remarks>
@@ -165,37 +124,38 @@ public class KYController : ControllerBase,
     ///         {
     ///             "brandCode": "GPI",
     ///             "playerCode": "4ucmqplxb029",
-    ///             "currencyCode": "CNY",
+    ///             "currencyCode": "HKD",
     ///             "orderId":"72412202110271546265054ucmqplxb029"
     ///         }
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<KYPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<KaiyuanPlayerFundCheckingQuery, bool> service,
         PlayerFundCheckingRequest request)
     {
-        var result = await getService
+        var query = new KaiyuanPlayerFundCheckingQuery()
+        {
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            OrderId = request.OrderId,
+        };
+        var result = await service
             .GetAsync(
-                query: new()
-                {
-                    BrandCode = request.BrandCode,
-                    PlayerCode = request.PlayerCode,
-                    CurrencyCode = request.CurrencyCode,
-                    OrderId = request.OrderId,
-                },
-                cancellationToken: HttpContext.RequestAborted)
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
 
-        return result == null ? null : new PlayerFundCheckingResponse()
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 
     /// <summary>
     /// Players the fund in asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
     /// <remarks>
@@ -205,38 +165,41 @@ public class KYController : ControllerBase,
     ///         {
     ///             "brandCode": "GPI",
     ///             "playerCode": "4ucmqplxb029",
-    ///             "currencyCode": "CNY",
+    ///             "currencyCode": "HKD",
     ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
     ///             "amount": 1
     ///         }
     /// </remarks>
     [HttpPost("playerfundin")]
     public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
-        [FromServices] IGetService<KYPlayerFundInQuery, PlayerFundResult> getService,
+        [FromServices] IGetService<KaiyuanPlayerFundInQuery, PlayerFundResult> service,
         PlayerFundRequest request)
     {
-        var result = await getService
-            .GetAsync(
-                query: new()
-                {
-                    BrandCode = request.BrandCode,
-                    PlayerCode = request.PlayerCode,
-                    CurrencyCode = request.CurrencyCode,
-                    OrderId = request.OrderId,
-                    Amount = request.Amount,
-                },
-                cancellationToken: HttpContext.RequestAborted)
-            .ConfigureAwait(false);
-        return result == null ? null : new PlayerFundResponse()
+        var query = new KaiyuanPlayerFundInQuery()
         {
-            OrderId = request.OrderId
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            OrderId = request.OrderId,
+            Amount = request.Amount,
+        };
+
+        var result = await service
+            .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
+        return new PlayerFundResponse()
+        {
+            OrderId = result.OrderId
         };
     }
 
     /// <summary>
     /// Players the fund out asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
     /// <remarks>
@@ -246,57 +209,64 @@ public class KYController : ControllerBase,
     ///         {
     ///             "brandCode": "GPI",
     ///             "playerCode": "4ucmqplxb029",
-    ///             "currencyCode": "CNY",
+    ///             "currencyCode": "HKD",
     ///             "orderId":"D07B3FAD0BE5F0B4EE0C2A401FC5C41075ED",
     ///             "amount": 1
     ///         }
     /// </remarks>
     [HttpPost("playerfundout")]
     public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
-        [FromServices] IGetService<KYPlayerFundOutQuery, PlayerFundResult> getService,
+        [FromServices] IGetService<KaiyuanPlayerFundOutQuery, PlayerFundResult> service,
         PlayerFundRequest request)
     {
-        var result = await getService
-            .GetAsync(
-                query: new()
-                {
-                    BrandCode = request.BrandCode,
-                    PlayerCode = request.PlayerCode,
-                    CurrencyCode = request.CurrencyCode,
-                    OrderId = request.OrderId,
-                    Amount = request.Amount,
-                },
-                cancellationToken: HttpContext.RequestAborted)
-            .ConfigureAwait(false);
-        return result == null ? null : new PlayerFundResponse()
+        var query = new KaiyuanPlayerFundOutQuery()
         {
-            OrderId = request.OrderId
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            OrderId = request.OrderId,
+            Amount = request.Amount,
+        };
+
+        var result = await service
+            .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
+        return new PlayerFundResponse()
+        {
+            OrderId = result.OrderId
         };
     }
 
     /// <summary>
     /// Rounds the detail asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
+    /// <param name="service">The service.</param>
     /// <param name="roundId">The round identifier.</param>
     /// <param name="language">The language.</param>
     /// <returns></returns>
     /// <remarks>
     /// <b>Example</b><br />
     ///
-    ///     Get rounddetail/5f6c4ed3-566e-4a43-217c-08d99fff6f02?language=zh-CN
+    ///     Get rounddetail/b53d5576-8f61-417d-17da-08d9a5803086?language=zh-CN
     /// </remarks>
     [HttpGet("rounddetail/{roundId:guid}")]
     public ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<KYRoundDetailQuery, RoundDetailResult?> getService,
+        [FromServices] IGetService<KaiyuanRoundDetailQuery, RoundDetailResult?> service,
         Guid roundId,
         [FromQuery] string language)
-        => getService
-        .GetAsync(
-            query: new()
-            {
-                RoundId = roundId,
-                Language = language
-            },
+
+    {
+        var query = new KaiyuanRoundDetailQuery
+        {
+            RoundId = roundId,
+            Language = language
+        };
+        return service
+            .GetAsync(
+            query: query,
             cancellationToken: HttpContext.RequestAborted);
+    }
 }

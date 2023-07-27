@@ -39,7 +39,7 @@ public static class GameProviderType
     public static readonly string Jili = "JILI";
     public static readonly string JiliTransfer = "JILITF";
     public static readonly string Joker = "JOKER";
-    public static readonly string KY = "KY";
+    public static readonly string Kaiyuan = "KY";
     public static readonly string LEGaming = "LY";
     public static readonly string MainWallet = "DEFAULT";
     public static readonly string OBet = "OBET";

@@ -7,10 +7,9 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Repositories.UnitTest;
 
-[TestClass]
 public class GameProviderRepositoryUnitTest
 {
-    [TestMethod]
+    [Fact]
     public async Task Get_AVIAGaming_ConfigurationAsync()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -49,13 +48,13 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAVIAGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual("authorization", actual.Authorization);
-        Assert.AreEqual("TgsP@ssw0rd", actual.PlayerPassword);
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal("authorization", actual.Authorization);
+        Assert.Equal("TgsP@ssw0rd", actual.PlayerPassword);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_AwcAelotto_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -95,14 +94,14 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAwcAelottoConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("agentId", actual.AgentId);
-        Assert.AreEqual("cert", actual.Cert);
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("agentId", actual.AgentId);
+        Assert.Equal("cert", actual.Cert);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_AwcAws_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -142,14 +141,14 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAwcAwsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("agentId", actual.AgentId);
-        Assert.AreEqual("cert", actual.Cert);
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("agentId", actual.AgentId);
+        Assert.Equal("cert", actual.Cert);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_AwcCockfight_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -204,15 +203,15 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAwcCockfightConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("agentId", actual.AgentId);
-        Assert.AreEqual("cert", actual.Cert);
-        Assert.AreEqual(betLimit.ToJsonString(), actual.BetLimit.ToJsonString());
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("agentId", actual.AgentId);
+        Assert.Equal("cert", actual.Cert);
+        Assert.Equal(betLimit.ToJsonString(), actual.BetLimit.ToJsonString());
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_AwcFacai_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -252,14 +251,14 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAwcFacaiConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("agentId", actual.AgentId);
-        Assert.AreEqual("cert", actual.Cert);
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("agentId", actual.AgentId);
+        Assert.Equal("cert", actual.Cert);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_AwcFs_ConfigurationAsync()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -299,14 +298,14 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAwcFsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("agentId", actual.AgentId);
-        Assert.AreEqual("cert", actual.Cert);
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("agentId", actual.AgentId);
+        Assert.Equal("cert", actual.Cert);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_AwcKm_ConfigurationAsync()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -346,14 +345,14 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAwcKmConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("agentId", actual.AgentId);
-        Assert.AreEqual("cert", actual.Cert);
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("agentId", actual.AgentId);
+        Assert.Equal("cert", actual.Cert);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_AwcLudo_ConfigurationAsync()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -393,14 +392,14 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAwcLudoConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("agentId", actual.AgentId);
-        Assert.AreEqual("cert", actual.Cert);
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("agentId", actual.AgentId);
+        Assert.Equal("cert", actual.Cert);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_AwcPgs_ConfigurationAsync()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -440,14 +439,14 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAwcPgsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("agentId", actual.AgentId);
-        Assert.AreEqual("cert", actual.Cert);
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("agentId", actual.AgentId);
+        Assert.Equal("cert", actual.Cert);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_AwcRcb_ConfigurationAsync()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -503,15 +502,15 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAwcRcbConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("agentId", actual.AgentId);
-        Assert.AreEqual("cert", actual.Cert);
-        Assert.AreEqual(betLimit.ToJsonString(), actual.BetLimit.ToJsonString());
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("agentId", actual.AgentId);
+        Assert.Equal("cert", actual.Cert);
+        Assert.Equal(betLimit.ToJsonString(), actual.BetLimit.ToJsonString());
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_AwcSg_ConfigurationAsync()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -564,15 +563,15 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAwcSgConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("agentId", actual.AgentId);
-        Assert.AreEqual("cert", actual.Cert);
-        Assert.AreEqual(betLimit.ToJsonString(), actual.BetLimit.ToJsonString());
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("agentId", actual.AgentId);
+        Assert.Equal("cert", actual.Cert);
+        Assert.Equal(betLimit.ToJsonString(), actual.BetLimit.ToJsonString());
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_AwcSpade_ConfigurationAsync()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -612,14 +611,14 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAwcSpadeConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("agentId", actual.AgentId);
-        Assert.AreEqual("cert", actual.Cert);
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("agentId", actual.AgentId);
+        Assert.Equal("cert", actual.Cert);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_AwcVenus_ConfigurationAsync()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -674,15 +673,15 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAwcVenusConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("agentId", actual.AgentId);
-        Assert.AreEqual("cert", actual.Cert);
-        Assert.AreEqual(betLimit.ToJsonString(), actual.BetLimit.ToJsonString());
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("agentId", actual.AgentId);
+        Assert.Equal("cert", actual.Cert);
+        Assert.Equal(betLimit.ToJsonString(), actual.BetLimit.ToJsonString());
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_AwcYl_ConfigurationAsync()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -722,14 +721,14 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAwcYlConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("agentId", actual.AgentId);
-        Assert.AreEqual("cert", actual.Cert);
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new Uri("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("agentId", actual.AgentId);
+        Assert.Equal("cert", actual.Cert);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_BTiSports_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -770,15 +769,15 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetBTiSportsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("https://prod20240-108707434.1x2aaa.com/"), actual.SportsbookURL);
-        Assert.AreEqual("PegaGaming_GPIRMB", actual.AgentUserName);
-        Assert.AreEqual("IM60Ho7Y4B9C", actual.AgentPassword);
-        Assert.AreEqual("asian-view", actual.DesktopLayout);
-        Assert.AreEqual("sports", actual.MobileLayout);
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("https://prod20240-108707434.1x2aaa.com/"), actual.SportsbookURL);
+        Assert.Equal("PegaGaming_GPIRMB", actual.AgentUserName);
+        Assert.Equal("IM60Ho7Y4B9C", actual.AgentPassword);
+        Assert.Equal("asian-view", actual.DesktopLayout);
+        Assert.Equal("sports", actual.MobileLayout);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_Cards365Transfer_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -814,14 +813,14 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetCards365TransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new("https://localhost/"), actual.ApiUrl);
-        Assert.AreEqual("website", actual.Website);
-        Assert.AreEqual("cert", actual.Cert);
-        Assert.AreEqual("cardp101", actual.Extension1);
+        Assert.NotNull(actual);
+        Assert.Equal(new("https://localhost/"), actual.ApiUrl);
+        Assert.Equal("website", actual.Website);
+        Assert.Equal("cert", actual.Cert);
+        Assert.Equal("cardp101", actual.Extension1);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_Game_Endpoints()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -847,14 +846,13 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetGameEndpointsAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var (DesktopEndpoint, MobileEndpoint) = await repository.GetGameEndpointsAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(desktopEndpoint, actual.DesktopEndpoint);
-        Assert.AreEqual(mobileEndpoint, actual.MobileEndpoint);
+        Assert.Equal(desktopEndpoint, DesktopEndpoint);
+        Assert.Equal(mobileEndpoint, MobileEndpoint);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_GameProvider()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -879,11 +877,11 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetAsync(gameProviderId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(gameProviderId, actual.GameProviderId);
+        Assert.NotNull(actual);
+        Assert.Equal(gameProviderId, actual.GameProviderId);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_GameProvider_CultureCode()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -897,11 +895,11 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(expected, actual);
+        Assert.NotNull(actual);
+        Assert.Equal(expected, actual);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_GameProvider_CurrencyCode()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -915,11 +913,11 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(expected, actual);
+        Assert.NotNull(actual);
+        Assert.Equal(expected, actual);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_GameProvider_Id()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -932,11 +930,10 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetGameProviderIdAsync(gameProviderCode).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(expected, actual);
+        Assert.Equal(expected, actual);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_InplayMatrixESports_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -972,12 +969,12 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetInplayMatrixESportsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual("OfL5H2hKOIP9tHp9ZIoqYeggJtFC39zQ", actual.MerchantCode);
-        Assert.AreEqual("IM1S3", actual.MerchantPrefix);
+        Assert.NotNull(actual);
+        Assert.Equal("OfL5H2hKOIP9tHp9ZIoqYeggJtFC39zQ", actual.MerchantCode);
+        Assert.Equal("IM1S3", actual.MerchantPrefix);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_JDBTransfer_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1014,13 +1011,13 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetJDBTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual("ConfigurationData-Agent", actual.Agent);
-        Assert.AreEqual("ConfigurationData-AesIV", actual.AesIV);
-        Assert.AreEqual("ConfigurationData-AesKey", actual.AesKey);
+        Assert.NotNull(actual);
+        Assert.Equal("ConfigurationData-Agent", actual.Agent);
+        Assert.Equal("ConfigurationData-AesIV", actual.AesIV);
+        Assert.Equal("ConfigurationData-AesKey", actual.AesKey);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_JiliTransfer_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1056,11 +1053,11 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetJiliTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual("ConfigurationData-AgentId", actual.AgentId);
+        Assert.NotNull(actual);
+        Assert.Equal("ConfigurationData-AgentId", actual.AgentId);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_Joker_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1095,12 +1092,12 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetJokerConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual("TGVY", actual.AppId);
-        Assert.AreEqual("s5ghrn77baoto", actual.SecretKey);
+        Assert.NotNull(actual);
+        Assert.Equal("TGVY", actual.AppId);
+        Assert.Equal("s5ghrn77baoto", actual.SecretKey);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_LEGaming_ConfigurationData()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1139,16 +1136,16 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetLEGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new("http://localhost/"), actual.ApiUrl);
-        Assert.AreEqual(new("http://localhost:8090/"), actual.ApiRecordUrl);
-        Assert.AreEqual("deskey", actual.Deskey);
-        Assert.AreEqual("md5key", actual.Md5key);
-        Assert.AreEqual("HKD", actual.CurrencyCode);
-        Assert.AreEqual("200995", actual.AgentId);
+        Assert.NotNull(actual);
+        Assert.Equal(new("http://localhost/"), actual.ApiUrl);
+        Assert.Equal(new("http://localhost:8090/"), actual.ApiRecordUrl);
+        Assert.Equal("deskey", actual.Deskey);
+        Assert.Equal("md5key", actual.Md5key);
+        Assert.Equal("HKD", actual.CurrencyCode);
+        Assert.Equal("200995", actual.AgentId);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_Pinnacle_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1186,13 +1183,13 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetPinnacleConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual("V0201", actual.AgentCode);
-        Assert.AreEqual("8d0e9ac0-99d8-48c7-8307-bc328c4181f6", actual.AgentKey);
-        Assert.AreEqual("zenDIdY7Knuzmeen", actual.SecretKey);
+        Assert.NotNull(actual);
+        Assert.Equal("V0201", actual.AgentCode);
+        Assert.Equal("8d0e9ac0-99d8-48c7-8307-bc328c4181f6", actual.AgentKey);
+        Assert.Equal("zenDIdY7Knuzmeen", actual.SecretKey);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_SabaTransfer_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1227,13 +1224,13 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetSabaTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual("tg", actual.OperatorId);
-        Assert.AreEqual("um5vspnzkx", actual.VendorId);
-        Assert.AreEqual(2, actual.OddsType);
+        Assert.NotNull(actual);
+        Assert.Equal("tg", actual.OperatorId);
+        Assert.Equal("um5vspnzkx", actual.VendorId);
+        Assert.Equal(2, actual.OddsType);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_SBOTransfer_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1272,15 +1269,15 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetSBOTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual("STAG_GPI", actual.Agent);
-        Assert.AreEqual("CNY", actual.Currency);
-        Assert.AreEqual(10000, actual.Max);
-        Assert.AreEqual(40000, actual.MaxPerMatch);
-        Assert.AreEqual(2, actual.CasinoTableLimit);
+        Assert.NotNull(actual);
+        Assert.Equal("STAG_GPI", actual.Agent);
+        Assert.Equal("CNY", actual.Currency);
+        Assert.Equal(10000, actual.Max);
+        Assert.Equal(40000, actual.MaxPerMatch);
+        Assert.Equal(2, actual.CasinoTableLimit);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_SM01_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1315,13 +1312,13 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetSM01ConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual(new Uri("https://cn.ucfclive.com"), actual.ApiUrl);
-        Assert.AreEqual("SQjCxm2cX5bahBta", actual.MerchantId);
-        Assert.AreEqual("XGKGkcmYNnfex8AecKzCEbD4GMExA2cb", actual.MerchantKey);
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("https://cn.ucfclive.com"), actual.ApiUrl);
+        Assert.Equal("SQjCxm2cX5bahBta", actual.MerchantId);
+        Assert.Equal("XGKGkcmYNnfex8AecKzCEbD4GMExA2cb", actual.MerchantKey);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_WGFmGaming_ConfigurationData()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1361,14 +1358,14 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetWGFmGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual("ConfigurationDataPartnerCode", actual.PartnerCode);
-        Assert.AreEqual("ConfigurationDataPartnerKey", actual.PartnerKey);
-        Assert.AreEqual("ConfigurationDataPartnerIV", actual.IV);
-        Assert.AreEqual(1, actual.Version);
+        Assert.NotNull(actual);
+        Assert.Equal("ConfigurationDataPartnerCode", actual.PartnerCode);
+        Assert.Equal("ConfigurationDataPartnerKey", actual.PartnerKey);
+        Assert.Equal("ConfigurationDataPartnerIV", actual.IV);
+        Assert.Equal(1, actual.Version);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_WGFmGaming_ConfigurationData_Is_Empty()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1408,14 +1405,14 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetWGFmGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual("SettingConfigurationPartnerCode", actual.PartnerCode);
-        Assert.AreEqual("SettingConfigurationPartnerKey", actual.PartnerKey);
-        Assert.AreEqual("SettingConfigurationPartnerIV", actual.IV);
-        Assert.AreEqual(2, actual.Version);
+        Assert.NotNull(actual);
+        Assert.Equal("SettingConfigurationPartnerCode", actual.PartnerCode);
+        Assert.Equal("SettingConfigurationPartnerKey", actual.PartnerKey);
+        Assert.Equal("SettingConfigurationPartnerIV", actual.IV);
+        Assert.Equal(2, actual.Version);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_WGViaGaming_ConfigurationData()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1454,13 +1451,13 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetWGViaGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual("SettingConfigurationPartnerCode", actual.PartnerCode);
-        Assert.AreEqual("SettingConfigurationPartnerKey", actual.PartnerKey);
-        Assert.AreEqual("SettingConfigurationPartnerIV", actual.IV);
+        Assert.NotNull(actual);
+        Assert.Equal("SettingConfigurationPartnerCode", actual.PartnerCode);
+        Assert.Equal("SettingConfigurationPartnerKey", actual.PartnerKey);
+        Assert.Equal("SettingConfigurationPartnerIV", actual.IV);
     }
 
-    [TestMethod]
+    [Fact]
     public async Task Get_WMCasinoTransfer_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1494,8 +1491,8 @@ public class GameProviderRepositoryUnitTest
 
         var actual = await repository.GetWMCasinoTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        Assert.IsNotNull(actual);
-        Assert.AreEqual("hpg02twapi", actual.VendorId);
-        Assert.AreEqual("89448b444ed2e922ddc3aa0753370238", actual.Signature);
+        Assert.NotNull(actual);
+        Assert.Equal("hpg02twapi", actual.VendorId);
+        Assert.Equal("89448b444ed2e922ddc3aa0753370238", actual.Signature);
     }
 }
