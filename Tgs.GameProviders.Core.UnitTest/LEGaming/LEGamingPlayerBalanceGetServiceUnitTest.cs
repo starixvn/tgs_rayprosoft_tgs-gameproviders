@@ -76,9 +76,9 @@ public class LEGamingPlayerBalanceGetServiceUnitTest
 
         var playerBalanceReply = new PlayerBalanceReply
         {
-            LockBalance = 1,
+            Balance = 100,
             FreeBalance = 99,
-            Balance = 100
+            OutstandingBalance = 1
         };
         _ = fakeClient
             .PlayerBalanceAsync(
@@ -101,6 +101,8 @@ public class LEGamingPlayerBalanceGetServiceUnitTest
             query: query)
             .ConfigureAwait(false);
 
-        Assert.Equal(99m, actual.Balance);
+        Assert.Equal(100m, actual.Balance);
+        Assert.Equal(99m, actual.FreeBalance);
+        Assert.Equal(1m, actual.OutstandingBalance);
     }
 }
