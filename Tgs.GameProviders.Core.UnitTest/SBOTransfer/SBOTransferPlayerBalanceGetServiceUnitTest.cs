@@ -62,7 +62,9 @@ public class SBOTransferPlayerBalanceGetServiceUnitTest
         var response = new PlayerBalanceReply()
         {
             IsPlayerExist = true,
-            Balance = 100m
+            Balance = 100m,
+            FreeBalance = 99m,
+            OutstandingBalance = 1m
         };
         _ = fakeGameInterfaceSBOClient.PlayerBalanceAsync(
                 Arg.Is(configuration.ApiUrl),
@@ -79,6 +81,8 @@ public class SBOTransferPlayerBalanceGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
-        Assert.Equal(response.Balance.ToDecimal(), actual.Balance);
+        Assert.Equal(response.Balance.ToDecimal().GetValueOrDefault(0), actual.Balance);
+        Assert.Equal(response.FreeBalance.ToDecimal().GetValueOrDefault(0), actual.FreeBalance);
+        Assert.Equal(response.OutstandingBalance.ToDecimal().GetValueOrDefault(0), actual.OutstandingBalance);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
@@ -63,11 +64,12 @@ public class SBOTransferPlayerFundOutGetServiceUnitTest
         };
         _ = fakeGameProviderRepository.GetSBOTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
+        var txnId = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
         var reply = new FundReply()
         {
-            Refno = Guid.NewGuid().ToString("N"),
-            TxnId = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
-            Balance = 100,
+
+            TxnId = txnId,
+            Resp = new JsonObject { ["TxnId"] = txnId }.ToJsonString()
         };
         _ = fakeGameInterfaceSBOClient.FundOutAsync(
                 Arg.Is(configuration.ApiUrl),
@@ -85,5 +87,6 @@ public class SBOTransferPlayerFundOutGetServiceUnitTest
         var actual = await sut.GetAsync(query).ConfigureAwait(false);
 
         Assert.NotNull(actual);
+        Assert.Equal(txnId, actual.OrderId);
     }
 }
