@@ -94,7 +94,7 @@ public class PPTFController : ControllerBase
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public async ValueTask<decimal> PlayerBalanceAsync(
+    public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
         [FromServices] IGetService<PragmaticPlayTransferPlayerBalanceQuery, PlayerBalanceResult> service,
         string playerCode)
     {
@@ -109,7 +109,10 @@ public class PPTFController : ControllerBase
             cancellationToken: HttpContext.RequestAborted)
          .ConfigureAwait(false);
 
-        return result.FreeBalance;
+        return new PlayerBalanceResponse(
+            result.Balance,
+            result.FreeBalance,
+            result.OutstandingBalance);
     }
 
     /// <summary>

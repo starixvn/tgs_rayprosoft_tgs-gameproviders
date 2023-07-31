@@ -14,7 +14,7 @@ public interface IGameProvidersClient
 
     ValueTask KickPlayerAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default);
 
-    ValueTask<decimal> PlayerBalanceAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default);
+    ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default);
 
     ValueTask<bool> PlayerFundCheckingAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, CancellationToken cancellationToken = default);
 

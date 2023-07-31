@@ -71,7 +71,7 @@ public class SkywindTransferController : ControllerBase,
     ///   Get balance/4ucmqplxb029
     /// </remarks>
     [HttpGet("balance/{playerCode}")]
-    public async ValueTask<decimal> PlayerBalanceAsync(
+    public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
          [FromServices] IGetService<SkywindTransferPlayerBalanceQuery, PlayerBalanceResult> service,
          string playerCode)
     {
@@ -85,7 +85,10 @@ public class SkywindTransferController : ControllerBase,
             cancellationToken: HttpContext.RequestAborted)
          .ConfigureAwait(false);
 
-        return result.FreeBalance;
+        return new PlayerBalanceResponse(
+            result.Balance,
+            result.FreeBalance,
+            result.OutstandingBalance);
     }
 
     /// <summary>

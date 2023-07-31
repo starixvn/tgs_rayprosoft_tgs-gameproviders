@@ -231,7 +231,7 @@ internal class GameProvidersClient : IGameProvidersClient
         _ = response.EnsureSuccessStatusCode();
     }
 
-    public async ValueTask<decimal> PlayerBalanceAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient
             .GetAsync(
@@ -242,13 +242,13 @@ internal class GameProvidersClient : IGameProvidersClient
 
         return response.StatusCode == HttpStatusCode.NoContent
             ? throw new Exception($"取得{gameProviderCode}餘額失敗.")
-            : JsonSerializer.Deserialize<decimal>(
+            : JsonSerializer.Deserialize<PlayerBalanceResponse>(
                 await response
                 .Content
                 .ReadAsStringAsync(
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false),
-                _SerializerOptions);
+                _SerializerOptions)!;
     }
 
     public async ValueTask<bool> PlayerFundCheckingAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, CancellationToken cancellationToken = default)

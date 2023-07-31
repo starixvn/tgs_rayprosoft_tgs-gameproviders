@@ -56,6 +56,9 @@ public class PlayerBalanceUnitTest
             playerCode: playerCode)
             .ConfigureAwait(false);
 
-        Assert.Equal(99m, actual);
+        Assert.NotNull(actual);
+        Assert.Equal(100m, actual.Balance);
+        Assert.Equal(99m, actual.FreeBalance);
+        Assert.Equal(1m, actual.OutstandingBalance);
     }
 }
