@@ -31,7 +31,7 @@ public class PlayerBalanceUnitTest
                 var result = new PlayerBalanceResult
                 {
                     FreeBalance = 99m,
-                    OccupyBalance = 1m
+                    OutstandingBalance = 1m
                 };
 
                 _ = fakeService

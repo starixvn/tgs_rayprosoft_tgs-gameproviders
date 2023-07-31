@@ -64,7 +64,7 @@ public class KaiyuanPlayerBalanceGetService : IGetService<KaiyuanPlayerBalanceQu
         return new PlayerBalanceResult
         {
             FreeBalance = reply.FreeBalance.ToDecimal().GetValueOrDefault(0),
-            OccupyBalance = reply.LockBalance.ToDecimal().GetValueOrDefault(0),
+            OutstandingBalance = reply.OutstandingBalance.ToDecimal().GetValueOrDefault(0),
         };
     }
 }

@@ -93,8 +93,7 @@ public class AwcAelottoPlayerBalanceGetService : IGetService<AwcAelottoPlayerBal
             ? throw new Exception($"This game product has failed to withdraw the balance..{response.Message}")
             : new PlayerBalanceResult
             {
-                FreeBalance = response.Balance.ToDecimal().GetValueOrDefault(0),
-                OccupyBalance = 0
+                FreeBalance = response.Balance.ToDecimal().GetValueOrDefault(0)
             };
     }
 }

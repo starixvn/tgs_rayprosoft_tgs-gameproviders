@@ -97,8 +97,7 @@ public class WGFmGamingPlayerBalanceGetService : IGetService<WGFmGamingPlayerBal
             ? throw new Exception($"Player does not exist.{player.PlayerCode}")
             : new PlayerBalanceResult
             {
-                FreeBalance = Balance,
-                OccupyBalance = 0
+                FreeBalance = Balance
             };
     }
 }

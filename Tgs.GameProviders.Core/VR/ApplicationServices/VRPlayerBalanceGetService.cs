@@ -68,8 +68,7 @@ public class VRPlayerBalanceGetService : IGetService<VRPlayerBalanceQuery, Playe
             ? throw new Exception($"Player does not exist.{command.PlayerCode}")
             : new PlayerBalanceResult
             {
-                FreeBalance = response.Balance,
-                OccupyBalance = 0
+                FreeBalance = response.Balance
             };
     }
 }

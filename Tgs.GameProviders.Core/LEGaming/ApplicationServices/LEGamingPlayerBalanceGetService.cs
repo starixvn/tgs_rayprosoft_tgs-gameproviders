@@ -62,8 +62,7 @@ public class LEGamingPlayerBalanceGetService : IGetService<LEGamingPlayerBalance
 
         return new PlayerBalanceResult
         {
-            FreeBalance = reply.FreeBalance.ToDecimal().GetValueOrDefault(0),
-            OccupyBalance = 0
+            FreeBalance = reply.FreeBalance.ToDecimal().GetValueOrDefault(0)
         };
     }
 }

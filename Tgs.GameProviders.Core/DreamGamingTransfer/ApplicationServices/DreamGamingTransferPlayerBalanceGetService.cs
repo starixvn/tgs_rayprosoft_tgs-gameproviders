@@ -94,8 +94,7 @@ public class DreamGamingTransferPlayerBalanceGetService : IGetService<DreamGamin
             ? throw new Exception($"Player does not exist.{player.PlayerCode}")
             : new PlayerBalanceResult
             {
-                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0),
-                OccupyBalance = 0
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0)
             };
     }
 }
