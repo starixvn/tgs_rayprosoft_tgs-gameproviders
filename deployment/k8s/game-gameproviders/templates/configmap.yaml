@@ -10,42 +10,41 @@ data:
     {
       "Logging": {
         "LogLevel": {
-          "Default": "Warning",
-          "Microsoft": "Warning"
+          "Default": "Warning"
         }
       },
       "GameProviders": {
-        "GameRoundsBaseUrl":"http://game-gamerounds/",
-        "GameTokenBaseUrl":"http://game-token/",
+        "GameRoundsBaseUrl": "http://game-gamerounds/",
+        "GameTokenBaseUrl": "http://game-token/",
         "GameCommandClientBaseUrl": "http://game-gamecommand/",
-        "GameInterfaceAwcBaseUrl":"dns:///game-gameinterface-awc-service:9090/",
-        "GameInterfaceJiliBaseUrl":"dns:///game-gameinterface-jili:9090/",
-        "GameInterfaceWMCasinoBaseUrl":"dns:///game-gameinterface-wmcasino-service:9090/",
-        "GameInterfaceEvolutionBaseUrl":"dns:///game-gameinterface-evolution-service:9090/",
-        "GameInterfaceSkywindBaseUrl":"dns:///game-gameinterface-sw-service:9090/",
-        "GameInterfaceWGFmGamingBaseUrl":"dns:///game-gameinterface-wgfm-service:9090/",
-        "GameInterfaceJDBBaseUrl":"dns:///game-gameinterface-jdb-service:9090/",
-        "GameInterfaceSBOBaseUrl":"dns:///game-gameinterface-sbo-service:9090/",
-        "GameInterfaceBTIBaseUrl":"dns:///game-gameinterface-bti-service:9090/",
-        "GameInterfaceHabaneroBaseUrl":"dns:///game-gameinterface-habanero-service:9090/",
-        "GameInterfaceSabaBaseUrl":"dns:///game-gameinterface-saba-service:9090/",
+        "GameInterfaceAwcBaseUrl": "dns:///game-gameinterface-awc-service:9090/",
+        "GameInterfaceJiliBaseUrl": "dns:///game-gameinterface-jili:9090/",
+        "GameInterfaceWMCasinoBaseUrl": "dns:///game-gameinterface-wmcasino-service:9090/",
+        "GameInterfaceEvolutionBaseUrl": "dns:///game-gameinterface-evolution-service:9090/",
+        "GameInterfaceSkywindBaseUrl": "dns:///game-gameinterface-sw-service:9090/",
+        "GameInterfaceWGFmGamingBaseUrl": "dns:///game-gameinterface-wgfm-service:9090/",
+        "GameInterfaceJDBBaseUrl": "dns:///game-gameinterface-jdb-service:9090/",
+        "GameInterfaceSBOBaseUrl": "dns:///game-gameinterface-sbo-service:9090/",
+        "GameInterfaceBTIBaseUrl": "dns:///game-gameinterface-bti-service:9090/",
+        "GameInterfaceHabaneroBaseUrl": "dns:///game-gameinterface-habanero-service:9090/",
+        "GameInterfaceSabaBaseUrl": "dns:///game-gameinterface-saba-service:9090/",
         "GameInterfaceSM01BaseUrl": "dns:///game-gameinterface-sm01-service:9090/",
         "GameInterfaceTFGamingBaseUrl": "dns:///game-gameinterface-tfgaming-service:9090/",
         "GameInterfaceDreamGamingBaseUrl": "dns:///game-gameinterface-dg-service:9090/",
         "GameInterfaceEndorphinaBaseUrl": "dns:///game-gameinterface-endor-service:9090/",
         "GameRecordEndorphinaSessionBaseUrl": "http://game-gamerecord-endorphina-session:9090/",
-        "GameInterfaceFaChaiBaseUrl":"dns:///game-gameinterface-fachai:9090/",
-        "GameInterfaceOBetBaseUrl":"dns:///game-gameinterface-obet:9090/",
-        "GameInterfaceYeeBetBaseUrl":"dns:///game-gameinterface-yeebet:9090/",
-        "GameInterfacePragmaticPlayBaseUrl":"dns:///game-gameinterface-pp:9090/",
-        "GameInterfaceInplayMatrixBaseUrl":"dns:///game-gameinterface-im:9090/",
-        "GameInterfaceCards365BaseUrl":"dns:///game-gameinterface-cards365:9090/",
-        "GameInterfacePinnacleBaseUrl":"dns:///game-gameinterface-pinnacle:9090/",
-        "GameInterfaceJokerBaseUrl":"dns:///game-gameinterface-joker:9090/",
-        "GameInterfaceWGViaGamingBaseUrl":"dns:///game-gameinterface-wgvia:9090/",
-        "GameInterfaceLEGamingBaseUrl":"dns:///game-gameinterface-ly:9090/",
-        "GameInterfaceAVIAGamingBaseUrl":"dns:///game-gameinterface-avia:9090/",
-        "GameInterfaceKaiyuanBaseUrl":"dns:///game-gameinterface-ky:9090/"
+        "GameInterfaceFaChaiBaseUrl": "dns:///game-gameinterface-fachai:9090/",
+        "GameInterfaceOBetBaseUrl": "dns:///game-gameinterface-obet:9090/",
+        "GameInterfaceYeeBetBaseUrl": "dns:///game-gameinterface-yeebet:9090/",
+        "GameInterfacePragmaticPlayBaseUrl": "dns:///game-gameinterface-pp:9090/",
+        "GameInterfaceInplayMatrixBaseUrl": "dns:///game-gameinterface-im:9090/",
+        "GameInterfaceCards365BaseUrl": "dns:///game-gameinterface-cards365:9090/",
+        "GameInterfacePinnacleBaseUrl": "dns:///game-gameinterface-pinnacle:9090/",
+        "GameInterfaceJokerBaseUrl": "dns:///game-gameinterface-joker:9090/",
+        "GameInterfaceWGViaGamingBaseUrl": "dns:///game-gameinterface-wgvia:9090/",
+        "GameInterfaceLEGamingBaseUrl": "dns:///game-gameinterface-ly:9090/",
+        "GameInterfaceAVIAGamingBaseUrl": "dns:///game-gameinterface-avia:9090/",
+        "GameInterfaceKaiyuanBaseUrl": "dns:///game-gameinterface-ky:9090/"
       }
     }
   otel-collector-config.yaml: |
