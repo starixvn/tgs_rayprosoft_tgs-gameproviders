@@ -393,9 +393,9 @@ public static class ServiceRegisterExtensions
             var gameProviderRepository = scope.ServiceProvider.GetRequiredService<IGameProviderRepository>();
 
             var gameProviderIdInfos = client
-                .GameProviderGetGameProviderIdsAsync()
+                .GameProviderQueryAsync()
                 .ToEnumerable()
-                ?? Enumerable.Empty<GameProviderIdInfo>();
+                ?? Enumerable.Empty<GameProviderInfo>();
 
             foreach (var gameProviderIdInfo in gameProviderIdInfos)
             {
