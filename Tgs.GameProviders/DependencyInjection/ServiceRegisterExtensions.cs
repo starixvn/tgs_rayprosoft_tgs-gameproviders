@@ -392,22 +392,60 @@ public static class ServiceRegisterExtensions
 
             var gameProviderRepository = scope.ServiceProvider.GetRequiredService<IGameProviderRepository>();
 
-            var gameProviderIdInfos = client
+            var gameProviderInfos = client
                 .GameProviderQueryAsync()
                 .ToEnumerable()
                 ?? Enumerable.Empty<GameProviderInfo>();
 
-            foreach (var gameProviderIdInfo in gameProviderIdInfos)
+            foreach (var gameProviderInfo in gameProviderInfos)
             {
                 _ = await gameProviderRepository
                     .GetGameProviderIdAsync(
-                        gameProviderCode: gameProviderIdInfo.GameProviderCode)
+                        gameProviderCode: gameProviderInfo.GameProviderCode)
                     .ConfigureAwait(false);
 
                 _ = await gameProviderRepository
                     .GetAsync(
-                        gameProviderId: gameProviderIdInfo.GameProviderId)
+                        gameProviderId: gameProviderInfo.GameProviderId)
                     .ConfigureAwait(false);
+            }
+
+            var brandRepository = scope.ServiceProvider.GetRequiredService<IBrandRepository>();
+
+            var brandInfos = client
+                .BrandQueryAsync()
+                .ToEnumerable()
+                ?? Enumerable.Empty<BrandInfo>();
+
+            foreach (var brandInfo in brandInfos)
+            {
+                try
+                {
+                    _ = await brandRepository
+                        .GetBrandIdAsync(
+                        brandCode: brandInfo.BrandCode)
+                        .ConfigureAwait(false);
+                }
+                catch
+                {
+
+                }
+
+                foreach (var gameProviderInfo in gameProviderInfos)
+                {
+                    try
+                    {
+                        _ = await brandRepository
+                            .GetBrandGameProviderConfigurationIdAsync(
+                                gameProviderId: gameProviderInfo.GameProviderId,
+                                brandId: brandInfo.BrandId)
+                            .ConfigureAwait(false);
+                    }
+                    catch
+                    {
+
+                    }
+                }
             }
         }
         return app;
