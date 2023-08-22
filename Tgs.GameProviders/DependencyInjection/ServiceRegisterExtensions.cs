@@ -425,26 +425,34 @@ public static class ServiceRegisterExtensions
                         .GetBrandIdAsync(
                         brandCode: brandInfo.BrandCode)
                         .ConfigureAwait(false);
+
+                    var brandGameProviderInfos = await client
+                        .BrandQueryGameProviderAsync(
+                        brandInfo.BrandId)
+                        .ToArrayAsync()
+                        .ConfigureAwait(false)
+                        ?? Enumerable.Empty<BrandGameProviderInfo>();
+
+                    foreach (var brandGameProviderInfo in brandGameProviderInfos)
+                    {
+                        try
+                        {
+                            _ = await brandRepository
+                                .GetBrandGameProviderConfigurationIdAsync(
+                                    gameProviderId: brandGameProviderInfo.GameProviderId,
+                                    brandId: brandGameProviderInfo.BrandId)
+                                .ConfigureAwait(false);
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+
                 }
                 catch
                 {
 
-                }
-
-                foreach (var gameProviderInfo in gameProviderInfos)
-                {
-                    try
-                    {
-                        _ = await brandRepository
-                            .GetBrandGameProviderConfigurationIdAsync(
-                                gameProviderId: gameProviderInfo.GameProviderId,
-                                brandId: brandInfo.BrandId)
-                            .ConfigureAwait(false);
-                    }
-                    catch
-                    {
-
-                    }
                 }
             }
         }
