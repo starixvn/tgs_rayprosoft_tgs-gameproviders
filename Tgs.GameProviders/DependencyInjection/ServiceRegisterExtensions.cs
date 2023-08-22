@@ -409,52 +409,6 @@ public static class ServiceRegisterExtensions
                         gameProviderId: gameProviderInfo.GameProviderId)
                     .ConfigureAwait(false);
             }
-
-            var brandRepository = scope.ServiceProvider.GetRequiredService<IBrandRepository>();
-
-            var brandInfos = client
-                .BrandQueryAsync()
-                .ToEnumerable()
-                ?? Enumerable.Empty<BrandInfo>();
-
-            foreach (var brandInfo in brandInfos)
-            {
-                try
-                {
-                    _ = await brandRepository
-                        .GetBrandIdAsync(
-                        brandCode: brandInfo.BrandCode)
-                        .ConfigureAwait(false);
-
-                    var brandGameProviderInfos = await client
-                        .BrandQueryGameProviderAsync(
-                        brandInfo.BrandId)
-                        .ToArrayAsync()
-                        .ConfigureAwait(false)
-                        ?? Enumerable.Empty<BrandGameProviderInfo>();
-
-                    foreach (var brandGameProviderInfo in brandGameProviderInfos)
-                    {
-                        try
-                        {
-                            _ = await brandRepository
-                                .GetBrandGameProviderConfigurationIdAsync(
-                                    gameProviderId: brandGameProviderInfo.GameProviderId,
-                                    brandId: brandGameProviderInfo.BrandId)
-                                .ConfigureAwait(false);
-                        }
-                        catch
-                        {
-
-                        }
-                    }
-
-                }
-                catch
-                {
-
-                }
-            }
         }
         return app;
     }
