@@ -37,8 +37,8 @@ public class WicketCricketGameUrlGetServiceUnitTest
         var gameProviderId = Guid.NewGuid();
         _ = fakeGameProviderRepository
             .GetGameProviderIdAsync(
-                gameProviderCode: Arg.Is(GameProviderType.WicketCricket),
-                cancellationToken: Arg.Any<CancellationToken>())
+            gameProviderCode: Arg.Is(GameProviderType.WicketCricket),
+            cancellationToken: Arg.Any<CancellationToken>())
             .Returns(gameProviderId);
 
         var player = new PlayerInfo(
@@ -54,16 +54,16 @@ public class WicketCricketGameUrlGetServiceUnitTest
             DefaultWalletCurrencyCode: "CNY");
         _ = fakePlayerRepository
             .GetAsync(
-                playerCode: Arg.Is(query.PlayerCode),
-                cancellationToken: Arg.Any<CancellationToken>())
+            playerCode: Arg.Is(query.PlayerCode),
+            cancellationToken: Arg.Any<CancellationToken>())
             .Returns(player);
 
         var gameProviderConfigurationId = Guid.NewGuid();
         _ = fakeBrandRepository
             .GetBrandGameProviderConfigurationIdAsync(
-                 gameProviderId: Arg.Is(gameProviderId),
-                 brandId: Arg.Is(player.BrandId),
-                 cancellationToken: Arg.Any<CancellationToken>())
+            gameProviderId: Arg.Is(gameProviderId),
+            brandId: Arg.Is(player.BrandId),
+            cancellationToken: Arg.Any<CancellationToken>())
             .Returns(gameProviderConfigurationId);
 
         var configuration = new WicketCricketConfiguration()

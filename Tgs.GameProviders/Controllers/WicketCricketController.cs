@@ -59,6 +59,26 @@ public class WicketCricketController : ControllerBase
     }
 
     /// <summary>
+    /// Kicks the player asynchronous.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Delete kickplayer/4ucmqplxb029
+    /// </remarks>
+    [HttpDelete("kickplayer/{playerCode}")]
+    public ValueTask KickPlayerAsync(
+        [FromServices] ICommandService<WicketCricketKickPlayerCommand> service,
+        string playerCode)
+        => service.ExecuteAsync(new()
+        {
+            PlayerCode = playerCode
+        });
+
+    /// <summary>
     /// Players the balance asynchronous.
     /// </summary>
     /// <param name="service">The service.</param>
