@@ -18,7 +18,6 @@ public class HabaneroRoundDetailGetServiceUnitTest
     [Fact]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<HabaneroRoundDetailGetService>.Instance;
         var fakeRoundService = Substitute.For<IRoundRepository>();
         var fakeService = Substitute.For<IHabaneroService>();
 
@@ -110,7 +109,9 @@ public class HabaneroRoundDetailGetServiceUnitTest
             null,
             null);
 
-        var sut = new HabaneroRoundDetailGetService(fakeLogger, fakeService, fakeRoundService);
+        var sut = new HabaneroRoundDetailGetService(
+            fakeService,
+            fakeRoundService);
 
         var query = new HabaneroRoundDetailQuery
         {
