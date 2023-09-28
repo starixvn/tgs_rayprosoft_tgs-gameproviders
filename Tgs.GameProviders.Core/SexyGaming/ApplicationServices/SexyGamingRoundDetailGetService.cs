@@ -27,17 +27,17 @@ internal class SexyGamingRoundDetailGetService : IGetService<SexyGamingRoundDeta
 
     public async ValueTask<RoundDetailResult> GetAsync(SexyGamingRoundDetailQuery query, CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        var gameInfo = await _gameRepository.GetAsync(roundInfo.GameId).ConfigureAwait(false);
-        if (gameInfo == null)
-        {
-            throw new Exception($"This game Id could not be found..{roundInfo.GameId}");
-        }
+        var gameInfo = await _gameRepository
+            .GetAsync(
+            gameId: roundInfo.GameId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var gameRecord = JsonSerializer.Deserialize<SexyGamingGameRecord>(roundInfo.AdditionalData);
 

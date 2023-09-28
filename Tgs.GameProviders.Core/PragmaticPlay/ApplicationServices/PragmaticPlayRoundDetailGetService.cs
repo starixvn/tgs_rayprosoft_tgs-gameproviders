@@ -13,24 +13,18 @@ internal class PragmaticPlayRoundDetailGetService : IGetService<PragmaticPlayRou
 {
     private readonly IPragmaticPlayApiClient _client;
     private readonly IGameActionService _gameActionService;
-    private readonly ILogger<PragmaticPlayRoundDetailGetService> _logger;
     private readonly IRoundRepository _roundService;
     private readonly IPragmaticPlayService _service;
-    private readonly IPragmaticPlayUtility _utility;
 
     public PragmaticPlayRoundDetailGetService(
-        ILogger<PragmaticPlayRoundDetailGetService> logger,
         IRoundRepository roundService,
         IGameActionService gameActionService,
         IPragmaticPlayService service,
-        IPragmaticPlayUtility utility,
         IPragmaticPlayApiClient client)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         _gameActionService = gameActionService ?? throw new ArgumentNullException(nameof(gameActionService));
         _service = service ?? throw new ArgumentNullException(nameof(service));
-        _utility = utility ?? throw new ArgumentNullException(nameof(utility));
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
@@ -38,17 +32,16 @@ internal class PragmaticPlayRoundDetailGetService : IGetService<PragmaticPlayRou
         PragmaticPlayRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        var gameProviderModel = await _service.GetGameProviderAsync(roundInfo.GameProviderId).ConfigureAwait(false);
-        if (gameProviderModel == null)
-        {
-            throw new Exception($"This game manufacturer does not exist.{roundInfo.GameProviderId}");
-        }
+        var gameProviderModel = await _service
+            .GetGameProviderAsync(
+            gameProviderId: roundInfo.GameProviderId)
+            .ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 

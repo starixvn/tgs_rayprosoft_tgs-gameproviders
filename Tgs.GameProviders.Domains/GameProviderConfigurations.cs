@@ -64,4 +64,5 @@ public static class GameProviderConfigurations
     public static readonly string WMCasino = string.Format(_template, GameProviderType.WMCasino);
     public static readonly string WMCasinoTransfer = string.Format(_template, GameProviderType.WMCasinoTransfer);
     public static readonly string YeeBet = string.Format(_template, GameProviderType.YeeBet);
+    public static readonly string WicketCricket = string.Format(_template, GameProviderType.WicketCricket);
 }

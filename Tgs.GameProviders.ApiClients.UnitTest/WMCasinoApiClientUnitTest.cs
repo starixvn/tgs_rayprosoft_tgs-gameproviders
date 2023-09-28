@@ -30,7 +30,7 @@ public class WMCasinoApiClientUnitTest
 
         var client = Substitute.For<IWMCasinoApiClient>();
 
-        _ = await client.MemberRegisterAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.MemberRegisterAsync(_apiUrl, request);
     }
 
     [Fact]
@@ -48,7 +48,7 @@ public class WMCasinoApiClientUnitTest
 
         var client = Substitute.For<IWMCasinoApiClient>();
 
-        _ = await client.LoginGameAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.LoginGameAsync(_apiUrl, request);
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class WMCasinoApiClientUnitTest
 
         var client = Substitute.For<IWMCasinoApiClient>();
 
-        _ = await client.LogoutGameAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.LogoutGameAsync(_apiUrl, request);
     }
 
     private static string ToWMCasinoPlayerId(string playerCode)

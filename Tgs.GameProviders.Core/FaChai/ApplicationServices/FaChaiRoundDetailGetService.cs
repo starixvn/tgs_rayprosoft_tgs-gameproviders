@@ -20,9 +20,10 @@ internal class FaChaiRoundDetailGetService : IGetService<FaChaiRoundDetailQuery,
     {
         var roundInfo = await _roundService
             .GetAsync(
-                query.RoundId)
-            .ConfigureAwait(false)
-            ?? throw new Exception($"This game round number could not be found.{query.RoundId}");
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
         return new RoundDetailResult()
         {
             Data = new RoundDetailDataBase[]

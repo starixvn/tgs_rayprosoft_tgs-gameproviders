@@ -10,21 +10,18 @@ namespace Tgs.GameProviders.Core.Jili.ApplicationServices;
 internal class JiliRoundDetailGetService : IGetService<JiliRoundDetailQuery, RoundDetailResult>
 {
     private readonly IJiliApiClient _client;
-    private readonly ILogger<JiliRoundDetailGetService> _logger;
     private readonly IJiliMerchantMapper _merchantMapper;
     private readonly IPlayerRepository _playerService;
     private readonly IRoundRepository _roundService;
     private readonly IJiliService _service;
 
     public JiliRoundDetailGetService(
-        ILogger<JiliRoundDetailGetService> logger,
         IRoundRepository roundService,
         IPlayerRepository playerService,
         IJiliService service,
         IJiliMerchantMapper merchantMapper,
         IJiliApiClient client)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         _playerService = playerService ?? throw new ArgumentNullException(nameof(playerService));
         _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -36,11 +33,11 @@ internal class JiliRoundDetailGetService : IGetService<JiliRoundDetailQuery, Rou
         JiliRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var playerModel = await _playerService.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);

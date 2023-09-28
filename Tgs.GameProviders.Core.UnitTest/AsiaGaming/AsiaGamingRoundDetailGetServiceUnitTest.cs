@@ -22,7 +22,6 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
     [Fact]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<AsiaGamingRoundDetailGetService>.Instance;
         var fakeRoundService = Substitute.For<IRoundRepository>();
         var fakeGameRepository = Substitute.For<IGameRepository>();
         var fakeService = Substitute.For<IAsiaGamingService>();
@@ -218,7 +217,6 @@ public class AsiaGamingRoundDetailGetServiceUnitTest
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
 
         var sut = new AsiaGamingRoundDetailGetService(
-            fakeLogger,
             fakeRoundService,
             fakeGameRepository,
             fakeService);

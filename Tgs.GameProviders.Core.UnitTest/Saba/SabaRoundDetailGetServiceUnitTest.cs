@@ -20,7 +20,6 @@ public class SabaRoundDetailGetServiceUnitTest
     [Fact]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<SabaRoundDetailGetService>.Instance;
         var fakeService = Substitute.For<ISabaService>();
         var fakeApiClient = Substitute.For<ISabaApiClient>();
         var fakeGameActionService = Substitute.For<IGameActionService>();
@@ -187,7 +186,6 @@ public class SabaRoundDetailGetServiceUnitTest
             }));
 
         var sut = new SabaRoundDetailGetService(
-            fakeLogger,
             fakeRoundService,
             fakeGameActionService,
             fakeService,

@@ -27,7 +27,7 @@ public class AllBetApiClientUnitTest
 
         var client = Substitute.For<IAllBetApiClient>();
 
-        _ = await client.CheckOrCreateMemberAsync(_apiUrl, PropertyId, ApiKey, request).ConfigureAwait(false);
+        _ = await client.CheckOrCreateMemberAsync(_apiUrl, PropertyId, ApiKey, request);
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class AllBetApiClientUnitTest
 
         var client = Substitute.For<IAllBetApiClient>();
 
-        _ = await client.LoginAsync(_apiUrl, PropertyId, ApiKey, request).ConfigureAwait(false);
+        _ = await client.LoginAsync(_apiUrl, PropertyId, ApiKey, request);
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class AllBetApiClientUnitTest
 
         var client = Substitute.For<IAllBetApiClient>();
 
-        _ = await client.LogoutAsync(_apiUrl, PropertyId, ApiKey, request).ConfigureAwait(false);
+        _ = await client.LogoutAsync(_apiUrl, PropertyId, ApiKey, request);
     }
 
     private static string ToAllBetPlayerId(string playerCode)

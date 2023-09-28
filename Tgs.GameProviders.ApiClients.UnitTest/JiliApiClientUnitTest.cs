@@ -20,9 +20,7 @@ public class JiliApiClientUnitTest
 
         var client = Substitute.For<IJiliApiClient>();
 
-        _ = await client
-            .GetGameDetailUrlAsync(_apiUrl, AgentId, AgentKey, language, externalRoundId)
-            .ConfigureAwait(false);
+        _ = await client.GetGameDetailUrlAsync(_apiUrl, AgentId, AgentKey, language, externalRoundId);
     }
 
     [Fact]
@@ -32,9 +30,7 @@ public class JiliApiClientUnitTest
 
         var client = Substitute.For<IJiliApiClient>();
 
-        _ = await client
-            .KickMemberAsync(_apiUrl, jiliPlayerId, AgentId, AgentKey)
-            .ConfigureAwait(false);
+        _ = await client.KickMemberAsync(_apiUrl, jiliPlayerId, AgentId, AgentKey);
     }
 
     [Fact]
@@ -49,8 +45,6 @@ public class JiliApiClientUnitTest
 
         var client = Substitute.For<IJiliApiClient>();
 
-        _ = await client
-            .LoginWithoutRedirectAsync(_apiUrl, AgentId, AgentKey, request)
-            .ConfigureAwait(false);
+        _ = await client.LoginWithoutRedirectAsync(_apiUrl, AgentId, AgentKey, request);
     }
 }

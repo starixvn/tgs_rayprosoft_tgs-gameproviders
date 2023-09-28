@@ -16,9 +16,7 @@ public class TFApiClientUnitTest
         var publicToken = "publicToken";
         var playerCode = "playerCode";
 
-        _ = await client
-            .GetGameUrlAsync(launchUrl, publicToken, playerCode)
-            .ConfigureAwait(false);
+        _ = await client.GetGameUrlAsync(launchUrl, publicToken, playerCode);
     }
 
     [Fact]
@@ -31,8 +29,6 @@ public class TFApiClientUnitTest
         var playerCode = "playerCode";
         var partnerId = "partnerId";
 
-        await client
-            .KickAsync(apiUrl, privateToken, partnerId, playerCode)
-            .ConfigureAwait(false);
+        await client.KickAsync(apiUrl, privateToken, partnerId, playerCode);
     }
 }

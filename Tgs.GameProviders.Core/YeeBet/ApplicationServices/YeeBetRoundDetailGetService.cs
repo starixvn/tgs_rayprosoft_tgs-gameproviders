@@ -20,15 +20,15 @@ internal class YeeBetRoundDetailGetService : IGetService<YeeBetRoundDetailQuery,
     {
         var roundInfo = await _roundService
             .GetAsync(
-                query.RoundId)
-            .ConfigureAwait(false)
-            ?? throw new Exception($"This game round number could not be found.{query.RoundId}");
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         return new RoundDetailResult()
         {
             Data = new RoundDetailDataBase[]
             {
-                new RoundDetailDataJson {Value = roundInfo.AdditionalData}
+                new RoundDetailDataJson { Value = roundInfo.AdditionalData }
             }
         };
     }

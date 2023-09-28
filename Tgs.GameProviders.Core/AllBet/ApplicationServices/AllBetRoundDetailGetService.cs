@@ -15,14 +15,11 @@ namespace Tgs.GameProviders.Core.AllBet.ApplicationServices;
 
 internal class AllBetRoundDetailGetService : IGetService<AllBetRoundDetailQuery, RoundDetailResult>
 {
-    private readonly ILogger<AllBetRoundDetailGetService> _logger;
     private readonly IRoundRepository _roundService;
 
     public AllBetRoundDetailGetService(
-        ILogger<AllBetRoundDetailGetService> logger,
         IRoundRepository roundService)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }
 
@@ -30,11 +27,11 @@ internal class AllBetRoundDetailGetService : IGetService<AllBetRoundDetailQuery,
         AllBetRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var value = GetGameHistory(roundInfo.AdditionalData);
 
@@ -50,7 +47,7 @@ internal class AllBetRoundDetailGetService : IGetService<AllBetRoundDetailQuery,
         };
     }
 
-    private string GetBaccaratGameHistory(AllBetGameHistory history)
+    private static string GetBaccaratGameHistory(AllBetGameHistory history)
     {
         var values = GetResultValues(history.Result);
 
@@ -68,7 +65,7 @@ internal class AllBetRoundDetailGetService : IGetService<AllBetRoundDetailQuery,
         return JsonSerializer.Serialize(results);
     }
 
-    private string GetBullBullGameHistory(AllBetGameHistory history)
+    private static string GetBullBullGameHistory(AllBetGameHistory history)
     {
         var values = GetResultValues(history.Result);
 
@@ -92,7 +89,7 @@ internal class AllBetRoundDetailGetService : IGetService<AllBetRoundDetailQuery,
         return JsonSerializer.Serialize(results);
     }
 
-    private string GetCard(char code) => code switch
+    private static string GetCard(char code) => code switch
     {
         '2' => "♥",
         '3' => "♣",
@@ -100,7 +97,7 @@ internal class AllBetRoundDetailGetService : IGetService<AllBetRoundDetailQuery,
         _ => "♠"
     };
 
-    private string GetCards(string[] details)
+    private static string GetCards(string[] details)
     {
         var cards = details.Where(v => v != "-1")
             .Select(v => $"{GetCard(v[0])}{GetNumber(v[1..])}");
@@ -108,7 +105,7 @@ internal class AllBetRoundDetailGetService : IGetService<AllBetRoundDetailQuery,
         return string.Join(";", cards);
     }
 
-    private string GetDragonTigerGameHistory(AllBetGameHistory history)
+    private static string GetDragonTigerGameHistory(AllBetGameHistory history)
     {
         var values = GetResultValues(history.Result);
 
@@ -153,23 +150,20 @@ internal class AllBetRoundDetailGetService : IGetService<AllBetRoundDetailQuery,
         };
     }
 
-    private string GetNumber(string value)
+    private static string GetNumber(string value)
     {
-        if (!int.TryParse(value, out var num))
-        {
-            return string.Empty;
-        }
-
-        return num switch
-        {
-            11 => "J",
-            12 => "Q",
-            13 => "K",
-            _ => num.ToString()
-        };
+        return !int.TryParse(value, out var num)
+            ? string.Empty
+            : num switch
+            {
+                11 => "J",
+                12 => "Q",
+                13 => "K",
+                _ => num.ToString()
+            };
     }
 
-    private string GetPokDengGameHistory(AllBetGameHistory history)
+    private static string GetPokDengGameHistory(AllBetGameHistory history)
     {
         var values = GetResultValues(history.Result);
 
@@ -187,7 +181,7 @@ internal class AllBetRoundDetailGetService : IGetService<AllBetRoundDetailQuery,
         return JsonSerializer.Serialize(results);
     }
 
-    private string[] GetResultValues(string result)
+    private static string[] GetResultValues(string result)
     {
         var matches = Regex.Matches(result, "{.+?}");
         return matches.Select(c =>
@@ -197,14 +191,14 @@ internal class AllBetRoundDetailGetService : IGetService<AllBetRoundDetailQuery,
             .ToArray();
     }
 
-    private string GetRouletteGameHistory(AllBetGameHistory history)
+    private static string GetRouletteGameHistory(AllBetGameHistory history)
     {
         var values = GetResultValues(history.Result);
 
         return JsonSerializer.Serialize(new { Result = values[0] });
     }
 
-    private string GetSicboGameHistory(AllBetGameHistory history)
+    private static string GetSicboGameHistory(AllBetGameHistory history)
     {
         var values = GetResultValues(history.Result);
         var results = values[0].SplitByComma()

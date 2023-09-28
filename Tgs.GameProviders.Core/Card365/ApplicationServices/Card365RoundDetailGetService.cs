@@ -12,14 +12,11 @@ namespace Tgs.GameProviders.Core.Card365.ApplicationServices;
 internal class Card365RoundDetailGetService : IGetService<Card365RoundDetailQuery, RoundDetailResult>
 {
     private readonly JsonSerializerOptions _jsonSerializerOptions;
-    private readonly ILogger<Card365RoundDetailGetService> _logger;
     private readonly IRoundRepository _roundService;
 
     public Card365RoundDetailGetService(
-        ILogger<Card365RoundDetailGetService> logger,
         IRoundRepository roundService)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         _jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = false };
     }
@@ -28,11 +25,11 @@ internal class Card365RoundDetailGetService : IGetService<Card365RoundDetailQuer
         Card365RoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var value = GetGameHistory(roundInfo.AdditionalData);
 

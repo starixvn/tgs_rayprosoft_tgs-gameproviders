@@ -18,8 +18,8 @@ internal class RoundRepository : IRoundRepository
     {
         var response = await _client
             .GetGameRoundAsync(
-                roundId: roundId,
-                cancellationToken: cancellationToken)
+            roundId: roundId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false)
             ?? throw new Exception($"This game round number could not be found.{roundId}");
 

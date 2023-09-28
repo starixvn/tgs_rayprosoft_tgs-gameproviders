@@ -36,8 +36,7 @@ namespace Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices
                 .GetAsync(
                 roundId: query.RoundId,
                 cancellationToken: cancellationToken)
-                .ConfigureAwait(false)
-                ?? throw new Exception($"This game round number could not be found.{query.RoundId}");
+                .ConfigureAwait(false);
 
             var gameProviderId = await _gameProvider
                 .GetGameProviderIdAsync(

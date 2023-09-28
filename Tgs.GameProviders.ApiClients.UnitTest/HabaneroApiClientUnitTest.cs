@@ -24,8 +24,6 @@ public class HabaneroApiClientUnitTest
 
         var client = Substitute.For<IHabaneroApiClient>();
 
-        _ = await client
-            .LogoutAsync(_apiUrl, request)
-            .ConfigureAwait(false);
+        _ = await client.LogoutAsync(_apiUrl, request);
     }
 }

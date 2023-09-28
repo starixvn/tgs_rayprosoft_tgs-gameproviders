@@ -18,15 +18,18 @@ internal class EndorphinaRoundDetailGetService : IGetService<EndorphinaRoundDeta
 
     public async ValueTask<RoundDetailResult> GetAsync(EndorphinaRoundDetailQuery query, CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        return roundInfo == null
-            ? throw new Exception($"This game round number could not be found.{query.RoundId}")
-            : (new RoundDetailResult()
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        return new RoundDetailResult()
+        {
+            Data = new RoundDetailDataBase[]
             {
-                Data = new RoundDetailDataBase[]
-                {
                 new RoundDetailDataJson {Value = roundInfo.AdditionalData}
-                }
-            });
+            }
+        };
     }
 }

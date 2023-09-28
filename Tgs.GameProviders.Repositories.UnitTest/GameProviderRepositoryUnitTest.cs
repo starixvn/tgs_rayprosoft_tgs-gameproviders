@@ -1495,4 +1495,50 @@ public class GameProviderRepositoryUnitTest
         Assert.Equal("hpg02twapi", actual.VendorId);
         Assert.Equal("89448b444ed2e922ddc3aa0753370238", actual.Signature);
     }
+
+    [Fact]
+    public async Task Get_WicketCricket_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new WicketCricketConfiguration()
+        {
+            ApiUrl = new("https://apiinfo.cckk77.net/"),
+            ExchangeApiUrl = new("https://test81.cckk77.net/")
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<WicketCricketConfiguration>(Arg.Is(GameProviderConfigurations.WicketCricket))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.WicketCricket,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "9WCRICKET-GPI_INR",
+            Description: "9WCRICKET-GPI_INR Configuration",
+            ClientId: "9WCRICKET-GPI_INR",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["Website"] = "WICKETSPRO",
+                ["Cert"] = "wkVwQ8sMVr252EA9",
+                ["Agent"] = "testpginrma"
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetWicketCricketConfigurationAsync(gameProviderConfigurationId);
+
+        Assert.NotNull(actual);
+        Assert.Equal("WICKETSPRO", actual.Website);
+        Assert.Equal("wkVwQ8sMVr252EA9", actual.Cert);
+        Assert.Equal("testpginrma", actual.Agent);
+    }
 }

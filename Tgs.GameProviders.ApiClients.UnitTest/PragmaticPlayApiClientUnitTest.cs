@@ -29,7 +29,7 @@ public class PragmaticPlayApiClientUnitTest
 
         var client = Substitute.For<IPragmaticPlayApiClient>();
 
-        _ = await client.GetGameUrlAsync(_apiUrl, SecretKey, request).ConfigureAwait(false);
+        _ = await client.GetGameUrlAsync(_apiUrl, SecretKey, request);
     }
 
     [Fact]
@@ -45,7 +45,7 @@ public class PragmaticPlayApiClientUnitTest
 
         var client = Substitute.For<IPragmaticPlayApiClient>();
 
-        _ = await client.GetRoundHistoryAsync(_apiUrl, SecretKey, request).ConfigureAwait(false);
+        _ = await client.GetRoundHistoryAsync(_apiUrl, SecretKey, request);
     }
 
     [Fact]
@@ -61,6 +61,6 @@ public class PragmaticPlayApiClientUnitTest
 
         var client = Substitute.For<IPragmaticPlayApiClient>();
 
-        _ = await client.LogoutAsync(_apiUrl, SecretKey, request).ConfigureAwait(false);
+        _ = await client.LogoutAsync(_apiUrl, SecretKey, request);
     }
 }

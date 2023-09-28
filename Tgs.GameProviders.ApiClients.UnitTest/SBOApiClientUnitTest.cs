@@ -30,7 +30,7 @@ public class SBOApiClientUnitTest
 
         var client = Substitute.For<ISBOApiClient>();
 
-        _ = await client.CreateAgentAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.CreateAgentAsync(_apiUrl, request);
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class SBOApiClientUnitTest
 
         var client = Substitute.For<ISBOApiClient>();
 
-        _ = await client.CreatePlayerAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.CreatePlayerAsync(_apiUrl, request);
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class SBOApiClientUnitTest
 
         var client = Substitute.For<ISBOApiClient>();
 
-        _ = await client.LoginAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.LoginAsync(_apiUrl, request);
     }
 
     [Fact]
@@ -83,7 +83,7 @@ public class SBOApiClientUnitTest
 
         var client = Substitute.For<ISBOApiClient>();
 
-        _ = await client.GetRoundHistoryAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.GetRoundHistoryAsync(_apiUrl, request);
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class SBOApiClientUnitTest
 
         var client = Substitute.For<ISBOApiClient>();
 
-        _ = await client.GetRoundHistoryAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.GetRoundHistoryAsync(_apiUrl, request);
     }
 
     [Fact]
@@ -115,6 +115,6 @@ public class SBOApiClientUnitTest
 
         var client = Substitute.For<ISBOApiClient>();
 
-        _ = await client.LogoutAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.LogoutAsync(_apiUrl, request);
     }
 }

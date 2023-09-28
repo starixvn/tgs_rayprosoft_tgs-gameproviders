@@ -29,11 +29,11 @@ internal class SkywindRoundDetailGetService : IGetService<SkywindRoundDetailQuer
 
     public async ValueTask<RoundDetailResult> GetAsync(SkywindRoundDetailQuery query, CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var roundId = roundInfo.ExternalRoundId;
         if (roundId.IndexOf("_") != -1)

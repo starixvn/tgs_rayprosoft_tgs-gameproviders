@@ -32,11 +32,11 @@ internal class HabaneroTransferRoundDetailGetService : IGetService<HabaneroTrans
 
     public async ValueTask<RoundDetailResult> GetAsync(HabaneroTransferRoundDetailQuery query, CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.HabaneroTransfer).ConfigureAwait(false);
         var player = await _player.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);

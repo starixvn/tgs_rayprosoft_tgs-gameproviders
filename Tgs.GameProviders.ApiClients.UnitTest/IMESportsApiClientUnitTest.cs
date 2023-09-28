@@ -31,7 +31,7 @@ public class IMESportsApiClientUnitTest
 
         var client = Substitute.For<IIMESportsApiClient>();
 
-        _ = await client.LaunchDesktopGameAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.LaunchDesktopGameAsync(_apiUrl, request);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class IMESportsApiClientUnitTest
 
         var client = Substitute.For<IIMESportsApiClient>();
 
-        _ = await client.LaunchMobileGameAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.LaunchMobileGameAsync(_apiUrl, request);
     }
 
     [Fact]
@@ -88,8 +88,7 @@ public class IMESportsApiClientUnitTest
 
         var client = Substitute.For<IIMESportsApiClient>();
 
-        _ = await client.RegisterPlayerAsync(_apiUrl, request)
-            .ConfigureAwait(false);
+        _ = await client.RegisterPlayerAsync(_apiUrl, request);
     }
 
     private static string ToIMESportsPlayerId(string playerCode)

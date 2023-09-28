@@ -387,7 +387,13 @@ internal class GameProviderRepository : IGameProviderRepository
             gameProviderConfiguration: GameProviderConfigurations.WGViaGaming,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
-
+    public ValueTask<WicketCricketConfiguration> GetWicketCricketConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+        => GetConfigurationAsync<WicketCricketConfiguration>(
+            gameProviderConfiguration: GameProviderConfigurations.WicketCricket,
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken);
     public ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)

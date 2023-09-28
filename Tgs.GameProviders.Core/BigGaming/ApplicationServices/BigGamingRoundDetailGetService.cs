@@ -35,19 +35,22 @@ internal class BigGamingRoundDetailGetService : IGetService<BigGamingRoundDetail
 
     public async ValueTask<RoundDetailResult> GetAsync(BigGamingRoundDetailQuery query, CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        var gameInfo = await _gameRepository.GetAsync(roundInfo.GameId).ConfigureAwait(false);
-        if (gameInfo == null)
-        {
-            throw new Exception($"This game Id could not be found..{gameInfo.GameId}");
-        }
+        var gameInfo = await _gameRepository
+            .GetAsync(
+            gameId: roundInfo.GameId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        var brandMerchant = await _service.GetBrandMerchantAsync(roundInfo.CurrencyCode).ConfigureAwait(false);
+        var brandMerchant = await _service
+            .GetBrandMerchantAsync(
+            roundInfo.CurrencyCode)
+            .ConfigureAwait(false);
 
         if (gameInfo.Type == GameType.LiveDealer)
         {

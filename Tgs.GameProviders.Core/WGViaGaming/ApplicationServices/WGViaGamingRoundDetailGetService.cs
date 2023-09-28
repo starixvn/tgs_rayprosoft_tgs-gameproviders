@@ -25,14 +25,12 @@ internal class WGViaGamingRoundDetailGetService : IGetService<WGViaGamingRoundDe
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return roundInfo == null
-            ? throw new Exception($"This game round number could not be found.{query.RoundId}")
-            : new RoundDetailResult()
+        return new RoundDetailResult()
+        {
+            Data = new RoundDetailDataBase[]
             {
-                Data = new RoundDetailDataBase[]
-                {
-                    new RoundDetailDataJson { Value = roundInfo.AdditionalData }
-                }
-            };
+                new RoundDetailDataJson { Value = roundInfo.AdditionalData }
+            }
+        };
     }
 }

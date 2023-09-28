@@ -19,34 +19,18 @@ internal class TFGamingRoundDetailGetService : IGetService<TFGamingRoundDetailQu
 
     public async ValueTask<RoundDetailResult> GetAsync(TFGamingRoundDetailQuery query, CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        return new RoundDetailResult()
         {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
-
-        var gameRecord = string.IsNullOrEmpty(roundInfo.AdditionalData)
-            ? null
-            : JsonSerializer.Deserialize<TFGameRecord>(roundInfo.AdditionalData, new JsonSerializerOptions
+            Data = new RoundDetailDataBase[]
             {
-                // 設定在做序列化/反序列化時，尊重名稱大小寫
-                PropertyNameCaseInsensitive = true
-            });
-
-        return gameRecord == null
-           ? (new()
-           {
-               Data = new RoundDetailDataBase[]
-               {
-                    new RoundDetailDataJson {Value = null}
-               }
-           })
-           : (new()
-           {
-               Data = new RoundDetailDataBase[]
-           {
-                new RoundDetailDataJson {Value = JsonSerializer.Serialize(gameRecord)}
-           }
-           });
+                new RoundDetailDataJson { Value = roundInfo.AdditionalData }
+            }
+        };
     }
 }

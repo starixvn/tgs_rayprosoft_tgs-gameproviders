@@ -30,8 +30,7 @@ public class SabaApiClientUnitTest
 
         var client = Substitute.For<ISabaApiClient>();
 
-        _ = await client.CreateMemberAsync(_apiUrl, request)
-            .ConfigureAwait(false);
+        _ = await client.CreateMemberAsync(_apiUrl, request);
     }
 
     [Fact]
@@ -47,7 +46,7 @@ public class SabaApiClientUnitTest
 
         var client = Substitute.For<ISabaApiClient>();
 
-        _ = await client.GetBetDetailByTransIdAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.GetBetDetailByTransIdAsync(_apiUrl, request);
     }
 
     [Fact]
@@ -65,7 +64,7 @@ public class SabaApiClientUnitTest
 
         var client = Substitute.For<ISabaApiClient>();
 
-        _ = await client.GetGameUrlAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.GetGameUrlAsync(_apiUrl, request);
     }
 
     [Fact]
@@ -82,6 +81,6 @@ public class SabaApiClientUnitTest
 
         var client = Substitute.For<ISabaApiClient>();
 
-        _ = await client.KickUserAsync(_apiUrl, request).ConfigureAwait(false);
+        _ = await client.KickUserAsync(_apiUrl, request);
     }
 }

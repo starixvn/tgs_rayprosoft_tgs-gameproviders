@@ -17,13 +17,13 @@ internal class VRRoundDetailGetService : IGetService<VRRoundDetailQuery, RoundDe
 
     public async ValueTask<RoundDetailResult> GetAsync(VRRoundDetailQuery query, CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        return new()
+        return new RoundDetailResult()
         {
             Data = new RoundDetailDataBase[]
             {

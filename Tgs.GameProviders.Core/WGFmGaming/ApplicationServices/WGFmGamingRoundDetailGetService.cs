@@ -22,14 +22,13 @@ public class WGFmGamingRoundDetailGetService : IGetService<WGFmGamingRoundDetail
             roundId: query.RoundId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        return roundInfo == null
-            ? throw new Exception($"This game round number could not be found.{query.RoundId}")
-            : new()
+
+        return new RoundDetailResult()
+        {
+            Data = new RoundDetailDataBase[]
             {
-                Data = new RoundDetailDataBase[]
-                {
-                    new RoundDetailDataJson { Value = roundInfo.AdditionalData }
-                }
-            };
+                new RoundDetailDataJson { Value = roundInfo.AdditionalData }
+            }
+        };
     }
 }

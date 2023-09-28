@@ -19,19 +19,16 @@ internal class IMESportsRoundDetailGetService : IGetService<IMESportsRoundDetail
 
     private readonly IIMESportsApiClient _client;
     private readonly JsonSerializerOptions _jsonSerialzierOptions;
-    private readonly ILogger<IMESportsRoundDetailGetService> _logger;
     private readonly IIMESportsMerchantMapper _merchantMapper;
     private readonly IRoundRepository _roundService;
     private readonly IIMESportsService _service;
 
     public IMESportsRoundDetailGetService(
-        ILogger<IMESportsRoundDetailGetService> logger,
         IRoundRepository roundService,
         IIMESportsService service,
         IIMESportsMerchantMapper merchantMapper,
         IIMESportsApiClient client)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _merchantMapper = merchantMapper ?? throw new ArgumentNullException(nameof(merchantMapper));
@@ -47,11 +44,11 @@ internal class IMESportsRoundDetailGetService : IGetService<IMESportsRoundDetail
         IMESportsRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var playerModel = await _service.GetPlayerAsync(roundInfo.PlayerCode).ConfigureAwait(false);
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);

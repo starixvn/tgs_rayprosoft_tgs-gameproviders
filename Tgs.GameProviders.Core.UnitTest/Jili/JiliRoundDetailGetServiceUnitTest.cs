@@ -20,7 +20,6 @@ public class JiliRoundDetailGetServiceUnitTest
     [Fact]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<JiliRoundDetailGetService>.Instance;
         var fakeRoundService = Substitute.For<IRoundRepository>();
         var fakePlayer = Substitute.For<IPlayerRepository>();
         var fakeService = Substitute.For<IJiliService>();
@@ -132,7 +131,6 @@ public class JiliRoundDetailGetServiceUnitTest
         };
 
         var sut = new JiliRoundDetailGetService(
-            fakeLogger,
             fakeRoundService,
             fakePlayer,
             fakeService,

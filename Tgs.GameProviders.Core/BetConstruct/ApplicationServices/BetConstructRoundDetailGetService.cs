@@ -18,11 +18,11 @@ internal class BetConstructRoundDetailGetService : IGetService<BetConstructRound
 
     public async ValueTask<RoundDetailResult> GetAsync(BetConstructRoundDetailQuery query, CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var gameRecord = roundInfo.AdditionalData;
 

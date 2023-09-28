@@ -31,17 +31,16 @@ internal class HabaneroRoundDetailGetService : IGetService<HabaneroRoundDetailQu
         HabaneroRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        var gameProviderModel = await _service.GetGameProviderAsync(roundInfo.GameProviderId).ConfigureAwait(false);
-        if (gameProviderModel == null)
-        {
-            throw new Exception($"This game manufacturer does not exist.{roundInfo.GameProviderId}");
-        }
+        var gameProviderModel = await _service
+            .GetGameProviderAsync(
+            roundInfo.GameProviderId)
+            .ConfigureAwait(false);
 
         var configuration = await _service
             .GetSettingConfigurationAsync()

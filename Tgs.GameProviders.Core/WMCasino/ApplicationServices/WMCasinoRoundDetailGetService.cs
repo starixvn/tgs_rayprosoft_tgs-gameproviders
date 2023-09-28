@@ -11,14 +11,11 @@ namespace Tgs.GameProviders.Core.WMCasino.ApplicationServices;
 
 internal class WMCasinoRoundDetailGetService : IGetService<WMCasinoRoundDetailQuery, RoundDetailResult>
 {
-    private readonly ILogger<WMCasinoRoundDetailGetService> _logger;
     private readonly IRoundRepository _roundService;
 
     public WMCasinoRoundDetailGetService(
-        ILogger<WMCasinoRoundDetailGetService> logger,
         IRoundRepository roundService)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }
 
@@ -26,11 +23,11 @@ internal class WMCasinoRoundDetailGetService : IGetService<WMCasinoRoundDetailQu
         WMCasinoRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var value = GetGameHistory(roundInfo.AdditionalData);
 
@@ -46,7 +43,7 @@ internal class WMCasinoRoundDetailGetService : IGetService<WMCasinoRoundDetailQu
         };
     }
 
-    private string GetGameHistory(string roundDetail)
+    private static string GetGameHistory(string roundDetail)
     {
         if (string.IsNullOrWhiteSpace(roundDetail))
         {

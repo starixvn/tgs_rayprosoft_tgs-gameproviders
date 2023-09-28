@@ -33,12 +33,11 @@ public class JDBApiClientUnitTest
 
         _ = await client
             .GetBetHistoryUrlAsync(
-                _apiUrl,
-                ClientDomain,
-                AesIv,
-                AesKey,
-                request)
-            .ConfigureAwait(false);
+            apiUrl: _apiUrl,
+            clientDomain: ClientDomain,
+            aesIv: AesIv,
+            aesKey: AesKey,
+            request: request);
     }
 
     [Fact]
@@ -61,12 +60,11 @@ public class JDBApiClientUnitTest
 
         _ = await client
             .GetTokenAsync(
-                _apiUrl,
-                ClientDomain,
-                AesIv,
-                AesKey,
-                request)
-            .ConfigureAwait(false);
+            apiUrl: _apiUrl,
+            clientDomain: ClientDomain,
+            aesIv: AesIv,
+            aesKey: AesKey,
+            request: request);
     }
 
     [Fact]
@@ -85,11 +83,10 @@ public class JDBApiClientUnitTest
 
         _ = await client
             .LogoutAsync(
-                _apiUrl,
-                ClientDomain,
-                AesIv,
-                AesKey,
-                request)
-            .ConfigureAwait(false);
+            apiUrl: _apiUrl,
+            clientDomain: ClientDomain,
+            aesIv: AesIv,
+            aesKey: AesKey,
+            request: request);
     }
 }

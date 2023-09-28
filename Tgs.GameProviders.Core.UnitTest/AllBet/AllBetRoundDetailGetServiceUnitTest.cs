@@ -18,7 +18,6 @@ public class AllBetRoundDetailGetServiceUnitTest
     [Fact]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<AllBetRoundDetailGetService>.Instance;
         var fakeRoundService = Substitute.For<IRoundRepository>();
 
         var player = new PlayerInfo(
@@ -86,7 +85,6 @@ public class AllBetRoundDetailGetServiceUnitTest
         _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
 
         var sut = new AllBetRoundDetailGetService(
-            fakeLogger,
             fakeRoundService);
 
         var actual = await sut.GetAsync(query);

@@ -40,11 +40,11 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
         JDBRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var playerModel = await _playerRepository.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
 
@@ -54,11 +54,11 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
             throw new Exception($"This game manufacturer does not exist.{roundInfo.GameProviderId}");
         }
 
-        var gameInfo = await _gameRepository.GetAsync(roundInfo.GameId).ConfigureAwait(false);
-        if (gameInfo == null)
-        {
-            throw new Exception($"This game Id could not be found.{roundInfo.GameId}");
-        }
+        var gameInfo = await _gameRepository
+            .GetAsync(
+            gameId: roundInfo.GameId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var gameProviderLanguageCode = await _service
             .GetGameProviderLanguageAsync(gameProviderInfo.GameProviderId, query.Language)

@@ -30,12 +30,7 @@ public class Card365ApiClientUnitTest
 
         var client = Substitute.For<ICard365ApiClient>();
 
-        _ = await client
-             .GetAccessKeyAsync(
-                 _apiUrl,
-                 WebSite,
-                 request)
-             .ConfigureAwait(false);
+        _ = await client.GetAccessKeyAsync(_apiUrl, WebSite, request);
     }
 
     [Fact]
@@ -54,9 +49,8 @@ public class Card365ApiClientUnitTest
 
         _ = await client
             .LogoutAsync(
-                _apiUrl,
-                WebSite,
-                request)
-            .ConfigureAwait(false);
+            apiUrl: _apiUrl,
+            website: WebSite,
+            request: request);
     }
 }

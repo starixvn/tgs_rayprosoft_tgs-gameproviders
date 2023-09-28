@@ -30,9 +30,7 @@ public class AsiaGamingApiClientUnitTest
 
         var client = Substitute.For<IAsiaGamingApiClient>();
 
-        _ = await client
-            .CheckOrCreateAccountAsync(_loginApiUrl, Md5Key, DesKey, request)
-            .ConfigureAwait(false);
+        _ = await client.CheckOrCreateAccountAsync(_loginApiUrl, Md5Key, DesKey, request);
     }
 
     [Fact]
@@ -50,8 +48,6 @@ public class AsiaGamingApiClientUnitTest
 
         var client = Substitute.For<IAsiaGamingApiClient>();
 
-        _ = await client
-            .CreateGameSessionAsync(_serviceApiUrl, request)
-            .ConfigureAwait(false);
+        _ = await client.CreateGameSessionAsync(_serviceApiUrl, request);
     }
 }

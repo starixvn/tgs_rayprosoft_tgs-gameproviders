@@ -16,7 +16,6 @@ public class Card365RoundDetailGetServiceUnitTest
     [Fact]
     public async Task Normal_Process()
     {
-        var fakeLogger = NullLogger<Card365RoundDetailGetService>.Instance;
         var fakeRoundService = Substitute.For<IRoundRepository>();
 
         var player = new PlayerInfo(
@@ -84,7 +83,6 @@ public class Card365RoundDetailGetServiceUnitTest
         _ = fakeRoundService.GetAsync(query.RoundId).Returns(ValueTask.FromResult<RoundInfo?>(roundInfo));
 
         var sut = new Card365RoundDetailGetService(
-            fakeLogger,
             fakeRoundService);
 
         var actual = await sut.GetAsync(query);

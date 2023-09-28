@@ -176,6 +176,10 @@ public interface IGameProviderRepository
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
 
+    ValueTask<WicketCricketConfiguration> GetWicketCricketConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
+
     ValueTask<YeeBetConfiguration> GetYeeBetConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);

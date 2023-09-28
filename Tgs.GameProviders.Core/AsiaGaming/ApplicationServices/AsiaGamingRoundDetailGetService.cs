@@ -15,17 +15,14 @@ namespace Tgs.GameProviders.Core.AsiaGaming.ApplicationServices;
 internal class AsiaGamingRoundDetailGetService : IGetService<AsiaGamingRoundDetailQuery, RoundDetailResult>
 {
     private readonly IGameRepository _gameService;
-    private readonly ILogger<AsiaGamingRoundDetailGetService> _logger;
     private readonly IRoundRepository _roundService;
     private readonly IAsiaGamingService _service;
 
     public AsiaGamingRoundDetailGetService(
-        ILogger<AsiaGamingRoundDetailGetService> logger,
         IRoundRepository roundService,
         IGameRepository gameService,
         IAsiaGamingService service)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         _gameService = gameService ?? throw new ArgumentNullException(nameof(gameService));
         _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -35,11 +32,11 @@ internal class AsiaGamingRoundDetailGetService : IGetService<AsiaGamingRoundDeta
         AsiaGamingRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var gameInfo = await _gameService
             .GetAsync(

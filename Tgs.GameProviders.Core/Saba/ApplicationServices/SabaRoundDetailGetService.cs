@@ -16,18 +16,15 @@ internal class SabaRoundDetailGetService : IGetService<SabaRoundDetailQuery, Rou
     private readonly ISabaApiClient _client;
     private readonly IGameActionService _gameActionService;
     private readonly JsonSerializerOptions _jsonSerializerOptions;
-    private readonly ILogger<SabaRoundDetailGetService> _logger;
     private readonly IRoundRepository _roundService;
     private readonly ISabaService _service;
 
     public SabaRoundDetailGetService(
-        ILogger<SabaRoundDetailGetService> logger,
         IRoundRepository roundService,
         IGameActionService gameActionService,
         ISabaService service,
         ISabaApiClient client)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
         _gameActionService = gameActionService ?? throw new ArgumentNullException(nameof(gameActionService));
         _service = service ?? throw new ArgumentNullException(nameof(service));
@@ -43,21 +40,17 @@ internal class SabaRoundDetailGetService : IGetService<SabaRoundDetailQuery, Rou
         SabaRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        if (roundInfo == null)
-        {
-            throw new Exception($"This game round number could not be found.{query.RoundId}");
-        }
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var gameActionInfo = await _gameActionService
             .QueryAsync(query.RoundId)
             .FirstOrDefaultAsync(ga => ga.Type == GameActionType.PlaceBet, cancellationToken)
-            .ConfigureAwait(false);
-
-        if (gameActionInfo == null)
-        {
-            throw new Exception($"The place bet game action of given round id could not be found. {roundInfo.RoundId}");
-        }
+            .ConfigureAwait(false)
+            ?? throw new Exception($"The place bet game action of given round id could not be found. {roundInfo.RoundId}");
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
 

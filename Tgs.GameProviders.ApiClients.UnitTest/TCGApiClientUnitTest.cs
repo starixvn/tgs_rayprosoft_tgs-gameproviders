@@ -53,7 +53,7 @@ public class TCGApiClientUnitTest
 
         var client = Substitute.For<ITCGApiClient>();
 
-        _ = await client.LaunchGameAsync(_apiUrl, MerchantCode, DesKey, Sha256Key, data).ConfigureAwait(false);
+        _ = await client.LaunchGameAsync(_apiUrl, MerchantCode, DesKey, Sha256Key, data);
     }
 
     [Fact]
@@ -72,7 +72,7 @@ public class TCGApiClientUnitTest
 
         var client = Substitute.For<ITCGApiClient>();
 
-        _ = await client.LaunchGameAsync(_apiUrl, Vnd_MerchantCode, Vnd_DesKey, Vnd_Sha256Key, data).ConfigureAwait(false);
+        _ = await client.LaunchGameAsync(_apiUrl, Vnd_MerchantCode, Vnd_DesKey, Vnd_Sha256Key, data);
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class TCGApiClientUnitTest
 
         var client = Substitute.For<ITCGApiClient>();
 
-        _ = await client.LaunchGameAsync(_apiUrl, MerchantCode, DesKey, Sha256Key, data).ConfigureAwait(false);
+        _ = await client.LaunchGameAsync(_apiUrl, MerchantCode, DesKey, Sha256Key, data);
     }
 
     [Fact]
@@ -104,7 +104,7 @@ public class TCGApiClientUnitTest
 
         var client = Substitute.For<ITCGApiClient>();
 
-        _ = await client.KickOutLottoPlayerAsync(_apiUrl, MerchantCode, DesKey, Sha256Key, data).ConfigureAwait(false);
+        _ = await client.KickOutLottoPlayerAsync(_apiUrl, MerchantCode, DesKey, Sha256Key, data);
     }
 
     private static string? DESCDecrypt(string data, string key)

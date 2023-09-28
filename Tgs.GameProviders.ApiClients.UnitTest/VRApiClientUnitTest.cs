@@ -31,7 +31,8 @@ public class VRApiClientUnitTest
         var client = Substitute.For<IVRApiClient>();
 
         _ = client.FundCheckingAsync(_apiUrl, MerchantId, Version, Deskey, data).Returns(ValueTask.FromResult<VRFundCheckingResponse>(new() { TotalRecords = totalRecords }));
-        var response = await client.FundCheckingAsync(_apiUrl, MerchantId, Version, Deskey, data).ConfigureAwait(false);
+        var response = await client.FundCheckingAsync(_apiUrl, MerchantId, Version, Deskey, data);
+
         Assert.Equal(totalRecords, response.TotalRecords);
     }
 
@@ -53,7 +54,7 @@ public class VRApiClientUnitTest
 
         var client = Substitute.For<IVRApiClient>();
 
-        _ = await client.FundAsync(_apiUrl, MerchantId, Version, Deskey, VRAction.FundIn, data).ConfigureAwait(false);
+        _ = await client.FundAsync(_apiUrl, MerchantId, Version, Deskey, VRAction.FundIn, data);
     }
 
     /// <summary>
@@ -74,7 +75,7 @@ public class VRApiClientUnitTest
 
         var client = Substitute.For<IVRApiClient>();
 
-        _ = await client.FundAsync(_apiUrl, MerchantId, Version, Deskey, VRAction.FundOut, data).ConfigureAwait(false);
+        _ = await client.FundAsync(_apiUrl, MerchantId, Version, Deskey, VRAction.FundOut, data);
     }
 
     [Fact]
@@ -87,7 +88,7 @@ public class VRApiClientUnitTest
 
         var client = Substitute.For<IVRApiClient>();
 
-        _ = await client.GetBalanceAsync(_apiUrl, MerchantId, Version, Deskey, data).ConfigureAwait(false);
+        _ = await client.GetBalanceAsync(_apiUrl, MerchantId, Version, Deskey, data);
     }
 
     [Fact]
@@ -106,7 +107,7 @@ public class VRApiClientUnitTest
 
         var client = Substitute.For<IVRApiClient>();
 
-        _ = await client.GetGameRecordAsync(_apiUrl, MerchantId, Version, Deskey, data).ConfigureAwait(false);
+        _ = await client.GetGameRecordAsync(_apiUrl, MerchantId, Version, Deskey, data);
     }
 
     [Fact]
@@ -136,6 +137,6 @@ public class VRApiClientUnitTest
 
         var client = Substitute.For<IVRApiClient>();
 
-        _ = await client.KickAsync(_apiUrl, MerchantId, Version, Deskey, data).ConfigureAwait(false);
+        _ = await client.KickAsync(_apiUrl, MerchantId, Version, Deskey, data);
     }
 }

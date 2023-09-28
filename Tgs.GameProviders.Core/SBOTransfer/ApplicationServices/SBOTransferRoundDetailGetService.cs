@@ -17,15 +17,18 @@ public class SBOTransferRoundDetailGetService : IGetService<SBOTransferRoundDeta
 
     public async ValueTask<RoundDetailResult> GetAsync(SBOTransferRoundDetailQuery query, CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _roundService.GetAsync(query.RoundId).ConfigureAwait(false);
-        return roundInfo == null
-            ? throw new Exception($"This game round number could not be found.{query.RoundId}")
-            : (new RoundDetailResult()
-            {
-                Data = new RoundDetailDataBase[]
+        var roundInfo = await _roundService
+            .GetAsync(
+            roundId: query.RoundId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        return new RoundDetailResult()
+        {
+            Data = new RoundDetailDataBase[]
             {
                 new RoundDetailDataJson { Value = roundInfo.AdditionalData }
             }
-            });
+        };
     }
 }

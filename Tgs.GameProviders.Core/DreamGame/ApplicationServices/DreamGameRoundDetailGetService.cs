@@ -30,8 +30,7 @@ internal class DreamGameRoundDetailGetService : IGetService<DreamGameRoundDetail
             .GetAsync(
             roundId: query.RoundId,
             cancellationToken: cancellationToken)
-            .ConfigureAwait(false)
-            ?? throw new Exception($"This game round number could not be found.{query.RoundId}");
+            .ConfigureAwait(false);
 
         var configuration = await _service.GetSettingConfigurationAsync().ConfigureAwait(false);
         var gameProviderCultureCode = await _service.GetGameProviderLanguageCodeAsync(query.Language).ConfigureAwait(false);
