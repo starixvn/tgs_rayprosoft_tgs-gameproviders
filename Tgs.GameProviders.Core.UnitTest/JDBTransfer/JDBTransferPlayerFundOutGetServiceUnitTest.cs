@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using Google.Protobuf.WellKnownTypes;
 using NSubstitute;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.JDBService.Client;
@@ -63,12 +63,8 @@ public class JDBTransferPlayerFundOutGetServiceUnitTest
 
         var reply = new FundReply()
         {
-            Pid = 123456,
             SerialNo = query.OrderId,
-            PayDate = DateTime.UtcNow.ToTimestamp(),
-            Amount = -1,
-            UserBalance = 0,
-            AgentCashBalance = 0
+            Resp = new JsonObject { }.ToJsonString()
         };
         _ = fakeGameInterfaceJDBClient.FundOutAsync(
                 Arg.Is(configuration.ApiUrl),
@@ -86,7 +82,7 @@ public class JDBTransferPlayerFundOutGetServiceUnitTest
             fakePlayerRepository,
             fakeBrandService);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(query.OrderId, actual.OrderId);

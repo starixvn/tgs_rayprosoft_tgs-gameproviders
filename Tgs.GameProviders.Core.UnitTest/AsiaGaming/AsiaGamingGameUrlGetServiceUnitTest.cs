@@ -185,25 +185,25 @@ public class AsiaGamingGameUrlGetServiceUnitTest
             PlayerBalance = 1000m
         };
 
-        fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
-        fakeService.GetGameAsync(query.GameId.Value).Returns(ValueTask.FromResult(gameInfo));
+        _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+        _ = fakeService.GetGameProviderIdAsync().Returns(ValueTask.FromResult(gameInfo.GameProviderId));
+        _ = fakeService.GetGameAsync(query.GameId.Value).Returns(ValueTask.FromResult(gameInfo));
 
-        fakeService
+        _ = fakeService
             .GetGameProviderCurrencyCodeAsync(gameInfo.GameProviderId, query.CurrencyCode)
             .Returns(ValueTask.FromResult(gameProviderCurrencyCode));
 
-        fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
+        _ = fakeService.GetGameProviderLanguageCodeAsync(gameInfo.GameProviderId, query.Language)
             .Returns(ValueTask.FromResult(gameProviderLanguageCode));
 
-        fakeService.GetBrandIdAsync(query.BrandCode).Returns(ValueTask.FromResult(player.BrandId));
-        fakeService.GetGameDomainAsync(player.BrandId, gameInfo.GameProviderId, query.PlatformType)
+        _ = fakeService.GetBrandIdAsync(query.BrandCode).Returns(ValueTask.FromResult(player.BrandId));
+        _ = fakeService.GetGameDomainAsync(player.BrandId, gameInfo.GameProviderId, query.PlatformType)
             .Returns(ValueTask.FromResult(domain));
 
-        fakePlayerService.CheckOrCreateAccountAsync(configuration, query.PlayerCode, gameProviderCurrencyCode)
+        _ = fakePlayerService.CheckOrCreateAccountAsync(configuration, query.PlayerCode, gameProviderCurrencyCode)
             .Returns(ValueTask.FromResult(true));
 
-        fakeSessionService
+        _ = fakeSessionService
             .CreateGameSessionAsync(
                 configuration,
                 query.PlayerCode,
@@ -211,19 +211,19 @@ public class AsiaGamingGameUrlGetServiceUnitTest
                 query.PlayerBalance)
             .Returns(ValueTask.FromResult(true));
 
-        fakeUtility.GetQueryString(
-                Arg.Is<AsiaGamingGameUrlRequest>(x =>
-                    x.AgentCode == configuration.AgentCode &&
-                    x.PlayerCode == query.PlayerCode &&
-                    x.Lang == gameProviderLanguageCode &&
-                    x.GameId == gameInfo.GameExternalId &&
-                    x.ReturnUrl == query.BackUrl.AbsoluteUri &&
-                    x.Currency == gameProviderCurrencyCode),
-                Arg.Any<string>())
+        _ = fakeUtility.GetQueryString(
+            Arg.Is<AsiaGamingGameUrlRequest>(x =>
+            x.AgentCode == configuration.AgentCode &&
+            x.PlayerCode == query.PlayerCode &&
+            x.Lang == gameProviderLanguageCode &&
+            x.GameId == gameInfo.GameExternalId &&
+            x.ReturnUrl == query.BackUrl.AbsoluteUri &&
+            x.Currency == gameProviderCurrencyCode),
+            Arg.Any<string>())
             .Returns(queryString);
 
-        fakeUtility.DesEncrypt(queryString, configuration.DesKey).Returns(encodeParas);
-        fakeUtility.Md5Hash($"{encodeParas}{configuration.Md5Key}").Returns(key);
+        _ = fakeUtility.DesEncrypt(queryString, configuration.DesKey).Returns(encodeParas);
+        _ = fakeUtility.Md5Hash($"{encodeParas}{configuration.Md5Key}").Returns(key);
 
         var sut = new AsiaGamingGameUrlGetService(
             fakeLogger,
@@ -232,9 +232,7 @@ public class AsiaGamingGameUrlGetServiceUnitTest
             fakeSessionService,
             fakeUtility);
 
-        await sut.GetAsync(query).ConfigureAwait(false);
-
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(gameUrl, actual.Url);

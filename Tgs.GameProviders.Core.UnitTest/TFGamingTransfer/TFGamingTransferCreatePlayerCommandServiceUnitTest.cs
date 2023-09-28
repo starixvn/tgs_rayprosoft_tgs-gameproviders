@@ -66,7 +66,7 @@ public class TFGamingTransferCreatePlayerCommandServiceUnitTest
             fakePlayerRepository,
             fakeGameInterfaceTFGamingClient);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeGameInterfaceTFGamingClient
             .Received(1)

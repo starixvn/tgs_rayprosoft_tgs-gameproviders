@@ -52,12 +52,11 @@ public partial class GameProvidersClientUnitTest
 
         var actual = await sut
             .PlayerFundCheckingAsync(
-                 gameProviderCode: gameProviderCode,
-                 brandCode: brandCode,
-                 playerCode: playerCode,
-                 currencyCode: currencyCode,
-                 orderId: orderId)
-            .ConfigureAwait(false);
+            gameProviderCode: gameProviderCode,
+            brandCode: brandCode,
+            playerCode: playerCode,
+            currencyCode: currencyCode,
+            orderId: orderId);
 
         Assert.True(actual);
     }

@@ -38,7 +38,7 @@ public class GameRepositoryUnitTest
 
         var repository = new GameRepository(fakeClient);
 
-        var actual = await repository.GetGameListAsync(gameProviderId, gameType).ToArrayAsync().ConfigureAwait(false);
+        var actual = await repository.GetGameListAsync(gameProviderId, gameType).ToArrayAsync();
 
         Assert.NotNull(actual);
         expected.ToExpectedObject().ShouldEqual(actual);
@@ -73,7 +73,7 @@ public class GameRepositoryUnitTest
 
         var repository = new GameRepository(fakeClient);
 
-        var actual = await repository.GetAsync(gameId).ConfigureAwait(false);
+        var actual = await repository.GetAsync(gameId);
 
         Assert.NotNull(actual);
         Assert.Equal(gameId, actual.GameId);

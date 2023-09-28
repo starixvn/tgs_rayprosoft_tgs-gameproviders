@@ -188,10 +188,7 @@ public class PragmaticPlayTransferPlayerBalanceGetServiceUnitTest
             fakeBrandRepository,
             fakeClient);
 
-        var actual = await sut
-            .GetAsync(
-                query)
-            .ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.Equal(playerBalanceReply.Balance.ToDecimal().GetValueOrDefault(0), actual.Balance);
     }

@@ -60,7 +60,7 @@ public class EndorphinaKickPlayerCommandServiceUnitTest
             fakeGameInterfaceEndorphinaClient,
             fakePlayerRepository);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeGameInterfaceEndorphinaClient
             .Received(1)

@@ -78,7 +78,7 @@ public class SBOTransferPlayerBalanceGetServiceUnitTest
             fakePlayerRepository,
             fakeBrandService);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(response.Balance.ToDecimal().GetValueOrDefault(0), actual.Balance);

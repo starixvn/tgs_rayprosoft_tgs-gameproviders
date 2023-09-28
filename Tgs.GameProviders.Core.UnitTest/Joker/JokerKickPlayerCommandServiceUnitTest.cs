@@ -76,17 +76,14 @@ public class JokerKickPlayerCommandServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        await sut
-           .ExecuteAsync(
-               command: command)
-           .ConfigureAwait(false);
+        await sut.ExecuteAsync(command: command);
 
         _ = fakeClient
             .Received(1)
             .PlayerLogoutAsync(
-                apiUrl: Arg.Is(configuration.ApiUrl),
-                appId: Arg.Is(configuration.AppId),
-                secretKey: Arg.Is(configuration.SecretKey),
-                playerCode: Arg.Is(command.PlayerCode));
+            apiUrl: Arg.Is(configuration.ApiUrl),
+            appId: Arg.Is(configuration.AppId),
+            secretKey: Arg.Is(configuration.SecretKey),
+            playerCode: Arg.Is(command.PlayerCode));
     }
 }

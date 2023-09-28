@@ -58,13 +58,12 @@ public partial class GameProvidersClientUnitTest
 
         var actual = await sut
             .PlayerFundOutAsync(
-                gameProviderCode,
-                brandCode,
-                playerCode,
-                currencyCode,
-                orderId,
-                amount)
-            .ConfigureAwait(false);
+            gameProviderCode,
+            brandCode,
+            playerCode,
+            currencyCode,
+            orderId,
+            amount);
 
         Assert.NotNull(actual);
     }

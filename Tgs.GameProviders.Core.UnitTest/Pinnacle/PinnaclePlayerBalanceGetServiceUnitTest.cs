@@ -75,9 +75,8 @@ public class PinnaclePlayerBalanceGetServiceUnitTest
         {
             IsPlayerExist = true,
             Balance = 100,
-            FreeBalance=99,
-            OutstandingBalance=1
-            
+            FreeBalance = 99,
+            OutstandingBalance = 1
         };
 
         _ = fakeClient
@@ -96,7 +95,7 @@ public class PinnaclePlayerBalanceGetServiceUnitTest
             fakeBrandRepository,
             fakeClient);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.Equal(100m, actual.Balance);
         Assert.Equal(99m, actual.FreeBalance);

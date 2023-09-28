@@ -68,18 +68,17 @@ public partial class GameProvidersClientUnitTest
 
         var actual = await sut
             .GameUrlByBetConstructAsync(
-                gameType: gameType,
-                gameId: gameId,
-                brandCode: brandCode,
-                playerCode: playerCode,
-                currencyCode: currencyCode,
-                loginRecordId: loginRecordId,
-                platformType: platformType,
-                language: language,
-                ipAddress: ipAddress,
-                backUrl: backUrl,
-                lobbyDomain: lobbyDomain)
-            .ConfigureAwait(false);
+            gameType: gameType,
+            gameId: gameId,
+            brandCode: brandCode,
+            playerCode: playerCode,
+            currencyCode: currencyCode,
+            loginRecordId: loginRecordId,
+            platformType: platformType,
+            language: language,
+            ipAddress: ipAddress,
+            backUrl: backUrl,
+            lobbyDomain: lobbyDomain);
 
         Assert.NotNull(actual);
     }

@@ -116,10 +116,7 @@ public class AVIAGamingGameUrlGetServiceUnitTest
             fakeBrand,
             fakeClient);
 
-        _ = await sut
-           .GetAsync(
-           query: query)
-           .ConfigureAwait(false);
+        _ = await sut.GetAsync(query: query);
 
         _ = fakeClient
             .Received(1)
@@ -129,8 +126,7 @@ public class AVIAGamingGameUrlGetServiceUnitTest
             playerCode: Arg.Is(player.PlayerCode),
             currency: Arg.Is(currency),
             password: Arg.Is(configuration.PlayerPassword),
-            cancellationToken: Arg.Any<CancellationToken>())
-            .ConfigureAwait(false);
+            cancellationToken: Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -228,10 +224,7 @@ public class AVIAGamingGameUrlGetServiceUnitTest
             fakeBrand,
             fakeClient);
 
-        var actual = await sut
-            .GetAsync(
-            query: query)
-            .ConfigureAwait(false);
+        var actual = await sut.GetAsync(query: query);
 
         Assert.NotNull(actual);
         Assert.Equal(gameurl.GameUrl, actual);

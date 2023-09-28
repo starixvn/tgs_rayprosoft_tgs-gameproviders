@@ -96,10 +96,7 @@ public class JokerPlayerFundOutGetServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        var actual = await sut
-            .GetAsync(
-               query: query)
-            .ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(reply.RequestId, actual.OrderId);

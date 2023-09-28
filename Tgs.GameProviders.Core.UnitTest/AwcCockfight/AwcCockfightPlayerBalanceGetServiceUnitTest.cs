@@ -112,7 +112,7 @@ public class AwcCockfightPlayerBalanceGetServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        _ = await sut.GetAsync(query: query).ConfigureAwait(false);
+        _ = await sut.GetAsync(query: query);
 
         _ = fakeClient
             .Received(1)
@@ -124,8 +124,7 @@ public class AwcCockfightPlayerBalanceGetServiceUnitTest
             userName: Arg.Is(query.PlayerCode),
             currency: Arg.Is(currency),
             betLimit: Arg.Is(configuration.BetLimit.ToJsonString()),
-            cancellationToken: Arg.Any<CancellationToken>())
-            .ConfigureAwait(false);
+            cancellationToken: Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -218,7 +217,7 @@ public class AwcCockfightPlayerBalanceGetServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(response.Balance.ToDecimal(), actual.Balance);

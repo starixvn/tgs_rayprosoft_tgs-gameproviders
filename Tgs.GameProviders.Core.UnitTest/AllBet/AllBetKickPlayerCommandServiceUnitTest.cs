@@ -86,7 +86,7 @@ public class AllBetKickPlayerCommandServiceUnitTest
             fakeAgentMapper,
             fakeApiClient);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeApiClient
             .Received(1)

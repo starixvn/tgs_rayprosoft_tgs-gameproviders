@@ -36,7 +36,7 @@ public class EvolutionTransferKickPlayerCommandServiceUnitTest
             fakeGameInterfaceEvolutionServiceGrpc,
             fakeSettingRepository);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeGameInterfaceEvolutionServiceGrpc
             .Received(1)

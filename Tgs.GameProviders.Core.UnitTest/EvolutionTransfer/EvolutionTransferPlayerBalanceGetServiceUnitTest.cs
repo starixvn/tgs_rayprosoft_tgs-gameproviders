@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Google.Protobuf.Collections;
 using NSubstitute;
-using Tgs.Core.Infrastructures.Security;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.EvolutionService.Protos;
@@ -100,20 +99,14 @@ public class EvolutionTransferPlayerBalanceGetServiceUnitTest
             fakePlayerRepository,
             fakeSettingRepository);
 
-        _ = await Assert.ThrowsAsync<Exception>(
-            () => sut
-            .GetAsync(
-                query)
-            .AsTask())
-             .ConfigureAwait(false);
+        _ = await Assert.ThrowsAsync<Exception>(() => sut.GetAsync(query).AsTask());
 
         _ = await fakeGameInterfaceEvolutionServiceGrpc
             .Received(2)
             .GetBalanceAsync(
             Arg.Is(configuration.ApiUrl),
             Arg.Is(configuration.EcId),
-            Arg.Is(query.PlayerCode))
-            .ConfigureAwait(false);
+            Arg.Is(query.PlayerCode));
     }
 
     [Fact]
@@ -176,7 +169,7 @@ public class EvolutionTransferPlayerBalanceGetServiceUnitTest
             fakePlayerRepository,
             fakeSettingRepository);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(response.Balance.ToDecimal(), actual.Balance);

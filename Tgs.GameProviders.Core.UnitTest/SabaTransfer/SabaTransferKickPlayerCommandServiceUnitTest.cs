@@ -61,7 +61,7 @@ public class SabaTransferKickPlayerCommandServiceUnitTest
             fakePlayerRepository,
             fakeBrandService);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeGameInterfaceSabaClient
             .Received(1)

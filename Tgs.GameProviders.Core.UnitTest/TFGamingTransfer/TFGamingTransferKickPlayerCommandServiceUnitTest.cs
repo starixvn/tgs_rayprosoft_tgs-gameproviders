@@ -52,21 +52,13 @@ public class TFGamingTransferKickPlayerCommandServiceUnitTest
         };
         _ = fakeGameProviderRepository.GetTFGamingTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
-        var response = new PlatformLoginReply()
-        {
-            MerchantId = "SQjCxm2cX5bahBta",
-            CustomerName = "4ucmqplxb029",
-            Timestamp = 1670390195123,
-            Sign = "46C9EA4F03900B74379A15A56ED14229"
-        };
-
         var sut = new TFGamingTransferKickPlayerCommandService(
             fakeBrandService,
             fakeGameProviderRepository,
             fakeGameInterfaceTFGamingClient,
             fakePlayerRepository);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeGameInterfaceTFGamingClient
             .Received(1)

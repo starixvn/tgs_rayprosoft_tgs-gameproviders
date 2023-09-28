@@ -98,7 +98,7 @@ public class EndorphinaPlayerBalanceGetServiceUnitTest
             fakeGameInterfaceEndorphinaClient,
             fakePlayerRepository);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(168M, actual.Balance);

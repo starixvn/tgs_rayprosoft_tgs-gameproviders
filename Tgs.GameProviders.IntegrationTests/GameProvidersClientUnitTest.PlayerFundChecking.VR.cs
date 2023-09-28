@@ -59,13 +59,12 @@ public partial class GameProvidersClientUnitTest
 
         var actual = await sut
             .PlayerFundCheckingByVRAsync(
-                 brandCode: brandCode,
-                 playerCode: playerCode,
-                 currencyCode: currencyCode,
-                 orderId: orderId,
-                 startTime: startTime,
-                 endTime: endTime)
-            .ConfigureAwait(false);
+            brandCode: brandCode,
+            playerCode: playerCode,
+            currencyCode: currencyCode,
+            orderId: orderId,
+            startTime: startTime,
+            endTime: endTime);
 
         Assert.True(actual);
     }

@@ -117,7 +117,7 @@ public class OBetGameUrlGetServiceUnitTest
             fakeBrandRepository,
             fakeClient);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri(gameUrlReply.GameUrl), actual);
@@ -125,18 +125,17 @@ public class OBetGameUrlGetServiceUnitTest
         await fakeClient
             .Received(1)
             .PlayerUpdateBetLimitAsync(
-                apiUrl: Arg.Is(configuration.ApiUrl),
-                apiKey: Arg.Is(configuration.ApiKey),
-                agentId: Arg.Is(configuration.AgentId),
-                playerCode: Arg.Is(player.PlayerCode),
-                maxBetGrpHdp: Arg.Is(configuration.MaxBetGrpHdp),
-                maxBetGrpBasketBall: Arg.Is(configuration.MaxBetGrpBasketBall),
-                maxBetGrpOthersSport: Arg.Is(configuration.MaxBetGrpOthersSport),
-                maxBetGrp1x2: Arg.Is(configuration.MaxBetGrp1x2),
-                maxBetGrpMixParlay: Arg.Is(configuration.MaxBetGrpMixParlay),
-                maxBetGrpOthersOdds: Arg.Is(configuration.MaxBetGrpOthersOdds),
-                maxBetGrpSpecial: Arg.Is(configuration.MaxBetGrpSpecial),
-                Arg.Any<CancellationToken>())
-            .ConfigureAwait(false);
+            apiUrl: Arg.Is(configuration.ApiUrl),
+            apiKey: Arg.Is(configuration.ApiKey),
+            agentId: Arg.Is(configuration.AgentId),
+            playerCode: Arg.Is(player.PlayerCode),
+            maxBetGrpHdp: Arg.Is(configuration.MaxBetGrpHdp),
+            maxBetGrpBasketBall: Arg.Is(configuration.MaxBetGrpBasketBall),
+            maxBetGrpOthersSport: Arg.Is(configuration.MaxBetGrpOthersSport),
+            maxBetGrp1x2: Arg.Is(configuration.MaxBetGrp1x2),
+            maxBetGrpMixParlay: Arg.Is(configuration.MaxBetGrpMixParlay),
+            maxBetGrpOthersOdds: Arg.Is(configuration.MaxBetGrpOthersOdds),
+            maxBetGrpSpecial: Arg.Is(configuration.MaxBetGrpSpecial),
+            Arg.Any<CancellationToken>());
     }
 }

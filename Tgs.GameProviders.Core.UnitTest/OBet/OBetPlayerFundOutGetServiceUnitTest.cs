@@ -96,7 +96,7 @@ public class OBetPlayerFundOutGetServiceUnitTest
             fakeBrandRepository,
             fakeClient);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(response.SerialNo, actual.OrderId);

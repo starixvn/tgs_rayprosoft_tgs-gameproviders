@@ -72,7 +72,7 @@ public class DreamGamingTransferKickPlayerCommandServiceUnitTest
             fakeGameInterfaceDreamGamingClient,
             fakePlayerRepository);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeGameInterfaceDreamGamingClient
             .Received(1)

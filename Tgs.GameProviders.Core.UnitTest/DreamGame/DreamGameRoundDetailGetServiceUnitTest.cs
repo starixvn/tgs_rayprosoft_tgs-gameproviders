@@ -87,7 +87,7 @@ public class DreamGameRoundDetailGetServiceUnitTest
             fakeRoundService,
             fakeService);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
     }

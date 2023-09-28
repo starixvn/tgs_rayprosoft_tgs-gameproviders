@@ -33,8 +33,8 @@ public class SabaKickPlayerCommandServiceUnitTest
             PlayerCode = "4ucmqplxb029"
         };
 
-        fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeUtility.ToSabaPlayerId(command.PlayerCode, configuration.IsTestEnvironment).Returns(command.PlayerCode);
+        _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+        _ = fakeUtility.ToSabaPlayerId(command.PlayerCode, configuration.IsTestEnvironment).Returns(command.PlayerCode);
 
         var sut = new SabaKickPlayerCommandService(
             fakeLogger,
@@ -42,7 +42,7 @@ public class SabaKickPlayerCommandServiceUnitTest
             fakeUtility,
             fakeApiClient);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeApiClient
             .Received(1)
@@ -80,8 +80,8 @@ public class SabaKickPlayerCommandServiceUnitTest
 
         var playerId = $"{command.PlayerCode}_test";
 
-        fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeUtility.ToSabaPlayerId(command.PlayerCode, configuration.IsTestEnvironment).Returns(playerId);
+        _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+        _ = fakeUtility.ToSabaPlayerId(command.PlayerCode, configuration.IsTestEnvironment).Returns(playerId);
 
         var sut = new SabaKickPlayerCommandService(
             fakeLogger,
@@ -89,7 +89,7 @@ public class SabaKickPlayerCommandServiceUnitTest
             fakeUtility,
             fakeApiClient);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeApiClient
             .Received(1)

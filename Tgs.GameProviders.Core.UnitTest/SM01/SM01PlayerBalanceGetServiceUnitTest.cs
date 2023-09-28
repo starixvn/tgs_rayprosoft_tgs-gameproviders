@@ -73,7 +73,7 @@ public class SM01PlayerBalanceGetServiceUnitTest
             fakeGameInterfaceSM01Client,
             fakePlayerRepository);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(response.Balance.ToDecimal(), actual.Balance);

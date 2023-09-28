@@ -47,10 +47,7 @@ public partial class GameProvidersClientUnitTest
 
         var sut = new GameProvidersClient(httpClient);
 
-        var actual = await sut
-            .GamePlatformLoginBySM01Async(
-                playerCode: playerCode)
-            .ConfigureAwait(false);
+        var actual = await sut.GamePlatformLoginBySM01Async(playerCode: playerCode);
 
         Assert.NotNull(actual);
         Assert.Equal(result.MerchantId, actual.MerchantId);

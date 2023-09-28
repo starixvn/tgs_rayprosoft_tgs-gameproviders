@@ -101,10 +101,7 @@ public class JokerRoundDetailGetServiceUnitTest
             fakeClient,
             fakeRound);
 
-        var actual = await sut
-            .GetAsync(
-               query: query)
-            .ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(reply.Url, (actual.Data!.Single() as RoundDetailDataUrl)!.Url.ToString());

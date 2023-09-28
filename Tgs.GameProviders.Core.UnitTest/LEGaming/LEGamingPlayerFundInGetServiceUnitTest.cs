@@ -95,10 +95,7 @@ public class LEGamingPlayerFundInGetServiceUnitTest
             fakeBrand,
             fakeClient);
 
-        var actual = await sut
-           .GetAsync(
-            query: query)
-           .ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(orderId, actual.OrderId);

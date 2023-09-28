@@ -68,7 +68,7 @@ public class JiliKickPlayerCommandServiceUnitTest
         _ = fakeMerchantMapper.GetMerchant(configuration.Merchants, player.BrandCode).Returns(merchant);
         _ = fakePlayer.GetAsync(command.PlayerCode).Returns(ValueTask.FromResult(player));
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeApiClient.Received(1)
             .KickMemberAsync(

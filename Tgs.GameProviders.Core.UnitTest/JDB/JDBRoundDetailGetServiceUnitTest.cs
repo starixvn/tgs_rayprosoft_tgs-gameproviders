@@ -188,7 +188,7 @@ public class JDBRoundDetailGetServiceUnitTest
             fakeAgentMapper,
             fakeApiClient);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         expected.Data.ToExpectedObject().ShouldEqual(actual.Data);

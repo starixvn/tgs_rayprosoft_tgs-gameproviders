@@ -129,10 +129,7 @@ public class LEGamingGameUrlGetServiceUnitTest
             fakeGame,
             fakeClient);
 
-        var actual = await sut
-            .GetAsync(
-            query: query)
-            .ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(gameurl, actual);

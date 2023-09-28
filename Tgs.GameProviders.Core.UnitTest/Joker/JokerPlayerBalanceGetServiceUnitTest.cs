@@ -90,10 +90,7 @@ public class JokerPlayerBalanceGetServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        var actual = await sut
-            .GetAsync(
-               query: query)
-            .ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.Equal(reply.Balance.ToDecimal().GetValueOrDefault(0), actual.Balance);
     }

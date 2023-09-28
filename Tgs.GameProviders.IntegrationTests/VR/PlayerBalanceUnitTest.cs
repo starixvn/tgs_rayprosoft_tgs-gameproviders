@@ -53,8 +53,7 @@ public class PlayerBalanceUnitTest
         var actual = await sut
             .PlayerBalanceAsync(
             gameProviderCode: GameProviderType.VR,
-            playerCode: playerCode)
-            .ConfigureAwait(false);
+            playerCode: playerCode);
 
         Assert.NotNull(actual);
         Assert.Equal(100m, actual.Balance);

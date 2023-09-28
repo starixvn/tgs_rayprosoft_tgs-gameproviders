@@ -209,6 +209,11 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceKaiyuanBaseUrl")!;
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceWicketCricketBaseUrl")!;
     });
 
 builder.Services
@@ -218,6 +223,7 @@ builder.Services
             .AddEnvironmentVariableDetector())
         .AddSource("Tgs.*")
         .AddSource("TGS.*")
+        .AddSource("Valhalla.*")
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddGrpcClientInstrumentation()
@@ -282,6 +288,7 @@ _ = app.InitialConnectionTFGaming();
 _ = app.InitialConnectionWGFmGaming();
 _ = app.InitialConnectionWGViaGaming();
 _ = app.InitialConnectionWMCasino();
+_ = app.InitialConnectionWicketCricke();
 _ = app.InitialConnectionYeeBet();
 
 app.Run();

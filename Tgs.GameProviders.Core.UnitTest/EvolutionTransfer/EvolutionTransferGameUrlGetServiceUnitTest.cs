@@ -127,9 +127,9 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
             fakeSettingRepository,
             fakeToken);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
-        var path = response.Entry.Substring(1, response.Entry.Length - 1);
+        var path = response.Entry[1..];
 
         var url = new Uri($"{configuration.ApiUrl}{path}");
 
@@ -251,9 +251,9 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
             fakeSettingRepository,
             fakeToken);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
-        var path = response.Entry.Substring(1, response.Entry.Length - 1);
+        var path = response.Entry[1..];
 
         var url = new Uri($"{configuration.ApiUrl}{path}");
 

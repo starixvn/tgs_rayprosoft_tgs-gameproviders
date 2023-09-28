@@ -27,7 +27,7 @@ public class PlayerRepositoryUintTest
 
         var repository = new PlayerRepository(fakeClient);
 
-        var actual = await repository.GetAsync(playerCode).ConfigureAwait(false);
+        var actual = await repository.GetAsync(playerCode);
 
         Assert.NotNull(actual);
         Assert.Equal(playerCode, actual.PlayerCode);

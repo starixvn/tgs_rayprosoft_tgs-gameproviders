@@ -89,7 +89,7 @@ public class SabaTransferGameUrlGetServiceUnitTest
             fakePlayerRepository,
             fakeBrandService);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri($"http://localhost/DepositProcessLogin?token=QwAfMp4OEKSUwoe48C/CA&lang={gameProviderCultureCode}"), actual);

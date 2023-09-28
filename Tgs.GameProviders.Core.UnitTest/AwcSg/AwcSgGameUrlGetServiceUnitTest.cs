@@ -135,11 +135,7 @@ public class AwcSgGameUrlGetServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        _ = Assert.ThrowsAsync<UriFormatException>(async ()
-            => await sut
-            .GetAsync(
-                query: query)
-            .ConfigureAwait(false));
+        _ = Assert.ThrowsAsync<UriFormatException>(async () => await sut.GetAsync(query: query));
 
         _ = fakeClient
             .Received(1)
@@ -151,8 +147,7 @@ public class AwcSgGameUrlGetServiceUnitTest
             userName: Arg.Is(query.PlayerCode),
             currency: Arg.Is(currency),
             betLimit: Arg.Is(configuration.BetLimit.ToJsonString()),
-            cancellationToken: Arg.Any<CancellationToken>())
-            .ConfigureAwait(false);
+            cancellationToken: Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -268,7 +263,7 @@ public class AwcSgGameUrlGetServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(gameUrl, actual.Url);

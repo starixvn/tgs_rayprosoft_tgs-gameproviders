@@ -115,7 +115,7 @@ public class SBOTransferGameUrlGetServiceUnitTest
             fakeBrandService,
             fakeGameRepository);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual);
@@ -223,7 +223,7 @@ public class SBOTransferGameUrlGetServiceUnitTest
             fakeBrandService,
             fakeGameRepository);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual);

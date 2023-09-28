@@ -48,7 +48,6 @@ public class SkywindTransferPlayerBalanceGetServiceUnitTest
             PlayerCode = "4ucmqplxb029"
         };
 
-
         _ = fakeSettingRepository.GetSkywindTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
 
@@ -74,7 +73,7 @@ public class SkywindTransferPlayerBalanceGetServiceUnitTest
              fakePlayerRepository,
              fakeSettingRepository);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(response.Balance.ToDecimal(), actual.Balance);

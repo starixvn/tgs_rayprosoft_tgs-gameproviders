@@ -78,8 +78,7 @@ public class AVIAGamingKickPlayerCommandServiceUnitTest
 
         await sut
            .ExecuteAsync(
-           command: command)
-           .ConfigureAwait(false);
+           command: command);
 
         _ = fakeClient
             .Received(1)

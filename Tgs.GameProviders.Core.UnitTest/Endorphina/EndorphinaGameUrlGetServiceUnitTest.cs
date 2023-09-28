@@ -118,7 +118,7 @@ public class EndorphinaGameUrlGetServiceUnitTest
 
         var expected = "https://test.endorphina.network/icasino/sessions/launch?token=96E108A557044C5EB0D0EF5EFED9596B&sign=0A79E18AD2D92F03273AF6D44DF270FE&lang=en&profile=noexit.xml";
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri(expected), actual);

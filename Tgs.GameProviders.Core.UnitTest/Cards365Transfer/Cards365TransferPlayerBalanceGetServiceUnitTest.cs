@@ -92,7 +92,7 @@ public class Cards365TransferPlayerBalanceGetServiceUnitTest
             fakeBrandRepository,
             fakeClient);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.Equal(168M, actual.Balance);
     }

@@ -46,7 +46,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAVIAGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAVIAGamingConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -92,7 +92,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcAelottoConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcAelottoConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -139,7 +139,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcAwsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcAwsConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -201,7 +201,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcCockfightConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcCockfightConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -249,7 +249,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcFacaiConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcFacaiConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -296,7 +296,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcFsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcFsConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -343,7 +343,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcKmConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcKmConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -390,7 +390,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcLudoConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcLudoConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -437,7 +437,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcPgsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcPgsConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -500,7 +500,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcRcbConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcRcbConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -561,7 +561,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcSgConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcSgConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -609,7 +609,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcSpadeConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcSpadeConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -671,7 +671,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcVenusConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcVenusConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -719,7 +719,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAwcYlConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetAwcYlConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
@@ -767,7 +767,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetBTiSportsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetBTiSportsConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("https://prod20240-108707434.1x2aaa.com/"), actual.SportsbookURL);
@@ -811,7 +811,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetCards365TransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetCards365TransferConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new("https://localhost/"), actual.ApiUrl);
@@ -846,7 +846,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var (DesktopEndpoint, MobileEndpoint) = await repository.GetGameEndpointsAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var (DesktopEndpoint, MobileEndpoint) = await repository.GetGameEndpointsAsync(gameProviderConfigurationId);
 
         Assert.Equal(desktopEndpoint, DesktopEndpoint);
         Assert.Equal(mobileEndpoint, MobileEndpoint);
@@ -875,7 +875,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetAsync(gameProviderId).ConfigureAwait(false);
+        var actual = await repository.GetAsync(gameProviderId);
 
         Assert.NotNull(actual);
         Assert.Equal(gameProviderId, actual.GameProviderId);
@@ -893,7 +893,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode).ConfigureAwait(false);
+        var actual = await repository.GetGameProviderCultureCodeAsync(gameProviderId, cultureCode);
 
         Assert.NotNull(actual);
         Assert.Equal(expected, actual);
@@ -911,7 +911,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode).ConfigureAwait(false);
+        var actual = await repository.GetGameProviderCurrencyCodeAsync(gameProviderId, currencyCode);
 
         Assert.NotNull(actual);
         Assert.Equal(expected, actual);
@@ -928,7 +928,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetGameProviderIdAsync(gameProviderCode).ConfigureAwait(false);
+        var actual = await repository.GetGameProviderIdAsync(gameProviderCode);
 
         Assert.Equal(expected, actual);
     }
@@ -967,7 +967,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetInplayMatrixESportsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetInplayMatrixESportsConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal("OfL5H2hKOIP9tHp9ZIoqYeggJtFC39zQ", actual.MerchantCode);
@@ -1009,7 +1009,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetJDBTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetJDBTransferConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal("ConfigurationData-Agent", actual.Agent);
@@ -1051,7 +1051,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetJiliTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetJiliTransferConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal("ConfigurationData-AgentId", actual.AgentId);
@@ -1090,7 +1090,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetJokerConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetJokerConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal("TGVY", actual.AppId);
@@ -1134,7 +1134,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetLEGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetLEGamingConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new("http://localhost/"), actual.ApiUrl);
@@ -1181,7 +1181,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetPinnacleConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetPinnacleConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal("V0201", actual.AgentCode);
@@ -1222,7 +1222,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetSabaTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetSabaTransferConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal("tg", actual.OperatorId);
@@ -1267,7 +1267,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetSBOTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetSBOTransferConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal("STAG_GPI", actual.Agent);
@@ -1310,7 +1310,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetSM01ConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetSM01ConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri("https://cn.ucfclive.com"), actual.ApiUrl);
@@ -1356,7 +1356,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetWGFmGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetWGFmGamingConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal("ConfigurationDataPartnerCode", actual.PartnerCode);
@@ -1403,7 +1403,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetWGFmGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetWGFmGamingConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal("SettingConfigurationPartnerCode", actual.PartnerCode);
@@ -1449,7 +1449,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetWGViaGamingConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetWGViaGamingConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal("SettingConfigurationPartnerCode", actual.PartnerCode);
@@ -1489,7 +1489,7 @@ public class GameProviderRepositoryUnitTest
 
         var repository = new GameProviderRepository(fakeClient);
 
-        var actual = await repository.GetWMCasinoTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var actual = await repository.GetWMCasinoTransferConfigurationAsync(gameProviderConfigurationId);
 
         Assert.NotNull(actual);
         Assert.Equal("hpg02twapi", actual.VendorId);

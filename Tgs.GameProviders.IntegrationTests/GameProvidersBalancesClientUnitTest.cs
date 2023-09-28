@@ -52,9 +52,8 @@ public class GameProvidersBalancesClientUnitTest
 
         var actual = await sut
             .AwcAelottoGetBalances(
-                brandCode)
-            .ToArrayAsync()
-            .ConfigureAwait(false);
+            brandCode)
+            .ToArrayAsync();
 
         Assert.NotNull(actual);
         Assert.True(actual.Any());
@@ -97,8 +96,7 @@ public class GameProvidersBalancesClientUnitTest
         var actual = await sut
             .AwcAwsGetBalances(
                 brandCode)
-            .ToArrayAsync()
-            .ConfigureAwait(false);
+            .ToArrayAsync();
 
         Assert.NotNull(actual);
         Assert.True(actual.Any());
@@ -140,9 +138,8 @@ public class GameProvidersBalancesClientUnitTest
 
         var actual = await sut
             .AwcFacaiGetBalances(
-                brandCode)
-            .ToArrayAsync()
-            .ConfigureAwait(false);
+            brandCode)
+            .ToArrayAsync();
 
         Assert.NotNull(actual);
         Assert.True(actual.Any());

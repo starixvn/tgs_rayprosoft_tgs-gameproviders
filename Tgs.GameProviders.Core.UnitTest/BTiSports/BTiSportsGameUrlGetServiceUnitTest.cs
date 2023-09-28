@@ -90,7 +90,7 @@ public class BTiSportsGameUrlGetServiceUnitTest
             fakeGameInterfaceBTiClient,
             fakePlayerRepository);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri(configuration.SportsbookURL, $"/{cultureCode}/{configuration.DesktopLayout}/?operatorToken={response.AuthToken}"), actual);

@@ -98,12 +98,7 @@ public class AVIAGamingPlayerBalanceGetServiceUnitTest
             fakeBrand,
             fakeClient);
 
-        _ = await Assert.ThrowsAsync<Exception>(
-            () => sut
-            .GetAsync(
-                query)
-            .AsTask())
-             .ConfigureAwait(false);
+        _ = await Assert.ThrowsAsync<Exception>(() => sut.GetAsync(query).AsTask());
 
         _ = fakeClient
             .Received(1)
@@ -113,8 +108,7 @@ public class AVIAGamingPlayerBalanceGetServiceUnitTest
             playerCode: Arg.Is(player.PlayerCode),
             currency: Arg.Is(currency),
             password: Arg.Is(configuration.PlayerPassword),
-            cancellationToken: Arg.Any<CancellationToken>())
-            .ConfigureAwait(false);
+            cancellationToken: Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -194,10 +188,7 @@ public class AVIAGamingPlayerBalanceGetServiceUnitTest
             fakeBrand,
             fakeClient);
 
-        var actual = await sut
-            .GetAsync(
-            query: query)
-            .ConfigureAwait(false);
+        var actual = await sut.GetAsync(query: query);
 
         Assert.Equal(gameurl.Balance.ToDecimal().GetValueOrDefault(0), actual.Balance);
     }

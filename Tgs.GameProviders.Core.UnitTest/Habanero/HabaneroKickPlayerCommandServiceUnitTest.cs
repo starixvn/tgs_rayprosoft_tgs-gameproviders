@@ -61,7 +61,7 @@ public class HabaneroKickPlayerCommandServiceUnitTest
         _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
         _ = fakeService.GetPlayerAsync(command.PlayerCode).Returns(ValueTask.FromResult(player));
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeApiClient.Received(1)
             .LogoutAsync(

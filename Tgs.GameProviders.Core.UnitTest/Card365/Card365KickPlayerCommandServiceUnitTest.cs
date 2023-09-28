@@ -55,9 +55,9 @@ public class Card365KickPlayerCommandServiceUnitTest
             PlayerCode = player.PlayerCode
         };
 
-        fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakePlayer.GetAsync(command.PlayerCode).Returns(ValueTask.FromResult(player));
-        fakeAgentMapper.GetAgent(configuration.BrandAgents, player.BrandCode).Returns(agent);
+        _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+        _ = fakePlayer.GetAsync(command.PlayerCode).Returns(ValueTask.FromResult(player));
+        _ = fakeAgentMapper.GetAgent(configuration.BrandAgents, player.BrandCode).Returns(agent);
 
         var sut = new Card365KickPlayerCommandService(
             fakeLogger,
@@ -66,7 +66,7 @@ public class Card365KickPlayerCommandServiceUnitTest
             fakeAgentMapper,
             fakeApiClient);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeApiClient
              .Received(1)

@@ -13,7 +13,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WMCasinoTransfer;
 public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
 {
     [Fact]
-    public void Can_Not_Fund_Out_Over_WM_Agent_Balance()
+    public async void Can_Not_Fund_Out_Over_WM_Agent_Balance()
     {
         var fakeBrandService = Substitute.For<IBrandRepository>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
@@ -75,7 +75,7 @@ public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
             fakeClient,
             fakePlayerRepository);
 
-        Assert.ThrowsAsync<Exception>(async () => await sut.GetAsync(query).ConfigureAwait(false));
+        _ = await Assert.ThrowsAsync<Exception>(() => sut.GetAsync(query).AsTask());
     }
 
     [Fact]
@@ -159,7 +159,7 @@ public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
             fakeClient,
             fakePlayerRepository);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(gameProviderTransactionId, actual.OrderId);

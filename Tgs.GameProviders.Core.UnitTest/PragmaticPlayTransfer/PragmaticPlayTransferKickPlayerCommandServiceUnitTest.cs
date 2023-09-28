@@ -75,19 +75,15 @@ public class PragmaticPlayTransferKickPlayerCommandServiceUnitTest
             fakeBrandRepository,
             fakeClient);
 
-        await sut
-            .ExecuteAsync(
-            command: command)
-           .ConfigureAwait(false);
+        await sut.ExecuteAsync(command: command);
 
         await fakeClient
             .Received(1)
             .PlayerLogoutAsync(
-                apiUrl: Arg.Is(configuration.ApiUrl),
-                secureLogin: Arg.Is(configuration.SecureLogin),
-                secretKey: Arg.Is(configuration.SecretKey),
-                playerCode: Arg.Is(command.PlayerCode),
-                cancellationToken: Arg.Any<CancellationToken>())
-            .ConfigureAwait(false);
+            apiUrl: Arg.Is(configuration.ApiUrl),
+            secureLogin: Arg.Is(configuration.SecureLogin),
+            secretKey: Arg.Is(configuration.SecretKey),
+            playerCode: Arg.Is(command.PlayerCode),
+            cancellationToken: Arg.Any<CancellationToken>());
     }
 }

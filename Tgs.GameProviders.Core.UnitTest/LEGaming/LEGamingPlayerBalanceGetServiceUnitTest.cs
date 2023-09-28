@@ -96,10 +96,7 @@ public class LEGamingPlayerBalanceGetServiceUnitTest
             fakeBrand,
             fakeClient);
 
-        var actual = await sut
-            .GetAsync(
-            query: query)
-            .ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.Equal(100m, actual.Balance);
         Assert.Equal(99m, actual.FreeBalance);

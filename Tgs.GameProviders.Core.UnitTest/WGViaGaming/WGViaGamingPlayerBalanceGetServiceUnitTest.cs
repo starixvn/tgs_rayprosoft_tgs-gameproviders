@@ -14,7 +14,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGViaGaming;
 public class WGViaGamingPlayerBalanceGetServiceUnitTest
 {
     [Fact]
-    public void Create_Player()
+    public async void Create_Player()
     {
         var fakeClient = Substitute.For<IGameInterfaceWGViaGamingClient>();
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
@@ -99,11 +99,7 @@ public class WGViaGamingPlayerBalanceGetServiceUnitTest
             fakeBrandRepository,
             fakeClient);
 
-        _ = Assert.ThrowsAsync<Exception>(async ()
-            => await sut
-            .GetAsync(
-                query: query)
-            .ConfigureAwait(false));
+        _ = await Assert.ThrowsAsync<Exception>(() => sut.GetAsync(query: query).AsTask());
 
         _ = fakeClient
             .Received(1)
@@ -195,10 +191,7 @@ public class WGViaGamingPlayerBalanceGetServiceUnitTest
             fakeBrandRepository,
             fakeClient);
 
-        var actual = await sut
-            .GetAsync(
-            query: query)
-            .ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.Equal(1, actual.Balance);
     }

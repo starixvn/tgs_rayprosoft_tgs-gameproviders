@@ -60,11 +60,11 @@ public class JDBKickPlayerCommandServiceUnitTest
             PlayerCode = player.PlayerCode
         };
 
-        fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        fakeAgentMapper.GetAgent(configuration.Agents, player.DefaultWalletCurrencyCode)
+        _ = fakeService.GetSettingConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+        _ = fakeAgentMapper.GetAgent(configuration.Agents, player.DefaultWalletCurrencyCode)
             .Returns(agent);
 
-        fakePlayer.GetAsync(command.PlayerCode).Returns(ValueTask.FromResult(player));
+        _ = fakePlayer.GetAsync(command.PlayerCode).Returns(ValueTask.FromResult(player));
 
         var sut = new JDBKickPlayerCommandService(
             fakeLogger,
@@ -73,7 +73,7 @@ public class JDBKickPlayerCommandServiceUnitTest
             fakeAgentMapper,
             fakeApiClient);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeApiClient
             .Received(1)

@@ -103,7 +103,7 @@ public class SabaGameUrlGetServiceUnitTest
 
         var sut = new SabaGameUrlGetService(fakeLogger, fakeService, fakePlayerService, fakeUtility, fakeApiClient);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(gameUrl, actual.Url);
@@ -201,7 +201,7 @@ public class SabaGameUrlGetServiceUnitTest
 
         var sut = new SabaGameUrlGetService(fakeLogger, fakeService, fakePlayerService, fakeUtility, fakeApiClient);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(gameUrl, actual.Url);

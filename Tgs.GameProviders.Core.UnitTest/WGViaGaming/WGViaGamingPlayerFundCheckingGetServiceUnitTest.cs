@@ -78,10 +78,7 @@ public class WGViaGamingPlayerFundCheckingGetServiceUnitTest
             fakeBrandRepository,
             fakeClient);
 
-        _ = await sut
-           .GetAsync(
-            query: query)
-           .ConfigureAwait(false);
+        _ = await sut.GetAsync(query: query);
 
         _ = fakeClient
             .Received(1)

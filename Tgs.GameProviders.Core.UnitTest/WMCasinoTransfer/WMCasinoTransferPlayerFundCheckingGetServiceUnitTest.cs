@@ -78,7 +78,7 @@ public class WMCasinoTransferPlayerFundCheckingGetServiceUnitTest
             fakeClient,
             fakePlayerRepository);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.True(actual.OrderStatus);

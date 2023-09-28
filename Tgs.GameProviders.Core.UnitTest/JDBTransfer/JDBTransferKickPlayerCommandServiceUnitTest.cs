@@ -62,7 +62,7 @@ public class JDBTransferKickPlayerCommandServiceUnitTest
             fakePlayerRepository,
             fakeBrandService);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeGameInterfaceJDBClient
             .Received(1)

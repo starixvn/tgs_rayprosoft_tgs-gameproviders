@@ -30,7 +30,7 @@ public class SettingRepositoryUnitTest
 
         var repository = new SettingRepository(fakeClient);
 
-        var actual = await repository.GetConfigurationAsync<KaiyuanConfiguration>(key).ConfigureAwait(false);
+        var actual = await repository.GetConfigurationAsync<KaiyuanConfiguration>(key);
 
         Assert.NotNull(actual);
         expected.ToExpectedObject().ShouldEqual(actual);

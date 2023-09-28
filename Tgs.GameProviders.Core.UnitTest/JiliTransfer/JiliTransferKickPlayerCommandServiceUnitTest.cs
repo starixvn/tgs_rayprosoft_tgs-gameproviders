@@ -71,7 +71,7 @@ public class JiliTransferKickPlayerCommandServiceUnitTest
             fakeClient,
             fakePlayerRepository);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeClient
             .Received(1)

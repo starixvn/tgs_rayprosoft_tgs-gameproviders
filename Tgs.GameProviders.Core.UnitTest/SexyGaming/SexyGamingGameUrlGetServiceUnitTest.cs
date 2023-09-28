@@ -90,7 +90,7 @@ public class SexyGamingGameUrlGetServiceUnitTest
               })
           }).Returns(ValueTask.FromResult(response));
 
-        var actual = await fakeService.GetAsync(query).ConfigureAwait(false);
+        var actual = await fakeService.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(gameUrl, actual.Url);

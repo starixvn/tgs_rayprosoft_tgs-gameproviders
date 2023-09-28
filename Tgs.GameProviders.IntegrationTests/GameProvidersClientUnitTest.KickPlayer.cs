@@ -50,9 +50,8 @@ public partial class GameProvidersClientUnitTest
 
         await sut
             .KickPlayerAsync(
-                gameProviderCode: gameProviderCode,
-                playerCode: playerCode)
-           .ConfigureAwait(false);
+            gameProviderCode: gameProviderCode,
+            playerCode: playerCode);
     }
 
     [Fact]

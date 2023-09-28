@@ -106,10 +106,7 @@ public class AVIAGamingPlayerFundInGetServiceUnitTest
             fakeBrand,
             fakeClient);
 
-        var actual = await sut
-            .GetAsync(
-            query: query)
-            .ConfigureAwait(false);
+        var actual = await sut.GetAsync(query: query);
 
         Assert.NotNull(actual);
         Assert.Equal(fundReply.OrderId, actual.OrderId);

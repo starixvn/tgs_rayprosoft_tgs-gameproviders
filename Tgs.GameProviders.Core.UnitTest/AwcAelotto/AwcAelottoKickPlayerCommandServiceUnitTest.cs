@@ -77,7 +77,7 @@ public class AwcAelottoKickPlayerCommandServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeClient
             .Received(1)

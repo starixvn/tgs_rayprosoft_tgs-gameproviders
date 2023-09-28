@@ -67,7 +67,6 @@ public class SBOTransferPlayerFundInGetServiceUnitTest
         var txnId = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
         var reply = new FundReply()
         {
-
             TxnId = txnId,
             Resp = new JsonObject { ["TxnId"] = txnId }.ToJsonString()
         };
@@ -84,7 +83,7 @@ public class SBOTransferPlayerFundInGetServiceUnitTest
             fakePlayerRepository,
             fakeBrandService);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(txnId, actual.OrderId);

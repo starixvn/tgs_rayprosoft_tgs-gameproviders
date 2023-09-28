@@ -59,7 +59,7 @@ public class WMCasinoTransferKickPlayerCommandServiceUnitTest
             fakeClient,
             fakePlayerRepository);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         var user = $"wmtf_{playerModel.PlayerCode}_{playerModel.BrandCode}";
 

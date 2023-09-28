@@ -97,7 +97,7 @@ public class AwcKmPlayerBalanceGetServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        _ = await sut.GetAsync(query: query).ConfigureAwait(false);
+        _ = await sut.GetAsync(query: query);
 
         _ = fakeClient
             .Received(1)
@@ -108,8 +108,7 @@ public class AwcKmPlayerBalanceGetServiceUnitTest
             playerCode: Arg.Is(query.PlayerCode),
             userName: Arg.Is(query.PlayerCode),
             currency: Arg.Is(currency),
-            cancellationToken: Arg.Any<CancellationToken>())
-            .ConfigureAwait(false);
+            cancellationToken: Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -188,7 +187,7 @@ public class AwcKmPlayerBalanceGetServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(response.Balance.ToDecimal(), actual.Balance);

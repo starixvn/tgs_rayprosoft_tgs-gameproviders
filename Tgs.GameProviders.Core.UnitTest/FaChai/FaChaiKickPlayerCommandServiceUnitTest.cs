@@ -73,7 +73,7 @@ public class FaChaiKickPlayerCommandServiceUnitTest
             fakeBrandRepository,
             fakeClient);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeClient
             .Received(1)

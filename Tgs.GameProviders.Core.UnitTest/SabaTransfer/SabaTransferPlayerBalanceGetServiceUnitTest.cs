@@ -59,8 +59,8 @@ public class SabaTransferPlayerBalanceGetServiceUnitTest
         {
             IsPlayerExist = true,
             Balance = 100m,
-            FreeBalance=99m,
-            OutstandingBalance=1m
+            FreeBalance = 99m,
+            OutstandingBalance = 1m
         };
         _ = fakeGameInterfaceSabaClient
             .PlayerBalanceAsync(
@@ -76,7 +76,7 @@ public class SabaTransferPlayerBalanceGetServiceUnitTest
             fakePlayerRepository,
             fakeBrandService);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(response.Balance.ToDecimal(), actual.Balance);

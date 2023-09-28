@@ -94,7 +94,7 @@ public class YeeBetPlayerBalanceGetServiceUnitTest
             fakeClient,
             fakePlayerCreateService);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(168M, actual.Balance);

@@ -115,7 +115,7 @@ public class Cards365TransferGameUrlGetServiceUnitTest
             fakeBrandRepository,
             fakeClient);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(new Uri(gameUrl), actual);

@@ -100,7 +100,7 @@ public class HabaneroGameUrlGetServiceUnitTest
 
         var sut = new HabaneroGameUrlGetService(fakeLogger, fakeService, fakeTokenProvider);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(gameUrl, actual.Url);

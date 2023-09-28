@@ -88,10 +88,7 @@ public class AVIAGamingPlayerFundCheckingGetServiceUnitTest
             fakeBrand,
             fakeClient);
 
-        var actual = await sut
-            .GetAsync(
-            query: query)
-            .ConfigureAwait(false);
+        var actual = await sut.GetAsync(query: query);
 
         Assert.True(actual);
     }

@@ -112,12 +112,7 @@ public class AwcRcbPlayerBalanceGetServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        _ = await Assert.ThrowsAsync<Exception>(
-            () => sut
-            .GetAsync(
-                query)
-            .AsTask())
-             .ConfigureAwait(false);
+        _ = await Assert.ThrowsAsync<Exception>(() => sut.GetAsync(query).AsTask());
 
         _ = fakeClient
             .Received(1)
@@ -129,8 +124,7 @@ public class AwcRcbPlayerBalanceGetServiceUnitTest
             userName: Arg.Is(query.PlayerCode),
             currency: Arg.Is(currency),
             betLimit: Arg.Is(configuration.BetLimit.ToJsonString()),
-            cancellationToken: Arg.Any<CancellationToken>())
-            .ConfigureAwait(false);
+            cancellationToken: Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -223,7 +217,7 @@ public class AwcRcbPlayerBalanceGetServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
         Assert.Equal(response.Balance.ToDecimal(), actual.Balance);

@@ -79,7 +79,7 @@ public class SM01PlayerFundOutGetServiceUnitTest
             fakeGameInterfaceSM01Client,
             fakePlayerRepository);
 
-        var actual = await sut.GetAsync(query).ConfigureAwait(false);
+        var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
     }

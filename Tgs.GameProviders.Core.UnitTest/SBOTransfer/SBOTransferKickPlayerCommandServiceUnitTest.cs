@@ -65,7 +65,7 @@ public class SBOTransferKickPlayerCommandServiceUnitTest
             fakePlayerRepository,
             fakeBrandService);
 
-        await sut.ExecuteAsync(command).ConfigureAwait(false);
+        await sut.ExecuteAsync(command);
 
         _ = fakeGameInterfaceSBOClient
             .Received(1)
