@@ -133,7 +133,7 @@ public class SabaTransferController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<SabaTransferPlayerFundCheckingQuery, PlayerFundCheckingResult> service,
+        [FromServices] IGetService<SabaTransferPlayerFundCheckingQuery, bool> service,
         PlayerFundCheckingRequest request)
     {
         var query = new SabaTransferPlayerFundCheckingQuery()
@@ -145,9 +145,9 @@ public class SabaTransferController : ControllerBase
         };
         var result = await service.GetAsync(query).ConfigureAwait(false);
 
-        return result == null ? null : new PlayerFundCheckingResponse()
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

@@ -127,7 +127,7 @@ public class DreamGamingTransferController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<DreamGamingTransferPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<DreamGamingTransferPlayerFundCheckingQuery, bool> getService,
         PlayerFundCheckingRequest request)
     {
         var result = await getService.GetAsync(new()
@@ -137,9 +137,10 @@ public class DreamGamingTransferController : ControllerBase
             CurrencyCode = request.CurrencyCode,
             OrderId = request.OrderId,
         }).ConfigureAwait(false);
-        return result == null ? null : new PlayerFundCheckingResponse()
+
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

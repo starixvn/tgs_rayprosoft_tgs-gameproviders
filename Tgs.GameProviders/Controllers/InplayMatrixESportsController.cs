@@ -110,7 +110,7 @@ public class InplayMatrixESportsController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<InplayMatrixESportsPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<InplayMatrixESportsPlayerFundCheckingQuery, bool> getService,
         PlayerFundCheckingRequest request)
     {
         var result = await getService.GetAsync(new()
@@ -120,9 +120,10 @@ public class InplayMatrixESportsController : ControllerBase
             CurrencyCode = request.CurrencyCode,
             OrderId = request.OrderId,
         }).ConfigureAwait(false);
-        return result == null ? null : new PlayerFundCheckingResponse()
+
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

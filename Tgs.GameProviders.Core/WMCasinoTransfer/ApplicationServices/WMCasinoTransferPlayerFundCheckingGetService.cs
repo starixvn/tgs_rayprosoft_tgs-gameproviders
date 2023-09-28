@@ -8,7 +8,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 
-public class WMCasinoTransferPlayerFundCheckingGetService : IGetService<WMCasinoTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class WMCasinoTransferPlayerFundCheckingGetService : IGetService<WMCasinoTransferPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceWMCasinoServiceClient _client;
@@ -27,7 +27,7 @@ public class WMCasinoTransferPlayerFundCheckingGetService : IGetService<WMCasino
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(WMCasinoTransferPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(WMCasinoTransferPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -62,6 +62,6 @@ public class WMCasinoTransferPlayerFundCheckingGetService : IGetService<WMCasino
             gameProviderTransactionId: null,
             cancellationToken: cancellationToken).ConfigureAwait(false);
 
-        return new() { OrderStatus = response.Items.Any() };
+        return response.Items.Any();
     }
 }

@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.WGFmGaming.ApplicationServices;
 
-public class WGFmGamingPlayerFundCheckingGetService : IGetService<WGFmGamingPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class WGFmGamingPlayerFundCheckingGetService : IGetService<WGFmGamingPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brandRepository;
     private readonly IGameInterfaceWGFmGamingClient _client;
@@ -26,7 +26,7 @@ public class WGFmGamingPlayerFundCheckingGetService : IGetService<WGFmGamingPlay
         _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(WGFmGamingPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(WGFmGamingPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProviderRepository
             .GetGameProviderIdAsync(
@@ -50,14 +50,14 @@ public class WGFmGamingPlayerFundCheckingGetService : IGetService<WGFmGamingPlay
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client.FundStatusAsync(
-            apiUrl: configurationData.ApiUrl,
-            partnerCode: configurationData.PartnerCode,
-            partnerKey: configurationData.PartnerKey,
-            partnerIV: configurationData.IV,
-            orderId: query.OrderId,
-            cancellationToken: cancellationToken).ConfigureAwait(false);
-
-        return new() { OrderStatus = response };
+        return await _client
+             .FundStatusAsync(
+             apiUrl: configurationData.ApiUrl,
+             partnerCode: configurationData.PartnerCode,
+             partnerKey: configurationData.PartnerKey,
+             partnerIV: configurationData.IV,
+             orderId: query.OrderId,
+             cancellationToken: cancellationToken)
+             .ConfigureAwait(false);
     }
 }

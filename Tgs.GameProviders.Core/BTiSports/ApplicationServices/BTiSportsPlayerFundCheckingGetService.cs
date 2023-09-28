@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.BTiSports.ApplicationServices;
 
-public class BTiSportsPlayerFundCheckingGetService : IGetService<BTiSportsPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class BTiSportsPlayerFundCheckingGetService : IGetService<BTiSportsPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceBTiClient _client;
@@ -26,22 +26,20 @@ public class BTiSportsPlayerFundCheckingGetService : IGetService<BTiSportsPlayer
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(BTiSportsPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(BTiSportsPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.BTiSports).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
         var configuration = await _gameProvider.GetBTiSportsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        var response = await _client
+        return await _client
             .FundStatusAsync(
-                apiUrl: configuration.ApiUrl,
-                agentUserName: configuration.AgentUserName,
-                agentPassword: configuration.AgentPassword,
-                refTransactionCode: query.OrderId,
-                cancellationToken: cancellationToken)
+            apiUrl: configuration.ApiUrl,
+            agentUserName: configuration.AgentUserName,
+            agentPassword: configuration.AgentPassword,
+            refTransactionCode: query.OrderId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-
-        return new() { OrderStatus = response };
     }
 }

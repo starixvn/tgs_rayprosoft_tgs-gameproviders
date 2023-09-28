@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Pinnacle.ApplicationServices;
 
-public class PinnaclePlayerFundCheckingGetService : IGetService<PinnaclePlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class PinnaclePlayerFundCheckingGetService : IGetService<PinnaclePlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfacePinnacleClient _client;
@@ -26,7 +26,7 @@ public class PinnaclePlayerFundCheckingGetService : IGetService<PinnaclePlayerFu
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(PinnaclePlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(PinnaclePlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -50,16 +50,14 @@ public class PinnaclePlayerFundCheckingGetService : IGetService<PinnaclePlayerFu
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client
+        return await _client
             .FundStatusAsync(
-                apiUrl: configuration.ApiUrl,
-                agentCode: configuration.AgentCode,
-                agentKey: configuration.AgentKey,
-                secretKey: configuration.SecretKey,
-                transactionId: query.OrderId,
-                cancellationToken: cancellationToken)
+            apiUrl: configuration.ApiUrl,
+            agentCode: configuration.AgentCode,
+            agentKey: configuration.AgentKey,
+            secretKey: configuration.SecretKey,
+            transactionId: query.OrderId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-
-        return new() { OrderStatus = response };
     }
 }

@@ -170,7 +170,7 @@ public class VRController : ControllerBase,
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<VRPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<VRPlayerFundCheckingQuery, bool> getService,
         VRPlayerFundCheckingRequest request)
     {
         var result = await getService
@@ -187,9 +187,9 @@ public class VRController : ControllerBase,
                 cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
 
-        return result == null ? null : new PlayerFundCheckingResponse()
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

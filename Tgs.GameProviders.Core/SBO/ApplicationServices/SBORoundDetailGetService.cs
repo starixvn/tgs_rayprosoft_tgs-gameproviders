@@ -44,10 +44,6 @@ internal class SBORoundDetailGetService : IGetService<SBORoundDetailQuery, Round
             .ConfigureAwait(false);
 
         var gameInfo = await _service.GetGameAsync(roundInfo.GameId).ConfigureAwait(false);
-        if (gameInfo == null)
-        {
-            throw new Exception($"This game Id could not be found.{roundInfo.GameId}");
-        }
 
         var gameProviderCultureCode = await _service
             .GetGameProviderCultureCodeAsync(roundInfo.GameProviderId, query.Language)

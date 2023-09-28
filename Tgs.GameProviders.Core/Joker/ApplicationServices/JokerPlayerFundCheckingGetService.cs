@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
-internal class JokerPlayerFundCheckingGetService : IGetService<JokerPlayerFundCheckingQuery, PlayerFundCheckingResult>
+internal class JokerPlayerFundCheckingGetService : IGetService<JokerPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceJokerClient _client;
@@ -26,7 +26,7 @@ internal class JokerPlayerFundCheckingGetService : IGetService<JokerPlayerFundCh
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(
+    public async ValueTask<bool> GetAsync(
         JokerPlayerFundCheckingQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -52,18 +52,13 @@ internal class JokerPlayerFundCheckingGetService : IGetService<JokerPlayerFundCh
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client
-            .FundStatusAsync(
-                apiUrl: configuration.ApiUrl,
-                appId: configuration.AppId,
-                secretKey: configuration.SecretKey,
-                transactionId: query.OrderId,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-
-        return new PlayerFundCheckingResult
-        {
-            OrderStatus = response
-        };
+        return await _client
+             .FundStatusAsync(
+            apiUrl: configuration.ApiUrl,
+             appId: configuration.AppId,
+             secretKey: configuration.SecretKey,
+             transactionId: query.OrderId,
+             cancellationToken: cancellationToken)
+             .ConfigureAwait(false);
     }
 }

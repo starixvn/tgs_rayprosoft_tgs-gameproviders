@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.TFGamingTransfer.ApplicationServices;
 
-public class TFGamingTransferPlayerFundCheckingGetService : IGetService<TFGamingTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class TFGamingTransferPlayerFundCheckingGetService : IGetService<TFGamingTransferPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceTFGamingClient _client;
@@ -26,21 +26,19 @@ public class TFGamingTransferPlayerFundCheckingGetService : IGetService<TFGaming
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(TFGamingTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(TFGamingTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.TFGamingTransfer).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
         var configuration = await _gameProvider.GetTFGamingTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        var response = await _client
+        return await _client
             .FundStatusAsync(
-                apiUrl: configuration.ApiUrl,
-                privateToken: configuration.PrivateToken,
-                refTransactionCode: query.OrderId,
-                cancellationToken: cancellationToken)
+            apiUrl: configuration.ApiUrl,
+            privateToken: configuration.PrivateToken,
+            refTransactionCode: query.OrderId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-
-        return new() { OrderStatus = response };
     }
 }

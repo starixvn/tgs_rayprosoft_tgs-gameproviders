@@ -8,7 +8,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.InplayMatrixESports.ApplicationServices;
 
-public class InplayMatrixESportsPlayerFundCheckingGetService : IGetService<InplayMatrixESportsPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class InplayMatrixESportsPlayerFundCheckingGetService : IGetService<InplayMatrixESportsPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceInplayMatrixClient _client;
@@ -27,7 +27,7 @@ public class InplayMatrixESportsPlayerFundCheckingGetService : IGetService<Inpla
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(InplayMatrixESportsPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(InplayMatrixESportsPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -51,17 +51,15 @@ public class InplayMatrixESportsPlayerFundCheckingGetService : IGetService<Inpla
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client
+        return await _client
             .FundStatusAsync(
-                apiUrl: configuration.ApiUrl,
-                merchantCode: configuration.MerchantCode,
-                merchantPrefix: configuration.MerchantPrefix,
-                playerCode: player.PlayerCode,
-                productWallet: (int)InplayMatrixProductWallet.IM_eSports_Wallet,
-                transactionId: query.OrderId,
-                cancellationToken: cancellationToken)
+            apiUrl: configuration.ApiUrl,
+            merchantCode: configuration.MerchantCode,
+            merchantPrefix: configuration.MerchantPrefix,
+            playerCode: player.PlayerCode,
+            productWallet: (int)InplayMatrixProductWallet.IM_eSports_Wallet,
+            transactionId: query.OrderId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-
-        return new() { OrderStatus = response };
     }
 }

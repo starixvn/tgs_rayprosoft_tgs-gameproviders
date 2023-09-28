@@ -138,7 +138,7 @@ public class AwcSgController : ControllerBase,
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<AwcSgPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<AwcSgPlayerFundCheckingQuery, bool> getService,
         PlayerFundCheckingRequest request)
     {
         var result = await getService
@@ -153,9 +153,9 @@ public class AwcSgController : ControllerBase,
                 cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
 
-        return result == null ? null : new PlayerFundCheckingResponse()
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

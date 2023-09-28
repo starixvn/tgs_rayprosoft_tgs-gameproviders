@@ -138,7 +138,7 @@ public class WGFMController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<WGFmGamingPlayerFundCheckingQuery, PlayerFundCheckingResult> service,
+        [FromServices] IGetService<WGFmGamingPlayerFundCheckingQuery, bool> service,
         PlayerFundCheckingRequest request)
     {
         var query = new WGFmGamingPlayerFundCheckingQuery()
@@ -156,7 +156,7 @@ public class WGFMController : ControllerBase
 
         return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

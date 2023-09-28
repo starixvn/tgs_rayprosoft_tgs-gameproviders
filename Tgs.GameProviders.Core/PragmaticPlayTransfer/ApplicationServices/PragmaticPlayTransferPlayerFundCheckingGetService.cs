@@ -7,8 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 
-internal class PragmaticPlayTransferPlayerFundCheckingGetService
-    : IGetService<PragmaticPlayTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
+internal class PragmaticPlayTransferPlayerFundCheckingGetService : IGetService<PragmaticPlayTransferPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfacePragmaticPlayClient _client;
@@ -27,7 +26,7 @@ internal class PragmaticPlayTransferPlayerFundCheckingGetService
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(
+    public async ValueTask<bool> GetAsync(
         PragmaticPlayTransferPlayerFundCheckingQuery query,
         CancellationToken cancellationToken = default)
     {
@@ -53,15 +52,13 @@ internal class PragmaticPlayTransferPlayerFundCheckingGetService
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client
+        return await _client
             .FundStatusAsync(
-                apiUrl: configuration.ApiUrl,
-                secureLogin: configuration.SecureLogin,
-                secretKey: configuration.SecretKey,
-                orderId: query.OrderId,
-                cancellationToken: cancellationToken)
+            apiUrl: configuration.ApiUrl,
+            secureLogin: configuration.SecureLogin,
+            secretKey: configuration.SecretKey,
+            orderId: query.OrderId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-
-        return new() { OrderStatus = response };
     }
 }

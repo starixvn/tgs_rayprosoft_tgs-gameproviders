@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.AwcSg.ApplicationServices;
 
-public class AwcSgPlayerFundCheckingGetService : IGetService<AwcSgPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class AwcSgPlayerFundCheckingGetService : IGetService<AwcSgPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceAwcServiceClient _client;
@@ -26,7 +26,7 @@ public class AwcSgPlayerFundCheckingGetService : IGetService<AwcSgPlayerFundChec
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(AwcSgPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(AwcSgPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -50,15 +50,13 @@ public class AwcSgPlayerFundCheckingGetService : IGetService<AwcSgPlayerFundChec
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client
-            .FundOrderCheckingAsync(
-            apiUrl: configuration.ApiUrl,
-            agentId: configuration.AgentId,
-            cert: configuration.Cert,
-            transactionId: command.OrderId,
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-
-        return new() { OrderStatus = response };
+        return await _client
+             .FundOrderCheckingAsync(
+             apiUrl: configuration.ApiUrl,
+             agentId: configuration.AgentId,
+             cert: configuration.Cert,
+             transactionId: command.OrderId,
+             cancellationToken: cancellationToken)
+             .ConfigureAwait(false);
     }
 }

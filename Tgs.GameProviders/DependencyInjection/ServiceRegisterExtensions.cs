@@ -359,19 +359,6 @@ public static class ServiceRegisterExtensions
         return app;
     }
 
-    public static async Task<WebApplication> InitialConnectionWMCasino(this WebApplication app)
-    {
-        using (var scope = app.Services.CreateScope())
-        {
-            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceWMCasinoServiceClient>();
-            _ = await gameInterface
-                .CheckingServiceAsync(
-                machineName: Environment.MachineName)
-                .ConfigureAwait(false);
-        }
-        return app;
-    }
-
     public static async Task<WebApplication> InitialConnectionWicketCricke(this WebApplication app)
     {
         using (var scope = app.Services.CreateScope())
@@ -385,7 +372,19 @@ public static class ServiceRegisterExtensions
         return app;
     }
 
-    
+    public static async Task<WebApplication> InitialConnectionWMCasino(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceWMCasinoServiceClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
     public static async Task<WebApplication> InitialConnectionYeeBet(this WebApplication app)
     {
         using (var scope = app.Services.CreateScope())

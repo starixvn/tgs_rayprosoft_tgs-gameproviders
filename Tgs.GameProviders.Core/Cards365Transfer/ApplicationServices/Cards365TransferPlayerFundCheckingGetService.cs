@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Cards365Transfer.ApplicationServices;
 
-public class Cards365TransferPlayerFundCheckingGetService : IGetService<Cards365TransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class Cards365TransferPlayerFundCheckingGetService : IGetService<Cards365TransferPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceCards365Client _client;
@@ -26,7 +26,7 @@ public class Cards365TransferPlayerFundCheckingGetService : IGetService<Cards365
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(Cards365TransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(Cards365TransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -50,15 +50,13 @@ public class Cards365TransferPlayerFundCheckingGetService : IGetService<Cards365
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client
+        return await _client
             .FundStatusAsync(
-                apiUrl: configuration.ApiUrl,
-                website: configuration.Website,
-                cert: configuration.Cert,
-                transactionId: query.OrderId,
-                cancellationToken: cancellationToken)
+            apiUrl: configuration.ApiUrl,
+            website: configuration.Website,
+            cert: configuration.Cert,
+            transactionId: query.OrderId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-
-        return new() { OrderStatus = response };
     }
 }

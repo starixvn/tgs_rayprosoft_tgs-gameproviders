@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.JDBTransfer.ApplicationServices;
 
-public class JDBTransferPlayerFundCheckingGetService : IGetService<JDBTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class JDBTransferPlayerFundCheckingGetService : IGetService<JDBTransferPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brandRepository;
     private readonly IGameInterfaceJDBClient _client;
@@ -26,22 +26,21 @@ public class JDBTransferPlayerFundCheckingGetService : IGetService<JDBTransferPl
         _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(JDBTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(JDBTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.JDBTransfer).ConfigureAwait(false);
         var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
         var configuration = await _gameProviderRepository.GetJDBTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        var response = await _client.FundStatusAsync(
-            configuration.ApiUrl,
-            configuration.Domain,
-            configuration.AesKey,
-            configuration.AesIV,
-            configuration.Agent,
-            query.OrderId,
-            cancellationToken).ConfigureAwait(false);
-
-        return new() { OrderStatus = response };
+        return await _client.FundStatusAsync(
+            apiUrl: configuration.ApiUrl,
+            domain: configuration.Domain,
+            aesKey: configuration.AesKey,
+            aesIV: configuration.AesIV,
+            agent: configuration.Agent,
+            serialNo: query.OrderId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
     }
 }

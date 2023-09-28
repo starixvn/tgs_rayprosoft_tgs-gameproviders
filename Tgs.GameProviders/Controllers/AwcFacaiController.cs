@@ -157,7 +157,7 @@ public class AwcFacaiController : ControllerBase,
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<AwcFacaiPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<AwcFacaiPlayerFundCheckingQuery, bool> getService,
         PlayerFundCheckingRequest request)
     {
         var result = await getService
@@ -172,9 +172,9 @@ public class AwcFacaiController : ControllerBase,
                 cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
 
-        return result == null ? null : new PlayerFundCheckingResponse()
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

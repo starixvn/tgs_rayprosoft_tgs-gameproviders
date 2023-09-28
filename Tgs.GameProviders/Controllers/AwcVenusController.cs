@@ -138,7 +138,7 @@ public class AwcVenusController : ControllerBase,
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<AwcVenusPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<AwcVenusPlayerFundCheckingQuery, bool> getService,
         PlayerFundCheckingRequest request)
     {
         var result = await getService
@@ -153,9 +153,9 @@ public class AwcVenusController : ControllerBase,
                 cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
 
-        return result == null ? null : new PlayerFundCheckingResponse()
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

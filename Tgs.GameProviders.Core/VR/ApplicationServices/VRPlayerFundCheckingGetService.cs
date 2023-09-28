@@ -7,30 +7,23 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.VR.ApplicationServices;
 
-public class VRPlayerFundCheckingGetService : IGetService<VRPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class VRPlayerFundCheckingGetService : IGetService<VRPlayerFundCheckingQuery, bool>
 {
     private readonly IVRApiClient _client;
-    private readonly ILogger<VRPlayerFundCheckingGetService> _logger;
     private readonly IVRService _service;
 
     public VRPlayerFundCheckingGetService(
-        ILogger<VRPlayerFundCheckingGetService> logger,
         IVRApiClient client,
         IVRService service)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _service = service ?? throw new ArgumentNullException(nameof(service));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(VRPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(VRPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
     {
-        var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false);
-
-        if (brandMerchant == null)
-        {
-            return null;
-        }
+        var brandMerchant = await _service.GetBrandMerchantAsync(command.BrandCode).ConfigureAwait(false)
+            ?? throw new Exception("平台商務不存在");
 
         var data = new VRFundCheckingRequest
         {
@@ -50,6 +43,6 @@ public class VRPlayerFundCheckingGetService : IGetService<VRPlayerFundCheckingQu
             data)
             .ConfigureAwait(false);
 
-        return new() { OrderStatus = (response != null && response?.TotalRecords == 1) };
+        return response != null && response?.TotalRecords == 1;
     }
 }

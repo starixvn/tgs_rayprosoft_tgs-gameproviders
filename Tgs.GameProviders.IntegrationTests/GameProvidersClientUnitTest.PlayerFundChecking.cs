@@ -74,7 +74,7 @@ public partial class GameProvidersClientUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<IGetService<KaiyuanPlayerFundCheckingQuery, PlayerFundCheckingResult>>();
+                var fakeService = Substitute.For<IGetService<KaiyuanPlayerFundCheckingQuery, bool>>();
 
                 var query = new KaiyuanPlayerFundCheckingQuery
                 {

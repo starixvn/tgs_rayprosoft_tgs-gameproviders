@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Endorphina.ApplicationServices;
 
-internal class EndorphinaPlayerFundCheckingGetService : IGetService<EndorphinaPlayerFundCheckingQuery, PlayerFundCheckingResult>
+internal class EndorphinaPlayerFundCheckingGetService : IGetService<EndorphinaPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceEndorphinaClient _client;
@@ -26,22 +26,21 @@ internal class EndorphinaPlayerFundCheckingGetService : IGetService<EndorphinaPl
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(EndorphinaPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(EndorphinaPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.Endorphina).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
         var configuration = await _gameProvider.GetEndorphinaConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        var response = await _client
+        return (await _client
             .FundStatusAsync(
-                apiUrl: configuration.ApiUrl,
-                merchantId: configuration.MerchantId,
-                secretKey: configuration.SecretKey,
-                transactionId: query.OrderId,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-
-        return new() { OrderStatus = response.IsOrderExist };
+            apiUrl: configuration.ApiUrl,
+            merchantId: configuration.MerchantId,
+            secretKey: configuration.SecretKey,
+            transactionId: query.OrderId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false))
+            .IsOrderExist;
     }
 }

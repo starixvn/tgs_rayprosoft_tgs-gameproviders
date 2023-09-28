@@ -110,7 +110,7 @@ public class Cards365TransferController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<Cards365TransferPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<Cards365TransferPlayerFundCheckingQuery, bool> getService,
         PlayerFundCheckingRequest request)
     {
         var result = await getService.GetAsync(new()
@@ -120,9 +120,10 @@ public class Cards365TransferController : ControllerBase
             CurrencyCode = request.CurrencyCode,
             OrderId = request.OrderId,
         }).ConfigureAwait(false);
-        return result == null ? null : new PlayerFundCheckingResponse()
+
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

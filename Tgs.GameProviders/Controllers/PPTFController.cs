@@ -134,7 +134,7 @@ public class PPTFController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse> PlayerFundCheckingAsync(
-        [FromServices] IGetService<PragmaticPlayTransferPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<PragmaticPlayTransferPlayerFundCheckingQuery, bool> getService,
         PlayerFundCheckingRequest request)
     {
         var result = await getService
@@ -151,7 +151,7 @@ public class PPTFController : ControllerBase
 
         return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

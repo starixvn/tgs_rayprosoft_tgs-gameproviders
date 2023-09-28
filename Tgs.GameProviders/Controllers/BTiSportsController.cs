@@ -113,7 +113,7 @@ public class BTiSportsController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<BTiSportsPlayerFundCheckingQuery, PlayerFundCheckingResult> service,
+        [FromServices] IGetService<BTiSportsPlayerFundCheckingQuery, bool> service,
         PlayerFundCheckingRequest request)
     {
         var query = new BTiSportsPlayerFundCheckingQuery()
@@ -125,9 +125,9 @@ public class BTiSportsController : ControllerBase
         };
         var result = await service.GetAsync(query).ConfigureAwait(false);
 
-        return result == null ? null : new PlayerFundCheckingResponse()
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

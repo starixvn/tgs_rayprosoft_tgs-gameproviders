@@ -134,7 +134,7 @@ public class TFGamingTransferController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<TFGamingTransferPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<TFGamingTransferPlayerFundCheckingQuery, bool> getService,
         PlayerFundCheckingRequest request)
     {
         var result = await getService
@@ -149,9 +149,9 @@ public class TFGamingTransferController : ControllerBase
                 cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
 
-        return result == null ? null : new PlayerFundCheckingResponse()
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

@@ -8,7 +8,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
 
-public class SabaTransferPlayerFundCheckingGetService : IGetService<SabaTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class SabaTransferPlayerFundCheckingGetService : IGetService<SabaTransferPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceSabaClient _client;
@@ -27,7 +27,7 @@ public class SabaTransferPlayerFundCheckingGetService : IGetService<SabaTransfer
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(SabaTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(SabaTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.SabaTransfer).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
@@ -35,16 +35,16 @@ public class SabaTransferPlayerFundCheckingGetService : IGetService<SabaTransfer
         var configuration = await _gameProvider.GetSabaTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
         var reply = await _client
-                .FundStatusAsync(
-                    apiUrl: configuration.ApiUrl,
-                    operatorId: configuration.OperatorId,
-                    vendorId: configuration.VendorId,
-                    vendorTransId: query.OrderId,
-                    cancellationToken)
-                .ConfigureAwait(false);
+            .FundStatusAsync(
+            apiUrl: configuration.ApiUrl,
+            operatorId: configuration.OperatorId,
+            vendorId: configuration.VendorId,
+            vendorTransId: query.OrderId,
+            cancellationToken)
+            .ConfigureAwait(false);
 
         return reply.Retry
             ? throw new Exception($"請呼叫遊戲廠商提供CheckFundTransfer.({JsonSerializer.Serialize(reply)})")
-            : (new() { OrderStatus = reply.IsOrderExist });
+            : reply.IsOrderExist;
     }
 }

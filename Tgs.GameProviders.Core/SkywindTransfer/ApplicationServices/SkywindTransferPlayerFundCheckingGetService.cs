@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 
-public class SkywindTransferPlayerFundCheckingGetService : IGetService<SkywindTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class SkywindTransferPlayerFundCheckingGetService : IGetService<SkywindTransferPlayerFundCheckingQuery, bool>
 {
     private readonly IGameInterfaceSkywindClient _client;
     private readonly ISettingRepository _setting;
@@ -20,7 +20,7 @@ public class SkywindTransferPlayerFundCheckingGetService : IGetService<SkywindTr
         _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(SkywindTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(SkywindTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var configuration = await _setting.GetSkywindTransferConfigurationAsync().ConfigureAwait(false);
 
@@ -41,6 +41,6 @@ public class SkywindTransferPlayerFundCheckingGetService : IGetService<SkywindTr
 
         return !reply.IsTransaction
             ? throw new Exception($"This order does not exist.({query.OrderId})")
-            : (new() { OrderStatus = reply.Status.Equals("committed", StringComparison.OrdinalIgnoreCase) });
+            : reply.Status.Equals("committed", StringComparison.OrdinalIgnoreCase);
     }
 }

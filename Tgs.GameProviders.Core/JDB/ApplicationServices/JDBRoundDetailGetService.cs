@@ -46,13 +46,17 @@ internal class JDBRoundDetailGetService : IGetService<JDBRoundDetailQuery, Round
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var playerModel = await _playerRepository.GetAsync(roundInfo.PlayerCode).ConfigureAwait(false);
+        var playerModel = await _playerRepository
+            .GetAsync(
+            playerCode: roundInfo.PlayerCode,
+            cancellationToken:cancellationToken)
+            .ConfigureAwait(false);
 
-        var gameProviderInfo = await _gameProviderRepository.GetAsync(roundInfo.GameProviderId).ConfigureAwait(false);
-        if (gameProviderInfo == null)
-        {
-            throw new Exception($"This game manufacturer does not exist.{roundInfo.GameProviderId}");
-        }
+        var gameProviderInfo = await _gameProviderRepository
+            .GetAsync(
+            gameProviderId: roundInfo.GameProviderId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var gameInfo = await _gameRepository
             .GetAsync(

@@ -133,7 +133,7 @@ public class JDBTransferController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<JDBTransferPlayerFundCheckingQuery, PlayerFundCheckingResult> service,
+        [FromServices] IGetService<JDBTransferPlayerFundCheckingQuery, bool> service,
         PlayerFundCheckingRequest request)
     {
         var query = new JDBTransferPlayerFundCheckingQuery()
@@ -145,9 +145,9 @@ public class JDBTransferController : ControllerBase
         };
         var result = await service.GetAsync(query).ConfigureAwait(false);
 
-        return result == null ? null : new PlayerFundCheckingResponse()
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

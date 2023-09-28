@@ -147,7 +147,7 @@ public class SBOTransferController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<SBOTransferPlayerFundCheckingQuery, PlayerFundCheckingResult> service,
+        [FromServices] IGetService<SBOTransferPlayerFundCheckingQuery, bool> service,
         PlayerFundCheckingRequest request)
     {
         var query = new SBOTransferPlayerFundCheckingQuery()
@@ -159,9 +159,9 @@ public class SBOTransferController : ControllerBase
         };
         var result = await service.GetAsync(query).ConfigureAwait(false);
 
-        return result == null ? null : new PlayerFundCheckingResponse()
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

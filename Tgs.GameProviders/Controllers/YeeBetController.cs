@@ -130,7 +130,7 @@ public class YeeBetController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<YeeBetPlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<YeeBetPlayerFundCheckingQuery, bool> getService,
         PlayerFundCheckingRequest request)
     {
         var result = await getService.GetAsync(new()
@@ -140,9 +140,10 @@ public class YeeBetController : ControllerBase
             CurrencyCode = request.CurrencyCode,
             OrderId = request.OrderId,
         }).ConfigureAwait(false);
-        return result == null ? null : new PlayerFundCheckingResponse()
+
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

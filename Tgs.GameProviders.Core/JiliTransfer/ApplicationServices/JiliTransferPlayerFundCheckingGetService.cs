@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 
-public class JiliTransferPlayerFundCheckingGetService : IGetService<JiliTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class JiliTransferPlayerFundCheckingGetService : IGetService<JiliTransferPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceJiliClient _client;
@@ -26,7 +26,7 @@ public class JiliTransferPlayerFundCheckingGetService : IGetService<JiliTransfer
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(JiliTransferPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(JiliTransferPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -50,13 +50,13 @@ public class JiliTransferPlayerFundCheckingGetService : IGetService<JiliTransfer
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client.FundOrderCheckingAsync(
-            apiUrl: configuration.ApiUrl,
-            agentId: configuration.AgentId,
-            agentKey: configuration.AgentKey,
-            transactionId: command.OrderId,
-            cancellationToken: cancellationToken).ConfigureAwait(false);
-
-        return new() { OrderStatus = response };
+        return await _client
+           .FundOrderCheckingAsync(
+           apiUrl: configuration.ApiUrl,
+           agentId: configuration.AgentId,
+           agentKey: configuration.AgentKey,
+           transactionId: command.OrderId,
+           cancellationToken: cancellationToken)
+           .ConfigureAwait(false);
     }
 }

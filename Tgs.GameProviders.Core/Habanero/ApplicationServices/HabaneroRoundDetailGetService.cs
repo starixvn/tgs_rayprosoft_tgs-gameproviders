@@ -13,16 +13,13 @@ namespace Tgs.GameProviders.Core.Habanero.ApplicationServices;
 
 internal class HabaneroRoundDetailGetService : IGetService<HabaneroRoundDetailQuery, RoundDetailResult>
 {
-    private readonly ILogger<HabaneroRoundDetailGetService> _logger;
     private readonly IRoundRepository _roundService;
     private readonly IHabaneroService _service;
 
     public HabaneroRoundDetailGetService(
-        ILogger<HabaneroRoundDetailGetService> logger,
         IHabaneroService service,
         IRoundRepository roundService)
     {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _service = service ?? throw new ArgumentNullException(nameof(service));
         _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
     }
@@ -74,7 +71,7 @@ internal class HabaneroRoundDetailGetService : IGetService<HabaneroRoundDetailQu
         };
     }
 
-    private string Sha256Hash(string value)
+    private static string Sha256Hash(string value)
         => new BigInteger(SHA256.HashData(Encoding.UTF8.GetBytes(value)), isBigEndian: true)
             .ToString("x");
 }

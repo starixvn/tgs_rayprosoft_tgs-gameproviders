@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.HabaneroTransfer.ApplicationServices;
 
-internal class HabaneroTransferPlayerFundCheckingGetService : IGetService<HabaneroTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
+internal class HabaneroTransferPlayerFundCheckingGetService : IGetService<HabaneroTransferPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceHabaneroClient _client;
@@ -26,23 +26,22 @@ internal class HabaneroTransferPlayerFundCheckingGetService : IGetService<Habane
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(HabaneroTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(HabaneroTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.HabaneroTransfer).ConfigureAwait(false);
         var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
         var configuration = await _gameProvider.GetHabaneroTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        var response = await _client
+        return (await _client
             .FundStatusAsync(
-                apiUrl: configuration.ApiUrl,
-                brandId: configuration.BrandId,
-                apiKey: configuration.ApiKey,
-                username: player.PlayerCode,
-                transactionId: query.OrderId,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-
-        return new PlayerFundCheckingResult { OrderStatus = response.IsOrderExist };
+            apiUrl: configuration.ApiUrl,
+            brandId: configuration.BrandId,
+            apiKey: configuration.ApiKey,
+            username: player.PlayerCode,
+            transactionId: query.OrderId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false))
+            .IsOrderExist;
     }
 }

@@ -110,7 +110,7 @@ public class PinnacleController : ControllerBase
     /// </remarks>
     [HttpPost("playerfundchecking")]
     public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-        [FromServices] IGetService<PinnaclePlayerFundCheckingQuery, PlayerFundCheckingResult> getService,
+        [FromServices] IGetService<PinnaclePlayerFundCheckingQuery, bool> getService,
         PlayerFundCheckingRequest request)
     {
         var result = await getService.GetAsync(new()
@@ -120,9 +120,10 @@ public class PinnacleController : ControllerBase
             CurrencyCode = request.CurrencyCode,
             OrderId = request.OrderId,
         }).ConfigureAwait(false);
-        return result == null ? null : new PlayerFundCheckingResponse()
+
+        return new PlayerFundCheckingResponse()
         {
-            OrderStatus = result.OrderStatus,
+            OrderStatus = result,
         };
     }
 

@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SBOTransfer.ApplicationServices;
 
-public class SBOTransferPlayerFundCheckingGetService : IGetService<SBOTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class SBOTransferPlayerFundCheckingGetService : IGetService<SBOTransferPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brandRepository;
     private readonly IGameInterfaceSBOClient _client;
@@ -26,19 +26,19 @@ public class SBOTransferPlayerFundCheckingGetService : IGetService<SBOTransferPl
         _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(SBOTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(SBOTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SBOTransfer).ConfigureAwait(false);
         var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
         var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
         var configuration = await _gameProviderRepository.GetSBOTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        var response = await _client.FundStatusAsync(
+        return await _client
+            .FundStatusAsync(
             configuration.ApiUrl,
             configuration.CompanyKey,
             query.OrderId,
-            cancellationToken).ConfigureAwait(false);
-
-        return new() { OrderStatus = response };
+            cancellationToken)
+            .ConfigureAwait(false);
     }
 }

@@ -28,7 +28,7 @@ public partial class GameProvidersClientUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<IGetService<VRPlayerFundCheckingQuery, PlayerFundCheckingResult>>();
+                var fakeService = Substitute.For<IGetService<VRPlayerFundCheckingQuery, bool>>();
 
                 var query = new VRPlayerFundCheckingQuery
                 {
@@ -39,15 +39,11 @@ public partial class GameProvidersClientUnitTest
                     StartTime = startTime,
                     EndTime = endTime
                 };
-                var result = new PlayerFundCheckingResult
-                {
-                    OrderStatus = true
-                };
                 _ = fakeService
                     .GetAsync(
                         query: Arg.Is(query),
                         cancellationToken: Arg.Any<CancellationToken>())
-                    .Returns(result);
+                    .Returns(true);
 
                 _ = services.AddTransient(_ => fakeService);
             });
@@ -83,7 +79,7 @@ public partial class GameProvidersClientUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<IGetService<VRPlayerFundCheckingQuery, PlayerFundCheckingResult>>();
+                var fakeService = Substitute.For<IGetService<VRPlayerFundCheckingQuery, bool>>();
 
                 var query = new VRPlayerFundCheckingQuery
                 {
@@ -93,10 +89,6 @@ public partial class GameProvidersClientUnitTest
                     OrderId = orderId,
                     StartTime = startTime,
                     EndTime = endTime
-                };
-                var result = new PlayerFundCheckingResult
-                {
-                    OrderStatus = true
                 };
                 _ = fakeService
                     .GetAsync(

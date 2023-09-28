@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.YeeBet.ApplicationServices;
 
-public class YeeBetPlayerFundCheckingGetService : IGetService<YeeBetPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class YeeBetPlayerFundCheckingGetService : IGetService<YeeBetPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceYeeBetClient _client;
@@ -26,7 +26,7 @@ public class YeeBetPlayerFundCheckingGetService : IGetService<YeeBetPlayerFundCh
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(YeeBetPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(YeeBetPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -50,16 +50,14 @@ public class YeeBetPlayerFundCheckingGetService : IGetService<YeeBetPlayerFundCh
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client
+        return await _client
             .FundStatusAsync(
-                apiUrl: configuration.ApiUrl,
-                appId: configuration.AppId,
-                secretKey: configuration.SecretKey,
-                playerCode: query.PlayerCode,
-                trsId: query.OrderId,
-                cancellationToken: cancellationToken)
+            apiUrl: configuration.ApiUrl,
+            appId: configuration.AppId,
+            secretKey: configuration.SecretKey,
+            playerCode: query.PlayerCode,
+            trsId: query.OrderId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-
-        return new() { OrderStatus = response };
     }
 }

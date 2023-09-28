@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices;
 
-public class DreamGamingTransferPlayerFundCheckingGetService : IGetService<DreamGamingTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class DreamGamingTransferPlayerFundCheckingGetService : IGetService<DreamGamingTransferPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceDreamGamingClient _client;
@@ -26,7 +26,7 @@ public class DreamGamingTransferPlayerFundCheckingGetService : IGetService<Dream
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(DreamGamingTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(DreamGamingTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -50,15 +50,14 @@ public class DreamGamingTransferPlayerFundCheckingGetService : IGetService<Dream
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client
-            .FundStatusAsync(
-                apiUrl: configuration.ApiUrl,
-                apiKey: configuration.ApiKey,
-                agentName: configuration.AgentName,
-                refTransactionCode: query.OrderId,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-
-        return new() { OrderStatus = response.IsOrderExist };
+        return (await _client
+             .FundStatusAsync(
+             apiUrl: configuration.ApiUrl,
+             apiKey: configuration.ApiKey,
+             agentName: configuration.AgentName,
+             refTransactionCode: query.OrderId,
+             cancellationToken: cancellationToken)
+             .ConfigureAwait(false))
+             .IsOrderExist;
     }
 }

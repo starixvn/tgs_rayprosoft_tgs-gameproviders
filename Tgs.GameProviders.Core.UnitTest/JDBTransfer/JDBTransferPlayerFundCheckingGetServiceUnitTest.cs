@@ -74,7 +74,6 @@ public class JDBTransferPlayerFundCheckingGetServiceUnitTest
 
         var actual = await sut.GetAsync(query);
 
-        Assert.NotNull(actual);
-        Assert.True(actual.OrderStatus);
+        Assert.True(actual);
     }
 }

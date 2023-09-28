@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.OBet.ApplicationServices;
 
-public class OBetPlayerFundCheckingGetService : IGetService<OBetPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class OBetPlayerFundCheckingGetService : IGetService<OBetPlayerFundCheckingQuery, bool>
 {
     private readonly IBrandRepository _brand;
     private readonly IGameInterfaceOBetClient _client;
@@ -26,7 +26,7 @@ public class OBetPlayerFundCheckingGetService : IGetService<OBetPlayerFundChecki
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(OBetPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(OBetPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
@@ -50,16 +50,14 @@ public class OBetPlayerFundCheckingGetService : IGetService<OBetPlayerFundChecki
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client
+        return await _client
             .FundStatusAsync(
-                apiUrl: configuration.ApiUrl,
-                apiKey: configuration.ApiKey,
-                agentId: configuration.AgentId,
-                playerCode: player.PlayerCode,
-                serialNo: query.OrderId,
-                cancellationToken: cancellationToken)
+            apiUrl: configuration.ApiUrl,
+            apiKey: configuration.ApiKey,
+            agentId: configuration.AgentId,
+            playerCode: player.PlayerCode,
+            serialNo: query.OrderId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-
-        return new() { OrderStatus = response };
     }
 }

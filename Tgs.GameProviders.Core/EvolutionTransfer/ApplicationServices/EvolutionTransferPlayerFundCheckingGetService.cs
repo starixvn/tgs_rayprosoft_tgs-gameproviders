@@ -6,7 +6,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
 
-public class EvolutionTransferPlayerFundCheckingGetService : IGetService<EvolutionTransferPlayerFundCheckingQuery, PlayerFundCheckingResult>
+public class EvolutionTransferPlayerFundCheckingGetService : IGetService<EvolutionTransferPlayerFundCheckingQuery, bool>
 {
     private readonly IGameInterfaceEvolutionClient _grpc;
     private readonly ISettingRepository _setting;
@@ -19,17 +19,17 @@ public class EvolutionTransferPlayerFundCheckingGetService : IGetService<Evoluti
         _setting = setting ?? throw new ArgumentNullException(nameof(setting));
     }
 
-    public async ValueTask<PlayerFundCheckingResult> GetAsync(EvolutionTransferPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(EvolutionTransferPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
     {
         var configuration = await _setting.GetEvolutionTransferConfigurationAsync().ConfigureAwait(false);
 
-        var response = await _grpc.GetTransactionInfoAsync(
+        return (await _grpc.GetTransactionInfoAsync(
             configuration.ApiUrl,
             configuration.EcId,
             command.PlayerCode,
             command.OrderId,
-            cancellationToken).ConfigureAwait(false);
-
-        return new() { OrderStatus = response.Result };
+            cancellationToken)
+            .ConfigureAwait(false))
+            .Result;
     }
 }
