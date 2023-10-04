@@ -70,7 +70,7 @@ public class WicketCricketPlayerBalanceGetService : IGetService<WicketCricketPla
 
             await _client
                 .PlayerCreateAsync(
-                exchangeApiUrl: configuration.ExchangeApiUrl,
+                apiUrl: configuration.ApiUrl,
                 website: configuration.Website,
                 cert: configuration.Cert,
                 agent: configuration.Agent,

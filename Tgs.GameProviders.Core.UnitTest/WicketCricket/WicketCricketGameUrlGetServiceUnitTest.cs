@@ -92,6 +92,7 @@ public class WicketCricketGameUrlGetServiceUnitTest
 
         _ = fakeClient
             .GameUrlAsync(
+            apiUrl: Arg.Is(configuration.ApiUrl),
             exchangeApiUrl: Arg.Is(configuration.ExchangeApiUrl),
             website: Arg.Is(configuration.Website),
             cert: Arg.Is(configuration.Cert),

@@ -58,6 +58,7 @@ public class WicketCricketGameUrlGetService : IGetService<WicketCricketGameUrlQu
 
         return await _client
             .GameUrlAsync(
+            apiUrl: configuration.ApiUrl,
             exchangeApiUrl: configuration.ExchangeApiUrl,
             website: configuration.Website,
             cert: configuration.Cert,

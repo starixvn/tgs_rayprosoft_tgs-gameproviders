@@ -38,7 +38,7 @@
 		<PackageReference Include="Tgs.GameInterface.TFGamingService.Client" Version="0.0.10" />
 		<PackageReference Include="Tgs.GameInterface.WGFmGamingService.Client" Version="0.0.12" />
 		<PackageReference Include="Tgs.GameInterface.WGViaGaming.Client" Version="0.0.10" />
-		<PackageReference Include="Tgs.GameInterface.WicketCricket.Client" Version="0.0.4" />
+		<PackageReference Include="Tgs.GameInterface.WicketCricket.Client" Version="0.0.5" />
 		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="1.0.11" />
 		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="0.0.11" />
 		<PackageReference Include="Tgs.GameRecord.Endorphina.Session.Client" Version="0.0.3" />
