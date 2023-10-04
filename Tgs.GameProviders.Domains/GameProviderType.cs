@@ -61,8 +61,8 @@ public static class GameProviderType
     public static readonly string VR = "VR";
     public static readonly string WGFmGaming = "WGFM";
     public static readonly string WGViaGaming = "WGVIA";
+    public static readonly string WicketCricket = "9WCRICKET";
     public static readonly string WMCasino = "WM";
     public static readonly string WMCasinoTransfer = "WMTF";
     public static readonly string YeeBet = "YEEBET";
-    public static readonly string WicketCricket = "9WCRICKET";
 }
