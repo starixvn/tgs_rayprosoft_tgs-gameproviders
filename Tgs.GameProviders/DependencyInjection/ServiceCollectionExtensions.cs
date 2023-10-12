@@ -7,6 +7,7 @@ using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.FaChai.Client;
+using Tgs.GameInterface.GKXGaming.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.JDBService.Client;
@@ -70,7 +71,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceLEGamingClientOptions, IServiceProvider> gameInterfaceLEGamingClientOptions,
         Action<GameInterfaceAVIAGamingClientOptions, IServiceProvider> gameInterfaceAVIAGamingClientOptions,
         Action<GameInterfaceKaiyuanClientOptions, IServiceProvider> gameInterfaceKaiyuanClientOptions,
-        Action<GameInterfaceWicketCricketClientOptions, IServiceProvider> gameInterfaceWicketCricketClientOptions)
+        Action<GameInterfaceWicketCricketClientOptions, IServiceProvider> gameInterfaceWicketCricketClientOptions,
+        Action<GameInterfaceGKXGamingClientOptions, IServiceProvider> gameInterfaceGKXGamingClientOptions)
         => services
         .AddOptions<RedisOptions>()
         .Configure(configure)
@@ -110,5 +112,6 @@ public static class ServiceCollectionExtensions
             gameInterfaceLEGamingClientOptions: gameInterfaceLEGamingClientOptions,
             gameInterfaceAVIAGamingClientOptions: gameInterfaceAVIAGamingClientOptions,
             gameInterfaceKaiyuanClientOptions: gameInterfaceKaiyuanClientOptions,
-            gameInterfaceWicketCricketClientOptions: gameInterfaceWicketCricketClientOptions);
+            gameInterfaceWicketCricketClientOptions: gameInterfaceWicketCricketClientOptions,
+            gameInterfaceGKXGamingClientOptions: gameInterfaceGKXGamingClientOptions);
 }

@@ -9,6 +9,7 @@ using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.FaChai.Client;
+using Tgs.GameInterface.GKXGaming.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.JDBService.Client;
@@ -71,7 +72,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceLEGamingClientOptions, IServiceProvider> gameInterfaceLEGamingClientOptions,
         Action<GameInterfaceAVIAGamingClientOptions, IServiceProvider> gameInterfaceAVIAGamingClientOptions,
         Action<GameInterfaceKaiyuanClientOptions, IServiceProvider> gameInterfaceKaiyuanClientOptions,
-        Action<GameInterfaceWicketCricketClientOptions, IServiceProvider> gameInterfaceWicketCricketClientOptions)
+        Action<GameInterfaceWicketCricketClientOptions, IServiceProvider> gameInterfaceWicketCricketClientOptions,
+        Action<GameInterfaceGKXGamingClientOptions, IServiceProvider> gameInterfaceGKXGamingClientOptions)
         => services
         .RegisterAllServiceUtilityTypes(
             Assembly.GetExecutingAssembly(),
@@ -106,9 +108,11 @@ public static class ServiceCollecitonExtensions
         .AddGameInterfaceAVIAGamingClient(gameInterfaceAVIAGamingClientOptions)
         .AddGameInterfaceKaiyuanClient(gameInterfaceKaiyuanClientOptions)
         .AddGameInterfaceWicketCricketClient(gameInterfaceWicketCricketClientOptions)
+        .AddGameInterfaceGKXGamingClient(gameInterfaceGKXGamingClientOptions)
         .AddGameRoundsClient(gameRoundsClientOptions)
         .AddGameTokenClient(gameTokenClientOptions)
         .AddSecurity()//Tgs.Core.Infrastructures.Security
         .AddMemoryCache()
-        .AddTransient<IGameActionService, GameActionService>();
+        .AddTransient<IGameActionService, GameActionService>()
+        .AddSingleton<ISystemClock, SystemClock>();
 }

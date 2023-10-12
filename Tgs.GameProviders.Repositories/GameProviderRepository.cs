@@ -192,7 +192,7 @@ internal class GameProviderRepository : IGameProviderRepository
     }
 
     public ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(
-            Guid gameProviderConfigurationId,
+        Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
         => GetConfigurationAsync<DreamGamingTransferConfiguration>(
             gameProviderConfiguration: GameProviderConfigurations.DreamGamingTransfer,
@@ -262,6 +262,14 @@ internal class GameProviderRepository : IGameProviderRepository
         .ConfigureAwait(false)
         ?? throw new Exception($"Game Provider does not exist.({gameProviderCode})");
 
+    public ValueTask<GKXGamingConfiguration> GetGKXGamingConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+        => GetConfigurationAsync<GKXGamingConfiguration>(
+            gameProviderConfiguration: GameProviderConfigurations.GKXGaming,
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken);
+
     public ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
@@ -301,6 +309,7 @@ internal class GameProviderRepository : IGameProviderRepository
             gameProviderConfiguration: GameProviderConfigurations.Joker,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
+
     public ValueTask<KaiyuanConfiguration> GetKaiyuanConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
@@ -308,6 +317,7 @@ internal class GameProviderRepository : IGameProviderRepository
             gameProviderConfiguration: GameProviderConfigurations.Kaiyuan,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
+
     public ValueTask<LEGamingConfiguration> GetLEGamingConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
@@ -387,6 +397,7 @@ internal class GameProviderRepository : IGameProviderRepository
             gameProviderConfiguration: GameProviderConfigurations.WGViaGaming,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
+
     public ValueTask<WicketCricketConfiguration> GetWicketCricketConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)
@@ -394,6 +405,7 @@ internal class GameProviderRepository : IGameProviderRepository
             gameProviderConfiguration: GameProviderConfigurations.WicketCricket,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
+
     public ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)

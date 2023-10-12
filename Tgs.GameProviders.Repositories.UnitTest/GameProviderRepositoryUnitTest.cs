@@ -934,6 +934,50 @@ public class GameProviderRepositoryUnitTest
     }
 
     [Fact]
+    public async Task Get_GKXGaming_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new GKXGamingConfiguration()
+        {
+            AmountFormat = "10,2",
+            AmountMaximum = 10000000m,
+            ApiUrl = new("https://wc-api.orz16.com/"),
+            ApiRecordUrl = new("https://wc-record.orz16.com/")
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<GKXGamingConfiguration>(Arg.Is(GameProviderConfigurations.GKXGaming))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.GKXGaming,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: $"{GameProviderType.GKXGaming}-GPI",
+            Description: $"{GameProviderType.GKXGaming}--GPI Configuration",
+            ClientId: $"{GameProviderType.GKXGaming}--GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"Deskey\":\"03CFE0179704BCDF\",\"Md5key\":\"337B01054C6FA208\",\"AgentId\":\"60073\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetGKXGamingConfigurationAsync(gameProviderConfigurationId);
+
+        Assert.NotNull(actual);
+        Assert.Equal("03CFE0179704BCDF", actual.Deskey);
+        Assert.Equal("337B01054C6FA208", actual.Md5key);
+        Assert.Equal("60073", actual.AgentId);
+    }
+
+    [Fact]
     public async Task Get_InplayMatrixESports_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1458,45 +1502,6 @@ public class GameProviderRepositoryUnitTest
     }
 
     [Fact]
-    public async Task Get_WMCasinoTransfer_Configuration()
-    {
-        var fakeClient = Substitute.For<IGameCommandClient>();
-
-        var gameProviderId = Guid.NewGuid();
-        var gameProviderConfigurationId = Guid.NewGuid();
-
-        var settingConfiguration = new WMCasinoTransferConfiguration()
-        {
-            ApiUrl = new("https://api.a45.me/api/public/Gateway.php")
-        };
-        _ = fakeClient
-            .SettingGetConfigurationAsync<WMCasinoTransferConfiguration>(Arg.Is(GameProviderConfigurations.WMCasinoTransfer))
-            .Returns(settingConfiguration);
-
-        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
-            GameProviderId: gameProviderId,
-            GameProviderCode: GameProviderType.WMCasinoTransfer,
-            GameProviderConfigId: gameProviderConfigurationId,
-            Name: "WMTF-GPI",
-            Description: "WMTF-GPI Configuration",
-            ClientId: "WMTF-GPI",
-            SecretKey: Guid.NewGuid().ToString("N"),
-            Status: GameProviderConfigStatus.Active,
-            DesktopEndpoint: string.Empty,
-            MobileEndpoint: string.Empty,
-            ConfigurationData: "{\"vendorId\":\"hpg02twapi\",\"signature\":\"89448b444ed2e922ddc3aa0753370238\"}",
-            IsDefault: false));
-
-        var repository = new GameProviderRepository(fakeClient);
-
-        var actual = await repository.GetWMCasinoTransferConfigurationAsync(gameProviderConfigurationId);
-
-        Assert.NotNull(actual);
-        Assert.Equal("hpg02twapi", actual.VendorId);
-        Assert.Equal("89448b444ed2e922ddc3aa0753370238", actual.Signature);
-    }
-
-    [Fact]
     public async Task Get_WicketCricket_Configuration()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1540,5 +1545,44 @@ public class GameProviderRepositoryUnitTest
         Assert.Equal("WICKETSPRO", actual.Website);
         Assert.Equal("wkVwQ8sMVr252EA9", actual.Cert);
         Assert.Equal("testpginrma", actual.Agent);
+    }
+
+    [Fact]
+    public async Task Get_WMCasinoTransfer_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new WMCasinoTransferConfiguration()
+        {
+            ApiUrl = new("https://api.a45.me/api/public/Gateway.php")
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<WMCasinoTransferConfiguration>(Arg.Is(GameProviderConfigurations.WMCasinoTransfer))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.WMCasinoTransfer,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "WMTF-GPI",
+            Description: "WMTF-GPI Configuration",
+            ClientId: "WMTF-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"vendorId\":\"hpg02twapi\",\"signature\":\"89448b444ed2e922ddc3aa0753370238\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetWMCasinoTransferConfigurationAsync(gameProviderConfigurationId);
+
+        Assert.NotNull(actual);
+        Assert.Equal("hpg02twapi", actual.VendorId);
+        Assert.Equal("89448b444ed2e922ddc3aa0753370238", actual.Signature);
     }
 }

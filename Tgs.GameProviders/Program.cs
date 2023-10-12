@@ -214,6 +214,11 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceWicketCricketBaseUrl")!;
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceGKXGamingBaseUrl")!;
     });
 
 builder.Services
@@ -274,6 +279,7 @@ _ = app.InitialConnectionEndorphina();
 _ = app.InitialConnectionEvolution();
 _ = app.InitialConnectionHabanero();
 _ = app.InitialConnectionFaChai();
+_ = app.InitialConnectionGKXGaming();
 _ = app.InitialConnectionJDB();
 _ = app.InitialConnectionJili();
 _ = app.InitialConnectionJoker();

@@ -183,4 +183,8 @@ public interface IGameProviderRepository
     ValueTask<YeeBetConfiguration> GetYeeBetConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
+
+    ValueTask<GKXGamingConfiguration> GetGKXGamingConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 }
