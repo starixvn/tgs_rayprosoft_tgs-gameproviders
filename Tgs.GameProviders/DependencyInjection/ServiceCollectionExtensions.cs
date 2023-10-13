@@ -23,6 +23,7 @@ using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.TFGamingService.Client;
+using Tgs.GameInterface.V8Poker.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WGViaGaming.Client;
 using Tgs.GameInterface.WicketCricket.Client;
@@ -72,7 +73,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceAVIAGamingClientOptions, IServiceProvider> gameInterfaceAVIAGamingClientOptions,
         Action<GameInterfaceKaiyuanClientOptions, IServiceProvider> gameInterfaceKaiyuanClientOptions,
         Action<GameInterfaceWicketCricketClientOptions, IServiceProvider> gameInterfaceWicketCricketClientOptions,
-        Action<GameInterfaceGKXGamingClientOptions, IServiceProvider> gameInterfaceGKXGamingClientOptions)
+        Action<GameInterfaceGKXGamingClientOptions, IServiceProvider> gameInterfaceGKXGamingClientOptions,
+        Action<GameInterfaceV8PokerClientOptions, IServiceProvider> gameInterfaceV8PokerClientOptions)
         => services
         .AddOptions<RedisOptions>()
         .Configure(configure)
@@ -113,5 +115,6 @@ public static class ServiceCollectionExtensions
             gameInterfaceAVIAGamingClientOptions: gameInterfaceAVIAGamingClientOptions,
             gameInterfaceKaiyuanClientOptions: gameInterfaceKaiyuanClientOptions,
             gameInterfaceWicketCricketClientOptions: gameInterfaceWicketCricketClientOptions,
-            gameInterfaceGKXGamingClientOptions: gameInterfaceGKXGamingClientOptions);
+            gameInterfaceGKXGamingClientOptions: gameInterfaceGKXGamingClientOptions,
+            gameInterfaceV8PokerClientOptions: gameInterfaceV8PokerClientOptions);
 }

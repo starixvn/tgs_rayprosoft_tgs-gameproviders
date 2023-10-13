@@ -381,7 +381,13 @@ internal class GameProviderRepository : IGameProviderRepository
             gameProviderConfiguration: GameProviderConfigurations.TFGamingTransfer,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
-
+    public ValueTask<V8PokerConfiguration> GetV8PokerConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default)
+        => GetConfigurationAsync<V8PokerConfiguration>(
+            gameProviderConfiguration: GameProviderConfigurations.V8Poker,
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken);
     public ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default)

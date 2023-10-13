@@ -25,6 +25,7 @@ using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.TFGamingService.Client;
+using Tgs.GameInterface.V8Poker.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WGViaGaming.Client;
 using Tgs.GameInterface.WicketCricket.Client;
@@ -73,7 +74,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceAVIAGamingClientOptions, IServiceProvider> gameInterfaceAVIAGamingClientOptions,
         Action<GameInterfaceKaiyuanClientOptions, IServiceProvider> gameInterfaceKaiyuanClientOptions,
         Action<GameInterfaceWicketCricketClientOptions, IServiceProvider> gameInterfaceWicketCricketClientOptions,
-        Action<GameInterfaceGKXGamingClientOptions, IServiceProvider> gameInterfaceGKXGamingClientOptions)
+        Action<GameInterfaceGKXGamingClientOptions, IServiceProvider> gameInterfaceGKXGamingClientOptions,
+        Action<GameInterfaceV8PokerClientOptions, IServiceProvider> gameInterfaceV8PokerClientOptions)
         => services
         .RegisterAllServiceUtilityTypes(
             Assembly.GetExecutingAssembly(),
@@ -109,6 +111,7 @@ public static class ServiceCollecitonExtensions
         .AddGameInterfaceKaiyuanClient(gameInterfaceKaiyuanClientOptions)
         .AddGameInterfaceWicketCricketClient(gameInterfaceWicketCricketClientOptions)
         .AddGameInterfaceGKXGamingClient(gameInterfaceGKXGamingClientOptions)
+        .AddGameInterfaceV8PokerClient(gameInterfaceV8PokerClientOptions)
         .AddGameRoundsClient(gameRoundsClientOptions)
         .AddGameTokenClient(gameTokenClientOptions)
         .AddSecurity()//Tgs.Core.Infrastructures.Security

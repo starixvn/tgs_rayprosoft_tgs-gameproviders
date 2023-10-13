@@ -1,0 +1,279 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.V8Poker.ApplicationServices;
+using Tgs.GameProviders.Domains.RoundDetail;
+using Tgs.GameProviders.ViewModels;
+using Tgs.ServiceUtility;
+
+namespace Tgs.GameProviders.Controllers;
+
+[ApiController]
+[Route("api/V8")]
+public class V8PokerController : ControllerBase
+{
+    /// <summary>
+    /// Games the URL asynchronous.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "gameType": 8,
+    ///             "gameId": 2000001,
+    ///             "brandCode": "GPI_VND",
+    ///             "playerCode": "4ue0uj8cwn2v",
+    ///             "currencyCode": "HKD",
+    ///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    ///             "platformType": 0,
+    ///             "language": "zh-CN",
+    ///             "ipAddress": "127.0.0.1",
+    ///             "backUrl": "https://dev-t1.rpgp.cc/"
+    ///         }
+    /// </remarks>
+    [HttpPost("gameurl")]
+    public async ValueTask<GameUrlResponse?> GameUrlAsync(
+        [FromServices] IGetService<V8PokerGameUrlQuery, string> service,
+        GameUrlRequest request)
+    {
+        var result = await service
+            .GetAsync(
+                query: new()
+                {
+                    GameType = request.GameType,
+                    GameId = request.GameId,
+                    BrandCode = request.BrandCode,
+                    PlayerCode = request.PlayerCode,
+                    CurrencyCode = request.CurrencyCode,
+                    LoginRecordId = request.LoginRecordId,
+                    PlatformType = request.PlatformType,
+                    Language = request.Language,
+                    IPAddress = request.IPAddress,
+                    BackUrl = request.BackUrl
+                },
+                cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+        return result == null ? null : new GameUrlResponse() { Url = new(result) };
+    }
+
+    /// <summary>
+    /// Kicks the player asynchronous.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Delete kickplayer/4ue0uj8cwn2v
+    /// </remarks>
+    [HttpDelete("kickplayer/{playerCode}")]
+    public ValueTask KickPlayerAsync(
+        [FromServices] ICommandService<V8PokerKickPlayerCommand> service,
+        string playerCode)
+    {
+        var command = new V8PokerKickPlayerCommand
+        {
+            PlayerCode = playerCode
+        };
+        return service
+        .ExecuteAsync(
+            command: command,
+            cancellationToken: HttpContext.RequestAborted);
+    }
+
+    /// <summary>
+    /// Players the balance asynchronous.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    ///   <b>Example</b><br />
+    ///
+    ///   Get balance/4ue0uj8cwn2v
+    /// </remarks>
+    [HttpGet("balance/{playerCode}")]
+    public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
+         [FromServices] IGetService<V8PokerPlayerBalanceQuery, PlayerBalanceResult> service,
+         string playerCode)
+    {
+        var query = new V8PokerPlayerBalanceQuery
+        {
+            PlayerCode = playerCode
+        };
+
+        var result = await service
+         .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+         .ConfigureAwait(false);
+
+        return new PlayerBalanceResponse(
+            result.Balance,
+            result.FreeBalance,
+            result.OutstandingBalance);
+    }
+
+    /// <summary>
+    /// Players the fund checking asynchronous.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "GPI_VND",
+    ///             "playerCode": "4ue0uj8cwn2v",
+    ///             "currencyCode": "VND",
+    ///             "orderId":"72412202110271546265054ue0uj8cwn2v"
+    ///         }
+    /// </remarks>
+    [HttpPost("playerfundchecking")]
+    public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
+        [FromServices] IGetService<V8PokerPlayerFundCheckingQuery, bool> service,
+        PlayerFundCheckingRequest request)
+    {
+        var query = new V8PokerPlayerFundCheckingQuery()
+        {
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            OrderId = request.OrderId,
+        };
+        var result = await service
+            .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
+        return new PlayerFundCheckingResponse()
+        {
+            OrderStatus = result,
+        };
+    }
+
+    /// <summary>
+    /// Players the fund in asynchronous.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "GPI_VND",
+    ///             "playerCode": "4ue0uj8cwn2v",
+    ///             "currencyCode": "VND",
+    ///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
+    ///             "amount": 1
+    ///         }
+    /// </remarks>
+    [HttpPost("playerfundin")]
+    public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
+        [FromServices] IGetService<V8PokerPlayerFundInQuery, PlayerFundResult> service,
+        PlayerFundRequest request)
+    {
+        var query = new V8PokerPlayerFundInQuery()
+        {
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            OrderId = request.OrderId,
+            Amount = request.Amount,
+        };
+
+        var result = await service
+            .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
+        return new PlayerFundResponse()
+        {
+            OrderId = result.OrderId
+        };
+    }
+
+    /// <summary>
+    /// Players the fund out asynchronous.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "brandCode": "GPI_VND",
+    ///             "playerCode": "4ue0uj8cwn2v",
+    ///             "currencyCode": "VND",
+    ///             "orderId":"D07B3FAD0BE5F0B4EE0C2A401FC5C41075ED",
+    ///             "amount": 1
+    ///         }
+    /// </remarks>
+    [HttpPost("playerfundout")]
+    public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
+        [FromServices] IGetService<V8PokerPlayerFundOutQuery, PlayerFundResult> service,
+        PlayerFundRequest request)
+    {
+        var query = new V8PokerPlayerFundOutQuery()
+        {
+            BrandCode = request.BrandCode,
+            PlayerCode = request.PlayerCode,
+            CurrencyCode = request.CurrencyCode,
+            OrderId = request.OrderId,
+            Amount = request.Amount,
+        };
+
+        var result = await service
+            .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted)
+            .ConfigureAwait(false);
+
+        return new PlayerFundResponse()
+        {
+            OrderId = result.OrderId
+        };
+    }
+
+    /// <summary>
+    /// Rounds the detail asynchronous.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="roundId">The round identifier.</param>
+    /// <param name="language">The language.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Get rounddetail/b53d5576-8f61-417d-17da-08d9a5803086?language=zh-CN
+    /// </remarks>
+    [HttpGet("rounddetail/{roundId:guid}")]
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(
+        [FromServices] IGetService<V8PokerRoundDetailQuery, RoundDetailResult?> service,
+        Guid roundId,
+        [FromQuery] string language)
+
+    {
+        var query = new V8PokerRoundDetailQuery
+        {
+            RoundId = roundId,
+            Language = language
+        };
+        return service
+            .GetAsync(
+            query: query,
+            cancellationToken: HttpContext.RequestAborted);
+    }
+}

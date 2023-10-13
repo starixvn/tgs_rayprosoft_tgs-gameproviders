@@ -187,4 +187,8 @@ public interface IGameProviderRepository
     ValueTask<GKXGamingConfiguration> GetGKXGamingConfigurationAsync(
         Guid gameProviderConfigurationId,
         CancellationToken cancellationToken = default);
+
+    ValueTask<V8PokerConfiguration> GetV8PokerConfigurationAsync(
+        Guid gameProviderConfigurationId,
+        CancellationToken cancellationToken = default);
 }
