@@ -296,6 +296,7 @@ _ = app.InitialConnectionPragmaticPlay();
 _ = app.InitialConnectionSBO();
 _ = app.InitialConnectionSkywind();
 _ = app.InitialConnectionTFGaming();
+_ = app.InitialConnectionV8Poker();
 _ = app.InitialConnectionWGFmGaming();
 _ = app.InitialConnectionWGViaGaming();
 _ = app.InitialConnectionWMCasino();

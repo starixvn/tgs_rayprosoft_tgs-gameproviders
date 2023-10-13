@@ -24,6 +24,7 @@ using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.TFGamingService.Client;
+using Tgs.GameInterface.V8Poker.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WGViaGaming.Client;
 using Tgs.GameInterface.WicketCricket.Client;
@@ -339,6 +340,19 @@ public static class ServiceRegisterExtensions
         using (var scope = app.Services.CreateScope())
         {
             var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceTFGamingClient>();
+            _ = await gameInterface
+                .CheckingServiceAsync(
+                machineName: Environment.MachineName)
+                .ConfigureAwait(false);
+        }
+        return app;
+    }
+
+    public static async Task<WebApplication> InitialConnectionV8Poker(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var gameInterface = scope.ServiceProvider.GetRequiredService<IGameInterfaceV8PokerClient>();
             _ = await gameInterface
                 .CheckingServiceAsync(
                 machineName: Environment.MachineName)
