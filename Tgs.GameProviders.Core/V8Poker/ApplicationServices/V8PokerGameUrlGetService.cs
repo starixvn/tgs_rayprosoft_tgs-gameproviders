@@ -57,7 +57,7 @@ public class V8PokerGameUrlGetService : IGetService<V8PokerGameUrlQuery, string>
             gameProviderId: gameProviderId,
             cultureCode: query.Language,
             cancellationToken: cancellationToken)
-            .ConfigureAwait(false) ?? "zh-cn";
+            .ConfigureAwait(false) ?? "en_us";
         return await _client
             .GameUrlAsync(
             apiUrl: configuration.ApiUrl,
