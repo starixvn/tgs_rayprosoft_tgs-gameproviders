@@ -30,24 +30,24 @@ public class KaiyuanPlayerFundCheckingGetService : IGetService<KaiyuanPlayerFund
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
-                gameProviderCode: GameProviderType.Kaiyuan,
-                cancellationToken: cancellationToken)
+            gameProviderCode: GameProviderType.Kaiyuan,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var player = await _player
             .GetAsync(
-                playerCode: query.PlayerCode,
-                cancellationToken: cancellationToken)
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand
             .GetBrandGameProviderConfigurationIdAsync(
-                gameProviderId: gameProviderId,
-                brandId: player.BrandId,
-                cancellationToken: cancellationToken)
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var configuration = await _gameProvider
             .GetKaiyuanConfigurationAsync(
-                gameProviderConfigurationId: gameProviderConfigurationId,
-                cancellationToken: cancellationToken)
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await _client

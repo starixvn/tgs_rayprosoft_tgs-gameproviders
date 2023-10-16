@@ -10,6 +10,7 @@ namespace Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 public class KaiyuanPlayerFundInGetService : IGetService<KaiyuanPlayerFundInQuery, PlayerFundResult>
 {
     private readonly IBrandRepository _brand;
+    private readonly ISystemClock _systemClock;
     private readonly IGameInterfaceKaiyuanClient _client;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
@@ -18,11 +19,13 @@ public class KaiyuanPlayerFundInGetService : IGetService<KaiyuanPlayerFundInQuer
         IGameProviderRepository gameProvider,
         IPlayerRepository player,
         IBrandRepository brand,
+        ISystemClock systemClock,
         IGameInterfaceKaiyuanClient client)
     {
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
         _player = player ?? throw new ArgumentNullException(nameof(player));
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
+        _systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
@@ -30,34 +33,37 @@ public class KaiyuanPlayerFundInGetService : IGetService<KaiyuanPlayerFundInQuer
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
-                gameProviderCode: GameProviderType.Kaiyuan,
-                cancellationToken: cancellationToken)
+            gameProviderCode: GameProviderType.Kaiyuan,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var player = await _player
             .GetAsync(
-                playerCode: query.PlayerCode,
-                cancellationToken: cancellationToken)
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand
             .GetBrandGameProviderConfigurationIdAsync(
-                gameProviderId: gameProviderId,
-                brandId: player.BrandId,
-                cancellationToken: cancellationToken)
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var configuration = await _gameProvider
             .GetKaiyuanConfigurationAsync(
-                gameProviderConfigurationId: gameProviderConfigurationId,
-                cancellationToken: cancellationToken)
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var orderId = await _client
+        var orderId = $"{configuration.AgentId}{_systemClock.CurrentTime:yyyyMMddHHmmssfff}{player.PlayerCode}";
+
+        _ = await _client
             .FundInAsync(
             apiUrl: configuration.ApiUrl,
             deskey: configuration.Deskey,
             md5key: configuration.Md5key,
             agentId: configuration.AgentId,
-            query.PlayerCode,
-            query.Amount,
+            playerCode: query.PlayerCode,
+            orderId: orderId,
+            amount: query.Amount,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 

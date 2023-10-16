@@ -27,7 +27,7 @@
 		<PackageReference Include="Tgs.GameInterface.JDBService.Client" Version="0.0.10" />
 		<PackageReference Include="Tgs.GameInterface.Jili.Client" Version="0.0.11" />
 		<PackageReference Include="Tgs.GameInterface.Joker.Client" Version="0.0.6" />
-		<PackageReference Include="Tgs.GameInterface.Kaiyuan.Client" Version="1.0.5" />
+		<PackageReference Include="Tgs.GameInterface.Kaiyuan.Client" Version="1.0.6" />
 		<PackageReference Include="Tgs.GameInterface.LEGaming.Client" Version="0.0.5" />
 		<PackageReference Include="Tgs.GameInterface.OBet.Client" Version="0.0.7" />
 		<PackageReference Include="Tgs.GameInterface.Pinnacle.Client" Version="0.0.7" />
@@ -37,7 +37,7 @@
 		<PackageReference Include="Tgs.GameInterface.SkywindService.Client" Version="0.0.10" />
 		<PackageReference Include="Tgs.GameInterface.SM01Service.Client" Version="0.0.12" />
 		<PackageReference Include="Tgs.GameInterface.TFGamingService.Client" Version="0.0.10" />
-		<PackageReference Include="Tgs.GameInterface.V8Poker.Client" Version="0.0.2" />
+		<PackageReference Include="Tgs.GameInterface.V8Poker.Client" Version="0.0.3" />
 		<PackageReference Include="Tgs.GameInterface.WGFmGamingService.Client" Version="0.0.12" />
 		<PackageReference Include="Tgs.GameInterface.WGViaGaming.Client" Version="0.0.10" />
 		<PackageReference Include="Tgs.GameInterface.WicketCricket.Client" Version="0.0.5" />

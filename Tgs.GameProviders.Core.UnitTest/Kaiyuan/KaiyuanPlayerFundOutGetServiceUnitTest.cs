@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.Kaiyuan.Client;
+using Tgs.GameInterface.Kaiyuan.Protos;
 using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
@@ -19,6 +20,7 @@ public class KaiyuanPlayerFundOutGetServiceUnitTest
         var fakeGameProvider = Substitute.For<IGameProviderRepository>();
         var fakePlayer = Substitute.For<IPlayerRepository>();
         var fakeBrand = Substitute.For<IBrandRepository>();
+        var fakeSystemClock = Substitute.For<ISystemClock>();
 
         var query = new KaiyuanPlayerFundOutQuery
         {
@@ -77,7 +79,14 @@ public class KaiyuanPlayerFundOutGetServiceUnitTest
             cancellationToken: Arg.Any<CancellationToken>()).
             Returns(ValueTask.FromResult(configuration));
 
-        var orderId = "200995202307180240242304uk9399rb9qo";
+        var currentTime = DateTimeOffset.Parse("2023-10-12T07:04:33.439Z");
+        _ = fakeSystemClock.CurrentTime.Returns(currentTime);
+
+        var orderId = $"{configuration.AgentId}{currentTime:yyyyMMddHHmmssfff}{player.PlayerCode}";
+        var reply = new FundReply
+        {
+            Resp = "{\"m\":\"/channelHandle\",\"s\":103,\"d\":{\"code\":0,\"money\":\"0.00\"}}"
+        };
         _ = fakeClient
             .FundOutAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
@@ -85,14 +94,16 @@ public class KaiyuanPlayerFundOutGetServiceUnitTest
             md5key: Arg.Is(configuration.Md5key),
             agentId: Arg.Is(configuration.AgentId),
             playerCode: Arg.Is(player.PlayerCode),
+            orderId: Arg.Is(orderId),
             amount: Arg.Is(query.Amount),
             cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(orderId);
+            .Returns(reply);
 
         var sut = new KaiyuanPlayerFundOutGetService(
             fakeGameProvider,
             fakePlayer,
             fakeBrand,
+            fakeSystemClock,
             fakeClient);
 
         var actual = await sut.GetAsync(query);
