@@ -118,7 +118,7 @@ public class LEGamingGameUrlGetServiceUnitTest
             brandCode: Arg.Is(player.BrandCode),
             playerCode: Arg.Is(player.PlayerCode),
             ipAddress: Arg.Is(query.IPAddress),
-            gameExternalID: Arg.Is(gameInfo.GameExternalId),
+            externalGameId: Arg.Is(gameInfo.GameExternalId),
             cancellationToken: Arg.Any<CancellationToken>())
             .Returns(gameurl);
 

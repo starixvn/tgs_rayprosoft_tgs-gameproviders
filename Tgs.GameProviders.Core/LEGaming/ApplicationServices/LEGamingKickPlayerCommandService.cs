@@ -30,24 +30,24 @@ public class LEGamingKickPlayerCommandService : ICommandService<LEGamingKickPlay
     {
         var gameProviderId = await _gameProvider
             .GetGameProviderIdAsync(
-                gameProviderCode: GameProviderType.LEGaming,
-                cancellationToken: cancellationToken)
+            gameProviderCode: GameProviderType.LEGaming,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var player = await _player
             .GetAsync(
-                playerCode: command.PlayerCode,
-                cancellationToken: cancellationToken)
+            playerCode: command.PlayerCode,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var gameProviderConfigurationId = await _brand
             .GetBrandGameProviderConfigurationIdAsync(
-                gameProviderId: gameProviderId,
-                brandId: player.BrandId,
-                cancellationToken: cancellationToken)
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
         var configuration = await _gameProvider
             .GetLEGamingConfigurationAsync(
-                gameProviderConfigurationId: gameProviderConfigurationId,
-                cancellationToken: cancellationToken)
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         await _client
