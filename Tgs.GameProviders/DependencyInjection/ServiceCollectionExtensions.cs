@@ -30,6 +30,7 @@ using Tgs.GameInterface.WicketCricket.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GameProviders;
+using Tgs.GameProviders.Core;
 using Tgs.GameRecord.Endorphina.Session.Client;
 using Tgs.GameRounds.Client;
 using Tgs.GameToken.Client;
@@ -41,6 +42,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddGameProvidersService(
         this IServiceCollection services,
         Action<RedisOptions, IServiceProvider> configure,
+        Action<IPAddressOptions, IServiceProvider> ipAddressOptions,
         Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions,
         Action<GameTokenClientOptions, IServiceProvider> gameTokenClientOptions,
         Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
@@ -83,6 +85,7 @@ public static class ServiceCollectionExtensions
         .AddGameProvidersRepositories()
         .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
         .AddGameProvidersCore(
+            ipAddressOptions: ipAddressOptions,
             gameRoundsClientOptions: gameRoundsClientOptions,
             gameTokenClientOptions: gameTokenClientOptions,
             gameCommandClientOptions: gameCommandClientOptions,

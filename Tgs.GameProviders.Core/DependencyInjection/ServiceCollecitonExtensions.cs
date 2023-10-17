@@ -42,6 +42,7 @@ public static class ServiceCollecitonExtensions
 {
     public static IServiceCollection AddGameProvidersCore(
         this IServiceCollection services,
+        Action<IPAddressOptions, IServiceProvider> ipAddressOptions,
         Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions,
         Action<GameTokenClientOptions, IServiceProvider> gameTokenClientOptions,
         Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
@@ -77,6 +78,9 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceGKXGamingClientOptions, IServiceProvider> gameInterfaceGKXGamingClientOptions,
         Action<GameInterfaceV8PokerClientOptions, IServiceProvider> gameInterfaceV8PokerClientOptions)
         => services
+        .AddOptions<IPAddressOptions>()
+        .Configure(ipAddressOptions)
+        .Services
         .RegisterAllServiceUtilityTypes(
             Assembly.GetExecutingAssembly(),
             ServiceLifetime.Transient)
@@ -117,5 +121,6 @@ public static class ServiceCollecitonExtensions
         .AddSecurity()//Tgs.Core.Infrastructures.Security
         .AddMemoryCache()
         .AddTransient<IGameActionService, GameActionService>()
-        .AddSingleton<ISystemClock, SystemClock>();
+        .AddSingleton<ISystemClock, SystemClock>()
+        .AddSingleton<ISnowflakeWork, SnowflakeWork>();
 }

@@ -40,6 +40,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
+            - name: POD_IP
+              valueFrom:
+               fieldRef:
+                fieldPath: status.podIP
             - name: ConnectionStrings__Redis
               valueFrom:
                 secretKeyRef:

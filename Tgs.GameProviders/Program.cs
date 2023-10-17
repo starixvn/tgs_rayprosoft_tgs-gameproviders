@@ -1,4 +1,6 @@
-﻿using System.Net.Mime;
+﻿using System.Net;
+using System.Net.Mime;
+using System.Net.Sockets;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using OpenTelemetry.Instrumentation.AspNetCore;
@@ -54,6 +56,12 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.ConnectionString = configuration.GetConnectionString("Redis")!;
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.IPAddress = builder.Configuration.GetSection("POD_IP").Value
+        ?? Dns.GetHostEntry(Dns.GetHostName()).AddressList.Where(ip => ip.AddressFamily == AddressFamily.InterNetwork).Single().ToString();
     },
     (options, sp) =>
     {
@@ -274,6 +282,7 @@ _ = app.MapControllers();
 
 app.MapHealthChecks("/healthz");
 
+_ = app.InitialSnowflakeWork();
 _ = app.InitialMemory();
 _ = app.InitialConnectionAVIAGaming();
 _ = app.InitialConnectionAwc();

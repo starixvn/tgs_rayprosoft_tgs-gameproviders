@@ -454,4 +454,15 @@ public static class ServiceRegisterExtensions
         }
         return app;
     }
+
+    public static WebApplication InitialSnowflakeWork(this WebApplication app)
+    {
+        using (var scope = app.Services.CreateScope())
+        {
+            var snowflakeWork = scope.ServiceProvider.GetRequiredService<ISnowflakeWork>();
+
+            _ = snowflakeWork.GetId();
+        }
+        return app;
+    }
 }
