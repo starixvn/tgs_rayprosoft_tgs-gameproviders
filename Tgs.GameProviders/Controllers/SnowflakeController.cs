@@ -17,6 +17,11 @@ public class SnowflakeController : ControllerBase
         [FromServices] ISnowflakeWork work)
         => work.GetId();
 
+    [HttpGet("IPAddress")]
+    public string GetIPAddress(
+        [FromServices] ISnowflakeWork work)
+        => work.GetIPAddress().ToString();
+
     [HttpGet("WorkerId")]
     public long GetWorkerId(
         [FromServices] ISnowflakeWork work)

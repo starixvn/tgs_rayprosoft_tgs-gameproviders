@@ -1,10 +1,14 @@
-﻿namespace Tgs.GameProviders.Core;
+﻿using System.Net;
+
+namespace Tgs.GameProviders.Core;
 
 public interface ISnowflakeWork
 {
     long GetDatacenterId();
 
-    long GetWorkerId();
-
     long GetId();
+
+    IPAddress GetIPAddress();
+
+    long GetWorkerId();
 }
