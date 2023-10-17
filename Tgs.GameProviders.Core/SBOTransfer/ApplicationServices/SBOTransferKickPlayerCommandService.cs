@@ -28,10 +28,23 @@ public class SBOTransferKickPlayerCommandService : ICommandService<SBOTransferKi
 
     public async ValueTask ExecuteAsync(SBOTransferKickPlayerCommand command, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SBOTransfer).ConfigureAwait(false);
-        var player = await _playerRepository.GetAsync(command.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProviderRepository.GetSBOTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.SBOTransfer,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _playerRepository.GetAsync(
+            playerCode: command.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            player.BrandId,
+            cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProviderRepository.GetSBOTransferConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         await _client.PlayerKickAsync(
             configuration.ApiUrl,

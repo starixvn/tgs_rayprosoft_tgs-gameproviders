@@ -28,55 +28,48 @@ public class SBOTransferPlayerBalanceGetService : IGetService<SBOTransferPlayerB
 
     public async ValueTask<PlayerBalanceResult> GetAsync(SBOTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProviderRepository
-            .GetGameProviderIdAsync(
-                gameProviderCode: GameProviderType.SBOTransfer,
-                cancellationToken: cancellationToken)
+        var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.SBOTransfer,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var player = await _playerRepository
-            .GetAsync(
-                playerCode: query.PlayerCode,
-                cancellationToken: cancellationToken)
+        var player = await _playerRepository.GetAsync(
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brandRepository
-            .GetBrandGameProviderConfigurationIdAsync(
-                gameProviderId: gameProviderId,
-                brandId: player.BrandId,
-                cancellationToken: cancellationToken)
+        var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            player.BrandId,
+            cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _gameProviderRepository
-            .GetSBOTransferConfigurationAsync(
-                gameProviderConfigurationId: gameProviderConfigurationId,
-                cancellationToken: cancellationToken)
+        var configuration = await _gameProviderRepository.GetSBOTransferConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var reply = await _client
-                .PlayerBalanceAsync(
-                    configuration.ApiUrl,
-                    configuration.CompanyKey,
-                    configuration.Agent,
-                    player.PlayerCode,
-                    cancellationToken)
-                .ConfigureAwait(false);
+        var reply = await _client.PlayerBalanceAsync(
+            apiUrl: configuration.ApiUrl,
+            companyKey: configuration.CompanyKey,
+            agent: configuration.Agent,
+            playerCode: player.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         if (!reply.IsPlayerExist)
         {
-            await _client
-               .PlayerCreateAsync(
-                    configuration.ApiUrl,
-                    configuration.CompanyKey,
-                    configuration.Agent,
-                    player.PlayerCode,
-                    cancellationToken)
-               .ConfigureAwait(false);
+            await _client.PlayerCreateAsync(
+                apiUrl: configuration.ApiUrl,
+                companyKey: configuration.CompanyKey,
+                agent: configuration.Agent,
+                playerCode: player.PlayerCode,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
 
-            reply = await _client
-                .PlayerBalanceAsync(
-                    configuration.ApiUrl,
-                    configuration.CompanyKey,
-                    configuration.Agent,
-                    player.PlayerCode,
-                    cancellationToken)
+            reply = await _client.PlayerBalanceAsync(
+                apiUrl: configuration.ApiUrl,
+                companyKey: configuration.CompanyKey,
+                agent: configuration.Agent,
+                playerCode: player.PlayerCode,
+                cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -86,7 +79,6 @@ public class SBOTransferPlayerBalanceGetService : IGetService<SBOTransferPlayerB
             {
                 FreeBalance = reply.FreeBalance.ToDecimal().GetValueOrDefault(0),
                 OutstandingBalance = reply.OutstandingBalance.ToDecimal().GetValueOrDefault(0)
-
             };
     }
 }

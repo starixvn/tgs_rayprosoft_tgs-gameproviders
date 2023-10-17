@@ -33,49 +33,63 @@ public class SBOTransferGameUrlGetService : IGetService<SBOTransferGameUrlQuery,
 
     public async ValueTask<Uri> GetAsync(SBOTransferGameUrlQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.SBOTransfer).ConfigureAwait(false);
-        var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProviderRepository.GetSBOTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
-        var game = await _gameRepository.GetAsync(query.GameId.Value).ConfigureAwait(false);
-
-        var cultureCode = await _gameProviderRepository
-            .GetGameProviderCultureCodeAsync(
-                gameProviderId,
-                query.Language)
+        var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.SBOTransfer,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var player = await _playerRepository.GetAsync(
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            player.BrandId,
+            cancellationToken)
+            .ConfigureAwait(false);
+        var configuration = await _gameProviderRepository.GetSBOTransferConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var game = await _gameRepository.GetAsync(
+            gameId: query.GameId.Value,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+        var cultureCode = await _gameProviderRepository.GetGameProviderCultureCodeAsync(
+            gameProviderId: gameProviderId,
+            cultureCode: query.Language,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false) ?? "en";
 
         var reply = await GetGameUrlReply(
-                configuration.ApiUrl,
-                configuration.CompanyKey,
-                configuration.Agent,
-                player.PlayerCode,
-                cultureCode,
-                query.PlatformType == PlatformType.Mobile,
-                game.Type,
-                cancellationToken)
+            apiUrl: configuration.ApiUrl,
+            companyKey: configuration.CompanyKey,
+            agent: configuration.Agent,
+            playerCode: player.PlayerCode,
+            cultureCode: cultureCode,
+            isMobile: query.PlatformType == PlatformType.Mobile,
+            gameType: game.Type,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         if (!reply.IsPlayerExist)
         {
-            await _client
-               .PlayerCreateAsync(
-                    configuration.ApiUrl,
-                    configuration.CompanyKey,
-                    configuration.Agent,
-                    player.PlayerCode,
-                    cancellationToken)
+            await _client.PlayerCreateAsync(
+                apiUrl: configuration.ApiUrl,
+                companyKey: configuration.CompanyKey,
+                agent: configuration.Agent,
+                playerCode: player.PlayerCode,
+                cancellationToken: cancellationToken)
                .ConfigureAwait(false);
 
             reply = await GetGameUrlReply(
-                    configuration.ApiUrl,
-                    configuration.CompanyKey,
-                    configuration.Agent,
-                    player.PlayerCode,
-                    cultureCode,
-                    query.PlatformType == PlatformType.Mobile,
-                    game.Type,
-                    cancellationToken)
+                apiUrl: configuration.ApiUrl,
+                companyKey: configuration.CompanyKey,
+                agent: configuration.Agent,
+                playerCode: player.PlayerCode,
+                cultureCode: cultureCode,
+                isMobile: query.PlatformType == PlatformType.Mobile,
+                gameType: game.Type,
+                cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -92,21 +106,19 @@ public class SBOTransferGameUrlGetService : IGetService<SBOTransferGameUrlQuery,
         GameType gameType,
         CancellationToken cancellationToken)
         => gameType is GameType.VirtualSportsLobby or GameType.VirtualSports
-            ? _client
-                .GameUrlByVirtualSportsAsync(
-                    apiUrl,
-                    companyKey,
-                    agent,
-                    playerCode,
-                    cultureCode,
-                    cancellationToken)
-            : _client
-                .GameUrlBySportsBookAsync(
-                    apiUrl,
-                    companyKey,
-                    agent,
-                    playerCode,
-                    cultureCode,
-                    isMobile,
-                    cancellationToken);
+        ? _client.GameUrlByVirtualSportsAsync(
+            apiUrl: apiUrl,
+            companyKey: companyKey,
+            agent: agent,
+            playerCode: playerCode,
+            lang: cultureCode,
+            cancellationToken: cancellationToken)
+        : _client.GameUrlBySportsBookAsync(
+            apiUrl: apiUrl,
+            companyKey: companyKey,
+            agent: agent,
+            playerCode: playerCode,
+            lang: cultureCode,
+            isMobile: isMobile,
+            cancellationToken: cancellationToken);
 }
