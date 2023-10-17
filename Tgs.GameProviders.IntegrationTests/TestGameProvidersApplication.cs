@@ -29,7 +29,7 @@ internal class TestGameProvidersApplication : WebApplicationFactory<Program>
                         {
                             exporterOptions.TimeoutMilliseconds = 0;
                         }));
-            }); ;
+            });
 
         _webHostConfigure?.Invoke(builder);
     }
