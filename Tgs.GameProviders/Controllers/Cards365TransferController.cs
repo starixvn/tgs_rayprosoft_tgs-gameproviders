@@ -160,7 +160,7 @@ public class Cards365TransferController : ControllerBase
         }).ConfigureAwait(false);
         return result == null ? null : new PlayerFundResponse()
         {
-            OrderId = request.OrderId
+            OrderId = result.OrderId
         };
     }
 
@@ -197,7 +197,7 @@ public class Cards365TransferController : ControllerBase
         }).ConfigureAwait(false);
         return result == null ? null : new PlayerFundResponse()
         {
-            OrderId = request.OrderId
+            OrderId = result.OrderId
         };
     }
 
