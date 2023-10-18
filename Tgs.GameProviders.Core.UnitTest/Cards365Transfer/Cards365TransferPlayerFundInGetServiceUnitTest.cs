@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
@@ -20,6 +21,7 @@ public class Cards365TransferPlayerFundInGetServiceUnitTest
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeBrandRepository = Substitute.For<IBrandRepository>();
         var fakeClient = Substitute.For<IGameInterfaceCards365Client>();
+        var fakeSnowflakeWork = Substitute.For<ISnowflakeWork>();
 
         var query = new Cards365TransferPlayerFundInQuery
         {
@@ -69,39 +71,42 @@ public class Cards365TransferPlayerFundInGetServiceUnitTest
             Cert = "cert",
             Extension1 = "extension1"
         };
-        _ = fakeGameProviderRepository
-            .GetCards365TransferConfigurationAsync(
-                gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
-                cancellationToken: Arg.Any<CancellationToken>())
+        _ = fakeGameProviderRepository.GetCards365TransferConfigurationAsync(
+            gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+            cancellationToken: Arg.Any<CancellationToken>())
             .Returns(configuration);
 
-        var response = new FundReply()
+        _ = fakeSnowflakeWork.GetId()
+           .Returns(1714154366418497500);
+
+        var orderId = "W1714154366418497500";
+        var reply = new FundReply()
         {
-            TransactionId = query.OrderId,
-            TsCode = "qERaf790J0mBUrlIKkKvnA"
+            TransactionId = orderId,
+            Resp = new JsonObject { ["status"] = "1" }.ToJsonString()
         };
 
-        _ = fakeClient
-            .FundInAsync(
-                apiUrl: Arg.Is(configuration.ApiUrl),
-                website: Arg.Is(configuration.Website),
-                cert: Arg.Is(configuration.Cert),
-                extension1: Arg.Is(configuration.Extension1),
-                playerCode: Arg.Is(player.PlayerCode),
-                transactionId: Arg.Is(query.OrderId),
-                amount: Arg.Is(query.Amount),
-                cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(response);
+        _ = fakeClient.FundInAsync(
+            apiUrl: Arg.Is(configuration.ApiUrl),
+            website: Arg.Is(configuration.Website),
+            cert: Arg.Is(configuration.Cert),
+            extension1: Arg.Is(configuration.Extension1),
+            playerCode: Arg.Is(player.PlayerCode),
+            transactionId: Arg.Is(orderId),
+            amount: Arg.Is(query.Amount),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(reply);
 
         var sut = new Cards365TransferPlayerFundInGetService(
             fakeGameProviderRepository,
             fakePlayerRepository,
             fakeBrandRepository,
+            fakeSnowflakeWork,
             fakeClient);
 
         var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
-        Assert.Equal(response.TransactionId, actual.OrderId);
+        Assert.Equal(reply.TransactionId, actual.OrderId);
     }
 }

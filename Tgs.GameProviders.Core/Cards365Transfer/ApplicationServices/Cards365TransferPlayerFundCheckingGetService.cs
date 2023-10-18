@@ -28,26 +28,22 @@ public class Cards365TransferPlayerFundCheckingGetService : IGetService<Cards365
 
     public async ValueTask<bool> GetAsync(Cards365TransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider
-            .GetGameProviderIdAsync(
-                gameProviderCode: GameProviderType.Cards365Transfer,
-                cancellationToken: cancellationToken)
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.Cards365Transfer,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var player = await _player
-            .GetAsync(
-                playerCode: query.PlayerCode,
-                cancellationToken: cancellationToken)
+        var player = await _player.GetAsync(
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand
-            .GetBrandGameProviderConfigurationIdAsync(
-                gameProviderId: gameProviderId,
-                brandId: player.BrandId,
-                cancellationToken: cancellationToken)
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _gameProvider
-            .GetCards365TransferConfigurationAsync(
-                gameProviderConfigurationId: gameProviderConfigurationId,
-                cancellationToken: cancellationToken)
+        var configuration = await _gameProvider.GetCards365TransferConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return await _client
