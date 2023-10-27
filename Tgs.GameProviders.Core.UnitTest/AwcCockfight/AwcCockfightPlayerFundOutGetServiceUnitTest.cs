@@ -93,11 +93,14 @@ public class AwcCockfightPlayerFundOutGetServiceUnitTest
         var gameProviderTransactionId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         var reply = new FundReply()
         {
-            Success = true,
-            TransactionId = query.OrderId,
+            OrderId = query.OrderId,
             GameProviderTransactionId = gameProviderTransactionId,
             CurrentBalance = 100m,
-            Amount = query.Amount
+            Amount = query.Amount,
+            Resp = new JsonObject
+            {
+                ["transactionId"] = gameProviderTransactionId
+            }.ToJsonString()
         };
         _ = fakeClient.FundOutAsync(
             Arg.Is(configuration.ApiUrl),

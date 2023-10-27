@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
@@ -78,11 +79,14 @@ public class AwcFsPlayerFundInGetServiceUnitTest
         var gameProviderTransactionId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
         var reply = new FundReply()
         {
-            Success = true,
-            TransactionId = query.OrderId,
+            OrderId = query.OrderId,
             GameProviderTransactionId = gameProviderTransactionId,
             CurrentBalance = 0,
-            Amount = query.Amount
+            Amount = query.Amount,
+            Resp = new JsonObject
+            {
+                ["transactionId"] = gameProviderTransactionId
+            }.ToJsonString()
         };
         _ = fakeClient.FundInAsync(
             Arg.Is(configuration.ApiUrl),

@@ -28,34 +28,32 @@ public class AwcLudoPlayerFundCheckingGetService : IGetService<AwcLudoPlayerFund
 
     public async ValueTask<bool> GetAsync(AwcLudoPlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider
-            .GetGameProviderIdAsync(
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
             gameProviderCode: GameProviderType.AWC_LUDO,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var player = await _player
-            .GetAsync(
+
+        var player = await _player.GetAsync(
             playerCode: command.PlayerCode,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand
-            .GetBrandGameProviderConfigurationIdAsync(
+
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
             gameProviderId: gameProviderId,
             brandId: player.BrandId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _gameProvider
-            .GetAwcLudoConfigurationAsync(
+
+        var configuration = await _gameProvider.GetAwcLudoConfigurationAsync(
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return await _client
-            .FundOrderCheckingAsync(
+        return await _client.FundStatusAsync(
             apiUrl: configuration.ApiUrl,
             agentId: configuration.AgentId,
             cert: configuration.Cert,
-            transactionId: command.OrderId,
+            orderId: command.OrderId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
     }

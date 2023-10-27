@@ -81,7 +81,7 @@ public class AwcYlKickPlayerCommandServiceUnitTest
 
         _ = fakeClient
             .Received(1)
-            .KickPlayerAsync(
+            .PlayerLogoutAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
             agentId: Arg.Is(configuration.AgentId),
             cert: Arg.Is(configuration.Cert),

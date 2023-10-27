@@ -114,25 +114,23 @@ public class AwcSpadeGameUrlGetServiceUnitTest
             Arg.Any<CancellationToken>())
             .Returns(game);
 
-        var request = new GameUrlRequest()
-        {
-            ApiUrl = configuration.ApiUrl.ToString(),
-            AgentId = configuration.AgentId,
-            Cert = configuration.Cert,
-            PlayerCode = query.PlayerCode,
-            BackUrl = query.BackUrl.ToString(),
-            IsMobileLogin = query.PlatformType == PlatformType.Mobile,
-            ExternalGameId = game.GameExternalId,
-            Language = gameProviderCultureCode
-        };
         var gameUrl = new Uri("http://www.google.com");
         var response = new GameUrlReply()
         {
-            Success = true,
             IsPlayerExist = false,
             GameUrl = string.Empty
         };
-        _ = fakeClient.GameUrlByAwcSpadeAsync(request).Returns(response);
+        _ = fakeClient.GameUrlByAwcSpadeAsync(
+            apiUrl: Arg.Is(configuration.ApiUrl),
+            agentId: Arg.Is(configuration.AgentId),
+            cert: Arg.Is(configuration.Cert),
+            playerCode: Arg.Is(player.PlayerCode),
+            isMobileLogin: Arg.Is(query.PlatformType == PlatformType.Mobile),
+            backUrl: Arg.Is(query.BackUrl.ToString()),
+            externalGameId: Arg.Is(game.GameExternalId),
+            language: Arg.Is(gameProviderCultureCode),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(response);
 
         var currency = "CNY";
         _ = fakeGameProvider
@@ -153,7 +151,7 @@ public class AwcSpadeGameUrlGetServiceUnitTest
 
         _ = fakeClient
             .Received(1)
-            .CreatePlayerAsync(
+            .PlayerCreateAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
             agentId: Arg.Is(configuration.AgentId),
             cert: Arg.Is(configuration.Cert),
@@ -264,25 +262,23 @@ public class AwcSpadeGameUrlGetServiceUnitTest
             Arg.Any<CancellationToken>())
             .Returns(game);
 
-        var request = new GameUrlRequest()
-        {
-            ApiUrl = configuration.ApiUrl.ToString(),
-            AgentId = configuration.AgentId,
-            Cert = configuration.Cert,
-            PlayerCode = query.PlayerCode,
-            BackUrl = query.BackUrl.ToString(),
-            IsMobileLogin = query.PlatformType == PlatformType.Mobile,
-            ExternalGameId = game.GameExternalId,
-            Language = gameProviderCultureCode
-        };
         var gameUrl = new Uri("http://www.google.com");
         var response = new GameUrlReply()
         {
-            Success = true,
             IsPlayerExist = true,
             GameUrl = gameUrl.ToString()
         };
-        _ = fakeClient.GameUrlByAwcSpadeAsync(request).Returns(response);
+        _ = fakeClient.GameUrlByAwcSpadeAsync(
+            apiUrl: Arg.Is(configuration.ApiUrl),
+            agentId: Arg.Is(configuration.AgentId),
+            cert: Arg.Is(configuration.Cert),
+            playerCode: Arg.Is(player.PlayerCode),
+            isMobileLogin: Arg.Is(query.PlatformType == PlatformType.Mobile),
+            backUrl: Arg.Is(query.BackUrl.ToString()),
+            externalGameId: Arg.Is(game.GameExternalId),
+            language: Arg.Is(gameProviderCultureCode),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(response);
 
         var sut = new AwcSpadeGameUrlGetService(
             fakeBrand,

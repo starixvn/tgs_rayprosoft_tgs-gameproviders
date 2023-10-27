@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.AwcService.Client;
-using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
@@ -29,30 +28,28 @@ public class AwcLudoPlayerBalanceGetService : IGetService<AwcLudoPlayerBalanceQu
 
     public async ValueTask<PlayerBalanceResult> GetAsync(AwcLudoPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider
-            .GetGameProviderIdAsync(
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
             gameProviderCode: GameProviderType.AWC_LUDO,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var player = await _player
-            .GetAsync(
+
+        var player = await _player.GetAsync(
             playerCode: query.PlayerCode,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand
-            .GetBrandGameProviderConfigurationIdAsync(
+
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
             gameProviderId: gameProviderId,
             brandId: player.BrandId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _gameProvider
-            .GetAwcLudoConfigurationAsync(
+
+        var configuration = await _gameProvider.GetAwcLudoConfigurationAsync(
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client
-            .GetBalanceAsync(
+        var reply = await _client.PlayerBalanceAsync(
             apiUrl: configuration.ApiUrl,
             agentId: configuration.AgentId,
             cert: configuration.Cert,
@@ -60,35 +57,25 @@ public class AwcLudoPlayerBalanceGetService : IGetService<AwcLudoPlayerBalanceQu
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        if (response.Success && !response.IsPlayerExist)
+        if (!reply.IsPlayerExist)
         {
-            var cultureCode = await _gameProvider
-                .GetGameProviderCultureCodeAsync(
-                gameProviderId: gameProviderId,
-                cultureCode: "en-US",
-                cancellationToken: cancellationToken)
-                .ConfigureAwait(false) ?? "en";
-            var currency = await _gameProvider
-                .GetGameProviderCurrencyCodeAsync(
+            var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(
                 gameProviderId: gameProviderId,
                 currencyCode: player.DefaultWalletCurrencyCode,
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            await _client
-                .CreatePlayerAsync(
+            await _client.PlayerCreateAsync(
                 apiUrl: configuration.ApiUrl,
                 agentId: configuration.AgentId,
                 cert: configuration.Cert,
                 playerCode: query.PlayerCode,
                 userName: query.PlayerCode,
                 currency: currency,
-                language: cultureCode,
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            response = await _client
-                .GetBalanceAsync(
+            reply = await _client.PlayerBalanceAsync(
                 apiUrl: configuration.ApiUrl,
                 agentId: configuration.AgentId,
                 cert: configuration.Cert,
@@ -97,11 +84,11 @@ public class AwcLudoPlayerBalanceGetService : IGetService<AwcLudoPlayerBalanceQu
                 .ConfigureAwait(false);
         }
 
-        return !response.IsPlayerExist
-            ? throw new Exception($"This game product has failed to withdraw the balance..{response.Message}")
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.({player.PlayerCode})")
             : new PlayerBalanceResult
             {
-                FreeBalance = response.Balance.ToDecimal().GetValueOrDefault(0)
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0)
             };
     }
 }

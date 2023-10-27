@@ -28,30 +28,28 @@ public class AwcLudoKickPlayerCommandService : ICommandService<AwcLudoKickPlayer
 
     public async ValueTask ExecuteAsync(AwcLudoKickPlayerCommand command, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider
-            .GetGameProviderIdAsync(
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
             gameProviderCode: GameProviderType.AWC_LUDO,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var player = await _player
-            .GetAsync(
+
+        var player = await _player.GetAsync(
             playerCode: command.PlayerCode,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand
-            .GetBrandGameProviderConfigurationIdAsync(
+
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
             gameProviderId: gameProviderId,
             brandId: player.BrandId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _gameProvider
-            .GetAwcLudoConfigurationAsync(
+
+        var configuration = await _gameProvider.GetAwcLudoConfigurationAsync(
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        await _client
-            .KickPlayerAsync(
+        await _client.PlayerLogoutAsync(
             apiUrl: configuration.ApiUrl,
             agentId: configuration.AgentId,
             cert: configuration.Cert,

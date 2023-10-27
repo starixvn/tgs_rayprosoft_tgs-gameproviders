@@ -26,36 +26,34 @@ public class AwcSpadePlayerFundCheckingGetService : IGetService<AwcSpadePlayerFu
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<bool> GetAsync(AwcSpadePlayerFundCheckingQuery command, CancellationToken cancellationToken = default)
+    public async ValueTask<bool> GetAsync(AwcSpadePlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider
-            .GetGameProviderIdAsync(
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
             gameProviderCode: GameProviderType.AWC_SPADE,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var player = await _player
-            .GetAsync(
-            playerCode: command.PlayerCode,
+
+        var player = await _player.GetAsync(
+            playerCode: query.PlayerCode,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand
-            .GetBrandGameProviderConfigurationIdAsync(
+
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
             gameProviderId: gameProviderId,
             brandId: player.BrandId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _gameProvider
-            .GetAwcSpadeConfigurationAsync(
+
+        var configuration = await _gameProvider.GetAwcSpadeConfigurationAsync(
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return await _client
-            .FundOrderCheckingAsync(
+        return await _client.FundStatusAsync(
             apiUrl: configuration.ApiUrl,
             agentId: configuration.AgentId,
             cert: configuration.Cert,
-            transactionId: command.OrderId,
+            orderId: query.OrderId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
     }

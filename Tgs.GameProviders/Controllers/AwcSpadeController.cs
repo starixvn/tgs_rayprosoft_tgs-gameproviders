@@ -9,13 +9,27 @@ namespace Tgs.GameProviders.Controllers;
 
 [Route("api/awc_spade")]
 [ApiController]
-public class AwcSpadeController : ControllerBase,
-        IGameUrlHandler<AwcSpadeGameUrlQuery>,
-        IKickPlayerHandler<AwcSpadeKickPlayerCommand>,
-        IPlayerFundHandler<AwcSpadePlayerFundInQuery, AwcSpadePlayerFundOutQuery>,
-        IPlayerFundCheckingHandler<AwcSpadePlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-        IRoundDetailHandler<AwcSpadeRoundDetailQuery>
+public class AwcSpadeController : ControllerBase
 {
+    /// <summary>
+    /// Brands the player balances asynchronous.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="brandCode">The brand code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    ///   <b>Example</b><br />
+    ///
+    ///   Get GPI/player/balances
+    /// </remarks>
+    [HttpGet("{brandCode}/player/balances")]
+    public IAsyncEnumerable<BalanceResult> BrandPlayerBalancesAsync(
+        [FromServices] IQueryService<AwcSpadeBalancesQuery, BalanceResult> service,
+        string brandCode)
+        => service.QueryAsync(
+            query: new(BrandCode: brandCode),
+            cancellationToken: HttpContext.RequestAborted);
+
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>

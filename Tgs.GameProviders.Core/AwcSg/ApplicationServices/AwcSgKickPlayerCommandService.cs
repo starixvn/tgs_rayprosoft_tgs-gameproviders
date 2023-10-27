@@ -28,30 +28,28 @@ public class AwcSgKickPlayerCommandService : ICommandService<AwcSgKickPlayerComm
 
     public async ValueTask ExecuteAsync(AwcSgKickPlayerCommand command, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider
-            .GetGameProviderIdAsync(
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
             gameProviderCode: GameProviderType.AWC_SG,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var player = await _player
-            .GetAsync(
+
+        var player = await _player.GetAsync(
             playerCode: command.PlayerCode,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand
-            .GetBrandGameProviderConfigurationIdAsync(
+
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
             gameProviderId: gameProviderId,
             brandId: player.BrandId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _gameProvider
-            .GetAwcSgConfigurationAsync(
+
+        var configuration = await _gameProvider.GetAwcSgConfigurationAsync(
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        await _client
-            .KickPlayerAsync(
+        await _client.PlayerLogoutAsync(
             apiUrl: configuration.ApiUrl,
             agentId: configuration.AgentId,
             cert: configuration.Cert,

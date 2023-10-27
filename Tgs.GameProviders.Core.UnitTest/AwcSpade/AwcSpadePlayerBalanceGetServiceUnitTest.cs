@@ -71,13 +71,12 @@ public class AwcSpadePlayerBalanceGetServiceUnitTest
             cancellationToken: Arg.Any<CancellationToken>())
             .Returns(configuration);
 
-        var response = new BalanceReply()
+        var response = new PlayerBalanceReply()
         {
-            Success = true,
             IsPlayerExist = false,
             Balance = 0.0m
         };
-        _ = fakeClient.GetBalanceAsync(
+        _ = fakeClient.PlayerBalanceAsync(
             Arg.Is(configuration.ApiUrl),
             Arg.Is(configuration.AgentId),
             Arg.Is(configuration.Cert),
@@ -101,7 +100,7 @@ public class AwcSpadePlayerBalanceGetServiceUnitTest
 
         _ = fakeClient
             .Received(1)
-            .CreatePlayerAsync(
+            .PlayerCreateAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
             agentId: Arg.Is(configuration.AgentId),
             cert: Arg.Is(configuration.Cert),
@@ -169,13 +168,12 @@ public class AwcSpadePlayerBalanceGetServiceUnitTest
             cancellationToken: Arg.Any<CancellationToken>())
             .Returns(configuration);
 
-        var response = new BalanceReply()
+        var response = new PlayerBalanceReply()
         {
-            Success = true,
             IsPlayerExist = true,
             Balance = 100m
         };
-        _ = fakeClient.GetBalanceAsync(
+        _ = fakeClient.PlayerBalanceAsync(
             Arg.Is(configuration.ApiUrl),
             Arg.Is(configuration.AgentId),
             Arg.Is(configuration.Cert),

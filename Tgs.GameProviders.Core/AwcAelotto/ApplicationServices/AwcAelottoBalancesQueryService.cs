@@ -25,51 +25,49 @@ internal class AwcAelottoBalancesQueryService : IQueryService<AwcAelottoBalances
         _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
     }
 
-    public async IAsyncEnumerable<BalanceResult> QueryAsync(
-        AwcAelottoBalancesQuery query,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<BalanceResult> QueryAsync(AwcAelottoBalancesQuery query, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider
-            .GetGameProviderIdAsync(
-                gameProviderCode: GameProviderType.AWC_AELOTTO,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-        var brandId = await _brand
-            .GetBrandIdAsync(
-                brandCode: query.BrandCode,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand
-            .GetBrandGameProviderConfigurationIdAsync(
-                gameProviderId: gameProviderId,
-                brandId: brandId,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-        var configuration = await _gameProvider
-            .GetAwcAelottoConfigurationAsync(
-                gameProviderConfigurationId: gameProviderConfigurationId,
-                cancellationToken: cancellationToken)
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.AWC_AELOTTO,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var reply = await _client
-            .GetBalancesAsync(
-                apiUrl: configuration.ApiUrl,
-                agentId: configuration.AgentId,
-                cert: configuration.Cert,
-                cancellationToken: cancellationToken)
+        var brandId = await _brand.GetBrandIdAsync(
+            brandCode: query.BrandCode,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        if (!reply.Items.Any())
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            brandId: brandId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        var configuration = await _gameProvider.GetAwcAelottoConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        var balanceInfos = await _client.AllBalancesAsync(
+            apiUrl: configuration.ApiUrl,
+            agentId: configuration.AgentId,
+            cert: configuration.Cert,
+            cancellationToken: cancellationToken)
+            .ToArrayAsync(
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        if (!balanceInfos.Any())
         {
             yield break;
         }
 
-        foreach (var item in reply.Items)
+        foreach (var balanceInfo in balanceInfos)
         {
             yield return new BalanceResult(
-                PlayerCode: item.UserId,
-                Balance: item.Balance.ToDecimal().GetValueOrDefault(0),
-                LastDateTime: item.LastModified.ToDateTime());
+                PlayerCode: balanceInfo.PlayerCode,
+                Balance: balanceInfo.Balance.ToDecimal().GetValueOrDefault(0),
+                LastDateTime: balanceInfo.LastModified.ToDateTime());
         }
     }
 }

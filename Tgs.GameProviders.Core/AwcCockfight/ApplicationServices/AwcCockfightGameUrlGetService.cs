@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.AwcService.Client;
-using Tgs.GameInterface.AwcService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
@@ -29,80 +28,83 @@ public class AwcCockfightGameUrlGetService : IGetService<AwcCockfightGameUrlQuer
 
     public async ValueTask<GameUrlResult> GetAsync(AwcCockfightGameUrlQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider
-            .GetGameProviderIdAsync(
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
             gameProviderCode: GameProviderType.AWC_COCKFIGHT,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var player = await _player
-            .GetAsync(
+
+        var player = await _player.GetAsync(
             playerCode: query.PlayerCode,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand
-            .GetBrandGameProviderConfigurationIdAsync(
+
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
             gameProviderId: gameProviderId,
             brandId: player.BrandId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _gameProvider
-            .GetAwcCockfightConfigurationAsync(
+
+        var configuration = await _gameProvider.GetAwcCockfightConfigurationAsync(
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var cultureCode = await _gameProvider
-            .GetGameProviderCultureCodeAsync(
+
+        var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(
             gameProviderId: gameProviderId,
             cultureCode: query.Language,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false) ?? "en";
 
-        var request = new GameUrlByLiveLobbyRequest()
-        {
-            ApiUrl = configuration.ApiUrl.ToString(),
-            AgentId = configuration.AgentId,
-            Cert = configuration.Cert,
-            PlayerCode = query.PlayerCode,
-            BackUrl = query.BackUrl.ToString(),
-            IsMobileLogin = query.PlatformType == PlatformType.Mobile,
-            BetLimit = configuration.BetLimit.ToJsonString(),
-            Language = cultureCode
-        };
-
-        var response = await _client
-            .GameUrlByLiveLobbyByAwcCockfightAsync(
-            request: request,
+        var reply = await _client.GameUrlByAwcCockfightAsync(
+            apiUrl: configuration.ApiUrl,
+            agentId: configuration.AgentId,
+            cert: configuration.Cert,
+            playerCode: player.PlayerCode,
+            isMobileLogin: query.PlatformType == PlatformType.Mobile,
+            backUrl: query.BackUrl.ToString(),
+            betLimit: configuration.BetLimit.ToJsonString(),
+            language: cultureCode,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        if (response.Success && !response.IsPlayerExist)
+        if (!reply.IsPlayerExist)
         {
-            var currency = await _gameProvider
-                .GetGameProviderCurrencyCodeAsync(
+            var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(
                 gameProviderId: gameProviderId,
                 currencyCode: player.DefaultWalletCurrencyCode,
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
             await _client
-                .CreatePlayerByBetLimitAsync(
+                .PlayerCreateByBetLimitAsync(
                 apiUrl: configuration.ApiUrl,
                 agentId: configuration.AgentId,
                 cert: configuration.Cert,
-                playerCode: query.PlayerCode,
-                userName: query.PlayerCode,
+                playerCode: player.PlayerCode,
+                userName: player.PlayerCode,
                 currency: currency,
                 betLimit: configuration.BetLimit.ToJsonString(),
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            response = await _client
-                .GameUrlByLiveLobbyByAwcCockfightAsync(
-                request: request,
+            reply = await _client.GameUrlByAwcCockfightAsync(
+                apiUrl: configuration.ApiUrl,
+                agentId: configuration.AgentId,
+                cert: configuration.Cert,
+                playerCode: player.PlayerCode,
+                isMobileLogin: query.PlatformType == PlatformType.Mobile,
+                backUrl: query.BackUrl.ToString(),
+                betLimit: configuration.BetLimit.ToJsonString(),
+                language: cultureCode,
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        return (response != null) ? new() { Url = new(response.GameUrl) } : null;
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.({player.PlayerCode})")
+            : new GameUrlResult
+            {
+                Url = new Uri(reply.GameUrl)
+            };
     }
 }

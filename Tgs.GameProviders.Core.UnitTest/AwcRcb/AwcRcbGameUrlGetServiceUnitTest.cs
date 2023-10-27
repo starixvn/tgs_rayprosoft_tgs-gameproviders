@@ -104,25 +104,23 @@ public class AwcRcbGameUrlGetServiceUnitTest
             cancellationToken: Arg.Any<CancellationToken>())
             .Returns(gameProviderCultureCode);
 
-        var request = new GameUrlByLiveLobbyRequest()
-        {
-            ApiUrl = configuration.ApiUrl.ToString(),
-            AgentId = configuration.AgentId,
-            Cert = configuration.Cert,
-            PlayerCode = query.PlayerCode,
-            BackUrl = query.BackUrl.ToString(),
-            IsMobileLogin = query.PlatformType == PlatformType.Mobile,
-            BetLimit = configuration.BetLimit.ToJsonString(),
-            Language = gameProviderCultureCode
-        };
         var gameUrl = new Uri("http://www.google.com");
         var response = new GameUrlReply()
         {
-            Success = true,
             IsPlayerExist = false,
             GameUrl = string.Empty
         };
-        _ = fakeClient.GameUrlLiveLobbyByAwcRcbAsync(request).Returns(response);
+        _ = fakeClient.GameUrlByAwcRcbAsync(
+            apiUrl: Arg.Is(configuration.ApiUrl),
+            agentId: Arg.Is(configuration.AgentId),
+            cert: Arg.Is(configuration.Cert),
+            playerCode: Arg.Is(player.PlayerCode),
+            isMobileLogin: Arg.Is(query.PlatformType == PlatformType.Mobile),
+            backUrl: Arg.Is(query.BackUrl.ToString()),
+            betLimit: Arg.Is(configuration.BetLimit.ToJsonString()),
+            language: Arg.Is(gameProviderCultureCode),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(response);
 
         var currency = "CNY";
         _ = fakeGameProvider
@@ -142,7 +140,7 @@ public class AwcRcbGameUrlGetServiceUnitTest
 
         _ = fakeClient
             .Received(1)
-            .CreatePlayerByBetLimitAsync(
+            .PlayerCreateByBetLimitAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
             agentId: Arg.Is(configuration.AgentId),
             cert: Arg.Is(configuration.Cert),
@@ -243,25 +241,23 @@ public class AwcRcbGameUrlGetServiceUnitTest
             cancellationToken: Arg.Any<CancellationToken>())
             .Returns(gameProviderCultureCode);
 
-        var request = new GameUrlByLiveLobbyRequest()
-        {
-            ApiUrl = configuration.ApiUrl.ToString(),
-            AgentId = configuration.AgentId,
-            Cert = configuration.Cert,
-            PlayerCode = query.PlayerCode,
-            BackUrl = query.BackUrl.ToString(),
-            IsMobileLogin = query.PlatformType == PlatformType.Mobile,
-            BetLimit = configuration.BetLimit.ToJsonString(),
-            Language = gameProviderCultureCode
-        };
         var gameUrl = new Uri("http://www.google.com");
         var response = new GameUrlReply()
         {
-            Success = true,
             IsPlayerExist = true,
             GameUrl = gameUrl.ToString()
         };
-        _ = fakeClient.GameUrlLiveLobbyByAwcRcbAsync(request).Returns(response);
+        _ = fakeClient.GameUrlByAwcRcbAsync(
+            apiUrl: Arg.Is(configuration.ApiUrl),
+            agentId: Arg.Is(configuration.AgentId),
+            cert: Arg.Is(configuration.Cert),
+            playerCode: Arg.Is(player.PlayerCode),
+            isMobileLogin: Arg.Is(query.PlatformType == PlatformType.Mobile),
+            backUrl: Arg.Is(query.BackUrl.ToString()),
+            betLimit: Arg.Is(configuration.BetLimit.ToJsonString()),
+            language: Arg.Is(gameProviderCultureCode),
+            cancellationToken: Arg.Any<CancellationToken>())
+            .Returns(response);
 
         var sut = new AwcRcbGameUrlGetService(
             fakeBrand,

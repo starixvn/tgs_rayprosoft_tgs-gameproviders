@@ -28,30 +28,28 @@ public class AwcFacaiPlayerBalanceGetService : IGetService<AwcFacaiPlayerBalance
 
     public async ValueTask<PlayerBalanceResult> GetAsync(AwcFacaiPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider
-            .GetGameProviderIdAsync(
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
             gameProviderCode: GameProviderType.AWC_FACAI,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var player = await _player
-            .GetAsync(
+
+        var player = await _player.GetAsync(
             playerCode: query.PlayerCode,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand
-            .GetBrandGameProviderConfigurationIdAsync(
+
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
             gameProviderId: gameProviderId,
             brandId: player.BrandId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _gameProvider
-            .GetAwcFacaiConfigurationAsync(
+
+        var configuration = await _gameProvider.GetAwcFacaiConfigurationAsync(
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client
-            .GetBalanceAsync(
+        var reply = await _client.PlayerBalanceAsync(
             apiUrl: configuration.ApiUrl,
             agentId: configuration.AgentId,
             cert: configuration.Cert,
@@ -59,7 +57,7 @@ public class AwcFacaiPlayerBalanceGetService : IGetService<AwcFacaiPlayerBalance
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        if (response.Success && !response.IsPlayerExist)
+        if (!reply.IsPlayerExist)
         {
             var currency = await _gameProvider
                 .GetGameProviderCurrencyCodeAsync(
@@ -68,8 +66,7 @@ public class AwcFacaiPlayerBalanceGetService : IGetService<AwcFacaiPlayerBalance
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            await _client
-                .CreatePlayerAsync(
+            await _client.PlayerCreateAsync(
                 apiUrl: configuration.ApiUrl,
                 agentId: configuration.AgentId,
                 cert: configuration.Cert,
@@ -79,8 +76,7 @@ public class AwcFacaiPlayerBalanceGetService : IGetService<AwcFacaiPlayerBalance
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            response = await _client
-                .GetBalanceAsync(
+            reply = await _client.PlayerBalanceAsync(
                 apiUrl: configuration.ApiUrl,
                 agentId: configuration.AgentId,
                 cert: configuration.Cert,
@@ -89,11 +85,11 @@ public class AwcFacaiPlayerBalanceGetService : IGetService<AwcFacaiPlayerBalance
                 .ConfigureAwait(false);
         }
 
-        return !response.Success
-            ? throw new Exception($"This game product has failed to withdraw the balance..{response.Message}")
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.({player.PlayerCode})")
             : new PlayerBalanceResult
             {
-                FreeBalance = response.Balance.ToDecimal().GetValueOrDefault(0)
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0)
             };
     }
 }

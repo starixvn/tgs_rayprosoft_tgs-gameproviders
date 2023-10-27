@@ -28,30 +28,28 @@ public class AwcVenusPlayerBalanceGetService : IGetService<AwcVenusPlayerBalance
 
     public async ValueTask<PlayerBalanceResult> GetAsync(AwcVenusPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider
-            .GetGameProviderIdAsync(
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
             gameProviderCode: GameProviderType.AWC_VENUS,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var player = await _player
-            .GetAsync(
+
+        var player = await _player.GetAsync(
             playerCode: query.PlayerCode,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand
-            .GetBrandGameProviderConfigurationIdAsync(
+
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
             gameProviderId: gameProviderId,
             brandId: player.BrandId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _gameProvider
-            .GetAwcVenusConfigurationAsync(
+
+        var configuration = await _gameProvider.GetAwcVenusConfigurationAsync(
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var response = await _client
-            .GetBalanceAsync(
+        var reply = await _client.PlayerBalanceAsync(
             apiUrl: configuration.ApiUrl,
             agentId: configuration.AgentId,
             cert: configuration.Cert,
@@ -59,29 +57,26 @@ public class AwcVenusPlayerBalanceGetService : IGetService<AwcVenusPlayerBalance
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        if (response.Success && !response.IsPlayerExist)
+        if (!reply.IsPlayerExist)
         {
-            var currency = await _gameProvider
-                .GetGameProviderCurrencyCodeAsync(
+            var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(
                 gameProviderId: gameProviderId,
                 currencyCode: player.DefaultWalletCurrencyCode,
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            await _client
-                .CreatePlayerByBetLimitAsync(
+            await _client.PlayerCreateByBetLimitAsync(
                 apiUrl: configuration.ApiUrl,
                 agentId: configuration.AgentId,
                 cert: configuration.Cert,
-                playerCode: query.PlayerCode,
-                userName: query.PlayerCode,
+                playerCode: player.PlayerCode,
+                userName: player.PlayerCode,
                 currency: currency,
                 betLimit: configuration.BetLimit.ToJsonString(),
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            response = await _client
-                .GetBalanceAsync(
+            reply = await _client.PlayerBalanceAsync(
                 apiUrl: configuration.ApiUrl,
                 agentId: configuration.AgentId,
                 cert: configuration.Cert,
@@ -90,11 +85,11 @@ public class AwcVenusPlayerBalanceGetService : IGetService<AwcVenusPlayerBalance
                 .ConfigureAwait(false);
         }
 
-        return !response.IsPlayerExist
-            ? throw new Exception($"This game product has failed to withdraw the balance..{response.Message}")
+        return !reply.IsPlayerExist
+            ? throw new Exception($"Player does not exist.({player.PlayerCode})")
             : new PlayerBalanceResult
             {
-                FreeBalance = response.Balance.ToDecimal().GetValueOrDefault(0)
+                FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0)
             };
     }
 }

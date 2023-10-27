@@ -26,26 +26,25 @@ public class AwcVenusPlayerFundInGetService : IGetService<AwcVenusPlayerFundInQu
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask<PlayerFundResult> GetAsync(AwcVenusPlayerFundInQuery command, CancellationToken cancellationToken = default)
+    public async ValueTask<PlayerFundResult> GetAsync(AwcVenusPlayerFundInQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider
-            .GetGameProviderIdAsync(
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
             gameProviderCode: GameProviderType.AWC_VENUS,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var player = await _player
-            .GetAsync(
-            playerCode: command.PlayerCode,
+
+        var player = await _player.GetAsync(
+            playerCode: query.PlayerCode,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand
-            .GetBrandGameProviderConfigurationIdAsync(
+
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
             gameProviderId: gameProviderId,
             brandId: player.BrandId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _gameProvider
-            .GetAwcVenusConfigurationAsync(
+
+        var configuration = await _gameProvider.GetAwcVenusConfigurationAsync(
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
@@ -56,11 +55,14 @@ public class AwcVenusPlayerFundInGetService : IGetService<AwcVenusPlayerFundInQu
             agentId: configuration.AgentId,
             cert: configuration.Cert,
             playerCode: player.PlayerCode,
-            transactionId: command.OrderId,
-            amount: command.Amount,
+            orderId: query.OrderId,
+            amount: query.Amount,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        return (reply.Success) ? new() { OrderId = reply.GameProviderTransactionId } : null;
+        return new PlayerFundResult
+        {
+            OrderId = reply.GameProviderTransactionId
+        };
     }
 }

@@ -26,32 +26,30 @@ public class AwcCockfightKickPlayerCommandService : ICommandService<AwcCockfight
         _player = player ?? throw new ArgumentNullException(nameof(player));
     }
 
-    public async ValueTask ExecuteAsync(AwcCockfightKickPlayerCommand command, CancellationToken cancellationToken = default)
+    public async ValueTask ExecuteAsync(AwcCockfightKickPlayerCommand query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider
-            .GetGameProviderIdAsync(
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
             gameProviderCode: GameProviderType.AWC_COCKFIGHT,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var player = await _player
-            .GetAsync(
-            playerCode: command.PlayerCode,
+
+        var player = await _player.GetAsync(
+            playerCode: query.PlayerCode,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand
-            .GetBrandGameProviderConfigurationIdAsync(
+
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
             gameProviderId: gameProviderId,
             brandId: player.BrandId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _gameProvider
-            .GetAwcCockfightConfigurationAsync(
+
+        var configuration = await _gameProvider.GetAwcCockfightConfigurationAsync(
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        await _client
-            .KickPlayerAsync(
+        await _client.PlayerLogoutAsync(
             apiUrl: configuration.ApiUrl,
             agentId: configuration.AgentId,
             cert: configuration.Cert,

@@ -9,13 +9,27 @@ namespace Tgs.GameProviders.Controllers;
 
 [Route("api/awc_venus")]
 [ApiController]
-public class AwcVenusController : ControllerBase,
-        IGameUrlHandler<AwcVenusGameUrlQuery>,
-        IKickPlayerHandler<AwcVenusKickPlayerCommand>,
-        IPlayerFundHandler<AwcVenusPlayerFundInQuery, AwcVenusPlayerFundOutQuery>,
-        IPlayerFundCheckingHandler<AwcVenusPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-        IRoundDetailHandler<AwcVenusRoundDetailQuery>
+public class AwcVenusController : ControllerBase
 {
+    /// <summary>
+    /// Brands the player balances asynchronous.
+    /// </summary>
+    /// <param name="service">The service.</param>
+    /// <param name="brandCode">The brand code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    ///   <b>Example</b><br />
+    ///
+    ///   Get GPI/player/balances
+    /// </remarks>
+    [HttpGet("{brandCode}/player/balances")]
+    public IAsyncEnumerable<BalanceResult> BrandPlayerBalancesAsync(
+        [FromServices] IQueryService<AwcVenusBalancesQuery, BalanceResult> service,
+        string brandCode)
+        => service.QueryAsync(
+            query: new(BrandCode: brandCode),
+            cancellationToken: HttpContext.RequestAborted);
+
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>

@@ -74,11 +74,11 @@ public class AwcLudoPlayerFundCheckingGetServiceUnitTest
             .Returns(configuration);
 
         _ = fakeClient
-            .FundOrderCheckingAsync(
+            .FundStatusAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
             agentId: Arg.Is(configuration.AgentId),
             cert: Arg.Is(configuration.Cert),
-            transactionId: Arg.Is(query.OrderId),
+            orderId: Arg.Is(query.OrderId),
             cancellationToken: Arg.Any<CancellationToken>())
             .Returns(true);
 

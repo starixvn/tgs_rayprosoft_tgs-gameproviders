@@ -17,8 +17,7 @@ internal class AwcKmRoundDetailGetService : IGetService<AwcKmRoundDetailQuery, R
 
     public async ValueTask<RoundDetailResult> GetAsync(AwcKmRoundDetailQuery query, CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _round
-            .GetAsync(
+        var roundInfo = await _round.GetAsync(
             roundId: query.RoundId,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
