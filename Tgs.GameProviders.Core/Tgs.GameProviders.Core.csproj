@@ -23,7 +23,7 @@
 		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.15" />
 		<PackageReference Include="Tgs.GameInterface.FaChai.Client" Version="0.0.10" />
 		<PackageReference Include="Tgs.GameInterface.GKXGaming.Client" Version="0.0.3" />
-		<PackageReference Include="Tgs.GameInterface.HabaneroService.Client" Version="0.0.11" />
+		<PackageReference Include="Tgs.GameInterface.HabaneroService.Client" Version="0.0.12" />
 		<PackageReference Include="Tgs.GameInterface.InplayMatrix.Client" Version="0.0.9" />
 		<PackageReference Include="Tgs.GameInterface.JDBService.Client" Version="0.0.11" />
 		<PackageReference Include="Tgs.GameInterface.Jili.Client" Version="0.0.12" />

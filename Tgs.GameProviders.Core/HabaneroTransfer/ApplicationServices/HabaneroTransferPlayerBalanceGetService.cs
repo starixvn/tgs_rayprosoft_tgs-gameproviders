@@ -28,10 +28,26 @@ internal class HabaneroTransferPlayerBalanceGetService : IGetService<HabaneroTra
 
     public async ValueTask<PlayerBalanceResult> GetAsync(HabaneroTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.HabaneroTransfer).ConfigureAwait(false);
-        var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetHabaneroTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+            gameProviderCode: GameProviderType.HabaneroTransfer,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        var player = await _player.GetAsync(
+            playerCode: query.PlayerCode,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
+            gameProviderId: gameProviderId,
+            brandId: player.BrandId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
+
+        var configuration = await _gameProvider.GetHabaneroTransferConfigurationAsync(
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
         var reply = await _client
             .PlayerBalanceAsync(
@@ -45,10 +61,11 @@ internal class HabaneroTransferPlayerBalanceGetService : IGetService<HabaneroTra
 
         if (!reply.IsPlayerExist)
         {
-            var gameProviderCurrencyCode = await _gameProvider
-                    .GetGameProviderCurrencyCodeAsync(gameProviderId, player.DefaultWalletCurrencyCode)
-                    .ConfigureAwait(false)
-                ?? throw new Exception($"This game product currency does not exist.({player.DefaultWalletCurrencyCode})");
+            var gameProviderCurrencyCode = await _gameProvider.GetGameProviderCurrencyCodeAsync(
+                gameProviderId: gameProviderId,
+                currencyCode: player.DefaultWalletCurrencyCode,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
 
             var gameTokenReply = await _client
                 .GameTokenAsync(
