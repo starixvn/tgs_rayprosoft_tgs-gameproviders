@@ -285,7 +285,6 @@ app.MapHealthChecks("/healthz");
 
 _ = app.InitialSnowflakeWork();
 _ = app.InitialMemory();
-_ = app.InitialConnectionAVIAGaming();
 _ = app.InitialConnectionAwc();
 _ = app.InitialConnectionBTi();
 _ = app.InitialConnectionCards365();

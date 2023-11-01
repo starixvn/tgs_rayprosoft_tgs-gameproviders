@@ -147,7 +147,7 @@ public class AwcSpadeGameUrlGetServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        _ = Assert.ThrowsAsync<UriFormatException>(async () => await sut.GetAsync(query: query));
+        _ = Assert.ThrowsAsync<UriFormatException>(() => sut.GetAsync(query: query).AsTask());
 
         _ = fakeClient
             .Received(1)
