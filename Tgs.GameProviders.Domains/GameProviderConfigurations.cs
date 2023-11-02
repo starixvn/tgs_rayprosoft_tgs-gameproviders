@@ -20,6 +20,7 @@ public static class GameProviderConfigurations
     public static readonly string AWC_SPADE = string.Format(_template, GameProviderType.AWC_SPADE);
     public static readonly string AWC_VENUS = string.Format(_template, GameProviderType.AWC_VENUS);
     public static readonly string AWC_YL = string.Format(_template, GameProviderType.AWC_YL);
+    public static readonly string AWC_YESBINGO = string.Format(_template, GameProviderType.AWC_YESBINGO);
     public static readonly string BetConstruct = string.Format(_template, GameProviderType.BetConstruct);
     public static readonly string BigGaming = string.Format(_template, GameProviderType.BigGaming);
     public static readonly string BTiSports = string.Format(_template, GameProviderType.BTiSports);

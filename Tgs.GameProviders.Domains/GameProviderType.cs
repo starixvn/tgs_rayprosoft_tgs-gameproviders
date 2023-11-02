@@ -18,6 +18,7 @@ public static class GameProviderType
     public static readonly string AWC_SPADE = "AWC_SPADE";
     public static readonly string AWC_VENUS = "AWC_VENUS";
     public static readonly string AWC_YL = "AWC_YL";
+    public static readonly string AWC_YESBINGO = "AWC_YESBINGO";
     public static readonly string BetConstruct = "BC";
     public static readonly string BigGaming = "BG";
     public static readonly string BTiSports = "BTI";
