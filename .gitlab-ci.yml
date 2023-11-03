@@ -133,7 +133,10 @@ deploy-dev:
         "nodeSelector": $node_selector,
         "tolerations": [$dedicated],
         "resources": $resources,
-        "autoscaling": $autoscaling
+        "autoscaling": $autoscaling,
+        "restart": {
+            "enabled": false
+        }
       }
       EOF
     - |
@@ -146,7 +149,10 @@ deploy-dev:
         "nodeSelector": $node_selector,
         "tolerations": [$dedicated],
         "resources": $resources,
-        "autoscaling": $autoscaling
+        "autoscaling": $autoscaling,
+        "restart": {
+            "enabled": false
+        }
       }
       EOF
 
@@ -180,7 +186,11 @@ deploy-staging:
         "nodeSelector": $node_selector,
         "tolerations": [$dedicated],
         "resources": $resources,
-        "autoscaling": $autoscaling
+        "autoscaling": $autoscaling,
+        "restart": {
+            "enabled": true,
+            "schedule": "30 0 * * *"
+        }
       }
       EOF
     - |
@@ -193,7 +203,11 @@ deploy-staging:
         "nodeSelector": $node_selector,
         "tolerations": [$dedicated],
         "resources": $resources,
-        "autoscaling": $autoscaling
+        "autoscaling": $autoscaling,
+        "restart": {
+            "enabled": true,
+            "schedule": "30 0 * * *"
+        }
       }
       EOF
 
@@ -227,7 +241,11 @@ deploy-prod:
         "nodeSelector": $node_selector,
         "tolerations": [$dedicated],
         "resources": $resources,
-        "autoscaling": $autoscaling
+        "autoscaling": $autoscaling,
+        "restart": {
+            "enabled": true,
+            "schedule": "30 */4 * * *"
+        }
       }
       EOF
     - |
@@ -240,6 +258,10 @@ deploy-prod:
         "nodeSelector": $node_selector,
         "tolerations": [$dedicated],
         "resources": $resources,
-        "autoscaling": $autoscaling
+        "autoscaling": $autoscaling,
+        "restart": {
+            "enabled": true,
+            "schedule": "30 */4 * * *"
+        }
       }
       EOF
