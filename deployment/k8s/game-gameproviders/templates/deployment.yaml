@@ -4,6 +4,8 @@ metadata:
   name: {{ include "game-gameproviders.fullname" . }}
   labels:
     {{- include "game-gameproviders.labels" . | nindent 4 }}
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -19,12 +21,12 @@ spec:
       {{- end }}
       labels:
         {{- include "game-gameproviders.selectorLabels" . | nindent 8 }}
-        tgs.kind: game
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "game-gameproviders.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -40,10 +42,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-            - name: POD_IP
+            - name: ConnectionStrings__Nats
               valueFrom:
-               fieldRef:
-                fieldPath: status.podIP
+                secretKeyRef:
+                  name: tgs-connections
+                  key: nats
             - name: ConnectionStrings__Redis
               valueFrom:
                 secretKeyRef:
@@ -62,8 +65,8 @@ spec:
             httpGet:
               path: /healthz
               port: http
-            initialDelaySeconds: 5
-            periodSeconds: 5
+            failureThreshold: 5
+            periodSeconds: 60
           startupProbe:
             httpGet:
               path: /healthz
