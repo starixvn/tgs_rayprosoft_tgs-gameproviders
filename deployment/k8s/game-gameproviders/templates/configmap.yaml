@@ -48,7 +48,7 @@ data:
         "GameInterfaceWicketCricketBaseUrl": "dns:///game-gameinterface-wicketcricket:9090/",
         "GameInterfaceGKXGamingBaseUrl": "dns:///game-gameinterface-gkx:9090/",
         "GameInterfaceV8PokerBaseUrl": "dns:///game-gameinterface-v8:9090/",
-        "GameInterfaceCrPatiBaseUrl": "dns://game-gameinterface-cp:9090/"
+        "GameInterfaceCrPatiBaseUrl": "dns:///game-gameinterface-cp:9090/"
       }
     }
   otel-collector-config.yaml: |
