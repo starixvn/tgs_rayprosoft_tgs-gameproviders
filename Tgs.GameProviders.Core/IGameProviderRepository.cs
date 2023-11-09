@@ -46,6 +46,8 @@ public interface IGameProviderRepository
 
     ValueTask<Cards365TransferConfiguration> GetCards365TransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
+    ValueTask<CrPatiConfiguration> GetCrPatiConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
+
     ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
     ValueTask<EndorphinaConfiguration> GetEndorphinaConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);

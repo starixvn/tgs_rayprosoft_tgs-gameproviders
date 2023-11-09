@@ -3,6 +3,7 @@ using Tgs.GameInterface.AVIAGaming.Client;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.Cards365.Client;
+using Tgs.GameInterface.CrPati.Client;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
@@ -76,7 +77,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceKaiyuanClientOptions, IServiceProvider> gameInterfaceKaiyuanClientOptions,
         Action<GameInterfaceWicketCricketClientOptions, IServiceProvider> gameInterfaceWicketCricketClientOptions,
         Action<GameInterfaceGKXGamingClientOptions, IServiceProvider> gameInterfaceGKXGamingClientOptions,
-        Action<GameInterfaceV8PokerClientOptions, IServiceProvider> gameInterfaceV8PokerClientOptions)
+        Action<GameInterfaceV8PokerClientOptions, IServiceProvider> gameInterfaceV8PokerClientOptions,
+        Action<GameInterfaceCrPatiClientOptions, IServiceProvider> gameInterfaceCrPatiClientOptions)
         => services
         .AddOptions<RedisOptions>()
         .Configure(configure)
@@ -119,5 +121,6 @@ public static class ServiceCollectionExtensions
             gameInterfaceKaiyuanClientOptions: gameInterfaceKaiyuanClientOptions,
             gameInterfaceWicketCricketClientOptions: gameInterfaceWicketCricketClientOptions,
             gameInterfaceGKXGamingClientOptions: gameInterfaceGKXGamingClientOptions,
-            gameInterfaceV8PokerClientOptions: gameInterfaceV8PokerClientOptions);
+            gameInterfaceV8PokerClientOptions: gameInterfaceV8PokerClientOptions,
+            gameInterfaceCrPatiClientOptions: gameInterfaceCrPatiClientOptions);
 }

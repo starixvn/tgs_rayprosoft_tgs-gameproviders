@@ -233,6 +233,11 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceV8PokerBaseUrl")!;
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceCrPatiBaseUrl")!;
     });
 
 builder.Services
@@ -288,6 +293,7 @@ _ = app.InitialMemory();
 _ = app.InitialConnectionAwc();
 _ = app.InitialConnectionBTi();
 _ = app.InitialConnectionCards365();
+_ = app.InitialConnectionCrPati();
 _ = app.InitialConnectionDreamGaming();
 _ = app.InitialConnectionEndorphina();
 _ = app.InitialConnectionEvolution();

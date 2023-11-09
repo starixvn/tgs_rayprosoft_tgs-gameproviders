@@ -26,7 +26,7 @@ public class V8PokerController : ControllerBase
     ///             "gameId": 2000001,
     ///             "brandCode": "GPI_VND",
     ///             "playerCode": "4ue0uj8cwn2v",
-    ///             "currencyCode": "HKD",
+    ///             "currencyCode": "VND",
     ///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     ///             "platformType": 0,
     ///             "language": "zh-CN",

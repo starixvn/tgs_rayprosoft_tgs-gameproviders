@@ -17,13 +17,14 @@ public static class GameProviderType
     public static readonly string AWC_SG = "AWC_SG";
     public static readonly string AWC_SPADE = "AWC_SPADE";
     public static readonly string AWC_VENUS = "AWC_VENUS";
-    public static readonly string AWC_YL = "AWC_YL";
     public static readonly string AWC_YESBINGO = "AWC_YESBINGO";
+    public static readonly string AWC_YL = "AWC_YL";
     public static readonly string BetConstruct = "BC";
     public static readonly string BigGaming = "BG";
     public static readonly string BTiSports = "BTI";
     public static readonly string Card365 = "365";
     public static readonly string Cards365Transfer = "365TF";
+    public static readonly string CrPati = "CP";
     public static readonly string DreamGame = "DG";
     public static readonly string DreamGamingTransfer = "DGTF";
     public static readonly string Endorphina = "ENDOR";

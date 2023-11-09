@@ -18,6 +18,7 @@
 		<PackageReference Include="Tgs.GameInterface.AwcService.Client" Version="0.0.21" />
 		<PackageReference Include="Tgs.GameInterface.BTiService.Client" Version="0.0.10" />
 		<PackageReference Include="Tgs.GameInterface.Cards365.Client" Version="0.0.9" />
+		<PackageReference Include="Tgs.GameInterface.CrPati.Client" Version="0.0.1" />
 		<PackageReference Include="Tgs.GameInterface.DreamGamingService.Client" Version="0.0.13" />
 		<PackageReference Include="Tgs.GameInterface.EndorphinaService.Client" Version="0.0.13" />
 		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.15" />

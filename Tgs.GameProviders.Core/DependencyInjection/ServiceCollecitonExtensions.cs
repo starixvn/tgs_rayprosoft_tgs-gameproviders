@@ -5,6 +5,7 @@ using Tgs.GameInterface.AVIAGaming.Client;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.Cards365.Client;
+using Tgs.GameInterface.CrPati.Client;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
@@ -76,7 +77,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceKaiyuanClientOptions, IServiceProvider> gameInterfaceKaiyuanClientOptions,
         Action<GameInterfaceWicketCricketClientOptions, IServiceProvider> gameInterfaceWicketCricketClientOptions,
         Action<GameInterfaceGKXGamingClientOptions, IServiceProvider> gameInterfaceGKXGamingClientOptions,
-        Action<GameInterfaceV8PokerClientOptions, IServiceProvider> gameInterfaceV8PokerClientOptions)
+        Action<GameInterfaceV8PokerClientOptions, IServiceProvider> gameInterfaceV8PokerClientOptions,
+        Action<GameInterfaceCrPatiClientOptions, IServiceProvider> gameInterfaceCrPatiClientOptions)
         => services
         .AddOptions<IPAddressOptions>()
         .Configure(ipAddressOptions)
@@ -116,6 +118,7 @@ public static class ServiceCollecitonExtensions
         .AddGameInterfaceWicketCricketClient(gameInterfaceWicketCricketClientOptions)
         .AddGameInterfaceGKXGamingClient(gameInterfaceGKXGamingClientOptions)
         .AddGameInterfaceV8PokerClient(gameInterfaceV8PokerClientOptions)
+        .AddGameInterfaceCrPatiClient(gameInterfaceCrPatiClientOptions)
         .AddGameRoundsClient(gameRoundsClientOptions)
         .AddGameTokenClient(gameTokenClientOptions)
         .AddSecurity()//Tgs.Core.Infrastructures.Security

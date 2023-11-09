@@ -160,6 +160,11 @@ internal class GameProviderRepository : IGameProviderRepository
                 );
     }
 
+    public ValueTask<CrPatiConfiguration> GetCrPatiConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+        => GetConfigurationAsync<CrPatiConfiguration>(
+            gameProviderConfiguration: GameProviderConfigurations.CrPati,
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken);
     public ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
         => GetConfigurationAsync<DreamGamingTransferConfiguration>(
             gameProviderConfiguration: GameProviderConfigurations.DreamGamingTransfer,

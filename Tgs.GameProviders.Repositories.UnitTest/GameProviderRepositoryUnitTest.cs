@@ -868,6 +868,50 @@ public class GameProviderRepositoryUnitTest
     }
 
     [Fact]
+    public async Task Get_CrPati_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new CrPatiConfiguration()
+        {
+            ApiUrl = new("https://localhost/")
+        };
+        _ = fakeClient
+            .SettingGetConfigurationAsync<CrPatiConfiguration>(Arg.Is(GameProviderConfigurations.CrPati))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.CrPati,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "CP-GPI",
+            Description: "CP-GPI Configuration",
+            ClientId: "CP-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: new JsonObject
+            {
+                ["ApiKey"] = "testgpi123123",
+                ["ApiSecret"] = "qOV55DQYYItjW1qPArpdLNQpWY3ykFoJi4TRF86CA1A9O4pQwR",
+            }.ToJsonString(),
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetCrPatiConfigurationAsync(gameProviderConfigurationId);
+
+        Assert.NotNull(actual);
+        Assert.Equal(new("https://localhost/"), actual.ApiUrl);
+        Assert.Equal("testgpi123123", actual.ApiKey);
+        Assert.Equal("qOV55DQYYItjW1qPArpdLNQpWY3ykFoJi4TRF86CA1A9O4pQwR", actual.ApiSecret);
+    }
+
+    [Fact]
     public async Task Get_Game_Endpoints()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();
