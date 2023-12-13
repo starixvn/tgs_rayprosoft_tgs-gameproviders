@@ -40,7 +40,7 @@
 		<PackageReference Include="Tgs.GameInterface.SM01Service.Client" Version="0.0.13" />
 		<PackageReference Include="Tgs.GameInterface.TFGamingService.Client" Version="0.0.11" />
 		<PackageReference Include="Tgs.GameInterface.V8Poker.Client" Version="0.0.3" />
-		<PackageReference Include="Tgs.GameInterface.WGFmGamingService.Client" Version="0.0.13" />
+		<PackageReference Include="Tgs.GameInterface.WGFmGamingService.Client" Version="0.0.14" />
 		<PackageReference Include="Tgs.GameInterface.WGViaGaming.Client" Version="0.0.11" />
 		<PackageReference Include="Tgs.GameInterface.WicketCricket.Client" Version="0.0.6" />
 		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="1.0.12" />

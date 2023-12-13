@@ -81,6 +81,7 @@ public class WGFmGamingGameUrlGetService : IGetService<WGFmGamingGameUrlQuery, U
             token: token,
             lang: cultureCode,
             version: configurationData.Version,
+            query.PlatformType == PlatformType.Mobile,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
     }
