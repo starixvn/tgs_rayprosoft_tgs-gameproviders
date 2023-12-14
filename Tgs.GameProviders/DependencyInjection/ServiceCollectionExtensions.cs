@@ -1,5 +1,4 @@
 ﻿using Tgs.GameCommand.Client;
-using Tgs.GameInterface.AVIAGaming.Client;
 using Tgs.GameInterface.AwcService.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.Cards365.Client;
@@ -73,7 +72,6 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceJokerClientOptions, IServiceProvider> gameInterfaceJokerClientOptions,
         Action<GameInterfaceWGViaGamingClientOptions, IServiceProvider> gameInterfaceWGViaGamingClientOptions,
         Action<GameInterfaceLEGamingClientOptions, IServiceProvider> gameInterfaceLEGamingClientOptions,
-        Action<GameInterfaceAVIAGamingClientOptions, IServiceProvider> gameInterfaceAVIAGamingClientOptions,
         Action<GameInterfaceKaiyuanClientOptions, IServiceProvider> gameInterfaceKaiyuanClientOptions,
         Action<GameInterfaceWicketCricketClientOptions, IServiceProvider> gameInterfaceWicketCricketClientOptions,
         Action<GameInterfaceGKXGamingClientOptions, IServiceProvider> gameInterfaceGKXGamingClientOptions,
@@ -117,7 +115,6 @@ public static class ServiceCollectionExtensions
             gameInterfaceJokerClientOptions: gameInterfaceJokerClientOptions,
             gameInterfaceWGViaGamingClientOptions: gameInterfaceWGViaGamingClientOptions,
             gameInterfaceLEGamingClientOptions: gameInterfaceLEGamingClientOptions,
-            gameInterfaceAVIAGamingClientOptions: gameInterfaceAVIAGamingClientOptions,
             gameInterfaceKaiyuanClientOptions: gameInterfaceKaiyuanClientOptions,
             gameInterfaceWicketCricketClientOptions: gameInterfaceWicketCricketClientOptions,
             gameInterfaceGKXGamingClientOptions: gameInterfaceGKXGamingClientOptions,

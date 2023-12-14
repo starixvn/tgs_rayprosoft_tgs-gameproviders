@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<Version>0.0.73</Version>
+		<Version>0.0.74</Version>
 		<Authors>Raypro</Authors>
 		<RootNamespace>Tgs.GameProviders.Client</RootNamespace>
 		<PackageId>Tgs.GameProviders.Client</PackageId>
