@@ -32,6 +32,10 @@ using Tgs.GameInterface.WicketCricket.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.BetConstruct;
+using Tgs.GameProviders.Core.BigGaming;
+using Tgs.GameProviders.Core.TCG;
+using Tgs.GameProviders.Core.VR;
 using Tgs.GameRecord.Endorphina.Session.Client;
 using Tgs.GameRounds.Client;
 using Tgs.GameToken.Client;
@@ -118,9 +122,19 @@ public static class ServiceCollecitonExtensions
         .AddGameInterfaceCrPatiClient(gameInterfaceCrPatiClientOptions)
         .AddGameRoundsClient(gameRoundsClientOptions)
         .AddGameTokenClient(gameTokenClientOptions)
-        .AddSecurity()//Tgs.Core.Infrastructures.Security
+        //Tgs.Core.Infrastructures.Security
+        .AddSecurity()
         .AddMemoryCache()
-        .AddTransient<IGameActionService, GameActionService>()
         .AddSingleton<ISystemClock, SystemClock>()
-        .AddSingleton<ISnowflakeWork, SnowflakeWork>();
+        .AddSingleton<ISnowflakeWork, SnowflakeWork>()
+        .AddTransient<IBigGamingService, BigGamingService>()
+        .AddTransient<IBigGamingGamePlayer, BigGamingGamePlayer>()
+        .AddTransient<IBigGamingGameUrl, BigGamingGameUrl>()
+        .AddTransient<ITCGService, TCGService>()
+        .AddTransient<ITCGGamePlayer, TCGGamePlayer>()
+        .AddTransient<IVRService, VRService>()
+        .AddTransient<IVRGamePlayer, VRGamePlayer>()
+        .AddTransient<IGameActionService, GameActionService>()
+        .AddTransient<IBetConstructService, BetConstructService>();
 }
+

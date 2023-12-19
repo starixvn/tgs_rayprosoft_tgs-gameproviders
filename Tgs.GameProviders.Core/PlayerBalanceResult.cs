@@ -15,4 +15,3 @@ public record PlayerBalanceResult
     /// </summary>
     public decimal OutstandingBalance { get; init; } = 0;
 }
-

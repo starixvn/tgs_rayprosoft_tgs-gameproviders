@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.Skywind.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
@@ -9,97 +8,22 @@ namespace Tgs.GameProviders.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SWController : ControllerBase,
-    IGameUrlHandler<SkywindGameUrlQuery>,
-    IRoundDetailHandler<SkywindRoundDetailQuery>
+public class SWController : ControllerBase
 {
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Post
-    ///         LiveDealerLobby
-    ///         {
-    ///             "gameType": 6,
-    ///             "gameId": 1200199,
-    ///             "brandCode": "GPI",
-    ///             "playerCode": "4ucmqplxb029",
-    ///             "currencyCode": "CNY",
-    ///             "loginRecordId": "9a03c73c-bdcc-4a95-c54b-08d9943d2322",
-    ///             "platformType": 0,
-    ///             "language": "zh-CN",
-    ///             "ipAddress": "127.0.0.1",
-    ///             "backUrl": "https://dev-t1.rpgp.cc/"
-    ///         }
-    ///
-    ///     Post
-    ///         Slot
-    ///         {
-    ///             "gameType": 15,
-    ///             "gameId": 1200139,
-    ///             "brandCode": "GPI",
-    ///             "playerCode": "4ucmqplxb029",
-    ///             "currencyCode": "CNY",
-    ///             "loginRecordId": "9a03c73c-bdcc-4a95-c54b-08d9943d2322",
-    ///             "platformType": 0,
-    ///             "language": "zh-CN",
-    ///             "ipAddress": "127.0.0.1",
-    ///             "backUrl": "https://dev-t1.rpgp.cc/"
-    ///         }
-    /// </remarks>
     [HttpPost("gameurl")]
-    public async ValueTask<GameUrlResponse?> GameUrlAsync(
-        [FromServices] IGetService<SkywindGameUrlQuery, GameUrlResult> getService,
-        GameUrlRequest request)
-    {
-        var result = await getService
-            .GetAsync(
-                query: new()
-                {
-                    GameType = request.GameType,
-                    GameId = request.GameId,
-                    BrandCode = request.BrandCode,
-                    PlayerCode = request.PlayerCode,
-                    CurrencyCode = request.CurrencyCode,
-                    LoginRecordId = request.LoginRecordId,
-                    PlatformType = request.PlatformType,
-                    Language = request.Language,
-                    IPAddress = request.IPAddress,
-                    BackUrl = request.BackUrl
-                },
-                cancellationToken: HttpContext.RequestAborted)
-            .ConfigureAwait(false);
-        return result == null ? null : new GameUrlResponse() { Url = result.Url };
-    }
+    public ValueTask<GameUrlResponse?> GameUrlAsync(GameUrlRequest request) => throw new NotImplementedException();
 
     /// <summary>
     /// Rounds the detail asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
     /// <param name="roundId">The round identifier.</param>
     /// <param name="language">The language.</param>
     /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Get rounddetail/3c6282df-d531-4482-088e-08d9a004e811?language=zh-CN
-    /// </remarks>
     [HttpGet("rounddetail/{roundId:guid}")]
-    public ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<SkywindRoundDetailQuery, RoundDetailResult?> getService,
-        Guid roundId,
-        [FromQuery] string language)
-        => getService
-        .GetAsync(
-            query: new()
-            {
-                RoundId = roundId,
-                Language = language
-            },
-            cancellationToken: HttpContext.RequestAborted);
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(Guid roundId, [FromQuery] string language) => throw new NotImplementedException();
 }

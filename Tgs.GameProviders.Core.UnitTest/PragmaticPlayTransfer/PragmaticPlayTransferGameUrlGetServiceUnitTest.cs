@@ -14,7 +14,7 @@ namespace Tgs.GameProviders.Core.UnitTest.PragmaticPlayTransfer;
 public class PragmaticPlayTransferGameUrlGetServiceUnitTest
 {
     [Fact]
-    public void Create_Player()
+    public async Task Create_PlayerAsync()
     {
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
@@ -146,7 +146,7 @@ public class PragmaticPlayTransferGameUrlGetServiceUnitTest
             fakeGameRepository,
             fakeClient);
 
-        _ = Assert.ThrowsAsync<Exception>(() => sut.GetAsync(query).AsTask());
+        _ = await Assert.ThrowsAsync<Exception>(() => sut.GetAsync(query: query).AsTask());
 
         _ = fakeClient
             .Received(1)

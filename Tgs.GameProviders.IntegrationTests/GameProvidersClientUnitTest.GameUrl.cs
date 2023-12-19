@@ -81,7 +81,7 @@ public partial class GameProvidersClientUnitTest
     }
 
     [Fact]
-    public void Game_Url_HttpRequestException()
+    public async void Game_Url_HttpRequestException()
     {
         var gameProviderCode = "KY";  // en-us
         var gameType = GameProvidersClientGameType.CardGameLobby;
@@ -127,7 +127,7 @@ public partial class GameProvidersClientUnitTest
 
         var sut = new GameProvidersClient(httpClient);
 
-        _ = Assert.ThrowsAsync<HttpRequestException>(() => sut
+        _ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
         .GameUrlAsync(
             gameProviderCode: gameProviderCode,
             gameType: gameType,

@@ -29,12 +29,8 @@ public class BigGamingGameUrlGetService : IGetService<BigGamingGameUrlQuery, Gam
     public async ValueTask<GameUrlResult> GetAsync(BigGamingGameUrlQuery command, CancellationToken cancellationToken = default)
     {
         var gameProviderCultureCode = await _service.GetGameProviderCultureCodeAsync(command.Language).ConfigureAwait(false);
-        var brandMerchant = await _service.GetBrandMerchantAsync(command.CurrencyCode).ConfigureAwait(false);
-
-        if (brandMerchant == null)
-        {
-            throw new Exception("The merchant does not exist.");
-        }
+        var brandMerchant = await _service.GetBrandMerchantAsync(command.CurrencyCode).ConfigureAwait(false)
+            ?? throw new Exception("The merchant does not exist.");
 
         var getGame = await _gameService.GetAsync(command.GameId.Value).ConfigureAwait(false);
 

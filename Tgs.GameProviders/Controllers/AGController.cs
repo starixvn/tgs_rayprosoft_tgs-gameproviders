@@ -1,91 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.AsiaGaming.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
-using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AGController : ControllerBase,
-    IRoundDetailHandler<AsiaGamingRoundDetailQuery>
+public class AGController : ControllerBase
 {
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
     /// <param name="request">The request.</param>
     /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Post
-    ///         {
-    ///             "gameType": 6,
-    ///             "gameId": 400001,
-    ///             "brandCode": "GPI",
-    ///             "playerCode": "4ucmqplxb029",
-    ///             "currencyCode": "CNY",
-    ///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    ///             "platformType": 0,
-    ///             "language": "zh-CN",
-    ///             "ipAddress": "127.0.0.1",
-    ///             "backUrl": "https://dev-t1.rpgp.cc/",
-    ///             "playerBalance": 1000
-    ///         }
-    /// </remarks>
+    /// <exception cref="System.NotImplementedException"></exception>
     [HttpPost("gameurl")]
-    public async ValueTask<GameUrlResponse?> GameUrlAsync(
-        [FromServices] IGetService<AsiaGamingGameUrlQuery, GameUrlResult> getService,
-        AGGameUrlRequest request)
-    {
-        var result = await getService
-            .GetAsync(
-                query: new()
-                {
-                    GameType = request.GameType,
-                    GameId = request.GameId,
-                    BrandCode = request.BrandCode,
-                    PlayerCode = request.PlayerCode,
-                    CurrencyCode = request.CurrencyCode,
-                    LoginRecordId = request.LoginRecordId,
-                    PlatformType = request.PlatformType,
-                    Language = request.Language,
-                    IPAddress = request.IPAddress,
-                    BackUrl = request.BackUrl,
-                    PlayerBalance = request.PlayerBalance
-                },
-                cancellationToken: HttpContext.RequestAborted)
-            .ConfigureAwait(false);
-
-        return result == null ? null : new GameUrlResponse() { Url = result.Url };
-    }
+    public ValueTask<GameUrlResponse?> GameUrlAsync(AGGameUrlRequest request) => throw new NotImplementedException();
 
     /// <summary>
     /// Rounds the detail asynchronous.
     /// </summary>
-    /// <param name="getService">The get service.</param>
     /// <param name="roundId">The round identifier.</param>
     /// <param name="language">The language.</param>
     /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Get rounddetail/330256a1-1553-ec11-a743-70b5e859fe4d?language=zh-CN
-    /// </remarks>
+    /// <exception cref="System.NotImplementedException"></exception>
     [HttpGet("rounddetail/{roundId:guid}")]
-    public ValueTask<RoundDetailResult?> RoundDetailAsync(
-        [FromServices] IGetService<AsiaGamingRoundDetailQuery, RoundDetailResult?> getService,
-        Guid roundId,
-        [FromQuery] string language)
-        => getService
-        .GetAsync(
-            query: new()
-            {
-                RoundId = roundId,
-                Language = language
-            },
-            cancellationToken: HttpContext.RequestAborted);
+    public ValueTask<RoundDetailResult?> RoundDetailAsync(Guid roundId, [FromQuery] string language) => throw new NotImplementedException();
 }

@@ -17,18 +17,12 @@ using Tgs.GameProviders.Core.VR.Models.Commons;
 
 namespace Tgs.GameProviders.ApiClients.VR;
 
-internal class VRApiClient : IVRApiClient
+internal class VRApiClient(
+    HttpClient client,
+    ILogger<VRApiClient> logger) : IVRApiClient
 {
-    private readonly HttpClient _client;
-    private readonly ILogger<VRApiClient> _logger;
-
-    public VRApiClient(
-        HttpClient client,
-        ILogger<VRApiClient> logger)
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
+    private readonly HttpClient _client = client ?? throw new ArgumentNullException(nameof(client));
+    private readonly ILogger<VRApiClient> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public ValueTask<VRErrorCodeResponse> CreatePlayerAsync(Uri apiUrl, string merchantid, string version, string deskey, VRCreatePlayerRequest source)
         => PostAsync<VRCreatePlayerRequest, VRErrorCodeResponse>(apiUrl, merchantid, version, deskey, VRAction.CreatePlayer, source);
@@ -76,27 +70,17 @@ internal class VRApiClient : IVRApiClient
 
             byte[] dataBytes = Convert.FromBase64String(data);
 
-            using (var aes = Aes.Create())
-            {
-                aes.Mode = CipherMode.ECB;
-                aes.Padding = PaddingMode.PKCS7;
-                aes.Key = Encoding.UTF8.GetBytes(secretKey);
-                aes.GenerateIV();
+            using var aes = Aes.Create();
+            aes.Mode = CipherMode.ECB;
+            aes.Padding = PaddingMode.PKCS7;
+            aes.Key = Encoding.UTF8.GetBytes(secretKey);
+            aes.GenerateIV();
 
-                using (ICryptoTransform cryptoTransform = aes.CreateDecryptor())
-                {
-                    using (MemoryStream memoryStream = new MemoryStream(dataBytes))
-                    {
-                        using (CryptoStream csDecrypt = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Read))
-                        {
-                            using (StreamReader streamReader = new StreamReader(csDecrypt))
-                            {
-                                return streamReader.ReadToEnd();
-                            }
-                        }
-                    }
-                }
-            }
+            using ICryptoTransform cryptoTransform = aes.CreateDecryptor();
+            using MemoryStream memoryStream = new MemoryStream(dataBytes);
+            using CryptoStream csDecrypt = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Read);
+            using StreamReader streamReader = new StreamReader(csDecrypt);
+            return streamReader.ReadToEnd();
         }
         catch
         {
@@ -110,33 +94,25 @@ internal class VRApiClient : IVRApiClient
             return null;
         byte[] dataBytes = Encoding.UTF8.GetBytes(data);
 
-        using (var aes = Aes.Create())
-        {
-            aes.Mode = CipherMode.ECB;
-            aes.Padding = PaddingMode.PKCS7;
-            aes.KeySize = 128;
-            aes.BlockSize = 128;
-            aes.Key = Encoding.UTF8.GetBytes(secretKey);
-            aes.GenerateIV();
+        using var aes = Aes.Create();
+        aes.Mode = CipherMode.ECB;
+        aes.Padding = PaddingMode.PKCS7;
+        aes.KeySize = 128;
+        aes.BlockSize = 128;
+        aes.Key = Encoding.UTF8.GetBytes(secretKey);
+        aes.GenerateIV();
 
-            byte[] encrypted;
-            using (var cryptoTransform = aes.CreateEncryptor())
-            {
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
-                    {
-                        cryptoStream.Write(dataBytes, 0, dataBytes.Length);
-                        cryptoStream.FlushFinalBlock();
-                        encrypted = memoryStream.ToArray();
+        byte[] encrypted;
+        using var cryptoTransform = aes.CreateEncryptor();
+        using MemoryStream memoryStream = new MemoryStream();
+        using CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write);
+        cryptoStream.Write(dataBytes, 0, dataBytes.Length);
+        cryptoStream.FlushFinalBlock();
+        encrypted = memoryStream.ToArray();
 
-                        var base64Str = Convert.ToBase64String(encrypted, 0, encrypted.Length);
+        var base64Str = Convert.ToBase64String(encrypted, 0, encrypted.Length);
 
-                        return isEncodeUrl ? System.Web.HttpUtility.UrlEncode(base64Str) : base64Str;
-                    }
-                }
-            }
-        }
+        return isEncodeUrl ? System.Web.HttpUtility.UrlEncode(base64Str) : base64Str;
     }
 
     private static string GetAction(VRAction action)

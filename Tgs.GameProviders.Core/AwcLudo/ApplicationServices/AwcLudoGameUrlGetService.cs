@@ -107,7 +107,7 @@ public class AwcLudoGameUrlGetService : IGetService<AwcLudoGameUrlQuery, GameUrl
                .ConfigureAwait(false);
         }
 
-        return !reply.IsPlayerExist
+        return reply is null || !reply.IsPlayerExist
             ? throw new Exception($"Player does not exist.({player.PlayerCode})")
             : new GameUrlResult
             {

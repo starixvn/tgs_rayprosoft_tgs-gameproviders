@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Core.Pinnacle.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
@@ -60,6 +59,26 @@ public class PinnacleController : ControllerBase
     }
 
     /// <summary>
+    /// Kicks the player asynchronous.
+    /// </summary>
+    /// <param name="commandService">The command service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Delete kickplayer/4ucmqplxb029
+    /// </remarks>
+    [HttpDelete("kickplayer/{playerCode}")]
+    public ValueTask KickPlayerAsync(
+        [FromServices] ICommandService<PinnacleKickPlayerCommand> commandService,
+        string playerCode)
+        => commandService.ExecuteAsync(new()
+        {
+            PlayerCode = playerCode
+        });
+
+    /// <summary>
     /// Players the balance asynchronous.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -91,26 +110,6 @@ public class PinnacleController : ControllerBase
             result.FreeBalance,
             result.OutstandingBalance);
     }
-
-    /// <summary>
-    /// Kicks the player asynchronous.
-    /// </summary>
-    /// <param name="commandService">The command service.</param>
-    /// <param name="playerCode">The player code.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Delete kickplayer/4ucmqplxb029
-    /// </remarks>
-    [HttpDelete("kickplayer/{playerCode}")]
-    public ValueTask KickPlayerAsync(
-        [FromServices] ICommandService<PinnacleKickPlayerCommand> commandService,
-        string playerCode)
-        => commandService.ExecuteAsync(new()
-        {
-            PlayerCode = playerCode
-        });
 
     /// <summary>
     /// Players the fund checking asynchronous.

@@ -49,6 +49,7 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
             yield return balance;
         }
     }
+
     public async IAsyncEnumerable<BalanceResponse> AwcAwsGetBalances(string brandCode, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(
@@ -76,6 +77,7 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
             yield return balance;
         }
     }
+
     public async IAsyncEnumerable<BalanceResponse> AwcCockfightGetBalances(string brandCode, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(
@@ -103,6 +105,7 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
             yield return balance;
         }
     }
+
     public async IAsyncEnumerable<BalanceResponse> AwcFacaiGetBalances(string brandCode, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(
@@ -130,6 +133,7 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
             yield return balance;
         }
     }
+
     public async IAsyncEnumerable<BalanceResponse> AwcFsGetBalances(string brandCode, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(
@@ -157,6 +161,7 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
             yield return balance;
         }
     }
+
     public async IAsyncEnumerable<BalanceResponse> AwcKmGetBalances(string brandCode, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(
@@ -184,6 +189,7 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
             yield return balance;
         }
     }
+
     public async IAsyncEnumerable<BalanceResponse> AwcLudoGetBalances(string brandCode, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(
@@ -211,6 +217,7 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
             yield return balance;
         }
     }
+
     public async IAsyncEnumerable<BalanceResponse> AwcPgsGetBalances(string brandCode, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(
@@ -238,6 +245,7 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
             yield return balance;
         }
     }
+
     public async IAsyncEnumerable<BalanceResponse> AwcRcbGetBalances(string brandCode, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(
@@ -265,6 +273,7 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
             yield return balance;
         }
     }
+
     public async IAsyncEnumerable<BalanceResponse> AwcSgGetBalances(string brandCode, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(
@@ -292,6 +301,7 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
             yield return balance;
         }
     }
+
     public async IAsyncEnumerable<BalanceResponse> AwcSpadeGetBalances(string brandCode, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(
@@ -319,6 +329,7 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
             yield return balance;
         }
     }
+
     public async IAsyncEnumerable<BalanceResponse> AwcVenusGetBalances(string brandCode, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(
@@ -346,6 +357,7 @@ internal class GameProvidersBalancesClient : IGameProvidersBalancesClient
             yield return balance;
         }
     }
+
     public async IAsyncEnumerable<BalanceResponse> AwcYlGetBalances(string brandCode, [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(

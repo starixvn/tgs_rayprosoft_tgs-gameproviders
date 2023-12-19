@@ -13,7 +13,7 @@ namespace Tgs.GameProviders.IntegrationTests;
 public partial class GameProvidersClientUnitTest
 {
     [Fact]
-    public void Player_Balance_HttpRequestException()
+    public async void Player_Balance_HttpRequestException()
     {
         var gameProviderCode = "KY";
         var playerCode = "test";
@@ -42,7 +42,7 @@ public partial class GameProvidersClientUnitTest
 
         var sut = new GameProvidersClient(httpClient);
 
-        _ = Assert.ThrowsAsync<HttpRequestException>(() => sut
+        _ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
             .PlayerBalanceAsync(
                 gameProviderCode: gameProviderCode,
                 playerCode: playerCode)

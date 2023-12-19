@@ -10,10 +10,10 @@ namespace Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 public class KaiyuanPlayerFundInGetService : IGetService<KaiyuanPlayerFundInQuery, PlayerFundResult>
 {
     private readonly IBrandRepository _brand;
-    private readonly ISystemClock _systemClock;
     private readonly IGameInterfaceKaiyuanClient _client;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
+    private readonly ISystemClock _systemClock;
 
     public KaiyuanPlayerFundInGetService(
         IGameProviderRepository gameProvider,

@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Tgs.GameProviders.Client;
-using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.VR.ApplicationServices;
 using Tgs.ServiceUtility;
 
@@ -66,7 +65,7 @@ public partial class GameProvidersClientUnitTest
     }
 
     [Fact]
-    public void Player_Fund_Checking_By_VR_HttpRequestException()
+    public async void Player_Fund_Checking_By_VR_HttpRequestException()
     {
         var brandCode = "GPI";
         var playerCode = "test";
@@ -104,7 +103,7 @@ public partial class GameProvidersClientUnitTest
 
         var sut = new GameProvidersClient(httpClient);
 
-        _ = Assert.ThrowsAsync<HttpRequestException>(() => sut
+        _ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
             .PlayerFundCheckingByVRAsync(
                  brandCode: brandCode,
                  playerCode: playerCode,

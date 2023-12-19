@@ -69,7 +69,7 @@ public partial class GameProvidersClientUnitTest
     }
 
     [Fact]
-    public void Player_Fund_Out_HttpRequestException()
+    public async void Player_Fund_Out_HttpRequestException()
     {
         var gameProviderCode = "KY";
         var brandCode = "GPI";
@@ -110,7 +110,7 @@ public partial class GameProvidersClientUnitTest
 
         var sut = new GameProvidersClient(httpClient);
 
-        _ = Assert.ThrowsAsync<HttpRequestException>(() => sut
+        _ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
             .PlayerFundOutAsync(
                 gameProviderCode,
                 brandCode,

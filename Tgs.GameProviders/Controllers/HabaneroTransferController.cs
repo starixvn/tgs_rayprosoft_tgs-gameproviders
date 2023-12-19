@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.HabaneroTransfer.ApplicationServices;
-using Tgs.GameProviders.Core.Joker.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
@@ -63,6 +62,28 @@ public class HabaneroTransferController : ControllerBase
     }
 
     /// <summary>
+    /// Kicks the player asynchronous.
+    /// </summary>
+    /// <param name="commandService">The command service.</param>
+    /// <param name="playerCode">The player code.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Delete kickplayer/4uf6k014jp5x
+    /// </remarks>
+    [HttpDelete("kickplayer/{playerCode}")]
+    public ValueTask KickPlayerAsync(
+        [FromServices] ICommandService<HabaneroTransferKickPlayerCommand> commandService,
+        string playerCode)
+        => commandService.ExecuteAsync(
+            command: new()
+            {
+                PlayerCode = playerCode
+            },
+            cancellationToken: HttpContext.RequestAborted);
+
+    /// <summary>
     /// Players the balance asynchronous.
     /// </summary>
     /// <param name="service">The service.</param>
@@ -94,28 +115,6 @@ public class HabaneroTransferController : ControllerBase
             result.FreeBalance,
             result.OutstandingBalance);
     }
-
-    /// <summary>
-    /// Kicks the player asynchronous.
-    /// </summary>
-    /// <param name="commandService">The command service.</param>
-    /// <param name="playerCode">The player code.</param>
-    /// <returns></returns>
-    /// <remarks>
-    /// <b>Example</b><br />
-    ///
-    ///     Delete kickplayer/4uf6k014jp5x
-    /// </remarks>
-    [HttpDelete("kickplayer/{playerCode}")]
-    public ValueTask KickPlayerAsync(
-        [FromServices] ICommandService<HabaneroTransferKickPlayerCommand> commandService,
-        string playerCode)
-        => commandService.ExecuteAsync(
-            command: new()
-            {
-                PlayerCode = playerCode
-            },
-            cancellationToken: HttpContext.RequestAborted);
 
     /// <summary>
     /// Players the fund checking asynchronous.

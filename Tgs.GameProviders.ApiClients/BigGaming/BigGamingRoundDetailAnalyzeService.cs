@@ -31,14 +31,63 @@ internal class BigGamingRoundDetailAnalyzeService : IBigGamingRoundDetailAnalyze
         _ => GetBaccaratGameHistory(Convert.FromBase64String(source.Baccarat64))           //百家樂相關
     };
 
+    private static string GetDragontigerGameHistory(int value) => JsonSerializer.Serialize(
+        new Dictionary<string, long>
+        {
+            {"dragon", value & 0xFFFF},
+            {"tiger", (value & 0xFFFF0000) >> 16}
+        });
+
     private static string GetFullColor(int value)
     {
-        if (value is > 0 and < 12) return "Green";
-        if (value is > 11 and < 23) return "Orange";
-        if (value is > 22 and < 34) return "Purple";
-        if (value is > 33 and < 45) return "Blue";
-        return "White";
+        return value is > 0 and < 12
+            ? "Green"
+            : value is > 11 and < 23
+            ? "Orange"
+            : value is > 22 and < 34
+            ? "Purple"
+            : value is > 33 and < 45
+            ? "Blue"
+            : "White";
     }
+
+    private static string GetFullColorBaccaratGameHistory(byte[] values)
+    {
+        var banker = new (string Key, int Value)[3];
+        var bankerIndex = 0;
+        var player = new (string Key, int Value)[3];
+        var playerIndex = 0;
+        for (var i = 0; i < values.Length; i++)
+        {
+            var ColorString = values[i] == 0 ? "" : GetFullColor(values[i]);
+            var NumberString = values[i] == 0 ? 0 : values[i] % 11 == 0 ? 11 : values[i] % 11;
+            if (i is 1 or 3 or 5)
+            {
+                banker[bankerIndex] = (ColorString, NumberString);
+                bankerIndex++;
+            }
+            else
+            {
+                player[playerIndex] = (ColorString, NumberString);
+                playerIndex++;
+            }
+        }
+
+        return JsonSerializer.Serialize(
+            new Dictionary<string, string>
+            {
+                {"player", string.Join(",", player.Select(kv => kv.Key + ":" + kv.Value).ToArray())},
+                {"banker", string.Join(",", banker.Select(kv => kv.Key + ":" + kv.Value).ToArray())}
+            });
+    }
+
+    private static string GetSicboGameHistory(int value) => JsonSerializer.Serialize(
+                                        new Dictionary<string, int>
+{
+            {"dice1", value >> 16},
+            {"dice2", (value & 0xFF00) >> 8},
+            {"dice3", value & 0xFF}
+});
 
     private string GetBaccaratGameHistory(byte[] values)
     {
@@ -90,51 +139,6 @@ internal class BigGamingRoundDetailAnalyzeService : IBigGamingRoundDetailAnalyze
                 {"player3", string.Join(',', player3)}
             });
     }
-
-    private string GetDragontigerGameHistory(int value) => JsonSerializer.Serialize(
-new Dictionary<string, long>
-{
-            {"dragon", value & 0xFFFF},
-            {"tiger", (value & 0xFFFF0000) >> 16}
-});
-
-    private string GetFullColorBaccaratGameHistory(byte[] values)
-    {
-        var banker = new (string Key, int Value)[3];
-        var bankerIndex = 0;
-        var player = new (string Key, int Value)[3];
-        var playerIndex = 0;
-        for (var i = 0; i < values.Length; i++)
-        {
-            var ColorString = values[i] == 0 ? "" : GetFullColor(values[i]);
-            var NumberString = values[i] == 0 ? 0 : values[i] % 11 == 0 ? 11 : values[i] % 11;
-            if (i is 1 or 3 or 5)
-            {
-                banker[bankerIndex] = (ColorString, NumberString);
-                bankerIndex++;
-            }
-            else
-            {
-                player[playerIndex] = (ColorString, NumberString);
-                playerIndex++;
-            }
-        }
-
-        return JsonSerializer.Serialize(
-            new Dictionary<string, string>
-            {
-                {"player", string.Join(",", player.Select(kv => kv.Key + ":" + kv.Value).ToArray())},
-                {"banker", string.Join(",", banker.Select(kv => kv.Key + ":" + kv.Value).ToArray())}
-            });
-    }
-
-    private string GetSicboGameHistory(int value) => JsonSerializer.Serialize(
-                                        new Dictionary<string, int>
-{
-            {"dice1", value >> 16},
-            {"dice2", (value & 0xFF00) >> 8},
-            {"dice3", value & 0xFF}
-});
 
     private string GetWinThreeCardsGameHistory(byte[] values)
     {

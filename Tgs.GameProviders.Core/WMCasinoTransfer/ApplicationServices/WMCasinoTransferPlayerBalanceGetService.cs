@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Tgs.GameInterface.WMCasinoService.Client;
-using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 

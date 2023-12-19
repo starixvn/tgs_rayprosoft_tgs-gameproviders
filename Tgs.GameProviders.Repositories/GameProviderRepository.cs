@@ -165,6 +165,7 @@ internal class GameProviderRepository : IGameProviderRepository
             gameProviderConfiguration: GameProviderConfigurations.CrPati,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
+
     public ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
         => GetConfigurationAsync<DreamGamingTransferConfiguration>(
             gameProviderConfiguration: GameProviderConfigurations.DreamGamingTransfer,

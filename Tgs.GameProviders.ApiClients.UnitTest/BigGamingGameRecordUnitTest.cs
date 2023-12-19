@@ -11,7 +11,7 @@ public class BigGamingGameRecordUnitTest
 
     public BigGamingGameRecordUnitTest()
     {
-        _pokerMapper = new Dictionary<int, string>();
+        _pokerMapper = [];
         InitoPoker();
     }
 
@@ -144,16 +144,16 @@ public class BigGamingGameRecordUnitTest
 
     private string GetBaccaratGameHistory(byte[] values)
     {
-        string[] banker = new string[3] {
+        string[] banker = [
             _pokerMapper.Where(x => x.Key == values[1]).First().Value,
             _pokerMapper.Where(x => x.Key == values[3]).First().Value,
             _pokerMapper.Where(x => x.Key == values[5]).First().Value,
-        };
-        string[] player = new string[3]{
+        ];
+        string[] player = [
             _pokerMapper.Where(x => x.Key == values[0]).First().Value,
             _pokerMapper.Where(x => x.Key == values[2]).First().Value,
             _pokerMapper.Where(x => x.Key == values[4]).First().Value,
-        };
+        ];
 
         return JsonSerializer.Serialize(
                        new Dictionary<string, string>() {
@@ -191,16 +191,16 @@ public class BigGamingGameRecordUnitTest
 
     private string GetWinThreeCardsGameHistory(byte[] values)
     {
-        string[] dragon = new string[3] {
+        string[] dragon = [
             _pokerMapper.Where(x => x.Key == values[0]).First().Value,
             _pokerMapper.Where(x => x.Key == values[1]).First().Value,
             _pokerMapper.Where(x => x.Key == values[2]).First().Value,
-        };
-        string[] phoenix = new string[3]{
+        ];
+        string[] phoenix = [
             _pokerMapper.Where(x => x.Key == values[3]).First().Value,
             _pokerMapper.Where(x => x.Key == values[4]).First().Value,
             _pokerMapper.Where(x => x.Key == values[5]).First().Value,
-        };
+        ];
 
         return JsonSerializer.Serialize(
                        new Dictionary<string, string>() {

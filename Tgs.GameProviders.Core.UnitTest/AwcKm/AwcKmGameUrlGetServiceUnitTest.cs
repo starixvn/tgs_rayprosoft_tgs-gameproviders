@@ -14,7 +14,7 @@ namespace Tgs.GameProviders.Core.UnitTest.AwcKm;
 public class AwcKmGameUrlGetServiceUnitTest
 {
     [Fact]
-    public void Create_Player()
+    public async Task Create_PlayerAsync()
     {
         var fakeBrand = Substitute.For<IBrandRepository>();
         var fakeGame = Substitute.For<IGameRepository>();
@@ -146,7 +146,7 @@ public class AwcKmGameUrlGetServiceUnitTest
             fakeClient,
             fakePlayer);
 
-        _ = Assert.ThrowsAsync<UriFormatException>(() => sut.GetAsync(query: query).AsTask());
+        _ = await Assert.ThrowsAsync<Exception>(() => sut.GetAsync(query: query).AsTask());
 
         _ = fakeClient
             .Received(1)

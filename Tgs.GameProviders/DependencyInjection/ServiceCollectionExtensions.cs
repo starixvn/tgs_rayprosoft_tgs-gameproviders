@@ -83,7 +83,6 @@ public static class ServiceCollectionExtensions
         .Services
         .AddSingleton<RedisConnectionFactory>()
         .AddGameProvidersRepositories()
-        .AddGameProvidersServices((sp) => sp.GetRequiredService<RedisConnectionFactory>().Database)
         .AddGameProvidersCore(
             ipAddressOptions: ipAddressOptions,
             gameRoundsClientOptions: gameRoundsClientOptions,

@@ -15,19 +15,12 @@ using Tgs.GameProviders.Core.Extensions;
 
 namespace Tgs.GameProviders.ApiClients.BigGaming;
 
-internal class BigGamingApiClient : IBigGamingApiClient
+internal class BigGamingApiClient(
+    HttpClient client,
+    ILogger<BigGamingApiClient> logger) : IBigGamingApiClient
 {
-    private readonly HttpClient _client;
-    private readonly ILogger<BigGamingApiClient> _logger;
-
-    public BigGamingApiClient(
-        HttpClient client,
-        ILogger<BigGamingApiClient> logger)
-
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
+    private readonly HttpClient _client = client ?? throw new ArgumentNullException(nameof(client));
+    private readonly ILogger<BigGamingApiClient> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public async ValueTask<BigGamingResponse> CreateAgentAsync(Uri apiurl, string secretCode, string secretKey, BigGamingCreateAgentRequest request)
     {
@@ -122,17 +115,15 @@ internal class BigGamingApiClient : IBigGamingApiClient
 
     private static string GetHashMD5(string data)
     {
-        using var md5 = MD5.Create();
         var dataByte = Encoding.UTF8.GetBytes(data);
-        var hash = md5.ComputeHash(dataByte);
+        var hash = MD5.HashData(dataByte);
         return hash.ToHexString().ToUpper();
     }
 
     private static string GetSecretCode(string agentLoginIdPassword)
     {
-        using var sHA1 = SHA1.Create();
         var dataByte = Encoding.UTF8.GetBytes(agentLoginIdPassword);
-        var hash = sHA1.ComputeHash(dataByte);
+        var hash = SHA1.HashData(dataByte);
         return hash.ToBase64String();
     }
 

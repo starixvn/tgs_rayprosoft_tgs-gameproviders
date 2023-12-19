@@ -15,7 +15,6 @@ COPY ["Tgs.GameProviders.ApiClients/Tgs.GameProviders.ApiClients.csproj", "Tgs.G
 COPY ["Tgs.GameProviders.Core/Tgs.GameProviders.Core.csproj", "Tgs.GameProviders.Core/"]
 COPY ["Tgs.GameProviders.Domains/Tgs.GameProviders.Domains.csproj", "Tgs.GameProviders.Domains/"]
 COPY ["Tgs.GameProviders.Repositories/Tgs.GameProviders.Repositories.csproj", "Tgs.GameProviders.Repositories/"]
-COPY ["Tgs.GameProviders.Services/Tgs.GameProviders.Services.csproj", "Tgs.GameProviders.Services/"]
 RUN dotnet restore "./Tgs.GameProviders/./Tgs.GameProviders.csproj"
 COPY . .
 WORKDIR "/src/Tgs.GameProviders"

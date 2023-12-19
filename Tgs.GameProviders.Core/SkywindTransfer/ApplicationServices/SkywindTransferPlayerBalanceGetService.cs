@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SkywindService.Protos;
-using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;

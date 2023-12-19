@@ -60,7 +60,7 @@ internal class JokerPlayerFundInGetService : IGetService<JokerPlayerFundInQuery,
                 playerCode: query.PlayerCode,
                 transactionId: query.OrderId,
                 amount: query.Amount,
-                cancellationToken:cancellationToken)
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return new PlayerFundResult

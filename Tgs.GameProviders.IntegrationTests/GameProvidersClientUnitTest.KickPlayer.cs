@@ -55,7 +55,7 @@ public partial class GameProvidersClientUnitTest
     }
 
     [Fact]
-    public void Kick_Player_HttpRequestException()
+    public async void Kick_Player_HttpRequestException()
     {
         var gameProviderCode = "KY";
         var playerCode = "test";
@@ -84,7 +84,7 @@ public partial class GameProvidersClientUnitTest
 
         var sut = new GameProvidersClient(httpClient);
 
-        _ = Assert.ThrowsAsync<HttpRequestException>(() => sut
+        _ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
             .KickPlayerAsync(
                 gameProviderCode: gameProviderCode,
                 playerCode: playerCode)

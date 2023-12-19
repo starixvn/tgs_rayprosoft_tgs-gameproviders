@@ -15,18 +15,12 @@ using Tgs.GameProviders.Core.TCG.Models.Commons;
 
 namespace Tgs.GameProviders.ApiClients.TCG;
 
-internal class TCGApiClient : ITCGApiClient
+internal class TCGApiClient(
+    HttpClient client,
+    ILogger<TCGApiClient> logger) : ITCGApiClient
 {
-    private readonly HttpClient _client;
-    private readonly ILogger<TCGApiClient> _logger;
-
-    public TCGApiClient(
-        HttpClient client,
-        ILogger<TCGApiClient> logger)
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
+    private readonly HttpClient _client = client ?? throw new ArgumentNullException(nameof(client));
+    private readonly ILogger<TCGApiClient> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
     public ValueTask<TCGKickOutLottoPlayerResponse> KickOutLottoPlayerAsync(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TCGKickOutLottoPlayerRequest request)
         => PostAsync<TCGKickOutLottoPlayerRequest, TCGKickOutLottoPlayerResponse>(apiUrl, merchantCode, desKey, sha256Key, request, "KickOutLottoPlayer");
@@ -53,15 +47,13 @@ internal class TCGApiClient : ITCGApiClient
 
         Byte[] toEncryptArray = Convert.FromBase64String(data);
 
-        using (var dESCrypto = DES.Create())
-        {
-            dESCrypto.Key = Encoding.UTF8.GetBytes(key);
-            dESCrypto.Mode = CipherMode.ECB;
-            dESCrypto.Padding = PaddingMode.PKCS7;
-            ICryptoTransform cTransform = dESCrypto.CreateDecryptor();
-            var resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
-            return Encoding.UTF8.GetString(resultArray);
-        }
+        using var dESCrypto = DES.Create();
+        dESCrypto.Key = Encoding.UTF8.GetBytes(key);
+        dESCrypto.Mode = CipherMode.ECB;
+        dESCrypto.Padding = PaddingMode.PKCS7;
+        ICryptoTransform cTransform = dESCrypto.CreateDecryptor();
+        var resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+        return Encoding.UTF8.GetString(resultArray);
     }
 
     private static string GetDESCEncrypt(string data, string key)
@@ -71,35 +63,24 @@ internal class TCGApiClient : ITCGApiClient
 
         byte[] dataBytes = Encoding.UTF8.GetBytes(data);
 
-        using (var des = DES.Create())
-        {
-            des.Key = Encoding.UTF8.GetBytes(key);
-            des.Mode = CipherMode.ECB;
-            des.Padding = PaddingMode.PKCS7;
-            using (var cryptoTransform = des.CreateEncryptor())
-            {
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    using (CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write))
-                    {
-                        cryptoStream.Write(dataBytes, 0, dataBytes.Length);
-                        cryptoStream.FlushFinalBlock();
-                        var encrypted = memoryStream.ToArray();
-                        return Convert.ToBase64String(encrypted, 0, encrypted.Length);
-                    }
-                }
-            }
-        }
+        using var des = DES.Create();
+        des.Key = Encoding.UTF8.GetBytes(key);
+        des.Mode = CipherMode.ECB;
+        des.Padding = PaddingMode.PKCS7;
+        using var cryptoTransform = des.CreateEncryptor();
+        using MemoryStream memoryStream = new MemoryStream();
+        using CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoTransform, CryptoStreamMode.Write);
+        cryptoStream.Write(dataBytes, 0, dataBytes.Length);
+        cryptoStream.FlushFinalBlock();
+        var encrypted = memoryStream.ToArray();
+        return Convert.ToBase64String(encrypted, 0, encrypted.Length);
     }
 
     private static string GetHash256(string data, string hash_key)
     {
-        using (var sha256 = SHA256.Create())
-        {
-            byte[] inputBytes = Encoding.UTF8.GetBytes(data + hash_key);
-            byte[] outputBytes = sha256.ComputeHash(inputBytes);
-            return BitConverter.ToString(outputBytes).Replace("-", "").ToLower();
-        }
+        byte[] inputBytes = Encoding.UTF8.GetBytes(data + hash_key);
+        byte[] outputBytes = SHA256.HashData(inputBytes);
+        return BitConverter.ToString(outputBytes).Replace("-", "").ToLower();
     }
 
     private async ValueTask<TResponse> PostAsync<TRequest, TResponse>(Uri apiUrl, string merchantCode, string desKey, string sha256Key, TRequest request, string logPrefix) where TResponse : TCGBaseResponse
@@ -143,11 +124,8 @@ internal class TCGApiClient : ITCGApiClient
 
         _logger.LogInformation("{apiLogEvent}", JsonSerializer.Serialize(apiLogEvent));
 
-        if (!string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK)
-        {
-            return JsonSerializer.Deserialize<TResponse>(responseMessage);
-        }
-
-        return default;
+        return !string.IsNullOrEmpty(responseMessage) && httpResponseMessage.StatusCode == HttpStatusCode.OK
+            ? JsonSerializer.Deserialize<TResponse>(responseMessage)
+            : default;
     }
 }

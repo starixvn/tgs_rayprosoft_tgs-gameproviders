@@ -58,6 +58,7 @@ internal class GameRecordListClient : IGameRecordListClient
 
         return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
     }
+
     public async ValueTask<GameRecordResponse?> VRGameRecordListAsync(
         string brandCode,
         bool isUpdateTime,
