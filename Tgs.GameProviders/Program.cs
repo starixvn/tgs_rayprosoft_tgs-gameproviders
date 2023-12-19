@@ -279,6 +279,7 @@ app.MapHealthChecks("/healthz");
 
 _ = app.InitialSnowflakeWork();
 _ = app.InitialMemory();
+/*
 _ = app.InitialConnectionAwc();
 _ = app.InitialConnectionBTi();
 _ = app.InitialConnectionCards365();
@@ -306,5 +307,6 @@ _ = app.InitialConnectionWGViaGaming();
 _ = app.InitialConnectionWMCasino();
 _ = app.InitialConnectionWicketCricke();
 _ = app.InitialConnectionYeeBet();
+*/
 
 app.Run();
