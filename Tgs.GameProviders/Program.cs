@@ -230,6 +230,11 @@ builder.Services
     {
         var configuration = sp.GetRequiredService<IConfiguration>();
         options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceCrPatiBaseUrl")!;
+    },
+    (options, sp) =>
+    {
+        var configuration = sp.GetRequiredService<IConfiguration>();
+        options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceVRGamingBaseUrl")!;
     });
 
 builder.Services
@@ -279,34 +284,5 @@ app.MapHealthChecks("/healthz");
 
 _ = app.InitialSnowflakeWork();
 _ = app.InitialMemory();
-/*
-_ = app.InitialConnectionAwc();
-_ = app.InitialConnectionBTi();
-_ = app.InitialConnectionCards365();
-_ = app.InitialConnectionCrPati();
-_ = app.InitialConnectionDreamGaming();
-_ = app.InitialConnectionEndorphina();
-_ = app.InitialConnectionEvolution();
-_ = app.InitialConnectionHabanero();
-_ = app.InitialConnectionFaChai();
-_ = app.InitialConnectionGKXGaming();
-_ = app.InitialConnectionJDB();
-_ = app.InitialConnectionJili();
-_ = app.InitialConnectionJoker();
-_ = app.InitialConnectionKaiyuan();
-_ = app.InitialConnectionLEGaming();
-_ = app.InitialConnectionOBet();
-_ = app.InitialConnectionPinnacle();
-_ = app.InitialConnectionPragmaticPlay();
-_ = app.InitialConnectionSBO();
-_ = app.InitialConnectionSkywind();
-_ = app.InitialConnectionTFGaming();
-_ = app.InitialConnectionV8Poker();
-_ = app.InitialConnectionWGFmGaming();
-_ = app.InitialConnectionWGViaGaming();
-_ = app.InitialConnectionWMCasino();
-_ = app.InitialConnectionWicketCricke();
-_ = app.InitialConnectionYeeBet();
-*/
 
 app.Run();

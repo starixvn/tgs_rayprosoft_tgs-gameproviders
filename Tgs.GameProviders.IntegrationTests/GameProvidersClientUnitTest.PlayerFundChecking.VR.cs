@@ -6,8 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Tgs.GameProviders.Client;
-using Tgs.GameProviders.Core.VR.ApplicationServices;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.Core.VRGaming.ApplicationServices;
 
 namespace Tgs.GameProviders.IntegrationTests;
 
@@ -27,9 +27,9 @@ public partial class GameProvidersClientUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<IGetService<VRPlayerFundCheckingQuery, bool>>();
+                var fakeService = Substitute.For<IGetService<VRGamingPlayerFundCheckingQuery, bool>>();
 
-                var query = new VRPlayerFundCheckingQuery
+                var query = new VRGamingPlayerFundCheckingQuery
                 {
                     BrandCode = brandCode,
                     PlayerCode = playerCode,
@@ -38,10 +38,9 @@ public partial class GameProvidersClientUnitTest
                     StartTime = startTime,
                     EndTime = endTime
                 };
-                _ = fakeService
-                    .GetAsync(
-                        query: Arg.Is(query),
-                        cancellationToken: Arg.Any<CancellationToken>())
+                _ = fakeService.GetAsync(
+                    query: Arg.Is(query),
+                    cancellationToken: Arg.Any<CancellationToken>())
                     .Returns(true);
 
                 _ = services.AddTransient(_ => fakeService);
@@ -78,9 +77,9 @@ public partial class GameProvidersClientUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<IGetService<VRPlayerFundCheckingQuery, bool>>();
+                var fakeService = Substitute.For<IGetService<VRGamingPlayerFundCheckingQuery, bool>>();
 
-                var query = new VRPlayerFundCheckingQuery
+                var query = new VRGamingPlayerFundCheckingQuery
                 {
                     BrandCode = brandCode,
                     PlayerCode = playerCode,

@@ -8,17 +8,10 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Repositories;
 
-internal class GameProviderRepository : IGameProviderRepository
+internal class GameProviderRepository(IGameCommandClient client) : IGameProviderRepository
 {
-    private readonly IGameCommandClient _client;
-
-    public GameProviderRepository(IGameCommandClient client)
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
-
     public async ValueTask<GameProviderInfo> GetAsync(Guid gameProviderId, CancellationToken cancellationToken = default)
-        => await _client
+        => await client
         .GameProviderGetAsync(
             gameProviderId: gameProviderId,
             cancellationToken: cancellationToken)
@@ -129,14 +122,14 @@ internal class GameProviderRepository : IGameProviderRepository
 
     public async ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string gameProviderConfiguration, Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
-        var settingConfiguration = await _client
+        var settingConfiguration = await client
             .SettingGetConfigurationAsync<TConfiguration>(
             key: gameProviderConfiguration,
             cancellationToken: cancellationToken)
             .ConfigureAwait(false)
             ?? throw new Exception($"This game product setting does not exist.({gameProviderConfiguration})");
 
-        var gameProviderConfig = await _client
+        var gameProviderConfig = await client
             .GameProviderConfigurationGetAsync(
             gameProviderConfigId: gameProviderConfigurationId,
             cancellationToken: cancellationToken)
@@ -186,7 +179,7 @@ internal class GameProviderRepository : IGameProviderRepository
 
     public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
-        var data = await _client
+        var data = await client
             .GameProviderConfigurationGetAsync(
             gameProviderConfigId: gameProviderConfigurationId,
             cancellationToken: cancellationToken)
@@ -197,7 +190,7 @@ internal class GameProviderRepository : IGameProviderRepository
     }
 
     public async ValueTask<string?> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode, CancellationToken cancellationToken = default)
-        => await _client
+        => await client
         .GameProviderGetCultureCodeAsync(
         gameProviderId,
         cultureCode,
@@ -205,7 +198,7 @@ internal class GameProviderRepository : IGameProviderRepository
         .ConfigureAwait(false);
 
     public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode, CancellationToken cancellationToken = default)
-        => await _client
+        => await client
         .GameProviderGetCurrencyCodeAsync(
         gameProviderId: gameProviderId,
         currencyCode: currencyCode,
@@ -214,7 +207,7 @@ internal class GameProviderRepository : IGameProviderRepository
         ?? throw new Exception($"This game product currency does not exist.({currencyCode})");
 
     public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode, CancellationToken cancellationToken = default)
-        => await _client
+        => await client
         .GameProviderGetGameProviderIdAsync(
         gameProviderCode: gameProviderCode,
         cancellationToken: cancellationToken)
@@ -314,6 +307,12 @@ internal class GameProviderRepository : IGameProviderRepository
     public ValueTask<V8PokerConfiguration> GetV8PokerConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
         => GetConfigurationAsync<V8PokerConfiguration>(
             gameProviderConfiguration: GameProviderConfigurations.V8Poker,
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken);
+
+    public ValueTask<VRGamingConfiguration> GetVRGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+        => GetConfigurationAsync<VRGamingConfiguration>(
+            gameProviderConfiguration: GameProviderConfigurations.VRGaming,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
 

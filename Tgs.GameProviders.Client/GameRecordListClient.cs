@@ -8,8 +8,6 @@ namespace Tgs.GameProviders.Client;
 
 internal class GameRecordListClient : IGameRecordListClient
 {
-    private static readonly string _GameRecordListPath = "/api/{0}/gamerecordlist";
-
     private static readonly JsonSerializerOptions? _SerializerOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -48,41 +46,6 @@ internal class GameRecordListClient : IGameRecordListClient
         var response = await _httpClient
             .PostAsync(
                 requestUri: $"/api/{GameProviderType.BigGaming}/FishingGameRecordList",
-                content: requestContent,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-
-        _ = response.EnsureSuccessStatusCode();
-
-        var contentJson = await response.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-
-        return JsonSerializer.Deserialize<GameRecordResponse>(contentJson, _SerializerOptions);
-    }
-
-    public async ValueTask<GameRecordResponse?> VRGameRecordListAsync(
-        string brandCode,
-        bool isUpdateTime,
-        DateTimeOffset startTime,
-        DateTimeOffset endTime,
-        int page,
-        int rows,
-        CancellationToken cancellationToken = default)
-    {
-        var source = new
-        {
-            BrandCode = brandCode,
-            IsUpdateTime = isUpdateTime,
-            StartTime = startTime,
-            EndTime = endTime,
-            Page = page,
-            Rows = rows
-        };
-        var requestContent = new StringContent(JsonSerializer.Serialize(source, _SerializerOptions));
-        requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-        var response = await _httpClient
-            .PostAsync(
-                requestUri: string.Format(_GameRecordListPath, GameProviderType.VR),
                 content: requestContent,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);

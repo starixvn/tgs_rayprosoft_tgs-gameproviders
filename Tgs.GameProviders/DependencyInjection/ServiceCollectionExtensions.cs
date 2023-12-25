@@ -24,6 +24,7 @@ using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.TFGamingService.Client;
 using Tgs.GameInterface.V8Poker.Client;
+using Tgs.GameInterface.VRGaming.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WGViaGaming.Client;
 using Tgs.GameInterface.WicketCricket.Client;
@@ -76,7 +77,8 @@ public static class ServiceCollectionExtensions
         Action<GameInterfaceWicketCricketClientOptions, IServiceProvider> gameInterfaceWicketCricketClientOptions,
         Action<GameInterfaceGKXGamingClientOptions, IServiceProvider> gameInterfaceGKXGamingClientOptions,
         Action<GameInterfaceV8PokerClientOptions, IServiceProvider> gameInterfaceV8PokerClientOptions,
-        Action<GameInterfaceCrPatiClientOptions, IServiceProvider> gameInterfaceCrPatiClientOptions)
+        Action<GameInterfaceCrPatiClientOptions, IServiceProvider> gameInterfaceCrPatiClientOptions,
+        Action<GameInterfaceVRGamingClientOptions, IServiceProvider> gameInterfaceVRGamingClientOptions)
         => services
         .AddOptions<RedisOptions>()
         .Configure(configure)
@@ -118,5 +120,6 @@ public static class ServiceCollectionExtensions
             gameInterfaceWicketCricketClientOptions: gameInterfaceWicketCricketClientOptions,
             gameInterfaceGKXGamingClientOptions: gameInterfaceGKXGamingClientOptions,
             gameInterfaceV8PokerClientOptions: gameInterfaceV8PokerClientOptions,
-            gameInterfaceCrPatiClientOptions: gameInterfaceCrPatiClientOptions);
+            gameInterfaceCrPatiClientOptions: gameInterfaceCrPatiClientOptions,
+            gameInterfaceVRGamingClientOptions: gameInterfaceVRGamingClientOptions);
 }

@@ -62,7 +62,7 @@ public static class GameProviderType
     public static readonly string TFGaming = "TF";
     public static readonly string TFGamingTransfer = "TFTF";
     public static readonly string V8Poker = "V8";
-    public static readonly string VR = "VR";
+    public static readonly string VRGaming = "VR";
     public static readonly string WGFmGaming = "WGFM";
     public static readonly string WGViaGaming = "WGVIA";
     public static readonly string WicketCricket = "9WCRICKET";

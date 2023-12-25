@@ -300,14 +300,14 @@ internal class GameProvidersClient : IGameProvidersClient
 
         var response = await _httpClient
            .PostAsync(
-               requestUri: string.Format(_PlayerFundChecking, GameProviderType.VR),
+               requestUri: string.Format(_PlayerFundChecking, GameProviderType.VRGaming),
                content: requestContent,
                cancellationToken: cancellationToken).ConfigureAwait(false);
 
         _ = response.EnsureSuccessStatusCode();
 
         return response.StatusCode == HttpStatusCode.NoContent
-            ? throw new Exception($"取得{GameProviderType.VR}交易檢查狀態失敗.({orderId})")
+            ? throw new Exception($"取得{GameProviderType.VRGaming}交易檢查狀態失敗.({orderId})")
             : JsonSerializer.Deserialize<PlayerFundCheckingResponse>(
                 await response
                 .Content

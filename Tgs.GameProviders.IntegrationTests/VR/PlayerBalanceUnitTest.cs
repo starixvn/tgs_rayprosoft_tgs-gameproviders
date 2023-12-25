@@ -5,7 +5,8 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.VR.ApplicationServices;
+using Tgs.GameProviders.Core.VRGaming.ApplicationServices;
+
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
@@ -22,9 +23,9 @@ public class PlayerBalanceUnitTest
         {
             _ = builder.ConfigureServices(services =>
             {
-                var fakeService = Substitute.For<IGetService<VRPlayerBalanceQuery, PlayerBalanceResult>>();
+                var fakeService = Substitute.For<IGetService<VRGamingPlayerBalanceQuery, PlayerBalanceResult>>();
 
-                var query = new VRPlayerBalanceQuery
+                var query = new VRGamingPlayerBalanceQuery
                 {
                     PlayerCode = playerCode
                 };
@@ -46,13 +47,13 @@ public class PlayerBalanceUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersClient(httpClient);
 
         var actual = await sut
             .PlayerBalanceAsync(
-            gameProviderCode: GameProviderType.VR,
+            gameProviderCode: GameProviderType.VRGaming,
             playerCode: playerCode);
 
         Assert.NotNull(actual);

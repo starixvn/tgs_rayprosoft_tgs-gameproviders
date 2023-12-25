@@ -1454,6 +1454,134 @@ public class GameProviderRepositoryUnitTest
     }
 
     [Fact]
+    public async Task Get_TFGamingTransfer_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new TFGamingTransferConfiguration()
+        {
+            ApiUrl = new("https://spi-test.r4espt.com"),
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<TFGamingTransferConfiguration>(Arg.Is(GameProviderConfigurations.TFGamingTransfer))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.TFGamingTransfer,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "TFTF-GPI",
+            Description: "TFTF-GPI Configuration",
+            ClientId: "TFTF-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"PrivateToken\":\"00022362f50e16fa474c80fc24da29793420aff6ce4b5d05a4a7dc52a261078ce72ceef10e7dc28f7bcfe89fe4922624fe72992e1f2f4f78360e4360970ce1b3f2e4567d01b071190c9051058fc1c14202f4ea117497c29fdbe8c9eddfb0e4fa6a3efe3bcbc7cfd8665c5b311e4a7065b8ad37a1a30d64919d8a3f2ff82c2ead23eb\",\"OperatorId\":\"3871\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetTFGamingTransferConfigurationAsync(gameProviderConfigurationId);
+
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("https://spi-test.r4espt.com"), actual.ApiUrl);
+        Assert.Contains("00022362f50e16fa474c80fc24da29793420aff6ce4b", actual.PrivateToken);
+        Assert.Equal("3871", actual.OperatorId);
+    }
+
+    [Fact]
+    public async Task Get_V8Poker_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new V8PokerConfiguration()
+        {
+            ApiUrl = new("https://wc-api.xpvcd046.com/"),
+            ApiRecordUrl = new("https://wc-record.xpvcd046.com/")
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<V8PokerConfiguration>(Arg.Is(GameProviderConfigurations.V8Poker))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.V8Poker,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "V8-GPI",
+            Description: "V8-GPI Configuration",
+            ClientId: "V8-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"Deskey\":\"C6995933499B163B\",\"Md5key\":\"628DA8F1857A6529\",\"AgentId\":\"71033\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetV8PokerConfigurationAsync(gameProviderConfigurationId);
+
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("https://wc-api.xpvcd046.com/"), actual.ApiUrl);
+        Assert.Equal(new Uri("https://wc-record.xpvcd046.com/"), actual.ApiRecordUrl);
+        Assert.Equal("C6995933499B163B", actual.Deskey);
+        Assert.Equal("628DA8F1857A6529", actual.Md5key);
+        Assert.Equal("71033", actual.AgentId);
+    }
+
+    [Fact]
+    public async Task Get_VRGaming_Configuration()
+    {
+        var fakeClient = Substitute.For<IGameCommandClient>();
+
+        var gameProviderId = Guid.NewGuid();
+        var gameProviderConfigurationId = Guid.NewGuid();
+
+        var settingConfiguration = new VRGamingConfiguration()
+        {
+            ApiUrl = new("https://fe.vrbetdemo.com/"),
+            Version = "1.0"
+        };
+
+        _ = fakeClient
+            .SettingGetConfigurationAsync<VRGamingConfiguration>(Arg.Is(GameProviderConfigurations.VRGaming))
+            .Returns(settingConfiguration);
+
+        _ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+            GameProviderId: gameProviderId,
+            GameProviderCode: GameProviderType.V8Poker,
+            GameProviderConfigId: gameProviderConfigurationId,
+            Name: "VR-GPI",
+            Description: "VR-GPI Configuration",
+            ClientId: "VR-GPI",
+            SecretKey: Guid.NewGuid().ToString("N"),
+            Status: GameProviderConfigStatus.Active,
+            DesktopEndpoint: string.Empty,
+            MobileEndpoint: string.Empty,
+            ConfigurationData: "{\"Merchantid\":\"PEGA\",\"Deskey\":\"8VF408JBV2B406488F2VH2X684T6R6DV\"}",
+            IsDefault: false));
+
+        var repository = new GameProviderRepository(fakeClient);
+
+        var actual = await repository.GetVRGamingConfigurationAsync(gameProviderConfigurationId);
+
+        Assert.NotNull(actual);
+        Assert.Equal(new Uri("https://fe.vrbetdemo.com/"), actual.ApiUrl);
+        Assert.Equal("1.0", actual.Version);
+        Assert.Equal("PEGA", actual.MerchantId);
+        Assert.Equal("8VF408JBV2B406488F2VH2X684T6R6DV", actual.Deskey);
+    }
+
+    [Fact]
     public async Task Get_WGFmGaming_ConfigurationData()
     {
         var fakeClient = Substitute.For<IGameCommandClient>();

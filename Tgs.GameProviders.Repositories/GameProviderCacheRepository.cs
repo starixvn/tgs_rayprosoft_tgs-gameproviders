@@ -5,21 +5,12 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Repositories;
 
-internal class GameProviderCacheRepository : IGameProviderRepository
+internal class GameProviderCacheRepository(
+    IMemoryCache memoryCache,
+    IGameProviderRepository repository) : IGameProviderRepository
 {
-    private readonly IMemoryCache _memoryCache;
-    private readonly IGameProviderRepository _repository;
-
-    public GameProviderCacheRepository(
-        IMemoryCache memoryCache,
-        IGameProviderRepository repository)
-    {
-        _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
-    }
-
     public ValueTask<GameProviderInfo> GetAsync(Guid gameProviderId, CancellationToken cancellationToken = default)
-         => _repository
+         => repository
         .GetAsync(
              gameProviderId: gameProviderId,
              cancellationToken: cancellationToken);
@@ -27,15 +18,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AVIAGamingConfiguration> GetAVIAGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AVIAGamingConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AVIAGamingConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAVIAGamingConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -48,15 +39,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcAelottoConfiguration> GetAwcAelottoConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcAelottoConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcAelottoConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcAelottoConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -69,15 +60,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcAwsConfiguration> GetAwcAwsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcAwsConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcAwsConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcAwsConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -90,15 +81,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcCockfightConfiguration> GetAwcCockfightConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcCockfightConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcCockfightConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcCockfightConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -111,15 +102,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcFacaiConfiguration> GetAwcFacaiConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcFacaiConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcFacaiConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcFacaiConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -132,15 +123,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcFsConfiguration> GetAwcFsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcFsConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcFsConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcFsConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -153,15 +144,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcKmConfiguration> GetAwcKmConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcKmConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcKmConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcKmConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -174,15 +165,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcLudoConfiguration> GetAwcLudoConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcLudoConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcLudoConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcLudoConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -195,15 +186,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcPgsConfiguration> GetAwcPgsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcPgsConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcPgsConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcPgsConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -216,15 +207,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcRcbConfiguration> GetAwcRcbConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcRcbConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcRcbConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcRcbConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -237,15 +228,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcSgConfiguration> GetAwcSgConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcSgConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcSgConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcSgConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -258,15 +249,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcSpadeConfiguration> GetAwcSpadeConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcSpadeConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcSpadeConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcSpadeConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -279,15 +270,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcVenusConfiguration> GetAwcVenusConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcVenusConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcVenusConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcVenusConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -300,15 +291,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcYesbingoConfiguration> GetAwcYesbingoConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcYesbingoConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcYesbingoConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcYesbingoConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -321,15 +312,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<AwcYlConfiguration> GetAwcYlConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out AwcYlConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out AwcYlConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetAwcYlConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -342,15 +333,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<BTiSportsConfiguration> GetBTiSportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out BTiSportsConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out BTiSportsConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetBTiSportsConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -363,15 +354,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<Cards365TransferConfiguration> GetCards365TransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out Cards365TransferConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out Cards365TransferConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetCards365TransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -384,15 +375,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<CrPatiConfiguration> GetCrPatiConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out CrPatiConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out CrPatiConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetCrPatiConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -405,15 +396,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out DreamGamingTransferConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out DreamGamingTransferConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetDreamGamingTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -426,15 +417,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<EndorphinaConfiguration> GetEndorphinaConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out EndorphinaConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out EndorphinaConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetEndorphinaConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -447,15 +438,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<FaChaiConfiguration> GetFaChaiConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out FaChaiConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out FaChaiConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetFaChaiConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -466,7 +457,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     }
 
     public ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
-        => _repository
+        => repository
         .GetGameEndpointsAsync(
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
@@ -474,9 +465,9 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<string?> GetGameProviderCultureCodeAsync(Guid gameProviderId, string cultureCode, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:culturecode:{gameProviderId}:{cultureCode}";
-        if (!_memoryCache.TryGetValue(key, out string? gameProviderCultureCode))
+        if (!memoryCache.TryGetValue(key, out string? gameProviderCultureCode))
         {
-            gameProviderCultureCode = await _repository
+            gameProviderCultureCode = await repository
                 .GetGameProviderCultureCodeAsync(
                     gameProviderId,
                     cultureCode,
@@ -485,7 +476,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
 
             if (!string.IsNullOrWhiteSpace(gameProviderCultureCode))
             {
-                return _memoryCache
+                return memoryCache
                     .Set(
                         key: key,
                         value: gameProviderCultureCode,
@@ -498,9 +489,9 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<string> GetGameProviderCurrencyCodeAsync(Guid gameProviderId, string currencyCode, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:currencycode:{gameProviderId}:{currencyCode}";
-        if (!_memoryCache.TryGetValue(key, out string? gameProviderCurrencyCode))
+        if (!memoryCache.TryGetValue(key, out string? gameProviderCurrencyCode))
         {
-            gameProviderCurrencyCode = await _repository
+            gameProviderCurrencyCode = await repository
                 .GetGameProviderCurrencyCodeAsync(
                     gameProviderId,
                     currencyCode,
@@ -509,7 +500,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
 
             if (!string.IsNullOrWhiteSpace(gameProviderCurrencyCode))
             {
-                return _memoryCache
+                return memoryCache
                      .Set(
                         key: key,
                         value: gameProviderCurrencyCode,
@@ -523,9 +514,9 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<Guid> GetGameProviderIdAsync(string gameProviderCode, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:gameproviderid:{gameProviderCode}";
-        if (!_memoryCache.TryGetValue(key, out Guid? gameProviderId))
+        if (!memoryCache.TryGetValue(key, out Guid? gameProviderId))
         {
-            gameProviderId = await _repository
+            gameProviderId = await repository
                 .GetGameProviderIdAsync(
                     gameProviderCode: gameProviderCode,
                     cancellationToken: cancellationToken)
@@ -533,7 +524,7 @@ internal class GameProviderCacheRepository : IGameProviderRepository
 
             if (gameProviderId.HasValue)
             {
-                return _memoryCache
+                return memoryCache
                     .Set(
                         key: key,
                         value: gameProviderId.Value);
@@ -546,14 +537,14 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<GKXGamingConfiguration> GetGKXGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out GKXGamingConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out GKXGamingConfiguration? configurationData))
         {
-            configurationData = await _repository.GetGKXGamingConfigurationAsync(
+            configurationData = await repository.GetGKXGamingConfigurationAsync(
                 gameProviderConfigurationId: gameProviderConfigurationId,
                 cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -566,15 +557,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out HabaneroTransferConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out HabaneroTransferConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetHabaneroTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -587,15 +578,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<InplayMatrixESportsConfiguration> GetInplayMatrixESportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out InplayMatrixESportsConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out InplayMatrixESportsConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetInplayMatrixESportsConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -608,15 +599,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<JDBTransferConfiguration> GetJDBTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out JDBTransferConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out JDBTransferConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetJDBTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -629,15 +620,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out JiliTransferConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out JiliTransferConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetJiliTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -650,15 +641,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<JokerConfiguration> GetJokerConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out JokerConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out JokerConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetJokerConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -672,15 +663,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
 
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out KaiyuanConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out KaiyuanConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetKaiyuanConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -693,15 +684,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<LEGamingConfiguration> GetLEGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out LEGamingConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out LEGamingConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetLEGamingConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -714,15 +705,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<OBetConfiguration> GetOBetConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out OBetConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out OBetConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetOBetConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -735,15 +726,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<PinnacleConfiguration> GetPinnacleConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out PinnacleConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out PinnacleConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetPinnacleConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -756,15 +747,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<PragmaticPlayTransferConfiguration> GetPragmaticPlayTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out PragmaticPlayTransferConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out PragmaticPlayTransferConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetPragmaticPlayTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -777,15 +768,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<SabaTransferConfiguration> GetSabaTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out SabaTransferConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out SabaTransferConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetSabaTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -798,15 +789,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<SBOTransferConfiguration> GetSBOTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out SBOTransferConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out SBOTransferConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetSBOTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -819,15 +810,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<SM01Configuration> GetSM01ConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out SM01Configuration? configurationData))
+        if (!memoryCache.TryGetValue(key, out SM01Configuration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetSM01ConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -840,15 +831,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out TFGamingTransferConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out TFGamingTransferConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetTFGamingTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -861,16 +852,35 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<V8PokerConfiguration> GetV8PokerConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out V8PokerConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out V8PokerConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetV8PokerConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
+    public async ValueTask<VRGamingConfiguration> GetVRGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!memoryCache.TryGetValue(key, out VRGamingConfiguration? configurationData))
+        {
+            configurationData = await repository.GetVRGamingConfigurationAsync(
+                gameProviderConfigurationId: gameProviderConfigurationId,
+                cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return memoryCache.Set(
                     key: key,
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
@@ -882,15 +892,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out WGFmGamingConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out WGFmGamingConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetWGFmGamingConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -904,15 +914,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
 
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out WGViaGamingConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out WGViaGamingConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetWGViaGamingConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -925,15 +935,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<WicketCricketConfiguration> GetWicketCricketConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out WicketCricketConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out WicketCricketConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetWicketCricketConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -946,15 +956,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out WMCasinoTransferConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out WMCasinoTransferConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetWMCasinoTransferConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,
@@ -967,15 +977,15 @@ internal class GameProviderCacheRepository : IGameProviderRepository
     public async ValueTask<YeeBetConfiguration> GetYeeBetConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
-        if (!_memoryCache.TryGetValue(key, out YeeBetConfiguration? configurationData))
+        if (!memoryCache.TryGetValue(key, out YeeBetConfiguration? configurationData))
         {
-            configurationData = await _repository
+            configurationData = await repository
                 .GetYeeBetConfigurationAsync(
                     gameProviderConfigurationId: gameProviderConfigurationId,
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
 
-            return _memoryCache
+            return memoryCache
                 .Set(
                     key: key,
                     value: configurationData,

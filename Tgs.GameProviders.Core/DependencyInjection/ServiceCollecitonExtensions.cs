@@ -26,6 +26,7 @@ using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.TFGamingService.Client;
 using Tgs.GameInterface.V8Poker.Client;
+using Tgs.GameInterface.VRGaming.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
 using Tgs.GameInterface.WGViaGaming.Client;
 using Tgs.GameInterface.WicketCricket.Client;
@@ -35,7 +36,6 @@ using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.BetConstruct;
 using Tgs.GameProviders.Core.BigGaming;
 using Tgs.GameProviders.Core.TCG;
-using Tgs.GameProviders.Core.VR;
 using Tgs.GameRecord.Endorphina.Session.Client;
 using Tgs.GameRounds.Client;
 using Tgs.GameToken.Client;
@@ -80,7 +80,8 @@ public static class ServiceCollecitonExtensions
         Action<GameInterfaceWicketCricketClientOptions, IServiceProvider> gameInterfaceWicketCricketClientOptions,
         Action<GameInterfaceGKXGamingClientOptions, IServiceProvider> gameInterfaceGKXGamingClientOptions,
         Action<GameInterfaceV8PokerClientOptions, IServiceProvider> gameInterfaceV8PokerClientOptions,
-        Action<GameInterfaceCrPatiClientOptions, IServiceProvider> gameInterfaceCrPatiClientOptions)
+        Action<GameInterfaceCrPatiClientOptions, IServiceProvider> gameInterfaceCrPatiClientOptions,
+        Action<GameInterfaceVRGamingClientOptions, IServiceProvider> gameInterfaceVRGamingClientOptions)
         => services
         .AddOptions<IPAddressOptions>()
         .Configure(ipAddressOptions)
@@ -120,6 +121,7 @@ public static class ServiceCollecitonExtensions
         .AddGameInterfaceGKXGamingClient(gameInterfaceGKXGamingClientOptions)
         .AddGameInterfaceV8PokerClient(gameInterfaceV8PokerClientOptions)
         .AddGameInterfaceCrPatiClient(gameInterfaceCrPatiClientOptions)
+        .AddGameInterfaceVRGamingClient(gameInterfaceVRGamingClientOptions)
         .AddGameRoundsClient(gameRoundsClientOptions)
         .AddGameTokenClient(gameTokenClientOptions)
         //Tgs.Core.Infrastructures.Security
@@ -132,8 +134,6 @@ public static class ServiceCollecitonExtensions
         .AddTransient<IBigGamingGameUrl, BigGamingGameUrl>()
         .AddTransient<ITCGService, TCGService>()
         .AddTransient<ITCGGamePlayer, TCGGamePlayer>()
-        .AddTransient<IVRService, VRService>()
-        .AddTransient<IVRGamePlayer, VRGamePlayer>()
         .AddTransient<IGameActionService, GameActionService>()
         .AddTransient<IBetConstructService, BetConstructService>();
 }
