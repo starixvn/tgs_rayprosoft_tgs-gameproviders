@@ -210,14 +210,15 @@ public class AwcBgGameUrlGetServiceUnitTest
             Cert = "testCert",
             BetLimit = new JsonObject
             {
-                ["SEXYBCRT"] = new JsonObject
+                ["BG"] = new JsonObject
                 {
-                    ["LIVE"] = new JsonArray
-                {
-                    280301,
-                    280302,
-                    280303
-                }
+                    ["LIVE"] = new JsonObject
+                    {
+                        ["limitId"] = new JsonArray {
+                        "A",
+                        "B"
+                    }
+                    }
                 }
             }
         };
@@ -238,7 +239,7 @@ public class AwcBgGameUrlGetServiceUnitTest
         var response = new GameUrlReply()
         {
             IsPlayerExist = true,
-            GameUrl = "http://www.google.com"
+            GameUrl = "http://www.google.com/"
         };
         _ = fakeClient.GameUrlByAwcBgAsync(
             apiUrl: Arg.Is(configuration.ApiUrl),
@@ -261,6 +262,6 @@ public class AwcBgGameUrlGetServiceUnitTest
         var actual = await sut.GetAsync(query);
 
         Assert.NotNull(actual);
-        Assert.Equal(response.GameUrl, actual);
+        Assert.Equal(response.GameUrl, actual.ToString());
     }
 }

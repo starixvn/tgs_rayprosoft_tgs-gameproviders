@@ -55,7 +55,7 @@ public class AwcBgController : ControllerBase
     /// </remarks>
     [HttpPost("gameurl")]
     public async ValueTask<GameUrlResponse?> GameUrlAsync(
-        [FromServices] IGetService<AwcBgGameUrlQuery, GameUrlResult> getService,
+        [FromServices] IGetService<AwcBgGameUrlQuery, Uri> getService,
         GameUrlRequest request)
     {
         var result = await getService
@@ -75,7 +75,7 @@ public class AwcBgController : ControllerBase
                 },
                 cancellationToken: HttpContext.RequestAborted)
             .ConfigureAwait(false);
-        return result == null ? null : new GameUrlResponse() { Url = result.Url };
+        return result == null ? null : new GameUrlResponse() { Url = result };
     }
 
     /// <summary>
