@@ -14,7 +14,7 @@
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 		<PackageReference Include="Tgs.Core.Infrastructures.Security" Version="0.0.2" />
 		<PackageReference Include="Tgs.GameCommand.Client" Version="0.0.11" />
-		<PackageReference Include="Tgs.GameInterface.AwcService.Client" Version="0.0.21" />
+		<PackageReference Include="Tgs.GameInterface.Awc.Client" Version="0.0.2" />
 		<PackageReference Include="Tgs.GameInterface.BTiService.Client" Version="0.0.10" />
 		<PackageReference Include="Tgs.GameInterface.Cards365.Client" Version="0.0.9" />
 		<PackageReference Include="Tgs.GameInterface.CrPati.Client" Version="0.0.1" />
@@ -39,7 +39,7 @@
 		<PackageReference Include="Tgs.GameInterface.SM01Service.Client" Version="0.0.13" />
 		<PackageReference Include="Tgs.GameInterface.TFGamingService.Client" Version="0.0.11" />
 		<PackageReference Include="Tgs.GameInterface.V8Poker.Client" Version="0.0.3" />
-		<PackageReference Include="Tgs.GameInterface.VRGaming.Client" Version="0.0.2" />
+		<PackageReference Include="Tgs.GameInterface.VRGaming.Client" Version="0.0.3" />
 		<PackageReference Include="Tgs.GameInterface.WGFmGamingService.Client" Version="0.0.14" />
 		<PackageReference Include="Tgs.GameInterface.WGViaGaming.Client" Version="0.0.11" />
 		<PackageReference Include="Tgs.GameInterface.WicketCricket.Client" Version="0.0.6" />

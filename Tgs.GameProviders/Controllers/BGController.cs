@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.BigGaming.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
-using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Controllers;
 
@@ -11,15 +8,6 @@ namespace Tgs.GameProviders.Controllers;
 [Route("api/[controller]")]
 public class BGController : ControllerBase
 {
-    /// <summary>
-    /// Games the record list asynchronous.
-    /// </summary>
-    /// <param name="request">The request.</param>
-    /// <returns></returns>
-    /// <exception cref="System.NotImplementedException"></exception>
-    [HttpPost("FishingGameRecordList")]
-    public ValueTask<GameRecordListResult?> GameRecordListAsync(BigGamingFishingGameRecordListQuery request) => throw new NotImplementedException();
-
     /// <summary>
     /// Games the URL asynchronous.
     /// </summary>

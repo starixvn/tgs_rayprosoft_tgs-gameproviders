@@ -9,6 +9,7 @@ public static class GameProviderConfigurations
     public static readonly string AVIAGaming = string.Format(_template, GameProviderType.AVIAGaming);
     public static readonly string AWC_AELOTTO = string.Format(_template, GameProviderType.AWC_AELOTTO);
     public static readonly string AWC_AWS = string.Format(_template, GameProviderType.AWC_AWS);
+    public static readonly string AWC_BG = string.Format(_template, GameProviderType.AWC_BG);
     public static readonly string AWC_COCKFIGHT = string.Format(_template, GameProviderType.AWC_COCKFIGHT);
     public static readonly string AWC_FACAI = string.Format(_template, GameProviderType.AWC_FACAI);
     public static readonly string AWC_FS = string.Format(_template, GameProviderType.AWC_FS);

@@ -8,7 +8,8 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Repositories;
 
-internal class GameProviderRepository(IGameCommandClient client) : IGameProviderRepository
+internal class GameProviderRepository(
+    IGameCommandClient client) : IGameProviderRepository
 {
     public async ValueTask<GameProviderInfo> GetAsync(Guid gameProviderId, CancellationToken cancellationToken = default)
         => await client
@@ -35,7 +36,11 @@ internal class GameProviderRepository(IGameCommandClient client) : IGameProvider
             gameProviderConfiguration: GameProviderConfigurations.AWC_AWS,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
-
+    public ValueTask<AwcBgConfiguration> GetAwcBgConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+        => GetConfigurationAsync<AwcBgConfiguration>(
+            gameProviderConfiguration: GameProviderConfigurations.AWC_BG,
+            gameProviderConfigurationId: gameProviderConfigurationId,
+            cancellationToken: cancellationToken);
     public ValueTask<AwcCockfightConfiguration> GetAwcCockfightConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
         => GetConfigurationAsync<AwcCockfightConfiguration>(
             gameProviderConfiguration: GameProviderConfigurations.AWC_COCKFIGHT,

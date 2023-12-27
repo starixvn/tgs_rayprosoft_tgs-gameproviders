@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.Awc.Client;
 using Tgs.GameProviders.Core.AwcKm.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
@@ -17,7 +17,7 @@ public class AwcKmBalancesQueryServiceUnitTest
     {
         var fakeBrand = Substitute.For<IBrandRepository>();
         var fakeGameProvider = Substitute.For<IGameProviderRepository>();
-        var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
+        var fakeClient = Substitute.For<IGameInterfaceAwcClient>();
 
         var query = new AwcKmBalancesQuery(
              BrandCode: "GPI");

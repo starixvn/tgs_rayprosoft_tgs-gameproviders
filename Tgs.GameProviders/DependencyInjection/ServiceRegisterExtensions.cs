@@ -1,6 +1,6 @@
 ﻿using Tgs.GameCommand.Client;
 using Tgs.GameCommand.Common;
-using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.Awc.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.Cards365.Client;
 using Tgs.GameInterface.CrPati.Client;

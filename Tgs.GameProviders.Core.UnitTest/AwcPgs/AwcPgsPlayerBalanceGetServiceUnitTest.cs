@@ -3,8 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
-using Tgs.GameInterface.AwcService.Client;
-using Tgs.GameInterface.AwcService.Protos;
+using Tgs.GameInterface.Awc.Client;
+using Tgs.GameInterface.Awc.Protos;
 using Tgs.GameProviders.Core.AwcPgs.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
@@ -18,7 +18,7 @@ public class AwcPgsPlayerBalanceGetServiceUnitTest
     {
         var fakeBrand = Substitute.For<IBrandRepository>();
         var fakeGameProvider = Substitute.For<IGameProviderRepository>();
-        var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
+        var fakeClient = Substitute.For<IGameInterfaceAwcClient>();
         var fakePlayer = Substitute.For<IPlayerRepository>();
 
         var query = new AwcPgsPlayerBalanceQuery
@@ -115,7 +115,7 @@ public class AwcPgsPlayerBalanceGetServiceUnitTest
     {
         var fakeBrand = Substitute.For<IBrandRepository>();
         var fakeGameProvider = Substitute.For<IGameProviderRepository>();
-        var fakeClient = Substitute.For<IGameInterfaceAwcServiceClient>();
+        var fakeClient = Substitute.For<IGameInterfaceAwcClient>();
         var fakePlayer = Substitute.For<IPlayerRepository>();
 
         var query = new AwcPgsPlayerBalanceQuery

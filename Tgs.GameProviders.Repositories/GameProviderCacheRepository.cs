@@ -78,6 +78,27 @@ internal class GameProviderCacheRepository(
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
+    public async ValueTask<AwcBgConfiguration> GetAwcBgConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+    {
+        var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+        if (!memoryCache.TryGetValue(key, out AwcBgConfiguration? configurationData))
+        {
+            configurationData = await repository
+                .GetAwcBgConfigurationAsync(
+                    gameProviderConfigurationId: gameProviderConfigurationId,
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+
+            return memoryCache
+                .Set(
+                    key: key,
+                    value: configurationData,
+                    absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+        }
+        return configurationData
+            ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+    }
+
     public async ValueTask<AwcCockfightConfiguration> GetAwcCockfightConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";

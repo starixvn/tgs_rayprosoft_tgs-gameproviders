@@ -1,5 +1,5 @@
 ﻿using Tgs.GameCommand.Client;
-using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.Awc.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.Cards365.Client;
 using Tgs.GameInterface.CrPati.Client;
@@ -47,7 +47,7 @@ public static class ServiceCollectionExtensions
         Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions,
         Action<GameTokenClientOptions, IServiceProvider> gameTokenClientOptions,
         Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
-        Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions,
+        Action<GameInterfaceAwcClientOptions, IServiceProvider> gameInterfaceAwcClientOptions,
         Action<GameInterfaceJiliClientOptions, IServiceProvider> gameInterfaceJiliClientOptions,
         Action<GameInterfaceWMCasinoServiceClientOptions, IServiceProvider> gameInterfaceWMCasinoClientOptions,
         Action<GameInterfaceEvolutionClientOptions, IServiceProvider> gameInterfaceEvolutionServiceClientOptions,
@@ -90,7 +90,7 @@ public static class ServiceCollectionExtensions
             gameRoundsClientOptions: gameRoundsClientOptions,
             gameTokenClientOptions: gameTokenClientOptions,
             gameCommandClientOptions: gameCommandClientOptions,
-            gameInterfaceAwcServiceClientOptions: gameInterfaceAwcServiceClientOptions,
+            gameInterfaceAwcClientOptions: gameInterfaceAwcClientOptions,
             gameInterfaceJiliClientOptions: gameInterfaceJiliClientOptions,
             gameInterfaceWMCasinoClientOptions: gameInterfaceWMCasinoClientOptions,
             gameInterfaceEvolutionServiceClientOptions: gameInterfaceEvolutionServiceClientOptions,

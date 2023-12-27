@@ -18,6 +18,8 @@ public interface IGameProviderRepository
 
     ValueTask<AwcAwsConfiguration> GetAwcAwsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
+    ValueTask<AwcBgConfiguration> GetAwcBgConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
+
     ValueTask<AwcCockfightConfiguration> GetAwcCockfightConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
     ValueTask<AwcFacaiConfiguration> GetAwcFacaiConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);

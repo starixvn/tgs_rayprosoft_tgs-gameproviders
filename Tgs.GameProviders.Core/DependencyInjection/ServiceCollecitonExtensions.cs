@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Tgs.GameCommand.Client;
-using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.Awc.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.Cards365.Client;
 using Tgs.GameInterface.CrPati.Client;
@@ -34,7 +34,6 @@ using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.BetConstruct;
-using Tgs.GameProviders.Core.BigGaming;
 using Tgs.GameProviders.Core.TCG;
 using Tgs.GameRecord.Endorphina.Session.Client;
 using Tgs.GameRounds.Client;
@@ -50,7 +49,7 @@ public static class ServiceCollecitonExtensions
         Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions,
         Action<GameTokenClientOptions, IServiceProvider> gameTokenClientOptions,
         Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
-        Action<GameInterfaceAwcServiceClientOptions, IServiceProvider> gameInterfaceAwcServiceClientOptions,
+        Action<GameInterfaceAwcClientOptions, IServiceProvider> gameInterfaceAwcClientOptions,
         Action<GameInterfaceJiliClientOptions, IServiceProvider> gameInterfaceJiliClientOptions,
         Action<GameInterfaceWMCasinoServiceClientOptions, IServiceProvider> gameInterfaceWMCasinoClientOptions,
         Action<GameInterfaceEvolutionClientOptions, IServiceProvider> gameInterfaceEvolutionServiceClientOptions,
@@ -90,7 +89,7 @@ public static class ServiceCollecitonExtensions
             Assembly.GetExecutingAssembly(),
             ServiceLifetime.Transient)
         .AddGameCommandClient(gameCommandClientOptions)
-        .AddGameInterfaceAwcServiceClient(gameInterfaceAwcServiceClientOptions)
+        .AddGameInterfaceAwcClient(gameInterfaceAwcClientOptions)
         .AddGameInterfaceJiliServiceClient(gameInterfaceJiliClientOptions)
         .AddGameInterfaceWMCasinoServiceClient(gameInterfaceWMCasinoClientOptions)
         .AddGameInterfaceEvoClient(gameInterfaceEvolutionServiceClientOptions)
@@ -129,9 +128,6 @@ public static class ServiceCollecitonExtensions
         .AddMemoryCache()
         .AddSingleton<ISystemClock, SystemClock>()
         .AddSingleton<ISnowflakeWork, SnowflakeWork>()
-        .AddTransient<IBigGamingService, BigGamingService>()
-        .AddTransient<IBigGamingGamePlayer, BigGamingGamePlayer>()
-        .AddTransient<IBigGamingGameUrl, BigGamingGameUrl>()
         .AddTransient<ITCGService, TCGService>()
         .AddTransient<ITCGGamePlayer, TCGGamePlayer>()
         .AddTransient<IGameActionService, GameActionService>()

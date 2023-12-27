@@ -7,6 +7,7 @@ public static class GameProviderType
     public static readonly string AVIAGaming = "AVIA";
     public static readonly string AWC_AELOTTO = "AWC_AELOTTO";
     public static readonly string AWC_AWS = "AWC_AWS";
+    public static readonly string AWC_BG = "AWC_BG";
     public static readonly string AWC_COCKFIGHT = "AWC_COCKFIGHT";
     public static readonly string AWC_FACAI = "AWC_FACAI";
     public static readonly string AWC_FS = "AWC_FS";

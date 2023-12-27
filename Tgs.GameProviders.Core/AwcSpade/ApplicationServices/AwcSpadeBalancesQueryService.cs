@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.Awc.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
@@ -12,12 +12,12 @@ namespace Tgs.GameProviders.Core.AwcSpade.ApplicationServices;
 internal class AwcSpadeBalancesQueryService : IQueryService<AwcSpadeBalancesQuery, BalanceResult>
 {
     private readonly IBrandRepository _brand;
-    private readonly IGameInterfaceAwcServiceClient _client;
+    private readonly IGameInterfaceAwcClient _client;
     private readonly IGameProviderRepository _gameProvider;
 
     public AwcSpadeBalancesQueryService(
         IBrandRepository brand,
-        IGameInterfaceAwcServiceClient client,
+        IGameInterfaceAwcClient client,
         IGameProviderRepository gameProvider)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));

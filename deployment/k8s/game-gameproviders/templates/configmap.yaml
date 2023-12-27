@@ -17,7 +17,7 @@ data:
         "GameRoundsBaseUrl": "http://game-gamerounds/",
         "GameTokenBaseUrl": "http://game-token/",
         "GameCommandClientBaseUrl": "http://game-gamecommand/",
-        "GameInterfaceAwcBaseUrl": "dns:///game-gameinterface-awc-service:9090/",
+        "GameInterfaceAwcBaseUrl": "dns:///game-gameinterface-awc:9090/",
         "GameInterfaceJiliBaseUrl": "dns:///game-gameinterface-jili:9090/",
         "GameInterfaceWMCasinoBaseUrl": "dns:///game-gameinterface-wmcasino-service:9090/",
         "GameInterfaceEvolutionBaseUrl": "dns:///game-gameinterface-evolution-service:9090/",

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.Awc.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
@@ -10,7 +10,7 @@ namespace Tgs.GameProviders.Core.AwcKm.ApplicationServices;
 public class AwcKmGameUrlGetService : IGetService<AwcKmGameUrlQuery, GameUrlResult>
 {
     private readonly IBrandRepository _brand;
-    private readonly IGameInterfaceAwcServiceClient _client;
+    private readonly IGameInterfaceAwcClient _client;
     private readonly IGameRepository _game;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
@@ -19,7 +19,7 @@ public class AwcKmGameUrlGetService : IGetService<AwcKmGameUrlQuery, GameUrlResu
         IBrandRepository brand,
         IGameRepository game,
         IGameProviderRepository gameProvider,
-        IGameInterfaceAwcServiceClient client,
+        IGameInterfaceAwcClient client,
         IPlayerRepository player)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));

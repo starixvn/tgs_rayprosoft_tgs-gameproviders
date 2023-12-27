@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Tgs.GameInterface.AwcService.Client;
+using Tgs.GameInterface.Awc.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
@@ -10,14 +10,14 @@ namespace Tgs.GameProviders.Core.AwcSg.ApplicationServices;
 public class AwcSgPlayerFundOutGetService : IGetService<AwcSgPlayerFundOutQuery, PlayerFundResult>
 {
     private readonly IBrandRepository _brand;
-    private readonly IGameInterfaceAwcServiceClient _client;
+    private readonly IGameInterfaceAwcClient _client;
     private readonly IGameProviderRepository _gameProvider;
     private readonly IPlayerRepository _player;
 
     public AwcSgPlayerFundOutGetService(
         IBrandRepository brand,
         IGameProviderRepository gameProvider,
-        IGameInterfaceAwcServiceClient client,
+        IGameInterfaceAwcClient client,
         IPlayerRepository player)
     {
         _brand = brand ?? throw new ArgumentNullException(nameof(brand));
