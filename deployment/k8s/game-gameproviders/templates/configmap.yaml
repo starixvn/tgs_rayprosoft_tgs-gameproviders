@@ -4,7 +4,6 @@ metadata:
   name: configmap-{{ include "game-gameproviders.fullname" . }}
   labels:
     {{- include "game-gameproviders.labels" . | nindent 4 }}
-  namespace: {{ .Release.Namespace }}
 data:
   appsettings.json: |
     {

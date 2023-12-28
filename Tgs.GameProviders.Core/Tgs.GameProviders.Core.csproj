@@ -16,12 +16,12 @@
 		<PackageReference Include="Tgs.GameCommand.Client" Version="0.0.11" />
 		<PackageReference Include="Tgs.GameInterface.Awc.Client" Version="0.0.2" />
 		<PackageReference Include="Tgs.GameInterface.BTiService.Client" Version="0.0.10" />
-		<PackageReference Include="Tgs.GameInterface.Cards365.Client" Version="0.0.9" />
-		<PackageReference Include="Tgs.GameInterface.CrPati.Client" Version="0.0.1" />
-		<PackageReference Include="Tgs.GameInterface.DreamGamingService.Client" Version="0.0.13" />
-		<PackageReference Include="Tgs.GameInterface.EndorphinaService.Client" Version="0.0.13" />
-		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.15" />
-		<PackageReference Include="Tgs.GameInterface.FaChai.Client" Version="0.0.10" />
+		<PackageReference Include="Tgs.GameInterface.Cards365.Client" Version="0.0.10" />
+		<PackageReference Include="Tgs.GameInterface.CrPati.Client" Version="0.0.2" />
+		<PackageReference Include="Tgs.GameInterface.DreamGamingService.Client" Version="0.0.14" />
+		<PackageReference Include="Tgs.GameInterface.EndorphinaService.Client" Version="0.0.14" />
+		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.16" />
+		<PackageReference Include="Tgs.GameInterface.FaChai.Client" Version="0.0.11" />
 		<PackageReference Include="Tgs.GameInterface.GKXGaming.Client" Version="0.0.3" />
 		<PackageReference Include="Tgs.GameInterface.HabaneroService.Client" Version="0.0.12" />
 		<PackageReference Include="Tgs.GameInterface.InplayMatrix.Client" Version="0.0.9" />
@@ -33,7 +33,7 @@
 		<PackageReference Include="Tgs.GameInterface.OBet.Client" Version="0.0.7" />
 		<PackageReference Include="Tgs.GameInterface.Pinnacle.Client" Version="0.0.8" />
 		<PackageReference Include="Tgs.GameInterface.PragmaticPlay.Client" Version="0.0.9" />
-		<PackageReference Include="Tgs.GameInterface.SabaService.Client" Version="0.0.10" />
+		<PackageReference Include="Tgs.GameInterface.SabaService.Client" Version="0.0.11" />
 		<PackageReference Include="Tgs.GameInterface.SBOService.Client" Version="0.0.12" />
 		<PackageReference Include="Tgs.GameInterface.SkywindService.Client" Version="0.0.11" />
 		<PackageReference Include="Tgs.GameInterface.SM01Service.Client" Version="0.0.13" />
