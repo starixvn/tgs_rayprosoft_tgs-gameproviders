@@ -4,8 +4,6 @@ metadata:
   name: {{ include "game-gameproviders.fullname" . }}
   labels:
     {{- include "game-gameproviders.labels" . | nindent 4 }}
-  annotations:
-    reloader.stakater.com/auto: "true"
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
@@ -45,6 +43,12 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
+            - name: RELEASE_NAMESPACE
+              value: {{ .Release.Namespace }}
+            - name: POD_IP
+              valueFrom:
+               fieldRef:
+                fieldPath: status.podIP 
             - name: ConnectionStrings__Nats
               valueFrom:
                 secretKeyRef:

@@ -7,8 +7,14 @@ namespace Tgs.GameProviders.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class InfoController : ControllerBase
+public class InfoController(
+    IConfiguration configuration) : ControllerBase
 {
+    /// <summary>
+    /// Gets the asynchronous.
+    /// </summary>
+    /// <param name="_hostingEnvironment">The hosting environment.</param>
+    /// <returns></returns>
     [HttpGet]
     public async Task<object> GetAsync([FromServices] IWebHostEnvironment _hostingEnvironment)
     {
@@ -26,7 +32,9 @@ public class InfoController : ControllerBase
                 Environment = _hostingEnvironment.EnvironmentName,
                 OsVersion = $"{Environment.OSVersion}",
                 Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(),
-                ProcessCount = Environment.ProcessorCount
+                ProcessCount = Environment.ProcessorCount,
+                ReleaseNamespace = configuration.GetValue<string>("RELEASE_NAMESPACE"),
+                PodIPAddress = configuration.GetValue<string>("POD_IP")
             }
         };
     }

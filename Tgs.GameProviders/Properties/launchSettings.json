@@ -19,6 +19,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "OTEL_SERVICE_NAME": "Game-GameProviders(local)",
         "NODE_IP": "otel.rpgp.cc",
+        "RELEASE_NAMESPACE": "dev",
         "POD_IP": "127.0.0.1"
       }
     },
@@ -32,6 +33,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "OTEL_SERVICE_NAME": "Game-GameProviders(local)",
         "NODE_IP": "otel.rpgp.cc",
+        "RELEASE_NAMESPACE": "dev",
         "POD_IP": "127.0.0.1"
       }
     }
