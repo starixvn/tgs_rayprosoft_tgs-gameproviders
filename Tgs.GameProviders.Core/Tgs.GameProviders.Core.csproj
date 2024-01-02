@@ -33,9 +33,9 @@
 		<PackageReference Include="Tgs.GameInterface.OBet.Client" Version="0.0.8" />
 		<PackageReference Include="Tgs.GameInterface.Pinnacle.Client" Version="0.0.9" />
 		<PackageReference Include="Tgs.GameInterface.PragmaticPlay.Client" Version="0.0.9" />
-		<PackageReference Include="Tgs.GameInterface.SabaService.Client" Version="0.0.11" />
-		<PackageReference Include="Tgs.GameInterface.SBOService.Client" Version="0.0.12" />
-		<PackageReference Include="Tgs.GameInterface.SkywindService.Client" Version="0.0.11" />
+		<PackageReference Include="Tgs.GameInterface.SabaService.Client" Version="0.0.12" />
+		<PackageReference Include="Tgs.GameInterface.SBOService.Client" Version="0.0.13" />
+		<PackageReference Include="Tgs.GameInterface.SkywindService.Client" Version="0.0.12" />
 		<PackageReference Include="Tgs.GameInterface.SM01Service.Client" Version="0.0.13" />
 		<PackageReference Include="Tgs.GameInterface.TFGamingService.Client" Version="0.0.11" />
 		<PackageReference Include="Tgs.GameInterface.V8Poker.Client" Version="0.0.3" />
