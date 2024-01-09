@@ -1,8 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Tgs.ServiceUtility;
 using Tgs.GameInterface.VRGaming.Client;
 using Tgs.GameProviders.Domains;
+
+using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.VRGaming.ApplicationServices;
 

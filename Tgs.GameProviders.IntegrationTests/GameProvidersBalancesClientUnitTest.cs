@@ -43,7 +43,7 @@ public class GameProvidersBalancesClientUnitTest
                     query: Arg.Is(query),
                     cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
-                    new BalanceResult(
+                    new(
                         PlayerCode: "test",
                         Balance: 1m,
                         LastDateTime: DateTime.Now)
@@ -55,7 +55,7 @@ public class GameProvidersBalancesClientUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -64,7 +64,7 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync();
 
         Assert.NotNull(actual);
-        Assert.True(actual.Any());
+        Assert.NotEmpty(actual);
     }
 
     [Fact]
@@ -84,7 +84,7 @@ public class GameProvidersBalancesClientUnitTest
                     query: Arg.Is(query),
                     cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
-                    new BalanceResult(
+                    new(
                         PlayerCode: "test",
                         Balance: 1m,
                         LastDateTime: DateTime.Now)
@@ -96,7 +96,7 @@ public class GameProvidersBalancesClientUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -105,7 +105,7 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync();
 
         Assert.NotNull(actual);
-        Assert.True(actual.Any());
+        Assert.NotEmpty(actual);
     }
 
     [Fact]
@@ -125,7 +125,7 @@ public class GameProvidersBalancesClientUnitTest
                     query: Arg.Is(query),
                     cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
-                    new BalanceResult(
+                    new(
                         PlayerCode: "test",
                         Balance: 1m,
                         LastDateTime: DateTime.Now)
@@ -137,7 +137,7 @@ public class GameProvidersBalancesClientUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -146,7 +146,7 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync();
 
         Assert.NotNull(actual);
-        Assert.True(actual.Any());
+        Assert.NotEmpty(actual);
     }
 
     [Fact]
@@ -166,7 +166,7 @@ public class GameProvidersBalancesClientUnitTest
                     query: Arg.Is(query),
                     cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
-                    new BalanceResult(
+                    new(
                         PlayerCode: "test",
                         Balance: 1m,
                         LastDateTime: DateTime.Now)
@@ -178,7 +178,7 @@ public class GameProvidersBalancesClientUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -187,7 +187,7 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync();
 
         Assert.NotNull(actual);
-        Assert.True(actual.Any());
+        Assert.NotEmpty(actual);
     }
 
     [Fact]
@@ -207,7 +207,7 @@ public class GameProvidersBalancesClientUnitTest
                     query: Arg.Is(query),
                     cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
-                    new BalanceResult(
+                    new(
                         PlayerCode: "test",
                         Balance: 1m,
                         LastDateTime: DateTime.Now)
@@ -219,7 +219,7 @@ public class GameProvidersBalancesClientUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -228,7 +228,7 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync();
 
         Assert.NotNull(actual);
-        Assert.True(actual.Any());
+        Assert.NotEmpty(actual);
     }
 
     [Fact]
@@ -248,7 +248,7 @@ public class GameProvidersBalancesClientUnitTest
                     query: Arg.Is(query),
                     cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
-                    new BalanceResult(
+                    new(
                         PlayerCode: "test",
                         Balance: 1m,
                         LastDateTime: DateTime.Now)
@@ -260,7 +260,7 @@ public class GameProvidersBalancesClientUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -269,7 +269,7 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync();
 
         Assert.NotNull(actual);
-        Assert.True(actual.Any());
+        Assert.NotEmpty(actual);
     }
 
     [Fact]
@@ -289,7 +289,7 @@ public class GameProvidersBalancesClientUnitTest
                     query: Arg.Is(query),
                     cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
-                    new BalanceResult(
+                    new(
                         PlayerCode: "test",
                         Balance: 1m,
                         LastDateTime: DateTime.Now)
@@ -301,7 +301,7 @@ public class GameProvidersBalancesClientUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -310,7 +310,7 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync();
 
         Assert.NotNull(actual);
-        Assert.True(actual.Any());
+        Assert.NotEmpty(actual);
     }
 
     [Fact]
@@ -330,7 +330,7 @@ public class GameProvidersBalancesClientUnitTest
                     query: Arg.Is(query),
                     cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
-                    new BalanceResult(
+                    new(
                         PlayerCode: "test",
                         Balance: 1m,
                         LastDateTime: DateTime.Now)
@@ -342,7 +342,7 @@ public class GameProvidersBalancesClientUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -351,7 +351,7 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync();
 
         Assert.NotNull(actual);
-        Assert.True(actual.Any());
+        Assert.NotEmpty(actual);
     }
 
     [Fact]
@@ -371,7 +371,7 @@ public class GameProvidersBalancesClientUnitTest
                     query: Arg.Is(query),
                     cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
-                    new BalanceResult(
+                    new(
                         PlayerCode: "test",
                         Balance: 1m,
                         LastDateTime: DateTime.Now)
@@ -383,7 +383,7 @@ public class GameProvidersBalancesClientUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -392,7 +392,7 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync();
 
         Assert.NotNull(actual);
-        Assert.True(actual.Any());
+        Assert.NotEmpty(actual);
     }
 
     [Fact]
@@ -412,7 +412,7 @@ public class GameProvidersBalancesClientUnitTest
                     query: Arg.Is(query),
                     cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
-                    new BalanceResult(
+                    new(
                         PlayerCode: "test",
                         Balance: 1m,
                         LastDateTime: DateTime.Now)
@@ -424,7 +424,7 @@ public class GameProvidersBalancesClientUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -433,7 +433,7 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync();
 
         Assert.NotNull(actual);
-        Assert.True(actual.Any());
+        Assert.NotEmpty(actual);
     }
 
     [Fact]
@@ -453,7 +453,7 @@ public class GameProvidersBalancesClientUnitTest
                     query: Arg.Is(query),
                     cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
-                    new BalanceResult(
+                    new(
                         PlayerCode: "test",
                         Balance: 1m,
                         LastDateTime: DateTime.Now)
@@ -465,7 +465,7 @@ public class GameProvidersBalancesClientUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -474,7 +474,7 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync();
 
         Assert.NotNull(actual);
-        Assert.True(actual.Any());
+        Assert.NotEmpty(actual);
     }
 
     [Fact]
@@ -494,7 +494,7 @@ public class GameProvidersBalancesClientUnitTest
                     query: Arg.Is(query),
                     cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
-                    new BalanceResult(
+                    new(
                         PlayerCode: "test",
                         Balance: 1m,
                         LastDateTime: DateTime.Now)
@@ -506,7 +506,7 @@ public class GameProvidersBalancesClientUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -515,7 +515,7 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync();
 
         Assert.NotNull(actual);
-        Assert.True(actual.Any());
+        Assert.NotEmpty(actual);
     }
 
     [Fact]
@@ -535,7 +535,7 @@ public class GameProvidersBalancesClientUnitTest
                     query: Arg.Is(query),
                     cancellationToken: Arg.Any<CancellationToken>())
                 .Returns(new BalanceResult[] {
-                    new BalanceResult(
+                    new(
                         PlayerCode: "test",
                         Balance: 1m,
                         LastDateTime: DateTime.Now)
@@ -547,7 +547,7 @@ public class GameProvidersBalancesClientUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -556,6 +556,6 @@ public class GameProvidersBalancesClientUnitTest
             .ToArrayAsync();
 
         Assert.NotNull(actual);
-        Assert.True(actual.Any());
+        Assert.NotEmpty(actual);
     }
 }

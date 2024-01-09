@@ -36,11 +36,13 @@ internal class GameProviderRepository(
             gameProviderConfiguration: GameProviderConfigurations.AWC_AWS,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
+
     public ValueTask<AwcBgConfiguration> GetAwcBgConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
         => GetConfigurationAsync<AwcBgConfiguration>(
             gameProviderConfiguration: GameProviderConfigurations.AWC_BG,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
+
     public ValueTask<AwcCockfightConfiguration> GetAwcCockfightConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
         => GetConfigurationAsync<AwcCockfightConfiguration>(
             gameProviderConfiguration: GameProviderConfigurations.AWC_COCKFIGHT,

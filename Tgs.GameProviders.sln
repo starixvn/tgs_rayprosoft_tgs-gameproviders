@@ -9,10 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameProviders.Core.Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameProviders.Domains", "Tgs.GameProviders.Domains\Tgs.GameProviders.Domains.csproj", "{0F9387C7-8ECD-4B93-934E-FA7C1B6EDEAA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameProviders.ApiClients", "Tgs.GameProviders.ApiClients\Tgs.GameProviders.ApiClients.csproj", "{6611668A-BCA7-48A5-B245-EEB46CC83677}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameProviders.ApiClients.UnitTest", "Tgs.GameProviders.ApiClients.UnitTest\Tgs.GameProviders.ApiClients.UnitTest.csproj", "{624E4B50-6ADF-4E35-8FF3-40CE47686E81}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameProviders", "Tgs.GameProviders\Tgs.GameProviders.csproj", "{0E38579B-A297-4079-A7D0-D343A75998DF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameProviders.Client", "Tgs.GameProviders.Client\Tgs.GameProviders.Client.csproj", "{514E1865-5FBC-4539-A298-EFF2BFC0D50F}"
@@ -41,14 +37,6 @@ Global
 		{0F9387C7-8ECD-4B93-934E-FA7C1B6EDEAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F9387C7-8ECD-4B93-934E-FA7C1B6EDEAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F9387C7-8ECD-4B93-934E-FA7C1B6EDEAA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6611668A-BCA7-48A5-B245-EEB46CC83677}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6611668A-BCA7-48A5-B245-EEB46CC83677}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6611668A-BCA7-48A5-B245-EEB46CC83677}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6611668A-BCA7-48A5-B245-EEB46CC83677}.Release|Any CPU.Build.0 = Release|Any CPU
-		{624E4B50-6ADF-4E35-8FF3-40CE47686E81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{624E4B50-6ADF-4E35-8FF3-40CE47686E81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{624E4B50-6ADF-4E35-8FF3-40CE47686E81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{624E4B50-6ADF-4E35-8FF3-40CE47686E81}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0E38579B-A297-4079-A7D0-D343A75998DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0E38579B-A297-4079-A7D0-D343A75998DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E38579B-A297-4079-A7D0-D343A75998DF}.Release|Any CPU.ActiveCfg = Release|Any CPU

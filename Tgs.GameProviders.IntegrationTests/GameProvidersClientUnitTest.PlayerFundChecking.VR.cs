@@ -6,8 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Tgs.GameProviders.Client;
-using Tgs.ServiceUtility;
 using Tgs.GameProviders.Core.VRGaming.ApplicationServices;
+
+using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.IntegrationTests;
 

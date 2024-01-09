@@ -55,8 +55,7 @@ public class DreamGamingTransferKickPlayerCommandServiceUnitTest
 
         var playerOnlines = new PlayerOnline[]
         {
-            new PlayerOnline
-            {
+            new() {
                 PlayerCode = "4ucmqplxb029",
                 MemberId = 94030972,
             }

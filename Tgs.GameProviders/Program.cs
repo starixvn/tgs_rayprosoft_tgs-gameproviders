@@ -47,8 +47,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services
-    .AddApiClients()
-    .AddGameProvidersService(
+    .AddGameProviders(
     (options, sp) =>
     {
         var configuration = sp.GetRequiredService<IConfiguration>();

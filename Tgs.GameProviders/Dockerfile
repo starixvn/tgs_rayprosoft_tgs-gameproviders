@@ -11,7 +11,6 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["nuget.config", "."]
 COPY ["Tgs.GameProviders/Tgs.GameProviders.csproj", "Tgs.GameProviders/"]
-COPY ["Tgs.GameProviders.ApiClients/Tgs.GameProviders.ApiClients.csproj", "Tgs.GameProviders.ApiClients/"]
 COPY ["Tgs.GameProviders.Core/Tgs.GameProviders.Core.csproj", "Tgs.GameProviders.Core/"]
 COPY ["Tgs.GameProviders.Domains/Tgs.GameProviders.Domains.csproj", "Tgs.GameProviders.Domains/"]
 COPY ["Tgs.GameProviders.Repositories/Tgs.GameProviders.Repositories.csproj", "Tgs.GameProviders.Repositories/"]

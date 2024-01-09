@@ -51,8 +51,7 @@ public class TFGamingTransferCreatePlayerCommandServiceUnitTest
             OperatorId = "3871"
         };
         _ = fakeGameProviderRepository.GetTFGamingTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
-
-        var response = new PlatformLoginReply()
+        _ = new PlatformLoginReply()
         {
             MerchantId = "SQjCxm2cX5bahBta",
             CustomerName = "4ucmqplxb029",

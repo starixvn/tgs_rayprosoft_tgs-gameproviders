@@ -19,6 +19,7 @@ public class YeeBetPlayerFundInGetServiceUnitTest
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeBrandRepository = Substitute.For<IBrandRepository>();
+        var fakeSnowflakeWork = Substitute.For<ISnowflakeWork>();
         var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
 
         var query = new YeeBetPlayerFundInQuery
@@ -74,27 +75,30 @@ public class YeeBetPlayerFundInGetServiceUnitTest
                 cancellationToken: Arg.Any<CancellationToken>())
             .Returns(configuration);
 
+        var orderId = 1640526045735424000;
+        _ = fakeSnowflakeWork.GetId().Returns(orderId);
+
         var response = new FundReply()
         {
             TransactionId = "1640526045735424000",
             Balance = 168M,
-            Response = "{}"
+            Res = "{}"
         };
-
-        _ = fakeClient
-            .FundInAsync(
-                apiUrl: Arg.Is(configuration.ApiUrl),
-                appId: Arg.Is(configuration.AppId),
-                secretKey: Arg.Is(configuration.SecretKey),
-                playerCode: Arg.Is(player.PlayerCode),
-                amount: Arg.Is(query.Amount),
-                cancellationToken: Arg.Any<CancellationToken>())
+        _ = fakeClient.FundInAsync(
+            apiUrl: Arg.Is(configuration.ApiUrl),
+            appId: Arg.Is(configuration.AppId),
+            secretKey: Arg.Is(configuration.SecretKey),
+            playerCode: Arg.Is(player.PlayerCode),
+            orderId: Arg.Is(orderId),
+            amount: Arg.Is(query.Amount),
+            cancellationToken: Arg.Any<CancellationToken>())
             .Returns(response);
 
         var sut = new YeeBetPlayerFundInGetService(
             fakeGameProviderRepository,
             fakePlayerRepository,
             fakeBrandRepository,
+            fakeSnowflakeWork,
             fakeClient);
 
         var actual = await sut.GetAsync(query);

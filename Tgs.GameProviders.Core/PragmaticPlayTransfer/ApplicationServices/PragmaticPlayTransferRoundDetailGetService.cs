@@ -40,9 +40,9 @@ internal class PragmaticPlayTransferRoundDetailGetService
         PragmaticPlayTransferRoundDetailQuery query,
         CancellationToken cancellationToken = default)
     {
-        var roundInfo = await _round
-            .GetAsync(
-                query.RoundId)
+        var roundInfo = await _round.GetAsync(
+                query.RoundId,
+                cancellationToken: cancellationToken)
             .ConfigureAwait(false)
             ?? throw new Exception($"This game round number could not be found.{query.RoundId}");
 
@@ -95,13 +95,13 @@ internal class PragmaticPlayTransferRoundDetailGetService
 
         return new RoundDetailResult
         {
-            Data = new RoundDetailDataBase[]
-            {
+            Data =
+            [
                 new RoundDetailDataUrl
                 {
                     Url = reply.Url
                 }
-            }
+            ]
         };
     }
 }

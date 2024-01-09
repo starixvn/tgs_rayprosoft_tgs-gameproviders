@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
-using Tgs.GameInterface.SM01Service.Protos;
 using Tgs.GameInterface.TFGamingService.Client;
 using Tgs.GameProviders.Core.TFGamingTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;

@@ -68,18 +68,18 @@ public class YeeBetPlayerFundCheckingGetServiceUnitTest
         };
         _ = fakeGameProviderRepository
             .GetYeeBetConfigurationAsync(
-                gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
-                cancellationToken: Arg.Any<CancellationToken>())
+            gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+            cancellationToken: Arg.Any<CancellationToken>())
             .Returns(configuration);
 
         _ = fakeClient
             .FundStatusAsync(
-                apiUrl: Arg.Is(configuration.ApiUrl),
-                appId: Arg.Is(configuration.AppId),
-                secretKey: Arg.Is(configuration.SecretKey),
-                playerCode: Arg.Is(query.PlayerCode),
-                trsId: Arg.Is(query.OrderId),
-                cancellationToken: Arg.Any<CancellationToken>())
+            apiUrl: Arg.Is(configuration.ApiUrl),
+            appId: Arg.Is(configuration.AppId),
+            secretKey: Arg.Is(configuration.SecretKey),
+            playerCode: Arg.Is(query.PlayerCode),
+            orderId: Arg.Is(long.Parse(query.OrderId)),
+            cancellationToken: Arg.Any<CancellationToken>())
             .Returns(true);
 
         var sut = new YeeBetPlayerFundCheckingGetService(

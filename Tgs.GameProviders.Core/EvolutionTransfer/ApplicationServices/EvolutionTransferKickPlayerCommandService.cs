@@ -21,9 +21,11 @@ public class EvolutionTransferKickPlayerCommandService : ICommandService<Evoluti
 
     public async ValueTask ExecuteAsync(EvolutionTransferKickPlayerCommand command, CancellationToken cancellationToken = default)
     {
-        var configuration = await _setting.GetEvolutionTransferConfigurationAsync().ConfigureAwait(false);
+        var configuration = await _setting.GetEvolutionTransferConfigurationAsync(
+            cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
 
-        await _grpc.KickPlayerAsync(
+        _ = await _grpc.KickPlayerAsync(
             configuration.ApiUrl,
             configuration.CasinoId,
             configuration.Ua2Token,

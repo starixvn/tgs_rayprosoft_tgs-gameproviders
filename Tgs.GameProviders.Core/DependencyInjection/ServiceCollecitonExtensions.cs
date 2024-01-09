@@ -33,8 +33,6 @@ using Tgs.GameInterface.WicketCricket.Client;
 using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.BetConstruct;
-using Tgs.GameProviders.Core.TCG;
 using Tgs.GameRecord.Endorphina.Session.Client;
 using Tgs.GameRounds.Client;
 using Tgs.GameToken.Client;
@@ -128,9 +126,5 @@ public static class ServiceCollecitonExtensions
         .AddMemoryCache()
         .AddSingleton<ISystemClock, SystemClock>()
         .AddSingleton<ISnowflakeWork, SnowflakeWork>()
-        .AddTransient<ITCGService, TCGService>()
-        .AddTransient<ITCGGamePlayer, TCGGamePlayer>()
-        .AddTransient<IGameActionService, GameActionService>()
-        .AddTransient<IBetConstructService, BetConstructService>();
+        .AddTransient<IGameActionService, GameActionService>();
 }
-

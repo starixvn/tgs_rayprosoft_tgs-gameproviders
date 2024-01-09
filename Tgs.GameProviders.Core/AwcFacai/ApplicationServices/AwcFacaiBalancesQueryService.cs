@@ -59,7 +59,7 @@ internal class AwcFacaiBalancesQueryService : IQueryService<AwcFacaiBalancesQuer
             cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        if (!balanceInfos.Any())
+        if (balanceInfos.Length == 0)
         {
             yield break;
         }

@@ -7,7 +7,7 @@ namespace Tgs.GameProviders.Core.Extensions;
 
 public static class GuidExtensions
 {
-    private static long _counter = DateTime.UtcNow.Ticks;
+    private static long _Counter = DateTime.UtcNow.Ticks;
 
     public static Guid NewSequentialGuid()
     {
@@ -29,7 +29,7 @@ public static class GuidExtensions
     private static Guid NewSequentialGuidByNonWindows()
     {
         var guidBytes = Guid.NewGuid().ToByteArray();
-        var counterBytes = BitConverter.GetBytes(Interlocked.Increment(ref _counter));
+        var counterBytes = BitConverter.GetBytes(Interlocked.Increment(ref _Counter));
 
         if (!BitConverter.IsLittleEndian)
         {

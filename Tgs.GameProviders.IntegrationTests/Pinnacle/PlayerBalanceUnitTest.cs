@@ -46,7 +46,7 @@ public class PlayerBalanceUnitTest
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient(new System.Net.Http.DelegatingHandler[] { fakeLoggingHandler });
+        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
         var sut = new GameProvidersClient(httpClient);
 

@@ -33,7 +33,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Tgs.GameProviders.ApiClients\Tgs.GameProviders.ApiClients.csproj" />
 		<ProjectReference Include="..\Tgs.GameProviders.Core\Tgs.GameProviders.Core.csproj" />
 		<ProjectReference Include="..\Tgs.GameProviders.Domains\Tgs.GameProviders.Domains.csproj" />
 		<ProjectReference Include="..\Tgs.GameProviders.Repositories\Tgs.GameProviders.Repositories.csproj" />

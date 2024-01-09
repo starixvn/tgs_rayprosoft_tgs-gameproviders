@@ -40,7 +40,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddGameProvidersService(
+    public static IServiceCollection AddGameProviders(
         this IServiceCollection services,
         Action<RedisOptions, IServiceProvider> configure,
         Action<IPAddressOptions, IServiceProvider> ipAddressOptions,
