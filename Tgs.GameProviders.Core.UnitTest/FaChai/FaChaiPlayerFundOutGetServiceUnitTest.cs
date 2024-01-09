@@ -19,6 +19,7 @@ public class FaChaiPlayerFundOutGetServiceUnitTest
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeBrandRepository = Substitute.For<IBrandRepository>();
+        var fakeSnowflakeWork = Substitute.For<ISnowflakeWork>();
         var fakeClient = Substitute.For<IGameInterfaceFaChaiClient>();
 
         var query = new FaChaiPlayerFundOutQuery
@@ -75,29 +76,33 @@ public class FaChaiPlayerFundOutGetServiceUnitTest
                 cancellationToken: Arg.Any<CancellationToken>())
             .Returns(configuration);
 
+        var orderId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        _ = fakeSnowflakeWork.GetId().Returns(orderId);
+
         var response = new FundReply()
         {
-            TrsId = "1635165954039484416",
+            TrsId = orderId.ToString(),
             BankId = 1635165954039484416,
             Balance = 0m,
             Amount = -100m
         };
 
-        _ = fakeClient
-            .FundOutAsync(
-                apiUrl: Arg.Is(configuration.ApiUrl),
-                agentCode: Arg.Is(configuration.AgentCode),
-                agentKey: Arg.Is(configuration.AgentKey),
-                currency: Arg.Is(configuration.Currency),
-                playerCode: Arg.Is(player.PlayerCode),
-                amount: Arg.Is(query.Amount),
-                cancellationToken: Arg.Any<CancellationToken>())
+        _ = fakeClient.FundOutAsync(
+            apiUrl: Arg.Is(configuration.ApiUrl),
+            agentCode: Arg.Is(configuration.AgentCode),
+            agentKey: Arg.Is(configuration.AgentKey),
+            currency: Arg.Is(configuration.Currency),
+            playerCode: Arg.Is(player.PlayerCode),
+            orderId: Arg.Is(orderId.ToString()),
+            amount: Arg.Is(query.Amount),
+            cancellationToken: Arg.Any<CancellationToken>())
             .Returns(response);
 
         var sut = new FaChaiPlayerFundOutGetService(
             fakeGameProviderRepository,
             fakePlayerRepository,
             fakeBrandRepository,
+            fakeSnowflakeWork,
             fakeClient);
 
         var actual = await sut.GetAsync(query);

@@ -73,14 +73,13 @@ public class FaChaiPlayerFundCheckingGetServiceUnitTest
                 cancellationToken: Arg.Any<CancellationToken>())
             .Returns(configuration);
 
-        _ = fakeClient
-            .FundStatusAsync(
-                apiUrl: Arg.Is(configuration.ApiUrl),
-                agentCode: Arg.Is(configuration.AgentCode),
-                agentKey: Arg.Is(configuration.AgentKey),
-                currency: Arg.Is(configuration.Currency),
-                trsId: Arg.Is(query.OrderId),
-                cancellationToken: Arg.Any<CancellationToken>())
+        _ = fakeClient.FundStatusAsync(
+            apiUrl: Arg.Is(configuration.ApiUrl),
+            agentCode: Arg.Is(configuration.AgentCode),
+            agentKey: Arg.Is(configuration.AgentKey),
+            currency: Arg.Is(configuration.Currency),
+            orderId: Arg.Is(query.OrderId),
+            cancellationToken: Arg.Any<CancellationToken>())
             .Returns(true);
 
         var sut = new FaChaiPlayerFundCheckingGetService(

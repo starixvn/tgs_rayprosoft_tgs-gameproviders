@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameProviders.Domains;
@@ -7,58 +6,48 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.FaChai.ApplicationServices;
 
-public class FaChaiPlayerFundInGetService : IGetService<FaChaiPlayerFundInQuery, PlayerFundResult>
+public class FaChaiPlayerFundInGetService(
+    IGameProviderRepository gameProvider,
+    IPlayerRepository player,
+    IBrandRepository brand,
+    ISnowflakeWork snowflakeWork,
+    IGameInterfaceFaChaiClient client) : IGetService<FaChaiPlayerFundInQuery, PlayerFundResult>
 {
-    private readonly IBrandRepository _brand;
-    private readonly IGameInterfaceFaChaiClient _client;
-    private readonly IGameProviderRepository _gameProvider;
-    private readonly IPlayerRepository _player;
-
-    public FaChaiPlayerFundInGetService(
-        IGameProviderRepository gameProvider,
-        IPlayerRepository player,
-        IBrandRepository brand,
-        IGameInterfaceFaChaiClient client)
-    {
-        _brand = brand ?? throw new ArgumentNullException(nameof(brand));
-        _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _player = player ?? throw new ArgumentNullException(nameof(player));
-    }
-
     public async ValueTask<PlayerFundResult> GetAsync(FaChaiPlayerFundInQuery query, CancellationToken cancellationToken = default)
     {
-        var gameProviderId = await _gameProvider
+        var gameProviderId = await gameProvider
             .GetGameProviderIdAsync(
                 gameProviderCode: GameProviderType.FaChai,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var player = await _player
+        var playerInfo = await player
             .GetAsync(
                 playerCode: query.PlayerCode,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand
+        var gameProviderConfigurationId = await brand
             .GetBrandGameProviderConfigurationIdAsync(
                 gameProviderId: gameProviderId,
-                brandId: player.BrandId,
+                brandId: playerInfo.BrandId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
-        var configuration = await _gameProvider
+        var configuration = await gameProvider
             .GetFaChaiConfigurationAsync(
                 gameProviderConfigurationId: gameProviderConfigurationId,
                 cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var reply = await _client
-            .FundInAsync(
-                apiUrl: configuration.ApiUrl,
-                agentCode: configuration.AgentCode,
-                agentKey: configuration.AgentKey,
-                currency: configuration.Currency,
-                playerCode: player.PlayerCode,
-                amount: query.Amount,
-                cancellationToken: cancellationToken)
+        var orderId = snowflakeWork.GetId();
+
+        var reply = await client.FundInAsync(
+            apiUrl: configuration.ApiUrl,
+            agentCode: configuration.AgentCode,
+            agentKey: configuration.AgentKey,
+            currency: configuration.Currency,
+            playerCode: playerInfo.PlayerCode,
+            orderId: orderId.ToString(),
+            amount: query.Amount,
+            cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
         return new PlayerFundResult()

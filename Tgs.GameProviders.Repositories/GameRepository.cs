@@ -4,20 +4,12 @@ using Tgs.GameProviders.Core;
 
 namespace Tgs.GameProviders.Repositories;
 
-internal class GameRepository : IGameRepository
+internal class GameRepository(IGameCommandClient client) : IGameRepository
 {
-    private readonly IGameCommandClient _client;
-
-    public GameRepository(IGameCommandClient client)
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
-
     public async ValueTask<GameInfo> GetAsync(
         int gameId,
         CancellationToken cancellationToken = default)
-        => await _client
-        .GameGetAsync(
+        => await client.GameGetAsync(
             gameId: gameId,
             cancellationToken: cancellationToken)
         .ConfigureAwait(false)
@@ -27,7 +19,7 @@ internal class GameRepository : IGameRepository
         Guid gameProviderId,
         GameType gameType,
         CancellationToken cancellationToken = default)
-        => _client.GameQueryAsync(
+        => client.GameQueryAsync(
             gameProviderId: gameProviderId,
             gameType: gameType,
             cancellationToken: cancellationToken);

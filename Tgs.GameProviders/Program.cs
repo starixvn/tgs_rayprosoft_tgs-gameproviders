@@ -26,7 +26,6 @@ builder.Logging
     });
 
 // Add services to the container.
-
 builder.Services
     .AddRouting(options => options.LowercaseUrls = true)
     .AddControllers(options =>
@@ -38,6 +37,7 @@ builder.Services
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -244,6 +244,7 @@ builder.Services
             .AddEnvironmentVariableDetector())
         .AddSource("Tgs.*")
         .AddSource("TGS.*")
+        .AddSource("Valhalla.*")
         .AddAspNetCoreInstrumentation(options => options.Filter =
             httpContext => !httpContext.Request.Path.HasValue
             || !httpContext.Request.Path.StartsWithSegments("/swagger")

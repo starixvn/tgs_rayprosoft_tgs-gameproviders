@@ -19,6 +19,7 @@ public class FaChaiPlayerFundInGetServiceUnitTest
         var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
         var fakePlayerRepository = Substitute.For<IPlayerRepository>();
         var fakeBrandRepository = Substitute.For<IBrandRepository>();
+        var fakeSnowflakeWork = Substitute.For<ISnowflakeWork>();
         var fakeClient = Substitute.For<IGameInterfaceFaChaiClient>();
 
         var query = new FaChaiPlayerFundInQuery
@@ -75,6 +76,9 @@ public class FaChaiPlayerFundInGetServiceUnitTest
                 cancellationToken: Arg.Any<CancellationToken>())
             .Returns(configuration);
 
+        var orderId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        _ = fakeSnowflakeWork.GetId().Returns(orderId);
+
         var response = new FundReply()
         {
             TrsId = "1635165954039484416",
@@ -83,13 +87,13 @@ public class FaChaiPlayerFundInGetServiceUnitTest
             Amount = 100m
         };
 
-        _ = fakeClient
-            .FundInAsync(
+        _ = fakeClient.FundInAsync(
                 apiUrl: Arg.Is(configuration.ApiUrl),
                 agentCode: Arg.Is(configuration.AgentCode),
                 agentKey: Arg.Is(configuration.AgentKey),
                 currency: Arg.Is(configuration.Currency),
                 playerCode: Arg.Is(player.PlayerCode),
+                orderId: Arg.Is(orderId.ToString()),
                 amount: Arg.Is(query.Amount),
                 cancellationToken: Arg.Any<CancellationToken>())
             .Returns(response);
@@ -98,6 +102,7 @@ public class FaChaiPlayerFundInGetServiceUnitTest
             fakeGameProviderRepository,
             fakePlayerRepository,
             fakeBrandRepository,
+            fakeSnowflakeWork,
             fakeClient);
 
         var actual = await sut.GetAsync(query);
