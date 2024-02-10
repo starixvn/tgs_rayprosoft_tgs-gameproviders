@@ -15,5 +15,6 @@ public record PlayerFundRequest
     public string OrderId { get; set; } = default!;
     [Required(ErrorMessage = "Please enter Amount")]
     [Column(TypeName = "decimal(12, 2)")]
+    [Range(typeof(decimal), "0", "79228162514264337593543950335")]
     public decimal Amount { get; init; } = default!;
 }
