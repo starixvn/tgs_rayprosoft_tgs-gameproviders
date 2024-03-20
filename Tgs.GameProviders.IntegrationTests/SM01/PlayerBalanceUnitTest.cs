@@ -18,31 +18,28 @@ public class PlayerBalanceUnitTest
     {
         var playerCode = "4ucmqplxb029";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IGetService<SM01PlayerBalanceQuery, PlayerBalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IGetService<SM01PlayerBalanceQuery, PlayerBalanceResult>>();
 
-                var query = new SM01PlayerBalanceQuery
-                {
-                    PlayerCode = playerCode
-                };
-                var result = new PlayerBalanceResult
-                {
-                    FreeBalance = 99m,
-                    OutstandingBalance = 1m
-                };
+				var query = new SM01PlayerBalanceQuery
+				{
+					PlayerCode = playerCode
+				};
+				var result = new PlayerBalanceResult
+				{
+					FreeBalance = 99m,
+					OutstandingBalance = 1m
+				};
 
-                _ = fakeService
-                .GetAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(result);
+				_ = fakeService
+				.GetAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(result);
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 

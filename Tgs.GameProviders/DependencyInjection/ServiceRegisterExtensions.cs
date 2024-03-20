@@ -32,6 +32,7 @@ public static class ServiceRegisterExtensions
                     .ConfigureAwait(false);
             }
         }
+
         return app;
     }
 
@@ -43,6 +44,7 @@ public static class ServiceRegisterExtensions
 
             _ = snowflakeWork.GetId();
         }
+
         return app;
     }
 }

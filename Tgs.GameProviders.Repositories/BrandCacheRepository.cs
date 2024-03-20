@@ -48,6 +48,7 @@ internal class BrandCacheRepository : IBrandRepository
                         value: brandId.Value);
             }
         }
+
         return brandId
             ?? throw new Exception($"The brand id does not exist.({brandCode})");
     }

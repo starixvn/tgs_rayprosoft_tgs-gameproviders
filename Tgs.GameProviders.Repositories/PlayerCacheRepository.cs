@@ -39,6 +39,7 @@ internal class PlayerCacheRepository : IPlayerRepository
                         absoluteExpirationRelativeToNow: TimeSpan.FromHours(1));
             }
         }
+
         return playerModel!;
     }
 }

@@ -45,6 +45,7 @@ internal class SettingCacheRepository : ISettingRepository
                     configuration,
                     _absoluteExpiration);
         }
+
         return configuration!;
     }
 
@@ -65,6 +66,7 @@ internal class SettingCacheRepository : ISettingRepository
                     configuration,
                     _absoluteExpiration);
         }
+
         return configuration!;
     }
 

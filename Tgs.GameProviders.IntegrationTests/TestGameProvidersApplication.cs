@@ -20,16 +20,10 @@ internal class TestGameProvidersApplication : WebApplicationFactory<Program>
     {
         _ = builder
             .ConfigureAppConfiguration(c => c.Sources.Clear())
-            .ConfigureServices(services =>
-            {
-                _ = services.AddSingleton<IConfigureOptions<OtlpExporterOptions>>(
-                    sp => new ConfigureNamedOptions<OtlpExporterOptions>(
-                        Options.DefaultName,
-                        exporterOptions =>
-                        {
-                            exporterOptions.TimeoutMilliseconds = 0;
-                        }));
-            });
+            .ConfigureServices(services => _ = services.AddSingleton<IConfigureOptions<OtlpExporterOptions>>(
+					sp => new ConfigureNamedOptions<OtlpExporterOptions>(
+						Options.DefaultName,
+						exporterOptions => exporterOptions.TimeoutMilliseconds = 0)));
 
         _webHostConfigure?.Invoke(builder);
     }

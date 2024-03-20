@@ -56,8 +56,10 @@ public class SabaTransferPlayerFundInGetService : IGetService<SabaTransferPlayer
             {
                 throw new Exception($"請呼叫遊戲廠商提供CheckFundTransfer.({JsonSerializer.Serialize(reply)})");
             }
+
             throw new Exception($"遊戲廠商交易失敗.({JsonSerializer.Serialize(reply)})");
         }
+
         return new PlayerFundResult()
         {
             OrderId = reply.ActualVendorTransId

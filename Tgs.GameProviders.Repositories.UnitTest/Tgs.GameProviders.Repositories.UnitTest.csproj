@@ -29,4 +29,12 @@
 		<ProjectReference Include="..\Tgs.GameProviders.Repositories\Tgs.GameProviders.Repositories.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <EditorConfigFiles Remove="D:\00.Git\tgs-gameproviders\Tgs.GameProviders.Repositories.UnitTest\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="D:\00.Git\tgs-gameproviders\Tgs.GameProviders.Repositories.UnitTest\.editorconfig" />
+	</ItemGroup>
+
 </Project>

@@ -31,27 +31,24 @@ public class GameProvidersBalancesClientUnitTest
     {
         var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IQueryService<AwcAelottoBalancesQuery, BalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IQueryService<AwcAelottoBalancesQuery, BalanceResult>>();
 
-                var query = new AwcAelottoBalancesQuery(brandCode);
+				var query = new AwcAelottoBalancesQuery(brandCode);
 
-                _ = fakeService.QueryAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(new BalanceResult[] {
-                    new(
-                        PlayerCode: "test",
-                        Balance: 1m,
-                        LastDateTime: DateTime.Now)
-                }.ToAsyncEnumerable());
+				_ = fakeService.QueryAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(new BalanceResult[] {
+					new(
+						PlayerCode: "test",
+						Balance: 1m,
+						LastDateTime: DateTime.Now)
+				}.ToAsyncEnumerable());
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
@@ -72,27 +69,24 @@ public class GameProvidersBalancesClientUnitTest
     {
         var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IQueryService<AwcAwsBalancesQuery, BalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IQueryService<AwcAwsBalancesQuery, BalanceResult>>();
 
-                var query = new AwcAwsBalancesQuery(brandCode);
+				var query = new AwcAwsBalancesQuery(brandCode);
 
-                _ = fakeService.QueryAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(new BalanceResult[] {
-                    new(
-                        PlayerCode: "test",
-                        Balance: 1m,
-                        LastDateTime: DateTime.Now)
-                }.ToAsyncEnumerable());
+				_ = fakeService.QueryAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(new BalanceResult[] {
+					new(
+						PlayerCode: "test",
+						Balance: 1m,
+						LastDateTime: DateTime.Now)
+				}.ToAsyncEnumerable());
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
@@ -113,27 +107,24 @@ public class GameProvidersBalancesClientUnitTest
     {
         var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IQueryService<AwcCockfightBalancesQuery, BalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IQueryService<AwcCockfightBalancesQuery, BalanceResult>>();
 
-                var query = new AwcCockfightBalancesQuery(brandCode);
+				var query = new AwcCockfightBalancesQuery(brandCode);
 
-                _ = fakeService.QueryAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(new BalanceResult[] {
-                    new(
-                        PlayerCode: "test",
-                        Balance: 1m,
-                        LastDateTime: DateTime.Now)
-                }.ToAsyncEnumerable());
+				_ = fakeService.QueryAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(new BalanceResult[] {
+					new(
+						PlayerCode: "test",
+						Balance: 1m,
+						LastDateTime: DateTime.Now)
+				}.ToAsyncEnumerable());
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
@@ -154,27 +145,24 @@ public class GameProvidersBalancesClientUnitTest
     {
         var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IQueryService<AwcFacaiBalancesQuery, BalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IQueryService<AwcFacaiBalancesQuery, BalanceResult>>();
 
-                var query = new AwcFacaiBalancesQuery(brandCode);
+				var query = new AwcFacaiBalancesQuery(brandCode);
 
-                _ = fakeService.QueryAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(new BalanceResult[] {
-                    new(
-                        PlayerCode: "test",
-                        Balance: 1m,
-                        LastDateTime: DateTime.Now)
-                }.ToAsyncEnumerable());
+				_ = fakeService.QueryAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(new BalanceResult[] {
+					new(
+						PlayerCode: "test",
+						Balance: 1m,
+						LastDateTime: DateTime.Now)
+				}.ToAsyncEnumerable());
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
@@ -195,27 +183,24 @@ public class GameProvidersBalancesClientUnitTest
     {
         var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IQueryService<AwcFsBalancesQuery, BalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IQueryService<AwcFsBalancesQuery, BalanceResult>>();
 
-                var query = new AwcFsBalancesQuery(brandCode);
+				var query = new AwcFsBalancesQuery(brandCode);
 
-                _ = fakeService.QueryAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(new BalanceResult[] {
-                    new(
-                        PlayerCode: "test",
-                        Balance: 1m,
-                        LastDateTime: DateTime.Now)
-                }.ToAsyncEnumerable());
+				_ = fakeService.QueryAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(new BalanceResult[] {
+					new(
+						PlayerCode: "test",
+						Balance: 1m,
+						LastDateTime: DateTime.Now)
+				}.ToAsyncEnumerable());
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
@@ -236,27 +221,24 @@ public class GameProvidersBalancesClientUnitTest
     {
         var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IQueryService<AwcKmBalancesQuery, BalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IQueryService<AwcKmBalancesQuery, BalanceResult>>();
 
-                var query = new AwcKmBalancesQuery(brandCode);
+				var query = new AwcKmBalancesQuery(brandCode);
 
-                _ = fakeService.QueryAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(new BalanceResult[] {
-                    new(
-                        PlayerCode: "test",
-                        Balance: 1m,
-                        LastDateTime: DateTime.Now)
-                }.ToAsyncEnumerable());
+				_ = fakeService.QueryAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(new BalanceResult[] {
+					new(
+						PlayerCode: "test",
+						Balance: 1m,
+						LastDateTime: DateTime.Now)
+				}.ToAsyncEnumerable());
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
@@ -277,27 +259,24 @@ public class GameProvidersBalancesClientUnitTest
     {
         var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IQueryService<AwcLudoBalancesQuery, BalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IQueryService<AwcLudoBalancesQuery, BalanceResult>>();
 
-                var query = new AwcLudoBalancesQuery(brandCode);
+				var query = new AwcLudoBalancesQuery(brandCode);
 
-                _ = fakeService.QueryAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(new BalanceResult[] {
-                    new(
-                        PlayerCode: "test",
-                        Balance: 1m,
-                        LastDateTime: DateTime.Now)
-                }.ToAsyncEnumerable());
+				_ = fakeService.QueryAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(new BalanceResult[] {
+					new(
+						PlayerCode: "test",
+						Balance: 1m,
+						LastDateTime: DateTime.Now)
+				}.ToAsyncEnumerable());
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
@@ -318,27 +297,24 @@ public class GameProvidersBalancesClientUnitTest
     {
         var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IQueryService<AwcPgsBalancesQuery, BalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IQueryService<AwcPgsBalancesQuery, BalanceResult>>();
 
-                var query = new AwcPgsBalancesQuery(brandCode);
+				var query = new AwcPgsBalancesQuery(brandCode);
 
-                _ = fakeService.QueryAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(new BalanceResult[] {
-                    new(
-                        PlayerCode: "test",
-                        Balance: 1m,
-                        LastDateTime: DateTime.Now)
-                }.ToAsyncEnumerable());
+				_ = fakeService.QueryAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(new BalanceResult[] {
+					new(
+						PlayerCode: "test",
+						Balance: 1m,
+						LastDateTime: DateTime.Now)
+				}.ToAsyncEnumerable());
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
@@ -359,27 +335,24 @@ public class GameProvidersBalancesClientUnitTest
     {
         var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IQueryService<AwcRcbBalancesQuery, BalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IQueryService<AwcRcbBalancesQuery, BalanceResult>>();
 
-                var query = new AwcRcbBalancesQuery(brandCode);
+				var query = new AwcRcbBalancesQuery(brandCode);
 
-                _ = fakeService.QueryAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(new BalanceResult[] {
-                    new(
-                        PlayerCode: "test",
-                        Balance: 1m,
-                        LastDateTime: DateTime.Now)
-                }.ToAsyncEnumerable());
+				_ = fakeService.QueryAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(new BalanceResult[] {
+					new(
+						PlayerCode: "test",
+						Balance: 1m,
+						LastDateTime: DateTime.Now)
+				}.ToAsyncEnumerable());
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
@@ -400,27 +373,24 @@ public class GameProvidersBalancesClientUnitTest
     {
         var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IQueryService<AwcSgBalancesQuery, BalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IQueryService<AwcSgBalancesQuery, BalanceResult>>();
 
-                var query = new AwcSgBalancesQuery(brandCode);
+				var query = new AwcSgBalancesQuery(brandCode);
 
-                _ = fakeService.QueryAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(new BalanceResult[] {
-                    new(
-                        PlayerCode: "test",
-                        Balance: 1m,
-                        LastDateTime: DateTime.Now)
-                }.ToAsyncEnumerable());
+				_ = fakeService.QueryAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(new BalanceResult[] {
+					new(
+						PlayerCode: "test",
+						Balance: 1m,
+						LastDateTime: DateTime.Now)
+				}.ToAsyncEnumerable());
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
@@ -441,27 +411,24 @@ public class GameProvidersBalancesClientUnitTest
     {
         var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IQueryService<AwcSpadeBalancesQuery, BalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IQueryService<AwcSpadeBalancesQuery, BalanceResult>>();
 
-                var query = new AwcSpadeBalancesQuery(brandCode);
+				var query = new AwcSpadeBalancesQuery(brandCode);
 
-                _ = fakeService.QueryAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(new BalanceResult[] {
-                    new(
-                        PlayerCode: "test",
-                        Balance: 1m,
-                        LastDateTime: DateTime.Now)
-                }.ToAsyncEnumerable());
+				_ = fakeService.QueryAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(new BalanceResult[] {
+					new(
+						PlayerCode: "test",
+						Balance: 1m,
+						LastDateTime: DateTime.Now)
+				}.ToAsyncEnumerable());
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
@@ -482,27 +449,24 @@ public class GameProvidersBalancesClientUnitTest
     {
         var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IQueryService<AwcVenusBalancesQuery, BalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IQueryService<AwcVenusBalancesQuery, BalanceResult>>();
 
-                var query = new AwcVenusBalancesQuery(brandCode);
+				var query = new AwcVenusBalancesQuery(brandCode);
 
-                _ = fakeService.QueryAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(new BalanceResult[] {
-                    new(
-                        PlayerCode: "test",
-                        Balance: 1m,
-                        LastDateTime: DateTime.Now)
-                }.ToAsyncEnumerable());
+				_ = fakeService.QueryAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(new BalanceResult[] {
+					new(
+						PlayerCode: "test",
+						Balance: 1m,
+						LastDateTime: DateTime.Now)
+				}.ToAsyncEnumerable());
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
@@ -523,27 +487,24 @@ public class GameProvidersBalancesClientUnitTest
     {
         var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IQueryService<AwcYlBalancesQuery, BalanceResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IQueryService<AwcYlBalancesQuery, BalanceResult>>();
 
-                var query = new AwcYlBalancesQuery(brandCode);
+				var query = new AwcYlBalancesQuery(brandCode);
 
-                _ = fakeService.QueryAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                .Returns(new BalanceResult[] {
-                    new(
-                        PlayerCode: "test",
-                        Balance: 1m,
-                        LastDateTime: DateTime.Now)
-                }.ToAsyncEnumerable());
+				_ = fakeService.QueryAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(new BalanceResult[] {
+					new(
+						PlayerCode: "test",
+						Balance: 1m,
+						LastDateTime: DateTime.Now)
+				}.ToAsyncEnumerable());
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 

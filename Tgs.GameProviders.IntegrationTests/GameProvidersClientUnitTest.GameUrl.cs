@@ -30,34 +30,31 @@ public partial class GameProvidersClientUnitTest
         var ipAddress = "127.0.0.1";
         var backUrl = new Uri("https://dev-t1.rpgp.cc/");
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IGetService<KaiyuanGameUrlQuery, string>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IGetService<KaiyuanGameUrlQuery, string>>();
 
-                var query = new KaiyuanGameUrlQuery
-                {
-                    GameType = (GameType)gameType,
-                    GameId = gameId,
-                    BrandCode = brandCode,
-                    PlayerCode = playerCode,
-                    CurrencyCode = currencyCode,
-                    LoginRecordId = loginRecordId,
-                    PlatformType = (PlatformType)platformType,
-                    Language = language,
-                    IPAddress = ipAddress,
-                    BackUrl = backUrl
-                };
-                _ = fakeService
-                    .GetAsync(
-                        query: Arg.Is(query),
-                        cancellationToken: Arg.Any<CancellationToken>())
-                    .Returns("http://localhost:8088/");
+				var query = new KaiyuanGameUrlQuery
+				{
+					GameType = (GameType)gameType,
+					GameId = gameId,
+					BrandCode = brandCode,
+					PlayerCode = playerCode,
+					CurrencyCode = currencyCode,
+					LoginRecordId = loginRecordId,
+					PlatformType = (PlatformType)platformType,
+					Language = language,
+					IPAddress = ipAddress,
+					BackUrl = backUrl
+				};
+				_ = fakeService
+					.GetAsync(
+						query: Arg.Is(query),
+						cancellationToken: Arg.Any<CancellationToken>())
+					.Returns("http://localhost:8088/");
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var httpClient = web.CreateClient();
 
@@ -95,34 +92,31 @@ public partial class GameProvidersClientUnitTest
         var ipAddress = "127.0.0.1";
         var backUrl = new Uri("https://dev-t1.rpgp.cc/");
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IGetService<KaiyuanGameUrlQuery, GameUrlResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IGetService<KaiyuanGameUrlQuery, GameUrlResult>>();
 
-                var query = new KaiyuanGameUrlQuery
-                {
-                    GameType = (GameType)gameType,
-                    GameId = gameId,
-                    BrandCode = brandCode,
-                    PlayerCode = playerCode,
-                    CurrencyCode = currencyCode,
-                    LoginRecordId = loginRecordId,
-                    PlatformType = (PlatformType)platformType,
-                    Language = language,
-                    IPAddress = ipAddress,
-                    BackUrl = backUrl
-                };
-                _ = fakeService
-                    .GetAsync(
-                        query: Arg.Is(query),
-                        cancellationToken: Arg.Any<CancellationToken>())
-                    .ThrowsForAnyArgs<Exception>();
+				var query = new KaiyuanGameUrlQuery
+				{
+					GameType = (GameType)gameType,
+					GameId = gameId,
+					BrandCode = brandCode,
+					PlayerCode = playerCode,
+					CurrencyCode = currencyCode,
+					LoginRecordId = loginRecordId,
+					PlatformType = (PlatformType)platformType,
+					Language = language,
+					IPAddress = ipAddress,
+					BackUrl = backUrl
+				};
+				_ = fakeService
+					.GetAsync(
+						query: Arg.Is(query),
+						cancellationToken: Arg.Any<CancellationToken>())
+					.ThrowsForAnyArgs<Exception>();
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
         var httpClient = web.CreateClient();
 
         var sut = new GameProvidersClient(httpClient);
