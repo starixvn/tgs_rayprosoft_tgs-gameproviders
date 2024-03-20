@@ -127,8 +127,10 @@ public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameU
                             cancellationToken: cancellationToken)
                         .ConfigureAwait(false);
             }
+
             gameUrl = (reply.IsPlayer) ? new(reply.GameUrl) : null;
         }
+
         return gameUrl is not null ? new() { Url = gameUrl } : null;
     }
 }

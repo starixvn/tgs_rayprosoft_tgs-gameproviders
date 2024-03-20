@@ -24,33 +24,30 @@ public partial class GameProvidersClientUnitTest
         var orderId = Guid.NewGuid().ToString("N");
         var amount = 1m;
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IGetService<KaiyuanPlayerFundInQuery, PlayerFundResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IGetService<KaiyuanPlayerFundInQuery, PlayerFundResult>>();
 
-                var query = new KaiyuanPlayerFundInQuery
-                {
-                    BrandCode = brandCode,
-                    PlayerCode = playerCode,
-                    CurrencyCode = currencyCode,
-                    OrderId = orderId,
-                    Amount = amount
-                };
-                var result = new PlayerFundResult
-                {
-                    OrderId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()
-                };
-                _ = fakeService
-                    .GetAsync(
-                        query: Arg.Is(query),
-                        cancellationToken: Arg.Any<CancellationToken>())
-                    .Returns(result);
+				var query = new KaiyuanPlayerFundInQuery
+				{
+					BrandCode = brandCode,
+					PlayerCode = playerCode,
+					CurrencyCode = currencyCode,
+					OrderId = orderId,
+					Amount = amount
+				};
+				var result = new PlayerFundResult
+				{
+					OrderId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()
+				};
+				_ = fakeService
+					.GetAsync(
+						query: Arg.Is(query),
+						cancellationToken: Arg.Any<CancellationToken>())
+					.Returns(result);
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var httpClient = web.CreateClient();
 
@@ -78,33 +75,30 @@ public partial class GameProvidersClientUnitTest
         var orderId = Guid.NewGuid().ToString("N");
         var amount = 1m;
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IGetService<KaiyuanPlayerFundInQuery, PlayerFundResult>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IGetService<KaiyuanPlayerFundInQuery, PlayerFundResult>>();
 
-                var query = new KaiyuanPlayerFundInQuery
-                {
-                    BrandCode = brandCode,
-                    PlayerCode = playerCode,
-                    CurrencyCode = currencyCode,
-                    OrderId = orderId,
-                    Amount = amount
-                };
-                var result = new PlayerFundResult
-                {
-                    OrderId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()
-                };
-                _ = fakeService
-                    .GetAsync(
-                        query: Arg.Is(query),
-                        cancellationToken: Arg.Any<CancellationToken>())
-                    .ThrowsForAnyArgs<Exception>();
+				var query = new KaiyuanPlayerFundInQuery
+				{
+					BrandCode = brandCode,
+					PlayerCode = playerCode,
+					CurrencyCode = currencyCode,
+					OrderId = orderId,
+					Amount = amount
+				};
+				var result = new PlayerFundResult
+				{
+					OrderId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()
+				};
+				_ = fakeService
+					.GetAsync(
+						query: Arg.Is(query),
+						cancellationToken: Arg.Any<CancellationToken>())
+					.ThrowsForAnyArgs<Exception>();
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var httpClient = web.CreateClient();
 

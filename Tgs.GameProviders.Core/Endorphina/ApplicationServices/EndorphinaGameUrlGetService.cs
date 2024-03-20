@@ -45,7 +45,7 @@ internal class EndorphinaGameUrlGetService : IGetService<EndorphinaGameUrlQuery,
              ?? throw new Exception($"The game for this game product does not exist.({query.GameId})");
         var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, query.CurrencyCode).ConfigureAwait(false)
             ?? throw new Exception($"This game product currency does not exist.({query.CurrencyCode})");
-        var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, query.Language) ?? "en";
+        var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, query.Language).ConfigureAwait(false) ?? "en";
 
         var response = await _client
             .GameTokenAsync(

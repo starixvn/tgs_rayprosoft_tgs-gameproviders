@@ -39,6 +39,7 @@ internal class GameCacheRepository : IGameRepository
                         absoluteExpirationRelativeToNow: TimeSpan.FromHours(1));
             }
         }
+
         return gameModel!;
     }
 

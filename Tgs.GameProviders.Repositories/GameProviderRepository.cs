@@ -183,8 +183,13 @@ internal class GameProviderRepository(
             gameProviderConfiguration: GameProviderConfigurations.FaChai,
             gameProviderConfigurationId: gameProviderConfigurationId,
             cancellationToken: cancellationToken);
+	public ValueTask<FunkyConfiguration> GetFunkyConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+		=> GetConfigurationAsync<FunkyConfiguration>(
+			gameProviderConfiguration: GameProviderConfigurations.Funky,
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken);
 
-    public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+	public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
     {
         var data = await client
             .GameProviderConfigurationGetAsync(

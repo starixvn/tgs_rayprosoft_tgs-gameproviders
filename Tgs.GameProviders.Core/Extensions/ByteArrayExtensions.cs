@@ -15,6 +15,7 @@ public static class ByteArrayExtensions
         {
             _ = sb.Append(t.ToString("x2"));
         }
+
         return sb.ToString();
     }
 }

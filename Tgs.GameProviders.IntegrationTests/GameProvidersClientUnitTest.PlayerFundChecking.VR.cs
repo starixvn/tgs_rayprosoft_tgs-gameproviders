@@ -24,29 +24,26 @@ public partial class GameProvidersClientUnitTest
         var startTime = DateTimeOffset.UtcNow.AddMinutes(-1);
         var endTime = DateTimeOffset.UtcNow;
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IGetService<VRGamingPlayerFundCheckingQuery, bool>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IGetService<VRGamingPlayerFundCheckingQuery, bool>>();
 
-                var query = new VRGamingPlayerFundCheckingQuery
-                {
-                    BrandCode = brandCode,
-                    PlayerCode = playerCode,
-                    CurrencyCode = currencyCode,
-                    OrderId = orderId,
-                    StartTime = startTime,
-                    EndTime = endTime
-                };
-                _ = fakeService.GetAsync(
-                    query: Arg.Is(query),
-                    cancellationToken: Arg.Any<CancellationToken>())
-                    .Returns(true);
+				var query = new VRGamingPlayerFundCheckingQuery
+				{
+					BrandCode = brandCode,
+					PlayerCode = playerCode,
+					CurrencyCode = currencyCode,
+					OrderId = orderId,
+					StartTime = startTime,
+					EndTime = endTime
+				};
+				_ = fakeService.GetAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+					.Returns(true);
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var httpClient = web.CreateClient();
 
@@ -74,30 +71,27 @@ public partial class GameProvidersClientUnitTest
         var startTime = DateTimeOffset.UtcNow.AddMinutes(-1);
         var endTime = DateTimeOffset.UtcNow;
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IGetService<VRGamingPlayerFundCheckingQuery, bool>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IGetService<VRGamingPlayerFundCheckingQuery, bool>>();
 
-                var query = new VRGamingPlayerFundCheckingQuery
-                {
-                    BrandCode = brandCode,
-                    PlayerCode = playerCode,
-                    CurrencyCode = currencyCode,
-                    OrderId = orderId,
-                    StartTime = startTime,
-                    EndTime = endTime
-                };
-                _ = fakeService
-                    .GetAsync(
-                        query: Arg.Is(query),
-                        cancellationToken: Arg.Any<CancellationToken>())
-                    .ThrowsForAnyArgs<Exception>();
+				var query = new VRGamingPlayerFundCheckingQuery
+				{
+					BrandCode = brandCode,
+					PlayerCode = playerCode,
+					CurrencyCode = currencyCode,
+					OrderId = orderId,
+					StartTime = startTime,
+					EndTime = endTime
+				};
+				_ = fakeService
+					.GetAsync(
+						query: Arg.Is(query),
+						cancellationToken: Arg.Any<CancellationToken>())
+					.ThrowsForAnyArgs<Exception>();
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var httpClient = web.CreateClient();
 

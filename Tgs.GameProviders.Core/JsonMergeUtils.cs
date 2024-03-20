@@ -42,7 +42,7 @@ public class JsonMergeUtils
     /// <returns>The list of null properties.</returns>
     public static async Task<List<string>> ExtractNullPropertiesAsync(System.IO.Stream patch, CancellationToken cancellationToken = default)
     {
-        using var patchDoc = await JsonDocument.ParseAsync(patch, new JsonDocumentOptions(), cancellationToken);
+        using var patchDoc = await JsonDocument.ParseAsync(patch, new JsonDocumentOptions(), cancellationToken).ConfigureAwait(false);
         return patchDoc.RootElement.ValueKind != JsonValueKind.Object
             ? throw new InvalidOperationException($"The patch JSON document must be an object type. Instead it is {patchDoc.RootElement.ValueKind}.")
             : ExtractNullPropertiesFromObject(patchDoc.RootElement).ToList();
@@ -107,7 +107,7 @@ public class JsonMergeUtils
         var outputBuffer = new ArrayBufferWriter<byte>();
         var jsonDocumentOptions = new JsonDocumentOptions();
         using (var originalDoc = JsonDocument.Parse(original, jsonDocumentOptions))
-        using (var patchDoc = await JsonDocument.ParseAsync(patch, jsonDocumentOptions, cancellationToken))
+        using (var patchDoc = await JsonDocument.ParseAsync(patch, jsonDocumentOptions, cancellationToken).ConfigureAwait(false))
         using (var jsonWriter = new Utf8JsonWriter(outputBuffer, writerOptions ?? new JsonWriterOptions { Indented = true }))
         {
             var originalKind = originalDoc.RootElement.ValueKind;
@@ -165,7 +165,7 @@ public class JsonMergeUtils
     public static async Task<T> MergeModelAsync<T>(T original, System.IO.Stream patch, JsonSerializerOptions options = null, CancellationToken cancellationToken = default)
     {
         var originalJson = JsonSerializer.Serialize(original, options);
-        return JsonSerializer.Deserialize<T>(await MergeAsync(originalJson, patch, cancellationToken: cancellationToken), options);
+        return JsonSerializer.Deserialize<T>(await MergeAsync(originalJson, patch, cancellationToken: cancellationToken).ConfigureAwait(false), options);
     }
 
     private static IEnumerable<string> ExtractNullPropertiesFromObject(JsonElement patch)

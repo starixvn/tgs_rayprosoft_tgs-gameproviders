@@ -32,6 +32,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -53,6 +54,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -74,6 +76,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -95,6 +98,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -116,6 +120,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -137,6 +142,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -158,6 +164,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -179,6 +186,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -200,6 +208,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -221,6 +230,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -242,6 +252,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -263,6 +274,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -284,6 +296,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -305,6 +318,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -326,6 +340,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -347,6 +362,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -368,6 +384,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -389,6 +406,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -410,6 +428,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -431,6 +450,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -452,6 +472,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -473,11 +494,33 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
 
-    public ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+	public async ValueTask<FunkyConfiguration> GetFunkyConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+	{
+		var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+		if (!memoryCache.TryGetValue(key, out FunkyConfiguration? configurationData))
+		{
+			configurationData = await repository
+				.GetFunkyConfigurationAsync(
+					gameProviderConfigurationId: gameProviderConfigurationId,
+					cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
+
+			return memoryCache
+				.Set(
+					key: key,
+					value: configurationData,
+					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+		}
+
+		return configurationData
+			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+	}
+	public ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
         => repository
         .GetGameEndpointsAsync(
             gameProviderConfigurationId: gameProviderConfigurationId,
@@ -504,6 +547,7 @@ internal class GameProviderCacheRepository(
                         absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
             }
         }
+
         return gameProviderCultureCode;
     }
 
@@ -528,6 +572,7 @@ internal class GameProviderCacheRepository(
                         absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
             }
         }
+
         return gameProviderCurrencyCode
             ?? throw new Exception($"This game product currency does not exist.({currencyCode})");
     }
@@ -551,6 +596,7 @@ internal class GameProviderCacheRepository(
                         value: gameProviderId.Value);
             }
         }
+
         return gameProviderId
             ?? throw new Exception($"Game Provider does not exist.({gameProviderCode})");
     }
@@ -571,6 +617,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -592,6 +639,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -613,6 +661,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -634,6 +683,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -655,6 +705,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -676,6 +727,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -698,6 +750,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -719,6 +772,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -740,6 +794,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -761,6 +816,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -782,6 +838,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -803,6 +860,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -824,6 +882,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -845,6 +904,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -866,6 +926,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -887,6 +948,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -906,6 +968,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -927,6 +990,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -949,6 +1013,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -970,6 +1035,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -991,6 +1057,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }
@@ -1012,6 +1079,7 @@ internal class GameProviderCacheRepository(
                     value: configurationData,
                     absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
         }
+
         return configurationData
             ?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
     }

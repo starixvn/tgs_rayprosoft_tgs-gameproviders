@@ -18,25 +18,22 @@ public partial class GameProvidersClientUnitTest
         var gameProviderCode = "KY";
         var playerCode = "test";
 
-        var web = new TestGameProvidersApplication(builder =>
-        {
-            _ = builder.ConfigureServices(services =>
-            {
-                var fakeService = Substitute.For<IGetService<KaiyuanPlayerBalanceQuery, decimal>>();
+        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IGetService<KaiyuanPlayerBalanceQuery, decimal>>();
 
-                var query = new KaiyuanPlayerBalanceQuery
-                {
-                    PlayerCode = playerCode
-                };
-                _ = fakeService
-                    .GetAsync(
-                        query: Arg.Is(query),
-                        cancellationToken: Arg.Any<CancellationToken>())
-                    .ThrowsForAnyArgs<Exception>();
+				var query = new KaiyuanPlayerBalanceQuery
+				{
+					PlayerCode = playerCode
+				};
+				_ = fakeService
+					.GetAsync(
+						query: Arg.Is(query),
+						cancellationToken: Arg.Any<CancellationToken>())
+					.ThrowsForAnyArgs<Exception>();
 
-                _ = services.AddTransient(_ => fakeService);
-            });
-        });
+				_ = services.AddTransient(_ => fakeService);
+			}));
 
         var httpClient = web.CreateClient();
 
