@@ -49,7 +49,8 @@ data:
         "GameInterfaceV8PokerBaseUrl": "dns:///game-gameinterface-v8:9090/",
         "GameInterfaceCrPatiBaseUrl": "dns:///game-gameinterface-cp:9090/",
         "GameInterfaceVRGamingBaseUrl": "dns:///game-gameinterface-vr:9090/",
-        "GameInterfaceFunkyBaseUrl": "dns:///game-gameinterface-funky:9090/"
+        "GameInterfaceFunkyBaseUrl": "dns:///game-gameinterface-funky:9090/",
+        "GameInterfaceTPhereBaseUrl": "dns:///game-gameinterface-tp:9090/"
       }
     }
   otel-collector-config.yaml: |

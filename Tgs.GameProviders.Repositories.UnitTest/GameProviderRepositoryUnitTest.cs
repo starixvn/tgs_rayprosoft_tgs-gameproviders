@@ -1605,6 +1605,47 @@ public class GameProviderRepositoryUnitTest
 	}
 
 	[Fact]
+	public async Task Get_TPhere_Configuration()
+	{
+		var fakeClient = Substitute.For<IGameCommandClient>();
+
+		var gameProviderId = Guid.NewGuid();
+		var gameProviderConfigurationId = Guid.NewGuid();
+
+		var settingConfiguration = new TPhereConfiguration()
+		{
+			ApiUrl = new("https://apidemo.tphere.com"),
+		};
+
+		_ = fakeClient
+			.SettingGetConfigurationAsync<TPhereConfiguration>(Arg.Is(GameProviderConfigurations.TPhere))
+			.Returns(settingConfiguration);
+
+		_ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+			GameProviderId: gameProviderId,
+			GameProviderCode: GameProviderType.TPhere,
+			GameProviderConfigId: gameProviderConfigurationId,
+			Name: "TP-GPI",
+			Description: "TP-GPI Configuration",
+			ClientId: "TP-GPI",
+			SecretKey: Guid.NewGuid().ToString("N"),
+			Status: GameProviderConfigStatus.Active,
+			DesktopEndpoint: string.Empty,
+			MobileEndpoint: string.Empty,
+			ConfigurationData: "{\"ApiKey\":\"6309572cf90658e17847a7b021723106\",\"ApiToken\":\"29dad28e8ab9c9855e6aa4b9a9e4a869325931d4976dfcf53266ccbe0c5f3387ea48258c002e3543edbb35f63caa5cacc65ac5c664ccfe0619e1d63018a87dbb\"}",
+			IsDefault: false));
+
+		var repository = new GameProviderRepository(fakeClient);
+
+		var actual = await repository.GetTPhereConfiguration(gameProviderConfigurationId);
+
+		Assert.NotNull(actual);
+		Assert.Equal(new Uri("https://apidemo.tphere.com"), actual.ApiUrl);
+		Assert.Contains("6309572cf90658e17847a7b021723106", actual.ApiKey);
+		Assert.Equal("29dad28e8ab9c9855e6aa4b9a9e4a869325931d4976dfcf53266ccbe0c5f3387ea48258c002e3543edbb35f63caa5cacc65ac5c664ccfe0619e1d63018a87dbb", actual.ApiToken);
+	}
+
+	[Fact]
 	public async Task Get_V8Poker_Configuration()
 	{
 		var fakeClient = Substitute.For<IGameCommandClient>();

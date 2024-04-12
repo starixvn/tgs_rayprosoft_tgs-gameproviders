@@ -12,7 +12,6 @@ public class FunkyPlayerFundOutGetService(
 	IBrandRepository brand,
 	IGameInterfaceFunkyClient client) : IGetService<FunkyPlayerFundOutQuery, PlayerFundResult>
 {
-
 	public async ValueTask<PlayerFundResult> GetAsync(FunkyPlayerFundOutQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProvider.GetGameProviderIdAsync(

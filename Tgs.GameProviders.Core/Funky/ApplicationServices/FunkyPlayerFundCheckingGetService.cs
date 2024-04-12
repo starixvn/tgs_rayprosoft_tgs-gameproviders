@@ -1,19 +1,19 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameInterface.Funky.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
-using Tgs.GameInterface.Funky.Client;
 
 namespace Tgs.GameProviders.Core.Funky.ApplicationServices;
 
 public class FunkyPlayerFundCheckingGetService(
-    IGameProviderRepository gameProvider,
-    IPlayerRepository player,
-    IBrandRepository brand,
+	IGameProviderRepository gameProvider,
+	IPlayerRepository player,
+	IBrandRepository brand,
 	IGameInterfaceFunkyClient client) : IGetService<FunkyPlayerFundCheckingQuery, bool>
 {
-    public async ValueTask<bool> GetAsync(FunkyPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
-    {
+	public async ValueTask<bool> GetAsync(FunkyPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
+	{
 		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.Funky,
 			cancellationToken: cancellationToken)
@@ -38,7 +38,7 @@ public class FunkyPlayerFundCheckingGetService(
 			authentication: configuration.Authentication,
 			playerCode: playerInfo.PlayerCode,
 			orderId: query.OrderId,
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-    }
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+	}
 }

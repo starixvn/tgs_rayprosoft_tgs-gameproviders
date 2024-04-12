@@ -1,8 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameInterface.Funky.Client;
+
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
-using Tgs.GameInterface.Funky.Client;
 
 namespace Tgs.GameProviders.Core.Funky.ApplicationServices;
 
@@ -12,7 +13,6 @@ public class FunkyPlayerBalanceGetService(
 	IBrandRepository brand,
 	IGameInterfaceFunkyClient client) : IGetService<FunkyPlayerBalanceQuery, PlayerBalanceResult>
 {
-
 	public async ValueTask<PlayerBalanceResult> GetAsync(FunkyPlayerBalanceQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
@@ -50,7 +50,6 @@ public class FunkyPlayerBalanceGetService(
 		return new PlayerBalanceResult
 		{
 			FreeBalance = balance
-
 		};
 	}
 }

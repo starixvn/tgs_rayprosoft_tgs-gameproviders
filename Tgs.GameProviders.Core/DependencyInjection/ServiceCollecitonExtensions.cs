@@ -26,6 +26,7 @@ using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.TFGamingService.Client;
+using Tgs.GameInterface.TPhere.Client;
 using Tgs.GameInterface.V8Poker.Client;
 using Tgs.GameInterface.VRGaming.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
@@ -80,7 +81,8 @@ public static class ServiceCollecitonExtensions
 		Action<GameInterfaceV8PokerClientOptions, IServiceProvider> gameInterfaceV8PokerClientOptions,
 		Action<GameInterfaceCrPatiClientOptions, IServiceProvider> gameInterfaceCrPatiClientOptions,
 		Action<GameInterfaceVRGamingClientOptions, IServiceProvider> gameInterfaceVRGamingClientOptions,
-		Action<GameInterfaceFunkyClientOptions, IServiceProvider> gameInterfaceFunkyClientOptions)
+		Action<GameInterfaceFunkyClientOptions, IServiceProvider> gameInterfaceFunkyClientOptions,
+		Action<GameInterfaceTPhereClientOptions, IServiceProvider> gameInterfaceTPhereClientOptions)
 		=> services
 		.AddOptions<IPAddressOptions>()
 		.Configure(ipAddressOptions)
@@ -122,6 +124,7 @@ public static class ServiceCollecitonExtensions
 		.AddGameInterfaceCrPatiClient(gameInterfaceCrPatiClientOptions)
 		.AddGameInterfaceVRGamingClient(gameInterfaceVRGamingClientOptions)
 		.AddGameInterfaceFunkyClient(gameInterfaceFunkyClientOptions)
+		.AddGameInterfaceTPhereClient(gameInterfaceTPhereClientOptions)
 		.AddGameRoundsClient(gameRoundsClientOptions)
 		.AddGameTokenClient(gameTokenClientOptions)
 		//Tgs.Core.Infrastructures.Security

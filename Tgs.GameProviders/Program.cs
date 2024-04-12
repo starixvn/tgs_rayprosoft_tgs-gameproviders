@@ -238,6 +238,11 @@ builder.Services
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
 		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceFunkyBaseUrl")!;
+	},
+	(options, sp) =>
+	{
+		var configuration = sp.GetRequiredService<IConfiguration>();
+		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceTPhereBaseUrl")!;
 	});
 
 builder.Services

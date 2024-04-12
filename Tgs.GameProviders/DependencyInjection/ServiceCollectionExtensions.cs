@@ -24,6 +24,7 @@ using Tgs.GameInterface.SBOService.Client;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.TFGamingService.Client;
+using Tgs.GameInterface.TPhere.Client;
 using Tgs.GameInterface.V8Poker.Client;
 using Tgs.GameInterface.VRGaming.Client;
 using Tgs.GameInterface.WGFmGamingService.Client;
@@ -80,7 +81,8 @@ public static class ServiceCollectionExtensions
 		Action<GameInterfaceV8PokerClientOptions, IServiceProvider> gameInterfaceV8PokerClientOptions,
 		Action<GameInterfaceCrPatiClientOptions, IServiceProvider> gameInterfaceCrPatiClientOptions,
 		Action<GameInterfaceVRGamingClientOptions, IServiceProvider> gameInterfaceVRGamingClientOptions,
-		Action<GameInterfaceFunkyClientOptions, IServiceProvider> gameInterfaceFunkyClientOptions)
+		Action<GameInterfaceFunkyClientOptions, IServiceProvider> gameInterfaceFunkyClientOptions,
+		Action<GameInterfaceTPhereClientOptions, IServiceProvider> gameInterfaceTPhereClientOptions)
 		=> services
 		.AddOptions<RedisOptions>()
 		.Configure(configure)
@@ -124,5 +126,6 @@ public static class ServiceCollectionExtensions
 			gameInterfaceV8PokerClientOptions: gameInterfaceV8PokerClientOptions,
 			gameInterfaceCrPatiClientOptions: gameInterfaceCrPatiClientOptions,
 			gameInterfaceVRGamingClientOptions: gameInterfaceVRGamingClientOptions,
-			gameInterfaceFunkyClientOptions: gameInterfaceFunkyClientOptions);
+			gameInterfaceFunkyClientOptions: gameInterfaceFunkyClientOptions,
+			gameInterfaceTPhereClientOptions: gameInterfaceTPhereClientOptions);
 }

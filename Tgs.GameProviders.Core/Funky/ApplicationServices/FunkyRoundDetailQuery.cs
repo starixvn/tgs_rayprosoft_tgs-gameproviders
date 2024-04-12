@@ -1,4 +1,3 @@
-﻿using Tgs.GameProviders.Core.FaChai.ApplicationServices;
-namespace Tgs.GameProviders.Core.Funky.ApplicationServices;
+﻿namespace Tgs.GameProviders.Core.Funky.ApplicationServices;
 
 public record FunkyRoundDetailQuery : RoundDetailQuery;
