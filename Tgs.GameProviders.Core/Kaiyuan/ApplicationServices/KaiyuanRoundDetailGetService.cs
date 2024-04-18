@@ -1,35 +1,26 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 
-internal class KaiyuanRoundDetailGetService : IGetService<KaiyuanRoundDetailQuery, RoundDetailResult>
+internal class KaiyuanRoundDetailGetService(
+	IRoundRepository roundRepository) : IGetService<KaiyuanRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundRepository _roundService;
+	public async ValueTask<RoundDetailResult> GetAsync(KaiyuanRoundDetailQuery query, CancellationToken cancellationToken = default)
+	{
+		var roundInfo = await roundRepository.GetAsync(
+			roundId: query.RoundId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 
-    public KaiyuanRoundDetailGetService(
-        IRoundRepository roundService)
-    {
-        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
-    }
-
-    public async ValueTask<RoundDetailResult> GetAsync(KaiyuanRoundDetailQuery query, CancellationToken cancellationToken = default)
-    {
-        var roundInfo = await _roundService
-            .GetAsync(
-            roundId: query.RoundId,
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-
-        return new RoundDetailResult()
-        {
-            Data = new RoundDetailDataBase[]
-            {
-                new RoundDetailDataJson { Value = roundInfo.AdditionalData }
-            }
-        };
-    }
+		return new RoundDetailResult()
+		{
+			Data = new RoundDetailDataBase[]
+			{
+				new RoundDetailDataJson { Value = roundInfo.AdditionalData }
+			}
+		};
+	}
 }
