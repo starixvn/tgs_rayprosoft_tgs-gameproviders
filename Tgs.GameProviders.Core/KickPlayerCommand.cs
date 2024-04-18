@@ -2,5 +2,5 @@
 
 public record KickPlayerCommand
 {
-    public string PlayerCode { get; init; }
+	public string PlayerCode { get; init; }
 }

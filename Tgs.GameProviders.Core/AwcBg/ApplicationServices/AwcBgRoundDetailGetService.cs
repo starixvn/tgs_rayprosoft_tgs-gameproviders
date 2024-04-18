@@ -6,23 +6,24 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.AwcBg.ApplicationServices;
 
-internal class AwcBgRoundDetailGetService(IRoundRepository round) : IGetService<AwcBgRoundDetailQuery, RoundDetailResult>
+internal class AwcBgRoundDetailGetService(
+	IRoundRepository roundRepository) : IGetService<AwcBgRoundDetailQuery, RoundDetailResult>
 {
-    public async ValueTask<RoundDetailResult> GetAsync(AwcBgRoundDetailQuery query, CancellationToken cancellationToken = default)
-    {
-        var roundInfo = await round.GetAsync(
-            roundId: query.RoundId,
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
+	public async ValueTask<RoundDetailResult> GetAsync(AwcBgRoundDetailQuery query, CancellationToken cancellationToken = default)
+	{
+		var roundInfo = await roundRepository.GetAsync(
+			roundId: query.RoundId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false)
+			?? throw new ArgumentNullException(query.RoundId.ToString(), $"This game bet does not exist.");
 
-        return roundInfo == null
-            ? throw new Exception($"This game round number could not be found.{query.RoundId}")
-            : (new RoundDetailResult()
-            {
-                Data = new RoundDetailDataBase[]
-                {
-                    new RoundDetailDataJson {Value = roundInfo.AdditionalData}
-                }
-            });
-    }
+		return new RoundDetailResult()
+		{
+			Data = new RoundDetailDataBase[]
+			{
+				new RoundDetailDataJson {Value = roundInfo.AdditionalData}
+			}
+		};
+		;
+	}
 }

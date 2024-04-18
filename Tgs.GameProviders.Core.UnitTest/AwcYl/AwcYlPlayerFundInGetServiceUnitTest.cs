@@ -14,97 +14,97 @@ namespace Tgs.GameProviders.Core.UnitTest.AwcYl;
 
 public class AwcYlPlayerFundInGetServiceUnitTest
 {
-    [Fact]
-    public async Task Normal_Process()
-    {
-        var fakeBrand = Substitute.For<IBrandRepository>();
-        var fakeGameProvider = Substitute.For<IGameProviderRepository>();
-        var fakeClient = Substitute.For<IGameInterfaceAwcClient>();
-        var fakePlayer = Substitute.For<IPlayerRepository>();
+	[Fact]
+	public async Task Normal_Process()
+	{
+		var fakeBrand = Substitute.For<IBrandRepository>();
+		var fakeGameProvider = Substitute.For<IGameProviderRepository>();
+		var fakeClient = Substitute.For<IGameInterfaceAwcClient>();
+		var fakePlayer = Substitute.For<IPlayerRepository>();
 
-        var query = new AwcYlPlayerFundInQuery
-        {
-            BrandCode = "GPI",
-            PlayerCode = "4ucmqplxb029",
-            CurrencyCode = "CNY",
-            OrderId = Guid.NewGuid().ToString("N"),
-            Amount = 100m
-        };
+		var query = new AwcYlPlayerFundInQuery
+		{
+			BrandCode = "GPI",
+			PlayerCode = "4ucmqplxb029",
+			CurrencyCode = "CNY",
+			OrderId = Guid.NewGuid().ToString("N"),
+			Amount = 100m
+		};
 
-        var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProvider
-            .GetGameProviderIdAsync(
-            gameProviderCode: Arg.Is(GameProviderType.AWC_YL),
-            cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(gameProviderId);
+		var gameProviderId = Guid.NewGuid();
+		_ = fakeGameProvider
+			.GetGameProviderIdAsync(
+			gameProviderCode: Arg.Is(GameProviderType.AWC_YL),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(gameProviderId);
 
-        var player = new PlayerInfo(
-            ResellerId: Guid.NewGuid(),
-            ResellerCode: "GPI",
-            LicenseeId: Guid.NewGuid(),
-            LicenseeCode: "GPI",
-            BrandId: Guid.NewGuid(),
-            BrandCode: "GPI",
-            PlayerCode: "4ucmqplxb029",
-            Username: "4ucmqplxb029",
-            DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY");
-        _ = fakePlayer
-            .GetAsync(
-            Arg.Is(query.PlayerCode),
-            Arg.Any<CancellationToken>())
-            .Returns(player);
+		var player = new PlayerInfo(
+			ResellerId: Guid.NewGuid(),
+			ResellerCode: "GPI",
+			LicenseeId: Guid.NewGuid(),
+			LicenseeCode: "GPI",
+			BrandId: Guid.NewGuid(),
+			BrandCode: "GPI",
+			PlayerCode: "4ucmqplxb029",
+			Username: "4ucmqplxb029",
+			DefaultWalletId: Guid.NewGuid(),
+			DefaultWalletCurrencyCode: "CNY");
+		_ = fakePlayer
+			.GetAsync(
+			Arg.Is(query.PlayerCode),
+			Arg.Any<CancellationToken>())
+			.Returns(player);
 
-        var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeBrand
-            .GetBrandGameProviderConfigurationIdAsync(
-            gameProviderId: Arg.Is(gameProviderId),
-            brandId: Arg.Is(player.BrandId),
-            cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(gameProviderConfigurationId);
+		var gameProviderConfigurationId = Guid.NewGuid();
+		_ = fakeBrand
+			.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: Arg.Is(gameProviderId),
+			brandId: Arg.Is(player.BrandId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(gameProviderConfigurationId);
 
-        var configuration = new AwcYlConfiguration
-        {
-            ApiUrl = new("https://tttint.onlinegames22.com/"),
-            ApiRecordUrl = new("https://tttint.onlinegames22.com/"),
-            AgentId = "testAgentId",
-            Cert = "testCert",
-        };
-        _ = fakeGameProvider
-            .GetAwcYlConfigurationAsync(
-            gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
-            cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(configuration);
+		var configuration = new AwcYlConfiguration
+		{
+			ApiUrl = new("https://tttint.onlinegames22.com/"),
+			ApiRecordUrl = new("https://tttint.onlinegames22.com/"),
+			AgentId = "testAgentId",
+			Cert = "testCert",
+		};
+		_ = fakeGameProvider
+			.GetAwcYlConfigurationAsync(
+			gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(configuration);
 
-        var gameProviderTransactionId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
-        var reply = new FundReply()
-        {
-            OrderId = query.OrderId,
-            GameProviderTransactionId = gameProviderTransactionId,
-            CurrentBalance = 0,
-            Amount = query.Amount,
-            Resp = new JsonObject
-            {
-                ["transactionId"] = gameProviderTransactionId
-            }.ToJsonString()
-        };
-        _ = fakeClient.FundInAsync(
-            Arg.Is(configuration.ApiUrl),
-            Arg.Is(configuration.AgentId),
-            Arg.Is(configuration.Cert),
-            Arg.Is(query.PlayerCode),
-            Arg.Is(query.OrderId),
-            Arg.Is(query.Amount)).Returns(reply);
+		var gameProviderTransactionId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+		var reply = new FundReply()
+		{
+			OrderId = query.OrderId,
+			GameProviderTransactionId = gameProviderTransactionId,
+			CurrentBalance = 0,
+			Amount = query.Amount,
+			Resp = new JsonObject
+			{
+				["transactionId"] = gameProviderTransactionId
+			}.ToJsonString()
+		};
+		_ = fakeClient.FundInAsync(
+			Arg.Is(configuration.ApiUrl),
+			Arg.Is(configuration.AgentId),
+			Arg.Is(configuration.Cert),
+			Arg.Is(query.PlayerCode),
+			Arg.Is(query.OrderId),
+			Arg.Is(query.Amount)).Returns(reply);
 
-        var sut = new AwcYlPlayerFundInGetService(
-            fakeBrand,
-            fakeGameProvider,
-            fakeClient,
-            fakePlayer);
+		var sut = new AwcYlPlayerFundInGetService(
+			fakeBrand,
+			fakeGameProvider,
+			fakeClient,
+			fakePlayer);
 
-        var actual = await sut.GetAsync(query);
+		var actual = await sut.GetAsync(query);
 
-        Assert.NotNull(actual);
-        Assert.Equal(gameProviderTransactionId, actual.OrderId);
-    }
+		Assert.NotNull(actual);
+		Assert.Equal(gameProviderTransactionId, actual.OrderId);
+	}
 }

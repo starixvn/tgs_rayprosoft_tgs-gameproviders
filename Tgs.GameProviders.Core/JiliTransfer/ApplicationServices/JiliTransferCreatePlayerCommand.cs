@@ -3,5 +3,5 @@
 namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 
 public record JiliTransferCreatePlayerCommand(
-    JiliTransferConfiguration Configuration,
-    string PlayerCode);
+	JiliTransferConfiguration Configuration,
+	string PlayerCode);

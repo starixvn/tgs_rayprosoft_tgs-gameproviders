@@ -1,45 +1,30 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.TPhere.Client;
-
-using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.TPhere.ApplicationServices;
 
 internal class TPhereRoundDetailGetService(
-	IRoundRepository roundService,
-	IGameProviderRepository gameProvider,
-	IPlayerRepository player,
-	IBrandRepository brand,
+	IRoundRepository roundRepository,
+	IGameProviderRepository gameProviderRepository,
 	IGameInterfaceTPhereClient client) : IGetService<TPhereRoundDetailQuery, RoundDetailResult>
 {
 	public async ValueTask<RoundDetailResult> GetAsync(TPhereRoundDetailQuery query, CancellationToken cancellationToken = default)
 	{
-		var roundInfo = await roundService.GetAsync(
+		var roundInfo = await roundRepository.GetAsync(
 			roundId: query.RoundId,
 			cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
-		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
-			gameProviderCode: GameProviderType.TPhere,
+			.ConfigureAwait(false)
+			?? throw new ArgumentNullException(query.RoundId.ToString(), $"This game bet does not exist.");
+		var configuration = await gameProviderRepository.GetTPhereConfiguration(
+			gameProviderConfigurationId: roundInfo.GameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var playerInfo = await player.GetAsync(
-			playerCode: roundInfo.PlayerCode,
-			cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await brand.GetBrandGameProviderConfigurationIdAsync(
-			gameProviderId: gameProviderId,
-			brandId: playerInfo.BrandId,
-			cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
-		var configuration = await gameProvider.GetTPhereConfiguration(
-			gameProviderConfigurationId: gameProviderConfigurationId,
-			cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
-		var cultureCode = await gameProvider.GetGameProviderCultureCodeAsync(
-			gameProviderId: gameProviderId,
+		var cultureCode = await gameProviderRepository.GetGameProviderCultureCodeAsync(
+			gameProviderId: roundInfo.GameProviderId,
 			cultureCode: query.Language,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "en";

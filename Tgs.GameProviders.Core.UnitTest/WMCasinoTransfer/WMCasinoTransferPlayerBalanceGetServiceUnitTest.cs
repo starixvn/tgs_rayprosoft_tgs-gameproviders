@@ -14,75 +14,75 @@ namespace Tgs.GameProviders.Core.UnitTest.WMCasinoTransfer;
 
 public class WMCasinoTransferPlayerBalanceGetServiceUnitTest
 {
-    [Fact]
-    public async Task Normal_Process()
-    {
-        var fakeBrandService = Substitute.For<IBrandRepository>();
-        var fakeCreatePlayerCommandService = Substitute.For<ICommandService<WMCasinoTransferCreatePlayerCommand>>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakeClient = Substitute.For<IGameInterfaceWMCasinoServiceClient>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeLogger = NullLogger<WMCasinoTransferPlayerBalanceGetService>.Instance;
+	[Fact]
+	public async Task Normal_Process()
+	{
+		var fakeBrandService = Substitute.For<IBrandRepository>();
+		var fakeCreatePlayerCommandService = Substitute.For<ICommandService<WMCasinoTransferCreatePlayerCommand>>();
+		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+		var fakeClient = Substitute.For<IGameInterfaceWMCasinoServiceClient>();
+		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+		var fakeLogger = NullLogger<WMCasinoTransferPlayerBalanceGetService>.Instance;
 
-        var configuration = new WMCasinoTransferConfiguration
-        {
-            ApiUrl = new Uri("https://api.a45.me/api/public/Gateway.php"),
-            VendorId = "testVendorId",
-            Signature = "testsignature"
-        };
+		var configuration = new WMCasinoTransferConfiguration
+		{
+			ApiUrl = new Uri("https://api.a45.me/api/public/Gateway.php"),
+			VendorId = "testVendorId",
+			Signature = "testsignature"
+		};
 
-        var playerModel = new PlayerInfo(
-            ResellerId: Guid.NewGuid(),
-            ResellerCode: "GPI",
-            LicenseeId: Guid.NewGuid(),
-            LicenseeCode: "GPI",
-            BrandId: Guid.NewGuid(),
-            BrandCode: "GPI",
-            PlayerCode: "4ucmqplxb029",
-            Username: "4ucmqplxb029",
-            DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY");
+		var playerModel = new PlayerInfo(
+			ResellerId: Guid.NewGuid(),
+			ResellerCode: "GPI",
+			LicenseeId: Guid.NewGuid(),
+			LicenseeCode: "GPI",
+			BrandId: Guid.NewGuid(),
+			BrandCode: "GPI",
+			PlayerCode: "4ucmqplxb029",
+			Username: "4ucmqplxb029",
+			DefaultWalletId: Guid.NewGuid(),
+			DefaultWalletCurrencyCode: "CNY");
 
-        var query = new WMCasinoTransferPlayerBalanceQuery
-        {
-            PlayerCode = "4ucmqplxb029"
-        };
+		var query = new WMCasinoTransferPlayerBalanceQuery
+		{
+			PlayerCode = "4ucmqplxb029"
+		};
 
-        var gameProviderConfigurationId = Guid.NewGuid();
-        var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WMCasinoTransfer)).Returns(gameProviderId);
-        _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
-        _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameProviderId),
-             Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
-        _ = fakeGameProviderRepository.GetWMCasinoTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+		var gameProviderConfigurationId = Guid.NewGuid();
+		var gameProviderId = Guid.NewGuid();
+		_ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WMCasinoTransfer)).Returns(gameProviderId);
+		_ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
+		_ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
+			 Arg.Is(gameProviderId),
+			 Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
+		_ = fakeGameProviderRepository.GetWMCasinoTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
-        var response = new BalanceReply()
-        {
-            Success = true,
-            IsPlayerExist = true,
-            Balance = 100m
-        };
+		var response = new BalanceReply()
+		{
+			Success = true,
+			IsPlayerExist = true,
+			Balance = 100m
+		};
 
-        var user = $"wmtf_{query.PlayerCode}_{playerModel.BrandCode}";
+		var user = $"wmtf_{query.PlayerCode}_{playerModel.BrandCode}";
 
-        _ = fakeClient.GetBalanceAsync(
-            apiUrl: Arg.Is(configuration.ApiUrl),
-            vendorId: Arg.Is(configuration.VendorId),
-            signature: Arg.Is(configuration.Signature),
-            user: Arg.Is(user)).Returns(response);
+		_ = fakeClient.GetBalanceAsync(
+			apiUrl: Arg.Is(configuration.ApiUrl),
+			vendorId: Arg.Is(configuration.VendorId),
+			signature: Arg.Is(configuration.Signature),
+			user: Arg.Is(user)).Returns(response);
 
-        var sut = new WMCasinoTransferPlayerBalanceGetService(
-            fakeBrandService,
-            fakeCreatePlayerCommandService,
-            fakeGameProviderRepository,
-            fakeClient,
-            fakePlayerRepository,
-            fakeLogger);
+		var sut = new WMCasinoTransferPlayerBalanceGetService(
+			fakeBrandService,
+			fakeCreatePlayerCommandService,
+			fakeGameProviderRepository,
+			fakeClient,
+			fakePlayerRepository,
+			fakeLogger);
 
-        var actual = await sut.GetAsync(query);
+		var actual = await sut.GetAsync(query);
 
-        Assert.NotNull(actual);
-        Assert.Equal(response.Balance.ToDecimal(), actual.Balance);
-    }
+		Assert.NotNull(actual);
+		Assert.Equal(response.Balance.ToDecimal(), actual.Balance);
+	}
 }

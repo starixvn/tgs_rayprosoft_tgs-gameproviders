@@ -12,13 +12,13 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-    [Fact]
-    public async void Player_Balance_HttpRequestException()
-    {
-        var gameProviderCode = "KY";
-        var playerCode = "test";
+	[Fact]
+	public async void Player_Balance_HttpRequestException()
+	{
+		var gameProviderCode = "KY";
+		var playerCode = "test";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IGetService<KaiyuanPlayerBalanceQuery, decimal>>();
 
@@ -35,14 +35,14 @@ public partial class GameProvidersClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var httpClient = web.CreateClient();
+		var httpClient = web.CreateClient();
 
-        var sut = new GameProvidersClient(httpClient);
+		var sut = new GameProvidersClient(httpClient);
 
-        _ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
-            .PlayerBalanceAsync(
-                gameProviderCode: gameProviderCode,
-                playerCode: playerCode)
-            .AsTask());
-    }
+		_ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
+			.PlayerBalanceAsync(
+				gameProviderCode: gameProviderCode,
+				playerCode: playerCode)
+			.AsTask());
+	}
 }

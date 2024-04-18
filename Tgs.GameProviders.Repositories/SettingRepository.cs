@@ -5,37 +5,28 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Repositories;
 
-internal class SettingRepository : ISettingRepository
+internal class SettingRepository(
+	IGameCommandClient client) : ISettingRepository
 {
-    private readonly IGameCommandClient _client;
+	public ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(
+		string key,
+		CancellationToken cancellationToken = default)
+		=> GetAsync<TConfiguration>(key, cancellationToken);
 
-    public SettingRepository(
-        IGameCommandClient client
-        )
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
+	public ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync(
+		CancellationToken cancellationToken = default)
+		=> GetAsync<EvolutionTransferConfiguration>(GameProviderConfigurations.EvolutionTransfer, cancellationToken);
 
-    public ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(
-        string key,
-        CancellationToken cancellationToken = default)
-        => GetAsync<TConfiguration>(key, cancellationToken);
+	public ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync(
+		CancellationToken cancellationToken = default)
+		=> GetAsync<SkywindTransferConfiguration>(GameProviderConfigurations.SkywindTransfer, cancellationToken);
 
-    public ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync(
-        CancellationToken cancellationToken = default)
-        => GetAsync<EvolutionTransferConfiguration>(GameProviderConfigurations.EvolutionTransfer, cancellationToken);
-
-    public ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync(
-        CancellationToken cancellationToken = default)
-        => GetAsync<SkywindTransferConfiguration>(GameProviderConfigurations.SkywindTransfer, cancellationToken);
-
-    private async ValueTask<TConfiguration> GetAsync<TConfiguration>(
-        string key,
-        CancellationToken cancellationToken = default)
-        => await _client
-        .SettingGetConfigurationAsync<TConfiguration>(
-            key: key,
-            cancellationToken: cancellationToken)
-        .ConfigureAwait(false)
-        ?? throw new Exception($"This game product setting does not exist.({key})");
+	private async ValueTask<TConfiguration> GetAsync<TConfiguration>(
+		string key,
+		CancellationToken cancellationToken = default)
+		=> await client.SettingGetConfigurationAsync<TConfiguration>(
+			key: key,
+			cancellationToken: cancellationToken)
+		.ConfigureAwait(false)
+		?? throw new ArgumentNullException(key, "This game product setting does not exist.");
 }

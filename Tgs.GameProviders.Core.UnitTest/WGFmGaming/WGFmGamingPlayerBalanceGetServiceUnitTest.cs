@@ -11,67 +11,67 @@ namespace Tgs.GameProviders.Core.UnitTest.WGFmGaming;
 
 public class WGFmGamingPlayerBalanceGetServiceUnitTest
 {
-    [Fact]
-    public async Task Normal_Process()
-    {
-        var fakeGameInterfaceWGFmGamingClient = Substitute.For<IGameInterfaceWGFmGamingClient>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeBrandRepository = Substitute.For<IBrandRepository>();
+	[Fact]
+	public async Task Normal_Process()
+	{
+		var fakeGameInterfaceWGFmGamingClient = Substitute.For<IGameInterfaceWGFmGamingClient>();
+		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+		var fakeBrandRepository = Substitute.For<IBrandRepository>();
 
-        var query = new WGFmGamingPlayerBalanceQuery
-        {
-            PlayerCode = "test"
-        };
+		var query = new WGFmGamingPlayerBalanceQuery
+		{
+			PlayerCode = "test"
+		};
 
-        var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WGFmGaming)).Returns(ValueTask.FromResult(gameProviderId));
+		var gameProviderId = Guid.NewGuid();
+		_ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.WGFmGaming)).Returns(ValueTask.FromResult(gameProviderId));
 
-        var player = new PlayerInfo(
-            ResellerId: Guid.NewGuid(),
-            ResellerCode: "GPI",
-            LicenseeId: Guid.NewGuid(),
-            LicenseeCode: "GPI",
-            BrandId: Guid.NewGuid(),
-            BrandCode: "GPI",
-            PlayerCode: "test",
-            Username: "test",
-            DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY");
-        _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(player);
+		var player = new PlayerInfo(
+			ResellerId: Guid.NewGuid(),
+			ResellerCode: "GPI",
+			LicenseeId: Guid.NewGuid(),
+			LicenseeCode: "GPI",
+			BrandId: Guid.NewGuid(),
+			BrandCode: "GPI",
+			PlayerCode: "test",
+			Username: "test",
+			DefaultWalletId: Guid.NewGuid(),
+			DefaultWalletCurrencyCode: "CNY");
+		_ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(player);
 
-        var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeBrandRepository.GetBrandGameProviderConfigurationIdAsync(
-            Arg.Is(gameProviderId),
-            Arg.Is(player.BrandId)).Returns(ValueTask.FromResult(gameProviderConfigurationId));
+		var gameProviderConfigurationId = Guid.NewGuid();
+		_ = fakeBrandRepository.GetBrandGameProviderConfigurationIdAsync(
+			Arg.Is(gameProviderId),
+			Arg.Is(player.BrandId)).Returns(ValueTask.FromResult(gameProviderConfigurationId));
 
-        var configuration = new WGFmGamingConfiguration
-        {
-            ApiUrl = new("http://localhost/"),
-            PartnerCode = "PartnerCode",
-            PartnerKey = "PartnerKey",
-            IV = "IV"
-        };
-        _ = fakeGameProviderRepository.GetWGFmGamingConfigurationAsync(
-            Arg.Is(gameProviderConfigurationId)
-            ).Returns(ValueTask.FromResult(configuration));
+		var configuration = new WGFmGamingConfiguration
+		{
+			ApiUrl = new("http://localhost/"),
+			PartnerCode = "PartnerCode",
+			PartnerKey = "PartnerKey",
+			IV = "IV"
+		};
+		_ = fakeGameProviderRepository.GetWGFmGamingConfigurationAsync(
+			Arg.Is(gameProviderConfigurationId)
+			).Returns(ValueTask.FromResult(configuration));
 
-        (bool IsPlayer, decimal balance) = (true, 1);
-        _ = fakeGameInterfaceWGFmGamingClient.PlayerBalanceAsync(
-            Arg.Is(configuration.ApiUrl),
-            Arg.Is(configuration.PartnerCode),
-            Arg.Is(configuration.PartnerKey),
-            Arg.Is(configuration.IV),
-            Arg.Is(player.PlayerCode)).Returns((IsPlayer, balance));
+		(bool IsPlayer, decimal balance) = (true, 1);
+		_ = fakeGameInterfaceWGFmGamingClient.PlayerBalanceAsync(
+			Arg.Is(configuration.ApiUrl),
+			Arg.Is(configuration.PartnerCode),
+			Arg.Is(configuration.PartnerKey),
+			Arg.Is(configuration.IV),
+			Arg.Is(player.PlayerCode)).Returns((IsPlayer, balance));
 
-        var sut = new WGFmGamingPlayerBalanceGetService(
-            fakeGameInterfaceWGFmGamingClient,
-            fakeGameProviderRepository,
-            fakePlayerRepository,
-            fakeBrandRepository);
+		var sut = new WGFmGamingPlayerBalanceGetService(
+			fakeGameInterfaceWGFmGamingClient,
+			fakeGameProviderRepository,
+			fakePlayerRepository,
+			fakeBrandRepository);
 
-        var actual = await sut.GetAsync(query);
+		var actual = await sut.GetAsync(query);
 
-        Assert.Equal(balance, actual.Balance);
-    }
+		Assert.Equal(balance, actual.Balance);
+	}
 }

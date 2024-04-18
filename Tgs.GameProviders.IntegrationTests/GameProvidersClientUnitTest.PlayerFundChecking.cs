@@ -13,16 +13,16 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-    [Fact]
-    public async Task Player_Fund_Checking()
-    {
-        var gameProviderCode = "KY";
-        var brandCode = "GPI";
-        var playerCode = "test";
-        var currencyCode = "CNY";
-        var orderId = Guid.NewGuid().ToString("N");
+	[Fact]
+	public async Task Player_Fund_Checking()
+	{
+		var gameProviderCode = "KY";
+		var brandCode = "GPI";
+		var playerCode = "test";
+		var currencyCode = "CNY";
+		var orderId = Guid.NewGuid().ToString("N");
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IGetService<KaiyuanPlayerFundCheckingQuery, bool>>();
 
@@ -42,31 +42,31 @@ public partial class GameProvidersClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var httpClient = web.CreateClient();
+		var httpClient = web.CreateClient();
 
-        var sut = new GameProvidersClient(httpClient);
+		var sut = new GameProvidersClient(httpClient);
 
-        var actual = await sut
-            .PlayerFundCheckingAsync(
-            gameProviderCode: gameProviderCode,
-            brandCode: brandCode,
-            playerCode: playerCode,
-            currencyCode: currencyCode,
-            orderId: orderId);
+		var actual = await sut
+			.PlayerFundCheckingAsync(
+			gameProviderCode: gameProviderCode,
+			brandCode: brandCode,
+			playerCode: playerCode,
+			currencyCode: currencyCode,
+			orderId: orderId);
 
-        Assert.True(actual);
-    }
+		Assert.True(actual);
+	}
 
-    [Fact]
-    public async void Player_Fund_HttpRequestException()
-    {
-        var gameProviderCode = "KY";
-        var brandCode = "GPI";
-        var playerCode = "test";
-        var currencyCode = "CNY";
-        var orderId = Guid.NewGuid().ToString("N");
+	[Fact]
+	public async void Player_Fund_HttpRequestException()
+	{
+		var gameProviderCode = "KY";
+		var brandCode = "GPI";
+		var playerCode = "test";
+		var currencyCode = "CNY";
+		var orderId = Guid.NewGuid().ToString("N");
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IGetService<KaiyuanPlayerFundCheckingQuery, bool>>();
 
@@ -87,17 +87,17 @@ public partial class GameProvidersClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var httpClient = web.CreateClient();
+		var httpClient = web.CreateClient();
 
-        var sut = new GameProvidersClient(httpClient);
+		var sut = new GameProvidersClient(httpClient);
 
-        _ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
-            .PlayerFundCheckingAsync(
-                 gameProviderCode: gameProviderCode,
-                 brandCode: brandCode,
-                 playerCode: playerCode,
-                 currencyCode: currencyCode,
-                 orderId: orderId)
-            .AsTask());
-    }
+		_ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
+			.PlayerFundCheckingAsync(
+				 gameProviderCode: gameProviderCode,
+				 brandCode: brandCode,
+				 playerCode: playerCode,
+				 currencyCode: currencyCode,
+				 orderId: orderId)
+			.AsTask());
+	}
 }

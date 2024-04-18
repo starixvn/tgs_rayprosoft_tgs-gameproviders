@@ -2,5 +2,5 @@
 
 public record SexyGamingBetLimit
 {
-    public Dictionary<int, string> SexybcrtMapper { get; init; } = default!;
+	public Dictionary<int, string> SexybcrtMapper { get; init; } = default!;
 }

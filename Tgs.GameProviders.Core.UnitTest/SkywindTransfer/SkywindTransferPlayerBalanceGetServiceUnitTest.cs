@@ -12,70 +12,70 @@ namespace Tgs.GameProviders.Core.UnitTest.SkywindTransfer;
 
 public class SkywindTransferPlayerBalanceGetServiceUnitTest
 {
-    [Fact]
-    public async Task Normal_Process()
-    {
-        var fakeCreatePlayerCommandService = Substitute.For<ICommandService<SkywindTransferCreatePlayerCommand>>();
-        var fakeGameInterfaceSkywindClient = Substitute.For<IGameInterfaceSkywindClient>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeSettingRepository = Substitute.For<ISettingRepository>();
+	[Fact]
+	public async Task Normal_Process()
+	{
+		var fakeCreatePlayerCommandService = Substitute.For<ICommandService<SkywindTransferCreatePlayerCommand>>();
+		var fakeGameInterfaceSkywindClient = Substitute.For<IGameInterfaceSkywindClient>();
+		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+		var fakeSettingRepository = Substitute.For<ISettingRepository>();
 
-        var configuration = new SkywindTransferConfiguration
-        {
-            ApiUrl = new("http://localhost/"),
-            LiveLobbyUrl = new("http://localhost/"),
-            MerchId = "merchId",
-            MerchPwd = "merchPwd",
-            SecretKey = "secretKey",
-            Username = "username",
-            Password = "password"
-        };
+		var configuration = new SkywindTransferConfiguration
+		{
+			ApiUrl = new("http://localhost/"),
+			LiveLobbyUrl = new("http://localhost/"),
+			MerchId = "merchId",
+			MerchPwd = "merchPwd",
+			SecretKey = "secretKey",
+			Username = "username",
+			Password = "password"
+		};
 
-        var playerModel = new PlayerInfo(
-            ResellerId: Guid.NewGuid(),
-            ResellerCode: "GPI",
-            LicenseeId: Guid.NewGuid(),
-            LicenseeCode: "GPI",
-            BrandId: Guid.NewGuid(),
-            BrandCode: "GPI",
-            PlayerCode: "4ucmqplxb029",
-            Username: "4ucmqplxb029",
-            DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY");
+		var playerModel = new PlayerInfo(
+			ResellerId: Guid.NewGuid(),
+			ResellerCode: "GPI",
+			LicenseeId: Guid.NewGuid(),
+			LicenseeCode: "GPI",
+			BrandId: Guid.NewGuid(),
+			BrandCode: "GPI",
+			PlayerCode: "4ucmqplxb029",
+			Username: "4ucmqplxb029",
+			DefaultWalletId: Guid.NewGuid(),
+			DefaultWalletCurrencyCode: "CNY");
 
-        var query = new SkywindTransferPlayerBalanceQuery
-        {
-            PlayerCode = "4ucmqplxb029"
-        };
+		var query = new SkywindTransferPlayerBalanceQuery
+		{
+			PlayerCode = "4ucmqplxb029"
+		};
 
-        _ = fakeSettingRepository.GetSkywindTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
-        _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
+		_ = fakeSettingRepository.GetSkywindTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+		_ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(playerModel);
 
-        var request = new PlayerBalanceRequest()
-        {
-            ApiUrl = configuration.ApiUrl.ToString(),
-            SecretKey = configuration.SecretKey,
-            Username = configuration.Username,
-            Password = configuration.Password,
-            PlayerCode = query.PlayerCode
-        };
-        var response = new PlayerBalanceReply()
-        {
-            IsPlayer = true,
-            Balance = 100m
-        };
-        _ = fakeGameInterfaceSkywindClient.PlayerBalanceAsync(
-            Arg.Is(request)).Returns(response);
+		var request = new PlayerBalanceRequest()
+		{
+			ApiUrl = configuration.ApiUrl.ToString(),
+			SecretKey = configuration.SecretKey,
+			Username = configuration.Username,
+			Password = configuration.Password,
+			PlayerCode = query.PlayerCode
+		};
+		var response = new PlayerBalanceReply()
+		{
+			IsPlayer = true,
+			Balance = 100m
+		};
+		_ = fakeGameInterfaceSkywindClient.PlayerBalanceAsync(
+			Arg.Is(request)).Returns(response);
 
-        var sut = new SkywindTransferPlayerBalanceGetService(
-             fakeCreatePlayerCommandService,
-             fakeGameInterfaceSkywindClient,
-             fakePlayerRepository,
-             fakeSettingRepository);
+		var sut = new SkywindTransferPlayerBalanceGetService(
+			 fakeCreatePlayerCommandService,
+			 fakeGameInterfaceSkywindClient,
+			 fakePlayerRepository,
+			 fakeSettingRepository);
 
-        var actual = await sut.GetAsync(query);
+		var actual = await sut.GetAsync(query);
 
-        Assert.NotNull(actual);
-        Assert.Equal(response.Balance.ToDecimal(), actual.Balance);
-    }
+		Assert.NotNull(actual);
+		Assert.Equal(response.Balance.ToDecimal(), actual.Balance);
+	}
 }

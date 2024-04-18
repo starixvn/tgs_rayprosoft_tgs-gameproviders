@@ -6,31 +6,23 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.WGViaGaming.ApplicationServices;
 
-internal class WGViaGamingRoundDetailGetService : IGetService<WGViaGamingRoundDetailQuery, RoundDetailResult>
+internal class WGViaGamingRoundDetailGetService(
+	IRoundRepository roundRepository) : IGetService<WGViaGamingRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundRepository _roundService;
+	public async ValueTask<RoundDetailResult> GetAsync(WGViaGamingRoundDetailQuery query, CancellationToken cancellationToken = default)
+	{
+		var roundInfo = await roundRepository.GetAsync(
+			roundId: query.RoundId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false)
+			?? throw new ArgumentNullException(query.RoundId.ToString(), $"This game bet does not exist.");
 
-    public WGViaGamingRoundDetailGetService(
-        IRoundRepository roundService
-        )
-    {
-        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
-    }
-
-    public async ValueTask<RoundDetailResult> GetAsync(WGViaGamingRoundDetailQuery query, CancellationToken cancellationToken = default)
-    {
-        var roundInfo = await _roundService
-            .GetAsync(
-            roundId: query.RoundId,
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-
-        return new RoundDetailResult()
-        {
-            Data = new RoundDetailDataBase[]
-            {
-                new RoundDetailDataJson { Value = roundInfo.AdditionalData }
-            }
-        };
-    }
+		return new RoundDetailResult()
+		{
+			Data = new RoundDetailDataBase[]
+			{
+				new RoundDetailDataJson {Value = roundInfo.AdditionalData}
+			}
+		};
+	}
 }

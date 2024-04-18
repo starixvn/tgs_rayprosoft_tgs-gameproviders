@@ -15,22 +15,22 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-    [Fact]
-    public async Task Game_Url()
-    {
-        var gameProviderCode = "KY";  // en-us
-        var gameType = GameProvidersClientGameType.CardGameLobby;
-        var gameId = 1;
-        var brandCode = "GPI";
-        var playerCode = "test";
-        var currencyCode = "CNY";
-        var loginRecordId = Guid.NewGuid();
-        var platformType = GameProvidersClientPlatformType.Desktop;
-        var language = "zh-TW";
-        var ipAddress = "127.0.0.1";
-        var backUrl = new Uri("https://dev-t1.rpgp.cc/");
+	[Fact]
+	public async Task Game_Url()
+	{
+		var gameProviderCode = "KY";  // en-us
+		var gameType = GameProvidersClientGameType.CardGameLobby;
+		var gameId = 1;
+		var brandCode = "GPI";
+		var playerCode = "test";
+		var currencyCode = "CNY";
+		var loginRecordId = Guid.NewGuid();
+		var platformType = GameProvidersClientPlatformType.Desktop;
+		var language = "zh-TW";
+		var ipAddress = "127.0.0.1";
+		var backUrl = new Uri("https://dev-t1.rpgp.cc/");
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IGetService<KaiyuanGameUrlQuery, string>>();
 
@@ -56,43 +56,43 @@ public partial class GameProvidersClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var httpClient = web.CreateClient();
+		var httpClient = web.CreateClient();
 
-        var sut = new GameProvidersClient(httpClient);
+		var sut = new GameProvidersClient(httpClient);
 
-        var actual = await sut
-            .GameUrlAsync(
-            gameProviderCode: gameProviderCode,
-            gameType: gameType,
-            gameId: gameId,
-            brandCode: brandCode,
-            playerCode: playerCode,
-            currencyCode: currencyCode,
-            loginRecordId: loginRecordId,
-            platformType: platformType,
-            language: language,
-            ipAddress: ipAddress,
-            backUrl: backUrl);
+		var actual = await sut
+			.GameUrlAsync(
+			gameProviderCode: gameProviderCode,
+			gameType: gameType,
+			gameId: gameId,
+			brandCode: brandCode,
+			playerCode: playerCode,
+			currencyCode: currencyCode,
+			loginRecordId: loginRecordId,
+			platformType: platformType,
+			language: language,
+			ipAddress: ipAddress,
+			backUrl: backUrl);
 
-        Assert.NotNull(actual);
-    }
+		Assert.NotNull(actual);
+	}
 
-    [Fact]
-    public async void Game_Url_HttpRequestException()
-    {
-        var gameProviderCode = "KY";  // en-us
-        var gameType = GameProvidersClientGameType.CardGameLobby;
-        var gameId = 1;
-        var brandCode = "GPI";
-        var playerCode = "test";
-        var currencyCode = "CNY";
-        var loginRecordId = Guid.NewGuid();
-        var platformType = GameProvidersClientPlatformType.Desktop;
-        var language = "zh-TW";
-        var ipAddress = "127.0.0.1";
-        var backUrl = new Uri("https://dev-t1.rpgp.cc/");
+	[Fact]
+	public async void Game_Url_HttpRequestException()
+	{
+		var gameProviderCode = "KY";  // en-us
+		var gameType = GameProvidersClientGameType.CardGameLobby;
+		var gameId = 1;
+		var brandCode = "GPI";
+		var playerCode = "test";
+		var currencyCode = "CNY";
+		var loginRecordId = Guid.NewGuid();
+		var platformType = GameProvidersClientPlatformType.Desktop;
+		var language = "zh-TW";
+		var ipAddress = "127.0.0.1";
+		var backUrl = new Uri("https://dev-t1.rpgp.cc/");
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IGetService<KaiyuanGameUrlQuery, GameUrlResult>>();
 
@@ -117,23 +117,23 @@ public partial class GameProvidersClientUnitTest
 
 				_ = services.AddTransient(_ => fakeService);
 			}));
-        var httpClient = web.CreateClient();
+		var httpClient = web.CreateClient();
 
-        var sut = new GameProvidersClient(httpClient);
+		var sut = new GameProvidersClient(httpClient);
 
-        _ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
-        .GameUrlAsync(
-            gameProviderCode: gameProviderCode,
-            gameType: gameType,
-            gameId: gameId,
-            brandCode: brandCode,
-            playerCode: playerCode,
-            currencyCode: currencyCode,
-            loginRecordId: loginRecordId,
-            platformType: platformType,
-            language: language,
-            ipAddress: ipAddress,
-            backUrl: backUrl)
-        .AsTask());
-    }
+		_ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
+		.GameUrlAsync(
+			gameProviderCode: gameProviderCode,
+			gameType: gameType,
+			gameId: gameId,
+			brandCode: brandCode,
+			playerCode: playerCode,
+			currencyCode: currencyCode,
+			loginRecordId: loginRecordId,
+			platformType: platformType,
+			language: language,
+			ipAddress: ipAddress,
+			backUrl: backUrl)
+		.AsTask());
+	}
 }

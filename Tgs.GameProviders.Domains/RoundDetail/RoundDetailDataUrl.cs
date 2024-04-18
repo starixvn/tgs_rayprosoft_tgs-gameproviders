@@ -4,10 +4,10 @@ namespace Tgs.GameProviders.Domains.RoundDetail;
 
 public record RoundDetailDataUrl : RoundDetailDataBase
 {
-    public RoundDetailDataUrl() : base(RoundDetailDataType.Url)
-    {
-    }
+	public RoundDetailDataUrl() : base(RoundDetailDataType.Url)
+	{
+	}
 
-    [JsonPropertyName("url")]
-    public string Url { get; init; } = default!;
+	[JsonPropertyName("url")]
+	public string Url { get; init; } = default!;
 }

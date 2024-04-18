@@ -7,12 +7,12 @@ namespace Tgs.GameProviders.Domains.SettingConfiguration;
 /// </summary>
 public record TCGConfiguration : PluggableConfigurationBase
 {
-    /// <summary>
-    /// The API URL
-    /// </summary>
-    public Uri ApiUrl { get; init; } = default!;
-    /// <summary>
-    /// The merchants
-    /// </summary>
-    public TCGMerchant[] Merchants { get; init; } = default!;
+	/// <summary>
+	/// The API URL
+	/// </summary>
+	public Uri ApiUrl { get; init; } = default!;
+	/// <summary>
+	/// The merchants
+	/// </summary>
+	public TCGMerchant[] Merchants { get; init; } = default!;
 }

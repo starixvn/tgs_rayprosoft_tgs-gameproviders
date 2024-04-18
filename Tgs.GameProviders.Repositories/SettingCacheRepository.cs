@@ -5,71 +5,54 @@ using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Repositories;
 
-internal class SettingCacheRepository : ISettingRepository
+internal class SettingCacheRepository(
+	IMemoryCache memoryCache,
+	ISettingRepository setting) : ISettingRepository
 {
-    private readonly TimeSpan _absoluteExpiration;
-    private readonly IMemoryCache _memoryCache;
-    private readonly ISettingRepository _setting;
+	private readonly TimeSpan _absoluteExpiration = TimeSpan.FromMinutes(5);
 
-    public SettingCacheRepository(
-        IMemoryCache memoryCache,
-        ISettingRepository setting)
-    {
-        _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-        _setting = setting ?? throw new ArgumentNullException(nameof(setting));
-        _absoluteExpiration = TimeSpan.FromMinutes(5);
-    }
+	public ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string key, CancellationToken cancellationToken = default)
+		=> setting.GetConfigurationAsync<TConfiguration>(key: key, cancellationToken: cancellationToken);
 
-    public ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(
-        string key,
-        CancellationToken cancellationToken = default)
-        => _setting
-        .GetConfigurationAsync<TConfiguration>(
-            key: key,
-            cancellationToken: cancellationToken);
+	public async ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync(CancellationToken cancellationToken = default)
+	{
+		var key = GetKey(GameProviderConfigurations.EvolutionTransfer);
+		if (!memoryCache.TryGetValue(key, out EvolutionTransferConfiguration? configuration))
+		{
+			configuration = await setting
+				.GetEvolutionTransferConfigurationAsync(
+					cancellationToken: cancellationToken)
+				.ConfigureAwait(false)!;
 
-    public async ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync(
-        CancellationToken cancellationToken = default)
-    {
-        var key = GetKey(GameProviderConfigurations.EvolutionTransfer);
-        if (!_memoryCache.TryGetValue(key, out EvolutionTransferConfiguration? configuration))
-        {
-            configuration = await _setting
-                .GetEvolutionTransferConfigurationAsync(
-                    cancellationToken: cancellationToken)
-                .ConfigureAwait(false)!;
+			return memoryCache.Set(
+					key,
+					configuration,
+					_absoluteExpiration);
+		}
 
-            return _memoryCache
-                .Set(
-                    key,
-                    configuration,
-                    _absoluteExpiration);
-        }
+		return configuration ?? throw new ArgumentNullException(key, "This game product setting does not exist.");
+	}
 
-        return configuration!;
-    }
+	public async ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync(CancellationToken cancellationToken = default)
+	{
+		var key = GetKey(GameProviderConfigurations.SkywindTransfer);
+		if (!memoryCache.TryGetValue(key, out SkywindTransferConfiguration? configuration))
+		{
+			configuration = await setting
+				.GetSkywindTransferConfigurationAsync(
+					cancellationToken: cancellationToken)
+				.ConfigureAwait(false)!;
 
-    public async ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync(
-        CancellationToken cancellationToken = default)
-    {
-        var key = GetKey(GameProviderConfigurations.SkywindTransfer);
-        if (!_memoryCache.TryGetValue(key, out SkywindTransferConfiguration? configuration))
-        {
-            configuration = await _setting
-                .GetSkywindTransferConfigurationAsync(
-                    cancellationToken: cancellationToken)
-                .ConfigureAwait(false)!;
+			return memoryCache
+				.Set(
+					key,
+					configuration,
+					_absoluteExpiration);
+		}
 
-            return _memoryCache
-                .Set(
-                    key,
-                    configuration,
-                    _absoluteExpiration);
-        }
+		return configuration ?? throw new ArgumentNullException(key, "This game product setting does not exist.");
+	}
 
-        return configuration!;
-    }
-
-    private static string GetKey(string gameProviderCode)
-            => $"gameg:gameproviders:settingcache:{gameProviderCode}";
+	private static string GetKey(string gameProviderCode)
+			=> $"gameg:gameproviders:settingcache:{gameProviderCode}";
 }

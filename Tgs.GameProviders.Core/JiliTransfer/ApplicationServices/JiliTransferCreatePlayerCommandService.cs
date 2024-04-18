@@ -8,19 +8,19 @@ namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 
 internal class JiliTransferCreatePlayerCommandService : ICommandService<JiliTransferCreatePlayerCommand>
 {
-    private readonly IGameInterfaceJiliClient _client;
+	private readonly IGameInterfaceJiliClient _client;
 
-    public JiliTransferCreatePlayerCommandService(
-        IGameInterfaceJiliClient client)
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
+	public JiliTransferCreatePlayerCommandService(
+		IGameInterfaceJiliClient client)
+	{
+		_client = client ?? throw new ArgumentNullException(nameof(client));
+	}
 
-    public ValueTask ExecuteAsync(JiliTransferCreatePlayerCommand command, CancellationToken cancellationToken = default)
-        => _client.CreatePlayerAsync(
-            apiUrl: command.Configuration.ApiUrl,
-            agentId: command.Configuration.AgentId,
-            agentKey: command.Configuration.AgentKey,
-            playerCode: command.PlayerCode,
-            cancellationToken: cancellationToken);
+	public ValueTask ExecuteAsync(JiliTransferCreatePlayerCommand command, CancellationToken cancellationToken = default)
+		=> _client.CreatePlayerAsync(
+			apiUrl: command.Configuration.ApiUrl,
+			agentId: command.Configuration.AgentId,
+			agentKey: command.Configuration.AgentKey,
+			playerCode: command.PlayerCode,
+			cancellationToken: cancellationToken);
 }

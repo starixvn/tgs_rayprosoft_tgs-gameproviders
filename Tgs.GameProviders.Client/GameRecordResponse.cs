@@ -2,6 +2,6 @@
 
 public record GameRecordResponse
 {
-    public bool Success { get; init; }
-    public GameRecordModle[]? Datas { get; init; }
+	public bool Success { get; init; }
+	public GameRecordModle[]? Datas { get; init; }
 }

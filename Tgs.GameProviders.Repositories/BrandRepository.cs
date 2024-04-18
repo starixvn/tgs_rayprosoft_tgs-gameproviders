@@ -3,35 +3,21 @@ using Tgs.GameProviders.Core;
 
 namespace Tgs.GameProviders.Repositories;
 
-internal class BrandRepository : IBrandRepository
+internal class BrandRepository(
+	IGameCommandClient client) : IBrandRepository
 {
-    private readonly IGameCommandClient _client;
+	public async ValueTask<Guid> GetBrandGameProviderConfigurationIdAsync(Guid gameProviderId, Guid brandId, CancellationToken cancellationToken = default)
+		=> await client.BrandGetGameProviderConfigurationIdAsync(
+			brandId: brandId,
+			gameProviderId: gameProviderId,
+			cancellationToken: cancellationToken)
+		.ConfigureAwait(false)
+		?? throw new ArgumentNullException(new { gameProviderId, brandId }.ToString(), "The gameprovider configuration id does not exist.");
 
-    public BrandRepository(
-        IGameCommandClient client)
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
-
-    public async ValueTask<Guid> GetBrandGameProviderConfigurationIdAsync(
-        Guid gameProviderId,
-        Guid brandId,
-        CancellationToken cancellationToken = default)
-        => await _client
-        .BrandGetGameProviderConfigurationIdAsync(
-            brandId: brandId,
-            gameProviderId: gameProviderId,
-            cancellationToken: cancellationToken)
-        .ConfigureAwait(false)
-        ?? throw new Exception($"The gameprovider configuration id does not exist.(gameProviderId={gameProviderId}、brandId{brandId})");
-
-    public async ValueTask<Guid> GetBrandIdAsync(
-        string brandCode,
-        CancellationToken cancellationToken = default)
-        => await _client
-        .BrandGetBrandIdAsync(
-            brandCode,
-            cancellationToken)
-        .ConfigureAwait(false)
-        ?? throw new Exception($"The brand id does not exist.({brandCode})");
+	public async ValueTask<Guid> GetBrandIdAsync(string brandCode, CancellationToken cancellationToken = default)
+		=> await client.BrandGetBrandIdAsync(
+			brandCode,
+			cancellationToken)
+		.ConfigureAwait(false)
+		?? throw new ArgumentNullException(brandCode, "The brand id does not exist.");
 }

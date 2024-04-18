@@ -4,7 +4,7 @@ namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
 public record IMESportsConfiguration : PluggableConfigurationBase
 {
-    public IMESportsBrandMerchant[] BrandMerchants { get; init; } = default!;
-    public int ProductWallet { get; init; }
-    public bool SupportHttps { get; init; } = false;
+	public IMESportsBrandMerchant[] BrandMerchants { get; init; } = default!;
+	public int ProductWallet { get; init; }
+	public bool SupportHttps { get; init; } = false;
 }

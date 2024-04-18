@@ -9,6 +9,7 @@ using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.Funky;
+
 public class FunkyPlayerBalanceGetServiceUnitTest
 {
 	[Fact]

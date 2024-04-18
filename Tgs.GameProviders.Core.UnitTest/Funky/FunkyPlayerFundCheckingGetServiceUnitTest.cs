@@ -9,6 +9,7 @@ using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.Funky;
+
 public class FunkyPlayerFundCheckingGetServiceUnitTest
 {
 	[Fact]
@@ -21,10 +22,10 @@ public class FunkyPlayerFundCheckingGetServiceUnitTest
 
 		var query = new FunkyPlayerFundCheckingQuery
 		{
-			BrandCode="GPI",
+			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode="CNY",
-			OrderId=Guid.NewGuid().ToString("N")
+			CurrencyCode = "CNY",
+			OrderId = Guid.NewGuid().ToString("N")
 		};
 
 		var gameProviderId = Guid.NewGuid();

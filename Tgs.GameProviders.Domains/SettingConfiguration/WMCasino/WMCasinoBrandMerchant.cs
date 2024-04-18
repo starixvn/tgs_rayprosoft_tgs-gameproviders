@@ -2,6 +2,6 @@
 
 public record WMCasinoBrandMerchant
 {
-    public WMCasinoAgent[] Agents { get; init; } = default!;
-    public string BrandCode { get; init; } = default!;
+	public WMCasinoAgent[] Agents { get; init; } = default!;
+	public string BrandCode { get; init; } = default!;
 }

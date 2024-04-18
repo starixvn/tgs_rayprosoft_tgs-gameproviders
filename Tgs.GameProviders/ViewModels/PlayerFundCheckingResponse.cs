@@ -2,5 +2,5 @@
 
 public record PlayerFundCheckingResponse
 {
-    public bool OrderStatus { get; init; }
+	public bool OrderStatus { get; init; }
 }

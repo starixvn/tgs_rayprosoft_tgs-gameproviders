@@ -12,85 +12,85 @@ namespace Tgs.GameProviders.Core.UnitTest.GKXGaming;
 
 public class GKXGamingPlayerFundCheckingGetServiceUnitTest
 {
-    [Fact]
-    public async Task Normal_Process()
-    {
-        var fakeClient = Substitute.For<IGameInterfaceGKXGamingClient>();
-        var fakeGameProvider = Substitute.For<IGameProviderRepository>();
-        var fakePlayer = Substitute.For<IPlayerRepository>();
-        var fakeBrand = Substitute.For<IBrandRepository>();
+	[Fact]
+	public async Task Normal_Process()
+	{
+		var fakeClient = Substitute.For<IGameInterfaceGKXGamingClient>();
+		var fakeGameProvider = Substitute.For<IGameProviderRepository>();
+		var fakePlayer = Substitute.For<IPlayerRepository>();
+		var fakeBrand = Substitute.For<IBrandRepository>();
 
-        var query = new GKXGamingPlayerFundCheckingQuery
-        {
-            BrandCode = "brandcode",
-            PlayerCode = "test",
-            CurrencyCode = "CNY",
-            OrderId = "200995202307180240242304uk9399rb9qo"
-        };
+		var query = new GKXGamingPlayerFundCheckingQuery
+		{
+			BrandCode = "brandcode",
+			PlayerCode = "test",
+			CurrencyCode = "CNY",
+			OrderId = "200995202307180240242304uk9399rb9qo"
+		};
 
-        var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProvider.GetGameProviderIdAsync(
-            gameProviderCode: Arg.Is(GameProviderType.GKXGaming),
-            cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(ValueTask.FromResult(gameProviderId));
+		var gameProviderId = Guid.NewGuid();
+		_ = fakeGameProvider.GetGameProviderIdAsync(
+			gameProviderCode: Arg.Is(GameProviderType.GKXGaming),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(ValueTask.FromResult(gameProviderId));
 
-        var player = new PlayerInfo(
-            ResellerId: Guid.NewGuid(),
-            ResellerCode: "GPI",
-            LicenseeId: Guid.NewGuid(),
-            LicenseeCode: "GPI",
-            BrandId: Guid.NewGuid(),
-            BrandCode: "GPI",
-            PlayerCode: "test",
-            Username: "test",
-            DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "HKD");
-        _ = fakePlayer
-            .GetAsync(
-            Arg.Is(query.PlayerCode),
-            Arg.Any<CancellationToken>())
-            .Returns(player);
+		var player = new PlayerInfo(
+			ResellerId: Guid.NewGuid(),
+			ResellerCode: "GPI",
+			LicenseeId: Guid.NewGuid(),
+			LicenseeCode: "GPI",
+			BrandId: Guid.NewGuid(),
+			BrandCode: "GPI",
+			PlayerCode: "test",
+			Username: "test",
+			DefaultWalletId: Guid.NewGuid(),
+			DefaultWalletCurrencyCode: "HKD");
+		_ = fakePlayer
+			.GetAsync(
+			Arg.Is(query.PlayerCode),
+			Arg.Any<CancellationToken>())
+			.Returns(player);
 
-        var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeBrand
-            .GetBrandGameProviderConfigurationIdAsync(
-            gameProviderId: Arg.Is(gameProviderId),
-            brandId: Arg.Is(player.BrandId),
-            cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(ValueTask.FromResult(gameProviderConfigurationId));
+		var gameProviderConfigurationId = Guid.NewGuid();
+		_ = fakeBrand
+			.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: Arg.Is(gameProviderId),
+			brandId: Arg.Is(player.BrandId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(ValueTask.FromResult(gameProviderConfigurationId));
 
-        var configuration = new GKXGamingConfiguration
-        {
-            AmountMaximum = 999999999999,
-            AmountFormat = "12,2",
-            ApiUrl = new("http://localhost/"),
-            ApiRecordUrl = new("http://localhost:8090/"),
-            Deskey = "deskey",
-            Md5key = "md5key",
-            AgentId = "200995"
-        };
-        _ = fakeGameProvider
-            .GetGKXGamingConfigurationAsync(
-            gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
-            cancellationToken: Arg.Any<CancellationToken>()).
-            Returns(ValueTask.FromResult(configuration));
+		var configuration = new GKXGamingConfiguration
+		{
+			AmountMaximum = 999999999999,
+			AmountFormat = "12,2",
+			ApiUrl = new("http://localhost/"),
+			ApiRecordUrl = new("http://localhost:8090/"),
+			Deskey = "deskey",
+			Md5key = "md5key",
+			AgentId = "200995"
+		};
+		_ = fakeGameProvider
+			.GetGKXGamingConfigurationAsync(
+			gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+			cancellationToken: Arg.Any<CancellationToken>()).
+			Returns(ValueTask.FromResult(configuration));
 
-        var sut = new GKXGamingPlayerFundCheckingGetService(
-            fakeGameProvider,
-            fakePlayer,
-            fakeBrand,
-            fakeClient);
+		var sut = new GKXGamingPlayerFundCheckingGetService(
+			fakeGameProvider,
+			fakePlayer,
+			fakeBrand,
+			fakeClient);
 
-        _ = await sut.GetAsync(query: query);
+		_ = await sut.GetAsync(query: query);
 
-        _ = fakeClient
-            .Received(1)
-            .FundStatusAsync(
-            apiUrl: Arg.Is(configuration.ApiUrl),
-            deskey: Arg.Is(configuration.Deskey),
-            md5key: Arg.Is(configuration.Md5key),
-            agentId: Arg.Is(configuration.AgentId),
-            orderId: Arg.Is(query.OrderId),
-            cancellationToken: Arg.Any<CancellationToken>());
-    }
+		_ = fakeClient
+			.Received(1)
+			.FundStatusAsync(
+			apiUrl: Arg.Is(configuration.ApiUrl),
+			deskey: Arg.Is(configuration.Deskey),
+			md5key: Arg.Is(configuration.Md5key),
+			agentId: Arg.Is(configuration.AgentId),
+			orderId: Arg.Is(query.OrderId),
+			cancellationToken: Arg.Any<CancellationToken>());
+	}
 }

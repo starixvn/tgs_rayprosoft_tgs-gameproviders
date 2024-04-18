@@ -7,75 +7,75 @@ namespace Tgs.GameProviders.Repositories.UnitTest;
 
 public class GameRepositoryUnitTest
 {
-    [Fact]
-    public async Task Game_List()
-    {
-        var fakeClient = Substitute.For<IGameCommandClient>();
+	[Fact]
+	public async Task Game_List()
+	{
+		var fakeClient = Substitute.For<IGameCommandClient>();
 
-        var gameProviderId = Guid.NewGuid();
-        var gameType = GameType.Fishing;
+		var gameProviderId = Guid.NewGuid();
+		var gameType = GameType.Fishing;
 
-        var expected = new GameInfo[] {new (
-            GameId: 1,
-            GameCode: "9",
-            GameProviderId: Guid.NewGuid(),
-            "BG",
-            GameExternalId: "Fishing",
-            Type: GameType.Fishing,
-            PlatformType: GamePlatformType.DesktopAndMobile,
-            Name: "KY Fishing",
-            SubGame: false,
-            AvailableToBrand: false,
-            HasTurnoverOnTieBet: false,
-            Html5: true,
-            Description: "Fishing",
-            EndpointPath: string.Empty,
-            RuleUrl: string.Empty,
-            AvailableCurrencies: null,
-            Localization: null,
-            SubGameProviderCode: "KY") };
-        _ = fakeClient.GameQueryAsync(gameProviderId, gameType).Returns(expected.ToAsyncEnumerable());
+		var expected = new GameInfo[] {new (
+			GameId: 1,
+			GameCode: "9",
+			GameProviderId: Guid.NewGuid(),
+			"BG",
+			GameExternalId: "Fishing",
+			Type: GameType.Fishing,
+			PlatformType: GamePlatformType.DesktopAndMobile,
+			Name: "KY Fishing",
+			SubGame: false,
+			AvailableToBrand: false,
+			HasTurnoverOnTieBet: false,
+			Html5: true,
+			Description: "Fishing",
+			EndpointPath: string.Empty,
+			RuleUrl: string.Empty,
+			AvailableCurrencies: null,
+			Localization: null,
+			SubGameProviderCode: "KY") };
+		_ = fakeClient.GameQueryAsync(gameProviderId, gameType).Returns(expected.ToAsyncEnumerable());
 
-        var repository = new GameRepository(fakeClient);
+		var repository = new GameRepository(fakeClient);
 
-        var actual = await repository.GetGameListAsync(gameProviderId, gameType).ToArrayAsync();
+		var actual = await repository.GetGameListAsync(gameProviderId, gameType).ToArrayAsync();
 
-        Assert.NotNull(actual);
-        expected.ToExpectedObject().ShouldEqual(actual);
-    }
+		Assert.NotNull(actual);
+		expected.ToExpectedObject().ShouldEqual(actual);
+	}
 
-    [Fact]
-    public async Task Get_Game()
-    {
-        var fakeClient = Substitute.For<IGameCommandClient>();
+	[Fact]
+	public async Task Get_Game()
+	{
+		var fakeClient = Substitute.For<IGameCommandClient>();
 
-        var gameId = 1;
+		var gameId = 1;
 
-        _ = fakeClient.GameGetAsync(gameId).Returns(new GameInfo(
-            GameId: 1,
-            GameCode: "9",
-            GameProviderId: Guid.NewGuid(),
-            "KY",
-            GameExternalId: "Fishing",
-            Type: GameType.Fishing,
-            PlatformType: GamePlatformType.DesktopAndMobile,
-            Name: "KY Fishing",
-            SubGame: false,
-            AvailableToBrand: false,
-            HasTurnoverOnTieBet: false,
-            Html5: true,
-            Description: "Fishing",
-            EndpointPath: string.Empty,
-            RuleUrl: string.Empty,
-            AvailableCurrencies: null,
-            Localization: null,
-            SubGameProviderCode: "KY"));
+		_ = fakeClient.GameGetAsync(gameId).Returns(new GameInfo(
+			GameId: 1,
+			GameCode: "9",
+			GameProviderId: Guid.NewGuid(),
+			"KY",
+			GameExternalId: "Fishing",
+			Type: GameType.Fishing,
+			PlatformType: GamePlatformType.DesktopAndMobile,
+			Name: "KY Fishing",
+			SubGame: false,
+			AvailableToBrand: false,
+			HasTurnoverOnTieBet: false,
+			Html5: true,
+			Description: "Fishing",
+			EndpointPath: string.Empty,
+			RuleUrl: string.Empty,
+			AvailableCurrencies: null,
+			Localization: null,
+			SubGameProviderCode: "KY"));
 
-        var repository = new GameRepository(fakeClient);
+		var repository = new GameRepository(fakeClient);
 
-        var actual = await repository.GetAsync(gameId);
+		var actual = await repository.GetAsync(gameId);
 
-        Assert.NotNull(actual);
-        Assert.Equal(gameId, actual.GameId);
-    }
+		Assert.NotNull(actual);
+		Assert.Equal(gameId, actual.GameId);
+	}
 }

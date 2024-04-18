@@ -2,5 +2,5 @@
 
 public record PluggableConfigurationBase
 {
-    public Uri ServiceEndpointUrl { get; init; } = default!;
+	public Uri ServiceEndpointUrl { get; init; } = default!;
 }

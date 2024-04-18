@@ -3,6 +3,6 @@
 namespace Tgs.GameProviders.Core;
 
 public record BalanceResult(
-    string PlayerCode,
-    decimal Balance,
-    DateTime LastDateTime);
+	string PlayerCode,
+	decimal Balance,
+	DateTime LastDateTime);

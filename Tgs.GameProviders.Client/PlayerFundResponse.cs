@@ -2,8 +2,8 @@
 
 internal record PlayerFundResponse
 {
-    /// <summary>
-    /// The order identifier
-    /// </summary>
-    public string OrderId { get; set; } = default!;
+	/// <summary>
+	/// The order identifier
+	/// </summary>
+	public string OrderId { get; set; } = default!;
 }

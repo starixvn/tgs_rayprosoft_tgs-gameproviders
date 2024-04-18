@@ -14,13 +14,13 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-    [Fact]
-    public async Task Kick_Player()
-    {
-        var gameProviderCode = "KY";
-        var playerCode = "test";
+	[Fact]
+	public async Task Kick_Player()
+	{
+		var gameProviderCode = "KY";
+		var playerCode = "test";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<ICommandService<KaiyuanKickPlayerCommand>>();
 
@@ -41,23 +41,23 @@ public partial class GameProvidersClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var httpClient = web.CreateClient();
+		var httpClient = web.CreateClient();
 
-        var sut = new GameProvidersClient(httpClient);
+		var sut = new GameProvidersClient(httpClient);
 
-        await sut
-            .KickPlayerAsync(
-            gameProviderCode: gameProviderCode,
-            playerCode: playerCode);
-    }
+		await sut
+			.KickPlayerAsync(
+			gameProviderCode: gameProviderCode,
+			playerCode: playerCode);
+	}
 
-    [Fact]
-    public async void Kick_Player_HttpRequestException()
-    {
-        var gameProviderCode = "KY";
-        var playerCode = "test";
+	[Fact]
+	public async void Kick_Player_HttpRequestException()
+	{
+		var gameProviderCode = "KY";
+		var playerCode = "test";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<ICommandService<KaiyuanKickPlayerCommand>>();
 
@@ -74,14 +74,14 @@ public partial class GameProvidersClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var httpClient = web.CreateClient();
+		var httpClient = web.CreateClient();
 
-        var sut = new GameProvidersClient(httpClient);
+		var sut = new GameProvidersClient(httpClient);
 
-        _ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
-            .KickPlayerAsync(
-                gameProviderCode: gameProviderCode,
-                playerCode: playerCode)
-            .AsTask());
-    }
+		_ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
+			.KickPlayerAsync(
+				gameProviderCode: gameProviderCode,
+				playerCode: playerCode)
+			.AsTask());
+	}
 }

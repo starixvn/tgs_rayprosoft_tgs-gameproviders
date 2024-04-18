@@ -13,12 +13,12 @@ namespace Tgs.GameProviders.IntegrationTests.CrPati;
 
 public class PlayerBalanceUnitTest
 {
-    [Fact]
-    public async Task GetBalances()
-    {
-        var playerCode = "4ue0ujotpmuu";
+	[Fact]
+	public async Task GetBalances()
+	{
+		var playerCode = "4ue0ujotpmuu";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IGetService<CrPatiPlayerBalanceQuery, PlayerBalanceResult>>();
 
@@ -41,20 +41,20 @@ public class PlayerBalanceUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersClient(httpClient);
+		var sut = new GameProvidersClient(httpClient);
 
-        var actual = await sut
-            .PlayerBalanceAsync(
-            gameProviderCode: GameProviderType.CrPati,
-            playerCode: playerCode);
+		var actual = await sut
+			.PlayerBalanceAsync(
+			gameProviderCode: GameProviderType.CrPati,
+			playerCode: playerCode);
 
-        Assert.NotNull(actual);
-        Assert.Equal(100m, actual.Balance);
-        Assert.Equal(100m, actual.FreeBalance);
-        Assert.Equal(0m, actual.OutstandingBalance);
-    }
+		Assert.NotNull(actual);
+		Assert.Equal(100m, actual.Balance);
+		Assert.Equal(100m, actual.FreeBalance);
+		Assert.Equal(0m, actual.OutstandingBalance);
+	}
 }

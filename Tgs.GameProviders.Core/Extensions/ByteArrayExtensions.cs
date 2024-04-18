@@ -5,17 +5,17 @@ namespace Tgs.GameProviders.Core.Extensions;
 
 public static class ByteArrayExtensions
 {
-    public static string ToBase64String(this byte[] byteArray) =>
-        Convert.ToBase64String(byteArray);
+	public static string ToBase64String(this byte[] byteArray) =>
+		Convert.ToBase64String(byteArray);
 
-    public static string ToHexString(this byte[] byteArray)
-    {
-        var sb = new StringBuilder();
-        foreach (var t in byteArray)
-        {
-            _ = sb.Append(t.ToString("x2"));
-        }
+	public static string ToHexString(this byte[] byteArray)
+	{
+		var sb = new StringBuilder();
+		foreach (var t in byteArray)
+		{
+			_ = sb.Append(t.ToString("x2"));
+		}
 
-        return sb.ToString();
-    }
+		return sb.ToString();
+	}
 }

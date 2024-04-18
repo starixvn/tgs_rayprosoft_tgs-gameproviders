@@ -12,112 +12,112 @@ namespace Tgs.GameProviders.Core.UnitTest.JDBTransfer;
 
 public class JDBTransferGameUrlGetServiceUnitTest
 {
-    [Fact]
-    public async Task Normal_Process()
-    {
-        var fakeGameInterfaceJDBClient = Substitute.For<IGameInterfaceJDBClient>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeBrandService = Substitute.For<IBrandRepository>();
-        var fakeGameRepository = Substitute.For<IGameRepository>();
+	[Fact]
+	public async Task Normal_Process()
+	{
+		var fakeGameInterfaceJDBClient = Substitute.For<IGameInterfaceJDBClient>();
+		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+		var fakeBrandService = Substitute.For<IBrandRepository>();
+		var fakeGameRepository = Substitute.For<IGameRepository>();
 
-        var query = new JDBTransferGameUrlQuery
-        {
-            GameType = GameType.Slot,
-            GameId = 1,
-            BrandCode = "GPI",
-            PlayerCode = "4ucmqplxb029",
-            CurrencyCode = "CNY",
-            LoginRecordId = Guid.NewGuid(),
-            PlatformType = PlatformType.Desktop,
-            Language = "en-US",
-            IPAddress = "127.0.0.1",
-            BackUrl = new("https://dev-t1.rpgp.cc/")
-        };
+		var query = new JDBTransferGameUrlQuery
+		{
+			GameType = GameType.Slot,
+			GameId = 1,
+			BrandCode = "GPI",
+			PlayerCode = "4ucmqplxb029",
+			CurrencyCode = "CNY",
+			LoginRecordId = Guid.NewGuid(),
+			PlatformType = PlatformType.Desktop,
+			Language = "en-US",
+			IPAddress = "127.0.0.1",
+			BackUrl = new("https://dev-t1.rpgp.cc/")
+		};
 
-        var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.JDBTransfer)).Returns(gameProviderId);
+		var gameProviderId = Guid.NewGuid();
+		_ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.JDBTransfer)).Returns(gameProviderId);
 
-        var player = new PlayerInfo(
-            ResellerId: Guid.NewGuid(),
-            ResellerCode: "GPI",
-            LicenseeId: Guid.NewGuid(),
-            LicenseeCode: "GPI",
-            BrandId: Guid.NewGuid(),
-            BrandCode: "GPI",
-            PlayerCode: "4ucmqplxb029",
-            Username: "4ucmqplxb029",
-            DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY");
-        _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(player);
+		var player = new PlayerInfo(
+			ResellerId: Guid.NewGuid(),
+			ResellerCode: "GPI",
+			LicenseeId: Guid.NewGuid(),
+			LicenseeCode: "GPI",
+			BrandId: Guid.NewGuid(),
+			BrandCode: "GPI",
+			PlayerCode: "4ucmqplxb029",
+			Username: "4ucmqplxb029",
+			DefaultWalletId: Guid.NewGuid(),
+			DefaultWalletCurrencyCode: "CNY");
+		_ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(player);
 
-        var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameProviderId),
-             Arg.Is(player.BrandId)).Returns(gameProviderConfigurationId);
+		var gameProviderConfigurationId = Guid.NewGuid();
+		_ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
+			 Arg.Is(gameProviderId),
+			 Arg.Is(player.BrandId)).Returns(gameProviderConfigurationId);
 
-        var configuration = new JDBTransferConfiguration()
-        {
-            ApiUrl = new("http://localhost/"),
-            Domain = "Domain",
-            Agent = "Agent",
-            AesIV = "AesIV",
-            AesKey = "AesKey"
-        };
-        _ = fakeGameProviderRepository.GetJDBTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+		var configuration = new JDBTransferConfiguration()
+		{
+			ApiUrl = new("http://localhost/"),
+			Domain = "Domain",
+			Agent = "Agent",
+			AesIV = "AesIV",
+			AesKey = "AesKey"
+		};
+		_ = fakeGameProviderRepository.GetJDBTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
-        var gameInfo = new GameInfo(
-            GameId: 1,
-            GameCode: "test",
-            GameProviderId: Guid.NewGuid(),
-            GameProviderCode: GameProviderType.JDBTransfer,
-            GameExternalId: "7_1",
-            Type: GameType.Slot,
-            PlatformType: GamePlatformType.DesktopAndMobile,
-            Name: "test",
-            SubGame: true,
-            AvailableToBrand: false,
-            HasTurnoverOnTieBet: true,
-            Html5: true,
-            Description: null,
-            EndpointPath: null,
-            RuleUrl: null,
-            AvailableCurrencies: null,
-            Localization: null,
-            SubGameProviderCode: GameProviderType.JDBTransfer);
-        _ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
+		var gameInfo = new GameInfo(
+			GameId: 1,
+			GameCode: "test",
+			GameProviderId: Guid.NewGuid(),
+			GameProviderCode: GameProviderType.JDBTransfer,
+			GameExternalId: "7_1",
+			Type: GameType.Slot,
+			PlatformType: GamePlatformType.DesktopAndMobile,
+			Name: "test",
+			SubGame: true,
+			AvailableToBrand: false,
+			HasTurnoverOnTieBet: true,
+			Html5: true,
+			Description: null,
+			EndpointPath: null,
+			RuleUrl: null,
+			AvailableCurrencies: null,
+			Localization: null,
+			SubGameProviderCode: GameProviderType.JDBTransfer);
+		_ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
 
-        var gameProviderCultureCode = "en";
-        _ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
-             Arg.Is(gameProviderId),
-             Arg.Is(query.Language)).Returns(gameProviderCultureCode);
+		var gameProviderCultureCode = "en";
+		_ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
+			 Arg.Is(gameProviderId),
+			 Arg.Is(query.Language)).Returns(gameProviderCultureCode);
 
-        var response = new GameUrlReply
-        {
-            IsPlayerExist = true,
-            GameUrl = "http://localhost/"
-        };
-        _ = fakeGameInterfaceJDBClient.GameUrlAsync(
-                Arg.Is(configuration.ApiUrl),
-                Arg.Is(configuration.Domain),
-                Arg.Is(configuration.AesKey),
-                Arg.Is(configuration.AesIV),
-                Arg.Is(player.PlayerCode),
-                Arg.Is("7"),
-                Arg.Is("1"),
-                Arg.Is(gameProviderCultureCode)
-            ).Returns(response);
+		var response = new GameUrlReply
+		{
+			IsPlayerExist = true,
+			GameUrl = "http://localhost/"
+		};
+		_ = fakeGameInterfaceJDBClient.GameUrlAsync(
+				Arg.Is(configuration.ApiUrl),
+				Arg.Is(configuration.Domain),
+				Arg.Is(configuration.AesKey),
+				Arg.Is(configuration.AesIV),
+				Arg.Is(player.PlayerCode),
+				Arg.Is("7"),
+				Arg.Is("1"),
+				Arg.Is(gameProviderCultureCode)
+			).Returns(response);
 
-        var sut = new JDBTransferGameUrlGetService(
-            fakeGameInterfaceJDBClient,
-            fakeGameProviderRepository,
-            fakePlayerRepository,
-            fakeBrandService,
-            fakeGameRepository);
+		var sut = new JDBTransferGameUrlGetService(
+			fakeGameInterfaceJDBClient,
+			fakeGameProviderRepository,
+			fakePlayerRepository,
+			fakeBrandService,
+			fakeGameRepository);
 
-        var actual = await sut.GetAsync(query);
+		var actual = await sut.GetAsync(query);
 
-        Assert.NotNull(actual);
-        Assert.Equal(new Uri("http://localhost/"), actual);
-    }
+		Assert.NotNull(actual);
+		Assert.Equal(new Uri("http://localhost/"), actual);
+	}
 }

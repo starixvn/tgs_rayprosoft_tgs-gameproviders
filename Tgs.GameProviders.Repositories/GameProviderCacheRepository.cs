@@ -520,6 +520,7 @@ internal class GameProviderCacheRepository(
 		return configurationData
 			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
 	}
+
 	public ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 		=> repository
 		.GetGameEndpointsAsync(

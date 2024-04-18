@@ -1,8 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameInterface.Funky.Client;
+
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
-using Tgs.GameInterface.Funky.Client;
 
 namespace Tgs.GameProviders.Core.Funky.ApplicationServices;
 

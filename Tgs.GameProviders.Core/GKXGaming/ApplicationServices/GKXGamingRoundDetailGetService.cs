@@ -6,30 +6,23 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.GKXGaming.ApplicationServices;
 
-internal class GKXGamingRoundDetailGetService : IGetService<GKXGamingRoundDetailQuery, RoundDetailResult>
+internal class GKXGamingRoundDetailGetService(
+	IRoundRepository roundRepository) : IGetService<GKXGamingRoundDetailQuery, RoundDetailResult>
 {
-    private readonly IRoundRepository _roundService;
+	public async ValueTask<RoundDetailResult> GetAsync(GKXGamingRoundDetailQuery query, CancellationToken cancellationToken = default)
+	{
+		var roundInfo = await roundRepository.GetAsync(
+			roundId: query.RoundId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false)
+			?? throw new ArgumentNullException(query.RoundId.ToString(), $"This game bet does not exist.");
 
-    public GKXGamingRoundDetailGetService(
-        IRoundRepository roundService)
-    {
-        _roundService = roundService ?? throw new ArgumentNullException(nameof(roundService));
-    }
-
-    public async ValueTask<RoundDetailResult> GetAsync(GKXGamingRoundDetailQuery query, CancellationToken cancellationToken = default)
-    {
-        var roundInfo = await _roundService
-            .GetAsync(
-            roundId: query.RoundId,
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-
-        return new RoundDetailResult()
-        {
-            Data = new RoundDetailDataBase[]
-            {
-                new RoundDetailDataJson { Value = roundInfo.AdditionalData }
-            }
-        };
-    }
+		return new RoundDetailResult()
+		{
+			Data = new RoundDetailDataBase[]
+			{
+				new RoundDetailDataJson {Value = roundInfo.AdditionalData}
+			}
+		};
+	}
 }

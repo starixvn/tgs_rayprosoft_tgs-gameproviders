@@ -1,18 +1,19 @@
 ﻿using System;
+using System.Linq;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
-using Tgs.GameInterface.Funky.Protos;
 using Tgs.GameInterface.Funky.Client;
 using Tgs.GameProviders.Core.Funky.ApplicationServices;
 using Tgs.GameProviders.Domains;
-using Tgs.GameProviders.Domains.SettingConfiguration;
-using System.Text.Json.Nodes;
-using System.Linq;
 using Tgs.GameProviders.Domains.RoundDetail;
 
+using Tgs.GameProviders.Domains.SettingConfiguration;
+
 namespace Tgs.GameProviders.Core.UnitTest.Funky;
+
 public class FunkyRoundDetailGetServiceUnitTest
 {
 	[Fact]
@@ -20,8 +21,6 @@ public class FunkyRoundDetailGetServiceUnitTest
 	{
 		var fakeRoundRepository = Substitute.For<IRoundRepository>();
 		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-		var fakeBrandRepository = Substitute.For<IBrandRepository>();
 		var fakeGameRepository = Substitute.For<IGameRepository>();
 		var fakeClient = Substitute.For<IGameInterfaceFunkyClient>();
 
@@ -78,33 +77,6 @@ public class FunkyRoundDetailGetServiceUnitTest
 			 cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(roundInfo);
 
-		_ = fakeGameProviderRepository.GetGameProviderIdAsync(
-			gameProviderCode: Arg.Is(GameProviderType.Funky),
-			cancellationToken: Arg.Any<CancellationToken>())
-			.Returns(roundInfo.GameProviderId);
-
-		var player = new PlayerInfo(
-			ResellerId: Guid.NewGuid(),
-			ResellerCode: "GPI",
-			LicenseeId: Guid.NewGuid(),
-			LicenseeCode: "GPI",
-			BrandId: roundInfo.BrandId,
-			BrandCode: "GPI",
-			PlayerCode: "4ucmqplxb029",
-			Username: "4ucmqplxb029",
-			DefaultWalletId: Guid.NewGuid(),
-			DefaultWalletCurrencyCode: "CNY");
-		_ = fakePlayerRepository.GetAsync(
-			playerCode: Arg.Is(roundInfo.PlayerCode),
-			cancellationToken: Arg.Any<CancellationToken>())
-			.Returns(player);
-
-		_ = fakeBrandRepository.GetBrandGameProviderConfigurationIdAsync(
-			gameProviderId: Arg.Is(roundInfo.GameProviderId),
-			brandId: Arg.Is(player.BrandId),
-			cancellationToken: Arg.Any<CancellationToken>())
-			.Returns(roundInfo.GameProviderConfigurationId);
-
 		var configuration = new FunkyConfiguration()
 		{
 			ApiUrl = new("http://trial-gp-api.funkytest.com/"),
@@ -153,7 +125,7 @@ public class FunkyRoundDetailGetServiceUnitTest
 			apiUrl: Arg.Is(configuration.ApiUrl),
 			userAgent: Arg.Is(configuration.UserAgent),
 			authentication: Arg.Is(configuration.Authentication),
-			playerCode: Arg.Is(player.PlayerCode),
+			playerCode: Arg.Is(roundInfo.PlayerCode),
 			gameCode: Arg.Is(game.GameExternalId),
 			externalWagerId: Arg.Is(roundInfo.ExternalRoundId),
 			language: Arg.Is(cultureCode),
@@ -163,8 +135,6 @@ public class FunkyRoundDetailGetServiceUnitTest
 		var sut = new FunkyRoundDetailGetService(
 			fakeRoundRepository,
 			fakeGameProviderRepository,
-			fakePlayerRepository,
-			fakeBrandRepository,
 			fakeGameRepository,
 			fakeClient);
 

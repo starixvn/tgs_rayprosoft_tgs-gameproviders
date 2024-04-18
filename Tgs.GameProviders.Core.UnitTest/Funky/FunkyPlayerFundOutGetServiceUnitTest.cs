@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Text.Json.Nodes;
+
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
-using Tgs.GameInterface.Funky.Protos;
 using Tgs.GameInterface.Funky.Client;
+using Tgs.GameInterface.Funky.Protos;
 using Tgs.GameProviders.Core.Funky.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using System.Text.Json.Nodes;
 
 namespace Tgs.GameProviders.Core.UnitTest.Funky;
+
 public class FunkyPlayerFundOutGetServiceUnitTest
 {
 	[Fact]

@@ -2,7 +2,7 @@
 
 public record AllBetBrandMerchant
 {
-    public string BrandCode { get; init; } = default!;
+	public string BrandCode { get; init; } = default!;
 
-    public AllBetAgent[] Agents { get; init; } = default!;
+	public AllBetAgent[] Agents { get; init; } = default!;
 }

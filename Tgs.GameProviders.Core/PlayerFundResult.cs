@@ -2,8 +2,8 @@
 
 public record PlayerFundResult
 {
-    /// <summary>
-    /// The order identifier
-    /// </summary>
-    public string OrderId { get; set; }
+	/// <summary>
+	/// The order identifier
+	/// </summary>
+	public string OrderId { get; set; }
 }

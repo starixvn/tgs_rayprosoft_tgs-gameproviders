@@ -2,6 +2,6 @@
 
 public record GameRecordListResult
 {
-    public bool Success { get; init; }
-    public GameRecordListModel[] Datas { get; init; }
+	public bool Success { get; init; }
+	public GameRecordListModel[] Datas { get; init; }
 }

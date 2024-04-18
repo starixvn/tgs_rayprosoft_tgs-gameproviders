@@ -26,12 +26,12 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public class GameProvidersBalancesClientUnitTest
 {
-    [Fact]
-    public async Task AwcAelotto_GetBalances()
-    {
-        var brandCode = "GPI";
+	[Fact]
+	public async Task AwcAelotto_GetBalances()
+	{
+		var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IQueryService<AwcAelottoBalancesQuery, BalanceResult>>();
 
@@ -50,26 +50,26 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersBalancesClient(httpClient);
+		var sut = new GameProvidersBalancesClient(httpClient);
 
-        var actual = await sut.AwcAelottoGetBalances(
-            brandCode: brandCode)
-            .ToArrayAsync();
+		var actual = await sut.AwcAelottoGetBalances(
+			brandCode: brandCode)
+			.ToArrayAsync();
 
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-    }
+		Assert.NotNull(actual);
+		Assert.NotEmpty(actual);
+	}
 
-    [Fact]
-    public async Task AwcAws_GetBalances()
-    {
-        var brandCode = "GPI";
+	[Fact]
+	public async Task AwcAws_GetBalances()
+	{
+		var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IQueryService<AwcAwsBalancesQuery, BalanceResult>>();
 
@@ -88,26 +88,26 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersBalancesClient(httpClient);
+		var sut = new GameProvidersBalancesClient(httpClient);
 
-        var actual = await sut.AwcAwsGetBalances(
-            brandCode: brandCode)
-            .ToArrayAsync();
+		var actual = await sut.AwcAwsGetBalances(
+			brandCode: brandCode)
+			.ToArrayAsync();
 
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-    }
+		Assert.NotNull(actual);
+		Assert.NotEmpty(actual);
+	}
 
-    [Fact]
-    public async Task AwcCockfight_GetBalances()
-    {
-        var brandCode = "GPI";
+	[Fact]
+	public async Task AwcCockfight_GetBalances()
+	{
+		var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IQueryService<AwcCockfightBalancesQuery, BalanceResult>>();
 
@@ -126,26 +126,26 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersBalancesClient(httpClient);
+		var sut = new GameProvidersBalancesClient(httpClient);
 
-        var actual = await sut.AwcCockfightGetBalances(
-            brandCode: brandCode)
-            .ToArrayAsync();
+		var actual = await sut.AwcCockfightGetBalances(
+			brandCode: brandCode)
+			.ToArrayAsync();
 
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-    }
+		Assert.NotNull(actual);
+		Assert.NotEmpty(actual);
+	}
 
-    [Fact]
-    public async Task AwcFacai_GetBalances()
-    {
-        var brandCode = "GPI";
+	[Fact]
+	public async Task AwcFacai_GetBalances()
+	{
+		var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IQueryService<AwcFacaiBalancesQuery, BalanceResult>>();
 
@@ -164,26 +164,26 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersBalancesClient(httpClient);
+		var sut = new GameProvidersBalancesClient(httpClient);
 
-        var actual = await sut.AwcFacaiGetBalances(
-            brandCode: brandCode)
-            .ToArrayAsync();
+		var actual = await sut.AwcFacaiGetBalances(
+			brandCode: brandCode)
+			.ToArrayAsync();
 
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-    }
+		Assert.NotNull(actual);
+		Assert.NotEmpty(actual);
+	}
 
-    [Fact]
-    public async Task AwcFs_GetBalances()
-    {
-        var brandCode = "GPI";
+	[Fact]
+	public async Task AwcFs_GetBalances()
+	{
+		var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IQueryService<AwcFsBalancesQuery, BalanceResult>>();
 
@@ -202,26 +202,26 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersBalancesClient(httpClient);
+		var sut = new GameProvidersBalancesClient(httpClient);
 
-        var actual = await sut.AwcFsGetBalances(
-            brandCode: brandCode)
-            .ToArrayAsync();
+		var actual = await sut.AwcFsGetBalances(
+			brandCode: brandCode)
+			.ToArrayAsync();
 
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-    }
+		Assert.NotNull(actual);
+		Assert.NotEmpty(actual);
+	}
 
-    [Fact]
-    public async Task AwcKm_GetBalances()
-    {
-        var brandCode = "GPI";
+	[Fact]
+	public async Task AwcKm_GetBalances()
+	{
+		var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IQueryService<AwcKmBalancesQuery, BalanceResult>>();
 
@@ -240,26 +240,26 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersBalancesClient(httpClient);
+		var sut = new GameProvidersBalancesClient(httpClient);
 
-        var actual = await sut.AwcKmGetBalances(
-            brandCode: brandCode)
-            .ToArrayAsync();
+		var actual = await sut.AwcKmGetBalances(
+			brandCode: brandCode)
+			.ToArrayAsync();
 
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-    }
+		Assert.NotNull(actual);
+		Assert.NotEmpty(actual);
+	}
 
-    [Fact]
-    public async Task AwcLudo_GetBalances()
-    {
-        var brandCode = "GPI";
+	[Fact]
+	public async Task AwcLudo_GetBalances()
+	{
+		var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IQueryService<AwcLudoBalancesQuery, BalanceResult>>();
 
@@ -278,26 +278,26 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersBalancesClient(httpClient);
+		var sut = new GameProvidersBalancesClient(httpClient);
 
-        var actual = await sut.AwcLudoGetBalances(
-            brandCode: brandCode)
-            .ToArrayAsync();
+		var actual = await sut.AwcLudoGetBalances(
+			brandCode: brandCode)
+			.ToArrayAsync();
 
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-    }
+		Assert.NotNull(actual);
+		Assert.NotEmpty(actual);
+	}
 
-    [Fact]
-    public async Task AwcPgs_GetBalances()
-    {
-        var brandCode = "GPI";
+	[Fact]
+	public async Task AwcPgs_GetBalances()
+	{
+		var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IQueryService<AwcPgsBalancesQuery, BalanceResult>>();
 
@@ -316,26 +316,26 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersBalancesClient(httpClient);
+		var sut = new GameProvidersBalancesClient(httpClient);
 
-        var actual = await sut.AwcPgsGetBalances(
-            brandCode: brandCode)
-            .ToArrayAsync();
+		var actual = await sut.AwcPgsGetBalances(
+			brandCode: brandCode)
+			.ToArrayAsync();
 
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-    }
+		Assert.NotNull(actual);
+		Assert.NotEmpty(actual);
+	}
 
-    [Fact]
-    public async Task AwcRcb_GetBalances()
-    {
-        var brandCode = "GPI";
+	[Fact]
+	public async Task AwcRcb_GetBalances()
+	{
+		var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IQueryService<AwcRcbBalancesQuery, BalanceResult>>();
 
@@ -354,26 +354,26 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersBalancesClient(httpClient);
+		var sut = new GameProvidersBalancesClient(httpClient);
 
-        var actual = await sut.AwcRcbGetBalances(
-            brandCode: brandCode)
-            .ToArrayAsync();
+		var actual = await sut.AwcRcbGetBalances(
+			brandCode: brandCode)
+			.ToArrayAsync();
 
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-    }
+		Assert.NotNull(actual);
+		Assert.NotEmpty(actual);
+	}
 
-    [Fact]
-    public async Task AwcSg_GetBalances()
-    {
-        var brandCode = "GPI";
+	[Fact]
+	public async Task AwcSg_GetBalances()
+	{
+		var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IQueryService<AwcSgBalancesQuery, BalanceResult>>();
 
@@ -392,26 +392,26 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersBalancesClient(httpClient);
+		var sut = new GameProvidersBalancesClient(httpClient);
 
-        var actual = await sut.AwcSgGetBalances(
-            brandCode: brandCode)
-            .ToArrayAsync();
+		var actual = await sut.AwcSgGetBalances(
+			brandCode: brandCode)
+			.ToArrayAsync();
 
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-    }
+		Assert.NotNull(actual);
+		Assert.NotEmpty(actual);
+	}
 
-    [Fact]
-    public async Task AwcSpade_GetBalances()
-    {
-        var brandCode = "GPI";
+	[Fact]
+	public async Task AwcSpade_GetBalances()
+	{
+		var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IQueryService<AwcSpadeBalancesQuery, BalanceResult>>();
 
@@ -430,26 +430,26 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersBalancesClient(httpClient);
+		var sut = new GameProvidersBalancesClient(httpClient);
 
-        var actual = await sut.AwcSpadeGetBalances(
-            brandCode: brandCode)
-            .ToArrayAsync();
+		var actual = await sut.AwcSpadeGetBalances(
+			brandCode: brandCode)
+			.ToArrayAsync();
 
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-    }
+		Assert.NotNull(actual);
+		Assert.NotEmpty(actual);
+	}
 
-    [Fact]
-    public async Task AwcVenus_GetBalances()
-    {
-        var brandCode = "GPI";
+	[Fact]
+	public async Task AwcVenus_GetBalances()
+	{
+		var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IQueryService<AwcVenusBalancesQuery, BalanceResult>>();
 
@@ -468,26 +468,26 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersBalancesClient(httpClient);
+		var sut = new GameProvidersBalancesClient(httpClient);
 
-        var actual = await sut.AwcVenusGetBalances(
-            brandCode: brandCode)
-            .ToArrayAsync();
+		var actual = await sut.AwcVenusGetBalances(
+			brandCode: brandCode)
+			.ToArrayAsync();
 
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-    }
+		Assert.NotNull(actual);
+		Assert.NotEmpty(actual);
+	}
 
-    [Fact]
-    public async Task AwcYl_GetBalances()
-    {
-        var brandCode = "GPI";
+	[Fact]
+	public async Task AwcYl_GetBalances()
+	{
+		var brandCode = "GPI";
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IQueryService<AwcYlBalancesQuery, BalanceResult>>();
 
@@ -506,17 +506,17 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
+		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
 
-        var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
 
-        var sut = new GameProvidersBalancesClient(httpClient);
+		var sut = new GameProvidersBalancesClient(httpClient);
 
-        var actual = await sut.AwcYlGetBalances(
-            brandCode: brandCode)
-            .ToArrayAsync();
+		var actual = await sut.AwcYlGetBalances(
+			brandCode: brandCode)
+			.ToArrayAsync();
 
-        Assert.NotNull(actual);
-        Assert.NotEmpty(actual);
-    }
+		Assert.NotNull(actual);
+		Assert.NotEmpty(actual);
+	}
 }

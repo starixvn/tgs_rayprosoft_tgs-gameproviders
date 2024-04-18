@@ -2,5 +2,5 @@
 
 public record SM01PlatformLoginQuery
 {
-    public string PlayerCode { get; init; } = default!;
+	public string PlayerCode { get; init; } = default!;
 }

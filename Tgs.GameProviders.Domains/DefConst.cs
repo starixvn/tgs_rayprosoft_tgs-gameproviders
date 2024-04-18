@@ -2,5 +2,5 @@
 
 public class DefConst
 {
-    public static readonly string BrandCodeDefault = "Default";
+	public static readonly string BrandCodeDefault = "Default";
 }

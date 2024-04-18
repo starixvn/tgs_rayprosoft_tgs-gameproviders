@@ -4,22 +4,12 @@ using Tgs.GameProviders.Core;
 
 namespace Tgs.GameProviders.Repositories;
 
-public class PlayerRepository : IPlayerRepository
+public class PlayerRepository(IGameCommandClient client) : IPlayerRepository
 {
-    private readonly IGameCommandClient _client;
-
-    public PlayerRepository(IGameCommandClient client)
-    {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
-
-    public async ValueTask<PlayerInfo> GetAsync(
-        string playerCode,
-        CancellationToken cancellationToken = default)
-       => await _client
-        .PlayerGetAsync(
-           playerCode: playerCode,
-           cancellationToken: cancellationToken)
-        .ConfigureAwait(false)
-        ?? throw new Exception($"The player does not exist.{playerCode}");
+	public async ValueTask<PlayerInfo> GetAsync(string playerCode, CancellationToken cancellationToken = default)
+		=> await client.PlayerGetAsync(
+			playerCode: playerCode,
+			cancellationToken: cancellationToken)
+		.ConfigureAwait(false)
+		?? throw new ArgumentNullException(playerCode, "The player does not exist.");
 }

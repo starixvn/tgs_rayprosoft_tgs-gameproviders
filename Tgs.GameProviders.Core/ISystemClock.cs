@@ -4,5 +4,5 @@ namespace Tgs.GameProviders.Core;
 
 public interface ISystemClock
 {
-    DateTimeOffset CurrentTime { get; }
+	DateTimeOffset CurrentTime { get; }
 }

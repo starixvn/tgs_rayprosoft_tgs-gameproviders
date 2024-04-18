@@ -12,90 +12,90 @@ namespace Tgs.GameProviders.Core.UnitTest.SabaTransfer;
 
 public class SabaTransferPlayerFundOutGetServiceUnitTest
 {
-    [Fact]
-    public async Task Normal_Process()
-    {
-        var fakeGameInterfaceSabaClient = Substitute.For<IGameInterfaceSabaClient>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeBrandService = Substitute.For<IBrandRepository>();
+	[Fact]
+	public async Task Normal_Process()
+	{
+		var fakeGameInterfaceSabaClient = Substitute.For<IGameInterfaceSabaClient>();
+		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+		var fakeBrandService = Substitute.For<IBrandRepository>();
 
-        var vendorTransId = Guid.NewGuid().ToString("N");
+		var vendorTransId = Guid.NewGuid().ToString("N");
 
-        var query = new SabaTransferPlayerFundOutQuery
-        {
-            BrandCode = "GPI",
-            PlayerCode = "4ucmqplxb029",
-            CurrencyCode = "CNY",
-            OrderId = vendorTransId,
-            Amount = 100m
-        };
+		var query = new SabaTransferPlayerFundOutQuery
+		{
+			BrandCode = "GPI",
+			PlayerCode = "4ucmqplxb029",
+			CurrencyCode = "CNY",
+			OrderId = vendorTransId,
+			Amount = 100m
+		};
 
-        var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.SabaTransfer)).Returns(gameProviderId);
+		var gameProviderId = Guid.NewGuid();
+		_ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.SabaTransfer)).Returns(gameProviderId);
 
-        var player = new PlayerInfo(
-            ResellerId: Guid.NewGuid(),
-            ResellerCode: "GPI",
-            LicenseeId: Guid.NewGuid(),
-            LicenseeCode: "GPI",
-            BrandId: Guid.NewGuid(),
-            BrandCode: "GPI",
-            PlayerCode: "4ucmqplxb029",
-            Username: "4ucmqplxb029",
-            DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY");
-        _ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(player);
+		var player = new PlayerInfo(
+			ResellerId: Guid.NewGuid(),
+			ResellerCode: "GPI",
+			LicenseeId: Guid.NewGuid(),
+			LicenseeCode: "GPI",
+			BrandId: Guid.NewGuid(),
+			BrandCode: "GPI",
+			PlayerCode: "4ucmqplxb029",
+			Username: "4ucmqplxb029",
+			DefaultWalletId: Guid.NewGuid(),
+			DefaultWalletCurrencyCode: "CNY");
+		_ = fakePlayerRepository.GetAsync(Arg.Is(query.PlayerCode)).Returns(player);
 
-        var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameProviderId),
-             Arg.Is(player.BrandId)).Returns(gameProviderConfigurationId);
+		var gameProviderConfigurationId = Guid.NewGuid();
+		_ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
+			 Arg.Is(gameProviderId),
+			 Arg.Is(player.BrandId)).Returns(gameProviderConfigurationId);
 
-        var configuration = new SabaTransferConfiguration()
-        {
-            ApiUrl = new("http://localhost/"),
-            OperatorId = "tg",
-            VendorId = "um5vspnzkx",
-            OddsType = 2
-        };
-        _ = fakeGameProviderRepository.GetSabaTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+		var configuration = new SabaTransferConfiguration()
+		{
+			ApiUrl = new("http://localhost/"),
+			OperatorId = "tg",
+			VendorId = "um5vspnzkx",
+			OddsType = 2
+		};
+		_ = fakeGameProviderRepository.GetSabaTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
-        var gameProviderCurrencyCode = "20";
-        _ = fakeGameProviderRepository
-            .GetGameProviderCurrencyCodeAsync(
-               gameProviderId: Arg.Is(gameProviderId),
-               currencyCode: Arg.Is(player.DefaultWalletCurrencyCode))
-            .Returns(gameProviderCurrencyCode);
+		var gameProviderCurrencyCode = "20";
+		_ = fakeGameProviderRepository
+			.GetGameProviderCurrencyCodeAsync(
+			   gameProviderId: Arg.Is(gameProviderId),
+			   currencyCode: Arg.Is(player.DefaultWalletCurrencyCode))
+			.Returns(gameProviderCurrencyCode);
 
-        var reply = new FundReply()
-        {
-            Check = false,
-            IsOrderExist = true,
-            VendorTransId = vendorTransId,
-            ActualVendorTransId = $"{configuration.OperatorId}_{vendorTransId}",
-            TransId = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-            Balance = 100,
-        };
-        _ = fakeGameInterfaceSabaClient
-            .FundOutAsync(
-                apiUrl: Arg.Is(configuration.ApiUrl),
-                operatorId: Arg.Is(configuration.OperatorId),
-                vendorId: Arg.Is(configuration.VendorId),
-                vendorMemberId: Arg.Is(player.PlayerCode),
-                vendorTransId: Arg.Is(query.OrderId),
-                currency: Arg.Is(int.Parse(gameProviderCurrencyCode)),
-                amount: Arg.Is(query.Amount))
-            .Returns(reply);
+		var reply = new FundReply()
+		{
+			Check = false,
+			IsOrderExist = true,
+			VendorTransId = vendorTransId,
+			ActualVendorTransId = $"{configuration.OperatorId}_{vendorTransId}",
+			TransId = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+			Balance = 100,
+		};
+		_ = fakeGameInterfaceSabaClient
+			.FundOutAsync(
+				apiUrl: Arg.Is(configuration.ApiUrl),
+				operatorId: Arg.Is(configuration.OperatorId),
+				vendorId: Arg.Is(configuration.VendorId),
+				vendorMemberId: Arg.Is(player.PlayerCode),
+				vendorTransId: Arg.Is(query.OrderId),
+				currency: Arg.Is(int.Parse(gameProviderCurrencyCode)),
+				amount: Arg.Is(query.Amount))
+			.Returns(reply);
 
-        var sut = new SabaTransferPlayerFundOutGetService(
-            fakeGameInterfaceSabaClient,
-            fakeGameProviderRepository,
-            fakePlayerRepository,
-            fakeBrandService);
+		var sut = new SabaTransferPlayerFundOutGetService(
+			fakeGameInterfaceSabaClient,
+			fakeGameProviderRepository,
+			fakePlayerRepository,
+			fakeBrandService);
 
-        var actual = await sut.GetAsync(query);
+		var actual = await sut.GetAsync(query);
 
-        Assert.NotNull(actual);
-    }
+		Assert.NotNull(actual);
+	}
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
@@ -13,13 +14,14 @@ internal class KaiyuanRoundDetailGetService(
 		var roundInfo = await roundRepository.GetAsync(
 			roundId: query.RoundId,
 			cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
+			.ConfigureAwait(false)
+			?? throw new ArgumentNullException(query.RoundId.ToString(), $"This game bet does not exist.");
 
 		return new RoundDetailResult()
 		{
 			Data = new RoundDetailDataBase[]
 			{
-				new RoundDetailDataJson { Value = roundInfo.AdditionalData }
+				new RoundDetailDataJson {Value = roundInfo.AdditionalData}
 			}
 		};
 	}

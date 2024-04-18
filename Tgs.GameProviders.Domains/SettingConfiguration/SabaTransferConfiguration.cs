@@ -2,11 +2,11 @@
 
 public record SabaTransferConfiguration
 {
-    public Uri ApiUrl { get; init; } = default!;
+	public Uri ApiUrl { get; init; } = default!;
 
-    public string OperatorId { get; init; } = default!;
+	public string OperatorId { get; init; } = default!;
 
-    public string VendorId { get; init; } = default!;
+	public string VendorId { get; init; } = default!;
 
-    public int OddsType { get; init; } = default!;
+	public int OddsType { get; init; } = default!;
 }

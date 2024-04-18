@@ -9,44 +9,44 @@ namespace Tgs.GameProviders.Core.TFGamingTransfer.ApplicationServices;
 
 public class TFGamingTransferPlayerFundInGetService : IGetService<TFGamingTransferPlayerFundInQuery, PlayerFundResult>
 {
-    private readonly IBrandRepository _brand;
-    private readonly IGameInterfaceTFGamingClient _client;
-    private readonly IGameProviderRepository _gameProvider;
-    private readonly IPlayerRepository _player;
+	private readonly IBrandRepository _brand;
+	private readonly IGameInterfaceTFGamingClient _client;
+	private readonly IGameProviderRepository _gameProvider;
+	private readonly IPlayerRepository _player;
 
-    public TFGamingTransferPlayerFundInGetService(
-        IBrandRepository brand,
-        IGameProviderRepository gameProvider,
-        IGameInterfaceTFGamingClient client,
-        IPlayerRepository player)
-    {
-        _brand = brand ?? throw new ArgumentNullException(nameof(brand));
-        _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _player = player ?? throw new ArgumentNullException(nameof(player));
-    }
+	public TFGamingTransferPlayerFundInGetService(
+		IBrandRepository brand,
+		IGameProviderRepository gameProvider,
+		IGameInterfaceTFGamingClient client,
+		IPlayerRepository player)
+	{
+		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
+		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
+		_client = client ?? throw new ArgumentNullException(nameof(client));
+		_player = player ?? throw new ArgumentNullException(nameof(player));
+	}
 
-    public async ValueTask<PlayerFundResult> GetAsync(TFGamingTransferPlayerFundInQuery query, CancellationToken cancellationToken = default)
-    {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.TFGamingTransfer).ConfigureAwait(false);
-        var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-        var configuration = await _gameProvider.GetTFGamingTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+	public async ValueTask<PlayerFundResult> GetAsync(TFGamingTransferPlayerFundInQuery query, CancellationToken cancellationToken = default)
+	{
+		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.TFGamingTransfer).ConfigureAwait(false);
+		var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
+		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
+		var configuration = await _gameProvider.GetTFGamingTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-        var reply = await _client
-            .FundInAsync(
-                apiUrl: configuration.ApiUrl,
-                operatorId: configuration.OperatorId,
-                privateToken: configuration.PrivateToken,
-                member: player.PlayerCode,
-                refTransactionCode: query.OrderId,
-                amount: query.Amount,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
+		var reply = await _client
+			.FundInAsync(
+				apiUrl: configuration.ApiUrl,
+				operatorId: configuration.OperatorId,
+				privateToken: configuration.PrivateToken,
+				member: player.PlayerCode,
+				refTransactionCode: query.OrderId,
+				amount: query.Amount,
+				cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 
-        return new PlayerFundResult()
-        {
-            OrderId = reply.TransactionId
-        };
-    }
+		return new PlayerFundResult()
+		{
+			OrderId = reply.TransactionId
+		};
+	}
 }

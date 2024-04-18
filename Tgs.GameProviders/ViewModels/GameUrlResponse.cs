@@ -2,5 +2,5 @@
 
 public class GameUrlResponse
 {
-    public Uri? Url { get; set; }
+	public Uri? Url { get; set; }
 }

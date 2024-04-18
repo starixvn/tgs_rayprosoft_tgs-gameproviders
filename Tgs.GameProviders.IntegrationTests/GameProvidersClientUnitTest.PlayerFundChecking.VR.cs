@@ -14,17 +14,17 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-    [Fact]
-    public async Task Player_Fund_Checking_By_VR()
-    {
-        var brandCode = "GPI";
-        var playerCode = "test";
-        var currencyCode = "CNY";
-        var orderId = Guid.NewGuid().ToString("N");
-        var startTime = DateTimeOffset.UtcNow.AddMinutes(-1);
-        var endTime = DateTimeOffset.UtcNow;
+	[Fact]
+	public async Task Player_Fund_Checking_By_VR()
+	{
+		var brandCode = "GPI";
+		var playerCode = "test";
+		var currencyCode = "CNY";
+		var orderId = Guid.NewGuid().ToString("N");
+		var startTime = DateTimeOffset.UtcNow.AddMinutes(-1);
+		var endTime = DateTimeOffset.UtcNow;
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IGetService<VRGamingPlayerFundCheckingQuery, bool>>();
 
@@ -45,33 +45,33 @@ public partial class GameProvidersClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var httpClient = web.CreateClient();
+		var httpClient = web.CreateClient();
 
-        var sut = new GameProvidersClient(httpClient);
+		var sut = new GameProvidersClient(httpClient);
 
-        var actual = await sut
-            .PlayerFundCheckingByVRAsync(
-            brandCode: brandCode,
-            playerCode: playerCode,
-            currencyCode: currencyCode,
-            orderId: orderId,
-            startTime: startTime,
-            endTime: endTime);
+		var actual = await sut
+			.PlayerFundCheckingByVRAsync(
+			brandCode: brandCode,
+			playerCode: playerCode,
+			currencyCode: currencyCode,
+			orderId: orderId,
+			startTime: startTime,
+			endTime: endTime);
 
-        Assert.True(actual);
-    }
+		Assert.True(actual);
+	}
 
-    [Fact]
-    public async void Player_Fund_Checking_By_VR_HttpRequestException()
-    {
-        var brandCode = "GPI";
-        var playerCode = "test";
-        var currencyCode = "CNY";
-        var orderId = Guid.NewGuid().ToString("N");
-        var startTime = DateTimeOffset.UtcNow.AddMinutes(-1);
-        var endTime = DateTimeOffset.UtcNow;
+	[Fact]
+	public async void Player_Fund_Checking_By_VR_HttpRequestException()
+	{
+		var brandCode = "GPI";
+		var playerCode = "test";
+		var currencyCode = "CNY";
+		var orderId = Guid.NewGuid().ToString("N");
+		var startTime = DateTimeOffset.UtcNow.AddMinutes(-1);
+		var endTime = DateTimeOffset.UtcNow;
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IGetService<VRGamingPlayerFundCheckingQuery, bool>>();
 
@@ -93,18 +93,18 @@ public partial class GameProvidersClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var httpClient = web.CreateClient();
+		var httpClient = web.CreateClient();
 
-        var sut = new GameProvidersClient(httpClient);
+		var sut = new GameProvidersClient(httpClient);
 
-        _ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
-            .PlayerFundCheckingByVRAsync(
-                 brandCode: brandCode,
-                 playerCode: playerCode,
-                 currencyCode: currencyCode,
-                 orderId: orderId,
-                 startTime: startTime,
-                 endTime: endTime)
-             .AsTask());
-    }
+		_ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
+			.PlayerFundCheckingByVRAsync(
+				 brandCode: brandCode,
+				 playerCode: playerCode,
+				 currencyCode: currencyCode,
+				 orderId: orderId,
+				 startTime: startTime,
+				 endTime: endTime)
+			 .AsTask());
+	}
 }

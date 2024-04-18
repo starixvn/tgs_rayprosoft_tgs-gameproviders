@@ -9,65 +9,65 @@ namespace Tgs.GameProviders.Core.Cards365Transfer.ApplicationServices;
 
 public class Cards365TransferGameUrlGetService : IGetService<Cards365TransferGameUrlQuery, Uri>
 {
-    private readonly IBrandRepository _brand;
-    private readonly IGameInterfaceCards365Client _client;
-    private readonly IGameProviderRepository _gameProvider;
-    private readonly IPlayerRepository _player;
+	private readonly IBrandRepository _brand;
+	private readonly IGameInterfaceCards365Client _client;
+	private readonly IGameProviderRepository _gameProvider;
+	private readonly IPlayerRepository _player;
 
-    public Cards365TransferGameUrlGetService(
-        IGameProviderRepository gameProvider,
-        IPlayerRepository player,
-        IBrandRepository brand,
-        IGameInterfaceCards365Client client)
-    {
-        _brand = brand ?? throw new ArgumentNullException(nameof(brand));
-        _gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _player = player ?? throw new ArgumentNullException(nameof(player));
-    }
+	public Cards365TransferGameUrlGetService(
+		IGameProviderRepository gameProvider,
+		IPlayerRepository player,
+		IBrandRepository brand,
+		IGameInterfaceCards365Client client)
+	{
+		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
+		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
+		_client = client ?? throw new ArgumentNullException(nameof(client));
+		_player = player ?? throw new ArgumentNullException(nameof(player));
+	}
 
-    public async ValueTask<Uri> GetAsync(Cards365TransferGameUrlQuery query, CancellationToken cancellationToken = default)
-    {
-        var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
-            gameProviderCode: GameProviderType.Cards365Transfer,
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-        var player = await _player.GetAsync(
-            playerCode: query.PlayerCode,
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-        var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
-            gameProviderId: gameProviderId,
-            brandId: player.BrandId,
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-        var configuration = await _gameProvider.GetCards365TransferConfigurationAsync(
-            gameProviderConfigurationId: gameProviderConfigurationId,
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
-        var currencyCode = await _gameProvider.GetGameProviderCurrencyCodeAsync(
-            gameProviderId: gameProviderId,
-            currencyCode: player.DefaultWalletCurrencyCode,
-            cancellationToken)
-            .ConfigureAwait(false);
-        var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(
-            gameProviderId: gameProviderId,
-            cultureCode: query.Language,
-            cancellationToken: cancellationToken)
-            .ConfigureAwait(false) ?? "EN";
+	public async ValueTask<Uri> GetAsync(Cards365TransferGameUrlQuery query, CancellationToken cancellationToken = default)
+	{
+		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.Cards365Transfer,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var player = await _player.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: player.BrandId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var configuration = await _gameProvider.GetCards365TransferConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var currencyCode = await _gameProvider.GetGameProviderCurrencyCodeAsync(
+			gameProviderId: gameProviderId,
+			currencyCode: player.DefaultWalletCurrencyCode,
+			cancellationToken)
+			.ConfigureAwait(false);
+		var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(
+			gameProviderId: gameProviderId,
+			cultureCode: query.Language,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false) ?? "EN";
 
-        var gameUrl = await _client
-            .GameUrlAsync(
-                apiUrl: configuration.ApiUrl,
-                website: configuration.Website,
-                cert: configuration.Cert,
-                extension1: configuration.Extension1,
-                playerCode: player.PlayerCode,
-                currency: int.Parse(currencyCode),
-                language: string.IsNullOrEmpty(cultureCode) ? "EN" : cultureCode,
-                cancellationToken: cancellationToken)
-            .ConfigureAwait(false);
+		var gameUrl = await _client
+			.GameUrlAsync(
+				apiUrl: configuration.ApiUrl,
+				website: configuration.Website,
+				cert: configuration.Cert,
+				extension1: configuration.Extension1,
+				playerCode: player.PlayerCode,
+				currency: int.Parse(currencyCode),
+				language: string.IsNullOrEmpty(cultureCode) ? "EN" : cultureCode,
+				cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 
-        return new Uri(gameUrl);
-    }
+		return new Uri(gameUrl);
+	}
 }

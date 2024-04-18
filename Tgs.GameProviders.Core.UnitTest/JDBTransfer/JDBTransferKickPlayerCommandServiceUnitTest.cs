@@ -12,66 +12,66 @@ namespace Tgs.GameProviders.Core.UnitTest.JDBTransfer;
 
 public class JDBTransferKickPlayerCommandServiceUnitTest
 {
-    [Fact]
-    public async Task Normal_Process()
-    {
-        var fakeGameInterfaceJDBClient = Substitute.For<IGameInterfaceJDBClient>();
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeBrandService = Substitute.For<IBrandRepository>();
+	[Fact]
+	public async Task Normal_Process()
+	{
+		var fakeGameInterfaceJDBClient = Substitute.For<IGameInterfaceJDBClient>();
+		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+		var fakeBrandService = Substitute.For<IBrandRepository>();
 
-        var command = new JDBTransferKickPlayerCommand
-        {
-            PlayerCode = "4ucmqplxb029"
-        };
+		var command = new JDBTransferKickPlayerCommand
+		{
+			PlayerCode = "4ucmqplxb029"
+		};
 
-        var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.JDBTransfer)).Returns(gameProviderId);
+		var gameProviderId = Guid.NewGuid();
+		_ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.JDBTransfer)).Returns(gameProviderId);
 
-        var player = new PlayerInfo(
-            ResellerId: Guid.NewGuid(),
-            ResellerCode: "GPI",
-            LicenseeId: Guid.NewGuid(),
-            LicenseeCode: "GPI",
-            BrandId: Guid.NewGuid(),
-            BrandCode: "GPI",
-            PlayerCode: "4ucmqplxb029",
-            Username: "4ucmqplxb029",
-            DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY");
-        _ = fakePlayerRepository.GetAsync(Arg.Is(command.PlayerCode)).Returns(player);
+		var player = new PlayerInfo(
+			ResellerId: Guid.NewGuid(),
+			ResellerCode: "GPI",
+			LicenseeId: Guid.NewGuid(),
+			LicenseeCode: "GPI",
+			BrandId: Guid.NewGuid(),
+			BrandCode: "GPI",
+			PlayerCode: "4ucmqplxb029",
+			Username: "4ucmqplxb029",
+			DefaultWalletId: Guid.NewGuid(),
+			DefaultWalletCurrencyCode: "CNY");
+		_ = fakePlayerRepository.GetAsync(Arg.Is(command.PlayerCode)).Returns(player);
 
-        var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
-             Arg.Is(gameProviderId),
-             Arg.Is(player.BrandId)).Returns(gameProviderConfigurationId);
+		var gameProviderConfigurationId = Guid.NewGuid();
+		_ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
+			 Arg.Is(gameProviderId),
+			 Arg.Is(player.BrandId)).Returns(gameProviderConfigurationId);
 
-        var configuration = new JDBTransferConfiguration()
-        {
-            ApiUrl = new("http://localhost/"),
-            Domain = "Domain",
-            Agent = "Agent",
-            AesIV = "AesIV",
-            AesKey = "AesKey"
-        };
-        _ = fakeGameProviderRepository.GetJDBTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
+		var configuration = new JDBTransferConfiguration()
+		{
+			ApiUrl = new("http://localhost/"),
+			Domain = "Domain",
+			Agent = "Agent",
+			AesIV = "AesIV",
+			AesKey = "AesKey"
+		};
+		_ = fakeGameProviderRepository.GetJDBTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
-        var sut = new JDBTransferKickPlayerCommandService(
-            fakeGameInterfaceJDBClient,
-            fakeGameProviderRepository,
-            fakePlayerRepository,
-            fakeBrandService);
+		var sut = new JDBTransferKickPlayerCommandService(
+			fakeGameInterfaceJDBClient,
+			fakeGameProviderRepository,
+			fakePlayerRepository,
+			fakeBrandService);
 
-        await sut.ExecuteAsync(command);
+		await sut.ExecuteAsync(command);
 
-        _ = fakeGameInterfaceJDBClient
-            .Received(1)
-            .PlayerKickAsync(
-                Arg.Is(configuration.ApiUrl),
-                Arg.Is(configuration.Domain),
-                Arg.Is(configuration.AesKey),
-                Arg.Is(configuration.AesIV),
-                Arg.Is(configuration.Agent),
-                Arg.Is(command.PlayerCode));
-    }
+		_ = fakeGameInterfaceJDBClient
+			.Received(1)
+			.PlayerKickAsync(
+				Arg.Is(configuration.ApiUrl),
+				Arg.Is(configuration.Domain),
+				Arg.Is(configuration.AesKey),
+				Arg.Is(configuration.AesIV),
+				Arg.Is(configuration.Agent),
+				Arg.Is(command.PlayerCode));
+	}
 }

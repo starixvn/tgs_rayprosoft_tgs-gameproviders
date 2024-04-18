@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.Funky.Client;
 using Tgs.GameProviders.Domains;
@@ -9,42 +10,28 @@ using Tgs.ServiceUtility;
 namespace Tgs.GameProviders.Core.Funky.ApplicationServices;
 
 internal class FunkyRoundDetailGetService(
-	IRoundRepository roundService,
-	IGameProviderRepository gameProvider,
-	IPlayerRepository player,
-	IBrandRepository brand,
-	IGameRepository game,
+	IRoundRepository roundRepository,
+	IGameProviderRepository gameProviderRepository,
+	IGameRepository gameRepository,
 	IGameInterfaceFunkyClient client) : IGetService<FunkyRoundDetailQuery, RoundDetailResult>
 {
 	public async ValueTask<RoundDetailResult> GetAsync(FunkyRoundDetailQuery query, CancellationToken cancellationToken = default)
 	{
-		var roundInfo = await roundService.GetAsync(
+		var roundInfo = await roundRepository.GetAsync(
 			roundId: query.RoundId,
 			cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
-		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
-			gameProviderCode: GameProviderType.Funky,
+			.ConfigureAwait(false)
+			?? throw new ArgumentNullException(query.RoundId.ToString(), $"This game bet does not exist.");
+		var configuration = await gameProviderRepository.GetFunkyConfigurationAsync(
+			gameProviderConfigurationId: roundInfo.GameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var playerInfo = await player.GetAsync(
-			playerCode: roundInfo.PlayerCode,
-			cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await brand.GetBrandGameProviderConfigurationIdAsync(
-			gameProviderId: gameProviderId,
-			brandId: playerInfo.BrandId,
-			cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
-		var configuration = await gameProvider.GetFunkyConfigurationAsync(
-			gameProviderConfigurationId: gameProviderConfigurationId,
-			cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
-		var cultureCode = await gameProvider.GetGameProviderCultureCodeAsync(
-			gameProviderId: gameProviderId,
+		var cultureCode = await gameProviderRepository.GetGameProviderCultureCodeAsync(
+			gameProviderId: roundInfo.GameProviderId,
 			cultureCode: query.Language,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "en";
-		var gameInfo = await game.GetAsync(
+		var gameInfo = await gameRepository.GetAsync(
 			gameId: roundInfo.GameId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
@@ -53,7 +40,7 @@ internal class FunkyRoundDetailGetService(
 			apiUrl: configuration.ApiUrl,
 			userAgent: configuration.UserAgent,
 			authentication: configuration.Authentication,
-			playerCode: playerInfo.PlayerCode,
+			playerCode: roundInfo.PlayerCode,
 			gameCode: gameInfo.GameExternalId,
 			externalWagerId: roundInfo.ExternalRoundId,
 			language: cultureCode,

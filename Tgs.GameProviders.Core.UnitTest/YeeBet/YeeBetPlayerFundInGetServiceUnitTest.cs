@@ -13,97 +13,97 @@ namespace Tgs.GameProviders.Core.UnitTest.YeeBet;
 
 public class YeeBetPlayerFundInGetServiceUnitTest
 {
-    [Fact]
-    public async Task Normal_Process()
-    {
-        var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-        var fakePlayerRepository = Substitute.For<IPlayerRepository>();
-        var fakeBrandRepository = Substitute.For<IBrandRepository>();
-        var fakeSnowflakeWork = Substitute.For<ISnowflakeWork>();
-        var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
+	[Fact]
+	public async Task Normal_Process()
+	{
+		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+		var fakeBrandRepository = Substitute.For<IBrandRepository>();
+		var fakeSnowflakeWork = Substitute.For<ISnowflakeWork>();
+		var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
 
-        var query = new YeeBetPlayerFundInQuery
-        {
-            BrandCode = "GPI",
-            PlayerCode = "4ucmqplxb029",
-            CurrencyCode = "CNY",
-            Amount = 100M,
-            OrderId = Guid.NewGuid().ToString(),
-        };
+		var query = new YeeBetPlayerFundInQuery
+		{
+			BrandCode = "GPI",
+			PlayerCode = "4ucmqplxb029",
+			CurrencyCode = "CNY",
+			Amount = 100M,
+			OrderId = Guid.NewGuid().ToString(),
+		};
 
-        var gameProviderId = Guid.NewGuid();
-        _ = fakeGameProviderRepository
-            .GetGameProviderIdAsync(
-                gameProviderCode: Arg.Is(GameProviderType.YeeBet),
-                cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(gameProviderId);
+		var gameProviderId = Guid.NewGuid();
+		_ = fakeGameProviderRepository
+			.GetGameProviderIdAsync(
+				gameProviderCode: Arg.Is(GameProviderType.YeeBet),
+				cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(gameProviderId);
 
-        var player = new PlayerInfo(
-            ResellerId: Guid.NewGuid(),
-            ResellerCode: "GPI",
-            LicenseeId: Guid.NewGuid(),
-            LicenseeCode: "GPI",
-            BrandId: Guid.NewGuid(),
-            BrandCode: "GPI",
-            PlayerCode: "4ucmqplxb029",
-            Username: "4ucmqplxb029",
-            DefaultWalletId: Guid.NewGuid(),
-            DefaultWalletCurrencyCode: "CNY");
-        _ = fakePlayerRepository
-            .GetAsync(
-                playerCode: Arg.Is(query.PlayerCode),
-                cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(player);
+		var player = new PlayerInfo(
+			ResellerId: Guid.NewGuid(),
+			ResellerCode: "GPI",
+			LicenseeId: Guid.NewGuid(),
+			LicenseeCode: "GPI",
+			BrandId: Guid.NewGuid(),
+			BrandCode: "GPI",
+			PlayerCode: "4ucmqplxb029",
+			Username: "4ucmqplxb029",
+			DefaultWalletId: Guid.NewGuid(),
+			DefaultWalletCurrencyCode: "CNY");
+		_ = fakePlayerRepository
+			.GetAsync(
+				playerCode: Arg.Is(query.PlayerCode),
+				cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(player);
 
-        var gameProviderConfigurationId = Guid.NewGuid();
-        _ = fakeBrandRepository
-            .GetBrandGameProviderConfigurationIdAsync(
-                 gameProviderId: Arg.Is(gameProviderId),
-                 brandId: Arg.Is(player.BrandId),
-                 cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(gameProviderConfigurationId);
+		var gameProviderConfigurationId = Guid.NewGuid();
+		_ = fakeBrandRepository
+			.GetBrandGameProviderConfigurationIdAsync(
+				 gameProviderId: Arg.Is(gameProviderId),
+				 brandId: Arg.Is(player.BrandId),
+				 cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(gameProviderConfigurationId);
 
-        var configuration = new YeeBetConfiguration()
-        {
-            ApiUrl = new("http://api.98kbus.top/"),
-            AppId = "xtdA15OTVGEP",
-            SecretKey = "4885366DF30D880224FF6AA46FBDE4F0",
-        };
-        _ = fakeGameProviderRepository
-            .GetYeeBetConfigurationAsync(
-                gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
-                cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(configuration);
+		var configuration = new YeeBetConfiguration()
+		{
+			ApiUrl = new("http://api.98kbus.top/"),
+			AppId = "xtdA15OTVGEP",
+			SecretKey = "4885366DF30D880224FF6AA46FBDE4F0",
+		};
+		_ = fakeGameProviderRepository
+			.GetYeeBetConfigurationAsync(
+				gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+				cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(configuration);
 
-        var orderId = 1640526045735424000;
-        _ = fakeSnowflakeWork.GetId().Returns(orderId);
+		var orderId = 1640526045735424000;
+		_ = fakeSnowflakeWork.GetId().Returns(orderId);
 
-        var response = new FundReply()
-        {
-            TransactionId = "1640526045735424000",
-            Balance = 168M,
-            Res = "{}"
-        };
-        _ = fakeClient.FundInAsync(
-            apiUrl: Arg.Is(configuration.ApiUrl),
-            appId: Arg.Is(configuration.AppId),
-            secretKey: Arg.Is(configuration.SecretKey),
-            playerCode: Arg.Is(player.PlayerCode),
-            orderId: Arg.Is(orderId),
-            amount: Arg.Is(query.Amount),
-            cancellationToken: Arg.Any<CancellationToken>())
-            .Returns(response);
+		var response = new FundReply()
+		{
+			TransactionId = "1640526045735424000",
+			Balance = 168M,
+			Res = "{}"
+		};
+		_ = fakeClient.FundInAsync(
+			apiUrl: Arg.Is(configuration.ApiUrl),
+			appId: Arg.Is(configuration.AppId),
+			secretKey: Arg.Is(configuration.SecretKey),
+			playerCode: Arg.Is(player.PlayerCode),
+			orderId: Arg.Is(orderId),
+			amount: Arg.Is(query.Amount),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(response);
 
-        var sut = new YeeBetPlayerFundInGetService(
-            fakeGameProviderRepository,
-            fakePlayerRepository,
-            fakeBrandRepository,
-            fakeSnowflakeWork,
-            fakeClient);
+		var sut = new YeeBetPlayerFundInGetService(
+			fakeGameProviderRepository,
+			fakePlayerRepository,
+			fakeBrandRepository,
+			fakeSnowflakeWork,
+			fakeClient);
 
-        var actual = await sut.GetAsync(query);
+		var actual = await sut.GetAsync(query);
 
-        Assert.NotNull(actual);
-        Assert.Equal(response.TransactionId, actual.OrderId);
-    }
+		Assert.NotNull(actual);
+		Assert.Equal(response.TransactionId, actual.OrderId);
+	}
 }

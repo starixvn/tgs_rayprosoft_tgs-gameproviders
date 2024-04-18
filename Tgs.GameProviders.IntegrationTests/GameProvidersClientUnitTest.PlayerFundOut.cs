@@ -14,17 +14,17 @@ namespace Tgs.GameProviders.IntegrationTests;
 
 public partial class GameProvidersClientUnitTest
 {
-    [Fact]
-    public async Task Player_Fund_Out()
-    {
-        var gameProviderCode = "KY";
-        var brandCode = "GPI";
-        var playerCode = "test";
-        var currencyCode = "CNY";
-        var orderId = Guid.NewGuid().ToString("N");
-        var amount = 1m;
+	[Fact]
+	public async Task Player_Fund_Out()
+	{
+		var gameProviderCode = "KY";
+		var brandCode = "GPI";
+		var playerCode = "test";
+		var currencyCode = "CNY";
+		var orderId = Guid.NewGuid().ToString("N");
+		var amount = 1m;
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IGetService<KaiyuanPlayerFundOutQuery, PlayerFundResult>>();
 
@@ -49,33 +49,33 @@ public partial class GameProvidersClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var httpClient = web.CreateClient();
+		var httpClient = web.CreateClient();
 
-        var sut = new GameProvidersClient(httpClient);
+		var sut = new GameProvidersClient(httpClient);
 
-        var actual = await sut
-            .PlayerFundOutAsync(
-            gameProviderCode,
-            brandCode,
-            playerCode,
-            currencyCode,
-            orderId,
-            amount);
+		var actual = await sut
+			.PlayerFundOutAsync(
+			gameProviderCode,
+			brandCode,
+			playerCode,
+			currencyCode,
+			orderId,
+			amount);
 
-        Assert.NotNull(actual);
-    }
+		Assert.NotNull(actual);
+	}
 
-    [Fact]
-    public async void Player_Fund_Out_HttpRequestException()
-    {
-        var gameProviderCode = "KY";
-        var brandCode = "GPI";
-        var playerCode = "test";
-        var currencyCode = "CNY";
-        var orderId = Guid.NewGuid().ToString("N");
-        var amount = 1m;
+	[Fact]
+	public async void Player_Fund_Out_HttpRequestException()
+	{
+		var gameProviderCode = "KY";
+		var brandCode = "GPI";
+		var playerCode = "test";
+		var currencyCode = "CNY";
+		var orderId = Guid.NewGuid().ToString("N");
+		var amount = 1m;
 
-        var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
 				var fakeService = Substitute.For<IGetService<KaiyuanPlayerFundOutQuery, PlayerFundResult>>();
 
@@ -100,18 +100,18 @@ public partial class GameProvidersClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-        var httpClient = web.CreateClient();
+		var httpClient = web.CreateClient();
 
-        var sut = new GameProvidersClient(httpClient);
+		var sut = new GameProvidersClient(httpClient);
 
-        _ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
-            .PlayerFundOutAsync(
-                gameProviderCode,
-                brandCode,
-                playerCode,
-                currencyCode,
-                orderId,
-                amount)
-            .AsTask());
-    }
+		_ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
+			.PlayerFundOutAsync(
+				gameProviderCode,
+				brandCode,
+				playerCode,
+				currencyCode,
+				orderId,
+				amount)
+			.AsTask());
+	}
 }

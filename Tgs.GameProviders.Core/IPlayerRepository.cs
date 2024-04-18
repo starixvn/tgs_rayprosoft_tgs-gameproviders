@@ -6,7 +6,7 @@ namespace Tgs.GameProviders.Core;
 
 public interface IPlayerRepository
 {
-    ValueTask<PlayerInfo> GetAsync(
-        string playerCode,
-        CancellationToken cancellationToken = default);
+	ValueTask<PlayerInfo> GetAsync(
+		string playerCode,
+		CancellationToken cancellationToken = default);
 }
