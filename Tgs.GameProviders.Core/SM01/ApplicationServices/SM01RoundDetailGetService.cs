@@ -17,7 +17,7 @@ internal class SM01RoundDetailGetService(
 
 		return new RoundDetailResult()
 		{
-			Data = [new RoundDetailDataJson { Value = gameBetInfo.AdditionalData.ToJsonString() }]
+			Data = [new RoundDetailDataJson { Value = gameBetInfo.AdditionalData.ToString() }]
 		};
 	}
 }

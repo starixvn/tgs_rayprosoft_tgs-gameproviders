@@ -17,7 +17,7 @@ internal class EvolutionTransferRoundDetailGetService(
 
 		return new RoundDetailResult()
 		{
-			Data = [new RoundDetailDataJson { Value = gameBetInfo.AdditionalData.ToJsonString() }]
+			Data = [new RoundDetailDataJson { Value = gameBetInfo.AdditionalData.ToString() }]
 		};
 	}
 }
