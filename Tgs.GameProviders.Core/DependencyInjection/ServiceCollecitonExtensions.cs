@@ -36,7 +36,6 @@ using Tgs.GameInterface.WMCasinoService.Client;
 using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameRecord.Endorphina.Session.Client;
-using Tgs.GameRounds.Client;
 using Tgs.GameToken.Client;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -46,7 +45,6 @@ public static class ServiceCollecitonExtensions
 	public static IServiceCollection AddGameProvidersCore(
 		this IServiceCollection services,
 		Action<IPAddressOptions, IServiceProvider> ipAddressOptions,
-		Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions,
 		Action<GameTokenClientOptions, IServiceProvider> gameTokenClientOptions,
 		Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
 		Action<GameInterfaceAwcClientOptions, IServiceProvider> gameInterfaceAwcClientOptions,
@@ -125,12 +123,10 @@ public static class ServiceCollecitonExtensions
 		.AddGameInterfaceVRGamingClient(gameInterfaceVRGamingClientOptions)
 		.AddGameInterfaceFunkyClient(gameInterfaceFunkyClientOptions)
 		.AddGameInterfaceTPhereClient(gameInterfaceTPhereClientOptions)
-		.AddGameRoundsClient(gameRoundsClientOptions)
 		.AddGameTokenClient(gameTokenClientOptions)
 		//Tgs.Core.Infrastructures.Security
 		.AddSecurity()
 		.AddMemoryCache()
 		.AddSingleton<ISystemClock, SystemClock>()
-		.AddSingleton<ISnowflakeWork, SnowflakeWork>()
-		.AddTransient<IGameActionService, GameActionService>();
+		.AddSingleton<ISnowflakeWork, SnowflakeWork>();
 }

@@ -9,8 +9,7 @@ namespace Tgs.GameProviders.Controllers;
 
 [Route("api/awc_aelotto")]
 [ApiController]
-public class AwcAelottoController : ControllerBase,
-		IRoundDetailHandler<AwcAelottoRoundDetailQuery>
+public class AwcAelottoController : ControllerBase
 {
 	/// <summary>
 	/// Brands the player balances asynchronous.
@@ -108,25 +107,19 @@ public class AwcAelottoController : ControllerBase,
 	/// <summary>
 	/// Rounds the detail asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
-	/// <param name="roundId">The round identifier.</param>
+	/// <param name="service">The get service.</param>
+	/// <param name="gameBetId">The game bet identifier.</param>
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
-	/// </remarks>
-	[HttpGet("rounddetail/{roundId:guid}")]
-	public ValueTask<RoundDetailResult?> RoundDetailAsync(
-		[FromServices] IGetService<AwcAelottoRoundDetailQuery, RoundDetailResult?> getService,
-		Guid roundId,
+	[HttpGet("rounddetail/{gameBetId:guid}")]
+	public ValueTask<RoundDetailResult> RoundDetailAsync(
+		[FromServices] IGetService<AwcAelottoRoundDetailQuery, RoundDetailResult> service,
+		Guid gameBetId,
 		[FromQuery] string language)
-		=> getService
-		.GetAsync(
+		=> service.GetAsync(
 			query: new()
 			{
-				RoundId = roundId,
+				GameBetId = gameBetId,
 				Language = language
 			},
 			cancellationToken: HttpContext.RequestAborted);

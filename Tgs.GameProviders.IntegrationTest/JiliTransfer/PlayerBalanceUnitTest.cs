@@ -8,8 +8,9 @@ using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.IntegrationTest;
 
-namespace Tgs.GameProviders.IntegrationTests.JiliTransfer;
+namespace Tgs.GameProviders.IntegrationTest.JiliTransfer;
 
 public class PlayerBalanceUnitTest
 {
@@ -41,9 +42,7 @@ public class PlayerBalanceUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersClient(httpClient);
 

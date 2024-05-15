@@ -13,8 +13,7 @@ public class WMCasinoTransferController : ControllerBase,
 		IGameUrlHandler<WMCasinoTransferGameUrlQuery>,
 		IKickPlayerHandler<WMCasinoTransferKickPlayerCommand>,
 		IPlayerFundHandler<WMCasinoTransferPlayerFundInQuery, WMCasinoTransferPlayerFundOutQuery>,
-		IPlayerFundCheckingHandler<WMCasinoTransferPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-		IRoundDetailHandler<WMCasinoTransferRoundDetailQuery>
+		IPlayerFundCheckingHandler<WMCasinoTransferPlayerFundCheckingQuery, PlayerFundCheckingRequest>
 {
 	/// <summary>
 	/// Games the URL asynchronous.
@@ -226,25 +225,20 @@ public class WMCasinoTransferController : ControllerBase,
 	/// <summary>
 	/// Rounds the detail asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
-	/// <param name="roundId">The round identifier.</param>
+	/// <param name="service">The service.</param>
+	/// <param name="gameBetId">The game bet identifier.</param>
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
-	/// </remarks>
-	[HttpGet("rounddetail/{roundId:guid}")]
-	public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-		[FromServices] IGetService<WMCasinoTransferRoundDetailQuery, RoundDetailResult?> getService,
-		Guid roundId,
+	[HttpGet("rounddetail/{gameBetId:guid}")]
+	public ValueTask<RoundDetailResult> RoundDetailAsync(
+		[FromServices] IGetService<WMCasinoTransferRoundDetailQuery, RoundDetailResult> service,
+		Guid gameBetId,
 		[FromQuery] string language)
-		=> await getService
-		.GetAsync(new WMCasinoTransferRoundDetailQuery
-		{
-			RoundId = roundId,
-			Language = language
-		})
-		.ConfigureAwait(false);
+		=> service.GetAsync(
+			query: new()
+			{
+				GameBetId = gameBetId,
+				Language = language
+			},
+			cancellationToken: HttpContext.RequestAborted);
 }

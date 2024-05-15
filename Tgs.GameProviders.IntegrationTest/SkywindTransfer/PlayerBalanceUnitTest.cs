@@ -1,15 +1,15 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.IntegrationTest;
 
-namespace Tgs.GameProviders.IntegrationTests.SkywindTransfer;
+namespace Tgs.GameProviders.IntegrationTest.SkywindTransfer;
 
 public class PlayerBalanceUnitTest
 {
@@ -41,9 +41,7 @@ public class PlayerBalanceUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersClient(httpClient);
 

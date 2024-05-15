@@ -256,29 +256,19 @@ public class VRGamingController : ControllerBase
 	/// Rounds the detail asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
-	/// <param name="roundId">The round identifier.</param>
+	/// <param name="gameBetId">The game bet identifier.</param>
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Get rounddetail/b53d5576-8f61-417d-17da-08d9a5803086?language=zh-CN
-	/// </remarks>
-	[HttpGet("rounddetail/{roundId:guid}")]
-	public ValueTask<RoundDetailResult?> RoundDetailAsync(
-		[FromServices] IGetService<VRGamingRoundDetailQuery, RoundDetailResult?> service,
-		Guid roundId,
+	[HttpGet("rounddetail/{gameBetId:guid}")]
+	public ValueTask<RoundDetailResult> RoundDetailAsync(
+		[FromServices] IGetService<VRGamingRoundDetailQuery, RoundDetailResult> service,
+		Guid gameBetId,
 		[FromQuery] string language)
-
-	{
-		var query = new VRGamingRoundDetailQuery
-		{
-			RoundId = roundId,
-			Language = language
-		};
-		return service
-			.GetAsync(
-			query: query,
+		=> service.GetAsync(
+			query: new()
+			{
+				GameBetId = gameBetId,
+				Language = language
+			},
 			cancellationToken: HttpContext.RequestAborted);
-	}
 }

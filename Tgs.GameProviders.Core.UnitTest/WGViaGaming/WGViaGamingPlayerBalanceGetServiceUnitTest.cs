@@ -14,7 +14,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WGViaGaming;
 public class WGViaGamingPlayerBalanceGetServiceUnitTest
 {
 	[Fact]
-	public async void Create_Player()
+	public async Task Create_Player()
 	{
 		var fakeClient = Substitute.For<IGameInterfaceWGViaGamingClient>();
 		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();

@@ -1,31 +1,28 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.Jili.Client;
-using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 
 internal class JiliTransferRoundDetailGetService(
-	IRoundRepository roundRepository,
+	IGameBetRepository gameBetRepository,
 	IGameProviderRepository gameProviderRepository,
 	IGameInterfaceJiliClient client) : IGetService<JiliTransferRoundDetailQuery, RoundDetailResult>
 {
 	public async ValueTask<RoundDetailResult> GetAsync(JiliTransferRoundDetailQuery query, CancellationToken cancellationToken = default)
 	{
-		var roundInfo = await roundRepository.GetAsync(
-			roundId: query.RoundId,
+		var gameBetInfo = await gameBetRepository.GetAsync(
+			gameBetId: query.GameBetId,
 			cancellationToken: cancellationToken)
-			.ConfigureAwait(false)
-			?? throw new ArgumentNullException(query.RoundId.ToString(), $"This game bet does not exist.");
+			.ConfigureAwait(false);
 		var configuration = await gameProviderRepository.GetJiliTransferConfigurationAsync(
-			gameProviderConfigurationId: roundInfo.GameProviderConfigurationId,
+			gameProviderConfigurationId: gameBetInfo.GameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 		var cultureCode = await gameProviderRepository.GetGameProviderCultureCodeAsync(
-			gameProviderId: roundInfo.GameProviderConfigurationId,
+			gameProviderId: gameBetInfo.GameProviderConfigurationId,
 			cultureCode: query.Language,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "en-US";
@@ -34,20 +31,14 @@ internal class JiliTransferRoundDetailGetService(
 			apiUrl: configuration.ApiUrl,
 			agentId: configuration.AgentId,
 			agentKey: configuration.AgentKey,
-			wagersId: roundInfo.ExternalRoundId,
+			wagersId: gameBetInfo.ExternalBetId,
 			language: cultureCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new RoundDetailResult
+		return new RoundDetailResult()
 		{
-			Data = new RoundDetailDataBase[]
-			{
-				new RoundDetailDataUrl
-				{
-					Url = result
-				}
-			}
+			Data = [new RoundDetailDataUrl { Url = result }]
 		};
 	}
 }

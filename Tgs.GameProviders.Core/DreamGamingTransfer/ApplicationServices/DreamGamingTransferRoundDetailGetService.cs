@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -8,23 +7,22 @@ using Tgs.ServiceUtility;
 namespace Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices;
 
 internal class DreamGamingTransferRoundDetailGetService(
-	IRoundRepository roundRepository,
+	IGameBetRepository gameBetRepository,
 	IGameProviderRepository gameProviderRepository,
 	IGameInterfaceDreamGamingClient client) : IGetService<DreamGamingTransferRoundDetailQuery, RoundDetailResult>
 {
 	public async ValueTask<RoundDetailResult> GetAsync(DreamGamingTransferRoundDetailQuery query, CancellationToken cancellationToken = default)
 	{
-		var roundInfo = await roundRepository.GetAsync(
-			roundId: query.RoundId,
+		var gameBetInfo = await gameBetRepository.GetAsync(
+			gameBetId: query.GameBetId,
 			cancellationToken: cancellationToken)
-			.ConfigureAwait(false)
-			?? throw new ArgumentNullException(query.RoundId.ToString(), $"This game bet does not exist.");
+			.ConfigureAwait(false);
 		var configuration = await gameProviderRepository.GetDreamGamingTransferConfigurationAsync(
-			roundInfo.GameProviderConfigurationId,
+			gameBetInfo.GameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 		var gameProviderCultureCode = await gameProviderRepository.GetGameProviderCultureCodeAsync(
-			roundInfo.GameProviderId,
+			gameBetInfo.GameProviderId,
 			query.Language,
 			cancellationToken)
 			.ConfigureAwait(false) ?? "cn";
@@ -33,16 +31,13 @@ internal class DreamGamingTransferRoundDetailGetService(
 			configuration.VideoGameApiUrl,
 			configuration.AgentName,
 			gameProviderCultureCode,
-			roundInfo.ExternalRoundId,
+			gameBetInfo.ExternalBetId,
 			cancellationToken)
 			.ConfigureAwait(false);
 
 		return new RoundDetailResult()
 		{
-			Data = new RoundDetailDataBase[]
-				{
-				new RoundDetailDataUrl { Url = reply.GameResult }
-				}
+			Data = [new RoundDetailDataUrl { Url = reply.GameResult }]
 		};
 	}
 }

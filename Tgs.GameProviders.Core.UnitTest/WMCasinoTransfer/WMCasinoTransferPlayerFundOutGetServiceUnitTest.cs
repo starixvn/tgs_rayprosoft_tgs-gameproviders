@@ -13,7 +13,7 @@ namespace Tgs.GameProviders.Core.UnitTest.WMCasinoTransfer;
 public class WMCasinoTransferPlayerFundOutGetServiceUnitTest
 {
 	[Fact]
-	public async void Can_Not_Fund_Out_Over_WM_Agent_Balance()
+	public async Task Can_Not_Fund_Out_Over_WM_Agent_Balance()
 	{
 		var fakeBrandService = Substitute.For<IBrandRepository>();
 		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();

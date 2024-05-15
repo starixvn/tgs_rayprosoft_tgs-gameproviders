@@ -21,8 +21,9 @@ using Tgs.GameProviders.Core.AwcSpade.ApplicationServices;
 using Tgs.GameProviders.Core.AwcVenus.ApplicationServices;
 using Tgs.GameProviders.Core.AwcYl.ApplicationServices;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.IntegrationTest;
 
-namespace Tgs.GameProviders.IntegrationTests;
+namespace Tgs.GameProviders.IntegrationTest;
 
 public class GameProvidersBalancesClientUnitTest
 {
@@ -50,9 +51,7 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -88,9 +87,7 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -126,9 +123,7 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -164,9 +159,7 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -202,9 +195,7 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -240,9 +231,7 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -278,9 +267,7 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -316,9 +303,7 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -354,9 +339,7 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -392,9 +375,7 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -430,9 +411,7 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -468,9 +447,7 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersBalancesClient(httpClient);
 
@@ -506,9 +483,7 @@ public class GameProvidersBalancesClientUnitTest
 				_ = services.AddTransient(_ => fakeService);
 			}));
 
-		var fakeLoggingHandler = new LoggingHandler(web.Services.GetRequiredService<ILogger<LoggingHandler>>());
-
-		var httpClient = web.CreateDefaultClient([fakeLoggingHandler]);
+		var httpClient = web.CreateDefaultClient();
 
 		var sut = new GameProvidersBalancesClient(httpClient);
 

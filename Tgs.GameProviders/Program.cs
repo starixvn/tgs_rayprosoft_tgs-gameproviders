@@ -42,7 +42,7 @@ builder.Services.AddSwaggerGen(c =>
 	foreach (var xmlFileName in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.xml"))
 	{
 		c.IncludeXmlComments(xmlFileName);
-	};
+	}
 });
 
 builder.Services
@@ -62,188 +62,188 @@ builder.Services
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameRoundsBaseUrl")!;
+		options.GameTokenUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameTokenBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.GameTokenUrl = configuration.GetValue<Uri>("GameProviders:GameTokenBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameCommandClientBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameCommandClientBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceAwcBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceAwcBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceJiliBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceJiliBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceWMCasinoBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceWMCasinoBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceEvolutionBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceEvolutionBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceSkywindBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceSkywindBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceWGFmGamingBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceWGFmGamingBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceJDBBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceJDBBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceSBOBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceSBOBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceBTIBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceBTIBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceHabaneroBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceHabaneroBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceSabaBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceSabaBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceSM01BaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceSM01BaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceTFGamingBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceTFGamingBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceDreamGamingBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceDreamGamingBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceEndorphinaBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceEndorphinaBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameRecordEndorphinaSessionBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameRecordEndorphinaSessionBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceFaChaiBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceFaChaiBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceOBetBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceOBetBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceYeeBetBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceYeeBetBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfacePragmaticPlayBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfacePragmaticPlayBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceInplayMatrixBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceInplayMatrixBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceCards365BaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceCards365BaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfacePinnacleBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfacePinnacleBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceJokerBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceJokerBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceWGViaGamingBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceWGViaGamingBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceLEGamingBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceLEGamingBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceKaiyuanBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceKaiyuanBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceWicketCricketBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceWicketCricketBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceGKXGamingBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceGKXGamingBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceV8PokerBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceV8PokerBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceCrPatiBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceCrPatiBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceVRGamingBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceVRGamingBaseUrl")!;
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceFunkyBaseUrl")!;
 	},
 	(options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceFunkyBaseUrl")!;
-	},
-	(options, sp) =>
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceTPhereBaseUrl")!;
+	})
+	.AddGameBetsClient(httpClientBuilder => httpClientBuilder.ConfigureHttpClient((sp, http) =>
 	{
-		var configuration = sp.GetRequiredService<IConfiguration>();
-		options.BaseUrl = configuration.GetValue<Uri>("GameProviders:GameInterfaceTPhereBaseUrl")!;
-	});
+		var config = sp.GetRequiredService<IConfiguration>();
+		http.BaseAddress = config.GetValue<Uri>("GameProvidersConnectionStrings:GameBetsClientBaseUrl");
+	}));
 
 builder.Services
 	.AddOpenTelemetry()

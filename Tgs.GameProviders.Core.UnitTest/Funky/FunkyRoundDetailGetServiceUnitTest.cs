@@ -19,44 +19,54 @@ public class FunkyRoundDetailGetServiceUnitTest
 	[Fact]
 	public async Task Normal_Process()
 	{
-		var fakeRoundRepository = Substitute.For<IRoundRepository>();
+		var fakeGameBetRepository = Substitute.For<IGameBetRepository>();
 		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
 		var fakeGameRepository = Substitute.For<IGameRepository>();
 		var fakeClient = Substitute.For<IGameInterfaceFunkyClient>();
 
 		var query = new FunkyRoundDetailQuery
 		{
-			RoundId = Guid.NewGuid(),
+			GameBetId = Guid.NewGuid(),
 			Language = "en"
 		};
 
-		var roundInfo = new RoundInfo(
-			RoundId: query.RoundId,
-			ExternalRoundId: "Funky_tt_4xGoldenDynastyx5199x82477",
+		var gameBetInfo = new GameBetInfo(
+			Id: query.GameBetId,
 			GameProviderId: Guid.NewGuid(),
-			PlayerCode: "4ucmqplxb029",
-			GameId: 1,
-			CurrencyCode: "CNY",
-			Status: GameRounds.Common.GameRoundStatus.Closed,
 			GameProviderConfigurationId: Guid.NewGuid(),
-			WalletId: Guid.NewGuid(),
-			CreatedOn: DateTimeOffset.UtcNow,
-			ClosedOn: DateTimeOffset.UtcNow,
-			UpdatedOn: DateTimeOffset.UtcNow,
+			GameId: 1,
+			ResellerId: Guid.NewGuid(),
+			LicenseeId: Guid.NewGuid(),
 			BrandId: Guid.NewGuid(),
+			PlayerCode: "4ucmqplxb029",
+			CurrencyCode: "CNY",
+			WalletId: Guid.NewGuid(),
+			ExternalRoundId: "Funky_tt_4xGoldenDynastyx5199x82477",
+			ExternalBetId: "Funky_tt_4xGoldenDynastyx5199x82477",
 			ExternalCreatedOn: new DateTimeOffset(2024, 03, 19, 03, 14, 02, TimeSpan.Zero),
 			ExternalClosedOn: new DateTimeOffset(2024, 03, 19, 03, 14, 02, TimeSpan.Zero),
-			BetAmount: 0.76m,
-			ValidBetAmount: 0.76m,
-			SettleAmount: 6.0m,
+			ExternalPayoffOn: new DateTimeOffset(2024, 03, 19, 03, 14, 02, TimeSpan.Zero),
+			ExternalResettleOn: DateTimeOffset.UnixEpoch,
+			BetState: GameBets.Common.Enums.BetState.Win,
+			BetType: GameBets.Common.Enums.BetType.Normal,
+			FreeGameState: GameBets.Common.Enums.FreeGameState.None,
+			GambleState: GameBets.Common.Enums.GambleState.None,
+			CashoutState: GameBets.Common.Enums.CashoutState.None,
+			ResettleState: GameBets.Common.Enums.ResettleState.None,
+			JackpotState: GameBets.Common.Enums.JackpotState.None,
+			CurrencyRatio: 1.000000m,
+			Bet: 0.76m,
+			ValidBet: 0.76m,
+			Settle: 6.0m,
 			Commission: 0.0m,
 			Turnover: 0.76m,
-			CompanyWinLoss: -5.24m,
-			TieBetAdjustment: 0.0m,
-			ClientStatus: GameRounds.Common.GameRoundClientStatus.Win,
-			ReopenTurnoverAdjustment: null,
-			ReopenedOn: null,
-			EffectiveBettingPercentage: null,
+			WinLoss: -5.24m,
+			Jackpot: 0.000000m,
+			CreatedOn: new DateTimeOffset(2024, 03, 19, 03, 14, 02, TimeSpan.Zero),
+			ClosedOn: new DateTimeOffset(2024, 03, 19, 03, 14, 02, TimeSpan.Zero),
+			UpdatedOn: new DateTimeOffset(2024, 03, 19, 03, 14, 02, TimeSpan.Zero),
+			ResetState: GameBets.Common.Enums.ResetState.None,
+			ResetOn: DateTimeOffset.UnixEpoch,
 			AdditionalData: new JsonObject
 			{
 				["playerId"] = "4ucmqplxb029",
@@ -72,10 +82,10 @@ public class FunkyRoundDetailGetServiceUnitTest
 				["winloss"] = 5.24,
 				["isTransferGame"] = false
 			}.ToJsonString());
-		_ = fakeRoundRepository.GetAsync(
-			 roundId: Arg.Is(query.RoundId),
+		_ = fakeGameBetRepository.GetAsync(
+			 gameBetId: Arg.Is(query.GameBetId),
 			 cancellationToken: Arg.Any<CancellationToken>())
-			.Returns(roundInfo);
+			.Returns(gameBetInfo);
 
 		var configuration = new FunkyConfiguration()
 		{
@@ -85,21 +95,21 @@ public class FunkyRoundDetailGetServiceUnitTest
 			UserAgent = "109-PG"
 		};
 		_ = fakeGameProviderRepository.GetFunkyConfigurationAsync(
-			gameProviderConfigurationId: Arg.Is(roundInfo.GameProviderConfigurationId),
+			gameProviderConfigurationId: Arg.Is(gameBetInfo.GameProviderConfigurationId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(configuration);
 
 		var cultureCode = "EN";
 		_ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
-			gameProviderId: Arg.Is(roundInfo.GameProviderId),
+			gameProviderId: Arg.Is(gameBetInfo.GameProviderId),
 			cultureCode: Arg.Is(query.Language),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(cultureCode);
 
 		var game = new GameInfo(
-			GameId: roundInfo.GameId,
+			GameId: gameBetInfo.GameId,
 			GameCode: "test",
-			GameProviderId: roundInfo.GameProviderId,
+			GameProviderId: gameBetInfo.GameProviderId,
 			GameProviderCode: GameProviderType.Funky,
 			GameExternalId: "1",
 			Type: GameType.Slot,
@@ -116,7 +126,7 @@ public class FunkyRoundDetailGetServiceUnitTest
 			Localization: null,
 			SubGameProviderCode: GameProviderType.Funky);
 		_ = fakeGameRepository.GetAsync(
-			gameId: Arg.Is(roundInfo.GameId),
+			gameId: Arg.Is(gameBetInfo.GameId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(game);
 
@@ -125,15 +135,15 @@ public class FunkyRoundDetailGetServiceUnitTest
 			apiUrl: Arg.Is(configuration.ApiUrl),
 			userAgent: Arg.Is(configuration.UserAgent),
 			authentication: Arg.Is(configuration.Authentication),
-			playerCode: Arg.Is(roundInfo.PlayerCode),
+			playerCode: Arg.Is(gameBetInfo.PlayerCode),
 			gameCode: Arg.Is(game.GameExternalId),
-			externalWagerId: Arg.Is(roundInfo.ExternalRoundId),
+			externalWagerId: Arg.Is(gameBetInfo.ExternalBetId),
 			language: Arg.Is(cultureCode),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(reply);
 
 		var sut = new FunkyRoundDetailGetService(
-			fakeRoundRepository,
+			fakeGameBetRepository,
 			fakeGameProviderRepository,
 			fakeGameRepository,
 			fakeClient);

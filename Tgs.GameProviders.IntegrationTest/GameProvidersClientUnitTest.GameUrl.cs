@@ -10,8 +10,9 @@ using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.IntegrationTest;
 
-namespace Tgs.GameProviders.IntegrationTests;
+namespace Tgs.GameProviders.IntegrationTest;
 
 public partial class GameProvidersClientUnitTest
 {
@@ -78,7 +79,7 @@ public partial class GameProvidersClientUnitTest
 	}
 
 	[Fact]
-	public async void Game_Url_HttpRequestException()
+	public async Task Game_Url_HttpRequestException()
 	{
 		var gameProviderCode = "KY";  // en-us
 		var gameType = GameProvidersClientGameType.CardGameLobby;
