@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.IntegrationTest;
 
-namespace Tgs.GameProviders.IntegrationTests;
+namespace Tgs.GameProviders.IntegrationTest;
 
 public partial class GameProvidersClientUnitTest
 {
 	[Fact]
-	public async void Player_Balance_HttpRequestException()
+	public async Task Player_Balance_HttpRequestException()
 	{
 		var gameProviderCode = "KY";
 		var playerCode = "test";

@@ -9,8 +9,9 @@ using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.IntegrationTest;
 
-namespace Tgs.GameProviders.IntegrationTests;
+namespace Tgs.GameProviders.IntegrationTest;
 
 public partial class GameProvidersClientUnitTest
 {
@@ -52,7 +53,7 @@ public partial class GameProvidersClientUnitTest
 	}
 
 	[Fact]
-	public async void Kick_Player_HttpRequestException()
+	public async Task Kick_Player_HttpRequestException()
 	{
 		var gameProviderCode = "KY";
 		var playerCode = "test";

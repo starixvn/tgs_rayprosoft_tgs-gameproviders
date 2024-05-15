@@ -29,10 +29,10 @@ public class TFController : ControllerBase
 	/// <summary>
 	/// Rounds the detail asynchronous.
 	/// </summary>
-	/// <param name="roundId">The round identifier.</param>
+	/// <param name="gameBetId">The game bet identifier.</param>
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
 	/// <exception cref="System.NotImplementedException"></exception>
-	[HttpGet("rounddetail/{roundId:guid}")]
-	public ValueTask<RoundDetailResult?> RoundDetailAsync(Guid roundId, [FromQuery] string language) => throw new NotImplementedException();
+	[HttpGet("rounddetail/{gameBetId:guid}")]
+	public ValueTask<RoundDetailResult> RoundDetailAsync(Guid gameBetId, [FromQuery] string language) => throw new NotImplementedException();
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
@@ -6,7 +7,6 @@ using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.DreamGamingService.Protos;
 using Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.GameRounds.Common;
 
 namespace Tgs.GameProviders.Core.UnitTest.DreamGamingTransfer;
 
@@ -15,51 +15,59 @@ public class DreamGamingTransferRoundDetailGetServiceUnitTest
 	[Fact]
 	public async Task Normal_Process()
 	{
-		var fakeRoundService = Substitute.For<IRoundRepository>();
+		var fakeGameBetRepository = Substitute.For<IGameBetRepository>();
 		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
 		var fakeClient = Substitute.For<IGameInterfaceDreamGamingClient>();
 
-		var roundId = Guid.Parse("b764cf23-4dae-4b45-c613-08dae7cb5e69");
-		var externalRoundId = "13540803433";
-
 		var query = new DreamGamingTransferRoundDetailQuery
 		{
-			RoundId = roundId,
+			GameBetId = Guid.NewGuid(),
 			Language = "en-us"
 		};
 
-		var gameProviderId = Guid.Parse("f52b4df6-4f71-e36e-9625-5065a4d11a28");
+		var gameBetInfo = new GameBetInfo(
+			Id: query.GameBetId,
+			GameProviderId: Guid.NewGuid(),
+			GameProviderConfigurationId: Guid.NewGuid(),
+			GameId: 5000007,
+			ResellerId: Guid.NewGuid(),
+			LicenseeId: Guid.NewGuid(),
+			BrandId: Guid.NewGuid(),
+			PlayerCode: "4ucmqplxb029",
+			CurrencyCode: "CNY",
+			WalletId: Guid.NewGuid(),
+			ExternalRoundId: "20417330944",
+			ExternalBetId: "20417330944",
+			ExternalCreatedOn: new DateTimeOffset(2024, 05, 15, 5, 40, 36, TimeSpan.FromHours(8)),
+			ExternalClosedOn: new DateTimeOffset(2024, 05, 15, 5, 40, 55, TimeSpan.FromHours(8)),
+			ExternalPayoffOn: new DateTimeOffset(2024, 05, 15, 5, 40, 55, TimeSpan.FromHours(8)),
+			ExternalResettleOn: DateTimeOffset.UnixEpoch,
+			BetState: GameBets.Common.Enums.BetState.Loss,
+			BetType: GameBets.Common.Enums.BetType.Normal,
+			FreeGameState: GameBets.Common.Enums.FreeGameState.None,
+			GambleState: GameBets.Common.Enums.GambleState.None,
+			CashoutState: GameBets.Common.Enums.CashoutState.None,
+			ResettleState: GameBets.Common.Enums.ResettleState.None,
+			JackpotState: GameBets.Common.Enums.JackpotState.None,
+			CurrencyRatio: 1.000000m,
+			Bet: 99.000000m,
+			ValidBet: 99.000000m,
+			Settle: 0.000000m,
+			Commission: 0.000000m,
+			Turnover: 99.000000m,
+			WinLoss: -99.000000m,
+			Jackpot: 0.000000m,
+			CreatedOn: new DateTimeOffset(2024, 05, 15, 5, 40, 36, TimeSpan.FromHours(8)),
+			ClosedOn: new DateTimeOffset(2024, 05, 15, 5, 41, 16, TimeSpan.FromHours(8)),
+			UpdatedOn: new DateTimeOffset(2024, 05, 15, 5, 41, 16, TimeSpan.FromHours(8)),
+			ResetState: GameBets.Common.Enums.ResetState.None,
+			ResetOn: DateTimeOffset.UnixEpoch,
+			AdditionalData: JsonNode.Parse("{\"id\": 20417330944, \"ip\": \"112.198.205.130\", \"ext\": \"240515B010432\", \"gameId\": 1, \"playId\": 4, \"result\": \"{\\\"result\\\":\\\"7,2,6\\\",\\\"poker\\\":{\\\"banker\\\":\\\"18-39-37\\\",\\\"player\\\":\\\"21-8-0\\\"}}\", \"roadid\": 0, \"shoeId\": 9, \"betTime\": \"2024-05-15 05:40:36\", \"calTime\": \"2024-05-15 05:40:55\", \"lobbyId\": 1, \"tableId\": 10101, \"gameType\": 1, \"memberId\": 96421283, \"parentId\": 23957, \"pluginid\": 0, \"userName\": \"4UHCFHNWW2O9\", \"betDetail\": \"{\\\"banker\\\":99.0}\", \"betPoints\": 99.0, \"winOrLoss\": 0.0, \"betPointsz\": 0.0, \"currencyId\": 7, \"deviceType\": 5, \"availableBet\": 99.0, \"isRevocation\": 1, \"balanceBefore\": 99.14999999999998}")!);
 
-		var roundInfo = new RoundInfo(
-			roundId,
-			externalRoundId,
-			gameProviderId,
-			"4ucmqplxb029",
-			1,
-			"CNY",
-			GameRoundStatus.Closed,
-			Guid.NewGuid(),
-			Guid.NewGuid(),
-			DateTimeOffset.Now,
-			DateTimeOffset.Now,
-			DateTimeOffset.Now,
-			Guid.NewGuid(),
-			DateTimeOffset.Now,
-			DateTimeOffset.Now,
-			10m,
-			10m,
-			20m,
-			0m,
-			10m,
-			-10m,
-			null,
-			GameRoundClientStatus.Win,
-			null,
-			null,
-			null,
-			"{}");
-
-		_ = fakeRoundService.GetAsync(query.RoundId).Returns(roundInfo);
+		_ = fakeGameBetRepository.GetAsync(
+			gameBetId: Arg.Is(query.GameBetId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(gameBetInfo);
 
 		var configuration = new DreamGamingTransferConfiguration()
 		{
@@ -69,11 +77,11 @@ public class DreamGamingTransferRoundDetailGetServiceUnitTest
 			AgentName = "DGTE0105IH",
 		};
 		_ = fakeGameProviderRepository.GetDreamGamingTransferConfigurationAsync(
-			Arg.Is(roundInfo.GameProviderConfigurationId)).Returns(configuration);
+			Arg.Is(gameBetInfo.GameProviderConfigurationId)).Returns(configuration);
 
 		var gameProviderCultureCode = "en";
 		_ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
-			Arg.Is(roundInfo.GameProviderId),
+			Arg.Is(gameBetInfo.GameProviderId),
 			Arg.Is(query.Language)).Returns(gameProviderCultureCode);
 
 		var response = new GameHistoryDetailReply()
@@ -86,12 +94,12 @@ public class DreamGamingTransferRoundDetailGetServiceUnitTest
 				Arg.Is(configuration.VideoGameApiUrl),
 				Arg.Is(configuration.AgentName),
 				gameProviderCultureCode,
-				roundInfo.ExternalRoundId,
+				gameBetInfo.ExternalRoundId,
 				Arg.Any<CancellationToken>())
 			.Returns(response);
 
 		var sut = new DreamGamingTransferRoundDetailGetService(
-			fakeRoundService,
+			fakeGameBetRepository,
 			fakeGameProviderRepository,
 			fakeClient);
 
@@ -102,9 +110,9 @@ public class DreamGamingTransferRoundDetailGetServiceUnitTest
 		_ = fakeClient
 			.Received(1)
 			.GameHistoryDetailAsync(
-			configuration.VideoGameApiUrl,
-			configuration.AgentName,
-			gameProviderCultureCode,
-			externalRoundId);
+			Arg.Is(configuration.VideoGameApiUrl),
+			Arg.Is(configuration.AgentName),
+			Arg.Is(gameProviderCultureCode),
+			Arg.Is(gameBetInfo.ExternalRoundId));
 	}
 }

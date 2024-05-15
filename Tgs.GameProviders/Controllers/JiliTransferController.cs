@@ -13,8 +13,7 @@ public class JiliTransferController : ControllerBase,
 		IGameUrlHandler<JiliTransferGameUrlQuery>,
 		IKickPlayerHandler<JiliTransferKickPlayerCommand>,
 		IPlayerFundHandler<JiliTransferPlayerFundInQuery, JiliTransferPlayerFundOutQuery>,
-		IPlayerFundCheckingHandler<JiliTransferPlayerFundCheckingQuery, PlayerFundCheckingRequest>,
-		IRoundDetailHandler<JiliTransferRoundDetailQuery>
+		IPlayerFundCheckingHandler<JiliTransferPlayerFundCheckingQuery, PlayerFundCheckingRequest>
 {
 	/// <summary>
 	/// Games the URL asynchronous.
@@ -226,24 +225,19 @@ public class JiliTransferController : ControllerBase,
 	/// Rounds the detail asynchronous.
 	/// </summary>
 	/// <param name="getService">The get service.</param>
-	/// <param name="roundId">The round identifier.</param>
+	/// <param name="gameBetId">The game bet identifier.</param>
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Get rounddetail/c3011003-6357-4cff-9404-97312397a791?language=zh-CN
-	/// </remarks>
-	[HttpGet("rounddetail/{roundId:guid}")]
-	public async ValueTask<RoundDetailResult?> RoundDetailAsync(
-		[FromServices] IGetService<JiliTransferRoundDetailQuery, RoundDetailResult?> getService,
-		Guid roundId,
+	[HttpGet("rounddetail/{gameBetId:guid}")]
+	public ValueTask<RoundDetailResult> RoundDetailAsync(
+		[FromServices] IGetService<JiliTransferRoundDetailQuery, RoundDetailResult> getService,
+		Guid gameBetId,
 		[FromQuery] string language)
-		=> await getService
-		.GetAsync(new JiliTransferRoundDetailQuery
-		{
-			RoundId = roundId,
-			Language = language
-		})
-		.ConfigureAwait(false);
+		=> getService.GetAsync(
+			query: new()
+			{
+				GameBetId = gameBetId,
+				Language = language
+			},
+			cancellationToken: HttpContext.RequestAborted);
 }

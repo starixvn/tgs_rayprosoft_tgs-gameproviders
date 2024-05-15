@@ -15,8 +15,7 @@ internal class RedisConnectionFactory : IDisposable
 	public RedisConnectionFactory(
 		IOptions<RedisOptions> optionsAccessor)
 	{
-		if (optionsAccessor is null)
-			throw new ArgumentNullException(nameof(optionsAccessor));
+		ArgumentNullException.ThrowIfNull(optionsAccessor);
 
 		var options = optionsAccessor.Value;
 

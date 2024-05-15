@@ -12,8 +12,8 @@ data:
           "Default": "Warning"
         }
       },
-      "GameProviders": {
-        "GameRoundsBaseUrl": "http://game-gamerounds/",
+      "GameProvidersConnectionStrings": {
+        "GameBetsClientBaseUrl": "http://game-gamebets/",
         "GameTokenBaseUrl": "http://game-token/",
         "GameCommandClientBaseUrl": "http://game-gamecommand/",
         "GameInterfaceAwcBaseUrl": "dns:///game-gameinterface-awc:9090/",

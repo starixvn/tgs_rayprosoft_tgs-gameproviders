@@ -15,7 +15,7 @@ namespace Tgs.GameProviders.Core.UnitTest.AwcCockfight;
 public class AwcCockfightGameUrlGetServiceUnitTest
 {
 	[Fact]
-	public async void Create_Player()
+	public async Task Create_Player()
 	{
 		var fakeBrand = Substitute.For<IBrandRepository>();
 		var fakeGameProvider = Substitute.For<IGameProviderRepository>();

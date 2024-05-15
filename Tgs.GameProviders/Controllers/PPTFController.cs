@@ -240,25 +240,19 @@ public class PPTFController : ControllerBase
 	/// <summary>
 	/// Rounds the detail asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
-	/// <param name="roundId">The round identifier.</param>
+	/// <param name="service">The service.</param>
+	/// <param name="gameBetId">The game bet identifier.</param>
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Get rounddetail/d9ca80d4-7a71-46df-341d-08d99f74a980?language=zh-CN
-	/// </remarks>
-	[HttpGet("rounddetail/{roundId:guid}")]
+	[HttpGet("rounddetail/{gameBetId:guid}")]
 	public ValueTask<RoundDetailResult> RoundDetailAsync(
-		[FromServices] IGetService<PragmaticPlayTransferRoundDetailQuery, RoundDetailResult> getService,
-		Guid roundId,
-		string language)
-		=> getService
-		.GetAsync(
+		[FromServices] IGetService<PragmaticPlayTransferRoundDetailQuery, RoundDetailResult> service,
+		Guid gameBetId,
+		[FromQuery] string language)
+		=> service.GetAsync(
 			query: new()
 			{
-				RoundId = roundId,
+				GameBetId = gameBetId,
 				Language = language
 			},
 			cancellationToken: HttpContext.RequestAborted);

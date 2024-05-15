@@ -213,30 +213,19 @@ public class BTiSportsController : ControllerBase
 	/// Rounds the detail asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
-	/// <param name="roundId">The round identifier.</param>
+	/// <param name="gameBetId">The game bet identifier.</param>
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Get rounddetail/f6dd64ee-ce12-4bef-9ddb-08d9676f4495?language=zh-CN
-	/// </remarks>
-	[HttpGet("rounddetail/{roundId:guid}")]
-	public async ValueTask<RoundDetailResult?> RoundDetailAsync(
+	[HttpGet("rounddetail/{gameBetId:guid}")]
+	public ValueTask<RoundDetailResult> RoundDetailAsync(
 		[FromServices] IGetService<BTiSportsRoundDetailQuery, RoundDetailResult> service,
-		Guid roundId,
+		Guid gameBetId,
 		[FromQuery] string language)
-	{
-		var query = new BTiSportsRoundDetailQuery()
-		{
-			RoundId = roundId,
-			Language = language
-		};
-
-		var result = await service
-				.GetAsync(
-					query)
-				.ConfigureAwait(false);
-		return result ?? null;
-	}
+		=> service.GetAsync(
+			query: new()
+			{
+				GameBetId = gameBetId,
+				Language = language
+			},
+			cancellationToken: HttpContext.RequestAborted);
 }

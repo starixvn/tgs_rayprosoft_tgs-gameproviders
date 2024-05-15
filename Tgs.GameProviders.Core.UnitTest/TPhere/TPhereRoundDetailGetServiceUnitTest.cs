@@ -17,43 +17,54 @@ public class TPhereRoundDetailGetServiceUnitTest
 	[Fact]
 	public async Task Normal_Process()
 	{
-		var fakeRoundRepository = Substitute.For<IRoundRepository>();
+		var fakeGameBetRepository = Substitute.For<IGameBetRepository>();
 		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
 		var fakeClient = Substitute.For<IGameInterfaceTPhereClient>();
 
 		var query = new TPhereRoundDetailQuery
 		{
-			RoundId = Guid.NewGuid(),
+			GameBetId = Guid.NewGuid(),
 			Language = "en"
 		};
 
-		var roundInfo = new RoundInfo(
-			RoundId: query.RoundId,
-			ExternalRoundId: "TPhere_mimi_mm-136817074",
+		var gameBetInfo = new GameBetInfo(
+			Id: query.GameBetId,
 			GameProviderId: Guid.NewGuid(),
-			PlayerCode: "4ucmqplxb029",
-			GameId: 1,
-			CurrencyCode: "CNY",
-			Status: GameRounds.Common.GameRoundStatus.Closed,
 			GameProviderConfigurationId: Guid.NewGuid(),
+			GameId: 1,
+			ResellerId: Guid.NewGuid(),
+			LicenseeId: Guid.NewGuid(),
+			BrandId: Guid.NewGuid(),
+			PlayerCode: "4ucmqplxb029",
+			CurrencyCode: "CNY",
 			WalletId: Guid.NewGuid(),
+			ExternalRoundId: "TPhere_mimi_mm-136817074",
+			ExternalBetId: "TPhere_mimi_mm-136817074",
+			ExternalCreatedOn: new DateTimeOffset(2024, 04, 18, 13, 14, 00, TimeSpan.FromHours(8)),
+			ExternalClosedOn: new DateTimeOffset(2024, 04, 18, 13, 14, 00, TimeSpan.FromHours(8)),
+			ExternalPayoffOn: new DateTimeOffset(2024, 04, 18, 13, 14, 00, TimeSpan.FromHours(8)),
+			ExternalResettleOn: DateTimeOffset.UnixEpoch,
+			BetState: GameBets.Common.Enums.BetState.Win,
+			BetType: GameBets.Common.Enums.BetType.Normal,
+			FreeGameState: GameBets.Common.Enums.FreeGameState.None,
+			GambleState: GameBets.Common.Enums.GambleState.None,
+			CashoutState: GameBets.Common.Enums.CashoutState.None,
+			ResettleState: GameBets.Common.Enums.ResettleState.None,
+			JackpotState: GameBets.Common.Enums.JackpotState.None,
+			CurrencyRatio: 1.000000m,
+
+			Bet: 3.000000m,
+			ValidBet: 3.000000m,
+			Settle: 6.000000m,
+			Commission: 0.0m,
+			Turnover: 3.000000m,
+			WinLoss: 3.000000m,
+			Jackpot: 0.0m,
 			CreatedOn: DateTimeOffset.UtcNow,
 			ClosedOn: DateTimeOffset.UtcNow,
 			UpdatedOn: DateTimeOffset.UtcNow,
-			BrandId: Guid.NewGuid(),
-			ExternalCreatedOn: new DateTimeOffset(2024, 04, 18, 13, 14, 00, TimeSpan.FromHours(8)),
-			ExternalClosedOn: new DateTimeOffset(2024, 04, 18, 13, 14, 00, TimeSpan.FromHours(8)),
-			BetAmount: 3.000000m,
-			ValidBetAmount: 3.000000m,
-			SettleAmount: 6.000000m,
-			Commission: 0.0m,
-			Turnover: 3.000000m,
-			CompanyWinLoss: -3.000000m,
-			TieBetAdjustment: 0.0m,
-			ClientStatus: GameRounds.Common.GameRoundClientStatus.Win,
-			ReopenTurnoverAdjustment: null,
-			ReopenedOn: null,
-			EffectiveBettingPercentage: null,
+			ResetState: GameBets.Common.Enums.ResetState.None,
+			ResetOn: DateTimeOffset.UnixEpoch,
 			AdditionalData: new JsonObject
 			{
 				["refNo"] = "TPhere_mimi_mm-136817074",
@@ -69,10 +80,10 @@ public class TPhereRoundDetailGetServiceUnitTest
 				["effectiveStake"] = 3.0,
 				["isTransferGame"] = false
 			}.ToJsonString());
-		_ = fakeRoundRepository.GetAsync(
-			 roundId: Arg.Is(query.RoundId),
-			 cancellationToken: Arg.Any<CancellationToken>())
-			.Returns(roundInfo);
+		_ = fakeGameBetRepository.GetAsync(
+			gameBetId: Arg.Is(query.GameBetId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(gameBetInfo);
 
 		var configuration = new TPhereConfiguration()
 		{
@@ -81,13 +92,13 @@ public class TPhereRoundDetailGetServiceUnitTest
 			ApiToken = "29dad28e8ab9c9855e6aa4b9a9e4a869325931d4976dfcf53266ccbe0c5f3387ea48258c002e3543edbb35f63caa5cacc65ac5c664ccfe0619e1d63018a87dbb",
 		};
 		_ = fakeGameProviderRepository.GetTPhereConfiguration(
-			gameProviderConfigurationId: Arg.Is(roundInfo.GameProviderConfigurationId),
+			gameProviderConfigurationId: Arg.Is(gameBetInfo.GameProviderConfigurationId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(configuration);
 
 		var cultureCode = "EN";
 		_ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
-			gameProviderId: Arg.Is(roundInfo.GameProviderId),
+			gameProviderId: Arg.Is(gameBetInfo.GameProviderId),
 			cultureCode: Arg.Is(query.Language),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(cultureCode);
@@ -97,14 +108,14 @@ public class TPhereRoundDetailGetServiceUnitTest
 			apiUrl: Arg.Is(configuration.ApiUrl),
 			apiKey: Arg.Is(configuration.ApiKey),
 			apiToken: Arg.Is(configuration.ApiToken),
-			externalWagerId: Arg.Is(roundInfo.ExternalRoundId),
-			externalCreatedOn: Arg.Is(roundInfo.ExternalCreatedOn!.Value),
+			externalWagerId: Arg.Is(gameBetInfo.ExternalBetId),
+			externalCreatedOn: Arg.Is(gameBetInfo.ExternalCreatedOn),
 			language: Arg.Is(cultureCode),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(reply);
 
 		var sut = new TPhereRoundDetailGetService(
-			fakeRoundRepository,
+			fakeGameBetRepository,
 			fakeGameProviderRepository,
 			fakeClient);
 

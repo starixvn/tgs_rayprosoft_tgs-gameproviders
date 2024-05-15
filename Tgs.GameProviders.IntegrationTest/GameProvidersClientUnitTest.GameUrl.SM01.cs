@@ -5,8 +5,9 @@ using NSubstitute;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core.SM01.ApplicationServices;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.IntegrationTest;
 
-namespace Tgs.GameProviders.IntegrationTests;
+namespace Tgs.GameProviders.IntegrationTest;
 
 public partial class GameProvidersClientUnitTest
 {

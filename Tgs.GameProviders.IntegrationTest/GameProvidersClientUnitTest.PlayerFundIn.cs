@@ -9,8 +9,9 @@ using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 using Tgs.ServiceUtility;
+using Tgs.GameProviders.IntegrationTest;
 
-namespace Tgs.GameProviders.IntegrationTests;
+namespace Tgs.GameProviders.IntegrationTest;
 
 public partial class GameProvidersClientUnitTest
 {
@@ -66,7 +67,7 @@ public partial class GameProvidersClientUnitTest
 	}
 
 	[Fact]
-	public async void Player_Fund_In_HttpRequestException()
+	public async Task Player_Fund_In_HttpRequestException()
 	{
 		var gameProviderCode = "KY";
 		var brandCode = "GPI";

@@ -121,14 +121,10 @@ public class AviaController : ControllerBase
 	/// <summary>
 	/// Rounds the detail asynchronous.
 	/// </summary>
-	/// <param name="roundId">The round identifier.</param>
+	/// <param name="gameBetId">The game bet identifier.</param>
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Get rounddetail/b53d5576-8f61-417d-17da-08d9a5803086?language=zh-CN
-	/// </remarks>
-	[HttpGet("rounddetail/{roundId:guid}")]
-	public ValueTask<RoundDetailResult?> RoundDetailAsync(Guid roundId, [FromQuery] string language) => throw new NotImplementedException();
+	/// <exception cref="System.NotImplementedException"></exception>
+	[HttpGet("rounddetail/{gameBetId:guid}")]
+	public ValueTask<RoundDetailResult> RoundDetailAsync(Guid gameBetId, [FromQuery] string language) => throw new NotImplementedException();
 }

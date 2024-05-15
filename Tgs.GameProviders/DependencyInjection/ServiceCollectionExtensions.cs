@@ -35,7 +35,6 @@ using Tgs.GameInterface.YeeBet.Client;
 using Tgs.GameProviders;
 using Tgs.GameProviders.Core;
 using Tgs.GameRecord.Endorphina.Session.Client;
-using Tgs.GameRounds.Client;
 using Tgs.GameToken.Client;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -46,7 +45,6 @@ public static class ServiceCollectionExtensions
 		this IServiceCollection services,
 		Action<RedisOptions, IServiceProvider> configure,
 		Action<IPAddressOptions, IServiceProvider> ipAddressOptions,
-		Action<GameRoundsClientOptions, IServiceProvider> gameRoundsClientOptions,
 		Action<GameTokenClientOptions, IServiceProvider> gameTokenClientOptions,
 		Action<GameCommandClientOptions, IServiceProvider> gameCommandClientOptions,
 		Action<GameInterfaceAwcClientOptions, IServiceProvider> gameInterfaceAwcClientOptions,
@@ -91,7 +89,6 @@ public static class ServiceCollectionExtensions
 		.AddGameProvidersRepositories()
 		.AddGameProvidersCore(
 			ipAddressOptions: ipAddressOptions,
-			gameRoundsClientOptions: gameRoundsClientOptions,
 			gameTokenClientOptions: gameTokenClientOptions,
 			gameCommandClientOptions: gameCommandClientOptions,
 			gameInterfaceAwcClientOptions: gameInterfaceAwcClientOptions,
