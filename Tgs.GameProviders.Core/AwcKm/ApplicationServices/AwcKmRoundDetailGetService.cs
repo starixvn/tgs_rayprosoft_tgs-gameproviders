@@ -17,7 +17,7 @@ internal class AwcKmRoundDetailGetService(
 
 		return new RoundDetailResult()
 		{
-			Data = [new RoundDetailDataJson { Value = gameBetInfo.AdditionalData.ToJsonString() }]
+			Data = [new RoundDetailDataJson { Value = gameBetInfo.AdditionalData.ToString() }]
 		};
 	}
 }
