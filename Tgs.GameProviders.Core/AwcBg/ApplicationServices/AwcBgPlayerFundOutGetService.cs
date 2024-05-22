@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Text.Json.Nodes;
+using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.Awc.Client;
 using Tgs.GameProviders.Domains;
@@ -45,9 +46,8 @@ public class AwcBgPlayerFundOutGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult
-		{
-			OrderId = reply.GameProviderTransactionId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.GameProviderTransactionId);
 	}
 }

@@ -20,14 +20,13 @@ public class SBOTransferPlayerFundInGetServiceUnitTest
 		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
 		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
 		var fakeBrandService = Substitute.For<IBrandRepository>();
-		var fakeSnowflakeWork = Substitute.For<ISnowflakeWork>();
 
 		var query = new SBOTransferPlayerFundInQuery
 		{
 			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
 			CurrencyCode = "CNY",
-			OrderId = Guid.NewGuid().ToString("N"),
+			OrderId = "W1714154366418497500",
 			Amount = 100m
 		};
 
@@ -65,21 +64,17 @@ public class SBOTransferPlayerFundInGetServiceUnitTest
 		};
 		_ = fakeGameProviderRepository.GetSBOTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
-		_ = fakeSnowflakeWork.GetId()
-			.Returns(1714154366418497500);
-
-		var txnId = "W1714154366418497500";
 		var reply = new FundReply()
 		{
-			TxnId = txnId,
-			Resp = new JsonObject { ["TxnId"] = txnId }.ToJsonString()
+			TxnId = query.OrderId,
+			Resp = new JsonObject { ["TxnId"] = query.OrderId }.ToJsonString()
 		};
 		_ = fakeGameInterfaceSBOClient.FundInAsync(
 			Arg.Is(configuration.ApiUrl),
 			Arg.Is(configuration.CompanyKey),
 			Arg.Is(configuration.Agent),
 			Arg.Is(player.PlayerCode),
-			Arg.Is("W1714154366418497500"),
+			Arg.Is(query.OrderId),
 			Arg.Is(query.Amount))
 			.Returns(reply);
 
@@ -87,12 +82,12 @@ public class SBOTransferPlayerFundInGetServiceUnitTest
 			fakeGameInterfaceSBOClient,
 			fakeGameProviderRepository,
 			fakePlayerRepository,
-			fakeBrandService,
-			fakeSnowflakeWork);
+			fakeBrandService);
 
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(txnId, actual.OrderId);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(reply.TxnId, actual.ExternalGameProviderTransactionId);
 	}
 }

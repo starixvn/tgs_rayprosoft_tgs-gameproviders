@@ -117,6 +117,7 @@ public class CrPatiPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(reply.ApiOrderNo, actual.OrderId);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(reply.ApiOrderNo, actual.ExternalGameProviderTransactionId);
 	}
 }

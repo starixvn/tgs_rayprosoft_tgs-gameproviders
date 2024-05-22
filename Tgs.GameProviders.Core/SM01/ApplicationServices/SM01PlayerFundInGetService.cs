@@ -44,9 +44,8 @@ public class SM01PlayerFundInGetService : IGetService<SM01PlayerFundInQuery, Pla
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.RefTransactionCode
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.RefTransactionCode);
 	}
 }

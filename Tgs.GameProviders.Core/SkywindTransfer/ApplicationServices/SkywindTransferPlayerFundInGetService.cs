@@ -45,12 +45,13 @@ public class SkywindTransferPlayerFundInGetService : IGetService<SkywindTransfer
 			Amount = query.Amount,
 		};
 
-		var reply = await _client
-					.FundInAsync(
-						request: request,
-						cancellationToken: cancellationToken)
-					.ConfigureAwait(false);
+		var reply = await _client.FundInAsync(
+			request: request,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 
-		return reply.Status ? new() { OrderId = reply.ExtTrxId } : null;
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.TrxId);
 	}
 }

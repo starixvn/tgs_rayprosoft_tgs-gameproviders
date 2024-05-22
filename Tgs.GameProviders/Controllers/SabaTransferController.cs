@@ -170,24 +170,26 @@ public class SabaTransferController : ControllerBase
 	///         }
 	/// </remarks>
 	[HttpPost("playerfundin")]
-	public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
+	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
 		[FromServices] IGetService<SabaTransferPlayerFundInQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
 	{
-		var query = new SabaTransferPlayerFundInQuery()
-		{
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			OrderId = request.OrderId,
-			Amount = request.Amount
-		};
-		var result = await service.GetAsync(query).ConfigureAwait(false);
+		var result = await service.GetAsync(
+			query: new()
+			{
+				BrandCode = request.BrandCode,
+				PlayerCode = request.PlayerCode,
+				CurrencyCode = request.CurrencyCode,
+				OrderId = request.OrderId,
+				Amount = request.Amount
+			},
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
 
-		return result == null ? null : new PlayerFundResponse()
-		{
-			OrderId = result.OrderId,
-		};
+		return new PlayerFundResponse(
+			OrderId: request.OrderId,
+			GameProviderTransactionId: result.GameProviderTransactionId,
+			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
 	}
 
 	/// <summary>
@@ -196,37 +198,27 @@ public class SabaTransferController : ControllerBase
 	/// <param name="service">The service.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "orderId":"D07B3FAD0BE5F0B4EE0C2A401FC5C41075ED",
-	///             "amount": 1
-	///         }
-	/// </remarks>
 	[HttpPost("playerfundout")]
-	public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
+	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
 		[FromServices] IGetService<SabaTransferPlayerFundOutQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
 	{
-		var query = new SabaTransferPlayerFundOutQuery()
-		{
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			OrderId = request.OrderId,
-			Amount = request.Amount
-		};
-		var result = await service.GetAsync(query).ConfigureAwait(false);
+		var result = await service.GetAsync(
+			query: new()
+			{
+				BrandCode = request.BrandCode,
+				PlayerCode = request.PlayerCode,
+				CurrencyCode = request.CurrencyCode,
+				OrderId = request.OrderId,
+				Amount = request.Amount,
+			},
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
 
-		return result == null ? null : new PlayerFundResponse()
-		{
-			OrderId = result.OrderId,
-		};
+		return new PlayerFundResponse(
+			OrderId: request.OrderId,
+			GameProviderTransactionId: result.GameProviderTransactionId,
+			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
 	}
 
 	/// <summary>

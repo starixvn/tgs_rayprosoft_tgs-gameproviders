@@ -21,7 +21,6 @@ public class Cards365TransferPlayerFundInGetServiceUnitTest
 		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
 		var fakeBrandRepository = Substitute.For<IBrandRepository>();
 		var fakeClient = Substitute.For<IGameInterfaceCards365Client>();
-		var fakeSnowflakeWork = Substitute.For<ISnowflakeWork>();
 
 		var query = new Cards365TransferPlayerFundInQuery
 		{
@@ -29,7 +28,7 @@ public class Cards365TransferPlayerFundInGetServiceUnitTest
 			PlayerCode = "4ucmqplxb029",
 			CurrencyCode = "CNY",
 			Amount = 100M,
-			OrderId = Guid.Parse("7f5a44a8-74bf-4927-8152-b9482a42af9c").ToString("N"),
+			OrderId = $"W{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}"
 		};
 
 		var gameProviderId = Guid.NewGuid();
@@ -76,13 +75,9 @@ public class Cards365TransferPlayerFundInGetServiceUnitTest
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(configuration);
 
-		_ = fakeSnowflakeWork.GetId()
-		   .Returns(1714154366418497500);
-
-		var orderId = "W1714154366418497500";
 		var reply = new FundReply()
 		{
-			TransactionId = orderId,
+			TransactionId = query.OrderId,
 			Resp = new JsonObject { ["status"] = "1" }.ToJsonString()
 		};
 
@@ -92,7 +87,7 @@ public class Cards365TransferPlayerFundInGetServiceUnitTest
 			cert: Arg.Is(configuration.Cert),
 			extension1: Arg.Is(configuration.Extension1),
 			playerCode: Arg.Is(player.PlayerCode),
-			transactionId: Arg.Is(orderId),
+			transactionId: Arg.Is(query.OrderId),
 			amount: Arg.Is(query.Amount),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(reply);
@@ -101,12 +96,12 @@ public class Cards365TransferPlayerFundInGetServiceUnitTest
 			fakeGameProviderRepository,
 			fakePlayerRepository,
 			fakeBrandRepository,
-			fakeSnowflakeWork,
 			fakeClient);
 
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(reply.TransactionId, actual.OrderId);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(reply.TransactionId.ToString(), actual.ExternalGameProviderTransactionId);
 	}
 }

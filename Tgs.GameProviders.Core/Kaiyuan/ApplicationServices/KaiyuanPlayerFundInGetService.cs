@@ -10,7 +10,6 @@ public class KaiyuanPlayerFundInGetService(
 	IGameProviderRepository gameProviderRepository,
 	IPlayerRepository playerRepository,
 	IBrandRepository brandRepository,
-	ISystemClock systemClock,
 	IGameInterfaceKaiyuanClient client) : IGetService<KaiyuanPlayerFundInQuery, PlayerFundResult>
 {
 	public async ValueTask<PlayerFundResult> GetAsync(KaiyuanPlayerFundInQuery query, CancellationToken cancellationToken = default)
@@ -33,19 +32,19 @@ public class KaiyuanPlayerFundInGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var orderId = $"{configuration.AgentId}{systemClock.CurrentTime:yyyyMMddHHmmssfff}{playerInfo.PlayerCode}";
-
 		_ = await client.FundInAsync(
 			apiUrl: configuration.ApiUrl,
 			deskey: configuration.Deskey,
 			md5key: configuration.Md5key,
 			agentId: configuration.AgentId,
 			playerCode: query.PlayerCode,
-			orderId: orderId,
+			orderId: query.OrderId,
 			amount: query.Amount,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new() { OrderId = orderId };
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: string.Empty);
 	}
 }

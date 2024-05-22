@@ -7,63 +7,44 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SBOTransfer.ApplicationServices;
 
-public class SBOTransferPlayerFundOutGetService : IGetService<SBOTransferPlayerFundOutQuery, PlayerFundResult>
+public class SBOTransferPlayerFundOutGetService(
+	IGameInterfaceSBOClient client,
+	IGameProviderRepository gameProviderRepository,
+	IPlayerRepository playerRepository,
+	IBrandRepository brandRepository) : IGetService<SBOTransferPlayerFundOutQuery, PlayerFundResult>
 {
-	private readonly IBrandRepository _brandRepository;
-	private readonly IGameInterfaceSBOClient _client;
-	private readonly IGameProviderRepository _gameProviderRepository;
-	private readonly IPlayerRepository _playerRepository;
-	private readonly ISnowflakeWork _snowflakeWork;
-
-	public SBOTransferPlayerFundOutGetService(
-		IGameInterfaceSBOClient client,
-		IGameProviderRepository gameProviderRepository,
-		IPlayerRepository playerRepository,
-		IBrandRepository brandRepository,
-		ISnowflakeWork snowflakeWork)
-	{
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_gameProviderRepository = gameProviderRepository ?? throw new ArgumentNullException(nameof(gameProviderRepository));
-		_playerRepository = playerRepository ?? throw new ArgumentNullException(nameof(playerRepository));
-		_brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
-		_snowflakeWork = snowflakeWork ?? throw new ArgumentNullException(nameof(snowflakeWork));
-	}
-
 	public async ValueTask<PlayerFundResult> GetAsync(SBOTransferPlayerFundOutQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.SBOTransfer,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _playerRepository.GetAsync(
+		var playerInfo = await playerRepository.GetAsync(
 			playerCode: query.PlayerCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
 			gameProviderId: gameProviderId,
-			player.BrandId,
+			playerInfo.BrandId,
 			cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProviderRepository.GetSBOTransferConfigurationAsync(
+		var configuration = await gameProviderRepository.GetSBOTransferConfigurationAsync(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var orderId = $"D{_snowflakeWork.GetId()}";
-
-		var reply = await _client.FundOutAsync(
+		var reply = await client.FundOutAsync(
 			apiUrl: configuration.ApiUrl,
 			companyKey: configuration.CompanyKey,
 			agent: configuration.Agent,
-			playerCode: player.PlayerCode,
-			orderId: orderId,
+			playerCode: playerInfo.PlayerCode,
+			orderId: query.OrderId,
 			amount: query.Amount,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.TxnId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.TxnId);
 	}
 }

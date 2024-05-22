@@ -28,13 +28,24 @@ public class BTiSportsPlayerFundOutGetService : IGetService<BTiSportsPlayerFundO
 
 	public async ValueTask<PlayerFundResult> GetAsync(BTiSportsPlayerFundOutQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.BTiSports).ConfigureAwait(false);
-		var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-		var configuration = await _gameProvider.GetBTiSportsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+			GameProviderType.BTiSports,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var player = await _player.GetAsync(
+			query.PlayerCode,
+			cancellationToken).ConfigureAwait(false);
+		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId,
+			player.BrandId,
+			cancellationToken)
+			.ConfigureAwait(false);
+		var configuration = await _gameProvider.GetBTiSportsConfigurationAsync(
+			gameProviderConfigurationId,
+			cancellationToken)
+			.ConfigureAwait(false);
 
-		var reply = await _client
-			.FundOutAsync(
+		var reply = await _client.FundOutAsync(
 				apiUrl: configuration.ApiUrl,
 				agentUserName: configuration.AgentUserName,
 				agentPassword: configuration.AgentPassword,
@@ -44,9 +55,8 @@ public class BTiSportsPlayerFundOutGetService : IGetService<BTiSportsPlayerFundO
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.RefTransactionCode
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.TransactionId);
 	}
 }

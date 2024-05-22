@@ -55,8 +55,7 @@ internal class HabaneroTransferPlayerFundInGetService : IGetService<HabaneroTran
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var reply = await _client
-			.FundInAsync(
+		var reply = await _client.FundInAsync(
 				apiUrl: configuration.ApiUrl,
 				brandId: configuration.BrandId,
 				apiKey: configuration.ApiKey,
@@ -68,9 +67,8 @@ internal class HabaneroTransferPlayerFundInGetService : IGetService<HabaneroTran
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult
-		{
-			OrderId = reply.TransactionId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.TransactionId);
 	}
 }

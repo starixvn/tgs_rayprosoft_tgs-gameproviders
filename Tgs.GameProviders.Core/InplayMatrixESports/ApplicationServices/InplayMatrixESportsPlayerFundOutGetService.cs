@@ -51,21 +51,19 @@ public class InplayMatrixESportsPlayerFundOutGetService : IGetService<InplayMatr
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var reply = await _client
-			.FundOutAsync(
-				apiUrl: configuration.ApiUrl,
-				merchantCode: configuration.MerchantCode,
-				merchantPrefix: configuration.MerchantPrefix,
-				playerCode: player.PlayerCode,
-				productWallet: (int)InplayMatrixProductWallet.IM_eSports_Wallet,
-				transactionId: query.OrderId,
-				amount: query.Amount,
-				cancellationToken: cancellationToken)
+		var reply = await _client.FundOutAsync(
+			apiUrl: configuration.ApiUrl,
+			merchantCode: configuration.MerchantCode,
+			merchantPrefix: configuration.MerchantPrefix,
+			playerCode: player.PlayerCode,
+			productWallet: (int)InplayMatrixProductWallet.IM_eSports_Wallet,
+			transactionId: query.OrderId,
+			amount: query.Amount,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.TransactionId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.TransactionId);
 	}
 }

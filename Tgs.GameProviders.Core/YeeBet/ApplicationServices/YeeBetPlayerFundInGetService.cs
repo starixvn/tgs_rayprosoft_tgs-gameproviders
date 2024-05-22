@@ -10,7 +10,6 @@ public class YeeBetPlayerFundInGetService(
 	IGameProviderRepository gameProvider,
 	IPlayerRepository player,
 	IBrandRepository brand,
-	ISnowflakeWork snowflakeWork,
 	IGameInterfaceYeeBetClient client) : IGetService<YeeBetPlayerFundInQuery, PlayerFundResult>
 {
 	public async ValueTask<PlayerFundResult> GetAsync(YeeBetPlayerFundInQuery query, CancellationToken cancellationToken = default)
@@ -33,21 +32,17 @@ public class YeeBetPlayerFundInGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var orderId = snowflakeWork.GetId();
-
 		var reply = await client.FundInAsync(
 			apiUrl: configuration.ApiUrl,
 			appId: configuration.AppId,
 			secretKey: configuration.SecretKey,
 			playerCode: playerInfo.PlayerCode,
-			orderId: orderId,
+			orderId: long.Parse(query.OrderId),
 			amount: query.Amount,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-
-		return new PlayerFundResult()
-		{
-			OrderId = reply.TransactionId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.TransactionId);
 	}
 }

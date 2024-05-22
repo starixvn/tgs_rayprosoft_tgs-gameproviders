@@ -59,9 +59,8 @@ public class AwcYesbingoPlayerFundOutGetService : IGetService<AwcYesbingoPlayerF
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult
-		{
-			OrderId = reply.GameProviderTransactionId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.GameProviderTransactionId);
 	}
 }

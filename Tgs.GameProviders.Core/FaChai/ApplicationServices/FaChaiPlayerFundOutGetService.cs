@@ -10,7 +10,6 @@ public class FaChaiPlayerFundOutGetService(
 	IGameProviderRepository gameProvider,
 	IPlayerRepository player,
 	IBrandRepository brand,
-	ISnowflakeWork snowflakeWork,
 	IGameInterfaceFaChaiClient client) : IGetService<FaChaiPlayerFundOutQuery, PlayerFundResult>
 {
 	public async ValueTask<PlayerFundResult> GetAsync(FaChaiPlayerFundOutQuery query, CancellationToken cancellationToken = default)
@@ -33,22 +32,19 @@ public class FaChaiPlayerFundOutGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var orderId = snowflakeWork.GetId();
-
 		var reply = await client.FundOutAsync(
 			apiUrl: configuration.ApiUrl,
 			agentCode: configuration.AgentCode,
 			agentKey: configuration.AgentKey,
 			currency: configuration.Currency,
 			playerCode: playerInfo.PlayerCode,
-			orderId: orderId.ToString(),
+			orderId: query.OrderId,
 			amount: query.Amount,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.TrsId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.BankId.ToString());
 	}
 }

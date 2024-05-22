@@ -129,75 +129,59 @@ public class FunkyController : ControllerBase
 	/// <summary>
 	/// Players the fund in asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
+	/// <param name="service">The service.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "orderId":"7a3f35bf271247b998f6750d448ed757",
-	///             "amount": 100
-	///         }
-	/// </remarks>
 	[HttpPost("playerfundin")]
-	public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
-		[FromServices] IGetService<FunkyPlayerFundInQuery, PlayerFundResult> getService,
+	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
+		[FromServices] IGetService<FunkyPlayerFundInQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
 	{
-		var result = await getService.GetAsync(new()
-		{
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			OrderId = request.OrderId,
-			Amount = request.Amount,
-		}).ConfigureAwait(false);
-		return result == null ? null : new PlayerFundResponse()
-		{
-			OrderId = request.OrderId
-		};
+		var result = await service.GetAsync(
+			query: new()
+			{
+				BrandCode = request.BrandCode,
+				PlayerCode = request.PlayerCode,
+				CurrencyCode = request.CurrencyCode,
+				OrderId = request.OrderId,
+				Amount = request.Amount
+			},
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
+
+		return new PlayerFundResponse(
+			OrderId: request.OrderId,
+			GameProviderTransactionId: result.GameProviderTransactionId,
+			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
 	}
 
 	/// <summary>
 	/// Players the fund out asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
+	/// <param name="service">The service.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "orderId":"7a7147218501000000010000af506b2c",
-	///             "amount": 1000
-	///         }
-	/// </remarks>
 	[HttpPost("playerfundout")]
-	public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
-		[FromServices] IGetService<FunkyPlayerFundOutQuery, PlayerFundResult> getService,
+	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
+		[FromServices] IGetService<FunkyPlayerFundOutQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
 	{
-		var result = await getService.GetAsync(new()
-		{
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			OrderId = request.OrderId,
-			Amount = request.Amount,
-		}).ConfigureAwait(false);
-		return result == null ? null : new PlayerFundResponse()
-		{
-			OrderId = request.OrderId
-		};
+		var result = await service.GetAsync(
+			query: new()
+			{
+				BrandCode = request.BrandCode,
+				PlayerCode = request.PlayerCode,
+				CurrencyCode = request.CurrencyCode,
+				OrderId = request.OrderId,
+				Amount = request.Amount,
+			},
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
+
+		return new PlayerFundResponse(
+			OrderId: request.OrderId,
+			GameProviderTransactionId: result.GameProviderTransactionId,
+			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
 	}
 
 	/// <summary>

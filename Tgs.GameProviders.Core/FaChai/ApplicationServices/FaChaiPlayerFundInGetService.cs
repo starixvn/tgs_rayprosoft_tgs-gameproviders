@@ -10,34 +10,27 @@ public class FaChaiPlayerFundInGetService(
 	IGameProviderRepository gameProvider,
 	IPlayerRepository player,
 	IBrandRepository brand,
-	ISnowflakeWork snowflakeWork,
 	IGameInterfaceFaChaiClient client) : IGetService<FaChaiPlayerFundInQuery, PlayerFundResult>
 {
 	public async ValueTask<PlayerFundResult> GetAsync(FaChaiPlayerFundInQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await gameProvider
-			.GetGameProviderIdAsync(
-				gameProviderCode: GameProviderType.FaChai,
-				cancellationToken: cancellationToken)
+		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.FaChai,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var playerInfo = await player
-			.GetAsync(
-				playerCode: query.PlayerCode,
-				cancellationToken: cancellationToken)
+		var playerInfo = await player.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await brand
-			.GetBrandGameProviderConfigurationIdAsync(
-				gameProviderId: gameProviderId,
-				brandId: playerInfo.BrandId,
-				cancellationToken: cancellationToken)
+		var gameProviderConfigurationId = await brand.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: playerInfo.BrandId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await gameProvider
-			.GetFaChaiConfigurationAsync(
-				gameProviderConfigurationId: gameProviderConfigurationId,
-				cancellationToken: cancellationToken)
+		var configuration = await gameProvider.GetFaChaiConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-
-		var orderId = snowflakeWork.GetId();
 
 		var reply = await client.FundInAsync(
 			apiUrl: configuration.ApiUrl,
@@ -45,14 +38,13 @@ public class FaChaiPlayerFundInGetService(
 			agentKey: configuration.AgentKey,
 			currency: configuration.Currency,
 			playerCode: playerInfo.PlayerCode,
-			orderId: orderId.ToString(),
+			orderId: query.OrderId,
 			amount: query.Amount,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.TrsId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.BankId.ToString());
 	}
 }

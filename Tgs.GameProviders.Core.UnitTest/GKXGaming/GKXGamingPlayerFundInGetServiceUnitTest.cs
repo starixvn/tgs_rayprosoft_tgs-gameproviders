@@ -20,14 +20,13 @@ public class GKXGamingPlayerFundInGetServiceUnitTest
 		var fakeGameProvider = Substitute.For<IGameProviderRepository>();
 		var fakePlayer = Substitute.For<IPlayerRepository>();
 		var fakeBrand = Substitute.For<IBrandRepository>();
-		var fakeSystemClock = Substitute.For<ISystemClock>();
 
 		var query = new GKXGamingPlayerFundInQuery
 		{
 			BrandCode = "brandcode",
 			PlayerCode = "test",
 			CurrencyCode = "CNY",
-			OrderId = Guid.NewGuid().ToString("N"),
+			OrderId = "20099520231012070433439test",
 			Amount = 1
 		};
 
@@ -78,10 +77,6 @@ public class GKXGamingPlayerFundInGetServiceUnitTest
 			cancellationToken: Arg.Any<CancellationToken>()).
 			Returns(ValueTask.FromResult(configuration));
 
-		var currentTime = DateTimeOffset.Parse("2023-10-12T07:04:33.439Z");
-		_ = fakeSystemClock.CurrentTime.Returns(currentTime);
-
-		var orderId = $"{configuration.AgentId}{currentTime:yyyyMMddHHmmssfff}{player.PlayerCode}";
 		var reply = new FundReply
 		{
 			Resp = "{\"m\":\"/channelHandle\",\"s\":103,\"d\":{\"code\":0,\"money\":\"0.00\"}}"
@@ -93,7 +88,7 @@ public class GKXGamingPlayerFundInGetServiceUnitTest
 			md5key: Arg.Is(configuration.Md5key),
 			agentId: Arg.Is(configuration.AgentId),
 			playerCode: Arg.Is(player.PlayerCode),
-			orderId: Arg.Is(orderId),
+			orderId: Arg.Is(query.OrderId),
 			amount: Arg.Is(query.Amount),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(reply);
@@ -102,12 +97,12 @@ public class GKXGamingPlayerFundInGetServiceUnitTest
 			fakeGameProvider,
 			fakePlayer,
 			fakeBrand,
-			fakeSystemClock,
 			fakeClient);
 
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(orderId, actual.OrderId);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Empty(actual.ExternalGameProviderTransactionId);
 	}
 }

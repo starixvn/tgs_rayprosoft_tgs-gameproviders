@@ -61,9 +61,8 @@ public class OBetPlayerFundOutGetService : IGetService<OBetPlayerFundOutQuery, P
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.SerialNo
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.SerialNo);
 	}
 }

@@ -126,7 +126,5 @@ public static class ServiceCollecitonExtensions
 		.AddGameTokenClient(gameTokenClientOptions)
 		//Tgs.Core.Infrastructures.Security
 		.AddSecurity()
-		.AddMemoryCache()
-		.AddSingleton<ISystemClock, SystemClock>()
-		.AddSingleton<ISnowflakeWork, SnowflakeWork>();
+		.AddMemoryCache();
 }

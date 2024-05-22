@@ -291,7 +291,6 @@ _ = app.MapControllers();
 
 app.MapHealthChecks("/healthz");
 
-_ = app.InitialSnowflakeWork();
 _ = app.InitialMemory();
 
 app.Run();

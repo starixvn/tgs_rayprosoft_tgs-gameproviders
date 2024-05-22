@@ -108,6 +108,7 @@ public class PragmaticPlayTransferPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(fundReply.TransactionId.ToString(), actual.ExternalGameProviderTransactionId);
 	}
 }

@@ -33,8 +33,7 @@ public class BTiSportsPlayerFundInGetService : IGetService<BTiSportsPlayerFundIn
 		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
 		var configuration = await _gameProvider.GetBTiSportsConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-		var reply = await _client
-			.FundInAsync(
+		var reply = await _client.FundInAsync(
 				apiUrl: configuration.ApiUrl,
 				agentUserName: configuration.AgentUserName,
 				agentPassword: configuration.AgentPassword,
@@ -44,9 +43,8 @@ public class BTiSportsPlayerFundInGetService : IGetService<BTiSportsPlayerFundIn
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.RefTransactionCode
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.RefTransactionCode);
 	}
 }

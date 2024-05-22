@@ -102,6 +102,7 @@ public class EndorphinaPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(response.TransactionId, actual.OrderId);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(response.TransactionId.ToString(), actual.ExternalGameProviderTransactionId);
 	}
 }

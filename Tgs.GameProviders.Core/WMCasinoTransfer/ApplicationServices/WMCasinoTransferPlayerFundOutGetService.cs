@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.WMCasinoService.Client;
@@ -26,28 +27,24 @@ public class WMCasinoTransferPlayerFundOutGetService : IGetService<WMCasinoTrans
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<PlayerFundResult> GetAsync(WMCasinoTransferPlayerFundOutQuery command, CancellationToken cancellationToken = default)
+	public async ValueTask<PlayerFundResult> GetAsync(WMCasinoTransferPlayerFundOutQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider
-			.GetGameProviderIdAsync(
-				gameProviderCode: GameProviderType.WMCasinoTransfer,
-				cancellationToken: cancellationToken)
+		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.WMCasinoTransfer,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player
-			.GetAsync(
-				playerCode: command.PlayerCode,
-				cancellationToken: cancellationToken)
+		var player = await _player.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand
-			.GetBrandGameProviderConfigurationIdAsync(
-				gameProviderId: gameProviderId,
-				brandId: player.BrandId,
-				cancellationToken: cancellationToken)
+		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: player.BrandId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProvider
-			.GetWMCasinoTransferConfigurationAsync(
-				gameProviderConfigurationId: gameProviderConfigurationId,
-				cancellationToken: cancellationToken)
+		var configuration = await _gameProvider.GetWMCasinoTransferConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
 		var agentBalance = await _client.GetAgentBalanceAsync(
@@ -56,9 +53,9 @@ public class WMCasinoTransferPlayerFundOutGetService : IGetService<WMCasinoTrans
 			signature: configuration.Signature,
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		if (agentBalance.Success && command.Amount > agentBalance.Balance)
+		if (agentBalance.Success && query.Amount > agentBalance.Balance)
 		{
-			throw new Exception($"Fund out failed(Tgs->WMCasino), transfer amount({command.Amount}) is over WMCasio({configuration.VendorId}) agent's balance({agentBalance.Balance}).");
+			throw new Exception($"Fund out failed(Tgs->WMCasino), transfer amount({query.Amount}) is over WMCasio({configuration.VendorId}) agent's balance({agentBalance.Balance}).");
 		}
 
 		var user = $"wmtf_{player.PlayerCode}_{player.BrandCode}";
@@ -68,10 +65,12 @@ public class WMCasinoTransferPlayerFundOutGetService : IGetService<WMCasinoTrans
 			vendorId: configuration.VendorId,
 			signature: configuration.Signature,
 			user: user,
-			transactionId: command.OrderId,
-			amount: command.Amount,
+			transactionId: query.OrderId,
+			amount: query.Amount,
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		return reply.Success ? new() { OrderId = reply.GameProviderTransactionId } : null;
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.GameProviderTransactionId);
 	}
 }

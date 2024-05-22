@@ -50,8 +50,7 @@ public class WGViaGamingPlayerFundInGetService : IGetService<WGViaGamingPlayerFu
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		await _client
-			.FundInAsync(
+		await _client.FundInAsync(
 			apiUrl: configurationData.ApiUrl,
 			partnerCode: configurationData.PartnerCode,
 			secretKey: configurationData.PartnerKey,
@@ -62,6 +61,8 @@ public class WGViaGamingPlayerFundInGetService : IGetService<WGViaGamingPlayerFu
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult { OrderId = query.OrderId };
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: string.Empty);
 	}
 }

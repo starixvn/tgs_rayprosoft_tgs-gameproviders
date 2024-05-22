@@ -99,6 +99,7 @@ public class JokerPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(reply.RequestId, actual.OrderId);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(reply.RequestId, actual.ExternalGameProviderTransactionId);
 	}
 }

@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.WicketCricket.Client;
+using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
@@ -50,8 +51,7 @@ public class WicketCricketPlayerFundInGetService : IGetService<WicketCricketPlay
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		_ = await _client
-			.FundInAsync(
+		_ = await _client.FundInAsync(
 			apiUrl: configuration.ApiUrl,
 			website: configuration.Website,
 			cert: configuration.Cert,
@@ -61,9 +61,8 @@ public class WicketCricketPlayerFundInGetService : IGetService<WicketCricketPlay
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = query.OrderId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: string.Empty);
 	}
 }

@@ -34,9 +34,7 @@ internal class GameProvidersClient : IGameProvidersClient
 		_httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 	}
 
-	public async ValueTask<SM01PlatformLoginResponse> GamePlatformLoginBySM01Async(
-		string playerCode,
-		CancellationToken cancellationToken = default)
+	public async ValueTask<SM01PlatformLoginResponse> GamePlatformLoginBySM01Async(string playerCode, CancellationToken cancellationToken = default)
 	{
 		var request = new
 		{
@@ -66,19 +64,7 @@ internal class GameProvidersClient : IGameProvidersClient
 				?? throw new Exception($"取得{GameProviderType.SM01}遊戲網址失敗.");
 	}
 
-	public async ValueTask<Uri> GameUrlAsync(
-		string gameProviderCode,
-		GameProvidersClientGameType gameType,
-		int gameId,
-		string brandCode,
-		string playerCode,
-		string currencyCode,
-		Guid loginRecordId,
-		GameProvidersClientPlatformType platformType,
-		string language,
-		string ipAddress,
-		Uri? backUrl,
-		CancellationToken cancellationToken = default)
+	public async ValueTask<Uri> GameUrlAsync(string gameProviderCode, GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, CancellationToken cancellationToken = default)
 	{
 		var request = new
 		{
@@ -117,19 +103,7 @@ internal class GameProvidersClient : IGameProvidersClient
 				?? throw new Exception($"取得{gameProviderCode}遊戲網址失敗.");
 	}
 
-	public async ValueTask<Uri> GameUrlByAsiaGamingAsync(
-		GameProvidersClientGameType gameType,
-		int gameId,
-		string brandCode,
-		string playerCode,
-		string currencyCode,
-		Guid loginRecordId,
-		GameProvidersClientPlatformType platformType,
-		string language,
-		string ipAddress,
-		Uri? backUrl,
-		decimal playerBalance,
-		CancellationToken cancellationToken = default)
+	public async ValueTask<Uri> GameUrlByAsiaGamingAsync(GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, decimal playerBalance, CancellationToken cancellationToken = default)
 	{
 		var request = new
 		{
@@ -169,19 +143,7 @@ internal class GameProvidersClient : IGameProvidersClient
 				?? throw new Exception($"取得{GameProviderType.AsiaGaming}遊戲網址失敗.");
 	}
 
-	public async ValueTask<Uri> GameUrlByBetConstructAsync(
-		GameProvidersClientGameType gameType,
-		int gameId,
-		string brandCode,
-		string playerCode,
-		string currencyCode,
-		Guid loginRecordId,
-		GameProvidersClientPlatformType platformType,
-		string language,
-		string ipAddress,
-		Uri? backUrl,
-		string lobbyDomain,
-		CancellationToken cancellationToken = default)
+	public async ValueTask<Uri> GameUrlByBetConstructAsync(GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, string lobbyDomain, CancellationToken cancellationToken = default)
 	{
 		var request = new
 		{
@@ -317,7 +279,7 @@ internal class GameProvidersClient : IGameProvidersClient
 				_SerializerOptions)!.OrderStatus;
 	}
 
-	public async ValueTask<string> PlayerFundInAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default)
+	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default)
 	{
 		var request = new
 		{
@@ -335,7 +297,8 @@ internal class GameProvidersClient : IGameProvidersClient
 		   .PostAsync(
 			   requestUri: string.Format(_PlayerFundInPath, gameProviderCode),
 			   content: requestContent,
-			   cancellationToken: cancellationToken).ConfigureAwait(false);
+			   cancellationToken: cancellationToken)
+		   .ConfigureAwait(false);
 
 		_ = response.EnsureSuccessStatusCode();
 
@@ -347,10 +310,10 @@ internal class GameProvidersClient : IGameProvidersClient
 				.ReadAsStringAsync(
 					cancellationToken: cancellationToken)
 				.ConfigureAwait(false),
-				_SerializerOptions)!.OrderId;
+				_SerializerOptions)!;
 	}
 
-	public async ValueTask<string> PlayerFundOutAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default)
+	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default)
 	{
 		var request = new
 		{
@@ -380,7 +343,7 @@ internal class GameProvidersClient : IGameProvidersClient
 				.ReadAsStringAsync(
 					cancellationToken: cancellationToken)
 				.ConfigureAwait(false),
-				_SerializerOptions)!.OrderId;
+				_SerializerOptions)!;
 	}
 
 	public async ValueTask<RoundDetailResult> RoundDetailAsync(string gameProviderCode, Guid roundId, string language, CancellationToken cancellationToken = default)

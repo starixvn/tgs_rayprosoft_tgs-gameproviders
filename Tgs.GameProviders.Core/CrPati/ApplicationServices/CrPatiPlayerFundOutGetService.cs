@@ -61,9 +61,8 @@ public class CrPatiPlayerFundOutGetService : IGetService<CrPatiPlayerFundOutQuer
 			cancellationToken: cancellationToken)
 		   .ConfigureAwait(false);
 
-		return new PlayerFundResult
-		{
-			OrderId = reply.ApiOrderNo
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.ApiOrderNo);
 	}
 }

@@ -26,7 +26,7 @@ public class WMCasinoTransferPlayerFundInGetService : IGetService<WMCasinoTransf
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<PlayerFundResult> GetAsync(WMCasinoTransferPlayerFundInQuery command, CancellationToken cancellationToken = default)
+	public async ValueTask<PlayerFundResult> GetAsync(WMCasinoTransferPlayerFundInQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider
 			.GetGameProviderIdAsync(
@@ -35,7 +35,7 @@ public class WMCasinoTransferPlayerFundInGetService : IGetService<WMCasinoTransf
 			.ConfigureAwait(false);
 		var player = await _player
 			.GetAsync(
-				playerCode: command.PlayerCode,
+				playerCode: query.PlayerCode,
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 		var gameProviderConfigurationId = await _brand
@@ -57,10 +57,12 @@ public class WMCasinoTransferPlayerFundInGetService : IGetService<WMCasinoTransf
 			vendorId: configuration.VendorId,
 			signature: configuration.Signature,
 			user: user,
-			transactionId: command.OrderId,
-			amount: command.Amount,
+			transactionId: query.OrderId,
+			amount: query.Amount,
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		return reply.Success ? new() { OrderId = reply.GameProviderTransactionId } : null;
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.GameProviderTransactionId);
 	}
 }

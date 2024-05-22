@@ -50,8 +50,7 @@ public class WGFmGamingPlayerFundOutGetService : IGetService<WGFmGamingPlayerFun
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		await _client
-			.FundOutAsync(
+		await _client.FundOutAsync(
 			apiUrl: configurationData.ApiUrl,
 			partnerCode: configurationData.PartnerCode,
 			partnerKey: configurationData.PartnerKey,
@@ -62,9 +61,8 @@ public class WGFmGamingPlayerFundOutGetService : IGetService<WGFmGamingPlayerFun
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = query.OrderId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: string.Empty);
 	}
 }
