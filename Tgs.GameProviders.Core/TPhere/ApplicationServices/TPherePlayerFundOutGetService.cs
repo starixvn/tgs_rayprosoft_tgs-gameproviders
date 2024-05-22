@@ -11,7 +11,6 @@ public class TPherePlayerFundOutGetService(
 	IGameProviderRepository gameProvider,
 	IPlayerRepository player,
 	IBrandRepository brand,
-	ISnowflakeWork snowflakeWork,
 	IGameInterfaceTPhereClient client) : IGetService<TPherePlayerFundOutQuery, PlayerFundResult>
 {
 	public async ValueTask<PlayerFundResult> GetAsync(TPherePlayerFundOutQuery query, CancellationToken cancellationToken = default)
@@ -34,21 +33,18 @@ public class TPherePlayerFundOutGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var orderId = $"D{snowflakeWork.GetId()}";
-
 		var reply = await client.TP2FundOutAsync(
 			apiUrl: configuration.ApiUrl,
 			apiKey: configuration.ApiKey,
 			apiToken: configuration.ApiToken,
 			playerCode: playerInfo.PlayerCode,
-			orderId: orderId,
+			orderId: query.OrderId,
 			amount: query.Amount,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.TransactionId.ToString()
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.CasinoTransId);
 	}
 }

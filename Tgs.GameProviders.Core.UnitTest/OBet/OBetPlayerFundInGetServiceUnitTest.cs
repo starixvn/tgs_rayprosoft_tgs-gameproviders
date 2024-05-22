@@ -98,6 +98,7 @@ public class OBetPlayerFundInGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(response.SerialNo, actual.OrderId);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(response.SerialNo, actual.ExternalGameProviderTransactionId);
 	}
 }

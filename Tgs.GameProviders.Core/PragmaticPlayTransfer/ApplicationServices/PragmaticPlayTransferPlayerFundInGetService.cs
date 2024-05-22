@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.PragmaticPlay.Client;
+using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
@@ -52,8 +53,7 @@ internal class PragmaticPlayTransferPlayerFundInGetService : IGetService<Pragmat
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		_ = await _client
-		   .FundInAsync(
+		var reply = await _client.FundInAsync(
 			   apiUrl: configuration.ApiUrl,
 			   secureLogin: configuration.SecureLogin,
 			   secretKey: configuration.SecretKey,
@@ -62,9 +62,8 @@ internal class PragmaticPlayTransferPlayerFundInGetService : IGetService<Pragmat
 			   amount: query.Amount)
 		   .ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = query.OrderId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.TransactionId.ToString());
 	}
 }

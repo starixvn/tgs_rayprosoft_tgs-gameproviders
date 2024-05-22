@@ -57,12 +57,11 @@ public class WMCasinoTransferPlayerFundInGetServiceUnitTest
 			 Arg.Is(playerModel.BrandId)).Returns(gameProviderConfigurationId);
 		_ = fakeGameProviderRepository.GetWMCasinoTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
-		var gameProviderTransactionId = "2147649635";
 		var reply = new FundReply()
 		{
 			Success = true,
 			TransactionId = query.OrderId,
-			GameProviderTransactionId = gameProviderTransactionId,
+			GameProviderTransactionId = "2147649635",
 			CurrentBalance = 168m
 		};
 
@@ -85,6 +84,7 @@ public class WMCasinoTransferPlayerFundInGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(gameProviderTransactionId, actual.OrderId);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(reply.GameProviderTransactionId, actual.ExternalGameProviderTransactionId);
 	}
 }

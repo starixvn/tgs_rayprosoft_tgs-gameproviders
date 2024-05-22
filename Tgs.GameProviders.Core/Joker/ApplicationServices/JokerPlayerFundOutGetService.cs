@@ -26,34 +26,27 @@ internal class JokerPlayerFundOutGetService : IGetService<JokerPlayerFundOutQuer
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<PlayerFundResult> GetAsync(
-		JokerPlayerFundOutQuery query,
-		CancellationToken cancellationToken = default)
+	public async ValueTask<PlayerFundResult> GetAsync(JokerPlayerFundOutQuery query,CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider
-			.GetGameProviderIdAsync(
-				gameProviderCode: GameProviderType.Joker,
-				cancellationToken: cancellationToken)
+		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.Joker,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player
-			.GetAsync(
-				playerCode: query.PlayerCode,
-				cancellationToken: cancellationToken)
+		var player = await _player.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand
-			.GetBrandGameProviderConfigurationIdAsync(
-				gameProviderId: gameProviderId,
-				brandId: player.BrandId,
-				cancellationToken: cancellationToken)
+		var gameProviderConfigurationId = await _brand	.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: player.BrandId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProvider
-			.GetJokerConfigurationAsync(
-				gameProviderConfigurationId: gameProviderConfigurationId,
-				cancellationToken: cancellationToken)
+		var configuration = await _gameProvider.GetJokerConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var reply = await _client
-			.FundOutAsync(
+		var reply = await _client.FundOutAsync(
 				apiUrl: configuration.ApiUrl,
 				appId: configuration.AppId,
 				secretKey: configuration.SecretKey,
@@ -63,9 +56,8 @@ internal class JokerPlayerFundOutGetService : IGetService<JokerPlayerFundOutQuer
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult
-		{
-			OrderId = reply.RequestId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.RequestId);
 	}
 }

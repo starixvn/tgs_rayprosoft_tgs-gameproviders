@@ -9,11 +9,7 @@ namespace Tgs.GameProviders.Controllers;
 
 [Route("api/wmtf")]
 [ApiController]
-public class WMCasinoTransferController : ControllerBase,
-		IGameUrlHandler<WMCasinoTransferGameUrlQuery>,
-		IKickPlayerHandler<WMCasinoTransferKickPlayerCommand>,
-		IPlayerFundHandler<WMCasinoTransferPlayerFundInQuery, WMCasinoTransferPlayerFundOutQuery>,
-		IPlayerFundCheckingHandler<WMCasinoTransferPlayerFundCheckingQuery, PlayerFundCheckingRequest>
+public class WMCasinoTransferController : ControllerBase
 {
 	/// <summary>
 	/// Games the URL asynchronous.
@@ -151,75 +147,59 @@ public class WMCasinoTransferController : ControllerBase,
 	/// <summary>
 	/// Players the fund in asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
+	/// <param name="service">The service.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
-	///             "amount": 1
-	///         }
-	/// </remarks>
 	[HttpPost("playerfundin")]
-	public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
-		[FromServices] IGetService<WMCasinoTransferPlayerFundInQuery, PlayerFundResult> getService,
+	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
+		[FromServices] IGetService<WMCasinoTransferPlayerFundInQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
 	{
-		var result = await getService.GetAsync(new()
-		{
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			OrderId = request.OrderId,
-			Amount = request.Amount,
-		}).ConfigureAwait(false);
-		return result == null ? null : new PlayerFundResponse()
-		{
-			OrderId = request.OrderId
-		};
+		var result = await service.GetAsync(
+			query: new()
+			{
+				BrandCode = request.BrandCode,
+				PlayerCode = request.PlayerCode,
+				CurrencyCode = request.CurrencyCode,
+				OrderId = request.OrderId,
+				Amount = request.Amount
+			},
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
+
+		return new PlayerFundResponse(
+			OrderId: request.OrderId,
+			GameProviderTransactionId: result.GameProviderTransactionId,
+			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
 	}
 
 	/// <summary>
 	/// Players the fund out asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
+	/// <param name="service">The service.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "orderId":"D07B3FAD0BE5F0B4EE0C2A401FC5C41075ED",
-	///             "amount": 1
-	///         }
-	/// </remarks>
 	[HttpPost("playerfundout")]
-	public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
-		[FromServices] IGetService<WMCasinoTransferPlayerFundOutQuery, PlayerFundResult> getService,
+	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
+		[FromServices] IGetService<WMCasinoTransferPlayerFundOutQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
 	{
-		var result = await getService.GetAsync(new()
-		{
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			OrderId = request.OrderId,
-			Amount = request.Amount,
-		}).ConfigureAwait(false);
-		return result == null ? null : new PlayerFundResponse()
-		{
-			OrderId = request.OrderId
-		};
+		var result = await service.GetAsync(
+			query: new()
+			{
+				BrandCode = request.BrandCode,
+				PlayerCode = request.PlayerCode,
+				CurrencyCode = request.CurrencyCode,
+				OrderId = request.OrderId,
+				Amount = request.Amount,
+			},
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
+
+		return new PlayerFundResponse(
+			OrderId: request.OrderId,
+			GameProviderTransactionId: result.GameProviderTransactionId,
+			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
 	}
 
 	/// <summary>

@@ -19,7 +19,6 @@ public class FaChaiPlayerFundOutGetServiceUnitTest
 		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
 		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
 		var fakeBrandRepository = Substitute.For<IBrandRepository>();
-		var fakeSnowflakeWork = Substitute.For<ISnowflakeWork>();
 		var fakeClient = Substitute.For<IGameInterfaceFaChaiClient>();
 
 		var query = new FaChaiPlayerFundOutQuery
@@ -28,7 +27,7 @@ public class FaChaiPlayerFundOutGetServiceUnitTest
 			PlayerCode = "4ucmqplxb029",
 			CurrencyCode = "CNY",
 			Amount = 100M,
-			OrderId = Guid.NewGuid().ToString(),
+			OrderId = $"D{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}"
 		};
 
 		var gameProviderId = Guid.NewGuid();
@@ -76,12 +75,9 @@ public class FaChaiPlayerFundOutGetServiceUnitTest
 				cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(configuration);
 
-		var orderId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-		_ = fakeSnowflakeWork.GetId().Returns(orderId);
-
 		var response = new FundReply()
 		{
-			TrsId = orderId.ToString(),
+			TrsId = query.OrderId,
 			BankId = 1635165954039484416,
 			Balance = 0m,
 			Amount = -100m
@@ -93,7 +89,7 @@ public class FaChaiPlayerFundOutGetServiceUnitTest
 			agentKey: Arg.Is(configuration.AgentKey),
 			currency: Arg.Is(configuration.Currency),
 			playerCode: Arg.Is(player.PlayerCode),
-			orderId: Arg.Is(orderId.ToString()),
+			orderId: Arg.Is(query.OrderId),
 			amount: Arg.Is(query.Amount),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(response);
@@ -102,12 +98,12 @@ public class FaChaiPlayerFundOutGetServiceUnitTest
 			fakeGameProviderRepository,
 			fakePlayerRepository,
 			fakeBrandRepository,
-			fakeSnowflakeWork,
 			fakeClient);
 
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(response.TrsId, actual.OrderId);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(response.BankId.ToString(), actual.ExternalGameProviderTransactionId);
 	}
 }

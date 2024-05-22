@@ -50,8 +50,7 @@ public class DreamGamingTransferPlayerFundInGetService : IGetService<DreamGaming
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var reply = await _client
-			.FundInAsync(
+		var reply = await _client.FundInAsync(
 				apiUrl: configuration.ApiUrl,
 				apiKey: configuration.ApiKey,
 				agentName: configuration.AgentName,
@@ -61,9 +60,8 @@ public class DreamGamingTransferPlayerFundInGetService : IGetService<DreamGaming
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.TransactionId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.TransactionId);
 	}
 }

@@ -60,9 +60,8 @@ public class AwcVenusPlayerFundInGetService : IGetService<AwcVenusPlayerFundInQu
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult
-		{
-			OrderId = reply.GameProviderTransactionId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.GameProviderTransactionId);
 	}
 }

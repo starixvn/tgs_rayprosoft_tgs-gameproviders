@@ -44,9 +44,8 @@ public class VRGamingPlayerFundInGetService(
 			 cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult
-		{
-			OrderId = reply.OrderId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.OrderId);
 	}
 }

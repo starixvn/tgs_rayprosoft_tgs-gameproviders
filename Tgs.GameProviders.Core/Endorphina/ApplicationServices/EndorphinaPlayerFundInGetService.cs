@@ -34,21 +34,19 @@ internal class EndorphinaPlayerFundInGetService : IGetService<EndorphinaPlayerFu
 		var configuration = await _gameProvider.GetEndorphinaConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 		var gameProviderCurrencyCode = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, player.DefaultWalletCurrencyCode).ConfigureAwait(false);
 
-		var reply = await _client
-			.FundInAsync(
-				apiUrl: configuration.ApiUrl,
-				merchantId: configuration.MerchantId,
-				secretKey: configuration.SecretKey,
-				username: player.PlayerCode,
-				currency: gameProviderCurrencyCode,
-				refTransactionCode: query.OrderId,
-				amount: query.Amount,
-				cancellationToken: cancellationToken)
+		var reply = await _client.FundInAsync(
+			apiUrl: configuration.ApiUrl,
+			merchantId: configuration.MerchantId,
+			secretKey: configuration.SecretKey,
+			username: player.PlayerCode,
+			currency: gameProviderCurrencyCode,
+			refTransactionCode: query.OrderId,
+			amount: query.Amount,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.TransactionId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.TransactionId);
 	}
 }

@@ -26,28 +26,24 @@ public class JiliTransferPlayerFundOutGetService : IGetService<JiliTransferPlaye
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<PlayerFundResult> GetAsync(JiliTransferPlayerFundOutQuery command, CancellationToken cancellationToken = default)
+	public async ValueTask<PlayerFundResult> GetAsync(JiliTransferPlayerFundOutQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider
-			.GetGameProviderIdAsync(
-				gameProviderCode: GameProviderType.JiliTransfer,
-				cancellationToken: cancellationToken)
+		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.JiliTransfer,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player
-			.GetAsync(
-				playerCode: command.PlayerCode,
-				cancellationToken: cancellationToken)
+		var player = await _player.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand
-			.GetBrandGameProviderConfigurationIdAsync(
-				gameProviderId: gameProviderId,
-				brandId: player.BrandId,
-				cancellationToken: cancellationToken)
+		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: player.BrandId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProvider
-			.GetJiliTransferConfigurationAsync(
-				gameProviderConfigurationId: gameProviderConfigurationId,
-				cancellationToken: cancellationToken)
+		var configuration = await _gameProvider.GetJiliTransferConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
 		var reply = await _client.FundOutAsync(
@@ -55,10 +51,12 @@ public class JiliTransferPlayerFundOutGetService : IGetService<JiliTransferPlaye
 			agentId: configuration.AgentId,
 			agentKey: configuration.AgentKey,
 			playerCode: player.PlayerCode,
-			transactionId: command.OrderId,
-			amount: command.Amount,
+			transactionId: query.OrderId,
+			amount: query.Amount,
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		return (reply.Success) ? new() { OrderId = reply.TransactionId } : null;
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.TransactionId);
 	}
 }

@@ -13,19 +13,16 @@ public class V8PokerPlayerFundInGetService : IGetService<V8PokerPlayerFundInQuer
 	private readonly IGameInterfaceV8PokerClient _client;
 	private readonly IGameProviderRepository _gameProvider;
 	private readonly IPlayerRepository _player;
-	private readonly ISystemClock _systemClock;
 
 	public V8PokerPlayerFundInGetService(
 		IGameProviderRepository gameProvider,
 		IPlayerRepository player,
 		IBrandRepository brand,
-		ISystemClock systemClock,
 		IGameInterfaceV8PokerClient client)
 	{
 		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_systemClock = systemClock ?? throw new ArgumentNullException(nameof(systemClock));
 		_client = client ?? throw new ArgumentNullException(nameof(client));
 	}
 
@@ -49,8 +46,6 @@ public class V8PokerPlayerFundInGetService : IGetService<V8PokerPlayerFundInQuer
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var orderId = $"{configuration.AgentId}{_systemClock.CurrentTime:yyyyMMddHHmmssfff}{player.PlayerCode}";
-
 		_ = await _client
 			.FundInAsync(
 			apiUrl: configuration.ApiUrl,
@@ -58,11 +53,13 @@ public class V8PokerPlayerFundInGetService : IGetService<V8PokerPlayerFundInQuer
 			md5key: configuration.Md5key,
 			agentId: configuration.AgentId,
 			playerCode: query.PlayerCode,
-			orderId: orderId,
+			orderId: query.OrderId,
 			amount: query.Amount,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new() { OrderId = orderId };
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: string.Empty);
 	}
 }

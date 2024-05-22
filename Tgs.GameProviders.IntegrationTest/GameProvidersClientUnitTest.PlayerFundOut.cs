@@ -24,6 +24,7 @@ public partial class GameProvidersClientUnitTest
 		var currencyCode = "CNY";
 		var orderId = Guid.NewGuid().ToString("N");
 		var amount = 1m;
+		var externalGameProviderTransactionId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
 
 		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
@@ -37,10 +38,10 @@ public partial class GameProvidersClientUnitTest
 					OrderId = orderId,
 					Amount = amount
 				};
-				var result = new PlayerFundResult
-				{
-					OrderId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()
-				};
+				var result = new PlayerFundResult(
+					GameProviderTransactionId: orderId,
+					ExternalGameProviderTransactionId: externalGameProviderTransactionId
+				);
 				_ = fakeService
 					.GetAsync(
 						query: Arg.Is(query),
@@ -54,8 +55,7 @@ public partial class GameProvidersClientUnitTest
 
 		var sut = new GameProvidersClient(httpClient);
 
-		var actual = await sut
-			.PlayerFundOutAsync(
+		var actual = await sut.PlayerFundOutAsync(
 			gameProviderCode,
 			brandCode,
 			playerCode,
@@ -64,6 +64,9 @@ public partial class GameProvidersClientUnitTest
 			amount);
 
 		Assert.NotNull(actual);
+		Assert.Equal(orderId, actual.OrderId);
+		Assert.Equal(orderId, actual.GameProviderTransactionId);
+		Assert.Equal(externalGameProviderTransactionId, actual.ExternalGameProviderTransactionId);
 	}
 
 	[Fact]
@@ -88,10 +91,10 @@ public partial class GameProvidersClientUnitTest
 					OrderId = orderId,
 					Amount = amount
 				};
-				var result = new PlayerFundResult
-				{
-					OrderId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()
-				};
+				var result = new PlayerFundResult(
+					GameProviderTransactionId: DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString(),
+					ExternalGameProviderTransactionId: DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()
+				);
 				_ = fakeService
 					.GetAsync(
 						query: Arg.Is(query),

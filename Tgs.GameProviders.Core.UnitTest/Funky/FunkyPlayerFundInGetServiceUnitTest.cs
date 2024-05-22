@@ -106,6 +106,8 @@ public class FunkyPlayerFundInGetServiceUnitTest
 
 		var actual = await sut.GetAsync(query);
 
-		Assert.Equal(actual.OrderId, reply.TxSerialId.ToString());
+		Assert.NotNull(actual);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(reply.TxSerialId.ToString(), actual.ExternalGameProviderTransactionId);
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.AwcBg.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -176,83 +177,59 @@ public class AwcBgController : ControllerBase
 	/// <summary>
 	/// Players the fund in asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
+	/// <param name="service">The service.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
-	///             "amount": 1
-	///         }
-	/// </remarks>
 	[HttpPost("playerfundin")]
-	public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
-		[FromServices] IGetService<AwcBgPlayerFundInQuery, PlayerFundResult> getService,
+	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
+		[FromServices] IGetService<AwcBgPlayerFundInQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
 	{
-		var result = await getService
-			.GetAsync(
-				query: new()
-				{
-					BrandCode = request.BrandCode,
-					PlayerCode = request.PlayerCode,
-					CurrencyCode = request.CurrencyCode,
-					OrderId = request.OrderId,
-					Amount = request.Amount,
-				},
-				cancellationToken: HttpContext.RequestAborted)
+		var result = await service.GetAsync(
+			query: new()
+			{
+				BrandCode = request.BrandCode,
+				PlayerCode = request.PlayerCode,
+				CurrencyCode = request.CurrencyCode,
+				OrderId = request.OrderId,
+				Amount = request.Amount
+			},
+			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
-		return result == null ? null : new PlayerFundResponse()
-		{
-			OrderId = request.OrderId
-		};
+
+		return new PlayerFundResponse(
+			OrderId: request.OrderId,
+			GameProviderTransactionId: result.GameProviderTransactionId,
+			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
 	}
 
 	/// <summary>
 	/// Players the fund out asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
+	/// <param name="service">The service.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "orderId":"D07B3FAD0BE5F0B4EE0C2A401FC5C41075ED",
-	///             "amount": 1
-	///         }
-	/// </remarks>
 	[HttpPost("playerfundout")]
-	public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
-		[FromServices] IGetService<AwcBgPlayerFundOutQuery, PlayerFundResult> getService,
+	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
+		[FromServices] IGetService<AwcBgPlayerFundOutQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
 	{
-		var result = await getService
-			.GetAsync(
-				query: new()
-				{
-					BrandCode = request.BrandCode,
-					PlayerCode = request.PlayerCode,
-					CurrencyCode = request.CurrencyCode,
-					OrderId = request.OrderId,
-					Amount = request.Amount,
-				},
-				cancellationToken: HttpContext.RequestAborted)
+		var result = await service.GetAsync(
+			query: new()
+			{
+				BrandCode = request.BrandCode,
+				PlayerCode = request.PlayerCode,
+				CurrencyCode = request.CurrencyCode,
+				OrderId = request.OrderId,
+				Amount = request.Amount,
+			},
+			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
-		return result == null ? null : new PlayerFundResponse()
-		{
-			OrderId = request.OrderId
-		};
+
+		return new PlayerFundResponse(
+			OrderId: request.OrderId,
+			GameProviderTransactionId: result.GameProviderTransactionId,
+			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
 	}
 
 	/// <summary>

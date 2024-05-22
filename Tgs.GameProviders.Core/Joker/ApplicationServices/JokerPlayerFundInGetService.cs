@@ -52,8 +52,7 @@ internal class JokerPlayerFundInGetService : IGetService<JokerPlayerFundInQuery,
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var reply = await _client
-			.FundInAsync(
+		var reply = await _client.FundInAsync(
 				apiUrl: configuration.ApiUrl,
 				appId: configuration.AppId,
 				secretKey: configuration.SecretKey,
@@ -63,9 +62,8 @@ internal class JokerPlayerFundInGetService : IGetService<JokerPlayerFundInQuery,
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult
-		{
-			OrderId = reply.RequestId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.RequestId);
 	}
 }

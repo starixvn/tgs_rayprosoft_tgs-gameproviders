@@ -33,22 +33,20 @@ public class JDBTransferPlayerFundOutGetService : IGetService<JDBTransferPlayerF
 		var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
 		var configuration = await _gameProviderRepository.GetJDBTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
 
-		var reply = await _client
-				.FundOutAsync(
-					configuration.ApiUrl,
-					configuration.Domain,
-					configuration.AesKey,
-					configuration.AesIV,
-					configuration.Agent,
-					player.PlayerCode,
-					query.OrderId,
-					query.Amount,
-					cancellationToken)
-				.ConfigureAwait(false);
+		var reply = await _client.FundOutAsync(
+			apiUrl: configuration.ApiUrl,
+			domain: configuration.Domain,
+			aesKey: configuration.AesKey,
+			aesIV: configuration.AesIV,
+			agent: configuration.Agent,
+			playerCode: player.PlayerCode,
+			serialNo: query.OrderId,
+			amount: query.Amount,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.SerialNo
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.SerialNo);
 	}
 }

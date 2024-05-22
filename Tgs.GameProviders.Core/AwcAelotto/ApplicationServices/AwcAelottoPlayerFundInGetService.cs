@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
+using StackExchange.Redis;
 using Tgs.GameInterface.Awc.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
@@ -46,9 +48,8 @@ public class AwcAelottoPlayerFundInGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult
-		{
-			OrderId = reply.GameProviderTransactionId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.GameProviderTransactionId);
 	}
 }

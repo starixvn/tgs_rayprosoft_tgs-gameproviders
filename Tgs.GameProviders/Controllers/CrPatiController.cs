@@ -139,42 +139,27 @@ public class CrPatiController : ControllerBase
 	/// <param name="service">The service.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI_INR",
-	///             "playerCode": "4ue0ujotpmuu",
-	///             "currencyCode": "VND",
-	///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
-	///             "amount": 1
-	///         }
-	/// </remarks>
 	[HttpPost("playerfundin")]
-	public async ValueTask<PlayerFundResponse?> PlayerFundInAsync(
+	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
 		[FromServices] IGetService<CrPatiPlayerFundInQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
 	{
-		var query = new CrPatiPlayerFundInQuery()
-		{
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			OrderId = request.OrderId,
-			Amount = request.Amount,
-		};
-
-		var result = await service
-			.GetAsync(
-			query: query,
+		var result = await service.GetAsync(
+			query: new()
+			{
+				BrandCode = request.BrandCode,
+				PlayerCode = request.PlayerCode,
+				CurrencyCode = request.CurrencyCode,
+				OrderId = request.OrderId,
+				Amount = request.Amount
+			},
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResponse()
-		{
-			OrderId = result.OrderId
-		};
+		return new PlayerFundResponse(
+			OrderId: request.OrderId,
+			GameProviderTransactionId: result.GameProviderTransactionId,
+			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
 	}
 
 	/// <summary>
@@ -183,42 +168,27 @@ public class CrPatiController : ControllerBase
 	/// <param name="service">The service.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI_INR",
-	///             "playerCode": "4ue0ujotpmuu",
-	///             "currencyCode": "VND",
-	///             "orderId":"D07B3FAD0BE5F0B4EE0C2A401FC5C41075ED",
-	///             "amount": 1
-	///         }
-	/// </remarks>
 	[HttpPost("playerfundout")]
-	public async ValueTask<PlayerFundResponse?> PlayerFundOutAsync(
+	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
 		[FromServices] IGetService<CrPatiPlayerFundOutQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
 	{
-		var query = new CrPatiPlayerFundOutQuery()
-		{
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			OrderId = request.OrderId,
-			Amount = request.Amount,
-		};
-
-		var result = await service
-			.GetAsync(
-			query: query,
+		var result = await service.GetAsync(
+			query: new()
+			{
+				BrandCode = request.BrandCode,
+				PlayerCode = request.PlayerCode,
+				CurrencyCode = request.CurrencyCode,
+				OrderId = request.OrderId,
+				Amount = request.Amount,
+			},
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResponse()
-		{
-			OrderId = result.OrderId
-		};
+		return new PlayerFundResponse(
+			OrderId: request.OrderId,
+			GameProviderTransactionId: result.GameProviderTransactionId,
+			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
 	}
 
 	/// <summary>

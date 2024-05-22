@@ -49,9 +49,8 @@ public class FunkyPlayerFundOutGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.TxSerialId.ToString()
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.TxSerialId.ToString());
 	}
 }

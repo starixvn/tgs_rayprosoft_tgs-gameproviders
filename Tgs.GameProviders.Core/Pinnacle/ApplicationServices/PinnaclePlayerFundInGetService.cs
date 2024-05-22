@@ -62,9 +62,8 @@ public class PinnaclePlayerFundInGetService : IGetService<PinnaclePlayerFundInQu
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = query.OrderId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: string.Empty);
 	}
 }

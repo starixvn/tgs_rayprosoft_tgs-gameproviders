@@ -46,8 +46,7 @@ public class JiliTransferPlayerFundOutGetServiceUnitTest
 			Username: "4ucmqplxb029",
 			DefaultWalletId: Guid.NewGuid(),
 			DefaultWalletCurrencyCode: "CNY");
-		_ = fakePlayerRepository
-		.GetAsync(
+		_ = fakePlayerRepository.GetAsync(
 				Arg.Is(query.PlayerCode))
 			.Returns(playerModel);
 
@@ -95,6 +94,7 @@ public class JiliTransferPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(reply.TransactionId, actual.ExternalGameProviderTransactionId);
 	}
 }

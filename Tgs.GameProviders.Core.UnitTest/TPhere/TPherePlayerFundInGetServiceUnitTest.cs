@@ -21,7 +21,6 @@ public class TPherePlayerFundInGetServiceUnitTest
 		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
 		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
 		var fakeBrandRepository = Substitute.For<IBrandRepository>();
-		var fakeISnowflakeWork = Substitute.For<ISnowflakeWork>();
 		var fakeClient = Substitute.For<IGameInterfaceTPhereClient>();
 
 		var query = new TPherePlayerFundInQuery
@@ -29,7 +28,7 @@ public class TPherePlayerFundInGetServiceUnitTest
 			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
 			CurrencyCode = "CNY",
-			OrderId = Guid.NewGuid().ToString("N"),
+			OrderId = $"W{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
 			Amount = 100
 		};
 
@@ -73,13 +72,9 @@ public class TPherePlayerFundInGetServiceUnitTest
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(configuration);
 
-		var id = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-		_ = fakeISnowflakeWork.GetId()
-			.Returns(id);
-
 		var reply = new FundReply
 		{
-			TransactionId = $"W{id}",
+			TransactionId = query.OrderId,
 			CasinoTransId = Guid.NewGuid().ToString("N"),
 			Balance = 0.0m,
 			Res = new JsonObject { }.ToJsonString()
@@ -89,7 +84,7 @@ public class TPherePlayerFundInGetServiceUnitTest
 			apiKey: Arg.Is(configuration.ApiKey),
 			apiToken: Arg.Is(configuration.ApiToken),
 			playerCode: Arg.Is(player.PlayerCode),
-			orderId: Arg.Is($"W{id}"),
+			orderId: Arg.Is(query.OrderId),
 			amount: Arg.Is(query.Amount),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(reply);
@@ -98,11 +93,11 @@ public class TPherePlayerFundInGetServiceUnitTest
 			fakeGameProviderRepository,
 			fakePlayerRepository,
 			fakeBrandRepository,
-			fakeISnowflakeWork,
 			fakeClient);
 
 		var actual = await sut.GetAsync(query);
 
-		Assert.Equal($"W{id}", actual.OrderId.ToString());
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId.ToString());
+		Assert.Equal(reply.CasinoTransId, actual.ExternalGameProviderTransactionId.ToString());
 	}
 }

@@ -1,9 +1,8 @@
-﻿namespace Tgs.GameProviders.ViewModels;
+﻿using System.Text.Json.Nodes;
 
-public record PlayerFundResponse
-{
-	/// <summary>
-	/// The order identifier
-	/// </summary>
-	public string? OrderId { get; set; } = null;
-}
+namespace Tgs.GameProviders.ViewModels;
+
+public record PlayerFundResponse(
+	string OrderId,
+	string GameProviderTransactionId,
+	string ExternalGameProviderTransactionId);

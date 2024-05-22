@@ -98,6 +98,6 @@ public class VRGamingPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(reply.OrderId, actual.OrderId);
+		Assert.Equal(reply.OrderId, actual.GameProviderTransactionId);
 	}
 }

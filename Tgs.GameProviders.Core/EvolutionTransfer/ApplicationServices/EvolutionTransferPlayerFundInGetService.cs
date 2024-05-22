@@ -22,19 +22,21 @@ public class EvolutionTransferPlayerFundInGetService : IGetService<EvolutionTran
 		_setting = setting ?? throw new ArgumentNullException(nameof(setting));
 	}
 
-	public async ValueTask<PlayerFundResult> GetAsync(EvolutionTransferPlayerFundInQuery command, CancellationToken cancellationToken = default)
+	public async ValueTask<PlayerFundResult> GetAsync(EvolutionTransferPlayerFundInQuery query, CancellationToken cancellationToken = default)
 	{
 		var configuration = await _setting.GetEvolutionTransferConfigurationAsync().ConfigureAwait(false);
-		var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
+		var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
 
 		var reply = await _grpc.FundInAsync(
 			configuration.ApiUrl,
 			configuration.EcId,
 			player.PlayerCode,
-			command.OrderId,
-			command.Amount,
+			query.OrderId,
+			query.Amount,
 			cancellationToken).ConfigureAwait(false);
 
-		return (reply.Result) ? new() { OrderId = reply.TransactionId } : null;
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.TransactionId);
 	}
 }

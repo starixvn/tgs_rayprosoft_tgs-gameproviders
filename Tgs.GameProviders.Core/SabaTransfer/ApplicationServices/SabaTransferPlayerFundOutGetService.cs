@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using StackExchange.Redis;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
@@ -60,9 +61,8 @@ public class SabaTransferPlayerFundOutGetService : IGetService<SabaTransferPlaye
 			throw new Exception($"遊戲廠商交易失敗.({JsonSerializer.Serialize(reply)})");
 		}
 
-		return new PlayerFundResult()
-		{
-			OrderId = reply.ActualVendorTransId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: reply.ActualVendorTransId);
 	}
 }

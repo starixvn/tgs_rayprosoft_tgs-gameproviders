@@ -62,9 +62,8 @@ public class WGFmGamingPlayerFundInGetService : IGetService<WGFmGamingPlayerFund
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerFundResult()
-		{
-			OrderId = query.OrderId
-		};
+		return new PlayerFundResult(
+			GameProviderTransactionId: query.OrderId,
+			ExternalGameProviderTransactionId: string.Empty);
 	}
 }

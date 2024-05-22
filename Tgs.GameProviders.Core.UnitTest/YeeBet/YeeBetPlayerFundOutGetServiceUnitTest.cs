@@ -19,7 +19,6 @@ public class YeeBetPlayerFundOutGetServiceUnitTest
 		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
 		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
 		var fakeBrandRepository = Substitute.For<IBrandRepository>();
-		var fakeSnowflakeWork = Substitute.For<ISnowflakeWork>();
 		var fakeClient = Substitute.For<IGameInterfaceYeeBetClient>();
 
 		var query = new YeeBetPlayerFundOutQuery
@@ -28,7 +27,7 @@ public class YeeBetPlayerFundOutGetServiceUnitTest
 			PlayerCode = "4ucmqplxb029",
 			CurrencyCode = "CNY",
 			Amount = 100M,
-			OrderId = Guid.NewGuid().ToString(),
+			OrderId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()
 		};
 
 		var gameProviderId = Guid.NewGuid();
@@ -72,12 +71,9 @@ public class YeeBetPlayerFundOutGetServiceUnitTest
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(configuration);
 
-		var orderId = 1640520550106664960;
-		_ = fakeSnowflakeWork.GetId().Returns(orderId);
-
 		var response = new FundReply()
 		{
-			TransactionId = "1640520550106664960",
+			TransactionId = query.OrderId.ToString(),
 			Balance = 168M,
 			Res = "{}"
 		};
@@ -87,7 +83,7 @@ public class YeeBetPlayerFundOutGetServiceUnitTest
 				appId: Arg.Is(configuration.AppId),
 				secretKey: Arg.Is(configuration.SecretKey),
 				playerCode: Arg.Is(player.PlayerCode),
-				orderId: Arg.Is(orderId),
+				orderId: Arg.Is(long.Parse(query.OrderId)),
 				amount: Arg.Is(query.Amount),
 				cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(response);
@@ -96,12 +92,12 @@ public class YeeBetPlayerFundOutGetServiceUnitTest
 			fakeGameProviderRepository,
 			fakePlayerRepository,
 			fakeBrandRepository,
-			fakeSnowflakeWork,
 			fakeClient);
 
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(response.TransactionId, actual.OrderId);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(response.TransactionId, actual.ExternalGameProviderTransactionId);
 	}
 }

@@ -105,6 +105,7 @@ public class AwcYesbingoPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(gameProviderTransactionId, actual.OrderId);
+		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(reply.GameProviderTransactionId, actual.ExternalGameProviderTransactionId);
 	}
 }

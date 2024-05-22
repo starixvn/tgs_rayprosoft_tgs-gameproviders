@@ -20,9 +20,9 @@ public interface IGameProvidersClient
 
 	ValueTask<bool> PlayerFundCheckingByVRAsync(string brandCode, string playerCode, string currencyCode, string orderId, DateTimeOffset startTime, DateTimeOffset endTime, CancellationToken cancellationToken = default);
 
-	ValueTask<string> PlayerFundInAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default);
+	ValueTask<PlayerFundResponse> PlayerFundInAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default);
 
-	ValueTask<string> PlayerFundOutAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default);
+	ValueTask<PlayerFundResponse> PlayerFundOutAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default);
 
 	ValueTask<RoundDetailResult> RoundDetailAsync(string gameProviderCode, Guid roundId, string language, CancellationToken cancellationToken = default);
 }
