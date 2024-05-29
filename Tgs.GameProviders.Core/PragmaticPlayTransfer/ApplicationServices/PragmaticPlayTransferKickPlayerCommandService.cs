@@ -7,58 +7,40 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 
-internal class PragmaticPlayTransferKickPlayerCommandService : ICommandService<PragmaticPlayTransferKickPlayerCommand>
+internal class PragmaticPlayTransferKickPlayerCommandService(
+	IGameProviderRepository gameProvider,
+	IPlayerRepository player,
+	IBrandRepository brand,
+	IGameInterfacePragmaticPlayClient client) : ICommandService<PragmaticPlayTransferKickPlayerCommand>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfacePragmaticPlayClient _client;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-
-	public PragmaticPlayTransferKickPlayerCommandService(
-		IGameProviderRepository gameProvider,
-		IPlayerRepository player,
-		IBrandRepository brand,
-		IGameInterfacePragmaticPlayClient client)
-	{
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-	}
-
 	public async ValueTask ExecuteAsync(
 		PragmaticPlayTransferKickPlayerCommand command,
 		CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider
-			.GetGameProviderIdAsync(
-				gameProviderCode: GameProviderType.PragmaticPlayTransfer,
-				cancellationToken: cancellationToken)
+		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.PragmaticPlayTransfer,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player
-			.GetAsync(
-				playerCode: command.PlayerCode,
-				cancellationToken: cancellationToken)
+		var playerInfo = await player.GetAsync(
+			playerCode: command.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand
-			.GetBrandGameProviderConfigurationIdAsync(
-				gameProviderId: gameProviderId,
-				brandId: player.BrandId,
-				cancellationToken: cancellationToken)
+		var gameProviderConfigurationId = await brand.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: playerInfo.BrandId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProvider
-			.GetPragmaticPlayTransferConfigurationAsync(
-				gameProviderConfigurationId: gameProviderConfigurationId,
-				cancellationToken: cancellationToken)
+		var configuration = await gameProvider.GetPragmaticPlayTransferConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		await _client
-			.PlayerLogoutAsync(
-				apiUrl: configuration.ApiUrl,
-				secureLogin: configuration.SecureLogin,
-				secretKey: configuration.SecretKey,
-				playerCode: command.PlayerCode,
-				cancellationToken: cancellationToken)
+		await client.PlayerLogoutAsync(
+			apiUrl: configuration.ApiUrl,
+			secureLogin: configuration.SecureLogin,
+			secretKey: configuration.SecretKey,
+			playerCode: command.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 	}
 }
