@@ -1435,6 +1435,48 @@ public class GameProviderRepositoryUnitTest
 	}
 
 	[Fact]
+	public async Task Get_PragmaticPlayTransfer_Configuration()
+	{
+		var fakeClient = Substitute.For<IGameCommandClient>();
+
+		var gameProviderId = Guid.NewGuid();
+		var gameProviderConfigurationId = Guid.NewGuid();
+
+		var settingConfiguration = new PragmaticPlayTransferConfiguration()
+		{
+			ApiUrl = new("https://api.prerelease-env.biz/")
+		};
+		_ = fakeClient
+			.SettingGetConfigurationAsync<PragmaticPlayTransferConfiguration>(
+				key: Arg.Is(GameProviderConfigurations.PragmaticPlayTransfer),
+				cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(settingConfiguration);
+
+		_ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+			GameProviderId: gameProviderId,
+			GameProviderCode: GameProviderConfigurations.PragmaticPlayTransfer,
+			GameProviderConfigId: gameProviderConfigurationId,
+			Name: $"{GameProviderConfigurations.PragmaticPlayTransfer}-GPI",
+			Description: $"{GameProviderConfigurations.PragmaticPlayTransfer}-GPI Configuration",
+			ClientId: $"{GameProviderConfigurations.PragmaticPlayTransfer}-GPI",
+			SecretKey: Guid.NewGuid().ToString("N"),
+			Status: GameProviderConfigStatus.Active,
+			DesktopEndpoint: string.Empty,
+			MobileEndpoint: string.Empty,
+			ConfigurationData: "{\"SecretKey\":\"testKey\",\"SecureLogin\":\"tgs_tgstfw\"}",
+			IsDefault: false));
+
+		var repository = new GameProviderRepository(fakeClient);
+
+		var actual = await repository.GetPragmaticPlayTransferConfigurationAsync(gameProviderConfigurationId);
+
+		Assert.NotNull(actual);
+		Assert.Equal("https://api.prerelease-env.biz/", actual.ApiUrl.ToString());
+		Assert.Equal("testKey", actual.SecretKey);
+		Assert.Equal("tgs_tgstfw", actual.SecureLogin);
+	}
+
+	[Fact]
 	public async Task Get_SabaTransfer_Configuration()
 	{
 		var fakeClient = Substitute.For<IGameCommandClient>();

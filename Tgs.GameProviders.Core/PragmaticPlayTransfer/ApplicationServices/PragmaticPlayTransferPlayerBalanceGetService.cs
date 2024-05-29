@@ -7,70 +7,51 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
 
-internal class PragmaticPlayTransferPlayerBalanceGetService : IGetService<PragmaticPlayTransferPlayerBalanceQuery, PlayerBalanceResult>
+internal class PragmaticPlayTransferPlayerBalanceGetService(
+	IGameProviderRepository gameProvider,
+	IPlayerRepository player,
+	IBrandRepository brand,
+	IGameInterfacePragmaticPlayClient client) : IGetService<PragmaticPlayTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfacePragmaticPlayClient _client;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-
-	public PragmaticPlayTransferPlayerBalanceGetService(
-		IGameProviderRepository gameProvider,
-		IPlayerRepository player,
-		IBrandRepository brand,
-		IGameInterfacePragmaticPlayClient client)
-	{
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-	}
-
 	public async ValueTask<PlayerBalanceResult> GetAsync(
 		PragmaticPlayTransferPlayerBalanceQuery query,
 		CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider
-			.GetGameProviderIdAsync(
-				gameProviderCode: GameProviderType.PragmaticPlayTransfer,
-				cancellationToken: cancellationToken)
+		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.PragmaticPlayTransfer,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player
-			.GetAsync(
-				playerCode: query.PlayerCode,
-				cancellationToken: cancellationToken)
+		var playerInfo = await player.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand
-			.GetBrandGameProviderConfigurationIdAsync(
-				gameProviderId: gameProviderId,
-				brandId: player.BrandId,
-				cancellationToken: cancellationToken)
+		var gameProviderConfigurationId = await brand.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: playerInfo.BrandId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProvider
-			.GetPragmaticPlayTransferConfigurationAsync(
-				gameProviderConfigurationId: gameProviderConfigurationId,
-				cancellationToken: cancellationToken)
+		var configuration = await gameProvider.GetPragmaticPlayTransferConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var reply = await _client
-			.PlayerBalanceAsync(
-				configuration.ApiUrl,
-				configuration.SecureLogin,
-				configuration.SecretKey,
-				query.PlayerCode,
-				cancellationToken: cancellationToken)
+		var reply = await client.PlayerBalanceAsync(
+			configuration.ApiUrl,
+			configuration.SecureLogin,
+			configuration.SecretKey,
+			query.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
 		if (!reply.IsPlayerExist)
 		{
-			var currencyCode = await _gameProvider
-				.GetGameProviderCurrencyCodeAsync(
-					gameProviderId: gameProviderId,
-					currencyCode: player.DefaultWalletCurrencyCode,
-					cancellationToken)
+			var currencyCode = await gameProvider.GetGameProviderCurrencyCodeAsync(
+				gameProviderId: gameProviderId,
+				currencyCode: playerInfo.DefaultWalletCurrencyCode,
+				cancellationToken)
 				.ConfigureAwait(false);
 
-			await _client.PlayerCreateAsync(
+			await client.PlayerCreateAsync(
 				apiUrl: configuration.ApiUrl,
 				secureLogin: configuration.SecureLogin,
 				secretKey: configuration.SecretKey,
@@ -79,18 +60,17 @@ internal class PragmaticPlayTransferPlayerBalanceGetService : IGetService<Pragma
 				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 
-			reply = await _client
-			   .PlayerBalanceAsync(
-				   configuration.ApiUrl,
-				   configuration.SecureLogin,
-				   configuration.SecretKey,
-				   query.PlayerCode,
-				   cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
+			reply = await client.PlayerBalanceAsync(
+				configuration.ApiUrl,
+				configuration.SecureLogin,
+				configuration.SecretKey,
+				query.PlayerCode,
+				cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
 		}
 
 		return !reply.IsPlayerExist
-			? throw new Exception($"Player does not exist.{player.PlayerCode}")
+			? throw new Exception($"Player does not exist.{playerInfo.PlayerCode}")
 			: new PlayerBalanceResult
 			{
 				FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0)
