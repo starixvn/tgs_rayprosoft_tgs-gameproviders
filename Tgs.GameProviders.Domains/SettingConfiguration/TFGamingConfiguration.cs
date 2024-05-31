@@ -1,11 +1,12 @@
-﻿using Tgs.GameProviders.Domains.SettingConfiguration.TF;
+﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-namespace Tgs.GameProviders.Domains.SettingConfiguration;
-
-public record TFGamingConfiguration : PluggableConfigurationBase
+public record TFGamingConfiguration
 {
-	/// <summary>
-	/// The brand merchants
-	/// </summary>
-	public TFBrandMerchant[] BrandMerchants { get; init; } = default!;
+	public Uri LaunchUrl { get; set; } = default!;
+	public Uri ApiUrl { get; set; } = default!;
+	public string BrandCurrency { get; set; } = default!;
+	public string BrandCode { get; set; } = default!;
+	public string PublicToken { get; set; } = default!;
+	public string PrivateToken { get; set; } = default!;
+	public string PartnerId { get; set; } = default!;
 }

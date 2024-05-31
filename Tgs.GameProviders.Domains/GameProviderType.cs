@@ -25,6 +25,7 @@ public static class GameProviderType
 	public static readonly string BTiSports = "BTI";
 	public static readonly string Card365 = "365";
 	public static readonly string Cards365Transfer = "365TF";
+	public static readonly string CQ9Gaming = "CQ9";
 	public static readonly string CrPati = "CP";
 	public static readonly string DreamGame = "DG";
 	public static readonly string DreamGamingTransfer = "DGTF";

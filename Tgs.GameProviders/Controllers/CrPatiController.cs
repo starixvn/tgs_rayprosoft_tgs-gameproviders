@@ -71,6 +71,7 @@ public class CrPatiController : ControllerBase
 	///   Get balance/4ue0ujotpmuu
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		 [FromServices] IGetService<CrPatiPlayerBalanceQuery, PlayerBalanceResult> service,
 		 string playerCode)

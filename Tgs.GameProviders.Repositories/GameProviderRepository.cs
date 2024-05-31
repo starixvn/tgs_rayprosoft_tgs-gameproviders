@@ -126,38 +126,11 @@ internal class GameProviderRepository(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken);
 
-	public async ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string gameProviderConfiguration, Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
-	{
-		var settingConfiguration = await client
-			.SettingGetConfigurationAsync<TConfiguration>(
-			key: gameProviderConfiguration,
-			cancellationToken: cancellationToken)
-			.ConfigureAwait(false)
-			?? throw new ArgumentNullException(gameProviderConfiguration, "This game product setting does not exist.");
-
-		var gameProviderConfig = await client
-			.GameProviderConfigurationGetAsync(
-			gameProviderConfigId: gameProviderConfigurationId,
-			cancellationToken: cancellationToken)
-			.ConfigureAwait(false)
-			?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist.");
-
-		return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
-			? settingConfiguration
-			: JsonMergeUtils.MergeModel(
-				original: settingConfiguration,
-				patch: gameProviderConfig.ConfigurationData,
-				options: new JsonSerializerOptions()
-				{
-					PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-					PropertyNameCaseInsensitive = true,
-					Converters =
-					{
-						new JsonStringEnumConverter()
-					}
-				}
-				);
-	}
+	public ValueTask<CQ9GamingConfiguration> GetCQ9GamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+		=> GetConfigurationAsync<CQ9GamingConfiguration>(
+			gameProviderConfiguration: GameProviderConfigurations.CQ9Gaming,
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken);
 
 	public ValueTask<CrPatiConfiguration> GetCrPatiConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 		=> GetConfigurationAsync<CrPatiConfiguration>(
@@ -316,7 +289,7 @@ internal class GameProviderRepository(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken);
 
-	public ValueTask<TPhereConfiguration> GetTPhereConfiguration(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+	public ValueTask<TPhereConfiguration> GetTPhereConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 		=> GetConfigurationAsync<TPhereConfiguration>(
 			gameProviderConfiguration: GameProviderConfigurations.TPhere,
 			gameProviderConfigurationId: gameProviderConfigurationId,
@@ -363,4 +336,37 @@ internal class GameProviderRepository(
 			gameProviderConfiguration: GameProviderConfigurations.YeeBet,
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken);
+
+	private async ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(string gameProviderConfiguration, Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+	{
+		var settingConfiguration = await client
+			.SettingGetConfigurationAsync<TConfiguration>(
+			key: gameProviderConfiguration,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false)
+			?? throw new ArgumentNullException(gameProviderConfiguration, "This game product setting does not exist.");
+
+		var gameProviderConfig = await client
+			.GameProviderConfigurationGetAsync(
+			gameProviderConfigId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false)
+			?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist.");
+
+		return string.IsNullOrWhiteSpace(gameProviderConfig.ConfigurationData)
+			? settingConfiguration
+			: JsonMergeUtils.MergeModel(
+				original: settingConfiguration,
+				patch: gameProviderConfig.ConfigurationData,
+				options: new JsonSerializerOptions()
+				{
+					PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+					PropertyNameCaseInsensitive = true,
+					Converters =
+					{
+						new JsonStringEnumConverter()
+					}
+				}
+				);
+	}
 }

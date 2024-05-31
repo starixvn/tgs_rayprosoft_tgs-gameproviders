@@ -14,32 +14,15 @@ public class SkywindTransferController : ControllerBase
 	/// <summary>
 	/// Games the URL asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
+	/// <param name="service">The service.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "gameType": 16,
-	///             "gameId": 3000001,
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-	///             "platformType": 0,
-	///             "language": "zh-CN",
-	///             "ipAddress": "127.0.0.1",
-	///             "backUrl": "https://dev-t1.rpgp.cc/"
-	///         }
-	/// </remarks>
 	[HttpPost("gameurl")]
 	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<SkywindTransferGameUrlQuery, GameUrlResult> getService,
+		[FromServices] IGetService<SkywindTransferGameUrlQuery, Uri> service,
 		GameUrlRequest request)
 	{
-		var result = await getService.GetAsync(new SkywindTransferGameUrlQuery()
+		var result = await service.GetAsync(new SkywindTransferGameUrlQuery()
 		{
 			GameType = request.GameType,
 			GameId = request.GameId,
@@ -52,7 +35,7 @@ public class SkywindTransferController : ControllerBase
 			IPAddress = request.IPAddress,
 			BackUrl = request.BackUrl
 		}).ConfigureAwait(false);
-		return result == null ? null : new GameUrlResponse() { Url = result.Url };
+		return result == null ? null : new GameUrlResponse() { Url = result };
 	}
 
 	/// <summary>
@@ -67,6 +50,7 @@ public class SkywindTransferController : ControllerBase
 	///   Get balance/4ucmqplxb029
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		 [FromServices] IGetService<SkywindTransferPlayerBalanceQuery, PlayerBalanceResult> service,
 		 string playerCode)

@@ -64,12 +64,8 @@ public class PinnacleController : ControllerBase
 	/// <param name="commandService">The command service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Delete kickplayer/4ucmqplxb029
-	/// </remarks>
 	[HttpDelete("kickplayer/{playerCode}")]
+	[HttpDelete("player/{playerCode}/logout")]
 	public ValueTask KickPlayerAsync(
 		[FromServices] ICommandService<PinnacleKickPlayerCommand> commandService,
 		string playerCode)
@@ -90,6 +86,7 @@ public class PinnacleController : ControllerBase
 	///   Get balance/4ucmqplxb029
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		 [FromServices] IGetService<PinnaclePlayerBalanceQuery, PlayerBalanceResult> service,
 		 string playerCode)

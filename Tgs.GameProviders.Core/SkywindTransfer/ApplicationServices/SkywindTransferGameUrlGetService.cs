@@ -11,7 +11,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 
-public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameUrlQuery, GameUrlResult>
+public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameUrlQuery, Uri>
 {
 	private readonly IGameInterfaceSkywindClient _client;
 	private readonly ICommandService<SkywindTransferCreatePlayerCommand> _createPlayerCommandService;
@@ -39,7 +39,7 @@ public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameU
 		_gameTokenClient = gameTokenClient ?? throw new ArgumentNullException(nameof(gameTokenClient));
 	}
 
-	public async ValueTask<GameUrlResult> GetAsync(SkywindTransferGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<Uri> GetAsync(SkywindTransferGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider
 			.GetGameProviderIdAsync(
@@ -131,6 +131,6 @@ public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameU
 			gameUrl = reply.IsPlayer ? new(reply.GameUrl) : null;
 		}
 
-		return gameUrl is not null ? new() { Url = gameUrl } : null;
+		return gameUrl ?? throw new Exception($"Player does not exist.({player.PlayerCode})");
 	}
 }

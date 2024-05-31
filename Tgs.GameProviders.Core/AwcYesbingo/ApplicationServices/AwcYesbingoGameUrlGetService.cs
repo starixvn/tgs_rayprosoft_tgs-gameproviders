@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.AwcYesbingo.ApplicationServices;
 
-public class AwcYesbingoGameUrlGetService : IGetService<AwcYesbingoGameUrlQuery, GameUrlResult>
+public class AwcYesbingoGameUrlGetService : IGetService<AwcYesbingoGameUrlQuery, Uri>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceAwcClient _client;
@@ -29,7 +29,7 @@ public class AwcYesbingoGameUrlGetService : IGetService<AwcYesbingoGameUrlQuery,
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<GameUrlResult> GetAsync(AwcYesbingoGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<Uri> GetAsync(AwcYesbingoGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.AWC_YESBINGO,
@@ -110,9 +110,6 @@ public class AwcYesbingoGameUrlGetService : IGetService<AwcYesbingoGameUrlQuery,
 
 		return !reply.IsPlayerExist
 			? throw new Exception($"Player does not exist.({player.PlayerCode})")
-			: new GameUrlResult
-			{
-				Url = new Uri(reply.GameUrl)
-			};
+			: new Uri(reply.GameUrl);
 	}
 }

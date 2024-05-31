@@ -2,6 +2,7 @@
 using Tgs.GameInterface.Awc.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.Cards365.Client;
+using Tgs.GameInterface.CQ9Gaming.Client;
 using Tgs.GameInterface.CrPati.Client;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EndorphinaService.Client;
@@ -80,7 +81,8 @@ public static class ServiceCollectionExtensions
 		Action<GameInterfaceCrPatiClientOptions, IServiceProvider> gameInterfaceCrPatiClientOptions,
 		Action<GameInterfaceVRGamingClientOptions, IServiceProvider> gameInterfaceVRGamingClientOptions,
 		Action<GameInterfaceFunkyClientOptions, IServiceProvider> gameInterfaceFunkyClientOptions,
-		Action<GameInterfaceTPhereClientOptions, IServiceProvider> gameInterfaceTPhereClientOptions)
+		Action<GameInterfaceTPhereClientOptions, IServiceProvider> gameInterfaceTPhereClientOptions,
+		Action<GameInterfaceCQ9GamingClientOptions, IServiceProvider> gameInterfaceCQ9GamingClientOptions)
 		=> services
 		.AddOptions<RedisOptions>()
 		.Configure(configure)
@@ -124,5 +126,6 @@ public static class ServiceCollectionExtensions
 			gameInterfaceCrPatiClientOptions: gameInterfaceCrPatiClientOptions,
 			gameInterfaceVRGamingClientOptions: gameInterfaceVRGamingClientOptions,
 			gameInterfaceFunkyClientOptions: gameInterfaceFunkyClientOptions,
-			gameInterfaceTPhereClientOptions: gameInterfaceTPhereClientOptions);
+			gameInterfaceTPhereClientOptions: gameInterfaceTPhereClientOptions,
+			gameInterfaceCQ9GamingClientOptions: gameInterfaceCQ9GamingClientOptions);
 }

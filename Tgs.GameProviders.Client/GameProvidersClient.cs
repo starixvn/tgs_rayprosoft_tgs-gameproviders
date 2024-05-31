@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text.Json;
@@ -8,15 +9,16 @@ using Tgs.GameProviders.Domains.RoundDetail;
 
 namespace Tgs.GameProviders.Client;
 
-internal class GameProvidersClient : IGameProvidersClient
+internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 {
 	private static readonly string _GameURL = "/api/{0}/gameurl";
-	private static readonly string _KickPlayerPath = "/api/{0}/KickPlayer/{1}";
-	private static readonly string _PlayerBalancePath = "/api/{0}/balance/{1}";
+	private static readonly string _PlayerLogoutPath = "/api/{0}/player/{1}/logout";
+	private static readonly string _PlayerBalancePath = "/api/{0}/player/{1}/balance";
 	private static readonly string _PlayerFundChecking = "/api/{0}/PlayerFundChecking";
 	private static readonly string _PlayerFundInPath = "/api/{0}/PlayerFundIn";
 	private static readonly string _PlayerFundOutPath = "/api/{0}/PlayerFundOut";
 	private static readonly string _RoundDetail = "/api/{0}/RoundDetail/{1}?language={2}";
+	private static readonly string _PlayerOnline = "/api/{0}/player/{1}/online";
 
 	private static readonly JsonSerializerOptions? _SerializerOptions = new()
 	{
@@ -26,13 +28,6 @@ internal class GameProvidersClient : IGameProvidersClient
 			new JsonStringEnumConverter()
 		}
 	};
-
-	private readonly HttpClient _httpClient;
-
-	public GameProvidersClient(HttpClient httpClient)
-	{
-		_httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-	}
 
 	public async ValueTask<SM01PlatformLoginResponse> GamePlatformLoginBySM01Async(string playerCode, CancellationToken cancellationToken = default)
 	{
@@ -44,7 +39,7 @@ internal class GameProvidersClient : IGameProvidersClient
 		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
 		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
-		var response = await _httpClient
+		var response = await httpClient
 		   .PostAsync(
 			   requestUri: string.Format("/api/{0}/gameurl", GameProviderType.SM01),
 			   content: requestContent,
@@ -83,7 +78,7 @@ internal class GameProvidersClient : IGameProvidersClient
 		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
 		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
-		var response = await _httpClient
+		var response = await httpClient
 		   .PostAsync(
 			   requestUri: string.Format(_GameURL, gameProviderCode),
 			   content: requestContent,
@@ -123,7 +118,7 @@ internal class GameProvidersClient : IGameProvidersClient
 		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
 		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
-		var response = await _httpClient
+		var response = await httpClient
 			.PostAsync(
 				requestUri: string.Format(_GameURL, GameProviderType.AsiaGaming),
 				content: requestContent,
@@ -163,7 +158,7 @@ internal class GameProvidersClient : IGameProvidersClient
 		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
 		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
-		var response = await _httpClient
+		var response = await httpClient
 		   .PostAsync(
 			   requestUri: string.Format(_GameURL, GameProviderType.BetConstruct),
 			   content: requestContent,
@@ -183,11 +178,11 @@ internal class GameProvidersClient : IGameProvidersClient
 				?? throw new Exception($"取得{GameProviderType.BetConstruct}遊戲網址失敗.");
 	}
 
-	public async ValueTask KickPlayerAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default)
+	public async ValueTask PlayerLogoutAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default)
 	{
-		var response = await _httpClient
+		var response = await httpClient
 		  .DeleteAsync(
-			  requestUri: string.Format(_KickPlayerPath, gameProviderCode, playerCode),
+			  requestUri: string.Format(_PlayerLogoutPath, gameProviderCode, playerCode),
 			  cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		_ = response.EnsureSuccessStatusCode();
@@ -195,7 +190,7 @@ internal class GameProvidersClient : IGameProvidersClient
 
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default)
 	{
-		var response = await _httpClient
+		var response = await httpClient
 			.GetAsync(
 				requestUri: string.Format(_PlayerBalancePath, gameProviderCode, playerCode),
 				cancellationToken: cancellationToken).ConfigureAwait(false);
@@ -226,7 +221,7 @@ internal class GameProvidersClient : IGameProvidersClient
 		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
 		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
-		var response = await _httpClient
+		var response = await httpClient
 		   .PostAsync(
 			   requestUri: string.Format(_PlayerFundChecking, gameProviderCode),
 			   content: requestContent,
@@ -260,7 +255,7 @@ internal class GameProvidersClient : IGameProvidersClient
 		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
 		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
-		var response = await _httpClient
+		var response = await httpClient
 		   .PostAsync(
 			   requestUri: string.Format(_PlayerFundChecking, GameProviderType.VRGaming),
 			   content: requestContent,
@@ -293,7 +288,7 @@ internal class GameProvidersClient : IGameProvidersClient
 		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
 		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
-		var response = await _httpClient
+		var response = await httpClient
 		   .PostAsync(
 			   requestUri: string.Format(_PlayerFundInPath, gameProviderCode),
 			   content: requestContent,
@@ -327,7 +322,7 @@ internal class GameProvidersClient : IGameProvidersClient
 		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
 		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
 
-		var response = await _httpClient
+		var response = await httpClient
 		   .PostAsync(
 			   requestUri: string.Format(_PlayerFundOutPath, gameProviderCode),
 			   content: requestContent,
@@ -346,9 +341,33 @@ internal class GameProvidersClient : IGameProvidersClient
 				_SerializerOptions)!;
 	}
 
+	public async ValueTask<PlayerOnlineResponse> PlayerOnlineAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default)
+	{
+		var response = await httpClient.GetAsync(
+			requestUri: string.Format(_PlayerOnline, gameProviderCode, playerCode),
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+
+		if (response.StatusCode == HttpStatusCode.NotFound)
+		{
+			return new PlayerOnlineResponse(
+				GameProviderSupport: false,
+				Online: false);
+		}
+
+		var httpResponseMessage = response.EnsureSuccessStatusCode();
+
+		var playerOnlineResponse = JsonSerializer.Deserialize<PlayerOnlineResponse>(await httpResponseMessage.Content.ReadAsStringAsync(cancellationToken: cancellationToken).ConfigureAwait(false), _SerializerOptions)!;
+
+		return new PlayerOnlineResponse(
+			GameProviderSupport: true,
+			Online: playerOnlineResponse.Online);
+
+	}
+
 	public async ValueTask<RoundDetailResult> RoundDetailAsync(string gameProviderCode, Guid roundId, string language, CancellationToken cancellationToken = default)
 	{
-		var response = await _httpClient
+		var response = await httpClient
 		   .GetAsync(
 			   requestUri: string.Format(_RoundDetail, gameProviderCode, roundId, language),
 			   cancellationToken: cancellationToken).ConfigureAwait(false);

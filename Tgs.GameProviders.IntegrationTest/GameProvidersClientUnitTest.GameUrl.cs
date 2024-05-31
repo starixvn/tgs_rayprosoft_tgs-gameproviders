@@ -95,7 +95,7 @@ public partial class GameProvidersClientUnitTest
 
 		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
-				var fakeService = Substitute.For<IGetService<KaiyuanGameUrlQuery, GameUrlResult>>();
+				var fakeService = Substitute.For<IGetService<KaiyuanGameUrlQuery, Uri>>();
 
 				var query = new KaiyuanGameUrlQuery
 				{

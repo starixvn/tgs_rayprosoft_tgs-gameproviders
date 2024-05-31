@@ -67,12 +67,8 @@ public class HabaneroTransferController : ControllerBase
 	/// <param name="commandService">The command service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Delete kickplayer/4uf6k014jp5x
-	/// </remarks>
 	[HttpDelete("kickplayer/{playerCode}")]
+	[HttpDelete("player/{playerCode}/logout")]
 	public ValueTask KickPlayerAsync(
 		[FromServices] ICommandService<HabaneroTransferKickPlayerCommand> commandService,
 		string playerCode)
@@ -95,6 +91,7 @@ public class HabaneroTransferController : ControllerBase
 	///   Get balance/4ucmqplxb029
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		 [FromServices] IGetService<HabaneroTransferPlayerBalanceQuery, PlayerBalanceResult> service,
 		 string playerCode)

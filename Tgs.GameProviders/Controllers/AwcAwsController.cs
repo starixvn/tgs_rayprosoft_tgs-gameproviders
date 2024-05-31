@@ -42,6 +42,7 @@ public class AwcAwsController : ControllerBase
 	///   Get balance/4ucmqplxb029
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		 [FromServices] IGetService<AwcAwsPlayerBalanceQuery, PlayerBalanceResult> service,
 		 string playerCode)

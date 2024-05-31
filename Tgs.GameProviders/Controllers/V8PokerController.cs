@@ -65,12 +65,8 @@ public class V8PokerController : ControllerBase
 	/// <param name="service">The service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Delete kickplayer/4ue0uj8cwn2v
-	/// </remarks>
 	[HttpDelete("kickplayer/{playerCode}")]
+	[HttpDelete("player/{playerCode}/logout")]
 	public ValueTask KickPlayerAsync(
 		[FromServices] ICommandService<V8PokerKickPlayerCommand> service,
 		string playerCode)
@@ -97,6 +93,7 @@ public class V8PokerController : ControllerBase
 	///   Get balance/4ue0uj8cwn2v
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		 [FromServices] IGetService<V8PokerPlayerBalanceQuery, PlayerBalanceResult> service,
 		 string playerCode)

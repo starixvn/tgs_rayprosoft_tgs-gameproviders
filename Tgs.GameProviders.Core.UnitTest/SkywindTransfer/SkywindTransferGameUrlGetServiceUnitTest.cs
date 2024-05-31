@@ -129,6 +129,6 @@ public class SkywindTransferGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri("http://localhost/"), actual.Url);
+		Assert.Equal(new Uri("http://localhost/"), actual);
 	}
 }

@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 
-public class JiliTransferGameUrlGetService : IGetService<JiliTransferGameUrlQuery, GameUrlResult>
+public class JiliTransferGameUrlGetService : IGetService<JiliTransferGameUrlQuery, Uri>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceJiliClient _client;
@@ -32,7 +32,7 @@ public class JiliTransferGameUrlGetService : IGetService<JiliTransferGameUrlQuer
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<GameUrlResult> GetAsync(JiliTransferGameUrlQuery command, CancellationToken cancellationToken = default)
+	public async ValueTask<Uri> GetAsync(JiliTransferGameUrlQuery command, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider
 			.GetGameProviderIdAsync(
@@ -67,7 +67,7 @@ public class JiliTransferGameUrlGetService : IGetService<JiliTransferGameUrlQuer
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var response = await _client.GetGameUrlAsync(
+		var reply = await _client.GetGameUrlAsync(
 			apiUrl: configuration.ApiUrl,
 			agentId: configuration.AgentId,
 			agentKey: configuration.AgentKey,
@@ -76,14 +76,14 @@ public class JiliTransferGameUrlGetService : IGetService<JiliTransferGameUrlQuer
 			language: cultureCode,
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		if (response.Success && !response.IsPlayerExist)
+		if (reply.Success && !reply.IsPlayerExist)
 		{
 			await _createPlayerCommandService.ExecuteAsync(new JiliTransferCreatePlayerCommand(
 				Configuration: configuration,
 				PlayerCode: player.PlayerCode),
 				cancellationToken).ConfigureAwait(false);
 
-			response = await _client.GetGameUrlAsync(
+			reply = await _client.GetGameUrlAsync(
 				apiUrl: configuration.ApiUrl,
 				agentId: configuration.AgentId,
 				agentKey: configuration.AgentKey,
@@ -93,6 +93,8 @@ public class JiliTransferGameUrlGetService : IGetService<JiliTransferGameUrlQuer
 				cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 
-		return (response != null) ? new() { Url = new(response.GameUrl) } : null;
+		return !reply.IsPlayerExist
+			? throw new Exception($"Player does not exist.({player.PlayerCode})")
+			: new Uri(reply.GameUrl);
 	}
 }

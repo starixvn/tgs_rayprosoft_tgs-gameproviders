@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 
-public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGameUrlQuery, GameUrlResult>
+public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGameUrlQuery, Uri>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceWMCasinoServiceClient _client;
@@ -29,7 +29,7 @@ public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGam
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<GameUrlResult> GetAsync(WMCasinoTransferGameUrlQuery command, CancellationToken cancellationToken = default)
+	public async ValueTask<Uri> GetAsync(WMCasinoTransferGameUrlQuery command, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider
 			.GetGameProviderIdAsync(
@@ -62,7 +62,7 @@ public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGam
 		var password = "TgsP@ssword";
 		var user = $"wmtf_{command.PlayerCode}_{player.BrandCode}";
 
-		var response = await _client.GameUrlAsync(
+		var reply = await _client.GameUrlAsync(
 			apiUrl: configuration.ApiUrl,
 			vendorId: configuration.VendorId,
 			signature: configuration.Signature,
@@ -71,7 +71,7 @@ public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGam
 			language: int.Parse(cultureCode),
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		if (response.Success && !response.IsPlayerExist)
+		if (reply.Success && !reply.IsPlayerExist)
 		{
 			await _createPlayerCommandService.ExecuteAsync(new WMCasinoTransferCreatePlayerCommand(
 				Configuration: configuration,
@@ -79,7 +79,7 @@ public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGam
 				CurrencyCode: player.DefaultWalletCurrencyCode),
 				cancellationToken).ConfigureAwait(false);
 
-			response = await _client.GameUrlAsync(
+			reply = await _client.GameUrlAsync(
 				apiUrl: configuration.ApiUrl,
 				vendorId: configuration.VendorId,
 				signature: configuration.Signature,
@@ -89,6 +89,8 @@ public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGam
 				cancellationToken: cancellationToken).ConfigureAwait(false);
 		}
 
-		return (response != null) ? new() { Url = new(response.GameUrl) } : null;
+		return !reply.IsPlayerExist
+			? throw new Exception($"Player does not exist.({player.PlayerCode})")
+			: new Uri(reply.GameUrl);
 	}
 }

@@ -33,8 +33,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcAelottoConfiguration> GetAwcAelottoConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -55,8 +54,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcAwsConfiguration> GetAwcAwsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -77,8 +75,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcBgConfiguration> GetAwcBgConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -99,8 +96,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcCockfightConfiguration> GetAwcCockfightConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -121,8 +117,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcFacaiConfiguration> GetAwcFacaiConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -143,8 +138,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcFsConfiguration> GetAwcFsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -165,8 +159,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcKmConfiguration> GetAwcKmConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -187,8 +180,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcLudoConfiguration> GetAwcLudoConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -209,8 +201,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcPgsConfiguration> GetAwcPgsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -231,8 +222,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcRcbConfiguration> GetAwcRcbConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -253,8 +243,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcSgConfiguration> GetAwcSgConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -275,8 +264,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcSpadeConfiguration> GetAwcSpadeConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -297,8 +285,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcVenusConfiguration> GetAwcVenusConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -319,8 +306,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcYesbingoConfiguration> GetAwcYesbingoConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -341,8 +327,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<AwcYlConfiguration> GetAwcYlConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -363,8 +348,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<BTiSportsConfiguration> GetBTiSportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -385,8 +369,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<Cards365TransferConfiguration> GetCards365TransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -407,8 +390,28 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
+	}
+
+	public async ValueTask<CQ9GamingConfiguration> GetCQ9GamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+	{
+		var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+		if (!memoryCache.TryGetValue(key, out CQ9GamingConfiguration? configurationData))
+		{
+			configurationData = await repository
+				.GetCQ9GamingConfigurationAsync(
+					gameProviderConfigurationId: gameProviderConfigurationId,
+					cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
+
+			return memoryCache
+				.Set(
+					key: key,
+					value: configurationData,
+					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+		}
+
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<CrPatiConfiguration> GetCrPatiConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -429,8 +432,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -451,8 +453,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<EndorphinaConfiguration> GetEndorphinaConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -473,8 +474,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<FaChaiConfiguration> GetFaChaiConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -495,8 +495,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<FunkyConfiguration> GetFunkyConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -517,8 +516,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -619,8 +617,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -641,8 +638,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<InplayMatrixESportsConfiguration> GetInplayMatrixESportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -663,8 +659,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<JDBTransferConfiguration> GetJDBTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -685,8 +680,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<JiliTransferConfiguration> GetJiliTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -707,8 +701,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<JokerConfiguration> GetJokerConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -729,8 +722,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<KaiyuanConfiguration> GetKaiyuanConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -752,8 +744,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<LEGamingConfiguration> GetLEGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -774,8 +765,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<OBetConfiguration> GetOBetConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -796,8 +786,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<PinnacleConfiguration> GetPinnacleConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -818,8 +807,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<PragmaticPlayTransferConfiguration> GetPragmaticPlayTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -840,8 +828,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<SabaTransferConfiguration> GetSabaTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -862,8 +849,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<SBOTransferConfiguration> GetSBOTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -884,8 +870,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<SM01Configuration> GetSM01ConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -906,8 +891,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -928,17 +912,16 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
-	public async ValueTask<TPhereConfiguration> GetTPhereConfiguration(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+	public async ValueTask<TPhereConfiguration> GetTPhereConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 	{
 		var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
 		if (!memoryCache.TryGetValue(key, out TPhereConfiguration? configurationData))
 		{
 			configurationData = await repository
-				.GetTPhereConfiguration(
+				.GetTPhereConfigurationAsync(
 					gameProviderConfigurationId: gameProviderConfigurationId,
 					cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
@@ -950,8 +933,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<V8PokerConfiguration> GetV8PokerConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -972,8 +954,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<VRGamingConfiguration> GetVRGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -992,8 +973,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<WGFmGamingConfiguration> GetWGFmGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -1014,8 +994,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<WGViaGamingConfiguration> GetWGViaGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -1037,8 +1016,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<WicketCricketConfiguration> GetWicketCricketConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -1059,8 +1037,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -1081,8 +1058,7 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
 	public async ValueTask<YeeBetConfiguration> GetYeeBetConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
@@ -1103,7 +1079,6 @@ internal class GameProviderCacheRepository(
 					absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
 		}
 
-		return configurationData
-			?? throw new Exception($"Game Provider Configuration does not exist.({gameProviderConfigurationId})");
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 }

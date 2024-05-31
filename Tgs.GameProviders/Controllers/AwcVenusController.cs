@@ -33,32 +33,15 @@ public class AwcVenusController : ControllerBase
 	/// <summary>
 	/// Games the URL asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
+	/// <param name="service">The service.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "gameType": 5,
-	///             "gameId": 3800001,
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-	///             "platformType": 0,
-	///             "language": "zh-CN",
-	///             "ipAddress": "127.0.0.1",
-	///             "backUrl": "https://dev-t1.rpgp.cc/"
-	///         }
-	/// </remarks>
 	[HttpPost("gameurl")]
 	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<AwcVenusGameUrlQuery, GameUrlResult> getService,
+		[FromServices] IGetService<AwcVenusGameUrlQuery, Uri> service,
 		GameUrlRequest request)
 	{
-		var result = await getService
+		var result = await service
 			.GetAsync(
 				query: new()
 				{
@@ -75,7 +58,7 @@ public class AwcVenusController : ControllerBase
 				},
 				cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
-		return result == null ? null : new GameUrlResponse() { Url = result.Url };
+		return result == null ? null : new GameUrlResponse() { Url = result };
 	}
 
 	/// <summary>
@@ -84,12 +67,8 @@ public class AwcVenusController : ControllerBase
 	/// <param name="commandService">The command service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Delete kickplayer/4ucmqplxb029
-	/// </remarks>
 	[HttpDelete("kickplayer/{playerCode}")]
+	[HttpDelete("player/{playerCode}/logout")]
 	public ValueTask KickPlayerAsync(
 		[FromServices] ICommandService<AwcVenusKickPlayerCommand> commandService,
 		string playerCode)
@@ -113,6 +92,7 @@ public class AwcVenusController : ControllerBase
 	///   Get balance/4ucmqplxb029
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		 [FromServices] IGetService<AwcVenusPlayerBalanceQuery, PlayerBalanceResult> service,
 		 string playerCode)

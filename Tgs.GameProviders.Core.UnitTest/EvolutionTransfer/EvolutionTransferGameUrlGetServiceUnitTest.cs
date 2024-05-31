@@ -134,7 +134,7 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
 		var url = new Uri($"{configuration.ApiUrl}{path}");
 
 		Assert.NotNull(actual);
-		Assert.Equal(url, actual.Url);
+		Assert.Equal(url, actual);
 	}
 
 	[Fact]
@@ -258,6 +258,6 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
 		var url = new Uri($"{configuration.ApiUrl}{path}");
 
 		Assert.NotNull(actual);
-		Assert.Equal(url, actual.Url);
+		Assert.Equal(url, actual);
 	}
 }

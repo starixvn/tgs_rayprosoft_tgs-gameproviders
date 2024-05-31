@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-public record SkywindConfiguration : PluggableConfigurationBase
+public record SkywindConfiguration
 {
 	public Uri ApiUrl { get; init; } = default!;
 	public Uri LiveLobbyUrl { get; init; } = default!;

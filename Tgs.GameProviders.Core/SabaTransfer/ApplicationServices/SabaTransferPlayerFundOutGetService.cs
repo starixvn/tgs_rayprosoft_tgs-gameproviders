@@ -2,7 +2,6 @@
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using StackExchange.Redis;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;

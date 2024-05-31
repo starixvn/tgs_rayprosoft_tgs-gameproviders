@@ -33,7 +33,7 @@ public class AwcKmController : ControllerBase
 	/// <summary>
 	/// Games the URL asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
+	/// <param name="service">The get service.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
 	/// <remarks>
@@ -55,10 +55,10 @@ public class AwcKmController : ControllerBase
 	/// </remarks>
 	[HttpPost("gameurl")]
 	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<AwcKmGameUrlQuery, GameUrlResult> getService,
+		[FromServices] IGetService<AwcKmGameUrlQuery, Uri> service,
 		GameUrlRequest request)
 	{
-		var result = await getService
+		var result = await service
 			.GetAsync(
 				query: new()
 				{
@@ -75,7 +75,7 @@ public class AwcKmController : ControllerBase
 				},
 				cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
-		return result == null ? null : new GameUrlResponse() { Url = result.Url };
+		return result == null ? null : new GameUrlResponse() { Url = result };
 	}
 
 	/// <summary>
@@ -84,12 +84,8 @@ public class AwcKmController : ControllerBase
 	/// <param name="commandService">The command service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Delete kickplayer/4ucmqplxb029
-	/// </remarks>
 	[HttpDelete("kickplayer/{playerCode}")]
+	[HttpDelete("player/{playerCode}/logout")]
 	public ValueTask KickPlayerAsync(
 		[FromServices] ICommandService<AwcKmKickPlayerCommand> commandService,
 		string playerCode)
@@ -113,6 +109,7 @@ public class AwcKmController : ControllerBase
 	///   Get balance/4ucmqplxb029
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		 [FromServices] IGetService<AwcKmPlayerBalanceQuery, PlayerBalanceResult> service,
 		 string playerCode)

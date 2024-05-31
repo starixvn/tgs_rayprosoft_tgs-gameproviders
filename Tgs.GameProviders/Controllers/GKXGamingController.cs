@@ -65,12 +65,8 @@ public class GKXGamingController : ControllerBase
 	/// <param name="service">The service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Delete kickplayer/4uh3pdl0lcii
-	/// </remarks>
 	[HttpDelete("kickplayer/{playerCode}")]
+	[HttpDelete("player/{playerCode}/logout")]
 	public ValueTask KickPlayerAsync(
 		[FromServices] ICommandService<GKXGamingKickPlayerCommand> service,
 		string playerCode)
@@ -97,6 +93,7 @@ public class GKXGamingController : ControllerBase
 	///   Get balance/4uh3pdl0lcii
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		 [FromServices] IGetService<GKXGamingPlayerBalanceQuery, PlayerBalanceResult> service,
 		 string playerCode)

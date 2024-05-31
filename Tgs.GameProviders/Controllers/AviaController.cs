@@ -38,12 +38,9 @@ public class AviaController : ControllerBase
 	/// </summary>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Delete kickplayer/4ucmqplxb029
-	/// </remarks>
+	/// <exception cref="System.NotImplementedException"></exception>
 	[HttpDelete("kickplayer/{playerCode}")]
+	[HttpDelete("player/{playerCode}/logout")]
 	public ValueTask KickPlayerAsync(string playerCode) => throw new NotImplementedException();
 
 	/// <summary>
@@ -57,6 +54,7 @@ public class AviaController : ControllerBase
 	///   Get balance/4ucmqplxb029
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(string playerCode) => throw new NotImplementedException();
 
 	/// <summary>

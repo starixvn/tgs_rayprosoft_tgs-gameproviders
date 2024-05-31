@@ -24,6 +24,8 @@ public class ABController : ControllerBase
 	/// <returns></returns>
 	/// <exception cref="System.NotImplementedException"></exception>
 	[HttpDelete("kickplayer/{playerCode}")]
+	[HttpDelete("player/{playerCode}/logout")]
+
 	public ValueTask KickPlayerAsync(string playerCode) => throw new NotImplementedException();
 
 	/// <summary>

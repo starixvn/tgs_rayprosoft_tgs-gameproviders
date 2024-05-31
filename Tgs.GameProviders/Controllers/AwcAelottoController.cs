@@ -42,6 +42,7 @@ public class AwcAelottoController : ControllerBase
 	///   Get balance/4ucmqplxb029
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		[FromServices] IGetService<AwcAelottoPlayerBalanceQuery, PlayerBalanceResult> service,
 		 string playerCode)
