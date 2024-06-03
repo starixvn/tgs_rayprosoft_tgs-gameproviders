@@ -18,7 +18,7 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 	private static readonly string _PlayerFundChecking = "/api/{0}/player/{1}/fund/checking";
 	private static readonly string _PlayerFundInPath = "/api/{0}/player/{1}/fund/in";
 	private static readonly string _PlayerFundOutPath = "/api/{0}/player/{1}/fund/out";
-	private static readonly string _RoundDetail = "/api/{0}/round/{1}";
+	private static readonly string _RoundDetail = "/api/{0}/round/{1}/detail";
 	private static readonly string _PlayerOnline = "/api/{0}/player/{1}/online";
 
 	private static readonly JsonSerializerOptions? _SerializerOptions = new()
