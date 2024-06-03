@@ -29,7 +29,7 @@ public class TPherePlayerBalanceGetService(
 			brandId: playerInfo.BrandId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await gameProvider.GetTPhereConfiguration(
+		var configuration = await gameProvider.GetTPhereConfigurationAsync(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);

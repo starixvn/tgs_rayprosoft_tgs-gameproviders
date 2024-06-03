@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.LEGaming.Client;
-using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
@@ -64,7 +63,7 @@ public class LEGamingPlayerFundInGetService : IGetService<LEGamingPlayerFundInQu
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: string.Empty);
+			OrderId: query.OrderId,
+			ExternalOrderId: string.Empty);
 	}
 }

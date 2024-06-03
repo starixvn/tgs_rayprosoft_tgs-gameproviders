@@ -9,7 +9,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
 
-public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferGameUrlQuery, GameUrlResult>
+public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferGameUrlQuery, Uri>
 {
 	private readonly IGameRepository _game;
 	private readonly IGameProviderRepository _gameProvider;
@@ -34,7 +34,7 @@ public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferG
 		_tokenProvider = tokenProvider ?? throw new ArgumentNullException(nameof(tokenProvider));
 	}
 
-	public async ValueTask<GameUrlResult> GetAsync(EvolutionTransferGameUrlQuery command, CancellationToken cancellationToken = default)
+	public async ValueTask<Uri> GetAsync(EvolutionTransferGameUrlQuery command, CancellationToken cancellationToken = default)
 	{
 		var encryptedToken = await _tokenProvider.EncryptAsync(command.LoginRecordId).ConfigureAwait(false);
 		var gameProviderId = await _gameProvider
@@ -98,6 +98,6 @@ public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferG
 
 		var path = response.Entry[1..];
 
-		return (response != null) ? new() { Url = new($"{configuration.ApiUrl}{path}") } : null;
+		return new($"{configuration.ApiUrl}{path}");
 	}
 }

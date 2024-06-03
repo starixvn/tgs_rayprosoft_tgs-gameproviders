@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-public class InplayMatrixESportsConfiguration
+public record InplayMatrixESportsConfiguration
 {
 	public Uri ApiUrl { get; init; } = default!;
 

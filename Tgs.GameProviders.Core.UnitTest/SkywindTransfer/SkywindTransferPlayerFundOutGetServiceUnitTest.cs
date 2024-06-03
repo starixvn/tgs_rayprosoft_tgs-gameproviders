@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
+using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SkywindService.Protos;
 using Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
@@ -15,8 +17,38 @@ public class SkywindTransferPlayerFundOutGetServiceUnitTest
 	public async Task Normal_Process()
 	{
 		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
-		var fakeGameInterfaceSkywindClient = Substitute.For<IGameInterfaceSkywindClient>();
+		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
 		var fakeSettingRepository = Substitute.For<ISettingRepository>();
+		var fakeClient = Substitute.For<IGameInterfaceSkywindClient>();
+
+		var query = new SkywindTransferPlayerFundOutQuery
+		{
+			PlayerCode = "test",
+			OrderId = Guid.NewGuid().ToString("N"),
+			Amount = 1
+		};
+
+		var gameProviderId = Guid.NewGuid();
+		_ = fakeGameProviderRepository.GetGameProviderIdAsync(
+			gameProviderCode: Arg.Is(GameProviderType.SkywindTransfer),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(ValueTask.FromResult(gameProviderId));
+
+		var playerInfo = new PlayerInfo(
+			ResellerId: Guid.NewGuid(),
+			ResellerCode: "GPI",
+			LicenseeId: Guid.NewGuid(),
+			LicenseeCode: "GPI",
+			BrandId: Guid.NewGuid(),
+			BrandCode: "GPI",
+			PlayerCode: "test",
+			Username: "test",
+			DefaultWalletId: Guid.NewGuid(),
+			DefaultWalletCurrencyCode: "HKD");
+		_ = fakePlayerRepository.GetAsync(
+			playerCode: Arg.Is(query.PlayerCode),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(playerInfo);
 
 		var configuration = new SkywindTransferConfiguration
 		{
@@ -28,25 +60,16 @@ public class SkywindTransferPlayerFundOutGetServiceUnitTest
 			Username = "username",
 			Password = "password"
 		};
-
-		var query = new SkywindTransferPlayerFundOutQuery
-		{
-			BrandCode = "GPI",
-			PlayerCode = "test",
-			CurrencyCode = "CNY",
-			OrderId = Guid.NewGuid().ToString("N"),
-			Amount = 1
-		};
-		var gameProviderId = Guid.NewGuid();
-		_ = fakeGameProviderRepository.GetGameProviderIdAsync(Arg.Is(GameProviderType.SkywindTransfer)).Returns(ValueTask.FromResult(gameProviderId));
-
-		_ = fakeSettingRepository.GetSkywindTransferConfigurationAsync().Returns(ValueTask.FromResult(configuration));
+		_ = fakeSettingRepository.GetSkywindTransferConfigurationAsync(
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(ValueTask.FromResult(configuration));
 
 		var gameProviderCurrencyCode = "CNY";
 		_ = fakeGameProviderRepository
 			.GetGameProviderCurrencyCodeAsync(
-				Arg.Is(gameProviderId),
-				Arg.Is(query.CurrencyCode))
+			gameProviderId: Arg.Is(gameProviderId),
+			currencyCode: Arg.Is(playerInfo.DefaultWalletCurrencyCode),
+			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(ValueTask.FromResult(gameProviderCurrencyCode));
 
 		var request = new FundRequest()
@@ -56,7 +79,7 @@ public class SkywindTransferPlayerFundOutGetServiceUnitTest
 			Username = configuration.Username,
 			Password = configuration.Password,
 			ExtTrxId = query.OrderId,
-			PlayerCode = query.PlayerCode,
+			PlayerCode = playerInfo.PlayerCode,
 			Currency = gameProviderCurrencyCode,
 			Amount = query.Amount,
 		};
@@ -69,18 +92,19 @@ public class SkywindTransferPlayerFundOutGetServiceUnitTest
 			Amount = query.Amount,
 			Balance = 1
 		};
-		_ = fakeGameInterfaceSkywindClient.FundOutAsync(
+		_ = fakeClient.FundOutAsync(
 			Arg.Is(request)).Returns(response);
 
 		var sut = new SkywindTransferPlayerFundOutGetService(
 			fakeGameProviderRepository,
-			 fakeGameInterfaceSkywindClient,
-			 fakeSettingRepository);
+			fakePlayerRepository,
+			fakeSettingRepository,
+			fakeClient);
 
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(response.TrxId, actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(response.TrxId, actual.ExternalOrderId);
 	}
 }

@@ -7,83 +7,68 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.AwcKm.ApplicationServices;
 
-public class AwcKmGameUrlGetService : IGetService<AwcKmGameUrlQuery, GameUrlResult>
+public class AwcKmGameUrlGetService(
+	IBrandRepository brand,
+	IGameRepository game,
+	IGameProviderRepository gameProvider,
+	IGameInterfaceAwcClient client,
+	IPlayerRepository player) : IGetService<AwcKmGameUrlQuery, Uri>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfaceAwcClient _client;
-	private readonly IGameRepository _game;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-
-	public AwcKmGameUrlGetService(
-		IBrandRepository brand,
-		IGameRepository game,
-		IGameProviderRepository gameProvider,
-		IGameInterfaceAwcClient client,
-		IPlayerRepository player)
+	public async ValueTask<Uri> GetAsync(AwcKmGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_game = game ?? throw new ArgumentNullException(nameof(game));
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-	}
-
-	public async ValueTask<GameUrlResult> GetAsync(AwcKmGameUrlQuery query, CancellationToken cancellationToken = default)
-	{
-		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.AWC_KM,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var player = await _player.GetAsync(
+		var playerInfo = await player.GetAsync(
 			playerCode: query.PlayerCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
+		var gameProviderConfigurationId = await brand.GetBrandGameProviderConfigurationIdAsync(
 			gameProviderId: gameProviderId,
-			brandId: player.BrandId,
+			brandId: playerInfo.BrandId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var configuration = await _gameProvider.GetAwcKmConfigurationAsync(
+		var configuration = await gameProvider.GetAwcKmConfigurationAsync(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(
+		var cultureCode = await gameProvider.GetGameProviderCultureCodeAsync(
 			gameProviderId: gameProviderId,
 			cultureCode: query.Language,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "en";
 
-		var game = await _game.GetAsync(
+		var gameInfo = await game.GetAsync(
 			gameId: query.GameId.Value,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var reply = await _client.GameUrlByAwcKmAsync(
+		var reply = await client.GameUrlByAwcKmAsync(
 			apiUrl: configuration.ApiUrl,
 			agentId: configuration.AgentId,
 			cert: configuration.Cert,
-			playerCode: player.PlayerCode,
+			playerCode: playerInfo.PlayerCode,
 			isMobileLogin: query.PlatformType == PlatformType.Mobile,
 			backUrl: query.BackUrl.ToString(),
-			externalGameId: game.GameExternalId,
+			externalGameId: gameInfo.GameExternalId,
 			language: cultureCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
 		if (!reply.IsPlayerExist)
 		{
-			var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(
+			var currency = await gameProvider.GetGameProviderCurrencyCodeAsync(
 				gameProviderId: gameProviderId,
-				currencyCode: player.DefaultWalletCurrencyCode,
+				currencyCode: playerInfo.DefaultWalletCurrencyCode,
 				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 
-			await _client.PlayerCreateAsync(
+			await client.PlayerCreateAsync(
 				apiUrl: configuration.ApiUrl,
 				agentId: configuration.AgentId,
 				cert: configuration.Cert,
@@ -93,24 +78,21 @@ public class AwcKmGameUrlGetService : IGetService<AwcKmGameUrlQuery, GameUrlResu
 				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 
-			reply = await _client.GameUrlByAwcKmAsync(
+			reply = await client.GameUrlByAwcKmAsync(
 			   apiUrl: configuration.ApiUrl,
 			   agentId: configuration.AgentId,
 			   cert: configuration.Cert,
-			   playerCode: player.PlayerCode,
+			   playerCode: playerInfo.PlayerCode,
 			   isMobileLogin: query.PlatformType == PlatformType.Mobile,
 			   backUrl: query.BackUrl.ToString(),
-			   externalGameId: game.GameExternalId,
+			   externalGameId: gameInfo.GameExternalId,
 			   language: cultureCode,
 			   cancellationToken: cancellationToken)
 			   .ConfigureAwait(false);
 		}
 
 		return !reply.IsPlayerExist
-			? throw new Exception($"Player does not exist.({player.PlayerCode})")
-			: new GameUrlResult
-			{
-				Url = new Uri(reply.GameUrl)
-			};
+			? throw new Exception($"Player does not exist.({playerInfo.PlayerCode})")
+			: new Uri(reply.GameUrl);
 	}
 }

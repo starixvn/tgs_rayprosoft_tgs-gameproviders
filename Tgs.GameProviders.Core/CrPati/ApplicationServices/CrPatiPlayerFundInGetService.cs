@@ -62,7 +62,7 @@ public class CrPatiPlayerFundInGetService : IGetService<CrPatiPlayerFundInQuery,
 		   .ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.ApiOrderNo);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.ApiOrderNo);
 	}
 }

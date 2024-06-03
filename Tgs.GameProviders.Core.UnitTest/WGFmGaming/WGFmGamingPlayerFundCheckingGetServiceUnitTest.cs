@@ -21,8 +21,6 @@ public class WGFmGamingPlayerFundCheckingGetServiceUnitTest
 
 		var query = new WGFmGamingPlayerFundCheckingQuery
 		{
-			BrandCode = "BrandCode",
-			CurrencyCode = "CNY",
 			PlayerCode = "test",
 			OrderId = Guid.NewGuid().ToString("N")
 		};

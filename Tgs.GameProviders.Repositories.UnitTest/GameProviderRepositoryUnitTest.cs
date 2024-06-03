@@ -930,6 +930,46 @@ public class GameProviderRepositoryUnitTest
 	}
 
 	[Fact]
+	public async Task Get_CQ9Gaming_Configuration()
+	{
+		var fakeClient = Substitute.For<IGameCommandClient>();
+
+		var gameProviderId = Guid.NewGuid();
+		var gameProviderConfigurationId = Guid.NewGuid();
+
+		var settingConfiguration = new CQ9GamingConfiguration()
+		{
+			ApiUrl = new("https://localhost/")
+		};
+		_ = fakeClient
+			.SettingGetConfigurationAsync<CQ9GamingConfiguration>(
+			Arg.Is(GameProviderConfigurations.CQ9Gaming))
+			.Returns(settingConfiguration);
+
+		_ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+			GameProviderId: gameProviderId,
+			GameProviderCode: GameProviderType.CQ9Gaming,
+			GameProviderConfigId: gameProviderConfigurationId,
+			Name: $"{GameProviderType.CQ9Gaming}-GPI",
+			Description: $"{GameProviderType.CQ9Gaming}-GPI Configuration",
+			ClientId: $"{GameProviderType.CQ9Gaming}-GPI",
+			SecretKey: Guid.NewGuid().ToString("N"),
+			Status: GameProviderConfigStatus.Active,
+			DesktopEndpoint: string.Empty,
+			MobileEndpoint: string.Empty,
+			ConfigurationData: "{\"ApiToken\":\"apiToken\"}",
+			IsDefault: false));
+
+		var repository = new GameProviderRepository(fakeClient);
+
+		var actual = await repository.GetCQ9GamingConfigurationAsync(gameProviderConfigurationId);
+
+		Assert.NotNull(actual);
+		Assert.Equal(new("https://localhost/"), actual.ApiUrl);
+		Assert.Equal("apiToken", actual.ApiToken);
+	}
+
+	[Fact]
 	public async Task Get_CrPati_Configuration()
 	{
 		var fakeClient = Substitute.For<IGameCommandClient>();
@@ -1679,7 +1719,7 @@ public class GameProviderRepositoryUnitTest
 
 		var repository = new GameProviderRepository(fakeClient);
 
-		var actual = await repository.GetTPhereConfiguration(gameProviderConfigurationId);
+		var actual = await repository.GetTPhereConfigurationAsync(gameProviderConfigurationId);
 
 		Assert.NotNull(actual);
 		Assert.Equal(new Uri("https://apidemo.tphere.com"), actual.ApiUrl);

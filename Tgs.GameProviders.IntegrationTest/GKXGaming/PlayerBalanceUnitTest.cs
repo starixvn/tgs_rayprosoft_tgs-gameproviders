@@ -15,7 +15,7 @@ namespace Tgs.GameProviders.IntegrationTest.GKXGaming;
 public class PlayerBalanceUnitTest
 {
 	[Fact]
-	public async Task GetBalances()
+	public async Task Normal_Process()
 	{
 		var playerCode = "4uh3pdl0lcii";
 
@@ -46,8 +46,7 @@ public class PlayerBalanceUnitTest
 
 		var sut = new GameProvidersClient(httpClient);
 
-		var actual = await sut
-			.PlayerBalanceAsync(
+		var actual = await sut.PlayerBalanceAsync(
 			gameProviderCode: GameProviderType.GKXGaming,
 			playerCode: playerCode);
 

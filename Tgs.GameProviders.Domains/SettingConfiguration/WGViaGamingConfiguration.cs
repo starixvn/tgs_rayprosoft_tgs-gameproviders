@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-public record WGViaGamingConfiguration : PluggableConfigurationBase
+public record WGViaGamingConfiguration
 {
 	/// <summary>
 	/// The amount maximum

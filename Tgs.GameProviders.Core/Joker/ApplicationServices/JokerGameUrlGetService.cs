@@ -8,7 +8,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
-internal class JokerGameUrlGetService : IGetService<JokerGameUrlQuery, GameUrlResult>
+internal class JokerGameUrlGetService : IGetService<JokerGameUrlQuery, Uri>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceJokerClient _client;
@@ -30,7 +30,7 @@ internal class JokerGameUrlGetService : IGetService<JokerGameUrlQuery, GameUrlRe
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<GameUrlResult> GetAsync(
+	public async ValueTask<Uri> GetAsync(
 		JokerGameUrlQuery query,
 		CancellationToken cancellationToken = default)
 	{
@@ -90,9 +90,6 @@ internal class JokerGameUrlGetService : IGetService<JokerGameUrlQuery, GameUrlRe
 
 		var url = $"{configuration.GameLaunchUrl.OriginalString}?{queryStrings}";
 
-		return new GameUrlResult
-		{
-			Url = new Uri(url)
-		};
+		return new(url);
 	}
 }

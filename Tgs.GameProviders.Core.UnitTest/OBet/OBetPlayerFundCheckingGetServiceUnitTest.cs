@@ -22,9 +22,7 @@ public class OBetPlayerFundCheckingGetServiceUnitTest
 
 		var query = new OBetPlayerFundCheckingQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = "1635165954039484416"
 		};
 

@@ -28,7 +28,7 @@ public class TPherePlayerFundInGetService(
 			brandId: playerInfo.BrandId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await gameProvider.GetTPhereConfiguration(
+		var configuration = await gameProvider.GetTPhereConfigurationAsync(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
@@ -44,7 +44,7 @@ public class TPherePlayerFundInGetService(
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.CasinoTransId.ToString());
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.CasinoTransId.ToString());
 	}
 }

@@ -60,7 +60,7 @@ public class TPhereKickPlayerCommandServiceUnitTest
 			ApiKey = "6309572cf90658e17847a7b021723106",
 			ApiToken = "29dad28e8ab9c9855e6aa4b9a9e4a869325931d4976dfcf53266ccbe0c5f3387ea48258c002e3543edbb35f63caa5cacc65ac5c664ccfe0619e1d63018a87dbb",
 		};
-		_ = fakeGameProviderRepository.GetTPhereConfiguration(
+		_ = fakeGameProviderRepository.GetTPhereConfigurationAsync(
 			gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(configuration);

@@ -29,9 +29,7 @@ public class SkywindTransferPlayerFundCheckingGetServiceUnitTest
 
 		var query = new SkywindTransferPlayerFundCheckingQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "test",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N")
 		};
 

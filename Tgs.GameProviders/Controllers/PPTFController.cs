@@ -65,12 +65,8 @@ public class PPTFController : ControllerBase
 	/// <param name="commandService">The command service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Delete kickplayer/4ucmqplxb029
-	/// </remarks>
 	[HttpDelete("kickplayer/{playerCode}")]
+	[HttpDelete("player/{playerCode}/logout")]
 	public ValueTask KickPlayerAsync(
 		[FromServices] ICommandService<PragmaticPlayTransferKickPlayerCommand> commandService,
 		string playerCode)
@@ -94,6 +90,7 @@ public class PPTFController : ControllerBase
 	///   Get balance/4ucmqplxb029
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		[FromServices] IGetService<PragmaticPlayTransferPlayerBalanceQuery, PlayerBalanceResult> service,
 		string playerCode)
@@ -118,35 +115,23 @@ public class PPTFController : ControllerBase
 	/// <summary>
 	/// Players the fund checking asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
+	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "orderId":"4c3415e7138942e1b9b48a5fd10e1d47"
-	///         }
-	/// </remarks>
-	[HttpPost("playerfundchecking")]
+	[HttpGet("player/{playerCode}/fund/checking")]
 	public async ValueTask<PlayerFundCheckingResponse> PlayerFundCheckingAsync(
-		[FromServices] IGetService<PragmaticPlayTransferPlayerFundCheckingQuery, bool> getService,
-		PlayerFundCheckingRequest request)
+		[FromServices] IGetService<PragmaticPlayTransferPlayerFundCheckingQuery, bool> service,
+		string playerCode,
+		[FromQuery] PlayerFundCheckingRequest request)
 	{
-		var result = await getService
-			.GetAsync(
-				query: new()
-				{
-					BrandCode = request.BrandCode,
-					PlayerCode = request.PlayerCode,
-					CurrencyCode = request.CurrencyCode,
-					OrderId = request.OrderId,
-				},
-				cancellationToken: HttpContext.RequestAborted)
+		var result = await service.GetAsync(
+			query: new()
+			{
+				PlayerCode = playerCode,
+				OrderId = request.OrderId,
+			},
+			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
 		return new PlayerFundCheckingResponse()
@@ -162,6 +147,7 @@ public class PPTFController : ControllerBase
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
 	[HttpPost("playerfundin")]
+	[HttpPost("player/{playerCode}/fund/in")]
 	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
 		[FromServices] IGetService<PragmaticPlayTransferPlayerFundInQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
@@ -169,9 +155,7 @@ public class PPTFController : ControllerBase
 		var result = await service.GetAsync(
 			query: new()
 			{
-				BrandCode = request.BrandCode,
 				PlayerCode = request.PlayerCode,
-				CurrencyCode = request.CurrencyCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -179,9 +163,10 @@ public class PPTFController : ControllerBase
 			.ConfigureAwait(false);
 
 		return new PlayerFundResponse(
-			OrderId: request.OrderId,
-			GameProviderTransactionId: result.GameProviderTransactionId,
-			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
+			OrderId: result.OrderId,
+			ExternalOrderId: result.ExternalOrderId,
+			GameProviderTransactionId: result.OrderId,
+			ExternalGameProviderTransactionId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -191,6 +176,7 @@ public class PPTFController : ControllerBase
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
 	[HttpPost("playerfundout")]
+	[HttpPost("player/{playerCode}/fund/out")]
 	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
 		[FromServices] IGetService<PragmaticPlayTransferPlayerFundOutQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
@@ -198,19 +184,18 @@ public class PPTFController : ControllerBase
 		var result = await service.GetAsync(
 			query: new()
 			{
-				BrandCode = request.BrandCode,
 				PlayerCode = request.PlayerCode,
-				CurrencyCode = request.CurrencyCode,
 				OrderId = request.OrderId,
-				Amount = request.Amount,
+				Amount = request.Amount
 			},
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
 		return new PlayerFundResponse(
-			OrderId: request.OrderId,
-			GameProviderTransactionId: result.GameProviderTransactionId,
-			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
+			OrderId: result.OrderId,
+			ExternalOrderId: result.ExternalOrderId,
+			GameProviderTransactionId: result.OrderId,
+			ExternalGameProviderTransactionId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -221,6 +206,7 @@ public class PPTFController : ControllerBase
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
 	[HttpGet("rounddetail/{gameBetId:guid}")]
+	[HttpGet("round/{gameBetId:guid}/detail")]
 	public ValueTask<RoundDetailResult> RoundDetailAsync(
 		[FromServices] IGetService<PragmaticPlayTransferRoundDetailQuery, RoundDetailResult> service,
 		Guid gameBetId,

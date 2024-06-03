@@ -17,7 +17,7 @@ internal class TPhereRoundDetailGetService(
 			gameBetId: query.GameBetId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await gameProviderRepository.GetTPhereConfiguration(
+		var configuration = await gameProviderRepository.GetTPhereConfigurationAsync(
 			gameProviderConfigurationId: gameBetInfo.GameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);

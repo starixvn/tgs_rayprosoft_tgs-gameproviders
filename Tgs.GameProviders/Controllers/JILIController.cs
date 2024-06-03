@@ -24,6 +24,7 @@ public class JILIController : ControllerBase
 	/// <returns></returns>
 	/// <exception cref="System.NotImplementedException"></exception>
 	[HttpDelete("kickplayer/{playerCode}")]
+	[HttpDelete("player/{playerCode}/logout")]
 	public ValueTask KickPlayerAsync(string playerCode) => throw new NotImplementedException();
 
 	/// <summary>
@@ -34,5 +35,6 @@ public class JILIController : ControllerBase
 	/// <returns></returns>
 	/// <exception cref="System.NotImplementedException"></exception>
 	[HttpGet("rounddetail/{gameBetId:guid}")]
+	[HttpGet("round/{gameBetId:guid}/detail")]
 	public ValueTask<RoundDetailResult> RoundDetailAsync(Guid gameBetId, [FromQuery] string language) => throw new NotImplementedException();
 }

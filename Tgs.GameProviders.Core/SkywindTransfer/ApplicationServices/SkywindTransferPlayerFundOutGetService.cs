@@ -8,30 +8,32 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 
-public class SkywindTransferPlayerFundOutGetService : IGetService<SkywindTransferPlayerFundOutQuery, PlayerFundResult>
+public class SkywindTransferPlayerFundOutGetService(
+	IGameProviderRepository gameProviderRepository,
+	IPlayerRepository playerRepository,
+	ISettingRepository settingRepository,
+	IGameInterfaceSkywindClient client) : IGetService<SkywindTransferPlayerFundOutQuery, PlayerFundResult>
 {
-	private readonly IGameInterfaceSkywindClient _client;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly ISettingRepository _setting;
-
-	public SkywindTransferPlayerFundOutGetService(
-		IGameProviderRepository gameProvider,
-		IGameInterfaceSkywindClient client,
-		ISettingRepository setting)
-	{
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_setting = setting ?? throw new ArgumentNullException(nameof(setting));
-	}
-
 	public async ValueTask<PlayerFundResult> GetAsync(SkywindTransferPlayerFundOutQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.SkywindTransfer).ConfigureAwait(false);
-		var configuration = await _setting.GetSkywindTransferConfigurationAsync().ConfigureAwait(false);
-		var gameProviderCurrencyCode = await _gameProvider
-				.GetGameProviderCurrencyCodeAsync(gameProviderId, query.CurrencyCode)
-				.ConfigureAwait(false)
-			?? throw new Exception($"This game product currency does not exist.({query.CurrencyCode})");
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.SkywindTransfer,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var playerInfo = await playerRepository.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var configuration = await settingRepository.GetSkywindTransferConfigurationAsync(
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var gameProviderCurrencyCode = await gameProviderRepository
+			.GetGameProviderCurrencyCodeAsync(
+			gameProviderId: gameProviderId,
+			currencyCode: playerInfo.DefaultWalletCurrencyCode,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false)
+			?? throw new ArgumentNullException(playerInfo.DefaultWalletCurrencyCode, $"This game product currency does not exist.");
 
 		var request = new FundRequest()
 		{
@@ -40,18 +42,18 @@ public class SkywindTransferPlayerFundOutGetService : IGetService<SkywindTransfe
 			Username = configuration.Username,
 			Password = configuration.Password,
 			ExtTrxId = query.OrderId,
-			PlayerCode = query.PlayerCode,
+			PlayerCode = playerInfo.PlayerCode,
 			Currency = gameProviderCurrencyCode,
 			Amount = query.Amount,
 		};
 
-		var reply = await _client.FundOutAsync(
+		var reply = await client.FundOutAsync(
 			request: request,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.TrxId);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.TrxId);
 	}
 }

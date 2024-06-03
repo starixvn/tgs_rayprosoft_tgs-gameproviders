@@ -22,9 +22,7 @@ public class KaiyuanPlayerFundCheckingGetServiceUnitTest
 
 		var query = new KaiyuanPlayerFundCheckingQuery
 		{
-			BrandCode = "brandcode",
 			PlayerCode = "test",
-			CurrencyCode = "CNY",
 			OrderId = "200995202307180240242304uk9399rb9qo"
 		};
 

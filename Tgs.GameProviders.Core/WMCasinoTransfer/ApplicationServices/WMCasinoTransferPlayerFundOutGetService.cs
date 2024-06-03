@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.WMCasinoService.Client;
@@ -70,7 +69,7 @@ public class WMCasinoTransferPlayerFundOutGetService : IGetService<WMCasinoTrans
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.GameProviderTransactionId);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.GameProviderTransactionId);
 	}
 }

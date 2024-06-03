@@ -23,9 +23,7 @@ public class VRGamingPlayerFundOutGetServiceUnitTest
 
 		var query = new VRGamingPlayerFundOutQuery
 		{
-			BrandCode = "brandcode",
 			PlayerCode = "test",
-			CurrencyCode = "CNY",
 			OrderId = "018c8f8f201f0000000107e7db655fdb",
 			Amount = 1
 		};
@@ -98,6 +96,7 @@ public class VRGamingPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(reply.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(reply.OrderId, actual.OrderId);
+		Assert.Empty(actual.ExternalOrderId);
 	}
 }

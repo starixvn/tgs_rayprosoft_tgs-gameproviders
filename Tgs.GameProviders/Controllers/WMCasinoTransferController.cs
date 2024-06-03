@@ -14,32 +14,15 @@ public class WMCasinoTransferController : ControllerBase
 	/// <summary>
 	/// Games the URL asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
+	/// <param name="service">The service.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "gameType": 16,
-	///             "gameId": 3000001,
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-	///             "platformType": 0,
-	///             "language": "zh-CN",
-	///             "ipAddress": "127.0.0.1",
-	///             "backUrl": "https://dev-t1.rpgp.cc/"
-	///         }
-	/// </remarks>
 	[HttpPost("gameurl")]
 	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<WMCasinoTransferGameUrlQuery, GameUrlResult> getService,
+		[FromServices] IGetService<WMCasinoTransferGameUrlQuery, Uri> service,
 		GameUrlRequest request)
 	{
-		var result = await getService.GetAsync(new WMCasinoTransferGameUrlQuery()
+		var result = await service.GetAsync(new WMCasinoTransferGameUrlQuery()
 		{
 			GameType = request.GameType,
 			GameId = request.GameId,
@@ -52,7 +35,7 @@ public class WMCasinoTransferController : ControllerBase
 			IPAddress = request.IPAddress,
 			BackUrl = request.BackUrl
 		}).ConfigureAwait(false);
-		return result == null ? null : new GameUrlResponse() { Url = result.Url };
+		return result == null ? null : new GameUrlResponse() { Url = result };
 	}
 
 	/// <summary>
@@ -61,12 +44,8 @@ public class WMCasinoTransferController : ControllerBase
 	/// <param name="commandService">The command service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Delete kickplayer/4ucmqplxb029
-	/// </remarks>
 	[HttpDelete("kickplayer/{playerCode}")]
+	[HttpDelete("player/{playerCode}/logout")]
 	public ValueTask KickPlayerAsync(
 		[FromServices] ICommandService<WMCasinoTransferKickPlayerCommand> commandService,
 		string playerCode)
@@ -87,6 +66,7 @@ public class WMCasinoTransferController : ControllerBase
 	///   Get balance/4ucmqplxb029
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		 [FromServices] IGetService<WMCasinoTransferPlayerBalanceQuery, PlayerBalanceResult> service,
 		 string playerCode)
@@ -111,32 +91,24 @@ public class WMCasinoTransferController : ControllerBase
 	/// <summary>
 	/// Players the fund checking asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
+	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "orderId":"72412202110271546265054ucmqplxb029"
-	///         }
-	/// </remarks>
-	[HttpPost("playerfundchecking")]
-	public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-		[FromServices] IGetService<WMCasinoTransferPlayerFundCheckingQuery, bool> getService,
-		PlayerFundCheckingRequest request)
+	[HttpGet("player/{playerCode}/fund/checking")]
+	public async ValueTask<PlayerFundCheckingResponse> PlayerFundCheckingAsync(
+		[FromServices] IGetService<WMCasinoTransferPlayerFundCheckingQuery, bool> service,
+		string playerCode,
+		[FromQuery] PlayerFundCheckingRequest request)
 	{
-		var result = await getService.GetAsync(new()
-		{
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			OrderId = request.OrderId,
-		}).ConfigureAwait(false);
+		var result = await service.GetAsync(
+			query: new()
+			{
+				PlayerCode = playerCode,
+				OrderId = request.OrderId,
+			},
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
 
 		return new PlayerFundCheckingResponse()
 		{
@@ -151,6 +123,7 @@ public class WMCasinoTransferController : ControllerBase
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
 	[HttpPost("playerfundin")]
+	[HttpPost("player/{playerCode}/fund/in")]
 	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
 		[FromServices] IGetService<WMCasinoTransferPlayerFundInQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
@@ -158,9 +131,7 @@ public class WMCasinoTransferController : ControllerBase
 		var result = await service.GetAsync(
 			query: new()
 			{
-				BrandCode = request.BrandCode,
 				PlayerCode = request.PlayerCode,
-				CurrencyCode = request.CurrencyCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -168,9 +139,10 @@ public class WMCasinoTransferController : ControllerBase
 			.ConfigureAwait(false);
 
 		return new PlayerFundResponse(
-			OrderId: request.OrderId,
-			GameProviderTransactionId: result.GameProviderTransactionId,
-			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
+			OrderId: result.OrderId,
+			ExternalOrderId: result.ExternalOrderId,
+			GameProviderTransactionId: result.OrderId,
+			ExternalGameProviderTransactionId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -180,6 +152,7 @@ public class WMCasinoTransferController : ControllerBase
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
 	[HttpPost("playerfundout")]
+	[HttpPost("player/{playerCode}/fund/out")]
 	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
 		[FromServices] IGetService<WMCasinoTransferPlayerFundOutQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
@@ -187,9 +160,7 @@ public class WMCasinoTransferController : ControllerBase
 		var result = await service.GetAsync(
 			query: new()
 			{
-				BrandCode = request.BrandCode,
 				PlayerCode = request.PlayerCode,
-				CurrencyCode = request.CurrencyCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount,
 			},
@@ -197,9 +168,10 @@ public class WMCasinoTransferController : ControllerBase
 			.ConfigureAwait(false);
 
 		return new PlayerFundResponse(
-			OrderId: request.OrderId,
-			GameProviderTransactionId: result.GameProviderTransactionId,
-			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
+			OrderId: result.OrderId,
+			ExternalOrderId: result.ExternalOrderId,
+			GameProviderTransactionId: result.OrderId,
+			ExternalGameProviderTransactionId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -210,6 +182,7 @@ public class WMCasinoTransferController : ControllerBase
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
 	[HttpGet("rounddetail/{gameBetId:guid}")]
+	[HttpGet("round/{gameBetId:guid}/detail")]
 	public ValueTask<RoundDetailResult> RoundDetailAsync(
 		[FromServices] IGetService<WMCasinoTransferRoundDetailQuery, RoundDetailResult> service,
 		Guid gameBetId,

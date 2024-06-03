@@ -23,11 +23,9 @@ public class YeeBetPlayerFundOutGetServiceUnitTest
 
 		var query = new YeeBetPlayerFundOutQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			Amount = 100M,
-			OrderId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString()
+			OrderId = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString(),
+			Amount = 100M
 		};
 
 		var gameProviderId = Guid.NewGuid();
@@ -97,7 +95,7 @@ public class YeeBetPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(response.TransactionId, actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(response.TransactionId, actual.ExternalOrderId);
 	}
 }

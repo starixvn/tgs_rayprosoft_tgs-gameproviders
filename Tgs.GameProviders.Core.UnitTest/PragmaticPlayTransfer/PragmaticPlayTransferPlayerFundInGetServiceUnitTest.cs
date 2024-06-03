@@ -24,9 +24,7 @@ public class PragmaticPlayTransferPlayerFundInGetServiceUnitTest
 
 		var query = new PragmaticPlayTransferPlayerFundInQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N"),
 			Amount = 100
 		};
@@ -108,7 +106,7 @@ public class PragmaticPlayTransferPlayerFundInGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(fundReply.TransactionId.ToString(), actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(fundReply.TransactionId.ToString(), actual.ExternalOrderId);
 	}
 }

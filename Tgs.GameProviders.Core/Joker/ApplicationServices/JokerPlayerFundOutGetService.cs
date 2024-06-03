@@ -26,7 +26,7 @@ internal class JokerPlayerFundOutGetService : IGetService<JokerPlayerFundOutQuer
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<PlayerFundResult> GetAsync(JokerPlayerFundOutQuery query,CancellationToken cancellationToken = default)
+	public async ValueTask<PlayerFundResult> GetAsync(JokerPlayerFundOutQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.Joker,
@@ -36,7 +36,7 @@ internal class JokerPlayerFundOutGetService : IGetService<JokerPlayerFundOutQuer
 			playerCode: query.PlayerCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand	.GetBrandGameProviderConfigurationIdAsync(
+		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
 			gameProviderId: gameProviderId,
 			brandId: player.BrandId,
 			cancellationToken: cancellationToken)
@@ -57,7 +57,7 @@ internal class JokerPlayerFundOutGetService : IGetService<JokerPlayerFundOutQuer
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.RequestId);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.RequestId);
 	}
 }

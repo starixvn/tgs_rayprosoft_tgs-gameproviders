@@ -66,12 +66,8 @@ public class VRGamingController : ControllerBase
 	/// <param name="service">The service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Delete kickplayer/4ucmqplxb029
-	/// </remarks>
 	[HttpDelete("kickplayer/{playerCode}")]
+	[HttpDelete("player/{playerCode}/logout")]
 	public ValueTask KickPlayerAsync(
 		[FromServices] ICommandService<VRGamingKickPlayerCommand> service,
 		string playerCode)
@@ -98,6 +94,7 @@ public class VRGamingController : ControllerBase
 	///   Get balance/4ucmqplxb029
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		 [FromServices] IGetService<VRGamingPlayerBalanceQuery, PlayerBalanceResult> service,
 		 string playerCode)
@@ -123,38 +120,23 @@ public class VRGamingController : ControllerBase
 	/// Players the fund checking asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "orderId":"018c8f8f201f0000000107e7db655fdb"
-	///             "startTime": "2023-12-22T11:27:00+08:00",
-	///             "endTime": "2023-12-22T11:42:00+08:00"
-	///         }
-	/// </remarks>
-	[HttpPost("playerfundchecking")]
-	public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
+	[HttpGet("player/{playerCode}/fund/checking")]
+	public async ValueTask<PlayerFundCheckingResponse> PlayerFundCheckingAsync(
 		[FromServices] IGetService<VRGamingPlayerFundCheckingQuery, bool> service,
-		VRGamingPlayerFundCheckingRequest request)
+		string playerCode,
+		[FromQuery] PlayerFundCheckingRequest request)
 	{
-		var query = new VRGamingPlayerFundCheckingQuery()
-		{
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			OrderId = request.OrderId,
-			StartTime = request.StartTime,
-			EndTime = request.EndTime
-		};
-		var result = await service
-			.GetAsync(
-			query: query,
+		var result = await service.GetAsync(
+			query: new()
+			{
+				PlayerCode = playerCode,
+				OrderId = request.OrderId,
+				StartTime = request.OrderOn.AddHours(-6),
+				EndTime = request.OrderOn.AddHours(6),
+			},
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
@@ -171,6 +153,7 @@ public class VRGamingController : ControllerBase
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
 	[HttpPost("playerfundin")]
+	[HttpPost("player/{playerCode}/fund/in")]
 	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
 		[FromServices] IGetService<VRGamingPlayerFundInQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
@@ -178,9 +161,7 @@ public class VRGamingController : ControllerBase
 		var result = await service.GetAsync(
 			query: new()
 			{
-				BrandCode = request.BrandCode,
 				PlayerCode = request.PlayerCode,
-				CurrencyCode = request.CurrencyCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -188,9 +169,10 @@ public class VRGamingController : ControllerBase
 			.ConfigureAwait(false);
 
 		return new PlayerFundResponse(
-			OrderId: request.OrderId,
-			GameProviderTransactionId: result.GameProviderTransactionId,
-			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
+			OrderId: result.OrderId,
+			ExternalOrderId: result.ExternalOrderId,
+			GameProviderTransactionId: result.OrderId,
+			ExternalGameProviderTransactionId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -200,6 +182,7 @@ public class VRGamingController : ControllerBase
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
 	[HttpPost("playerfundout")]
+	[HttpPost("player/{playerCode}/fund/out")]
 	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
 		[FromServices] IGetService<VRGamingPlayerFundOutQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
@@ -207,19 +190,18 @@ public class VRGamingController : ControllerBase
 		var result = await service.GetAsync(
 			query: new()
 			{
-				BrandCode = request.BrandCode,
 				PlayerCode = request.PlayerCode,
-				CurrencyCode = request.CurrencyCode,
 				OrderId = request.OrderId,
-				Amount = request.Amount,
+				Amount = request.Amount
 			},
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
 		return new PlayerFundResponse(
-			OrderId: request.OrderId,
-			GameProviderTransactionId: result.GameProviderTransactionId,
-			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
+			OrderId: result.OrderId,
+			ExternalOrderId: result.ExternalOrderId,
+			GameProviderTransactionId: result.OrderId,
+			ExternalGameProviderTransactionId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -230,6 +212,7 @@ public class VRGamingController : ControllerBase
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
 	[HttpGet("rounddetail/{gameBetId:guid}")]
+	[HttpGet("round/{gameBetId:guid}/detail")]
 	public ValueTask<RoundDetailResult> RoundDetailAsync(
 		[FromServices] IGetService<VRGamingRoundDetailQuery, RoundDetailResult> service,
 		Guid gameBetId,

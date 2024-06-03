@@ -24,9 +24,7 @@ public class InplayMatrixESportsPlayerFundInGetServiceUnitTest
 
 		var query = new InplayMatrixESportsPlayerFundInQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			Amount = 100M,
 			OrderId = Guid.NewGuid().ToString(),
 		};
@@ -102,7 +100,7 @@ public class InplayMatrixESportsPlayerFundInGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(response.TransactionId, actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(response.TransactionId, actual.ExternalOrderId);
 	}
 }

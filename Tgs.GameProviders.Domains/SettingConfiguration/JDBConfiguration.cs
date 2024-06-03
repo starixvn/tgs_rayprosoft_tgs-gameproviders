@@ -1,8 +1,6 @@
-﻿using Tgs.GameProviders.Domains.SettingConfiguration.JDB;
+﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-namespace Tgs.GameProviders.Domains.SettingConfiguration;
-
-public record JDBConfiguration : PluggableConfigurationBase
+public record JDBConfiguration
 {
 	public Uri ApiUrl { get; init; } = default!;
 
@@ -16,5 +14,7 @@ public record JDBConfiguration : PluggableConfigurationBase
 
 	public int TimezoneHour { get; init; }
 
-	public IEnumerable<JDBAgent> Agents { get; init; } = default!;
+	public string CurrencyCode { get; init; } = default!;
+
+	public string Id { get; init; } = default!;
 }

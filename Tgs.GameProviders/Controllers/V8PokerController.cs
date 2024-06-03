@@ -65,12 +65,8 @@ public class V8PokerController : ControllerBase
 	/// <param name="service">The service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Delete kickplayer/4ue0uj8cwn2v
-	/// </remarks>
 	[HttpDelete("kickplayer/{playerCode}")]
+	[HttpDelete("player/{playerCode}/logout")]
 	public ValueTask KickPlayerAsync(
 		[FromServices] ICommandService<V8PokerKickPlayerCommand> service,
 		string playerCode)
@@ -97,6 +93,7 @@ public class V8PokerController : ControllerBase
 	///   Get balance/4ue0uj8cwn2v
 	/// </remarks>
 	[HttpGet("balance/{playerCode}")]
+	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		 [FromServices] IGetService<V8PokerPlayerBalanceQuery, PlayerBalanceResult> service,
 		 string playerCode)
@@ -122,34 +119,21 @@ public class V8PokerController : ControllerBase
 	/// Players the fund checking asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI_VND",
-	///             "playerCode": "4ue0uj8cwn2v",
-	///             "currencyCode": "VND",
-	///             "orderId":"72412202110271546265054ue0uj8cwn2v"
-	///         }
-	/// </remarks>
-	[HttpPost("playerfundchecking")]
-	public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
+	[HttpGet("player/{playerCode}/fund/checking")]
+	public async ValueTask<PlayerFundCheckingResponse> PlayerFundCheckingAsync(
 		[FromServices] IGetService<V8PokerPlayerFundCheckingQuery, bool> service,
-		PlayerFundCheckingRequest request)
+		string playerCode,
+		[FromQuery] PlayerFundCheckingRequest request)
 	{
-		var query = new V8PokerPlayerFundCheckingQuery()
-		{
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			OrderId = request.OrderId,
-		};
-		var result = await service
-			.GetAsync(
-			query: query,
+		var result = await service.GetAsync(
+			query: new()
+			{
+				PlayerCode = playerCode,
+				OrderId = request.OrderId,
+			},
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
@@ -166,6 +150,7 @@ public class V8PokerController : ControllerBase
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
 	[HttpPost("playerfundin")]
+	[HttpPost("player/{playerCode}/fund/in")]
 	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
 		[FromServices] IGetService<V8PokerPlayerFundInQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
@@ -173,9 +158,7 @@ public class V8PokerController : ControllerBase
 		var result = await service.GetAsync(
 			query: new()
 			{
-				BrandCode = request.BrandCode,
 				PlayerCode = request.PlayerCode,
-				CurrencyCode = request.CurrencyCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -183,9 +166,10 @@ public class V8PokerController : ControllerBase
 			.ConfigureAwait(false);
 
 		return new PlayerFundResponse(
-			OrderId: request.OrderId,
-			GameProviderTransactionId: result.GameProviderTransactionId,
-			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
+			OrderId: result.OrderId,
+			ExternalOrderId: result.ExternalOrderId,
+			GameProviderTransactionId: result.OrderId,
+			ExternalGameProviderTransactionId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -195,6 +179,7 @@ public class V8PokerController : ControllerBase
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
 	[HttpPost("playerfundout")]
+	[HttpPost("player/{playerCode}/fund/out")]
 	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
 		[FromServices] IGetService<V8PokerPlayerFundOutQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
@@ -202,19 +187,18 @@ public class V8PokerController : ControllerBase
 		var result = await service.GetAsync(
 			query: new()
 			{
-				BrandCode = request.BrandCode,
 				PlayerCode = request.PlayerCode,
-				CurrencyCode = request.CurrencyCode,
 				OrderId = request.OrderId,
-				Amount = request.Amount,
+				Amount = request.Amount
 			},
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
 		return new PlayerFundResponse(
-			OrderId: request.OrderId,
-			GameProviderTransactionId: result.GameProviderTransactionId,
-			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
+			OrderId: result.OrderId,
+			ExternalOrderId: result.ExternalOrderId,
+			GameProviderTransactionId: result.OrderId,
+			ExternalGameProviderTransactionId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -225,6 +209,7 @@ public class V8PokerController : ControllerBase
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
 	[HttpGet("rounddetail/{gameBetId:guid}")]
+	[HttpGet("round/{gameBetId:guid}/detail")]
 	public ValueTask<RoundDetailResult> RoundDetailAsync(
 		[FromServices] IGetService<V8PokerRoundDetailQuery, RoundDetailResult> service,
 		Guid gameBetId,

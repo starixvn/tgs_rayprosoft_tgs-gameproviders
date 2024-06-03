@@ -24,9 +24,7 @@ public class AwcRcbPlayerFundInGetServiceUnitTest
 
 		var query = new AwcRcbPlayerFundInQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N"),
 			Amount = 100m
 		};
@@ -119,7 +117,7 @@ public class AwcRcbPlayerFundInGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(reply.GameProviderTransactionId, actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(reply.GameProviderTransactionId, actual.ExternalOrderId);
 	}
 }

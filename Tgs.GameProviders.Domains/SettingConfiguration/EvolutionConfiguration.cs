@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-public record EvolutionConfiguration : PluggableConfigurationBase
+public record EvolutionConfiguration
 {
 	public Uri ApiUrl { get; init; } = default!;
 	public string CasinoID { get; init; } = default!;

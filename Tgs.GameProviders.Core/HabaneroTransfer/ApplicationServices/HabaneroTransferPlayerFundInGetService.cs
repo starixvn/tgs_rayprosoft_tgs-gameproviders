@@ -68,7 +68,7 @@ internal class HabaneroTransferPlayerFundInGetService : IGetService<HabaneroTran
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.TransactionId);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.TransactionId);
 	}
 }

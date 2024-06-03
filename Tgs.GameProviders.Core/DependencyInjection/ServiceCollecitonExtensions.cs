@@ -4,6 +4,7 @@ using Tgs.GameCommand.Client;
 using Tgs.GameInterface.Awc.Client;
 using Tgs.GameInterface.BTiService.Client;
 using Tgs.GameInterface.Cards365.Client;
+using Tgs.GameInterface.CQ9Gaming.Client;
 using Tgs.GameInterface.CrPati.Client;
 using Tgs.GameInterface.DreamGamingService.Client;
 using Tgs.GameInterface.EndorphinaService.Client;
@@ -80,7 +81,8 @@ public static class ServiceCollecitonExtensions
 		Action<GameInterfaceCrPatiClientOptions, IServiceProvider> gameInterfaceCrPatiClientOptions,
 		Action<GameInterfaceVRGamingClientOptions, IServiceProvider> gameInterfaceVRGamingClientOptions,
 		Action<GameInterfaceFunkyClientOptions, IServiceProvider> gameInterfaceFunkyClientOptions,
-		Action<GameInterfaceTPhereClientOptions, IServiceProvider> gameInterfaceTPhereClientOptions)
+		Action<GameInterfaceTPhereClientOptions, IServiceProvider> gameInterfaceTPhereClientOptions,
+		Action<GameInterfaceCQ9GamingClientOptions, IServiceProvider> gameInterfaceCQ9GamingClientOptions)
 		=> services
 		.AddOptions<IPAddressOptions>()
 		.Configure(ipAddressOptions)
@@ -123,6 +125,7 @@ public static class ServiceCollecitonExtensions
 		.AddGameInterfaceVRGamingClient(gameInterfaceVRGamingClientOptions)
 		.AddGameInterfaceFunkyClient(gameInterfaceFunkyClientOptions)
 		.AddGameInterfaceTPhereClient(gameInterfaceTPhereClientOptions)
+		.AddGameInterfaceCQ9GamingClient(gameInterfaceCQ9GamingClientOptions)
 		.AddGameTokenClient(gameTokenClientOptions)
 		//Tgs.Core.Infrastructures.Security
 		.AddSecurity()

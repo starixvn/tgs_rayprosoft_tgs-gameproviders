@@ -45,7 +45,7 @@ public class SM01PlayerFundInGetService : IGetService<SM01PlayerFundInQuery, Pla
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.RefTransactionCode);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.RefTransactionCode);
 	}
 }

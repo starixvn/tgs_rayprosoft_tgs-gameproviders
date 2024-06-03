@@ -1,8 +1,6 @@
-﻿using Tgs.GameProviders.Domains.SettingConfiguration.Card365;
+﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-namespace Tgs.GameProviders.Domains.SettingConfiguration;
-
-public record Card365Configuration : PluggableConfigurationBase
+public record Card365Configuration
 {
 	public Uri ApiUrl { get; init; } = default!;
 
@@ -10,5 +8,6 @@ public record Card365Configuration : PluggableConfigurationBase
 
 	public string Website { get; init; } = default!;
 
-	public IEnumerable<Card365BrandAgent> BrandAgents { get; init; } = default!;
+	public string BrandCode { get; init; } = default!;
+	public string AgentId { get; init; } = default!;
 }

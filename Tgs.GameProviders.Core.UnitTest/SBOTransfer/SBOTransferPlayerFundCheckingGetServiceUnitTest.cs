@@ -21,9 +21,7 @@ public class SBOTransferPlayerFundCheckingGetServiceUnitTest
 
 		var query = new SBOTransferPlayerFundCheckingQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N")
 		};
 

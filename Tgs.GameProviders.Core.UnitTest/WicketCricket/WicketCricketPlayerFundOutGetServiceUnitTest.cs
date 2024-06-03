@@ -23,11 +23,9 @@ public class WicketCricketPlayerFundOutGetServiceUnitTest
 
 		var query = new WicketCricketPlayerFundOutQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			Amount = 100M,
 			OrderId = Guid.Parse("7f5a44a8-74bf-4927-8152-b9482a42af9c").ToString("N"),
+			Amount = 100M
 		};
 
 		var gameProviderId = Guid.NewGuid();
@@ -101,6 +99,6 @@ public class WicketCricketPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
 	}
 }

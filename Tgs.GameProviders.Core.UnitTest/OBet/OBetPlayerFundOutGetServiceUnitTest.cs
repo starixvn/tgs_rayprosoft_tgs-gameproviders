@@ -23,9 +23,7 @@ public class OBetPlayerFundOutGetServiceUnitTest
 
 		var query = new OBetPlayerFundOutQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			Amount = 100M,
 			OrderId = Guid.NewGuid().ToString(),
 		};
@@ -99,7 +97,7 @@ public class OBetPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(response.SerialNo, actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(response.SerialNo, actual.ExternalOrderId);
 	}
 }

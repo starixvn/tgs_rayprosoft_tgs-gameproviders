@@ -48,6 +48,8 @@ public interface IGameProviderRepository
 
 	ValueTask<Cards365TransferConfiguration> GetCards365TransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
+	ValueTask<CQ9GamingConfiguration> GetCQ9GamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
+
 	ValueTask<CrPatiConfiguration> GetCrPatiConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
 	ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
@@ -96,7 +98,7 @@ public interface IGameProviderRepository
 
 	ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
-	ValueTask<TPhereConfiguration> GetTPhereConfiguration(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
+	ValueTask<TPhereConfiguration> GetTPhereConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
 	ValueTask<V8PokerConfiguration> GetV8PokerConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 

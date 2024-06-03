@@ -1,8 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Tgs.GameInterface.Funky.Client;
+
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
-using Tgs.GameInterface.Funky.Client;
 
 namespace Tgs.GameProviders.Core.Funky.ApplicationServices;
 
@@ -49,7 +50,7 @@ public class FunkyPlayerFundInGetService(
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.TxSerialId.ToString());
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.TxSerialId.ToString());
 	}
 }

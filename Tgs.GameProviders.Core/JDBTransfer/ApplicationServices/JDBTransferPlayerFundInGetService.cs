@@ -46,7 +46,7 @@ public class JDBTransferPlayerFundInGetService : IGetService<JDBTransferPlayerFu
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.SerialNo);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.SerialNo);
 	}
 }

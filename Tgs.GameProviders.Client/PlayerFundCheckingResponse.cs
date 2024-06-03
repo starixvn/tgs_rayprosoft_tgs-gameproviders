@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameProviders.Client;
 
-internal record PlayerFundCheckingResponse
+public record PlayerFundCheckingResponse
 {
 	/// <summary>
 	/// The order status

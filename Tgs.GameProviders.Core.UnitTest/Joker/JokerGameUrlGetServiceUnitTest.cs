@@ -141,6 +141,6 @@ public class JokerGameUrlGetServiceUnitTest
 		queryStrings.Add("lang", (!string.IsNullOrEmpty(gameProviderCultureCode)) ? "en" : gameProviderCultureCode);
 
 		var url = $"{configuration.GameLaunchUrl.OriginalString}?{queryStrings}";
-		Assert.Equal(new Uri(url), actual.Url);
+		Assert.Equal(new Uri(url), actual);
 	}
 }

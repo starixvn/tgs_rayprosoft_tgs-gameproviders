@@ -1,8 +1,6 @@
-﻿using Tgs.GameProviders.Domains.SettingConfiguration.AsiaGaming;
+﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-namespace Tgs.GameProviders.Domains.SettingConfiguration;
-
-public record AsiaGamingConfiguration : PluggableConfigurationBase
+public record AsiaGamingConfiguration
 {
 	public string AgentCode { get; init; } = default!;
 
@@ -20,5 +18,7 @@ public record AsiaGamingConfiguration : PluggableConfigurationBase
 
 	public string[] LockGameTypes { get; init; } = default!;
 
-	public AsiaGamingGameHistoryType[] GameHistoryTypes { get; init; } = default!;
+	public string[] GameTypes { get; init; } = default!;
+
+	public IDictionary<string, string> Descriptions { get; init; } = default!;
 }

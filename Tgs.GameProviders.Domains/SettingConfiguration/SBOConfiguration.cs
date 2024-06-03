@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-public record SBOConfiguration : PluggableConfigurationBase
+public record SBOConfiguration
 {
 	public string AgentPrefix { get; init; } = default!;
 	public Uri ApiUrl { get; init; } = default!;

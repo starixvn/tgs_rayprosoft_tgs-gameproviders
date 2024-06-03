@@ -22,9 +22,7 @@ public class SM01PlayerFundOutGetServiceUnitTest
 
 		var query = new SM01PlayerFundOutQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N"),
 			Amount = 100m
 		};

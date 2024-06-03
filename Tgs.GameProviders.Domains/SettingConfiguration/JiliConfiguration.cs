@@ -1,8 +1,6 @@
-﻿using Tgs.GameProviders.Domains.SettingConfiguration.Jili;
+﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-namespace Tgs.GameProviders.Domains.SettingConfiguration;
-
-public record JiliConfiguration : PluggableConfigurationBase
+public record JiliConfiguration
 {
 	public Uri ApiUrl { get; init; } = default!;
 
@@ -10,5 +8,9 @@ public record JiliConfiguration : PluggableConfigurationBase
 
 	public string SecretKey { get; init; } = default!;
 
-	public IEnumerable<JiliMerchant> Merchants { get; init; } = default!;
+	public string AgentId { get; init; } = default!;
+
+	public string AgentKey { get; init; } = default!;
+
+	public string BrandCode { get; init; } = default!;
 }

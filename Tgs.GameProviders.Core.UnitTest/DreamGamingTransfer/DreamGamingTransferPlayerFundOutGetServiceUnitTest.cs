@@ -84,7 +84,7 @@ public class DreamGamingTransferPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(response.TransactionId.ToString(), actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(response.TransactionId.ToString(), actual.ExternalOrderId);
 	}
 }

@@ -29,10 +29,6 @@ public partial class GameProvidersClientUnitTest
 				{
 					PlayerCode = playerCode
 				};
-				var result = new GameUrlResult
-				{
-					Url = new Uri("https://www.google.com/")
-				};
 
 				_ = fakeService
 				   .ExecuteAsync(
@@ -47,7 +43,7 @@ public partial class GameProvidersClientUnitTest
 		var sut = new GameProvidersClient(httpClient);
 
 		await sut
-			.KickPlayerAsync(
+			.PlayerLogoutAsync(
 			gameProviderCode: gameProviderCode,
 			playerCode: playerCode);
 	}
@@ -80,7 +76,7 @@ public partial class GameProvidersClientUnitTest
 		var sut = new GameProvidersClient(httpClient);
 
 		_ = await Assert.ThrowsAsync<HttpRequestException>(() => sut
-			.KickPlayerAsync(
+			.PlayerLogoutAsync(
 				gameProviderCode: gameProviderCode,
 				playerCode: playerCode)
 			.AsTask());

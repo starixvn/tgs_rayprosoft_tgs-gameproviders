@@ -22,9 +22,7 @@ public class AwcYlPlayerFundCheckingGetServiceUnitTest
 
 		var query = new AwcYlPlayerFundCheckingQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N")
 		};
 

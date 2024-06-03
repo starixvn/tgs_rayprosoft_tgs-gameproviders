@@ -23,9 +23,7 @@ public class AwcVenusPlayerFundCheckingGetServiceUnitTest
 
 		var query = new AwcVenusPlayerFundCheckingQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N")
 		};
 

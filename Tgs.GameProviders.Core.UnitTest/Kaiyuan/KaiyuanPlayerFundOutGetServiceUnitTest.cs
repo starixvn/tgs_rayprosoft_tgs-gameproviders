@@ -23,9 +23,7 @@ public class KaiyuanPlayerFundOutGetServiceUnitTest
 
 		var query = new KaiyuanPlayerFundOutQuery
 		{
-			BrandCode = "brandcode",
 			PlayerCode = "test",
-			CurrencyCode = "CNY",
 			OrderId = "20099520231012070433439test",
 			Amount = 1
 		};
@@ -103,7 +101,7 @@ public class KaiyuanPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Empty(actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Empty(actual.ExternalOrderId);
 	}
 }

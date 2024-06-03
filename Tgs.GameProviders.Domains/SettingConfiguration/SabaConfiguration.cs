@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
-public record SabaConfiguration : PluggableConfigurationBase
+public record SabaConfiguration
 {
 	public string OperatorId { get; init; } = default!;
 

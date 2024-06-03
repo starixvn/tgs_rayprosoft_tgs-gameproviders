@@ -23,9 +23,7 @@ public class SBOTransferPlayerFundOutGetServiceUnitTest
 
 		var query = new SBOTransferPlayerFundOutQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = "D1714154181705543700",
 			Amount = 100m
 		};
@@ -64,7 +62,6 @@ public class SBOTransferPlayerFundOutGetServiceUnitTest
 		};
 		_ = fakeGameProviderRepository.GetSBOTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
-
 		var reply = new FundReply()
 		{
 			TxnId = query.OrderId,
@@ -88,7 +85,7 @@ public class SBOTransferPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(reply.TxnId, actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(reply.TxnId, actual.ExternalOrderId);
 	}
 }

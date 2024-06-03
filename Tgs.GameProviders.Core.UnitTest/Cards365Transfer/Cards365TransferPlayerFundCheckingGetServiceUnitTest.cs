@@ -22,9 +22,7 @@ public class Cards365TransferPlayerFundCheckingGetServiceUnitTest
 
 		var query = new Cards365TransferPlayerFundCheckingQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = "9595e0fe83fe44819839bd07931738c9"
 		};
 

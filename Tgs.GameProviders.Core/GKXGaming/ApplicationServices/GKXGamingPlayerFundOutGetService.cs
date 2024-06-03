@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.GKXGaming.Client;
-using Tgs.GameInterface.WMCasinoService.Protos;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
@@ -60,7 +59,7 @@ public class GKXGamingPlayerFundOutGetService : IGetService<GKXGamingPlayerFundO
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: string.Empty);
+			OrderId: query.OrderId,
+			ExternalOrderId: string.Empty);
 	}
 }

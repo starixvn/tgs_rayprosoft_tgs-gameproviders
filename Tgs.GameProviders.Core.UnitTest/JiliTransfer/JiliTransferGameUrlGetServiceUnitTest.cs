@@ -132,6 +132,6 @@ public class JiliTransferGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri(response.GameUrl), actual.Url);
+		Assert.Equal(new Uri(response.GameUrl), actual);
 	}
 }

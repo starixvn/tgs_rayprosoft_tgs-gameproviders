@@ -61,7 +61,7 @@ public class AwcSpadePlayerFundOutGetService : IGetService<AwcSpadePlayerFundOut
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.GameProviderTransactionId);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.GameProviderTransactionId);
 	}
 }

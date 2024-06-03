@@ -1,5 +1,5 @@
 ﻿namespace Tgs.GameProviders.Core;
 
 public record PlayerFundResult(
-	string GameProviderTransactionId,
-	string ExternalGameProviderTransactionId);
+	string OrderId,
+	string ExternalOrderId);

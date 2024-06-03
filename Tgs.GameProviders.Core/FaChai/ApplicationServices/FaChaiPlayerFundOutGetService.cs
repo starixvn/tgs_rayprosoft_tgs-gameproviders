@@ -44,7 +44,7 @@ public class FaChaiPlayerFundOutGetService(
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.BankId.ToString());
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.BankId.ToString());
 	}
 }

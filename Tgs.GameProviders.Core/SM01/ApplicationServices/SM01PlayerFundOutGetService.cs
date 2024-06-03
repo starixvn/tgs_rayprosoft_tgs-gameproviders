@@ -62,7 +62,7 @@ public class SM01PlayerFundOutGetService : IGetService<SM01PlayerFundOutQuery, P
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.RefTransactionCode);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.RefTransactionCode);
 	}
 }

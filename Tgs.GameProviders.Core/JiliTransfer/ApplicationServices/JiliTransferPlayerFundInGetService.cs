@@ -56,7 +56,7 @@ public class JiliTransferPlayerFundInGetService : IGetService<JiliTransferPlayer
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.TransactionId);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.TransactionId);
 	}
 }
