@@ -34,5 +34,6 @@ public class BGController : ControllerBase
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
 	[HttpGet("rounddetail/{gameBetId:guid}")]
+	[HttpGet("round/{gameBetId:guid}/detail")]
 	public ValueTask<RoundDetailResult> RoundDetailAsync(Guid gameBetId, [FromQuery] string language) => throw new NotImplementedException();
 }

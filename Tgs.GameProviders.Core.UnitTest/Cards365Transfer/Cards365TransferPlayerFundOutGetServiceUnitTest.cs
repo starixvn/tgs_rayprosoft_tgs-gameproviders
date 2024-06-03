@@ -24,11 +24,10 @@ public class Cards365TransferPlayerFundOutGetServiceUnitTest
 
 		var query = new Cards365TransferPlayerFundOutQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			Amount = 100M,
-			OrderId = $"D{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}"
+			OrderId = $"D{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
+			Amount = 100M
+
 		};
 
 		var gameProviderId = Guid.NewGuid();
@@ -102,7 +101,7 @@ public class Cards365TransferPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(reply.TransactionId.ToString(), actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(reply.TransactionId.ToString(), actual.ExternalOrderId);
 	}
 }

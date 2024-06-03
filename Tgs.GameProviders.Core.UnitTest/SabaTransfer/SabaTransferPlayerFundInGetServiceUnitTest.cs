@@ -24,9 +24,7 @@ public class SabaTransferPlayerFundInGetServiceUnitTest
 
 		var query = new SabaTransferPlayerFundInQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = vendorTransId,
 			Amount = 100m
 		};

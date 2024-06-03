@@ -22,9 +22,7 @@ public class WGViaGamingPlayerFundOutGetServiceUnitTest
 
 		var query = new WGViaGamingPlayerFundOutQuery
 		{
-			BrandCode = "brandcode",
 			PlayerCode = "test",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N"),
 			Amount = 1
 		};
@@ -82,7 +80,7 @@ public class WGViaGamingPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
 
 		_ = fakeClient
 			.Received(1)

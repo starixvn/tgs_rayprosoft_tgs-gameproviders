@@ -61,7 +61,7 @@ public class WicketCricketPlayerFundInGetService : IGetService<WicketCricketPlay
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: string.Empty);
+			OrderId: query.OrderId,
+			ExternalOrderId: string.Empty);
 	}
 }

@@ -22,9 +22,7 @@ public class JiliTransferPlayerFundInGetServiceUnitTest
 
 		var query = new JiliTransferPlayerFundInQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N"),
 			Amount = 100m
 		};
@@ -95,7 +93,7 @@ public class JiliTransferPlayerFundInGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(reply.TransactionId, actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(reply.TransactionId, actual.ExternalOrderId);
 	}
 }

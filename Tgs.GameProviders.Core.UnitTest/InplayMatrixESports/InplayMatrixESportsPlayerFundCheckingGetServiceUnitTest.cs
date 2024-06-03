@@ -23,9 +23,7 @@ public class InplayMatrixESportsPlayerFundCheckingGetServiceUnitTest
 
 		var query = new InplayMatrixESportsPlayerFundCheckingQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = "1635165954039484416"
 		};
 

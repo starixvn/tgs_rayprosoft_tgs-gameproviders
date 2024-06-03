@@ -44,7 +44,7 @@ public class SBOTransferPlayerFundOutGetService(
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.TxnId);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.TxnId);
 	}
 }

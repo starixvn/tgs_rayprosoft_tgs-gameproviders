@@ -7,7 +7,7 @@ namespace Tgs.GameProviders.IntegrationTest.AwcRcb;
 public class PlayerOnlineUnitTest
 {
 	[Fact]
-	public async Task PlayerOnline()
+	public async Task Normal_Process()
 	{
 		var playerCode = "4ucmqplxb029";
 

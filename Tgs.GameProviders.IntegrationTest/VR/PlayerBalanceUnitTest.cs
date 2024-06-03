@@ -8,14 +8,13 @@ using Tgs.GameProviders.Core.VRGaming.ApplicationServices;
 
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
-using Tgs.GameProviders.IntegrationTest;
 
 namespace Tgs.GameProviders.IntegrationTest.VR;
 
 public class PlayerBalanceUnitTest
 {
 	[Fact]
-	public async Task GetBalances()
+	public async Task Normal_Process()
 	{
 		var playerCode = "4ucmqplxb029";
 
@@ -46,8 +45,7 @@ public class PlayerBalanceUnitTest
 
 		var sut = new GameProvidersClient(httpClient);
 
-		var actual = await sut
-			.PlayerBalanceAsync(
+		var actual = await sut.PlayerBalanceAsync(
 			gameProviderCode: GameProviderType.VRGaming,
 			playerCode: playerCode);
 

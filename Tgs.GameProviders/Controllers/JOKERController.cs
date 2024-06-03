@@ -98,35 +98,23 @@ public class JOKERController : ControllerBase
 	/// <summary>
 	/// Players the fund checking asynchronous.
 	/// </summary>
-	/// <param name="getService">The get service.</param>
+	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI_HKD",
-	///             "playerCode": "4uf6k014jp5x",
-	///             "currencyCode": "HKD",
-	///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86"
-	///         }
-	/// </remarks>
-	[HttpPost("playerfundchecking")]
-	public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
-		[FromServices] IGetService<JokerPlayerFundCheckingQuery, bool> getService,
-		PlayerFundCheckingRequest request)
+	[HttpGet("player/{playerCode}/fund/checking")]
+	public async ValueTask<PlayerFundCheckingResponse> PlayerFundCheckingAsync(
+		[FromServices] IGetService<JokerPlayerFundCheckingQuery, bool> service,
+		string playerCode,
+		[FromQuery] PlayerFundCheckingRequest request)
 	{
-		var result = await getService
-			.GetAsync(
-				query: new()
-				{
-					BrandCode = request.BrandCode,
-					PlayerCode = request.PlayerCode,
-					CurrencyCode = request.CurrencyCode,
-					OrderId = request.OrderId,
-				},
-				cancellationToken: HttpContext.RequestAborted)
+		var result = await service.GetAsync(
+			query: new()
+			{
+				PlayerCode = playerCode,
+				OrderId = request.OrderId,
+			},
+			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
 		return new PlayerFundCheckingResponse()
@@ -142,6 +130,7 @@ public class JOKERController : ControllerBase
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
 	[HttpPost("playerfundin")]
+	[HttpPost("player/{playerCode}/fund/in")]
 	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
 		[FromServices] IGetService<JokerPlayerFundInQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
@@ -149,9 +138,7 @@ public class JOKERController : ControllerBase
 		var result = await service.GetAsync(
 			query: new()
 			{
-				BrandCode = request.BrandCode,
 				PlayerCode = request.PlayerCode,
-				CurrencyCode = request.CurrencyCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -159,9 +146,10 @@ public class JOKERController : ControllerBase
 			.ConfigureAwait(false);
 
 		return new PlayerFundResponse(
-			OrderId: request.OrderId,
-			GameProviderTransactionId: result.GameProviderTransactionId,
-			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
+			OrderId: result.OrderId,
+			ExternalOrderId: result.ExternalOrderId,
+			GameProviderTransactionId: result.OrderId,
+			ExternalGameProviderTransactionId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -171,6 +159,7 @@ public class JOKERController : ControllerBase
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
 	[HttpPost("playerfundout")]
+	[HttpPost("player/{playerCode}/fund/out")]
 	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
 		[FromServices] IGetService<JokerPlayerFundOutQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
@@ -178,19 +167,18 @@ public class JOKERController : ControllerBase
 		var result = await service.GetAsync(
 			query: new()
 			{
-				BrandCode = request.BrandCode,
 				PlayerCode = request.PlayerCode,
-				CurrencyCode = request.CurrencyCode,
 				OrderId = request.OrderId,
-				Amount = request.Amount,
+				Amount = request.Amount
 			},
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
 		return new PlayerFundResponse(
-			OrderId: request.OrderId,
-			GameProviderTransactionId: result.GameProviderTransactionId,
-			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
+			OrderId: result.OrderId,
+			ExternalOrderId: result.ExternalOrderId,
+			GameProviderTransactionId: result.OrderId,
+			ExternalGameProviderTransactionId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -201,6 +189,7 @@ public class JOKERController : ControllerBase
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
 	[HttpGet("rounddetail/{gameBetId:guid}")]
+	[HttpGet("round/{gameBetId:guid}/detail")]
 	public ValueTask<RoundDetailResult> RoundDetailAsync(
 		[FromServices] IGetService<JokerRoundDetailQuery, RoundDetailResult> service,
 		Guid gameBetId,

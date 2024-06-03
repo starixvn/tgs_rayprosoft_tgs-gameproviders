@@ -25,9 +25,7 @@ public class CQ9GamingPlayerFundOutGetServiceUnitTest
 
 		var query = new CQ9GamingPlayerFundOutQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = $"D{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
 			Amount = 100
 		};
@@ -93,7 +91,8 @@ public class CQ9GamingPlayerFundOutGetServiceUnitTest
 
 		var actual = await sut.GetAsync(query);
 
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId.ToString());
-		Assert.Empty(actual.ExternalGameProviderTransactionId.ToString());
+		Assert.NotNull(actual);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Empty(actual.ExternalOrderId);
 	}
 }

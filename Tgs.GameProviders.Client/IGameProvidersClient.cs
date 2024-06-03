@@ -16,13 +16,11 @@ public interface IGameProvidersClient
 
 	ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default);
 
-	ValueTask<bool> PlayerFundCheckingAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, CancellationToken cancellationToken = default);
+	ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(string gameProviderCode, string playerCode, string orderId, DateTimeOffset orderOn, CancellationToken cancellationToken = default);
 
-	ValueTask<bool> PlayerFundCheckingByVRAsync(string brandCode, string playerCode, string currencyCode, string orderId, DateTimeOffset startTime, DateTimeOffset endTime, CancellationToken cancellationToken = default);
+	ValueTask<PlayerFundResponse> PlayerFundInAsync(string gameProviderCode, string playerCode, string orderId, decimal amount, CancellationToken cancellationToken = default);
 
-	ValueTask<PlayerFundResponse> PlayerFundInAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default);
-
-	ValueTask<PlayerFundResponse> PlayerFundOutAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default);
+	ValueTask<PlayerFundResponse> PlayerFundOutAsync(string gameProviderCode, string playerCode, string orderId, decimal amount, CancellationToken cancellationToken = default);
 	ValueTask<PlayerOnlineResponse> PlayerOnlineAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default);
-	ValueTask<RoundDetailResult> RoundDetailAsync(string gameProviderCode, Guid roundId, string language, CancellationToken cancellationToken = default);
+	ValueTask<RoundDetailResult?> RoundDetailAsync(string gameProviderCode, Guid roundId, DateTimeOffset externalCreatedOn, string language, CancellationToken cancellationToken = default);
 }

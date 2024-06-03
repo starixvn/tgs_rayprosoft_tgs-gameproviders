@@ -45,7 +45,7 @@ internal class PragmaticPlayTransferPlayerFundOutGetService(
 		   .ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.TransactionId.ToString());
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.TransactionId.ToString());
 	}
 }

@@ -50,7 +50,7 @@ public class FunkyPlayerFundInGetService(
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.TxSerialId.ToString());
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.TxSerialId.ToString());
 	}
 }

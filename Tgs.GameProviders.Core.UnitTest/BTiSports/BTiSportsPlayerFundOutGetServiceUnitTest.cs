@@ -22,9 +22,7 @@ public class BTiSportsPlayerFundOutGetServiceUnitTest
 
 		var query = new BTiSportsPlayerFundOutQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N"),
 			Amount = 100m
 		};

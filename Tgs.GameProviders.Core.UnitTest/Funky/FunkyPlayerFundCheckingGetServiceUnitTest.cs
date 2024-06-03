@@ -22,9 +22,7 @@ public class FunkyPlayerFundCheckingGetServiceUnitTest
 
 		var query = new FunkyPlayerFundCheckingQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N")
 		};
 

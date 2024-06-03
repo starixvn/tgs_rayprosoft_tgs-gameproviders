@@ -29,9 +29,7 @@ public class CrPatiPlayerFundOutGetServiceUnitTest
 
 		var query = new CrPatiPlayerFundOutQuery
 		{
-			BrandCode = "brandcode",
 			PlayerCode = "test",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N"),
 			Amount = 1
 		};
@@ -117,7 +115,7 @@ public class CrPatiPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(reply.ApiOrderNo, actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(reply.ApiOrderNo, actual.ExternalOrderId);
 	}
 }

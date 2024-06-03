@@ -25,9 +25,7 @@ public class TPherePlayerFundInGetServiceUnitTest
 
 		var query = new TPherePlayerFundInQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = $"W{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
 			Amount = 100
 		};
@@ -97,7 +95,8 @@ public class TPherePlayerFundInGetServiceUnitTest
 
 		var actual = await sut.GetAsync(query);
 
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId.ToString());
-		Assert.Equal(reply.CasinoTransId, actual.ExternalGameProviderTransactionId.ToString());
+		Assert.NotNull(actual);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(reply.CasinoTransId, actual.ExternalOrderId);
 	}
 }

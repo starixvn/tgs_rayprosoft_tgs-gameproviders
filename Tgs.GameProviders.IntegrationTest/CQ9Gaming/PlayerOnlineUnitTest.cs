@@ -14,7 +14,7 @@ public class PlayerOnlineUnitTest
 	[Theory]
 	[InlineData(true, true)]
 	[InlineData(false, false)]
-	public async Task PlayerOnline(bool online, bool expected)
+	public async Task Normal_Process(bool online, bool expected)
 	{
 		var playerCode = "4ucmqplxb029";
 

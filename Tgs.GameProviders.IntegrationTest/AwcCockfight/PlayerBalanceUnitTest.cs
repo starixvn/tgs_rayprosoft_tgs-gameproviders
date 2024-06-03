@@ -15,7 +15,7 @@ namespace Tgs.GameProviders.IntegrationTest.AwcCockfight;
 public class PlayerBalanceUnitTest
 {
 	[Fact]
-	public async Task GetBalances()
+	public async Task Normal_Process()
 	{
 		var playerCode = "4ucmqplxb029";
 
@@ -46,8 +46,7 @@ public class PlayerBalanceUnitTest
 
 		var sut = new GameProvidersClient(httpClient);
 
-		var actual = await sut
-			.PlayerBalanceAsync(
+		var actual = await sut.PlayerBalanceAsync(
 			gameProviderCode: GameProviderType.AWC_COCKFIGHT,
 			playerCode: playerCode);
 

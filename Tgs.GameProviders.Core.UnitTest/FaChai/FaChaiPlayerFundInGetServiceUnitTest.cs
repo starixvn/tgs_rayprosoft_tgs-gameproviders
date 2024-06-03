@@ -23,9 +23,7 @@ public class FaChaiPlayerFundInGetServiceUnitTest
 
 		var query = new FaChaiPlayerFundInQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			Amount = 100M,
 			OrderId = $"W{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}"
 		};
@@ -103,7 +101,7 @@ public class FaChaiPlayerFundInGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(response.BankId.ToString(), actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(response.BankId.ToString(), actual.ExternalOrderId);
 	}
 }

@@ -22,9 +22,7 @@ public class PinnaclePlayerFundCheckingGetServiceUnitTest
 
 		var query = new PinnaclePlayerFundCheckingQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = Guid.Parse("7f5a44a8-74bf-4927-8152-b9482a42af9c").ToString("N"),
 		};
 

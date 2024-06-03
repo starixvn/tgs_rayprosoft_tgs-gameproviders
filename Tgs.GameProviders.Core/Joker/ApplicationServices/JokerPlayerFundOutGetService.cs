@@ -57,7 +57,7 @@ internal class JokerPlayerFundOutGetService : IGetService<JokerPlayerFundOutQuer
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.RequestId);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.RequestId);
 	}
 }

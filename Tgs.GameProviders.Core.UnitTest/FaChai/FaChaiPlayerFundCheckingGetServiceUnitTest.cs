@@ -22,9 +22,7 @@ public class FaChaiPlayerFundCheckingGetServiceUnitTest
 
 		var query = new FaChaiPlayerFundCheckingQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = "1635165954039484416"
 		};
 

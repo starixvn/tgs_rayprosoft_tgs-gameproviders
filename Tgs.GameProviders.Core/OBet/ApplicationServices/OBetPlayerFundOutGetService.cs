@@ -62,7 +62,7 @@ public class OBetPlayerFundOutGetService : IGetService<OBetPlayerFundOutQuery, P
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.SerialNo);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.SerialNo);
 	}
 }

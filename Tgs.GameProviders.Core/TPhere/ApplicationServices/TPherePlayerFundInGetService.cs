@@ -44,7 +44,7 @@ public class TPherePlayerFundInGetService(
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.CasinoTransId.ToString());
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.CasinoTransId.ToString());
 	}
 }

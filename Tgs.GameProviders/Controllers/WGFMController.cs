@@ -120,34 +120,21 @@ public class WGFMController : ControllerBase
 	/// Players the fund checking asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86"
-	///         }
-	/// </remarks>
-	[HttpPost("playerfundchecking")]
-	public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(
+	[HttpGet("player/{playerCode}/fund/checking")]
+	public async ValueTask<PlayerFundCheckingResponse> PlayerFundCheckingAsync(
 		[FromServices] IGetService<WGFmGamingPlayerFundCheckingQuery, bool> service,
-		PlayerFundCheckingRequest request)
+		string playerCode,
+		[FromQuery] PlayerFundCheckingRequest request)
 	{
-		var query = new WGFmGamingPlayerFundCheckingQuery()
-		{
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			OrderId = request.OrderId,
-		};
-		var result = await service
-			.GetAsync(
-			query: query,
+		var result = await service.GetAsync(
+			query: new()
+			{
+				PlayerCode = playerCode,
+				OrderId = request.OrderId,
+			},
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
@@ -164,6 +151,7 @@ public class WGFMController : ControllerBase
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
 	[HttpPost("playerfundin")]
+	[HttpPost("player/{playerCode}/fund/in")]
 	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
 		[FromServices] IGetService<WGFmGamingPlayerFundInQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
@@ -171,9 +159,7 @@ public class WGFMController : ControllerBase
 		var result = await service.GetAsync(
 			query: new()
 			{
-				BrandCode = request.BrandCode,
 				PlayerCode = request.PlayerCode,
-				CurrencyCode = request.CurrencyCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -181,9 +167,10 @@ public class WGFMController : ControllerBase
 			.ConfigureAwait(false);
 
 		return new PlayerFundResponse(
-			OrderId: request.OrderId,
-			GameProviderTransactionId: result.GameProviderTransactionId,
-			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
+			OrderId: result.OrderId,
+			ExternalOrderId: result.ExternalOrderId,
+			GameProviderTransactionId: result.OrderId,
+			ExternalGameProviderTransactionId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -193,6 +180,7 @@ public class WGFMController : ControllerBase
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
 	[HttpPost("playerfundout")]
+	[HttpPost("player/{playerCode}/fund/out")]
 	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
 		[FromServices] IGetService<WGFmGamingPlayerFundOutQuery, PlayerFundResult> service,
 		PlayerFundRequest request)
@@ -200,19 +188,18 @@ public class WGFMController : ControllerBase
 		var result = await service.GetAsync(
 			query: new()
 			{
-				BrandCode = request.BrandCode,
 				PlayerCode = request.PlayerCode,
-				CurrencyCode = request.CurrencyCode,
 				OrderId = request.OrderId,
-				Amount = request.Amount,
+				Amount = request.Amount
 			},
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
 		return new PlayerFundResponse(
-			OrderId: request.OrderId,
-			GameProviderTransactionId: result.GameProviderTransactionId,
-			ExternalGameProviderTransactionId: result.ExternalGameProviderTransactionId);
+			OrderId: result.OrderId,
+			ExternalOrderId: result.ExternalOrderId,
+			GameProviderTransactionId: result.OrderId,
+			ExternalGameProviderTransactionId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -223,6 +210,7 @@ public class WGFMController : ControllerBase
 	/// <param name="language">The language.</param>
 	/// <returns></returns>
 	[HttpGet("rounddetail/{gameBetId:guid}")]
+	[HttpGet("round/{gameBetId:guid}/detail")]
 	public ValueTask<RoundDetailResult> RoundDetailAsync(
 		[FromServices] IGetService<WGFmGamingRoundDetailQuery, RoundDetailResult> service,
 		Guid gameBetId,

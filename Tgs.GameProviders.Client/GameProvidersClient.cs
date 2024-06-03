@@ -1,9 +1,10 @@
 ﻿using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Web;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.RoundDetail;
 
@@ -14,10 +15,10 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 	private static readonly string _GameURL = "/api/{0}/gameurl";
 	private static readonly string _PlayerLogoutPath = "/api/{0}/player/{1}/logout";
 	private static readonly string _PlayerBalancePath = "/api/{0}/player/{1}/balance";
-	private static readonly string _PlayerFundChecking = "/api/{0}/PlayerFundChecking";
-	private static readonly string _PlayerFundInPath = "/api/{0}/PlayerFundIn";
-	private static readonly string _PlayerFundOutPath = "/api/{0}/PlayerFundOut";
-	private static readonly string _RoundDetail = "/api/{0}/RoundDetail/{1}?language={2}";
+	private static readonly string _PlayerFundChecking = "/api/{0}/player/{1}/fund/checking";
+	private static readonly string _PlayerFundInPath = "/api/{0}/player/{1}/fund/in";
+	private static readonly string _PlayerFundOutPath = "/api/{0}/player/{1}/fund/out";
+	private static readonly string _RoundDetail = "/api/{0}/round/{1}";
 	private static readonly string _PlayerOnline = "/api/{0}/player/{1}/online";
 
 	private static readonly JsonSerializerOptions? _SerializerOptions = new()
@@ -208,137 +209,75 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 				_SerializerOptions)!;
 	}
 
-	public async ValueTask<bool> PlayerFundCheckingAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, CancellationToken cancellationToken = default)
+	public async ValueTask<PlayerFundCheckingResponse?> PlayerFundCheckingAsync(string gameProviderCode, string playerCode, string orderId, DateTimeOffset orderOn, CancellationToken cancellationToken = default)
 	{
-		var request = new
-		{
-			BrandCode = brandCode,
-			PlayerCode = playerCode,
-			CurrencyCode = currencyCode,
-			OrderId = orderId,
-		};
+		var path = new Uri(httpClient.BaseAddress!, string.Format(_PlayerFundChecking, gameProviderCode, playerCode));
+		var builder = new UriBuilder(path);
+		var query = HttpUtility.ParseQueryString(builder.Query);
+		query["orderId"] = orderId;
+		query["orderOn"] = orderOn.ToString("u");
+		builder.Query = query.ToString();
+		string url = builder.ToString();
 
-		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
-		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-		var response = await httpClient
-		   .PostAsync(
-			   requestUri: string.Format(_PlayerFundChecking, gameProviderCode),
-			   content: requestContent,
-			   cancellationToken: cancellationToken).ConfigureAwait(false);
-
-		_ = response.EnsureSuccessStatusCode();
-
-		return response.StatusCode == HttpStatusCode.NoContent
-			? throw new Exception($"取得{gameProviderCode}交易檢查狀態失敗.({orderId})")
-			: JsonSerializer.Deserialize<PlayerFundCheckingResponse>(
-				await response
-				.Content
-				.ReadAsStringAsync(
-					cancellationToken: cancellationToken)
-				.ConfigureAwait(false),
-				_SerializerOptions)!.OrderStatus;
+		return await httpClient.GetAsync(url, cancellationToken)
+			.ToAsyncEnumerable()
+			.Do(response => response.EnsureSuccessStatusCode())
+			.Where(response => response.StatusCode == System.Net.HttpStatusCode.OK)
+			.SelectMany(response => response.Content
+				.ReadFromJsonAsync<PlayerFundCheckingResponse>(_SerializerOptions, cancellationToken)
+				.ToAsyncEnumerable())
+			.Where(info => info is not null)
+			.Select(info => info!)
+			.FirstOrDefaultAsync(cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 	}
 
-	public async ValueTask<bool> PlayerFundCheckingByVRAsync(string brandCode, string playerCode, string currencyCode, string orderId, DateTimeOffset startTime, DateTimeOffset endTime, CancellationToken cancellationToken = default)
+	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(string gameProviderCode, string playerCode, string orderId, decimal amount, CancellationToken cancellationToken = default)
 	{
-		var request = new
+		var source = new
 		{
-			BrandCode = brandCode,
 			PlayerCode = playerCode,
-			CurrencyCode = currencyCode,
-			OrderId = orderId,
-			StartTime = startTime,
-			EndTime = endTime
-		};
-
-		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
-		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-		var response = await httpClient
-		   .PostAsync(
-			   requestUri: string.Format(_PlayerFundChecking, GameProviderType.VRGaming),
-			   content: requestContent,
-			   cancellationToken: cancellationToken).ConfigureAwait(false);
-
-		_ = response.EnsureSuccessStatusCode();
-
-		return response.StatusCode == HttpStatusCode.NoContent
-			? throw new Exception($"取得{GameProviderType.VRGaming}交易檢查狀態失敗.({orderId})")
-			: JsonSerializer.Deserialize<PlayerFundCheckingResponse>(
-				await response
-				.Content
-				.ReadAsStringAsync(
-					cancellationToken: cancellationToken)
-				.ConfigureAwait(false),
-				_SerializerOptions)!.OrderStatus;
-	}
-
-	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default)
-	{
-		var request = new
-		{
-			BrandCode = brandCode,
-			PlayerCode = playerCode,
-			CurrencyCode = currencyCode,
 			OrderId = orderId,
 			Amount = amount
 		};
+		var requestContent = JsonContent.Create(source, options: _SerializerOptions);
 
-		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
-		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-		var response = await httpClient
-		   .PostAsync(
-			   requestUri: string.Format(_PlayerFundInPath, gameProviderCode),
-			   content: requestContent,
-			   cancellationToken: cancellationToken)
+		var response = await httpClient.PostAsync(
+			requestUri: string.Format(_PlayerFundInPath, gameProviderCode, playerCode),
+			content: requestContent,
+			cancellationToken: cancellationToken)
 		   .ConfigureAwait(false);
 
 		_ = response.EnsureSuccessStatusCode();
 
-		return response.StatusCode == HttpStatusCode.NoContent
-			? throw new Exception($"玩家{gameProviderCode}轉入主錢包失敗.({orderId})")
-			: JsonSerializer.Deserialize<PlayerFundResponse>(
-				await response
-				.Content
-				.ReadAsStringAsync(
-					cancellationToken: cancellationToken)
-				.ConfigureAwait(false),
-				_SerializerOptions)!;
+		return (await response.Content.ReadFromJsonAsync<PlayerFundResponse>(
+			_SerializerOptions,
+			cancellationToken)
+			.ConfigureAwait(false))!;
 	}
 
-	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(string gameProviderCode, string brandCode, string playerCode, string currencyCode, string orderId, decimal amount, CancellationToken cancellationToken = default)
+	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(string gameProviderCode, string playerCode, string orderId, decimal amount, CancellationToken cancellationToken = default)
 	{
-		var request = new
+		var source = new
 		{
-			BrandCode = brandCode,
 			PlayerCode = playerCode,
-			CurrencyCode = currencyCode,
 			OrderId = orderId,
 			Amount = amount
 		};
+		var requestContent = JsonContent.Create(source, options: _SerializerOptions);
 
-		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
-		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-		var response = await httpClient
-		   .PostAsync(
-			   requestUri: string.Format(_PlayerFundOutPath, gameProviderCode),
-			   content: requestContent,
-			   cancellationToken: cancellationToken).ConfigureAwait(false);
+		var response = await httpClient.PostAsync(
+			requestUri: string.Format(_PlayerFundOutPath, gameProviderCode, playerCode),
+			content: requestContent,
+			cancellationToken: cancellationToken)
+		   .ConfigureAwait(false);
 
 		_ = response.EnsureSuccessStatusCode();
 
-		return response.StatusCode == HttpStatusCode.NoContent
-			? throw new Exception($"玩家主錢包轉入{gameProviderCode}失敗.({orderId})")
-			: JsonSerializer.Deserialize<PlayerFundResponse>(
-				await response
-				.Content
-				.ReadAsStringAsync(
-					cancellationToken: cancellationToken)
-				.ConfigureAwait(false),
-				_SerializerOptions)!;
+		return (await response.Content.ReadFromJsonAsync<PlayerFundResponse>(
+			_SerializerOptions,
+			cancellationToken)
+			.ConfigureAwait(false))!;
 	}
 
 	public async ValueTask<PlayerOnlineResponse> PlayerOnlineAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default)
@@ -365,23 +304,26 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 
 	}
 
-	public async ValueTask<RoundDetailResult> RoundDetailAsync(string gameProviderCode, Guid roundId, string language, CancellationToken cancellationToken = default)
+	public async ValueTask<RoundDetailResult?> RoundDetailAsync(string gameProviderCode, Guid roundId, DateTimeOffset externalCreatedOn, string language, CancellationToken cancellationToken = default)
 	{
-		var response = await httpClient
-		   .GetAsync(
-			   requestUri: string.Format(_RoundDetail, gameProviderCode, roundId, language),
-			   cancellationToken: cancellationToken).ConfigureAwait(false);
+		var path = new Uri(httpClient.BaseAddress!, string.Format(_RoundDetail, gameProviderCode, roundId));
+		var builder = new UriBuilder(path);
+		var query = HttpUtility.ParseQueryString(builder.Query);
+		query["language"] = language;
+		query["externalCreatedOn"] = externalCreatedOn.ToString("u");
+		builder.Query = query.ToString();
+		string url = builder.ToString();
 
-		_ = response.EnsureSuccessStatusCode();
-
-		return response.StatusCode == HttpStatusCode.NoContent
-			? throw new Exception($"取得訂單明細{gameProviderCode}失敗.({roundId:N})")
-			: JsonSerializer.Deserialize<RoundDetailResult>(
-				await response
-				.Content
-				.ReadAsStringAsync(
-					cancellationToken: cancellationToken)
-				.ConfigureAwait(false),
-				_SerializerOptions)!;
+		return await httpClient.GetAsync(url, cancellationToken)
+			.ToAsyncEnumerable()
+			.Do(response => response.EnsureSuccessStatusCode())
+			.Where(response => response.StatusCode == System.Net.HttpStatusCode.OK)
+			.SelectMany(response => response.Content
+				.ReadFromJsonAsync<RoundDetailResult>(_SerializerOptions, cancellationToken)
+				.ToAsyncEnumerable())
+			.Where(info => info is not null)
+			.Select(info => info!)
+			.FirstOrDefaultAsync(cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 	}
 }

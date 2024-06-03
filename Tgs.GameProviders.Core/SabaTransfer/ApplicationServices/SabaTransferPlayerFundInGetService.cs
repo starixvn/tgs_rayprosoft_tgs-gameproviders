@@ -61,7 +61,7 @@ public class SabaTransferPlayerFundInGetService : IGetService<SabaTransferPlayer
 		}
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.ActualVendorTransId);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.ActualVendorTransId);
 	}
 }

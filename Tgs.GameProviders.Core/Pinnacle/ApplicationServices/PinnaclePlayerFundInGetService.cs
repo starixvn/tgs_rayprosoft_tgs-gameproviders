@@ -63,7 +63,7 @@ public class PinnaclePlayerFundInGetService : IGetService<PinnaclePlayerFundInQu
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: string.Empty);
+			OrderId: query.OrderId,
+			ExternalOrderId: string.Empty);
 	}
 }

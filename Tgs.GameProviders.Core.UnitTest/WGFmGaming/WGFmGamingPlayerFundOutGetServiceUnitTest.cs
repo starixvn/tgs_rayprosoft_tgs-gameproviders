@@ -21,8 +21,6 @@ public class WGFmGamingPlayerFundOutGetServiceUnitTest
 
 		var query = new WGFmGamingPlayerFundOutQuery
 		{
-			BrandCode = "BrandCode",
-			CurrencyCode = "CNY",
 			PlayerCode = "test",
 			OrderId = Guid.NewGuid().ToString("N"),
 			Amount = 1
@@ -79,6 +77,6 @@ public class WGFmGamingPlayerFundOutGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
 	}
 }

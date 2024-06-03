@@ -44,7 +44,7 @@ public class BTiSportsPlayerFundInGetService : IGetService<BTiSportsPlayerFundIn
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.RefTransactionCode);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.RefTransactionCode);
 	}
 }

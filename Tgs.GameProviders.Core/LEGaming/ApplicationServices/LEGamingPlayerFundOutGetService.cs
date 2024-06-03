@@ -62,7 +62,7 @@ public class LEGamingPlayerFundOutGetService : IGetService<LEGamingPlayerFundOut
 		   .ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: string.Empty);
+			OrderId: query.OrderId,
+			ExternalOrderId: string.Empty);
 	}
 }

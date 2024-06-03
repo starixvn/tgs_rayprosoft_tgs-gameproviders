@@ -22,9 +22,7 @@ public class WGViaGamingPlayerFundCheckingGetServiceUnitTest
 
 		var query = new WGViaGamingPlayerFundCheckingQuery
 		{
-			BrandCode = "brandcode",
 			PlayerCode = "test",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N")
 		};
 

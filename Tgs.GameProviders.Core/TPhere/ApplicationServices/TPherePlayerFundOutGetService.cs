@@ -44,7 +44,7 @@ public class TPherePlayerFundOutGetService(
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.CasinoTransId);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.CasinoTransId);
 	}
 }

@@ -7,29 +7,21 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 
-public class SkywindTransferPlayerBalanceGetService : IGetService<SkywindTransferPlayerBalanceQuery, PlayerBalanceResult>
+public class SkywindTransferPlayerBalanceGetService(
+	ICommandService<SkywindTransferCreatePlayerCommand> createPlayerCommandService,
+	IGameInterfaceSkywindClient client,
+	IPlayerRepository playerRepository,
+	ISettingRepository settingRepository) : IGetService<SkywindTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
-	private readonly IGameInterfaceSkywindClient _client;
-	private readonly ICommandService<SkywindTransferCreatePlayerCommand> _createPlayerCommandService;
-	private readonly IPlayerRepository _player;
-	private readonly ISettingRepository _setting;
-
-	public SkywindTransferPlayerBalanceGetService(
-		ICommandService<SkywindTransferCreatePlayerCommand> createPlayerCommandService,
-		IGameInterfaceSkywindClient client,
-		IPlayerRepository player,
-		ISettingRepository setting)
-	{
-		_createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-		_setting = setting ?? throw new ArgumentNullException(nameof(setting));
-	}
-
 	public async ValueTask<PlayerBalanceResult> GetAsync(SkywindTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
 	{
-		var configuration = await _setting.GetSkywindTransferConfigurationAsync().ConfigureAwait(false);
-		var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
+		var configuration = await settingRepository.GetSkywindTransferConfigurationAsync(
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var player = await playerRepository.GetAsync(
+			query.PlayerCode,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 
 		var request = new PlayerBalanceRequest()
 		{
@@ -40,7 +32,7 @@ public class SkywindTransferPlayerBalanceGetService : IGetService<SkywindTransfe
 			PlayerCode = query.PlayerCode
 		};
 
-		var reply = await _client
+		var reply = await client
 				.PlayerBalanceAsync(
 					request: request,
 					cancellationToken: cancellationToken)
@@ -48,13 +40,13 @@ public class SkywindTransferPlayerBalanceGetService : IGetService<SkywindTransfe
 
 		if (!reply.IsPlayer)
 		{
-			await _createPlayerCommandService.ExecuteAsync(new SkywindTransferCreatePlayerCommand(
+			await createPlayerCommandService.ExecuteAsync(new SkywindTransferCreatePlayerCommand(
 				Configuration: configuration,
 				PlayerCode: player.PlayerCode,
 				CurrencyCode: player.DefaultWalletCurrencyCode),
 				cancellationToken).ConfigureAwait(false);
 
-			reply = await _client
+			reply = await client
 				.PlayerBalanceAsync(
 				request: request,
 				cancellationToken: cancellationToken)

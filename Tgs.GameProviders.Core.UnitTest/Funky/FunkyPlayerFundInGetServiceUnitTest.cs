@@ -25,9 +25,7 @@ public class FunkyPlayerFundInGetServiceUnitTest
 
 		var query = new FunkyPlayerFundInQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N"),
 			Amount = 100
 		};
@@ -107,7 +105,7 @@ public class FunkyPlayerFundInGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(reply.TxSerialId.ToString(), actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(reply.TxSerialId.ToString(), actual.ExternalOrderId);
 	}
 }

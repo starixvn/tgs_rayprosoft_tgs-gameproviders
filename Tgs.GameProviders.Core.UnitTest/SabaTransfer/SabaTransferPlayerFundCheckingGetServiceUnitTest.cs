@@ -22,9 +22,7 @@ public class SabaTransferPlayerFundCheckingGetServiceUnitTest
 
 		var query = new SabaTransferPlayerFundCheckingQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = Guid.NewGuid().ToString("N")
 		};
 

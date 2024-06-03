@@ -22,9 +22,7 @@ public class VRGamingPlayerFundCheckingGetServiceUnitTest
 
 		var query = new VRGamingPlayerFundCheckingQuery
 		{
-			BrandCode = "brandcode",
 			PlayerCode = "test",
-			CurrencyCode = "CNY",
 			OrderId = "018c8f8f201f0000000107e7db655fdb",
 			StartTime = DateTimeOffset.UtcNow.AddHours(-1),
 			EndTime = DateTimeOffset.UtcNow

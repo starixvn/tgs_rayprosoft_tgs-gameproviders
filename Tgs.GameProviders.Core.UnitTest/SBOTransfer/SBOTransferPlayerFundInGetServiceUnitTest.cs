@@ -23,9 +23,7 @@ public class SBOTransferPlayerFundInGetServiceUnitTest
 
 		var query = new SBOTransferPlayerFundInQuery
 		{
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
 			OrderId = "W1714154366418497500",
 			Amount = 100m
 		};
@@ -87,7 +85,7 @@ public class SBOTransferPlayerFundInGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(query.OrderId, actual.GameProviderTransactionId);
-		Assert.Equal(reply.TxnId, actual.ExternalGameProviderTransactionId);
+		Assert.Equal(query.OrderId, actual.OrderId);
+		Assert.Equal(reply.TxnId, actual.ExternalOrderId);
 	}
 }

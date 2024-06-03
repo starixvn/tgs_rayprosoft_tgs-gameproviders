@@ -59,7 +59,7 @@ public class V8PokerPlayerFundOutGetService : IGetService<V8PokerPlayerFundOutQu
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: string.Empty);
+			OrderId: query.OrderId,
+			ExternalOrderId: string.Empty);
 	}
 }

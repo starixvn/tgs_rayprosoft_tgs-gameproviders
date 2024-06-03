@@ -1,21 +1,19 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.AwcAelotto.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
-using Tgs.GameProviders.IntegrationTest;
 
 namespace Tgs.GameProviders.IntegrationTest.AwcAelotto;
 
 public class PlayerBalanceUnitTest
 {
 	[Fact]
-	public async Task GetBalances()
+	public async Task Normal_Process()
 	{
 		var playerCode = "4ucmqplxb029";
 
@@ -46,8 +44,7 @@ public class PlayerBalanceUnitTest
 
 		var sut = new GameProvidersClient(httpClient);
 
-		var actual = await sut
-			.PlayerBalanceAsync(
+		var actual = await sut.PlayerBalanceAsync(
 			gameProviderCode: GameProviderType.AWC_AELOTTO,
 			playerCode: playerCode);
 

@@ -45,7 +45,7 @@ public class VRGamingPlayerFundInGetService(
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
-			GameProviderTransactionId: query.OrderId,
-			ExternalGameProviderTransactionId: reply.OrderId);
+			OrderId: query.OrderId,
+			ExternalOrderId: reply.OrderId);
 	}
 }
