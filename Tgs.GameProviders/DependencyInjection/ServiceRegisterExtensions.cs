@@ -17,7 +17,7 @@ public static class ServiceRegisterExtensions
 			var gameProviderInfos = client
 				.GameProviderQueryAsync()
 				.ToEnumerable()
-				?? Enumerable.Empty<GameProviderInfo>();
+				?? [];
 
 			foreach (var gameProviderInfo in gameProviderInfos)
 			{

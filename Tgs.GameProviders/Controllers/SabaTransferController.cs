@@ -62,20 +62,21 @@ public class SabaTransferController : ControllerBase
 	}
 
 	/// <summary>
-	/// Kicks the player asynchronous.
+	/// Players the logout asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	[HttpDelete("kickplayer/{playerCode}")]
 	[HttpDelete("player/{playerCode}/logout")]
-	public ValueTask KickPlayerAsync(
-		[FromServices] ICommandService<SabaTransferKickPlayerCommand> service,
+	public ValueTask PlayerLogoutAsync(
+		[FromServices] ICommandService<SabaTransferPlayerLogoutCommand> service,
 		string playerCode)
-		=> service.ExecuteAsync(new()
-		{
-			PlayerCode = playerCode
-		});
+		=> service.ExecuteAsync(
+			command: new()
+			{
+				PlayerCode = playerCode
+			},
+			cancellationToken: HttpContext.RequestAborted);
 
 	/// <summary>
 	/// Players the balance asynchronous.
@@ -83,27 +84,18 @@ public class SabaTransferController : ControllerBase
 	/// <param name="service">The service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	///   <b>Example</b><br />
-	///
-	///   Get balance/4ucmqplxb029
-	/// </remarks>
-	[HttpGet("balance/{playerCode}")]
 	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
-		 [FromServices] IGetService<SabaTransferPlayerBalanceQuery, PlayerBalanceResult> service,
-		 string playerCode)
+		[FromServices] IGetService<SabaTransferPlayerBalanceQuery, PlayerBalanceResult> service,
+		string playerCode)
 	{
-		var query = new SabaTransferPlayerBalanceQuery
-		{
-			PlayerCode = playerCode
-		};
-
-		var result = await service
-		 .GetAsync(
-			query: query,
+		var result = await service.GetAsync(
+			query: new()
+			{
+				PlayerCode = playerCode
+			},
 			cancellationToken: HttpContext.RequestAborted)
-		 .ConfigureAwait(false);
+			.ConfigureAwait(false);
 
 		return new PlayerBalanceResponse(
 			result.Balance,
@@ -143,30 +135,19 @@ public class SabaTransferController : ControllerBase
 	/// Players the fund in asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
-	///             "amount": 1
-	///         }
-	/// </remarks>
-	[HttpPost("playerfundin")]
 	[HttpPost("player/{playerCode}/fund/in")]
 	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
 		[FromServices] IGetService<SabaTransferPlayerFundInQuery, PlayerFundResult> service,
+		string playerCode,
 		PlayerFundRequest request)
 	{
 		var result = await service.GetAsync(
 			query: new()
 			{
-				PlayerCode = request.PlayerCode,
+				PlayerCode = playerCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -175,27 +156,26 @@ public class SabaTransferController : ControllerBase
 
 		return new PlayerFundResponse(
 			OrderId: result.OrderId,
-			ExternalOrderId: result.ExternalOrderId,
-			GameProviderTransactionId: result.OrderId,
-			ExternalGameProviderTransactionId: result.ExternalOrderId);
+			ExternalOrderId: result.ExternalOrderId);
 	}
 
 	/// <summary>
 	/// Players the fund out asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	[HttpPost("playerfundout")]
 	[HttpPost("player/{playerCode}/fund/out")]
 	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
 		[FromServices] IGetService<SabaTransferPlayerFundOutQuery, PlayerFundResult> service,
+		string playerCode,
 		PlayerFundRequest request)
 	{
 		var result = await service.GetAsync(
 			query: new()
 			{
-				PlayerCode = request.PlayerCode,
+				PlayerCode = playerCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -204,9 +184,7 @@ public class SabaTransferController : ControllerBase
 
 		return new PlayerFundResponse(
 			OrderId: result.OrderId,
-			ExternalOrderId: result.ExternalOrderId,
-			GameProviderTransactionId: result.OrderId,
-			ExternalGameProviderTransactionId: result.ExternalOrderId);
+			ExternalOrderId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -214,19 +192,19 @@ public class SabaTransferController : ControllerBase
 	/// </summary>
 	/// <param name="service">The service.</param>
 	/// <param name="gameBetId">The game bet identifier.</param>
-	/// <param name="language">The language.</param>
+	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	[HttpGet("rounddetail/{gameBetId:guid}")]
 	[HttpGet("round/{gameBetId:guid}/detail")]
 	public ValueTask<RoundDetailResult> RoundDetailAsync(
 		[FromServices] IGetService<SabaTransferRoundDetailQuery, RoundDetailResult> service,
 		Guid gameBetId,
-		[FromQuery] string language)
+		[FromQuery] RoundDetailRequest request)
 		=> service.GetAsync(
 			query: new()
 			{
 				GameBetId = gameBetId,
-				Language = language
+				Language = request.Language,
+				ExternalCreatedOn = request.ExternalCreatedOn
 			},
 			cancellationToken: HttpContext.RequestAborted);
 }

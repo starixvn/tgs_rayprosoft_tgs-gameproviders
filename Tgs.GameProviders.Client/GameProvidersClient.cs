@@ -236,7 +236,6 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 	{
 		var source = new
 		{
-			PlayerCode = playerCode,
 			OrderId = orderId,
 			Amount = amount
 		};
@@ -260,7 +259,6 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 	{
 		var source = new
 		{
-			PlayerCode = playerCode,
 			OrderId = orderId,
 			Amount = amount
 		};

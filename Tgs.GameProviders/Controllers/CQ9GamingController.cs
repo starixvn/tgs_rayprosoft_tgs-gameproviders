@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.CQ9Gaming.ApplicationServices;
-using Tgs.GameProviders.Core.TPhere.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
@@ -43,20 +42,21 @@ public class CQ9GamingController : ControllerBase
 	}
 
 	/// <summary>
-	/// Kicks the player asynchronous.
+	/// Players the logout asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	[HttpDelete("kickplayer/{playerCode}")]
 	[HttpDelete("player/{playerCode}/logout")]
-	public ValueTask KickPlayerAsync(
-		[FromServices] ICommandService<CQ9GamingKickPlayerCommand> service,
+	public ValueTask PlayerLogoutAsync(
+		[FromServices] ICommandService<CQ9GamingPlayerLogoutCommand> service,
 		string playerCode)
-		=> service.ExecuteAsync(new()
-		{
-			PlayerCode = playerCode
-		});
+		=> service.ExecuteAsync(
+			command: new()
+			{
+				PlayerCode = playerCode
+			},
+			cancellationToken: HttpContext.RequestAborted);
 
 	/// <summary>
 	/// Players the balance asynchronous.
@@ -64,22 +64,18 @@ public class CQ9GamingController : ControllerBase
 	/// <param name="service">The service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	[HttpGet("balance/{playerCode}")]
 	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
 		[FromServices] IGetService<CQ9GamingPlayerBalanceQuery, PlayerBalanceResult> service,
 		string playerCode)
 	{
-		var query = new CQ9GamingPlayerBalanceQuery
-		{
-			PlayerCode = playerCode
-		};
-
-		var result = await service
-		 .GetAsync(
-			query: query,
+		var result = await service.GetAsync(
+			query: new()
+			{
+				PlayerCode = playerCode
+			},
 			cancellationToken: HttpContext.RequestAborted)
-		 .ConfigureAwait(false);
+			.ConfigureAwait(false);
 
 		return new PlayerBalanceResponse(
 			result.Balance,
@@ -95,8 +91,8 @@ public class CQ9GamingController : ControllerBase
 	/// <returns></returns>
 	[HttpGet("player/{playerCode}/online")]
 	public async ValueTask<PlayerOnlineResponse> PlayerOnlineAsync(
-		 [FromServices] IGetService<CQ9GamingPlayerOnlineQuery, bool> service,
-		 string playerCode)
+		[FromServices] IGetService<CQ9GamingPlayerOnlineQuery, bool> service,
+		string playerCode)
 	{
 		var query = new CQ9GamingPlayerOnlineQuery
 		{
@@ -146,16 +142,16 @@ public class CQ9GamingController : ControllerBase
 	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	[HttpPost("playerfundin")]
 	[HttpPost("player/{playerCode}/fund/in")]
 	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
 		[FromServices] IGetService<CQ9GamingPlayerFundInQuery, PlayerFundResult> service,
+		string playerCode,
 		PlayerFundRequest request)
 	{
 		var result = await service.GetAsync(
 			query: new()
 			{
-				PlayerCode = request.PlayerCode,
+				PlayerCode = playerCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -164,27 +160,26 @@ public class CQ9GamingController : ControllerBase
 
 		return new PlayerFundResponse(
 			OrderId: result.OrderId,
-			ExternalOrderId: result.ExternalOrderId,
-			GameProviderTransactionId: result.OrderId,
-			ExternalGameProviderTransactionId: result.ExternalOrderId);
+			ExternalOrderId: result.ExternalOrderId);
 	}
 
 	/// <summary>
 	/// Players the fund out asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	[HttpPost("playerfundout")]
 	[HttpPost("player/{playerCode}/fund/out")]
 	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
 		[FromServices] IGetService<CQ9GamingPlayerFundOutQuery, PlayerFundResult> service,
+		string playerCode,
 		PlayerFundRequest request)
 	{
 		var result = await service.GetAsync(
 			query: new()
 			{
-				PlayerCode = request.PlayerCode,
+				PlayerCode = playerCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -193,9 +188,7 @@ public class CQ9GamingController : ControllerBase
 
 		return new PlayerFundResponse(
 			OrderId: result.OrderId,
-			ExternalOrderId: result.ExternalOrderId,
-			GameProviderTransactionId: result.OrderId,
-			ExternalGameProviderTransactionId: result.ExternalOrderId);
+			ExternalOrderId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -203,19 +196,19 @@ public class CQ9GamingController : ControllerBase
 	/// </summary>
 	/// <param name="service">The service.</param>
 	/// <param name="gameBetId">The game bet identifier.</param>
-	/// <param name="language">The language.</param>
+	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	[HttpGet("rounddetail/{gameBetId:guid}")]
 	[HttpGet("round/{gameBetId:guid}/detail")]
 	public ValueTask<RoundDetailResult> RoundDetailAsync(
 		[FromServices] IGetService<CQ9GamingRoundDetailQuery, RoundDetailResult> service,
 		Guid gameBetId,
-		[FromQuery] string language)
+		[FromQuery] RoundDetailRequest request)
 		=> service.GetAsync(
 			query: new()
 			{
 				GameBetId = gameBetId,
-				Language = language
+				Language = request.Language,
+				ExternalCreatedOn = request.ExternalCreatedOn
 			},
 			cancellationToken: HttpContext.RequestAborted);
 }
