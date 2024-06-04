@@ -23,9 +23,9 @@ public partial class GameProvidersClientUnitTest
 
 		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
-				var fakeService = Substitute.For<ICommandService<KaiyuanKickPlayerCommand>>();
+				var fakeService = Substitute.For<ICommandService<KaiyuanPlayerLogoutCommand>>();
 
-				var command = new KaiyuanKickPlayerCommand
+				var command = new KaiyuanPlayerLogoutCommand
 				{
 					PlayerCode = playerCode
 				};
@@ -56,9 +56,9 @@ public partial class GameProvidersClientUnitTest
 
 		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 			{
-				var fakeService = Substitute.For<ICommandService<KaiyuanKickPlayerCommand>>();
+				var fakeService = Substitute.For<ICommandService<KaiyuanPlayerLogoutCommand>>();
 
-				var command = new KaiyuanKickPlayerCommand
+				var command = new KaiyuanPlayerLogoutCommand
 				{
 					PlayerCode = playerCode
 				};

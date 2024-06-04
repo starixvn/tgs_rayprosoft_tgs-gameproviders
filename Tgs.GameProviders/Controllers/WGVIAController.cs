@@ -60,26 +60,21 @@ public class WGVIAController : ControllerBase
 	}
 
 	/// <summary>
-	/// Kicks the player asynchronous.
+	/// Players the logout asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	[HttpDelete("kickplayer/{playerCode}")]
 	[HttpDelete("player/{playerCode}/logout")]
-	public ValueTask KickPlayerAsync(
-		[FromServices] ICommandService<WGViaGamingKickPlayerCommand> service,
+	public ValueTask PlayerLogoutAsync(
+		[FromServices] ICommandService<WGViaGamingPlayerLogoutCommand> service,
 		string playerCode)
-	{
-		var command = new WGViaGamingKickPlayerCommand
-		{
-			PlayerCode = playerCode
-		};
-		return service
-		.ExecuteAsync(
-			command: command,
+		=> service.ExecuteAsync(
+			command: new()
+			{
+				PlayerCode = playerCode
+			},
 			cancellationToken: HttpContext.RequestAborted);
-	}
 
 	/// <summary>
 	/// Players the balance asynchronous.
@@ -87,27 +82,18 @@ public class WGVIAController : ControllerBase
 	/// <param name="service">The service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	///   <b>Example</b><br />
-	///
-	///   Get balance/4ucmqplxb029
-	/// </remarks>
-	[HttpGet("balance/{playerCode}")]
 	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
-		 [FromServices] IGetService<WGViaGamingPlayerBalanceQuery, PlayerBalanceResult> service,
-		 string playerCode)
+		[FromServices] IGetService<WGViaGamingPlayerBalanceQuery, PlayerBalanceResult> service,
+		string playerCode)
 	{
-		var query = new WGViaGamingPlayerBalanceQuery
-		{
-			PlayerCode = playerCode
-		};
-
-		var result = await service
-		 .GetAsync(
-			query: query,
+		var result = await service.GetAsync(
+			query: new()
+			{
+				PlayerCode = playerCode
+			},
 			cancellationToken: HttpContext.RequestAborted)
-		 .ConfigureAwait(false);
+			.ConfigureAwait(false);
 
 		return new PlayerBalanceResponse(
 			result.Balance,
@@ -147,30 +133,19 @@ public class WGVIAController : ControllerBase
 	/// Players the fund in asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "orderId":"397FE4DF0A2FF0E2820367F0E29CFCAC8F86",
-	///             "amount": 1
-	///         }
-	/// </remarks>
-	[HttpPost("playerfundin")]
 	[HttpPost("player/{playerCode}/fund/in")]
 	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
 		[FromServices] IGetService<WGViaGamingPlayerFundInQuery, PlayerFundResult> service,
+		string playerCode,
 		PlayerFundRequest request)
 	{
 		var result = await service.GetAsync(
 			query: new()
 			{
-				PlayerCode = request.PlayerCode,
+				PlayerCode = playerCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -179,27 +154,26 @@ public class WGVIAController : ControllerBase
 
 		return new PlayerFundResponse(
 			OrderId: result.OrderId,
-			ExternalOrderId: result.ExternalOrderId,
-			GameProviderTransactionId: result.OrderId,
-			ExternalGameProviderTransactionId: result.ExternalOrderId);
+			ExternalOrderId: result.ExternalOrderId);
 	}
 
 	/// <summary>
 	/// Players the fund out asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	[HttpPost("playerfundout")]
 	[HttpPost("player/{playerCode}/fund/out")]
 	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
 		[FromServices] IGetService<WGViaGamingPlayerFundOutQuery, PlayerFundResult> service,
+		string playerCode,
 		PlayerFundRequest request)
 	{
 		var result = await service.GetAsync(
 			query: new()
 			{
-				PlayerCode = request.PlayerCode,
+				PlayerCode = playerCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -208,34 +182,27 @@ public class WGVIAController : ControllerBase
 
 		return new PlayerFundResponse(
 			OrderId: result.OrderId,
-			ExternalOrderId: result.ExternalOrderId,
-			GameProviderTransactionId: result.OrderId,
-			ExternalGameProviderTransactionId: result.ExternalOrderId);
+			ExternalOrderId: result.ExternalOrderId);
 	}
 
 	/// <summary>
 	/// Rounds the detail asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
-	/// <param name="gameBetId">The round identifier.</param>
-	/// <param name="language">The language.</param>
+	/// <param name="gameBetId">The game bet identifier.</param>
+	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Get rounddetail/f6dd64ee-ce12-4bef-9ddb-08d9676f4495?language=zh-CN
-	/// </remarks>
-	[HttpGet("rounddetail/{gameBetId:guid}")]
 	[HttpGet("round/{gameBetId:guid}/detail")]
 	public ValueTask<RoundDetailResult> RoundDetailAsync(
 		[FromServices] IGetService<WGViaGamingRoundDetailQuery, RoundDetailResult> service,
 		Guid gameBetId,
-		[FromQuery] string language)
+		[FromQuery] RoundDetailRequest request)
 		=> service.GetAsync(
 			query: new()
 			{
 				GameBetId = gameBetId,
-				Language = language
+				Language = request.Language,
+				ExternalCreatedOn = request.ExternalCreatedOn
 			},
 			cancellationToken: HttpContext.RequestAborted);
 }

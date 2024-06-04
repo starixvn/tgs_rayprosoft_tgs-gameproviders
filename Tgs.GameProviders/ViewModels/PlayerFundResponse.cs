@@ -4,6 +4,4 @@ namespace Tgs.GameProviders.ViewModels;
 
 public record PlayerFundResponse(
 	string OrderId,
-	string ExternalOrderId,
-	string GameProviderTransactionId,
-	string ExternalGameProviderTransactionId);
+	string ExternalOrderId);

@@ -60,23 +60,16 @@ public class TFGamingTransferController : ControllerBase
 	}
 
 	/// <summary>
-	/// Kicks the player asynchronous.
+	/// Players the logout asynchronous.
 	/// </summary>
-	/// <param name="commandService">The command service.</param>
+	/// <param name="service">The service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Delete kickplayer/4ucmqplxb029
-	/// </remarks>
-	[HttpDelete("kickplayer/{playerCode}")]
 	[HttpDelete("player/{playerCode}/logout")]
-	public ValueTask KickPlayerAsync(
-		[FromServices] ICommandService<TFGamingTransferKickPlayerCommand> commandService,
+	public ValueTask PlayerLogoutAsync(
+		[FromServices] ICommandService<TFGamingTransferPlayerLogoutCommand> service,
 		string playerCode)
-		=> commandService
-		.ExecuteAsync(
+		=> service.ExecuteAsync(
 			command: new()
 			{
 				PlayerCode = playerCode
@@ -89,27 +82,18 @@ public class TFGamingTransferController : ControllerBase
 	/// <param name="service">The service.</param>
 	/// <param name="playerCode">The player code.</param>
 	/// <returns></returns>
-	/// <remarks>
-	///   <b>Example</b><br />
-	///
-	///   Get balance/4ucmqplxb029
-	/// </remarks>
-	[HttpGet("balance/{playerCode}")]
 	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
-		 [FromServices] IGetService<TFGamingTransferPlayerBalanceQuery, PlayerBalanceResult> service,
-		 string playerCode)
+		[FromServices] IGetService<TFGamingTransferPlayerBalanceQuery, PlayerBalanceResult> service,
+		string playerCode)
 	{
-		var query = new TFGamingTransferPlayerBalanceQuery
-		{
-			PlayerCode = playerCode
-		};
-
-		var result = await service
-		 .GetAsync(
-			query: query,
+		var result = await service.GetAsync(
+			query: new()
+			{
+				PlayerCode = playerCode
+			},
 			cancellationToken: HttpContext.RequestAborted)
-		 .ConfigureAwait(false);
+			.ConfigureAwait(false);
 
 		return new PlayerBalanceResponse(
 			result.Balance,
@@ -149,18 +133,19 @@ public class TFGamingTransferController : ControllerBase
 	/// Players the fund in asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	[HttpPost("playerfundin")]
 	[HttpPost("player/{playerCode}/fund/in")]
 	public async ValueTask<PlayerFundResponse> PlayerFundInAsync(
 		[FromServices] IGetService<TFGamingTransferPlayerFundInQuery, PlayerFundResult> service,
+		string playerCode,
 		PlayerFundRequest request)
 	{
 		var result = await service.GetAsync(
 			query: new()
 			{
-				PlayerCode = request.PlayerCode,
+				PlayerCode = playerCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -169,27 +154,26 @@ public class TFGamingTransferController : ControllerBase
 
 		return new PlayerFundResponse(
 			OrderId: result.OrderId,
-			ExternalOrderId: result.ExternalOrderId,
-			GameProviderTransactionId: result.OrderId,
-			ExternalGameProviderTransactionId: result.ExternalOrderId);
+			ExternalOrderId: result.ExternalOrderId);
 	}
 
 	/// <summary>
 	/// Players the fund out asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
 	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	[HttpPost("playerfundout")]
 	[HttpPost("player/{playerCode}/fund/out")]
 	public async ValueTask<PlayerFundResponse> PlayerFundOutAsync(
 		[FromServices] IGetService<TFGamingTransferPlayerFundOutQuery, PlayerFundResult> service,
+		string playerCode,
 		PlayerFundRequest request)
 	{
 		var result = await service.GetAsync(
 			query: new()
 			{
-				PlayerCode = request.PlayerCode,
+				PlayerCode = playerCode,
 				OrderId = request.OrderId,
 				Amount = request.Amount
 			},
@@ -198,9 +182,7 @@ public class TFGamingTransferController : ControllerBase
 
 		return new PlayerFundResponse(
 			OrderId: result.OrderId,
-			ExternalOrderId: result.ExternalOrderId,
-			GameProviderTransactionId: result.OrderId,
-			ExternalGameProviderTransactionId: result.ExternalOrderId);
+			ExternalOrderId: result.ExternalOrderId);
 	}
 
 	/// <summary>
@@ -208,19 +190,19 @@ public class TFGamingTransferController : ControllerBase
 	/// </summary>
 	/// <param name="service">The service.</param>
 	/// <param name="gameBetId">The game bet identifier.</param>
-	/// <param name="language">The language.</param>
+	/// <param name="request">The request.</param>
 	/// <returns></returns>
-	[HttpGet("rounddetail/{gameBetId:guid}")]
 	[HttpGet("round/{gameBetId:guid}/detail")]
 	public ValueTask<RoundDetailResult> RoundDetailAsync(
 		[FromServices] IGetService<TFGamingTransferRoundDetailQuery, RoundDetailResult> service,
 		Guid gameBetId,
-		[FromQuery] string language)
+		[FromQuery] RoundDetailRequest request)
 		=> service.GetAsync(
 			query: new()
 			{
 				GameBetId = gameBetId,
-				Language = language
+				Language = request.Language,
+				ExternalCreatedOn = request.ExternalCreatedOn
 			},
 			cancellationToken: HttpContext.RequestAborted);
 }

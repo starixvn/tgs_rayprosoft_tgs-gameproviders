@@ -5,7 +5,6 @@ namespace Tgs.GameProviders.ViewModels;
 
 public record PlayerFundRequest
 {
-	public string PlayerCode { get; init; } = default!;
 	[Required(ErrorMessage = "Please enter OrderId")]
 	public string OrderId { get; set; } = default!;
 	[Required(ErrorMessage = "Please enter Amount")]

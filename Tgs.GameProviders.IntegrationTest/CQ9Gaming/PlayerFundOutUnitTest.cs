@@ -10,6 +10,7 @@ using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.IntegrationTest.CQ9Gaming;
+
 public class PlayerFundOutUnitTest
 {
 	[Fact]

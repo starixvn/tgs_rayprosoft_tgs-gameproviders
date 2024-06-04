@@ -3,9 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Tgs.GameProviders.Client;
+using Tgs.GameProviders.Core.CQ9Gaming.ApplicationServices;
+
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
-using Tgs.GameProviders.Core.CQ9Gaming.ApplicationServices;
 
 namespace Tgs.GameProviders.IntegrationTest.CQ9Gaming;
 
