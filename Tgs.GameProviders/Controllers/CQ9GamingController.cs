@@ -94,13 +94,11 @@ public class CQ9GamingController : ControllerBase
 		[FromServices] IGetService<CQ9GamingPlayerOnlineQuery, bool> service,
 		string playerCode)
 	{
-		var query = new CQ9GamingPlayerOnlineQuery
-		{
-			PlayerCode = playerCode
-		};
-
 		var result = await service.GetAsync(
-			query: query,
+			query: new()
+			{
+				PlayerCode = playerCode
+			},
 			cancellationToken: HttpContext.RequestAborted)
 		 .ConfigureAwait(false);
 
