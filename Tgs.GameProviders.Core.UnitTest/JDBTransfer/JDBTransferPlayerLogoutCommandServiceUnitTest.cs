@@ -66,7 +66,7 @@ public class JDBTransferPlayerLogoutCommandServiceUnitTest
 
 		_ = fakeGameInterfaceJDBClient
 			.Received(1)
-			.PlayerKickAsync(
+			.PlayerLogoutAsync(
 				Arg.Is(configuration.ApiUrl),
 				Arg.Is(configuration.Domain),
 				Arg.Is(configuration.AesKey),
