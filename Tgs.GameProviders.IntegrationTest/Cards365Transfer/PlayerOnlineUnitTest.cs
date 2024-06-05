@@ -1,17 +1,41 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
 using Tgs.GameProviders.Client;
+using Tgs.GameProviders.Core.Cards365Transfer.ApplicationServices;
+using Tgs.GameProviders.Core.JDBTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
+using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.IntegrationTest.Cards365Transfer;
 
 public class PlayerOnlineUnitTest
 {
-	[Fact]
-	public async Task Normal_Process()
+	[Theory]
+	[InlineData(true, true)]
+	[InlineData(false, false)]
+	public async Task Normal_Process(bool online, bool expected)
 	{
 		var playerCode = "4ucmqplxb029";
 
-		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services => { }));
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+		{
+			var fakeService = Substitute.For<IGetService<Cards365TransferPlayerOnlineQuery, bool>>();
+
+			var query = new Cards365TransferPlayerOnlineQuery
+			{
+				PlayerCode = playerCode
+			};
+
+			_ = fakeService
+			.GetAsync(
+				query: Arg.Is(query),
+				cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(online);
+
+			_ = services.AddTransient(_ => fakeService);
+		}));
 
 		var httpClient = web.CreateDefaultClient();
 
@@ -22,7 +46,7 @@ public class PlayerOnlineUnitTest
 			playerCode: playerCode);
 
 		Assert.NotNull(actual);
-		Assert.False(actual.GameProviderSupport);
-		Assert.False(actual.Online);
+		Assert.True(actual.GameProviderSupport);
+		Assert.Equal(expected, actual.Online);
 	}
 }
