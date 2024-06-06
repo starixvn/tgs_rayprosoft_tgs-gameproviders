@@ -120,8 +120,7 @@ public class VRGamingController : ControllerBase
 			{
 				PlayerCode = playerCode,
 				OrderId = request.OrderId,
-				StartTime = request.OrderOn.AddHours(-6),
-				EndTime = request.OrderOn.AddHours(6),
+				OrderOn = request.OrderOn
 			},
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);

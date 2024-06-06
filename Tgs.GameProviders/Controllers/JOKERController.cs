@@ -102,6 +102,7 @@ public class JOKERController : ControllerBase
 			{
 				PlayerCode = playerCode,
 				OrderId = request.OrderId,
+				OrderOn = request.OrderOn
 			},
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);

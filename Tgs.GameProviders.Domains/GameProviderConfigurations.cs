@@ -61,6 +61,7 @@ public static class GameProviderConfigurations
 	public static readonly string Skywind = string.Format(_template, GameProviderType.Skywind);
 	public static readonly string SkywindTransfer = string.Format(_template, GameProviderType.SkywindTransfer);
 	public static readonly string SM01 = string.Format(_template, GameProviderType.SM01);
+	public static readonly string SharpSports = string.Format(_template, GameProviderType.SharpSports);
 	public static readonly string TCG = string.Format(_template, GameProviderType.TCG);
 	public static readonly string TFGaming = string.Format(_template, GameProviderType.TFGaming);
 	public static readonly string TFGamingTransfer = string.Format(_template, GameProviderType.TFGamingTransfer);

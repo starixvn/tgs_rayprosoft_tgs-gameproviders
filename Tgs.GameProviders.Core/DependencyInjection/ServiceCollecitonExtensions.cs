@@ -24,6 +24,7 @@ using Tgs.GameInterface.Pinnacle.Client;
 using Tgs.GameInterface.PragmaticPlay.Client;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameInterface.SBOService.Client;
+using Tgs.GameInterface.SharpSports.Client;
 using Tgs.GameInterface.SkywindService.Client;
 using Tgs.GameInterface.SM01Service.Client;
 using Tgs.GameInterface.TFGamingService.Client;
@@ -82,7 +83,8 @@ public static class ServiceCollecitonExtensions
 		Action<GameInterfaceVRGamingClientOptions, IServiceProvider> gameInterfaceVRGamingClientOptions,
 		Action<GameInterfaceFunkyClientOptions, IServiceProvider> gameInterfaceFunkyClientOptions,
 		Action<GameInterfaceTPhereClientOptions, IServiceProvider> gameInterfaceTPhereClientOptions,
-		Action<GameInterfaceCQ9GamingClientOptions, IServiceProvider> gameInterfaceCQ9GamingClientOptions)
+		Action<GameInterfaceCQ9GamingClientOptions, IServiceProvider> gameInterfaceCQ9GamingClientOptions,
+		Action<GameInterfaceSharpSportsClientOptions, IServiceProvider> gameInterfaceSharpSportsClientOptions)
 		=> services
 		.AddOptions<IPAddressOptions>()
 		.Configure(ipAddressOptions)
@@ -126,6 +128,7 @@ public static class ServiceCollecitonExtensions
 		.AddGameInterfaceFunkyClient(gameInterfaceFunkyClientOptions)
 		.AddGameInterfaceTPhereClient(gameInterfaceTPhereClientOptions)
 		.AddGameInterfaceCQ9GamingClient(gameInterfaceCQ9GamingClientOptions)
+		.AddGameInterfaceSharpSportsClient(gameInterfaceSharpSportsClientOptions)
 		.AddGameTokenClient(gameTokenClientOptions)
 		//Tgs.Core.Infrastructures.Security
 		.AddSecurity()
