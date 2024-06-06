@@ -7,54 +7,38 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 
-public class JiliTransferPlayerLogoutCommandService : ICommandService<JiliTransferPlayerLogoutCommand>
+public class JiliTransferPlayerLogoutCommandService(
+	IBrandRepository brandRepository,
+	IGameProviderRepository gameProviderRepository,
+	IGameInterfaceJiliClient client,
+	IPlayerRepository playerRepository) : ICommandService<JiliTransferPlayerLogoutCommand>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfaceJiliClient _client;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-
-	public JiliTransferPlayerLogoutCommandService(
-		IBrandRepository brand,
-		IGameProviderRepository gameProvider,
-		IGameInterfaceJiliClient client,
-		IPlayerRepository player)
-	{
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-	}
-
 	public async ValueTask ExecuteAsync(JiliTransferPlayerLogoutCommand command, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider
-			.GetGameProviderIdAsync(
-				gameProviderCode: GameProviderType.JiliTransfer,
-				cancellationToken: cancellationToken)
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.JiliTransfer,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player
-			.GetAsync(
-				playerCode: command.PlayerCode,
-				cancellationToken: cancellationToken)
+		var playerInfo = await playerRepository.GetAsync(
+			playerCode: command.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand
-			.GetBrandGameProviderConfigurationIdAsync(
-				gameProviderId: gameProviderId,
-				brandId: player.BrandId,
-				cancellationToken: cancellationToken)
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: playerInfo.BrandId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProvider
-			.GetJiliTransferConfigurationAsync(
-				gameProviderConfigurationId: gameProviderConfigurationId,
-				cancellationToken: cancellationToken)
+		var configuration = await gameProviderRepository.GetJiliTransferConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		await _client.KickPlayerAsync(
+		await client.PlayerLogoutAsync(
 			apiUrl: configuration.ApiUrl,
 			agentId: configuration.AgentId,
 			agentKey: configuration.AgentKey,
-			playerCode: player.PlayerCode,
-			cancellationToken: cancellationToken).ConfigureAwait(false);
+			playerCode: playerInfo.PlayerCode,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 	}
 }

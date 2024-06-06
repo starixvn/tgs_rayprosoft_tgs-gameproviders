@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.Jili.Client;
-using Tgs.GameInterface.JiliService.Protos;
+using Tgs.GameInterface.Jili.Protos;
 using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
-using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.UnitTest.JiliTransfer;
 
@@ -17,7 +17,6 @@ public class JiliTransferPlayerBalanceGetServiceUnitTest
 	public async Task Normal_Process()
 	{
 		var fakeBrandService = Substitute.For<IBrandRepository>();
-		var fakeCreatePlayerCommandService = Substitute.For<ICommandService<JiliTransferCreatePlayerCommand>>();
 		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
 		var fakeClient = Substitute.For<IGameInterfaceJiliClient>();
 		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
@@ -28,12 +27,12 @@ public class JiliTransferPlayerBalanceGetServiceUnitTest
 		};
 
 		var gameProviderId = Guid.NewGuid();
-		_ = fakeGameProviderRepository
-			.GetGameProviderIdAsync(
-				Arg.Is(GameProviderType.JiliTransfer))
+		_ = fakeGameProviderRepository.GetGameProviderIdAsync(
+			Arg.Is(GameProviderType.JiliTransfer),
+			Arg.Any<CancellationToken>())
 			.Returns(gameProviderId);
 
-		var playerModel = new PlayerInfo(
+		var playerInfo = new PlayerInfo(
 			ResellerId: Guid.NewGuid(),
 			ResellerCode: "GPI",
 			LicenseeId: Guid.NewGuid(),
@@ -44,16 +43,16 @@ public class JiliTransferPlayerBalanceGetServiceUnitTest
 			Username: "4ucmqplxb029",
 			DefaultWalletId: Guid.NewGuid(),
 			DefaultWalletCurrencyCode: "CNY");
-		_ = fakePlayerRepository
-		.GetAsync(
-				Arg.Is(query.PlayerCode))
-			.Returns(playerModel);
+		_ = fakePlayerRepository.GetAsync(
+			Arg.Is(query.PlayerCode),
+			Arg.Any<CancellationToken>())
+			.Returns(playerInfo);
 
 		var gameProviderConfigurationId = Guid.NewGuid();
-		_ = fakeBrandService
-			.GetBrandGameProviderConfigurationIdAsync(
-				Arg.Is(gameProviderId),
-				Arg.Is(playerModel.BrandId))
+		_ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
+			Arg.Is(gameProviderId),
+			Arg.Is(playerInfo.BrandId),
+			Arg.Any<CancellationToken>())
 			.Returns(gameProviderConfigurationId);
 
 		var configuration = new JiliTransferConfiguration
@@ -62,26 +61,26 @@ public class JiliTransferPlayerBalanceGetServiceUnitTest
 			AgentKey = Guid.NewGuid().ToString("N"),
 			AgentId = "testAgentId"
 		};
-		_ = fakeGameProviderRepository
-			.GetJiliTransferConfigurationAsync(
-				Arg.Is(gameProviderConfigurationId))
+		_ = fakeGameProviderRepository.GetJiliTransferConfigurationAsync(
+			Arg.Is(gameProviderConfigurationId),
+			Arg.Any<CancellationToken>())
 			.Returns(configuration);
 
-		var response = new BalanceReply()
+		var response = new PlayerBalanceReply()
 		{
-			Success = true,
 			IsPlayerExist = true,
 			Balance = 100m
 		};
-		_ = fakeClient.GetBalanceAsync(
+		_ = fakeClient.PlayerBalanceAsync(
 			apiUrl: Arg.Is(configuration.ApiUrl),
 			agentId: Arg.Is(configuration.AgentId),
 			agentKey: Arg.Is(configuration.AgentKey),
-			playerCode: Arg.Is(query.PlayerCode)).Returns(response);
+			playerCode: Arg.Is(query.PlayerCode),
+			Arg.Any<CancellationToken>())
+			.Returns(response);
 
 		var sut = new JiliTransferPlayerBalanceGetService(
 			fakeBrandService,
-			fakeCreatePlayerCommandService,
 			fakeGameProviderRepository,
 			fakeClient,
 			fakePlayerRepository);

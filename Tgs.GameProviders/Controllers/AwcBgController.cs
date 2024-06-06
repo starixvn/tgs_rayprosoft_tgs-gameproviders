@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using StackExchange.Redis;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.AwcBg.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;

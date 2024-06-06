@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.Jili.Client;
-using Tgs.GameInterface.JiliService.Protos;
+using Tgs.GameInterface.Jili.Protos;
 using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
@@ -17,7 +18,6 @@ public class JiliTransferGameUrlGetServiceUnitTest
 	public async Task Normal_Process()
 	{
 		var fakeBrandService = Substitute.For<IBrandRepository>();
-		var fakeCreatePlayerCommandService = Substitute.For<ICommandService<JiliTransferCreatePlayerCommand>>();
 		var fakeGameRepository = Substitute.For<IGameRepository>();
 		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
 		var fakeClient = Substitute.For<IGameInterfaceJiliClient>();
@@ -38,12 +38,12 @@ public class JiliTransferGameUrlGetServiceUnitTest
 		};
 
 		var gameProviderId = Guid.NewGuid();
-		_ = fakeGameProviderRepository
-			.GetGameProviderIdAsync(
-				Arg.Is(GameProviderType.JiliTransfer))
+		_ = fakeGameProviderRepository.GetGameProviderIdAsync(
+			Arg.Is(GameProviderType.JiliTransfer),
+			Arg.Any<CancellationToken>())
 			.Returns(gameProviderId);
 
-		var playerModel = new PlayerInfo(
+		var playerInfo = new PlayerInfo(
 			ResellerId: Guid.NewGuid(),
 			ResellerCode: "GPI",
 			LicenseeId: Guid.NewGuid(),
@@ -54,16 +54,16 @@ public class JiliTransferGameUrlGetServiceUnitTest
 			Username: "4ucmqplxb029",
 			DefaultWalletId: Guid.NewGuid(),
 			DefaultWalletCurrencyCode: "CNY");
-		_ = fakePlayerRepository
-			.GetAsync(
-				Arg.Is(query.PlayerCode))
-			.Returns(playerModel);
+		_ = fakePlayerRepository.GetAsync(
+			Arg.Is(query.PlayerCode),
+			Arg.Any<CancellationToken>())
+			.Returns(playerInfo);
 
 		var gameProviderConfigurationId = Guid.NewGuid();
-		_ = fakeBrandService
-			.GetBrandGameProviderConfigurationIdAsync(
-				Arg.Is(gameProviderId),
-				Arg.Is(playerModel.BrandId))
+		_ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
+			Arg.Is(gameProviderId),
+			Arg.Is(playerInfo.BrandId),
+			Arg.Any<CancellationToken>())
 			.Returns(gameProviderConfigurationId);
 
 		var configuration = new JiliTransferConfiguration
@@ -72,16 +72,16 @@ public class JiliTransferGameUrlGetServiceUnitTest
 			AgentKey = Guid.NewGuid().ToString("N"),
 			AgentId = "testAgentId"
 		};
-		_ = fakeGameProviderRepository
-			.GetJiliTransferConfigurationAsync(
-				Arg.Is(gameProviderConfigurationId))
+		_ = fakeGameProviderRepository.GetJiliTransferConfigurationAsync(
+			Arg.Is(gameProviderConfigurationId),
+			Arg.Any<CancellationToken>())
 			.Returns(configuration);
 
 		var gameProviderCultureCode = "en-US";
-		_ = fakeGameProviderRepository
-			.GetGameProviderCultureCodeAsync(
-				Arg.Is(gameProviderId),
-				Arg.Is(query.Language))
+		_ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
+			Arg.Is(gameProviderId),
+			Arg.Is(query.Language),
+			Arg.Any<CancellationToken>())
 			.Returns(gameProviderCultureCode);
 
 		var gameInfo = new GameInfo(
@@ -103,27 +103,27 @@ public class JiliTransferGameUrlGetServiceUnitTest
 			AvailableCurrencies: null,
 			Localization: null,
 			SubGameProviderCode: GameProviderType.JiliTransfer);
-		_ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
+		_ = fakeGameRepository.GetAsync(
+			Arg.Is(query.GameId.Value),
+			Arg.Any<CancellationToken>())
+			.Returns(gameInfo);
 
 		var response = new GameUrlReply()
 		{
-			Success = true,
 			IsPlayerExist = true,
 			GameUrl = new Uri("http://www.google.com/").ToString()
 		};
-		_ = fakeClient
-			.GetGameUrlAsync(
-				apiUrl: Arg.Is(configuration.ApiUrl),
-				agentId: Arg.Is(configuration.AgentId),
-				agentKey: Arg.Is(configuration.AgentKey),
-				playerCode: Arg.Is(playerModel.PlayerCode),
-				externalGameId: Arg.Is(gameInfo.GameExternalId),
-				language: Arg.Is(gameProviderCultureCode)
-			).Returns(response);
+		_ = fakeClient.GameUrlAsync(
+			apiUrl: Arg.Is(configuration.ApiUrl),
+			agentId: Arg.Is(configuration.AgentId),
+			agentKey: Arg.Is(configuration.AgentKey),
+			playerCode: Arg.Is(playerInfo.PlayerCode),
+			externalGameId: Arg.Is(gameInfo.GameExternalId),
+			language: Arg.Is(gameProviderCultureCode))
+			.Returns(response);
 
 		var sut = new JiliTransferGameUrlGetService(
 			fakeBrandService,
-			fakeCreatePlayerCommandService,
 			fakeGameRepository,
 			fakeGameProviderRepository,
 			fakeClient,

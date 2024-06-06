@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
@@ -26,12 +27,12 @@ public class JiliTransferPlayerFundCheckingGetServiceUnitTest
 		};
 
 		var gameProviderId = Guid.NewGuid();
-		_ = fakeGameProviderRepository
-			.GetGameProviderIdAsync(
-				Arg.Is(GameProviderType.JiliTransfer))
+		_ = fakeGameProviderRepository.GetGameProviderIdAsync(
+			Arg.Is(GameProviderType.JiliTransfer),
+			Arg.Any<CancellationToken>())
 			.Returns(gameProviderId);
 
-		var playerModel = new PlayerInfo(
+		var playerInfo = new PlayerInfo(
 			ResellerId: Guid.NewGuid(),
 			ResellerCode: "GPI",
 			LicenseeId: Guid.NewGuid(),
@@ -42,16 +43,16 @@ public class JiliTransferPlayerFundCheckingGetServiceUnitTest
 			Username: "4ucmqplxb029",
 			DefaultWalletId: Guid.NewGuid(),
 			DefaultWalletCurrencyCode: "CNY");
-		_ = fakePlayerRepository
-		.GetAsync(
-				Arg.Is(query.PlayerCode))
-			.Returns(playerModel);
+		_ = fakePlayerRepository.GetAsync(
+			Arg.Is(query.PlayerCode),
+			Arg.Any<CancellationToken>())
+			.Returns(playerInfo);
 
 		var gameProviderConfigurationId = Guid.NewGuid();
-		_ = fakeBrandService
-			.GetBrandGameProviderConfigurationIdAsync(
-				Arg.Is(gameProviderId),
-				Arg.Is(playerModel.BrandId))
+		_ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
+			Arg.Is(gameProviderId),
+			Arg.Is(playerInfo.BrandId),
+			Arg.Any<CancellationToken>())
 			.Returns(gameProviderConfigurationId);
 
 		var configuration = new JiliTransferConfiguration
@@ -60,16 +61,18 @@ public class JiliTransferPlayerFundCheckingGetServiceUnitTest
 			AgentKey = Guid.NewGuid().ToString("N"),
 			AgentId = "testAgentId"
 		};
-		_ = fakeGameProviderRepository
-			.GetJiliTransferConfigurationAsync(
-				Arg.Is(gameProviderConfigurationId))
+		_ = fakeGameProviderRepository.GetJiliTransferConfigurationAsync(
+			Arg.Is(gameProviderConfigurationId),
+			Arg.Any<CancellationToken>())
 			.Returns(configuration);
 
-		_ = fakeClient.FundOrderCheckingAsync(
+		_ = fakeClient.FundStatusAsync(
 			apiUrl: Arg.Is(configuration.ApiUrl),
 			agentId: Arg.Is(configuration.AgentId),
 			agentKey: Arg.Is(configuration.AgentKey),
-			transactionId: Arg.Is(query.OrderId)).Returns(true);
+			transactionId: Arg.Is(query.OrderId),
+			Arg.Any<CancellationToken>())
+			.Returns(true);
 
 		var sut = new JiliTransferPlayerFundCheckingGetService(
 			fakeBrandService,

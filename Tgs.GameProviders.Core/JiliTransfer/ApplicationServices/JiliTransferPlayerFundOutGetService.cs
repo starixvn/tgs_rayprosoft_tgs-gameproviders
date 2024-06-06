@@ -7,53 +7,41 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 
-public class JiliTransferPlayerFundOutGetService : IGetService<JiliTransferPlayerFundOutQuery, PlayerFundResult>
+public class JiliTransferPlayerFundOutGetService(
+	IBrandRepository brandRepository,
+	IGameProviderRepository gameProviderRepository,
+	IGameInterfaceJiliClient client,
+	IPlayerRepository playerRepository) : IGetService<JiliTransferPlayerFundOutQuery, PlayerFundResult>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfaceJiliClient _client;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-
-	public JiliTransferPlayerFundOutGetService(
-		IBrandRepository brand,
-		IGameProviderRepository gameProvider,
-		IGameInterfaceJiliClient client,
-		IPlayerRepository player)
-	{
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-	}
-
 	public async ValueTask<PlayerFundResult> GetAsync(JiliTransferPlayerFundOutQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.JiliTransfer,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player.GetAsync(
+		var playerInfo = await playerRepository.GetAsync(
 			playerCode: query.PlayerCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
 			gameProviderId: gameProviderId,
-			brandId: player.BrandId,
+			brandId: playerInfo.BrandId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProvider.GetJiliTransferConfigurationAsync(
+		var configuration = await gameProviderRepository.GetJiliTransferConfigurationAsync(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var reply = await _client.FundOutAsync(
+		var reply = await client.FundOutAsync(
 			apiUrl: configuration.ApiUrl,
 			agentId: configuration.AgentId,
 			agentKey: configuration.AgentKey,
-			playerCode: player.PlayerCode,
+			playerCode: playerInfo.PlayerCode,
 			transactionId: query.OrderId,
 			amount: query.Amount,
-			cancellationToken: cancellationToken).ConfigureAwait(false);
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 
 		return new PlayerFundResult(
 			OrderId: query.OrderId,

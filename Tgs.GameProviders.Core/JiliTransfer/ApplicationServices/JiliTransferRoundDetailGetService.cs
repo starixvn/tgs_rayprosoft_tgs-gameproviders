@@ -27,7 +27,7 @@ internal class JiliTransferRoundDetailGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "en-US";
 
-		var result = await client.GetGameDetailUrlAsync(
+		var reply = await client.GameRecordDetailAsync(
 			apiUrl: configuration.ApiUrl,
 			agentId: configuration.AgentId,
 			agentKey: configuration.AgentKey,
@@ -38,7 +38,7 @@ internal class JiliTransferRoundDetailGetService(
 
 		return new RoundDetailResult()
 		{
-			Data = [new RoundDetailDataUrl { Url = result }]
+			Data = [new RoundDetailDataUrl { Url = reply.Url }]
 		};
 	}
 }

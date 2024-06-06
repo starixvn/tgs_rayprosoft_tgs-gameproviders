@@ -7,76 +7,61 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 
-public class JiliTransferPlayerBalanceGetService : IGetService<JiliTransferPlayerBalanceQuery, PlayerBalanceResult>
+public class JiliTransferPlayerBalanceGetService(
+	IBrandRepository brandRepository,
+	IGameProviderRepository gameProviderRepository,
+	IGameInterfaceJiliClient client,
+	IPlayerRepository playerRepository) : IGetService<JiliTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfaceJiliClient _client;
-	private readonly ICommandService<JiliTransferCreatePlayerCommand> _createPlayerCommandService;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-
-	public JiliTransferPlayerBalanceGetService(
-		IBrandRepository brand,
-		ICommandService<JiliTransferCreatePlayerCommand> createPlayerCommandService,
-		IGameProviderRepository gameProvider,
-		IGameInterfaceJiliClient client,
-		IPlayerRepository player)
+	public async ValueTask<PlayerBalanceResult> GetAsync(JiliTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
 	{
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_createPlayerCommandService = createPlayerCommandService ?? throw new ArgumentNullException(nameof(createPlayerCommandService));
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-	}
-
-	public async ValueTask<PlayerBalanceResult> GetAsync(JiliTransferPlayerBalanceQuery command, CancellationToken cancellationToken = default)
-	{
-		var gameProviderId = await _gameProvider
-			.GetGameProviderIdAsync(
-				gameProviderCode: GameProviderType.JiliTransfer,
-				cancellationToken: cancellationToken)
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.JiliTransfer,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player
-			.GetAsync(
-				playerCode: command.PlayerCode,
-				cancellationToken: cancellationToken)
+		var playerInfo = await playerRepository.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand
-			.GetBrandGameProviderConfigurationIdAsync(
-				gameProviderId: gameProviderId,
-				brandId: player.BrandId,
-				cancellationToken: cancellationToken)
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: playerInfo.BrandId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProvider
-			.GetJiliTransferConfigurationAsync(
-				gameProviderConfigurationId: gameProviderConfigurationId,
-				cancellationToken: cancellationToken)
+		var configuration = await gameProviderRepository.GetJiliTransferConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var reply = await _client.GetBalanceAsync(
+		var reply = await client.PlayerBalanceAsync(
 			apiUrl: configuration.ApiUrl,
 			agentId: configuration.AgentId,
 			agentKey: configuration.AgentKey,
-			playerCode: player.PlayerCode,
-			cancellationToken: cancellationToken).ConfigureAwait(false);
+			playerCode: playerInfo.PlayerCode,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 
-		if (reply.Success && !reply.IsPlayerExist)
+		if (!reply.IsPlayerExist)
 		{
-			await _createPlayerCommandService.ExecuteAsync(new JiliTransferCreatePlayerCommand(
-				Configuration: configuration,
-				PlayerCode: player.PlayerCode),
-				cancellationToken).ConfigureAwait(false);
+			await client.PlayerCreateAsync(
+				apiUrl: configuration.ApiUrl,
+				agentId: configuration.AgentId,
+				agentKey: configuration.AgentKey,
+				playerCode: playerInfo.PlayerCode,
+				cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
 
-			reply = await _client.GetBalanceAsync(
+			reply = await client.PlayerBalanceAsync(
 			   apiUrl: configuration.ApiUrl,
 			   agentId: configuration.AgentId,
 			   agentKey: configuration.AgentKey,
-			   playerCode: player.PlayerCode,
-			   cancellationToken: cancellationToken).ConfigureAwait(false);
+			   playerCode: playerInfo.PlayerCode,
+			   cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
 		}
 
 		return !reply.IsPlayerExist
-			? throw new Exception($"Player does not exist.{player.PlayerCode}")
+			? throw new Exception($"Player does not exist.{playerInfo.PlayerCode}")
 			: new PlayerBalanceResult
 			{
 				FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0)
