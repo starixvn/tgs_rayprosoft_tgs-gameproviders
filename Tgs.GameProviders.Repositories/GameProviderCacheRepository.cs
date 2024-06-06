@@ -873,6 +873,25 @@ internal class GameProviderCacheRepository(
 		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
+	public async ValueTask<SharpSportsConfiguration> GetSharpSportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+	{
+		var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+		if (!memoryCache.TryGetValue(key, out SharpSportsConfiguration? configurationData))
+		{
+			configurationData = await repository.GetSharpSportsConfigurationAsync(
+				gameProviderConfigurationId: gameProviderConfigurationId,
+				cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
+
+			return memoryCache.Set(
+				key: key,
+				value: configurationData,
+				absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+		}
+
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
+	}
+
 	public async ValueTask<SM01Configuration> GetSM01ConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 	{
 		var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";

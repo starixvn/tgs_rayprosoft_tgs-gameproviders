@@ -40,8 +40,8 @@ public class VRGamingPlayerFundCheckingGetService(
 			 configuration.Deskey,
 			 playerInfo.PlayerCode,
 			 orderId: query.OrderId,
-			 startTime: query.StartTime,
-			 endTime: query.EndTime,
+			 startTime: query.OrderOn.AddHours(-6),
+			 endTime: query.OrderOn.AddHours(+6),
 			 cancellationToken: cancellationToken)
 			 .ConfigureAwait(false);
 	}

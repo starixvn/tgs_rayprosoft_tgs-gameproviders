@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core.VRGaming.ApplicationServices;
+using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.IntegrationTest.VRGaming;
@@ -14,7 +15,7 @@ public class PlayerFundCheckingUnitTest
 	[Fact]
 	public async Task PlayerFundChecking()
 	{
-		var gameProviderCode = "VR";
+		var gameProviderCode = GameProviderType.VRGaming;
 		var playerCode = "test";
 		var orderId = Guid.NewGuid().ToString("N");
 		var ordeOn = new DateTimeOffset(2024, 06, 03, 11, 18, 03, TimeSpan.FromHours(+8));
@@ -27,8 +28,7 @@ public class PlayerFundCheckingUnitTest
 			{
 				PlayerCode = playerCode,
 				OrderId = orderId,
-				StartTime = ordeOn.AddHours(-6),
-				EndTime = ordeOn.AddHours(6),
+				OrderOn = ordeOn
 			};
 			_ = fakeService.GetAsync(
 				query: Arg.Is(query),

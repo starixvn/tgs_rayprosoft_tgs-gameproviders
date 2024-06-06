@@ -96,6 +96,8 @@ public interface IGameProviderRepository
 
 	ValueTask<SM01Configuration> GetSM01ConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
+	ValueTask<SharpSportsConfiguration> GetSharpSportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
+
 	ValueTask<TFGamingTransferConfiguration> GetTFGamingTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
 	ValueTask<TPhereConfiguration> GetTPhereConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);

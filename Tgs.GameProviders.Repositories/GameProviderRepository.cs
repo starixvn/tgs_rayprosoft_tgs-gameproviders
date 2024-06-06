@@ -277,6 +277,12 @@ internal class GameProviderRepository(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken);
 
+	public ValueTask<SharpSportsConfiguration> GetSharpSportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+		=> GetConfigurationAsync<SharpSportsConfiguration>(
+			gameProviderConfiguration: GameProviderConfigurations.SharpSports,
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken);
+
 	public ValueTask<SM01Configuration> GetSM01ConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 		=> GetConfigurationAsync<SM01Configuration>(
 			gameProviderConfiguration: GameProviderConfigurations.SM01,

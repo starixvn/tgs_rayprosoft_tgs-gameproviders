@@ -1646,6 +1646,48 @@ public class GameProviderRepositoryUnitTest
 	}
 
 	[Fact]
+	public async Task Get_SharpSports_Configuration()
+	{
+		var fakeClient = Substitute.For<IGameCommandClient>();
+
+		var gameProviderId = Guid.NewGuid();
+		var gameProviderConfigurationId = Guid.NewGuid();
+
+		var settingConfiguration = new SharpSportsConfiguration()
+		{
+			ApiUrl = new("http://localhost/"),
+		};
+
+		_ = fakeClient
+			.SettingGetConfigurationAsync<SharpSportsConfiguration>(Arg.Is(GameProviderConfigurations.SharpSports))
+			.Returns(settingConfiguration);
+
+		_ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+			GameProviderId: gameProviderId,
+			GameProviderCode: GameProviderType.SharpSports,
+			GameProviderConfigId: gameProviderConfigurationId,
+			Name: $"{GameProviderType.SharpSports}-GPI",
+			Description: $"{GameProviderType.SharpSports}-GPI Configuration",
+			ClientId: $"{GameProviderType.SharpSports}-GPI",
+			SecretKey: Guid.NewGuid().ToString("N"),
+			Status: GameProviderConfigStatus.Active,
+			DesktopEndpoint: string.Empty,
+			MobileEndpoint: string.Empty,
+			ConfigurationData: "{\"MerchantId\":\"merchantId\",\"ClientId\":\"clientId\",\"ClientSecret\":\"clientSecret\"}",
+			IsDefault: false));
+
+		var repository = new GameProviderRepository(fakeClient);
+
+		var actual = await repository.GetSharpSportsConfigurationAsync(gameProviderConfigurationId);
+
+		Assert.NotNull(actual);
+		Assert.Equal(new Uri("http://localhost/"), actual.ApiUrl);
+		Assert.Equal("merchantId", actual.MerchantId);
+		Assert.Equal("clientId", actual.ClientId);
+		Assert.Equal("clientSecret", actual.ClientSecret);
+	}
+
+	[Fact]
 	public async Task Get_TFGamingTransfer_Configuration()
 	{
 		var fakeClient = Substitute.For<IGameCommandClient>();

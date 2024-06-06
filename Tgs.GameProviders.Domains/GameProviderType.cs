@@ -61,6 +61,7 @@ public static class GameProviderType
 	public static readonly string Skywind = "SW";
 	public static readonly string SkywindTransfer = "SWTF";
 	public static readonly string SM01 = "SM01";
+	public static readonly string SharpSports = "SHARP_SPORTS";
 	public static readonly string TCG = "TCG";
 	public static readonly string TFGaming = "TF";
 	public static readonly string TFGamingTransfer = "TFTF";

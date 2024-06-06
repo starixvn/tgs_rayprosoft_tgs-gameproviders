@@ -51,7 +51,8 @@ data:
         "GameInterfaceVRGamingBaseUrl": "dns:///game-gameinterface-vr:9090/",
         "GameInterfaceFunkyBaseUrl": "dns:///game-gameinterface-funky:9090/",
         "GameInterfaceTPhereBaseUrl": "dns:///game-gameinterface-tp:9090/",
-        "GameInterfaceCQ9GamingBaseUrl": "dns:///game-gameinterface-cq9:9090/"
+        "GameInterfaceCQ9GamingBaseUrl": "dns:///game-gameinterface-cq9:9090/",
+        "GameInterfaceSharpSportsBaseUrl": "dns:///game-gameinterface-sharpsports:9090/"
       }
     }
   otel-collector-config.yaml: |

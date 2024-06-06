@@ -24,8 +24,7 @@ public class VRGamingPlayerFundCheckingGetServiceUnitTest
 		{
 			PlayerCode = "test",
 			OrderId = "018c8f8f201f0000000107e7db655fdb",
-			StartTime = DateTimeOffset.UtcNow.AddHours(-1),
-			EndTime = DateTimeOffset.UtcNow
+			OrderOn = DateTimeOffset.UtcNow
 		};
 
 		var gameProviderId = Guid.NewGuid();
@@ -91,8 +90,8 @@ public class VRGamingPlayerFundCheckingGetServiceUnitTest
 			deskey: Arg.Is(configuration.Deskey),
 			playerCode: Arg.Is(player.PlayerCode),
 			orderId: Arg.Is(query.OrderId),
-			startTime: Arg.Is(query.StartTime),
-			endTime: Arg.Is(query.EndTime),
+			startTime: Arg.Is(query.OrderOn.AddHours(-6)),
+			endTime: Arg.Is(query.OrderOn.AddHours(+6)),
 			cancellationToken: Arg.Any<CancellationToken>());
 	}
 }
