@@ -38,7 +38,7 @@
 		<PackageReference Include="Tgs.GameInterface.PragmaticPlay.Client" Version="1.0.0" />
 		<PackageReference Include="Tgs.GameInterface.SabaService.Client" Version="1.0.0" />
 		<PackageReference Include="Tgs.GameInterface.SBOService.Client" Version="1.0.1" />
-		<PackageReference Include="Tgs.GameInterface.SharpSports.Client" Version="1.0.2" />
+		<PackageReference Include="Tgs.GameInterface.SharpSports.Client" Version="1.0.3" />
 		<PackageReference Include="Tgs.GameInterface.SkywindService.Client" Version="1.0.0" />
 		<PackageReference Include="Tgs.GameInterface.SM01Service.Client" Version="1.0.0" />
 		<PackageReference Include="Tgs.GameInterface.TFGamingService.Client" Version="1.0.0" />

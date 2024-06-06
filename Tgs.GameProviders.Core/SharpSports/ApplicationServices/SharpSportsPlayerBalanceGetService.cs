@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.SharpSports.Client;
 using Tgs.GameProviders.Domains;
@@ -41,9 +42,35 @@ public class SharpSportsPlayerBalanceGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerBalanceResult
+		if (!reply.IsPlayerExist)
 		{
-			FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0)
-		};
+			_ = await client.GameUrlAsync(
+				apiUrl: configuration.ApiUrl,
+				merchantId: configuration.MerchantId,
+				clientId: configuration.ClientId,
+				clientSecret: configuration.ClientSecret,
+				playerCode: playerInfo.PlayerCode,
+				isMobile: true,
+				language: "en-us",
+				ip: "127.0.0.1",
+				cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
+
+			reply = await client.PlayerBalanceAsync(
+				apiUrl: configuration.ApiUrl,
+				merchantId: configuration.MerchantId,
+				clientId: configuration.ClientId,
+				clientSecret: configuration.ClientSecret,
+				playerCode: playerInfo.PlayerCode,
+				cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
+		}
+
+		return !reply.IsPlayerExist
+			? throw new Exception($"Player does not exist.{playerInfo.PlayerCode}")
+			: new PlayerBalanceResult
+			{
+				FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0)
+			};
 	}
 }

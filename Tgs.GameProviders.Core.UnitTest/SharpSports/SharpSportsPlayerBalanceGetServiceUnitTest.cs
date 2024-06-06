@@ -69,6 +69,7 @@ public class SharpSportsPlayerBalanceGetServiceUnitTest
 
 		var balance = new PlayerBalanceReply
 		{
+			IsPlayerExist = true,
 			Balance = 100.0m
 		};
 		_ = fakeClient.PlayerBalanceAsync(
@@ -90,5 +91,103 @@ public class SharpSportsPlayerBalanceGetServiceUnitTest
 
 		Assert.NotNull(actual);
 		Assert.Equal(100.0m, actual.Balance);
+	}
+
+	[Fact]
+	public async Task Player_does_not_exist()
+	{
+		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
+		var fakeBrandRepository = Substitute.For<IBrandRepository>();
+		var fakeClient = Substitute.For<IGameInterfaceSharpSportsClient>();
+
+		var query = new SharpSportsPlayerBalanceQuery
+		{
+			PlayerCode = "4ucmqplxb029"
+		};
+
+		var gameProviderId = Guid.NewGuid();
+		_ = fakeGameProviderRepository.GetGameProviderIdAsync(
+			gameProviderCode: Arg.Is(GameProviderType.SharpSports),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(gameProviderId);
+
+		var player = new PlayerInfo(
+			ResellerId: Guid.NewGuid(),
+			ResellerCode: "GPI",
+			LicenseeId: Guid.NewGuid(),
+			LicenseeCode: "GPI",
+			BrandId: Guid.NewGuid(),
+			BrandCode: "GPI",
+			PlayerCode: "4ucmqplxb029",
+			Username: "4ucmqplxb029",
+			DefaultWalletId: Guid.NewGuid(),
+			DefaultWalletCurrencyCode: "CNY");
+		_ = fakePlayerRepository.GetAsync(
+			playerCode: Arg.Is(query.PlayerCode),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(player);
+
+		var gameProviderConfigurationId = Guid.NewGuid();
+		_ = fakeBrandRepository.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: Arg.Is(gameProviderId),
+			brandId: Arg.Is(player.BrandId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(gameProviderConfigurationId);
+
+		var configuration = new SharpSportsConfiguration()
+		{
+			ApiUrl = new("https://localhost/"),
+			MerchantId = "merchantId",
+			ClientId = "clientId",
+			ClientSecret = "clientSecret"
+		};
+		_ = fakeGameProviderRepository.GetSharpSportsConfigurationAsync(
+			gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(configuration);
+
+		_ = fakeClient.PlayerBalanceAsync(
+			apiUrl: Arg.Is(configuration.ApiUrl),
+			merchantId: Arg.Is(configuration.MerchantId),
+			clientId: Arg.Is(configuration.ClientId),
+			clientSecret: Arg.Is(configuration.ClientSecret),
+			playerCode: Arg.Is(player.PlayerCode),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(
+			  new PlayerBalanceReply
+			  {
+				  IsPlayerExist = false,
+				  Balance = 0.0m
+			  },
+			   new PlayerBalanceReply
+			   {
+				   IsPlayerExist = true,
+				   Balance = 100.0m
+			   });
+
+		var sut = new SharpSportsPlayerBalanceGetService(
+			fakeGameProviderRepository,
+			fakePlayerRepository,
+			fakeBrandRepository,
+			fakeClient);
+
+		var actual = await sut.GetAsync(query);
+
+		Assert.NotNull(actual);
+		Assert.Equal(100.0m, actual.Balance);
+
+		await fakeClient
+			.Received(1)
+			.GameUrlAsync(
+			apiUrl: Arg.Is(configuration.ApiUrl),
+			merchantId: Arg.Is(configuration.MerchantId),
+			clientId: Arg.Is(configuration.ClientId),
+			clientSecret: Arg.Is(configuration.ClientSecret),
+			playerCode: Arg.Is(player.PlayerCode),
+			isMobile: Arg.Is(true),
+			language: Arg.Is("en-us"),
+			ip: Arg.Is("127.0.0.1"),
+			cancellationToken: Arg.Any<CancellationToken>());
 	}
 }
