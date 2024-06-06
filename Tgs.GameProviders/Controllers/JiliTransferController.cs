@@ -56,6 +56,28 @@ public class JiliTransferController : ControllerBase
 			cancellationToken: HttpContext.RequestAborted);
 
 	/// <summary>
+	/// Players the online asynchronous.
+	/// </summary>
+	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
+	/// <returns></returns>
+	[HttpGet("player/{playerCode}/online")]
+	public async ValueTask<PlayerOnlineResponse> PlayerOnlineAsync(
+		[FromServices] IGetService<JiliTransferPlayerOnlineQuery, bool> service,
+		string playerCode)
+	{
+		var result = await service.GetAsync(
+			query: new()
+			{
+				PlayerCode = playerCode
+			},
+			cancellationToken: HttpContext.RequestAborted)
+		 .ConfigureAwait(false);
+
+		return new PlayerOnlineResponse(result);
+	}
+
+	/// <summary>
 	/// Players the balance asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>

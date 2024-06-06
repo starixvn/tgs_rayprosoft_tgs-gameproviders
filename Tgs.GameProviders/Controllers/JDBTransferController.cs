@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.CQ9Gaming.ApplicationServices;
 using Tgs.GameProviders.Core.JDBTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;

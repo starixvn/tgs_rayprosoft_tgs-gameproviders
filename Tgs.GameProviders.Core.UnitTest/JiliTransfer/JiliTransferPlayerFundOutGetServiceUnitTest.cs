@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.Jili.Client;
-using Tgs.GameInterface.JiliService.Protos;
+using Tgs.GameInterface.Jili.Protos;
 using Tgs.GameProviders.Core.JiliTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
@@ -28,12 +30,12 @@ public class JiliTransferPlayerFundOutGetServiceUnitTest
 		};
 
 		var gameProviderId = Guid.NewGuid();
-		_ = fakeGameProviderRepository
-			.GetGameProviderIdAsync(
-				Arg.Is(GameProviderType.JiliTransfer))
+		_ = fakeGameProviderRepository.GetGameProviderIdAsync(
+			Arg.Is(GameProviderType.JiliTransfer),
+			Arg.Any<CancellationToken>())
 			.Returns(gameProviderId);
 
-		var playerModel = new PlayerInfo(
+		var playerInfo = new PlayerInfo(
 			ResellerId: Guid.NewGuid(),
 			ResellerCode: "GPI",
 			LicenseeId: Guid.NewGuid(),
@@ -45,14 +47,15 @@ public class JiliTransferPlayerFundOutGetServiceUnitTest
 			DefaultWalletId: Guid.NewGuid(),
 			DefaultWalletCurrencyCode: "CNY");
 		_ = fakePlayerRepository.GetAsync(
-				Arg.Is(query.PlayerCode))
-			.Returns(playerModel);
+			Arg.Is(query.PlayerCode),
+			Arg.Any<CancellationToken>())
+			.Returns(playerInfo);
 
 		var gameProviderConfigurationId = Guid.NewGuid();
-		_ = fakeBrandService
-			.GetBrandGameProviderConfigurationIdAsync(
-				Arg.Is(gameProviderId),
-				Arg.Is(playerModel.BrandId))
+		_ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
+			Arg.Is(gameProviderId),
+			Arg.Is(playerInfo.BrandId),
+			Arg.Any<CancellationToken>())
 			.Returns(gameProviderConfigurationId);
 
 		var configuration = new JiliTransferConfiguration
@@ -61,19 +64,26 @@ public class JiliTransferPlayerFundOutGetServiceUnitTest
 			AgentKey = Guid.NewGuid().ToString("N"),
 			AgentId = "testAgentId"
 		};
-		_ = fakeGameProviderRepository
-			.GetJiliTransferConfigurationAsync(
-				Arg.Is(gameProviderConfigurationId))
+		_ = fakeGameProviderRepository.GetJiliTransferConfigurationAsync(
+			Arg.Is(gameProviderConfigurationId),
+			Arg.Any<CancellationToken>())
 			.Returns(configuration);
 
 		var reply = new FundReply()
 		{
-			Success = true,
 			TransactionId = query.OrderId,
 			CoinAfter = 0,
 			CoinBefore = 100,
 			CurrencyAfter = 0,
-			CurrencyBefore = 100
+			CurrencyBefore = 100,
+			Resp = JsonSerializer.Serialize(new
+			{
+				TransactionId = query.OrderId,
+				CoinAfter = 0,
+				CoinBefore = 100,
+				CurrencyAfter = 0,
+				CurrencyBefore = 100,
+			})
 		};
 		_ = IGameInterfaceJiliClient.FundOutAsync(
 			apiUrl: Arg.Is(configuration.ApiUrl),
@@ -81,7 +91,9 @@ public class JiliTransferPlayerFundOutGetServiceUnitTest
 			agentKey: Arg.Is(configuration.AgentKey),
 			playerCode: Arg.Is(query.PlayerCode),
 			transactionId: Arg.Is(query.OrderId),
-			amount: Arg.Is(query.Amount)).Returns(reply);
+			amount: Arg.Is(query.Amount),
+			Arg.Any<CancellationToken>())
+			.Returns(reply);
 
 		var sut = new JiliTransferPlayerFundOutGetService(
 			fakeBrandService,

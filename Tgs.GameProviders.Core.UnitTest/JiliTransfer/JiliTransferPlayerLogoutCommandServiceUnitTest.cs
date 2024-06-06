@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using NSubstitute.ReceivedExtensions;
@@ -26,12 +27,12 @@ public class JiliTransferPlayerLogoutCommandServiceUnitTest
 		};
 
 		var gameProviderId = Guid.NewGuid();
-		_ = fakeGameProviderRepository
-			.GetGameProviderIdAsync(
-				Arg.Is(GameProviderType.JiliTransfer))
+		_ = fakeGameProviderRepository.GetGameProviderIdAsync(
+			Arg.Is(GameProviderType.JiliTransfer),
+			Arg.Any<CancellationToken>())
 			.Returns(gameProviderId);
 
-		var playerModel = new PlayerInfo(
+		var playerInfo = new PlayerInfo(
 			ResellerId: Guid.NewGuid(),
 			ResellerCode: "GPI",
 			LicenseeId: Guid.NewGuid(),
@@ -42,16 +43,16 @@ public class JiliTransferPlayerLogoutCommandServiceUnitTest
 			Username: "4ucmqplxb029",
 			DefaultWalletId: Guid.NewGuid(),
 			DefaultWalletCurrencyCode: "CNY");
-		_ = fakePlayerRepository
-		.GetAsync(
-				Arg.Is(command.PlayerCode))
-			.Returns(playerModel);
+		_ = fakePlayerRepository.GetAsync(
+			Arg.Is(command.PlayerCode),
+			Arg.Any<CancellationToken>())
+			.Returns(playerInfo);
 
 		var gameProviderConfigurationId = Guid.NewGuid();
-		_ = fakeBrandService
-			.GetBrandGameProviderConfigurationIdAsync(
-				Arg.Is(gameProviderId),
-				Arg.Is(playerModel.BrandId))
+		_ = fakeBrandService.GetBrandGameProviderConfigurationIdAsync(
+			Arg.Is(gameProviderId),
+			Arg.Is(playerInfo.BrandId),
+			Arg.Any<CancellationToken>())
 			.Returns(gameProviderConfigurationId);
 
 		var configuration = new JiliTransferConfiguration
@@ -60,9 +61,9 @@ public class JiliTransferPlayerLogoutCommandServiceUnitTest
 			AgentKey = Guid.NewGuid().ToString("N"),
 			AgentId = "testAgentId"
 		};
-		_ = fakeGameProviderRepository
-			.GetJiliTransferConfigurationAsync(
-				Arg.Is(gameProviderConfigurationId))
+		_ = fakeGameProviderRepository.GetJiliTransferConfigurationAsync(
+			Arg.Is(gameProviderConfigurationId),
+			Arg.Any<CancellationToken>())
 			.Returns(configuration);
 
 		var sut = new JiliTransferPlayerLogoutCommandService(
@@ -75,10 +76,11 @@ public class JiliTransferPlayerLogoutCommandServiceUnitTest
 
 		_ = fakeClient
 			.Received(1)
-			.KickPlayerAsync(
+			.PlayerLogoutAsync(
 			Arg.Is(configuration.ApiUrl),
 			Arg.Is(configuration.AgentId),
 			Arg.Is(configuration.AgentKey),
-			Arg.Is(command.PlayerCode));
+			Arg.Is(command.PlayerCode),
+			Arg.Any<CancellationToken>());
 	}
 }

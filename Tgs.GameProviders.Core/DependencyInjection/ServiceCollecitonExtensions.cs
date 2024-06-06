@@ -92,7 +92,7 @@ public static class ServiceCollecitonExtensions
 			ServiceLifetime.Transient)
 		.AddGameCommandClient(gameCommandClientOptions)
 		.AddGameInterfaceAwcClient(gameInterfaceAwcClientOptions)
-		.AddGameInterfaceJiliServiceClient(gameInterfaceJiliClientOptions)
+		.AddGameInterfaceJiliClient(gameInterfaceJiliClientOptions)
 		.AddGameInterfaceWMCasinoServiceClient(gameInterfaceWMCasinoClientOptions)
 		.AddGameInterfaceEvoClient(gameInterfaceEvolutionServiceClientOptions)
 		.AddGameInterfaceSkywindServiceClient(gameInterfaceSkywindClientOptions)
