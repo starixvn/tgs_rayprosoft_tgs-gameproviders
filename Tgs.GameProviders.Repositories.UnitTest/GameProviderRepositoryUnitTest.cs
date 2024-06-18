@@ -1127,6 +1127,47 @@ public class GameProviderRepositoryUnitTest
 	}
 
 	[Fact]
+	public async Task Get_GA28_Configuration()
+	{
+		var fakeClient = Substitute.For<IGameCommandClient>();
+
+		var gameProviderId = Guid.NewGuid();
+		var gameProviderConfigurationId = Guid.NewGuid();
+
+		var settingConfiguration = new GA28Configuration()
+		{
+			ApiUrl = new("http://partner-api.dev.ga28.cc/")
+		};
+
+		_ = fakeClient
+			.SettingGetConfigurationAsync<GA28Configuration>(Arg.Is(GameProviderConfigurations.GA28))
+			.Returns(settingConfiguration);
+
+		_ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+			GameProviderId: gameProviderId,
+			GameProviderCode: GameProviderType.GA28,
+			GameProviderConfigId: gameProviderConfigurationId,
+			Name: $"{GameProviderType.GA28}-GPI",
+			Description: $"{GameProviderType.GA28}--GPI Configuration",
+			ClientId: $"{GameProviderType.GA28}--GPI",
+			SecretKey: Guid.NewGuid().ToString("N"),
+			Status: GameProviderConfigStatus.Active,
+			DesktopEndpoint: string.Empty,
+			MobileEndpoint: string.Empty,
+			ConfigurationData: "{\"PrivateKey\":\"8456c9de-d589-4e8a-876f-c9c8e48dda3e\",\"PartnerAccountId\":\"99a6f8ef-38a6-4f31-b69a-e222c2a54771\"}",
+			IsDefault: false));
+
+		var repository = new GameProviderRepository(fakeClient);
+
+		var actual = await repository.GetGA28ConfigurationAsync(gameProviderConfigurationId);
+
+		Assert.NotNull(actual);
+		Assert.Equal(new("http://partner-api.dev.ga28.cc/"), actual.ApiUrl);
+		Assert.Equal("8456c9de-d589-4e8a-876f-c9c8e48dda3e", actual.PrivateKey);
+		Assert.Equal("99a6f8ef-38a6-4f31-b69a-e222c2a54771", actual.PartnerAccountId);
+	}
+
+	[Fact]
 	public async Task Get_GKXGaming_Configuration()
 	{
 		var fakeClient = Substitute.For<IGameCommandClient>();

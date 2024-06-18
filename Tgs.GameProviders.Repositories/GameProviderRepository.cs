@@ -162,6 +162,12 @@ internal class GameProviderRepository(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken);
 
+	public ValueTask<GA28Configuration> GetGA28ConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+		=> GetConfigurationAsync<GA28Configuration>(
+			gameProviderConfiguration: GameProviderConfigurations.GA28,
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken);
+
 	public async ValueTask<(string DesktopEndpoint, string MobileEndpoint)> GetGameEndpointsAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 	{
 		var data = await client

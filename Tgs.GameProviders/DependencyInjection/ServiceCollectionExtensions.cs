@@ -9,6 +9,7 @@ using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameInterface.Funky.Client;
+using Tgs.GameInterface.Ga28.Client;
 using Tgs.GameInterface.GKXGaming.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.InplayMatrix.Client;
@@ -84,7 +85,8 @@ public static class ServiceCollectionExtensions
 		Action<GameInterfaceFunkyClientOptions, IServiceProvider> gameInterfaceFunkyClientOptions,
 		Action<GameInterfaceTPhereClientOptions, IServiceProvider> gameInterfaceTPhereClientOptions,
 		Action<GameInterfaceCQ9GamingClientOptions, IServiceProvider> gameInterfaceCQ9GamingClientOptions,
-		Action<GameInterfaceSharpSportsClientOptions, IServiceProvider> gameInterfaceSharpSportsClientOptions)
+		Action<GameInterfaceSharpSportsClientOptions, IServiceProvider> gameInterfaceSharpSportsClientOptions,
+		Action<GameInterfaceGa28ClientOptions, IServiceProvider> gameInterfaceGa28ClientOptions)
 		=> services
 		.AddOptions<RedisOptions>()
 		.Configure(configure)
@@ -130,5 +132,6 @@ public static class ServiceCollectionExtensions
 			gameInterfaceFunkyClientOptions: gameInterfaceFunkyClientOptions,
 			gameInterfaceTPhereClientOptions: gameInterfaceTPhereClientOptions,
 			gameInterfaceCQ9GamingClientOptions: gameInterfaceCQ9GamingClientOptions,
-			gameInterfaceSharpSportsClientOptions: gameInterfaceSharpSportsClientOptions);
+			gameInterfaceSharpSportsClientOptions: gameInterfaceSharpSportsClientOptions,
+			gameInterfaceGa28ClientOptions: gameInterfaceGa28ClientOptions);
 }
