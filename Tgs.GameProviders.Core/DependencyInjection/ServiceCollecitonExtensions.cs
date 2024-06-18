@@ -11,6 +11,7 @@ using Tgs.GameInterface.EndorphinaService.Client;
 using Tgs.GameInterface.EvolutionService.Client;
 using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameInterface.Funky.Client;
+using Tgs.GameInterface.Ga28.Client;
 using Tgs.GameInterface.GKXGaming.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.InplayMatrix.Client;
@@ -84,7 +85,8 @@ public static class ServiceCollecitonExtensions
 		Action<GameInterfaceFunkyClientOptions, IServiceProvider> gameInterfaceFunkyClientOptions,
 		Action<GameInterfaceTPhereClientOptions, IServiceProvider> gameInterfaceTPhereClientOptions,
 		Action<GameInterfaceCQ9GamingClientOptions, IServiceProvider> gameInterfaceCQ9GamingClientOptions,
-		Action<GameInterfaceSharpSportsClientOptions, IServiceProvider> gameInterfaceSharpSportsClientOptions)
+		Action<GameInterfaceSharpSportsClientOptions, IServiceProvider> gameInterfaceSharpSportsClientOptions,
+		Action<GameInterfaceGa28ClientOptions, IServiceProvider> gameInterfaceGa28ClientOptions)
 		=> services
 		.AddOptions<IPAddressOptions>()
 		.Configure(ipAddressOptions)
@@ -129,6 +131,7 @@ public static class ServiceCollecitonExtensions
 		.AddGameInterfaceTPhereClient(gameInterfaceTPhereClientOptions)
 		.AddGameInterfaceCQ9GamingClient(gameInterfaceCQ9GamingClientOptions)
 		.AddGameInterfaceSharpSportsClient(gameInterfaceSharpSportsClientOptions)
+		.AddGameInterfaceGa28Client(gameInterfaceGa28ClientOptions)
 		.AddGameTokenClient(gameTokenClientOptions)
 		//Tgs.Core.Infrastructures.Security
 		.AddSecurity()

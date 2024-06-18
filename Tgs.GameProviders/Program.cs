@@ -248,6 +248,11 @@ builder.Services
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
 		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceSharpSportsBaseUrl")!;
+	},
+	(options, sp) =>
+	{
+		var configuration = sp.GetRequiredService<IConfiguration>();
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceGa28BaseUrl")!;
 	})
 	.AddGameBetsClient(httpClientBuilder => httpClientBuilder.ConfigureHttpClient((sp, http) =>
 	{

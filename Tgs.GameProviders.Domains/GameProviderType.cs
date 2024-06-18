@@ -34,6 +34,7 @@ public static class GameProviderType
 	public static readonly string EvolutionTransfer = "EVOTF";
 	public static readonly string FaChai = "FACHAI";
 	public static readonly string Funky = "FUNKY";
+	public static readonly string GA28 = "GA28";
 	public static readonly string GKXGaming = "GKX";
 	public static readonly string Habanero = "HABA";
 	public static readonly string HabaneroTransfer = "HABATF";
