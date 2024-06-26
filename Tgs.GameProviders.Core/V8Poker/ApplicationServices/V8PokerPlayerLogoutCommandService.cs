@@ -7,46 +7,33 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.V8Poker.ApplicationServices;
 
-public class V8PokerPlayerLogoutCommandService : ICommandService<V8PokerPlayerLogoutCommand>
+public class V8PokerPlayerLogoutCommandService(
+	IGameProviderRepository gameProviderRepository,
+	IPlayerRepository playerRepository,
+	IBrandRepository brandRepository,
+	IGameInterfaceV8PokerClient client) : ICommandService<V8PokerPlayerLogoutCommand>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfaceV8PokerClient _client;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-
-	public V8PokerPlayerLogoutCommandService(
-		IGameProviderRepository gameProvider,
-		IPlayerRepository player,
-		IBrandRepository brand,
-		IGameInterfaceV8PokerClient client)
-	{
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-	}
-
 	public async ValueTask ExecuteAsync(V8PokerPlayerLogoutCommand command, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.V8Poker,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player.GetAsync(
+		var player = await playerRepository.GetAsync(
 			playerCode: command.PlayerCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
 			gameProviderId: gameProviderId,
 			brandId: player.BrandId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProvider.GetV8PokerConfigurationAsync(
+		var configuration = await gameProviderRepository.GetV8PokerConfigurationAsync(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		await _client
+		await client
 			.PlayerLogoutAsync(
 			apiUrl: configuration.ApiUrl,
 			deskey: configuration.Deskey,

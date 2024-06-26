@@ -62,12 +62,11 @@ public class SabaTransferPlayerBalanceGetServiceUnitTest
 			FreeBalance = 99m,
 			OutstandingBalance = 1m
 		};
-		_ = fakeGameInterfaceSabaClient
-			.PlayerBalanceAsync(
-				apiUrl: Arg.Is(configuration.ApiUrl),
-				operatorId: Arg.Is(configuration.OperatorId),
-				vendorId: Arg.Is(configuration.VendorId),
-				vendorMemberId: Arg.Is(player.PlayerCode))
+		_ = fakeGameInterfaceSabaClient.PlayerBalanceAsync(
+			apiUrl: Arg.Is(configuration.ApiUrl),
+			operatorId: Arg.Is(configuration.OperatorId),
+			vendorId: Arg.Is(configuration.VendorId),
+			playerCode: Arg.Is(player.PlayerCode))
 			.Returns(response);
 
 		var sut = new SabaTransferPlayerBalanceGetService(

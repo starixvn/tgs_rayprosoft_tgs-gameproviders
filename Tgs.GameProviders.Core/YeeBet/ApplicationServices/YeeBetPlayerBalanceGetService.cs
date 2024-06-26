@@ -7,79 +7,61 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.YeeBet.ApplicationServices;
 
-public class YeeBetPlayerBalanceGetService : IGetService<YeeBetPlayerBalanceQuery, PlayerBalanceResult>
+public class YeeBetPlayerBalanceGetService(
+	IGameProviderRepository gameProviderRepository,
+	IPlayerRepository playerRepository,
+	IBrandRepository brandRepository,
+	IGameInterfaceYeeBetClient client,
+	ICommandService<YeeBetPlayerCreateCommand> playerCreateService) : IGetService<YeeBetPlayerBalanceQuery, PlayerBalanceResult>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfaceYeeBetClient _client;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-	private readonly ICommandService<YeeBetPlayerCreateCommand> _playerCreateService;
-
-	public YeeBetPlayerBalanceGetService(
-		IGameProviderRepository gameProvider,
-		IPlayerRepository player,
-		IBrandRepository brand,
-		IGameInterfaceYeeBetClient client,
-		ICommandService<YeeBetPlayerCreateCommand> playerCreateService)
-	{
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_playerCreateService = playerCreateService ?? throw new ArgumentNullException(nameof(playerCreateService));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-	}
-
 	public async ValueTask<PlayerBalanceResult> GetAsync(YeeBetPlayerBalanceQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider
-			.GetGameProviderIdAsync(
-				gameProviderCode: GameProviderType.YeeBet,
-				cancellationToken: cancellationToken)
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.YeeBet,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player
-			.GetAsync(
-				playerCode: query.PlayerCode,
-				cancellationToken: cancellationToken)
+		var playerInfo = await playerRepository.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand
-			.GetBrandGameProviderConfigurationIdAsync(
-				gameProviderId: gameProviderId,
-				brandId: player.BrandId,
-				cancellationToken: cancellationToken)
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: playerInfo.BrandId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProvider
-			.GetYeeBetConfigurationAsync(
-				gameProviderConfigurationId: gameProviderConfigurationId,
-				cancellationToken: cancellationToken)
+		var configuration = await gameProviderRepository.GetYeeBetConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var reply = await _client
-			.PlayerBalanceAsync(
-				apiUrl: configuration.ApiUrl,
-				appId: configuration.AppId,
-				secretKey: configuration.SecretKey,
-				playerCode: player.PlayerCode,
-				cancellationToken: cancellationToken)
+		var reply = await client.PlayerBalanceAsync(
+			apiUrl: configuration.ApiUrl,
+			appId: configuration.AppId,
+			secretKey: configuration.SecretKey,
+			playerCode: playerInfo.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
 		if (!reply.IsPlayerExist)
 		{
-			await _playerCreateService
-				.ExecuteAsync(new YeeBetPlayerCreateCommand(player.PlayerCode), cancellationToken)
+			await playerCreateService
+				.ExecuteAsync(
+				command: new YeeBetPlayerCreateCommand(
+					playerInfo.PlayerCode),
+				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 
-			reply = await _client
-			   .PlayerBalanceAsync(
-					apiUrl: configuration.ApiUrl,
-					appId: configuration.AppId,
-					secretKey: configuration.SecretKey,
-					playerCode: player.PlayerCode,
-					cancellationToken: cancellationToken)
+			reply = await client.PlayerBalanceAsync(
+				apiUrl: configuration.ApiUrl,
+				appId: configuration.AppId,
+				secretKey: configuration.SecretKey,
+				playerCode: playerInfo.PlayerCode,
+				cancellationToken: cancellationToken)
 			   .ConfigureAwait(false);
 		}
 
 		return !reply.IsPlayerExist
-			? throw new Exception($"Player does not exist.{player.PlayerCode}")
+			? throw new Exception($"Player does not exist.{playerInfo.PlayerCode}")
 			: new PlayerBalanceResult
 			{
 				FreeBalance = reply.Balance.ToDecimal().GetValueOrDefault(0)

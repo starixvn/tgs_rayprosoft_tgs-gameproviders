@@ -7,27 +7,27 @@ using Tgs.ServiceUtility;
 namespace Tgs.GameProviders.Core.YeeBet.ApplicationServices;
 
 public class YeeBetPlayerFundCheckingGetService(
-	IGameProviderRepository gameProvider,
-	IPlayerRepository player,
-	IBrandRepository brand,
+	IGameProviderRepository gameProviderRepository,
+	IPlayerRepository playerRepository,
+	IBrandRepository brandRepository,
 	IGameInterfaceYeeBetClient client) : IGetService<YeeBetPlayerFundCheckingQuery, bool>
 {
 	public async ValueTask<bool> GetAsync(YeeBetPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.YeeBet,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var playerInfo = await player.GetAsync(
+		var playerInfo = await playerRepository.GetAsync(
 			playerCode: query.PlayerCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await brand.GetBrandGameProviderConfigurationIdAsync(
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
 			gameProviderId: gameProviderId,
 			brandId: playerInfo.BrandId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await gameProvider.GetYeeBetConfigurationAsync(
+		var configuration = await gameProviderRepository.GetYeeBetConfigurationAsync(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);

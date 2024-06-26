@@ -7,88 +7,65 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.YeeBet.ApplicationServices;
 
-public class YeeBetGameUrlGetService : IGetService<YeeBetGameUrlQuery, Uri>
+public class YeeBetGameUrlGetService(
+	IGameProviderRepository gameProviderRepository,
+	IPlayerRepository playerRepository,
+	IBrandRepository brandRepository,
+	IGameInterfaceYeeBetClient client,
+	ICommandService<YeeBetPlayerCreateCommand> playerCreateService) : IGetService<YeeBetGameUrlQuery, Uri>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfaceYeeBetClient _client;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-	private readonly ICommandService<YeeBetPlayerCreateCommand> _playerCreateService;
-
-	public YeeBetGameUrlGetService(
-		IGameProviderRepository gameProvider,
-		IPlayerRepository player,
-		IBrandRepository brand,
-		IGameInterfaceYeeBetClient client,
-		ICommandService<YeeBetPlayerCreateCommand> playerCreateService)
-	{
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_playerCreateService = playerCreateService ?? throw new ArgumentNullException(nameof(playerCreateService));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-	}
-
 	public async ValueTask<Uri> GetAsync(YeeBetGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider
-			.GetGameProviderIdAsync(
-				gameProviderCode: GameProviderType.YeeBet,
-				cancellationToken: cancellationToken)
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.YeeBet,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-
-		var player = await _player
-			.GetAsync(
-				playerCode: query.PlayerCode,
-				cancellationToken: cancellationToken)
+		var playerInfo = await playerRepository.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-
-		var gameProviderConfigurationId = await _brand
-			.GetBrandGameProviderConfigurationIdAsync(
-				gameProviderId: gameProviderId,
-				brandId: player.BrandId,
-				cancellationToken: cancellationToken)
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: playerInfo.BrandId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-
-		var configuration = await _gameProvider
-			.GetYeeBetConfigurationAsync(
-				gameProviderConfigurationId: gameProviderConfigurationId,
-				cancellationToken: cancellationToken)
+		var configuration = await gameProviderRepository.GetYeeBetConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-
-		var cultureCode = await _gameProvider
-			.GetGameProviderCultureCodeAsync(
-				gameProviderId: gameProviderId,
-				cultureCode: query.Language,
-				cancellationToken: cancellationToken)
+		var cultureCode = await gameProviderRepository.GetGameProviderCultureCodeAsync(
+			gameProviderId: gameProviderId,
+			cultureCode: query.Language,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "2";
 
-		var isPlayerExist = await _client
-			.PlayerUpdateBetLimitAsync(
-				apiUrl: configuration.ApiUrl,
-				appId: configuration.AppId,
-				secretKey: configuration.SecretKey,
-				playerCode: player.PlayerCode,
-				quotas: configuration.BetLimit,
-				cancellationToken: cancellationToken)
+		var isPlayerExist = await client.PlayerUpdateBetLimitAsync(
+			apiUrl: configuration.ApiUrl,
+			appId: configuration.AppId,
+			secretKey: configuration.SecretKey,
+			playerCode: playerInfo.PlayerCode,
+			quotas: configuration.BetLimit,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
 		if (!isPlayerExist)
 		{
-			await _playerCreateService
-				.ExecuteAsync(new YeeBetPlayerCreateCommand(player.PlayerCode), cancellationToken)
+			await playerCreateService
+				.ExecuteAsync(
+				command: new YeeBetPlayerCreateCommand(
+					playerInfo.PlayerCode),
+				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 		}
 
-		var response = await _client
-			.GameUrlAsync(
-				apiUrl: configuration.ApiUrl,
-				appId: configuration.AppId,
-				secretKey: configuration.SecretKey,
-				playerCode: player.PlayerCode,
-				clientType: query.PlatformType == PlatformType.Desktop ? 1 : 2,
-				languageId: int.Parse(cultureCode),
-				cancellationToken: cancellationToken)
+		var response = await client.GameUrlAsync(
+			apiUrl: configuration.ApiUrl,
+			appId: configuration.AppId,
+			secretKey: configuration.SecretKey,
+			playerCode: playerInfo.PlayerCode,
+			clientType: query.PlatformType == PlatformType.Desktop ? 1 : 2,
+			languageId: int.Parse(cultureCode),
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
 		return new Uri(response);

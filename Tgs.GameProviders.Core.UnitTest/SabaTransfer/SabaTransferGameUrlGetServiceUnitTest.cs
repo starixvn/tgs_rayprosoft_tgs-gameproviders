@@ -74,13 +74,12 @@ public class SabaTransferGameUrlGetServiceUnitTest
 			IsPlayerExist = true,
 			GameUrl = "http://localhost/DepositProcessLogin?token=QwAfMp4OEKSUwoe48C/CA"
 		};
-		_ = fakeGameInterfaceSabaClient
-			.GameUrlAsync(
-				apiUrl: Arg.Is(configuration.ApiUrl),
-				operatorId: Arg.Is(configuration.OperatorId),
-				vendorId: Arg.Is(configuration.VendorId),
-				vendorMemberId: Arg.Is(player.PlayerCode),
-				isMobile: Arg.Is(query.PlatformType == PlatformType.Mobile))
+		_ = fakeGameInterfaceSabaClient.GameUrlAsync(
+			apiUrl: Arg.Is(configuration.ApiUrl),
+			operatorId: Arg.Is(configuration.OperatorId),
+			vendorId: Arg.Is(configuration.VendorId),
+			playerCode: Arg.Is(player.PlayerCode),
+			isMobile: Arg.Is(query.PlatformType == PlatformType.Mobile))
 			.Returns(response);
 
 		var sut = new SabaTransferGameUrlGetService(
