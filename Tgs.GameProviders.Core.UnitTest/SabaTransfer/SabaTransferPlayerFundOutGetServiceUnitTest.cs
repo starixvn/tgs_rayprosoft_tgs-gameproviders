@@ -20,12 +20,12 @@ public class SabaTransferPlayerFundOutGetServiceUnitTest
 		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
 		var fakeBrandService = Substitute.For<IBrandRepository>();
 
-		var vendorTransId = Guid.NewGuid().ToString("N");
+		var orderId = Guid.NewGuid().ToString("N");
 
 		var query = new SabaTransferPlayerFundOutQuery
 		{
 			PlayerCode = "4ucmqplxb029",
-			OrderId = vendorTransId,
+			OrderId = orderId,
 			Amount = 100m
 		};
 
@@ -70,18 +70,16 @@ public class SabaTransferPlayerFundOutGetServiceUnitTest
 		{
 			Check = false,
 			IsOrderExist = true,
-			VendorTransId = vendorTransId,
-			ActualVendorTransId = $"{configuration.OperatorId}_{vendorTransId}",
-			TransId = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-			Balance = 100,
+			VendorTransId = $"{configuration.OperatorId}_{query.OrderId}",
+			Resp = "{\"trans_id\":3120}"
 		};
 		_ = fakeGameInterfaceSabaClient
 			.FundOutAsync(
 				apiUrl: Arg.Is(configuration.ApiUrl),
 				operatorId: Arg.Is(configuration.OperatorId),
 				vendorId: Arg.Is(configuration.VendorId),
-				vendorMemberId: Arg.Is(player.PlayerCode),
-				vendorTransId: Arg.Is(query.OrderId),
+				playerCode: Arg.Is(player.PlayerCode),
+				orderId: Arg.Is(query.OrderId),
 				currency: Arg.Is(int.Parse(gameProviderCurrencyCode)),
 				amount: Arg.Is(query.Amount))
 			.Returns(reply);

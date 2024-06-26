@@ -56,17 +56,16 @@ public class SabaTransferPlayerFundCheckingGetServiceUnitTest
 		};
 		_ = fakeGameProviderRepository.GetSabaTransferConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
-		_ = fakeGameInterfaceSabaClient
-				.FundStatusAsync(
-					apiUrl: Arg.Is(configuration.ApiUrl),
-					operatorId: Arg.Is(configuration.OperatorId),
-					vendorId: Arg.Is(configuration.VendorId),
-					vendorTransId: Arg.Is(query.OrderId))
-				.Returns(new FundStatusReply()
-				{
-					Retry = false,
-					IsOrderExist = true
-				});
+		_ = fakeGameInterfaceSabaClient.FundStatusAsync(
+			apiUrl: Arg.Is(configuration.ApiUrl),
+			operatorId: Arg.Is(configuration.OperatorId),
+			vendorId: Arg.Is(configuration.VendorId),
+			orderId: Arg.Is(query.OrderId))
+			.Returns(new FundStatusReply()
+			{
+				Retry = false,
+				IsOrderExist = true
+			});
 
 		var sut = new SabaTransferPlayerFundCheckingGetService(
 			fakeGameInterfaceSabaClient,

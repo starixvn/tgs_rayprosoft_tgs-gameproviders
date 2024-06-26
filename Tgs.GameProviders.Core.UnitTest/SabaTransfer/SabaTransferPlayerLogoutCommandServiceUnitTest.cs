@@ -65,10 +65,10 @@ public class SabaTransferPlayerLogoutCommandServiceUnitTest
 
 		_ = fakeGameInterfaceSabaClient
 			.Received(1)
-			.PlayerKickAsync(
-				apiUrl: Arg.Is(configuration.ApiUrl),
-				operatorId: Arg.Is(configuration.OperatorId),
-				vendorId: Arg.Is(configuration.VendorId),
-				vendorMemberId: Arg.Is(player.PlayerCode));
+			.PlayerLogoutAsync(
+			apiUrl: Arg.Is(configuration.ApiUrl),
+			operatorId: Arg.Is(configuration.OperatorId),
+			vendorId: Arg.Is(configuration.VendorId),
+			playerCode: Arg.Is(player.PlayerCode));
 	}
 }

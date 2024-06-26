@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.CQ9Gaming.ApplicationServices;
 using Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
@@ -101,6 +102,28 @@ public class SabaTransferController : ControllerBase
 			result.Balance,
 			result.FreeBalance,
 			result.OutstandingBalance);
+	}
+
+	/// <summary>
+	/// Players the online asynchronous.
+	/// </summary>
+	/// <param name="service">The service.</param>
+	/// <param name="playerCode">The player code.</param>
+	/// <returns></returns>
+	[HttpGet("player/{playerCode}/online")]
+	public async ValueTask<PlayerOnlineResponse> PlayerOnlineAsync(
+		[FromServices] IGetService<SabaTransferPlayerOnlineQuery, bool> service,
+		string playerCode)
+	{
+		var result = await service.GetAsync(
+			query: new()
+			{
+				PlayerCode = playerCode
+			},
+			cancellationToken: HttpContext.RequestAborted)
+		 .ConfigureAwait(false);
+
+		return new PlayerOnlineResponse(result);
 	}
 
 	/// <summary>

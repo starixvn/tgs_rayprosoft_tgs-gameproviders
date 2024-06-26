@@ -179,14 +179,21 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 				?? throw new Exception($"取得{GameProviderType.BetConstruct}遊戲網址失敗.");
 	}
 
-	public async ValueTask PlayerLogoutAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default)
+	public async ValueTask<PlayerLogoutResponse> PlayerLogoutAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default)
 	{
 		var response = await httpClient
 		  .DeleteAsync(
 			  requestUri: string.Format(_PlayerLogoutPath, gameProviderCode, playerCode),
 			  cancellationToken: cancellationToken).ConfigureAwait(false);
 
+		if (response.StatusCode == HttpStatusCode.NotFound)
+		{
+			return new PlayerLogoutResponse(GameProviderSupport: false);
+		}
+
 		_ = response.EnsureSuccessStatusCode();
+
+		return new PlayerLogoutResponse(GameProviderSupport: true);
 	}
 
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default)

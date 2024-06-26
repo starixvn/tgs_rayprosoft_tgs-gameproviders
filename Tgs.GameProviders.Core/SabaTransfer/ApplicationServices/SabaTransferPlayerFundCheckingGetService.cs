@@ -8,38 +8,37 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
 
-public class SabaTransferPlayerFundCheckingGetService : IGetService<SabaTransferPlayerFundCheckingQuery, bool>
+public class SabaTransferPlayerFundCheckingGetService(
+	IGameInterfaceSabaClient client,
+	IGameProviderRepository gameProviderRepository,
+	IPlayerRepository playerRepository,
+	IBrandRepository brandRepository) : IGetService<SabaTransferPlayerFundCheckingQuery, bool>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfaceSabaClient _client;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-
-	public SabaTransferPlayerFundCheckingGetService(
-		IGameInterfaceSabaClient client,
-		IGameProviderRepository gameProvider,
-		IPlayerRepository player,
-		IBrandRepository brand)
-	{
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-	}
-
 	public async ValueTask<bool> GetAsync(SabaTransferPlayerFundCheckingQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.SabaTransfer).ConfigureAwait(false);
-		var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-		var configuration = await _gameProvider.GetSabaTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.SabaTransfer,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var player = await playerRepository.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: player.BrandId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var configuration = await gameProviderRepository.GetSabaTransferConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 
-		var reply = await _client
-			.FundStatusAsync(
+		var reply = await client.FundStatusAsync(
 			apiUrl: configuration.ApiUrl,
 			operatorId: configuration.OperatorId,
 			vendorId: configuration.VendorId,
-			vendorTransId: query.OrderId,
+			orderId: query.OrderId,
 			cancellationToken)
 			.ConfigureAwait(false);
 
