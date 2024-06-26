@@ -78,7 +78,7 @@ public class PragmaticPlayTransferPlayerFundOutGetServiceUnitTest
 		{
 			TransactionId = transactionId,
 			Balance = 100,
-			Res = JsonSerializer.Serialize(new
+			Resp = JsonSerializer.Serialize(new
 			{
 				error = "0",
 				description = "OK",

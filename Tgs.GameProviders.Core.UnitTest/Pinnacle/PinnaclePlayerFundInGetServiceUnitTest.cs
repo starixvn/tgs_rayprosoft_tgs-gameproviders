@@ -75,7 +75,7 @@ public class PinnaclePlayerFundInGetServiceUnitTest
 
 		var response = new FundReply()
 		{
-			Res = "{\"amount\":1,\"loginId\":\"4ucmqplxb029\",\"userCode\":\"V020100001\",\"availableBalance\":1.00}"
+			Resp = "{\"amount\":1,\"loginId\":\"4ucmqplxb029\",\"userCode\":\"V020100001\",\"availableBalance\":1.00}"
 		};
 
 		_ = fakeClient

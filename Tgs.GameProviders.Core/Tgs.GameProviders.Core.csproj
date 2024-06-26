@@ -32,11 +32,11 @@
 		<PackageReference Include="Tgs.GameInterface.JDBService.Client" Version="1.0.2" />
 		<PackageReference Include="Tgs.GameInterface.Jili.Client" Version="1.0.2" />
 		<PackageReference Include="Tgs.GameInterface.Joker.Client" Version="1.0.1" />
-		<PackageReference Include="Tgs.GameInterface.Kaiyuan.Client" Version="1.0.12" />
-		<PackageReference Include="Tgs.GameInterface.LEGaming.Client" Version="1.0.2" />
-		<PackageReference Include="Tgs.GameInterface.OBet.Client" Version="1.0.2" />
-		<PackageReference Include="Tgs.GameInterface.Pinnacle.Client" Version="1.0.1" />
-		<PackageReference Include="Tgs.GameInterface.PragmaticPlay.Client" Version="1.0.3" />
+		<PackageReference Include="Tgs.GameInterface.Kaiyuan.Client" Version="1.0.13" />
+		<PackageReference Include="Tgs.GameInterface.LEGaming.Client" Version="1.0.3" />
+		<PackageReference Include="Tgs.GameInterface.OBet.Client" Version="1.0.4" />
+		<PackageReference Include="Tgs.GameInterface.Pinnacle.Client" Version="1.0.2" />
+		<PackageReference Include="Tgs.GameInterface.PragmaticPlay.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.GameInterface.SabaService.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.GameInterface.SBOService.Client" Version="1.0.3" />
 		<PackageReference Include="Tgs.GameInterface.SharpSports.Client" Version="1.0.7" />
