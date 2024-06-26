@@ -7,46 +7,33 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.GKXGaming.ApplicationServices;
 
-public class GKXGamingPlayerLogoutCommandService : ICommandService<GKXGamingPlayerLogoutCommand>
+public class GKXGamingPlayerLogoutCommandService(
+	IGameProviderRepository gameProviderRepository,
+	IPlayerRepository playerRepository,
+	IBrandRepository brandRepository,
+	IGameInterfaceGKXGamingClient client) : ICommandService<GKXGamingPlayerLogoutCommand>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfaceGKXGamingClient _client;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-
-	public GKXGamingPlayerLogoutCommandService(
-		IGameProviderRepository gameProvider,
-		IPlayerRepository player,
-		IBrandRepository brand,
-		IGameInterfaceGKXGamingClient client)
-	{
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-	}
-
 	public async ValueTask ExecuteAsync(GKXGamingPlayerLogoutCommand command, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.GKXGaming,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player.GetAsync(
+		var player = await playerRepository.GetAsync(
 			playerCode: command.PlayerCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
 			gameProviderId: gameProviderId,
 			brandId: player.BrandId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProvider.GetGKXGamingConfigurationAsync(
+		var configuration = await gameProviderRepository.GetGKXGamingConfigurationAsync(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		await _client
+		await client
 			.PlayerLogoutAsync(
 			apiUrl: configuration.ApiUrl,
 			deskey: configuration.Deskey,
