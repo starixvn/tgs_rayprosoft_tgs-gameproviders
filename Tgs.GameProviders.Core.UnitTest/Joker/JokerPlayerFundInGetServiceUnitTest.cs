@@ -76,7 +76,7 @@ public class JokerPlayerFundInGetServiceUnitTest
 		var reply = new FundReply
 		{
 			RequestId = query.OrderId,
-			Res = JsonSerializer.Serialize(new { RequestId = query.OrderId })
+			Resp = JsonSerializer.Serialize(new { RequestId = query.OrderId })
 		};
 		_ = fakeClient
 			.FundInAsync(
