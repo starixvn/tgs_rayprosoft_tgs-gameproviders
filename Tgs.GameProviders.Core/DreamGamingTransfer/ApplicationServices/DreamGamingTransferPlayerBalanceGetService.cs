@@ -7,86 +7,66 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices;
 
-public class DreamGamingTransferPlayerBalanceGetService : IGetService<DreamGamingTransferPlayerBalanceQuery, PlayerBalanceResult>
+public class DreamGamingTransferPlayerBalanceGetService(
+	IBrandRepository brandRepository,
+	IGameProviderRepository gameProviderRepository,
+	IGameInterfaceDreamGamingClient client,
+	IPlayerRepository playerRepository) : IGetService<DreamGamingTransferPlayerBalanceQuery, PlayerBalanceResult>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfaceDreamGamingClient _client;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-
-	public DreamGamingTransferPlayerBalanceGetService(
-		IBrandRepository brand,
-		IGameProviderRepository gameProvider,
-		IGameInterfaceDreamGamingClient client,
-		IPlayerRepository player)
-	{
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-	}
-
 	public async ValueTask<PlayerBalanceResult> GetAsync(DreamGamingTransferPlayerBalanceQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider
-			.GetGameProviderIdAsync(
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.DreamGamingTransfer,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player
-			.GetAsync(
+		var player = await playerRepository.GetAsync(
 			playerCode: query.PlayerCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand
-			.GetBrandGameProviderConfigurationIdAsync(
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
 			gameProviderId: gameProviderId,
 			brandId: player.BrandId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProvider
-			.GetDreamGamingTransferConfigurationAsync(
+		var configuration = await gameProviderRepository.GetDreamGamingTransferConfigurationAsync(
 			gameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderCurrencyCode = await _gameProvider
-			.GetGameProviderCurrencyCodeAsync(
-			gameProviderId: gameProviderId,
-			currencyCode: player.DefaultWalletCurrencyCode,
-			cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
 
-		var reply = await _client
-			.PlayerBalanceAsync(
-				apiUrl: configuration.ApiUrl,
-				apiKey: configuration.ApiKey,
-				agentName: configuration.AgentName,
-				username: player.PlayerCode,
-				cancellationToken: cancellationToken)
+		var reply = await client.PlayerBalanceAsync(
+			apiUrl: configuration.ApiUrl,
+			apiKey: configuration.ApiKey,
+			agentName: configuration.AgentName,
+			playerCode: player.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
 		if (!reply.IsPlayerExist)
 		{
-			await _client
-				.PlayerCreateAsync(
-					apiUrl: configuration.ApiUrl,
-					apiKey: configuration.ApiKey,
-					agentName: configuration.AgentName,
-					username: player.PlayerCode,
-					password: "DGTFP@ssw0rd",
-					currencyName: gameProviderCurrencyCode,
-					tableLimit: configuration.TableLimit,
-					winLimit: 0,
-					cancellationToken: cancellationToken)
+			var gameProviderCurrencyCode = await gameProviderRepository.GetGameProviderCurrencyCodeAsync(
+				gameProviderId: gameProviderId,
+				currencyCode: player.DefaultWalletCurrencyCode,
+				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 
-			reply = await _client
-			   .PlayerBalanceAsync(
-					apiUrl: configuration.ApiUrl,
-					apiKey: configuration.ApiKey,
-					agentName: configuration.AgentName,
-					username: player.PlayerCode,
-					cancellationToken: cancellationToken)
+			await client.PlayerCreateAsync(
+				apiUrl: configuration.ApiUrl,
+				apiKey: configuration.ApiKey,
+				agentName: configuration.AgentName,
+				playerCode: player.PlayerCode,
+				password: "DGTFP@ssw0rd",
+				currencyName: gameProviderCurrencyCode,
+				tableLimit: configuration.TableLimit,
+				winLimit: 0,
+				cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
+
+			reply = await client.PlayerBalanceAsync(
+				apiUrl: configuration.ApiUrl,
+				apiKey: configuration.ApiKey,
+				agentName: configuration.AgentName,
+				playerCode: player.PlayerCode,
+				cancellationToken: cancellationToken)
 			   .ConfigureAwait(false);
 		}
 

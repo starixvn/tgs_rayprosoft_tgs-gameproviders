@@ -61,8 +61,10 @@ public class DreamGamingTransferPlayerLogoutCommandServiceUnitTest
 			}
 		};
 
-		_ = fakeGameInterfaceDreamGamingClient
-			.PlayerOnlineAsync(configuration.ApiUrl, configuration.ApiKey, configuration.AgentName)
+		_ = fakeGameInterfaceDreamGamingClient.PlayerOnlineListAsync(
+			configuration.ApiUrl,
+			configuration.ApiKey,
+			configuration.AgentName)
 			.Returns(playerOnlines.ToAsyncEnumerable());
 
 		var sut = new DreamGamingTransferPlayerLogoutCommandService(
@@ -75,7 +77,7 @@ public class DreamGamingTransferPlayerLogoutCommandServiceUnitTest
 
 		_ = fakeGameInterfaceDreamGamingClient
 			.Received(1)
-			.PlayerKickAsync(
+			.PlayerLogoutAsync(
 				Arg.Is(configuration.ApiUrl),
 				Arg.Is(configuration.ApiKey),
 				Arg.Is(configuration.AgentName),
