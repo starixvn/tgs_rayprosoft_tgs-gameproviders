@@ -21,9 +21,9 @@
 		<PackageReference Include="Tgs.GameInterface.CQ9Gaming.Client" Version="1.0.2" />
 		<PackageReference Include="Tgs.GameInterface.CrPati.Client" Version="1.0.1" />
 		<PackageReference Include="Tgs.GameInterface.DreamGamingService.Client" Version="1.0.1" />
-		<PackageReference Include="Tgs.GameInterface.EndorphinaService.Client" Version="1.0.1" />
-		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.18" />
-		<PackageReference Include="Tgs.GameInterface.FaChai.Client" Version="1.0.1" />
+		<PackageReference Include="Tgs.GameInterface.EndorphinaService.Client" Version="1.0.2" />
+		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.19" />
+		<PackageReference Include="Tgs.GameInterface.FaChai.Client" Version="1.0.2" />
 		<PackageReference Include="Tgs.GameInterface.Funky.Client" Version="1.0.2" />
 		<PackageReference Include="Tgs.GameInterface.Ga28.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.GameInterface.GKXGaming.Client" Version="1.0.2" />

@@ -64,11 +64,11 @@ public class EndorphinaPlayerLogoutCommandServiceUnitTest
 
 		_ = fakeGameInterfaceEndorphinaClient
 			.Received(1)
-			.PlayerKickAsync(
-				Arg.Is(configuration.ApiUrl),
-				Arg.Is(configuration.MerchantId),
-				Arg.Is(configuration.SecretKey),
-				Arg.Is(command.PlayerCode),
-				Arg.Any<CancellationToken>());
+			.PlayerLogoutAsync(
+			apiUrl: Arg.Is(configuration.ApiUrl),
+			merchantId: Arg.Is(configuration.MerchantId),
+			secretKey: Arg.Is(configuration.SecretKey),
+			username: Arg.Is(command.PlayerCode),
+			cancellationToken: Arg.Any<CancellationToken>());
 	}
 }
