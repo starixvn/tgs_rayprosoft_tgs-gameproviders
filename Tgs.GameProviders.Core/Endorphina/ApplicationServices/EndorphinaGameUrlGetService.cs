@@ -10,56 +10,63 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Endorphina.ApplicationServices;
 
-internal class EndorphinaGameUrlGetService : IGetService<EndorphinaGameUrlQuery, Uri>
+internal class EndorphinaGameUrlGetService(
+	IBrandRepository brandRepository,
+	IGameProviderRepository gameProviderRepository,
+	IGameInterfaceEndorphinaClient client,
+	IPlayerRepository playerRepository,
+	IGameRepository gameRepository,
+	IGameRecordEndorphinaSessionClient sessionClient) : IGetService<EndorphinaGameUrlQuery, Uri>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfaceEndorphinaClient _client;
-	private readonly IGameRepository _game;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-	private readonly IGameRecordEndorphinaSessionClient _sessionClient;
-
-	public EndorphinaGameUrlGetService(
-		IBrandRepository brand,
-		IGameProviderRepository gameProvider,
-		IGameInterfaceEndorphinaClient client,
-		IPlayerRepository player,
-		IGameRepository game,
-		IGameRecordEndorphinaSessionClient sessionClient)
-	{
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-		_game = game ?? throw new ArgumentNullException(nameof(game));
-		_sessionClient = sessionClient ?? throw new ArgumentNullException(nameof(sessionClient));
-	}
-
 	public async ValueTask<Uri> GetAsync(EndorphinaGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.Endorphina).ConfigureAwait(false);
-		var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-		var configuration = await _gameProvider.GetEndorphinaConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
-		var game = await _game.GetAsync(query.GameId.Value).ConfigureAwait(false)
-			 ?? throw new Exception($"The game for this game product does not exist.({query.GameId})");
-		var currency = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, query.CurrencyCode).ConfigureAwait(false)
-			?? throw new Exception($"This game product currency does not exist.({query.CurrencyCode})");
-		var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(gameProviderId, query.Language).ConfigureAwait(false) ?? "en";
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.Endorphina,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var player = await playerRepository.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: player.BrandId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var configuration = await gameProviderRepository.GetEndorphinaConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var game = await gameRepository.GetAsync(
+			gameId: query.GameId.Value,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var currency = await gameProviderRepository.GetGameProviderCurrencyCodeAsync(
+			gameProviderId: gameProviderId,
+			currencyCode: player.DefaultWalletCurrencyCode,
+			cancellationToken: cancellationToken).ConfigureAwait(false);
+		var cultureCode = await gameProviderRepository.GetGameProviderCultureCodeAsync(
+			gameProviderId: gameProviderId,
+			cultureCode: query.Language,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false) ?? "en";
 
-		var response = await _client
-			.GameTokenAsync(
-				apiUrl: configuration.ApiUrl,
-				merchantId: configuration.MerchantId,
-				secretKey: configuration.SecretKey,
-				gameId: game.GameExternalId,
-				currency: currency,
-				username: query.PlayerCode,
-				cancellationToken)
+		var response = await client.GameTokenAsync(
+			apiUrl: configuration.ApiUrl,
+			merchantId: configuration.MerchantId,
+			secretKey: configuration.SecretKey,
+			gameId: game.GameExternalId,
+			currency: currency,
+			username: query.PlayerCode,
+			cancellationToken)
 			.ConfigureAwait(false);
 
-		await _sessionClient
-			.AddSessionAsync(response.Token, query.BrandCode, query.PlayerCode, configuration.MerchantId, cancellationToken)
+		await sessionClient.AddSessionAsync(
+			token: response.Token,
+			brandCode: query.BrandCode,
+			playerCode: query.PlayerCode,
+			merchantId: configuration.MerchantId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
 		var sign = ComputeHash($"{response.Token}{configuration.SecretKey}");
@@ -73,7 +80,7 @@ internal class EndorphinaGameUrlGetService : IGetService<EndorphinaGameUrlQuery,
 	{
 		var dataByte = Encoding.UTF8.GetBytes(data);
 
-		var hash = MD5.Create().ComputeHash(dataByte);
+		var hash = MD5.HashData(dataByte);
 
 		return Convert.ToHexString(hash).ToUpper();
 	}

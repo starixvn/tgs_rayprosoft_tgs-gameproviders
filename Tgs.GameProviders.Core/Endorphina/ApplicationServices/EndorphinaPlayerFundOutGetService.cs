@@ -7,43 +7,45 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Endorphina.ApplicationServices;
 
-internal class EndorphinaPlayerFundOutGetService : IGetService<EndorphinaPlayerFundOutQuery, PlayerFundResult>
+internal class EndorphinaPlayerFundOutGetService(
+	IBrandRepository brandRepository,
+	IGameProviderRepository gameProviderRepository,
+	IGameInterfaceEndorphinaClient client,
+	IPlayerRepository playerRepository) : IGetService<EndorphinaPlayerFundOutQuery, PlayerFundResult>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfaceEndorphinaClient _client;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-
-	public EndorphinaPlayerFundOutGetService(
-		IBrandRepository brand,
-		IGameProviderRepository gameProvider,
-		IGameInterfaceEndorphinaClient client,
-		IPlayerRepository player)
-	{
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-	}
-
 	public async ValueTask<PlayerFundResult> GetAsync(EndorphinaPlayerFundOutQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.Endorphina).ConfigureAwait(false);
-		var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-		var configuration = await _gameProvider.GetEndorphinaConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
-		var gameProviderCurrencyCode = await _gameProvider.GetGameProviderCurrencyCodeAsync(gameProviderId, player.DefaultWalletCurrencyCode).ConfigureAwait(false);
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.Endorphina,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var player = await playerRepository.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: player.BrandId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var configuration = await gameProviderRepository.GetEndorphinaConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var currency = await gameProviderRepository.GetGameProviderCurrencyCodeAsync(
+			gameProviderId: gameProviderId,
+			currencyCode: player.DefaultWalletCurrencyCode,
+			cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		var reply = await _client
-			.FundOutAsync(
-				apiUrl: configuration.ApiUrl,
-				merchantId: configuration.MerchantId,
-				secretKey: configuration.SecretKey,
-				username: player.PlayerCode,
-				currency: gameProviderCurrencyCode,
-				refTransactionCode: query.OrderId,
-				amount: query.Amount,
-				cancellationToken: cancellationToken)
+		var reply = await client.FundOutAsync(
+			apiUrl: configuration.ApiUrl,
+			merchantId: configuration.MerchantId,
+			secretKey: configuration.SecretKey,
+			username: player.PlayerCode,
+			currency: currency,
+			refTransactionCode: query.OrderId,
+			amount: query.Amount,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
 		return new PlayerFundResult(

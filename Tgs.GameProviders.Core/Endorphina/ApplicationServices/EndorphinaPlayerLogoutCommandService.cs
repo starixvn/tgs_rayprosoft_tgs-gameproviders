@@ -7,37 +7,37 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Endorphina.ApplicationServices;
 
-internal class EndorphinaPlayerLogoutCommandService : ICommandService<EndorphinaPlayerLogoutCommand>
+internal class EndorphinaPlayerLogoutCommandService(
+	IBrandRepository brandRepository,
+	IGameProviderRepository gameProviderRepository,
+	IGameInterfaceEndorphinaClient client,
+	IPlayerRepository playerRepository) : ICommandService<EndorphinaPlayerLogoutCommand>
 {
-	private readonly IBrandRepository _brand;
-	private readonly IGameInterfaceEndorphinaClient _client;
-	private readonly IGameProviderRepository _gameProvider;
-	private readonly IPlayerRepository _player;
-
-	public EndorphinaPlayerLogoutCommandService(
-		IBrandRepository brand,
-		IGameProviderRepository gameProvider,
-		IGameInterfaceEndorphinaClient client,
-		IPlayerRepository player)
-	{
-		_brand = brand ?? throw new ArgumentNullException(nameof(brand));
-		_gameProvider = gameProvider ?? throw new ArgumentNullException(nameof(gameProvider));
-		_client = client ?? throw new ArgumentNullException(nameof(client));
-		_player = player ?? throw new ArgumentNullException(nameof(player));
-	}
-
 	public async ValueTask ExecuteAsync(EndorphinaPlayerLogoutCommand command, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.Endorphina).ConfigureAwait(false);
-		var player = await _player.GetAsync(command.PlayerCode).ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-		var configuration = await _gameProvider.GetEndorphinaConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.Endorphina,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var player = await playerRepository.GetAsync(
+			playerCode: command.PlayerCode,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: player.BrandId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var configuration = await gameProviderRepository.GetEndorphinaConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 
-		await _client.PlayerKickAsync(
+		await client.PlayerLogoutAsync(
 			apiUrl: configuration.ApiUrl,
 			merchantId: configuration.MerchantId,
 			secretKey: configuration.SecretKey,
-			username: command.PlayerCode,
+			username: player.PlayerCode,
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 }
