@@ -14,7 +14,7 @@
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 		<PackageReference Include="Tgs.Core.Infrastructures.Security" Version="0.0.2" />
 		<PackageReference Include="Tgs.GameBets.Client" Version="1.0.4" />
-		<PackageReference Include="Tgs.GameCommand.Client" Version="0.0.11" />
+		<PackageReference Include="Tgs.GameCommand.Client" Version="1.0.0" />
 		<PackageReference Include="Tgs.GameInterface.Awc.Client" Version="1.0.2" />
 		<PackageReference Include="Tgs.GameInterface.BTiService.Client" Version="1.0.2" />
 		<PackageReference Include="Tgs.GameInterface.Cards365.Client" Version="1.0.3" />
@@ -52,7 +52,7 @@
 		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="1.0.16" />
 		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="1.0.2" />
 		<PackageReference Include="Tgs.GameRecord.Endorphina.Session.Client" Version="1.0.0" />
-		<PackageReference Include="Tgs.GameToken.Client" Version="0.0.3" />
+		<PackageReference Include="Tgs.GameToken.Client" Version="1.0.0" />
 		<PackageReference Include="TGS.ServiceUtility" Version="0.2.0" />
 	</ItemGroup>
 
