@@ -50,14 +50,24 @@ public class CQ9GamingGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		var gameUrlReply = await client.GameUrlAsync(
-			apiUrl: configuration.ApiUrl,
-			apiToken: configuration.ApiToken,
-			userToken: gameLoginReply.UserToken,
-			gameCode: gameInfo.GameExternalId,
-			isMobile: query.PlatformType == PlatformType.Mobile,
-			language: cultureCode,
-			cancellationToken: cancellationToken)
+		var gameUrlReply = (gameInfo.Type != GameCommand.Common.GameType.LiveDealerLobby && gameInfo.Type != GameCommand.Common.GameType.LiveDealer)
+			? await client.GameUrlAsync(
+				apiUrl: configuration.ApiUrl,
+				apiToken: configuration.ApiToken,
+				userToken: gameLoginReply.UserToken,
+				gameCode: gameInfo.GameExternalId,
+				isMobile: query.PlatformType == PlatformType.Mobile,
+				language: cultureCode,
+				cancellationToken: cancellationToken)
+			.ConfigureAwait(false)
+			: await client.GameUrlAsync(
+				apiUrl: configuration.ApiUrl,
+				apiToken: configuration.ApiToken,
+				userToken: gameLoginReply.UserToken,
+				gameCode: "GINKGO01",
+				isMobile: query.PlatformType == PlatformType.Mobile,
+				language: cultureCode,
+				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
 		return new Uri(gameUrlReply.GameUrl);
