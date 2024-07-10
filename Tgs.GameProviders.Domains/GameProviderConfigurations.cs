@@ -38,6 +38,8 @@ public static class GameProviderConfigurations
 	public static readonly string Funky = string.Format(_template, GameProviderType.Funky);
 	public static readonly string GA28 = string.Format(_template, GameProviderType.GA28);
 	public static readonly string GKXGaming = string.Format(_template, GameProviderType.GKXGaming);
+	public static readonly string GT_Playtech = string.Format(_template, GameProviderType.GT_Playtech);
+	public static readonly string GT_Expanse = string.Format(_template, GameProviderType.GT_Expanse);
 	public static readonly string Habanero = string.Format(_template, GameProviderType.Habanero);
 	public static readonly string HabaneroTransfer = string.Format(_template, GameProviderType.HabaneroTransfer);
 	public static readonly string IDNLive = string.Format(_template, GameProviderType.IDNLive);

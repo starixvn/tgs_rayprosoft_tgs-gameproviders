@@ -1,0 +1,56 @@
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using NSubstitute;
+using Tgs.GameProviders.Client;
+using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.GTExpanse.ApplicationServices;
+using Tgs.GameProviders.Domains;
+using Tgs.ServiceUtility;
+
+namespace Tgs.GameProviders.IntegrationTest.GTExpanse;
+
+public class PlayerBalanceUnitTest
+{
+	[Fact]
+	public async Task Normal_Process()
+	{
+		var playerCode = "4ucmqplxb029";
+
+		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
+			{
+				var fakeService = Substitute.For<IGetService<GTExpansePlayerBalanceQuery, PlayerBalanceResult>>();
+
+				var query = new GTExpansePlayerBalanceQuery
+				{
+					PlayerCode = playerCode
+				};
+				var result = new PlayerBalanceResult
+				{
+					FreeBalance = 99m,
+					OutstandingBalance = 1m
+				};
+
+				_ = fakeService
+				.GetAsync(
+					query: Arg.Is(query),
+					cancellationToken: Arg.Any<CancellationToken>())
+				.Returns(result);
+
+				_ = services.AddTransient(_ => fakeService);
+			}));
+
+		var httpClient = web.CreateDefaultClient();
+
+		var sut = new GameProvidersClient(httpClient);
+
+		var actual = await sut.PlayerBalanceAsync(
+			gameProviderCode: GameProviderType.GT_Expanse,
+			playerCode: playerCode);
+
+		Assert.NotNull(actual);
+		Assert.Equal(100m, actual.Balance);
+		Assert.Equal(99m, actual.FreeBalance);
+		Assert.Equal(1m, actual.OutstandingBalance);
+	}
+}

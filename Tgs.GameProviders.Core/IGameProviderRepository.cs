@@ -71,6 +71,10 @@ public interface IGameProviderRepository
 
 	ValueTask<GKXGamingConfiguration> GetGKXGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
+	ValueTask<GTExpanseConfiguration> GetGTExpanseConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
+
+	ValueTask<GTPlaytechConfiguration> GetGTPlaytechConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
+
 	ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
 	ValueTask<InplayMatrixESportsConfiguration> GetInplayMatrixESportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);

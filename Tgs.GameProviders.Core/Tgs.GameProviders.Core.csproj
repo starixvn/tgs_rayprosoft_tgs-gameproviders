@@ -27,6 +27,7 @@
 		<PackageReference Include="Tgs.GameInterface.Funky.Client" Version="1.0.2" />
 		<PackageReference Include="Tgs.GameInterface.Ga28.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.GameInterface.GKXGaming.Client" Version="1.0.2" />
+		<PackageReference Include="Tgs.GameInterface.GlobalTechnology.Client" Version="1.0.0" />
 		<PackageReference Include="Tgs.GameInterface.HabaneroService.Client" Version="1.0.2" />
 		<PackageReference Include="Tgs.GameInterface.InplayMatrix.Client" Version="1.0.2" />
 		<PackageReference Include="Tgs.GameInterface.JDBService.Client" Version="1.0.3" />

@@ -584,6 +584,44 @@ internal class GameProviderCacheRepository(
 		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
+	public async ValueTask<GTExpanseConfiguration> GetGTExpanseConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+	{
+		var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+		if (!memoryCache.TryGetValue(key, out GTExpanseConfiguration? configurationData))
+		{
+			configurationData = await repository.GetGTExpanseConfigurationAsync(
+				gameProviderConfigurationId: gameProviderConfigurationId,
+				cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
+
+			return memoryCache.Set(
+				key: key,
+				value: configurationData,
+				absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+		}
+
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
+	}
+
+	public async ValueTask<GTPlaytechConfiguration> GetGTPlaytechConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+	{
+		var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+		if (!memoryCache.TryGetValue(key, out GTPlaytechConfiguration? configurationData))
+		{
+			configurationData = await repository.GetGTPlaytechConfigurationAsync(
+				gameProviderConfigurationId: gameProviderConfigurationId,
+				cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
+
+			return memoryCache.Set(
+				key: key,
+				value: configurationData,
+				absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+		}
+
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
+	}
+
 	public async ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 	{
 		var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";

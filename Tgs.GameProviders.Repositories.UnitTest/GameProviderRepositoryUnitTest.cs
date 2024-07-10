@@ -1212,6 +1212,100 @@ public class GameProviderRepositoryUnitTest
 	}
 
 	[Fact]
+	public async Task Get_GTExpanseConfiguratio()
+	{
+		var fakeClient = Substitute.For<IGameCommandClient>();
+
+		var gameProviderId = Guid.NewGuid();
+		var gameProviderConfigurationId = Guid.NewGuid();
+
+		var settingConfiguration = new GTExpanseConfiguration()
+		{
+			ApiUrl = new("https://api-stg.gmgiantgold.com/"),
+			LauncherApiUrl = new("https://api-stg.gmgiantgold.com/"),
+			DataApiUrl= new("http://gm-stage-data.gmgiantgold.com/"),
+			BrandId= 908,
+			SecretKey= "SMT1ZCVRI3uqtOXNV93q"
+		};
+
+		_ = fakeClient
+			.SettingGetConfigurationAsync<GTExpanseConfiguration>(Arg.Is(GameProviderConfigurations.GT_Expanse))
+			.Returns(settingConfiguration);
+
+		_ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+			GameProviderId: gameProviderId,
+			GameProviderCode: GameProviderType.GT_Expanse,
+			GameProviderConfigId: gameProviderConfigurationId,
+			Name: $"{GameProviderType.GT_Expanse}-GPI",
+			Description: $"{GameProviderType.GT_Expanse}--GPI Configuration",
+			ClientId: $"{GameProviderType.GT_Expanse}--GPI",
+			SecretKey: Guid.NewGuid().ToString("N"),
+			Status: GameProviderConfigStatus.Active,
+			DesktopEndpoint: string.Empty,
+			MobileEndpoint: string.Empty,
+			ConfigurationData: "{\"BrandId\":911,\"SecretKey\":\"pPRHm1NHFosSOUv4tVjv\"}",
+			IsDefault: false));
+
+		var repository = new GameProviderRepository(fakeClient);
+
+		var actual = await repository.GetGTExpanseConfigurationAsync(gameProviderConfigurationId);
+
+		Assert.NotNull(actual);
+		Assert.Equal(settingConfiguration.ApiUrl, actual.ApiUrl);
+		Assert.Equal(settingConfiguration.LauncherApiUrl, actual.LauncherApiUrl);
+		Assert.Equal(settingConfiguration.DataApiUrl, actual.DataApiUrl);
+		Assert.Equal(911, actual.BrandId);
+		Assert.Equal("pPRHm1NHFosSOUv4tVjv", actual.SecretKey);
+	}
+
+	[Fact]
+	public async Task Get_GTPlaytechConfiguration()
+	{
+		var fakeClient = Substitute.For<IGameCommandClient>();
+
+		var gameProviderId = Guid.NewGuid();
+		var gameProviderConfigurationId = Guid.NewGuid();
+
+		var settingConfiguration = new GTPlaytechConfiguration()
+		{
+			ApiUrl = new("https://api-stg.gmgiantgold.com/"),
+			LauncherApiUrl = new("https://api-stg.gmgiantgold.com/"),
+			DataApiUrl = new("http://gm-stage-data.gmgiantgold.com/"),
+			BrandId = 908,
+			SecretKey = "SMT1ZCVRI3uqtOXNV93q"
+		};
+
+		_ = fakeClient
+			.SettingGetConfigurationAsync<GTPlaytechConfiguration>(Arg.Is(GameProviderConfigurations.GT_Playtech))
+			.Returns(settingConfiguration);
+
+		_ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+			GameProviderId: gameProviderId,
+			GameProviderCode: GameProviderType.GT_Playtech,
+			GameProviderConfigId: gameProviderConfigurationId,
+			Name: $"{GameProviderType.GT_Playtech}-GPI",
+			Description: $"{GameProviderType.GT_Playtech}--GPI Configuration",
+			ClientId: $"{GameProviderType.GT_Playtech}--GPI",
+			SecretKey: Guid.NewGuid().ToString("N"),
+			Status: GameProviderConfigStatus.Active,
+			DesktopEndpoint: string.Empty,
+			MobileEndpoint: string.Empty,
+			ConfigurationData: "{\"BrandId\":908,\"SecretKey\":\"SMT1ZCVRI3uqtOXNV93q\"}",
+			IsDefault: false));
+
+		var repository = new GameProviderRepository(fakeClient);
+
+		var actual = await repository.GetGTPlaytechConfigurationAsync(gameProviderConfigurationId);
+
+		Assert.NotNull(actual);
+		Assert.Equal(settingConfiguration.ApiUrl, actual.ApiUrl);
+		Assert.Equal(settingConfiguration.LauncherApiUrl, actual.LauncherApiUrl);
+		Assert.Equal(settingConfiguration.DataApiUrl, actual.DataApiUrl);
+		Assert.Equal(908, actual.BrandId);
+		Assert.Equal("SMT1ZCVRI3uqtOXNV93q", actual.SecretKey);
+	}
+
+	[Fact]
 	public async Task Get_InplayMatrixESports_Configuration()
 	{
 		var fakeClient = Substitute.For<IGameCommandClient>();

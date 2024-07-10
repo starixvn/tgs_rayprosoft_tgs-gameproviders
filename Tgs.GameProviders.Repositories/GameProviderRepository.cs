@@ -210,7 +210,16 @@ internal class GameProviderRepository(
 			gameProviderConfiguration: GameProviderConfigurations.GKXGaming,
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken);
-
+	public ValueTask<GTExpanseConfiguration> GetGTExpanseConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+		=> GetConfigurationAsync<GTExpanseConfiguration>(
+			gameProviderConfiguration: GameProviderConfigurations.GT_Expanse,
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken);
+	public ValueTask<GTPlaytechConfiguration> GetGTPlaytechConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+		=> GetConfigurationAsync<GTPlaytechConfiguration>(
+			gameProviderConfiguration: GameProviderConfigurations.GT_Playtech,
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken);
 	public ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 		=> GetConfigurationAsync<HabaneroTransferConfiguration>(
 			gameProviderConfiguration: GameProviderConfigurations.HabaneroTransfer,
