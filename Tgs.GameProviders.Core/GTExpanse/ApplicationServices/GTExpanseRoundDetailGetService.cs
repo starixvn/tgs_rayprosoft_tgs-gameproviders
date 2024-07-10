@@ -18,7 +18,7 @@ internal class GTExpanseRoundDetailGetService(
 
 		return new RoundDetailResult()
 		{
-			Data = [new RoundDetailDataUrl { Url = gameBetInfo.AdditionalData["detailUrl"].ToString() ?? string.Empty }]
+			Data = [new RoundDetailDataJson { Value = gameBetInfo.AdditionalData.ToString() }]
 		};
 	}
 }
