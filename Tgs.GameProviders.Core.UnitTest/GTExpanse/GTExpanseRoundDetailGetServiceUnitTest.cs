@@ -103,6 +103,6 @@ public class GTExpanseRoundDetailGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.NotEmpty((actual.Data!.First()! as RoundDetailDataUrl)!.Url);
+		Assert.NotEmpty((actual.Data!.First()! as RoundDetailDataJson)!.Value!);
 	}
 }

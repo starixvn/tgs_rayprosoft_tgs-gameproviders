@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
-using Tgs.GameProviders.Core.GTExpanse.ApplicationServices;
+using Tgs.GameProviders.Core.GTPlaytech.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 
 namespace Tgs.GameProviders.Core.UnitTest.GTPlaytech;
@@ -16,7 +16,7 @@ public class GTPlaytechRoundDetailGetServiceUnitTest
 	{
 		var fakeGameBetRepository = Substitute.For<IGameBetRepository>();
 
-		var query = new GTExpanseRoundDetailQuery
+		var query = new GTPlaytechRoundDetailQuery
 		{
 			GameBetId = Guid.NewGuid(),
 			Language = "en"
@@ -97,7 +97,7 @@ public class GTPlaytechRoundDetailGetServiceUnitTest
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(gameBetInfo);
 
-		var sut = new GTExpanseRoundDetailGetService(
+		var sut = new GTPlaytechRoundDetailGetService(
 			fakeGameBetRepository);
 
 		var actual = await sut.GetAsync(query);
