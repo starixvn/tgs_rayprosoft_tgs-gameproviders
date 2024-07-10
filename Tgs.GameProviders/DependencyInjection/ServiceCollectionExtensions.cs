@@ -11,6 +11,7 @@ using Tgs.GameInterface.FaChai.Client;
 using Tgs.GameInterface.Funky.Client;
 using Tgs.GameInterface.Ga28.Client;
 using Tgs.GameInterface.GKXGaming.Client;
+using Tgs.GameInterface.GlobalTechnology.Client;
 using Tgs.GameInterface.HabaneroService.Client;
 using Tgs.GameInterface.InplayMatrix.Client;
 using Tgs.GameInterface.JDBService.Client;
@@ -86,7 +87,8 @@ public static class ServiceCollectionExtensions
 		Action<GameInterfaceTPhereClientOptions, IServiceProvider> gameInterfaceTPhereClientOptions,
 		Action<GameInterfaceCQ9GamingClientOptions, IServiceProvider> gameInterfaceCQ9GamingClientOptions,
 		Action<GameInterfaceSharpSportsClientOptions, IServiceProvider> gameInterfaceSharpSportsClientOptions,
-		Action<GameInterfaceGa28ClientOptions, IServiceProvider> gameInterfaceGa28ClientOptions)
+		Action<GameInterfaceGa28ClientOptions, IServiceProvider> gameInterfaceGa28ClientOptions,
+		Action<GameInterfaceGlobalTechnologyClientOptions, IServiceProvider> gameInterfaceGlobalTechnologyClientOptions)
 		=> services
 		.AddOptions<RedisOptions>()
 		.Configure(configure)
@@ -133,5 +135,6 @@ public static class ServiceCollectionExtensions
 			gameInterfaceTPhereClientOptions: gameInterfaceTPhereClientOptions,
 			gameInterfaceCQ9GamingClientOptions: gameInterfaceCQ9GamingClientOptions,
 			gameInterfaceSharpSportsClientOptions: gameInterfaceSharpSportsClientOptions,
-			gameInterfaceGa28ClientOptions: gameInterfaceGa28ClientOptions);
+			gameInterfaceGa28ClientOptions: gameInterfaceGa28ClientOptions,
+			gameInterfaceGlobalTechnologyClientOptions: gameInterfaceGlobalTechnologyClientOptions);
 }
