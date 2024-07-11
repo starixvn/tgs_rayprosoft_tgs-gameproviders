@@ -68,7 +68,7 @@ deploy-dev:
   when: manual
   script:
     - |
-      cat << EOF | deploy_k8s default $HelmTemplateFolderName $namespace
+      cat << EOF | deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
         {
           "restart": {
             "enabled": true,
@@ -102,7 +102,7 @@ deploy-staging:
   when: manual
   script:
     - |
-      cat << EOF | deploy_k8s default $HelmTemplateFolderName $namespace
+      cat << EOF | deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
         {
           "restart": {
             "enabled": true,
@@ -136,7 +136,7 @@ deploy-prod:
   when: manual
   script:
     - |
-      cat << EOF | deploy_k8s default $HelmTemplateFolderName $namespace
+      cat << EOF | deploy_k8s $TgsSettingKey $HelmTemplateFolderName $namespace
         {
           "restart": {
             "enabled": true,
