@@ -4,8 +4,10 @@ using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
+using Tgs.GameInterface.GlobalTechnology.Client;
 using Tgs.GameProviders.Core.GTPlaytech.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
+using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.GTPlaytech;
 
@@ -15,6 +17,9 @@ public class GTPlaytechRoundDetailGetServiceUnitTest
 	public async Task Normal_Process()
 	{
 		var fakeGameBetRepository = Substitute.For<IGameBetRepository>();
+		var fakeBrandRepository = Substitute.For<IBrandRepository>();
+		var fakeGameProviderRepository = Substitute.For<IGameProviderRepository>();
+		var fakeClient = Substitute.For<IGameInterfaceGlobalTechnologyClient>();
 
 		var query = new GTPlaytechRoundDetailQuery
 		{
@@ -97,12 +102,59 @@ public class GTPlaytechRoundDetailGetServiceUnitTest
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(gameBetInfo);
 
+		var gameProviderConfigurationId = Guid.NewGuid();
+		_ = fakeBrandRepository.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: Arg.Is(gameBetInfo.GameProviderId),
+			brandId: Arg.Is(gameBetInfo.BrandId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(gameProviderConfigurationId);
+
+		var configuration = new GTExpanseConfiguration()
+		{
+			ApiUrl = new("https://api-stg.gmgiantgold.com/"),
+			LauncherApiUrl = new("https://api-stg.gmgiantgold.com/"),
+			DataApiUrl = new("http://gm-stage-data.gmgiantgold.com/"),
+			BrandId = 911,
+			SecretKey = "pPRHm1NHFosSOUv4tVjv"
+		};
+		_ = fakeGameProviderRepository.GetGTExpanseConfigurationAsync(
+			gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(configuration);
+
+		var cultureCode = "EN";
+		_ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
+			gameProviderId: Arg.Is(gameBetInfo.GameProviderId),
+			cultureCode: Arg.Is(query.Language),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(cultureCode);
+
+		var reply = new GameInterface.GlobalTechnology.Protos.GameRecordDetailReply
+		{
+			IsSupport = true,
+			DetailUrl = "http://gm-stage-data.gmgiantgold.com/"
+		};
+		_ = fakeClient.GameRecordDetailAsync(
+			dataApiUrl: configuration.DataApiUrl,
+			brandId: configuration.BrandId,
+			secretKey: configuration.SecretKey,
+			externalProviderCode: GameInterface.GlobalTechnology.Protos.ProviderCodeType.Playtech,
+			externalBetId: gameBetInfo.ExternalBetId,
+			externalEndTime: gameBetInfo.ExternalClosedOn,
+			language: cultureCode,
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(reply);
+
 		var sut = new GTPlaytechRoundDetailGetService(
-			fakeGameBetRepository);
+			fakeGameBetRepository,
+			fakeBrandRepository,
+			fakeGameProviderRepository,
+			fakeClient);
 
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.NotEmpty((actual.Data!.First()! as RoundDetailDataUrl)!.Url);
+		Assert.NotEmpty((actual.Data![0]! as RoundDetailDataUrl)!.Url);
+		Assert.NotEmpty((actual.Data![1]! as RoundDetailDataJson)!.Value!);
 	}
 }
