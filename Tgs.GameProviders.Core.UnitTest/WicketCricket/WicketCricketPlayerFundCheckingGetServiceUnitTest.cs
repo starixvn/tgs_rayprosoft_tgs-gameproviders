@@ -78,7 +78,7 @@ public class WicketCricketPlayerFundCheckingGetServiceUnitTest
 			website: Arg.Is(configuration.Website),
 			cert: Arg.Is(configuration.Cert),
 			playerCode: Arg.Is(player.PlayerCode),
-			txid: Arg.Is(query.OrderId),
+			orderId: Arg.Is(query.OrderId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(true);
 

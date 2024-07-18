@@ -83,6 +83,7 @@ public class WicketCricketPlayerLogoutCommandServiceUnitTest
 		_ = fakeClient
 			.Received(1)
 			.PlayerLogoutAsync(
+			apiUrl: Arg.Is(configuration.ApiUrl),
 			exchangeApiUrl: Arg.Is(configuration.ExchangeApiUrl),
 			website: Arg.Is(configuration.Website),
 			cert: Arg.Is(configuration.Cert),
