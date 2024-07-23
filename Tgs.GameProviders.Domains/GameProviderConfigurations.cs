@@ -52,6 +52,7 @@ public static class GameProviderConfigurations
 	public static readonly string Joker = string.Format(_template, GameProviderType.Joker);
 	public static readonly string Kaiyuan = string.Format(_template, GameProviderType.Kaiyuan);
 	public static readonly string LEGaming = string.Format(_template, GameProviderType.LEGaming);
+	public static readonly string MicroGaming = string.Format(_template, GameProviderType.MicroGaming);
 	public static readonly string OBet = string.Format(_template, GameProviderType.OBet);
 	public static readonly string Pinnacle = string.Format(_template, GameProviderType.Pinnacle);
 	public static readonly string PragmaticPlay = string.Format(_template, GameProviderType.PragmaticPlay);

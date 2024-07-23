@@ -51,6 +51,7 @@ public static class GameProviderType
 	public static readonly string Kaiyuan = "KY";
 	public static readonly string LEGaming = "LY";
 	public static readonly string MainWallet = "DEFAULT";
+	public static readonly string MicroGaming = "MG";
 	public static readonly string OBet = "OBET";
 	public static readonly string Pinnacle = "PINNACLE";
 	public static readonly string PragmaticPlay = "PP";

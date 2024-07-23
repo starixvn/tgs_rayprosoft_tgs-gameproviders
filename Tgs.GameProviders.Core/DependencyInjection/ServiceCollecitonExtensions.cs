@@ -21,6 +21,7 @@ using Tgs.GameInterface.Jili.Client;
 using Tgs.GameInterface.Joker.Client;
 using Tgs.GameInterface.Kaiyuan.Client;
 using Tgs.GameInterface.LEGaming.Client;
+using Tgs.GameInterface.MicroGaming.Client;
 using Tgs.GameInterface.OBet.Client;
 using Tgs.GameInterface.Pinnacle.Client;
 using Tgs.GameInterface.PragmaticPlay.Client;
@@ -88,7 +89,8 @@ public static class ServiceCollecitonExtensions
 		Action<GameInterfaceCQ9GamingClientOptions, IServiceProvider> gameInterfaceCQ9GamingClientOptions,
 		Action<GameInterfaceSharpSportsClientOptions, IServiceProvider> gameInterfaceSharpSportsClientOptions,
 		Action<GameInterfaceGa28ClientOptions, IServiceProvider> gameInterfaceGa28ClientOptions,
-		Action<GameInterfaceGlobalTechnologyClientOptions, IServiceProvider> gameInterfaceGlobalTechnologyClientOptions)
+		Action<GameInterfaceGlobalTechnologyClientOptions, IServiceProvider> gameInterfaceGlobalTechnologyClientOptions,
+		Action<GameInterfaceMicroGamingClientOptions, IServiceProvider> gameInterfaceMicroGamingClientOptions)
 		=> services
 		.AddOptions<IPAddressOptions>()
 		.Configure(ipAddressOptions)
@@ -135,6 +137,7 @@ public static class ServiceCollecitonExtensions
 		.AddGameInterfaceSharpSportsClient(gameInterfaceSharpSportsClientOptions)
 		.AddGameInterfaceGa28Client(gameInterfaceGa28ClientOptions)
 		.AddGameInterfaceGlobalTechnologyClient(gameInterfaceGlobalTechnologyClientOptions)
+		.AddGameInterfaceMicroGamingClient(gameInterfaceMicroGamingClientOptions)
 		.AddGameTokenClient(gameTokenClientOptions)
 		//Tgs.Core.Infrastructures.Security
 		.AddSecurity()

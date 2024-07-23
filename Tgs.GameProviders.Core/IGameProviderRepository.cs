@@ -77,6 +77,8 @@ public interface IGameProviderRepository
 
 	ValueTask<HabaneroTransferConfiguration> GetHabaneroTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
+	ValueTask<MicroGamingConfiguration> GetMicroGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
+
 	ValueTask<InplayMatrixESportsConfiguration> GetInplayMatrixESportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
 	ValueTask<JDBTransferConfiguration> GetJDBTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
