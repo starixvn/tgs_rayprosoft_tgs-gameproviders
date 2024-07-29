@@ -641,6 +641,25 @@ internal class GameProviderCacheRepository(
 		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
+	public async ValueTask<MicroGamingConfiguration> GetMicroGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+	{
+		var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+		if (!memoryCache.TryGetValue(key, out MicroGamingConfiguration? configurationData))
+		{
+			configurationData = await repository.GetMicroGamingConfigurationAsync(
+				gameProviderConfigurationId: gameProviderConfigurationId,
+				cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
+
+			return memoryCache.Set(
+				key: key,
+				value: configurationData,
+				absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+		}
+
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
+	}
+
 	public async ValueTask<InplayMatrixESportsConfiguration> GetInplayMatrixESportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 	{
 		var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";

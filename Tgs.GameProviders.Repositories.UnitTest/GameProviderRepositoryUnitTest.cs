@@ -1566,6 +1566,52 @@ public class GameProviderRepositoryUnitTest
 	}
 
 	[Fact]
+	public async Task Get_MicroGaming_ConfigurationData()
+	{
+		var fakeClient = Substitute.For<IGameCommandClient>();
+
+		var gameProviderId = Guid.NewGuid();
+		var gameProviderConfigurationId = Guid.NewGuid();
+
+		var settingConfiguration = new MicroGamingConfiguration()
+		{
+			StsApiUrl = new("https://localhost/sts/"),
+			ClientId = "clientId",
+			ClientSecret = "clientSecret",
+			ApiUrl = new("https://localhost/"),
+			AgentCode = "agentCode",
+		};
+		_ = fakeClient
+			.SettingGetConfigurationAsync<MicroGamingConfiguration>(Arg.Is(GameProviderConfigurations.MicroGaming))
+			.Returns(settingConfiguration);
+
+		_ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+			GameProviderId: gameProviderId,
+			GameProviderCode: "MG",
+			GameProviderConfigId: gameProviderConfigurationId,
+			Name: "MG-GPI",
+			Description: "MG-GPI Configuration",
+			ClientId: "MG-GPI",
+			SecretKey: Guid.NewGuid().ToString("N"),
+			Status: GameProviderConfigStatus.Active,
+			DesktopEndpoint: string.Empty,
+			MobileEndpoint: string.Empty,
+			ConfigurationData: string.Empty,
+			IsDefault: false));
+
+		var repository = new GameProviderRepository(fakeClient);
+
+		var actual = await repository.GetMicroGamingConfigurationAsync(gameProviderConfigurationId);
+
+		Assert.NotNull(actual);
+		Assert.Equal(new("https://localhost/sts/"), actual.StsApiUrl);
+		Assert.Equal("clientId", actual.ClientId);
+		Assert.Equal("clientSecret", actual.ClientSecret);
+		Assert.Equal(new("https://localhost/"), actual.ApiUrl);
+		Assert.Equal("agentCode", actual.AgentCode);
+	}
+
+	[Fact]
 	public async Task Get_Pinnacle_Configuration()
 	{
 		var fakeClient = Substitute.For<IGameCommandClient>();

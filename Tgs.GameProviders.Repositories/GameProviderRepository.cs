@@ -226,6 +226,12 @@ internal class GameProviderRepository(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken);
 
+	public ValueTask<MicroGamingConfiguration> GetMicroGamingConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+		=> GetConfigurationAsync<MicroGamingConfiguration>(
+			gameProviderConfiguration: GameProviderConfigurations.MicroGaming,
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken);
+
 	public ValueTask<InplayMatrixESportsConfiguration> GetInplayMatrixESportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 		=> GetConfigurationAsync<InplayMatrixESportsConfiguration>(
 			gameProviderConfiguration: GameProviderConfigurations.InplayMatrix_ESports,
