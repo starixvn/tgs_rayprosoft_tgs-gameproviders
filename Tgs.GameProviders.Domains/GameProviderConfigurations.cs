@@ -29,6 +29,7 @@ public static class GameProviderConfigurations
 	public static readonly string Cards365Transfer = string.Format(_template, GameProviderType.Cards365Transfer);
 	public static readonly string CQ9Gaming = string.Format(_template, GameProviderType.CQ9Gaming);
 	public static readonly string CrPati = string.Format(_template, GameProviderType.CrPati);
+	public static readonly string CRSports = string.Format(_template, GameProviderType.CRSports);
 	public static readonly string DreamGame = string.Format(_template, GameProviderType.DreamGame);
 	public static readonly string DreamGamingTransfer = string.Format(_template, GameProviderType.DreamGamingTransfer);
 	public static readonly string Endorphina = string.Format(_template, GameProviderType.Endorphina);

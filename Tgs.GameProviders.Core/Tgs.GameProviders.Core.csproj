@@ -20,6 +20,7 @@
 		<PackageReference Include="Tgs.GameInterface.Cards365.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.GameInterface.CQ9Gaming.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.GameInterface.CrPati.Client" Version="1.0.4" />
+		<PackageReference Include="Tgs.GameInterface.CRSports.Client" Version="1.0.1" />
 		<PackageReference Include="Tgs.GameInterface.DreamGamingService.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.GameInterface.EndorphinaService.Client" Version="1.0.3" />
 		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.20" />
@@ -35,7 +36,7 @@
 		<PackageReference Include="Tgs.GameInterface.Joker.Client" Version="1.0.3" />
 		<PackageReference Include="Tgs.GameInterface.Kaiyuan.Client" Version="1.0.14" />
 		<PackageReference Include="Tgs.GameInterface.LEGaming.Client" Version="1.0.4" />
-		<PackageReference Include="Tgs.GameInterface.MicroGaming.Client" Version="1.0.1" />
+		<PackageReference Include="Tgs.GameInterface.MicroGaming.Client" Version="1.0.2" />
 		<PackageReference Include="Tgs.GameInterface.OBet.Client" Version="1.0.5" />
 		<PackageReference Include="Tgs.GameInterface.Pinnacle.Client" Version="1.0.3" />
 		<PackageReference Include="Tgs.GameInterface.PragmaticPlay.Client" Version="1.0.5" />

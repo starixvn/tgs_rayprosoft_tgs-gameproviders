@@ -138,6 +138,12 @@ internal class GameProviderRepository(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken);
 
+	public ValueTask<CRSportsConfiguration> GetCRSportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+		=> GetConfigurationAsync<CRSportsConfiguration>(
+			gameProviderConfiguration: GameProviderConfigurations.CRSports,
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken);
+
 	public ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 		=> GetConfigurationAsync<DreamGamingTransferConfiguration>(
 			gameProviderConfiguration: GameProviderConfigurations.DreamGamingTransfer,
