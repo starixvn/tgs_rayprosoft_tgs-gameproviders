@@ -395,6 +395,25 @@ internal class GameProviderCacheRepository(
 		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
 	}
 
+	public async ValueTask<CRSportsConfiguration> GetCRSportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+	{
+		var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";
+		if (!memoryCache.TryGetValue(key, out CRSportsConfiguration? configurationData))
+		{
+			configurationData = await repository.GetCRSportsConfigurationAsync(
+				gameProviderConfigurationId: gameProviderConfigurationId,
+				cancellationToken: cancellationToken)
+				.ConfigureAwait(false);
+
+			return memoryCache.Set(
+				key: key,
+				value: configurationData,
+				absoluteExpirationRelativeToNow: TimeSpan.FromMinutes(5));
+		}
+
+		return configurationData ?? throw new ArgumentNullException(gameProviderConfigurationId.ToString(), $"Game Provider Configuration does not exist");
+	}
+
 	public async ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 	{
 		var key = $"game:gameproviders:gameprovidercache:get:configuration:{gameProviderConfigurationId}";

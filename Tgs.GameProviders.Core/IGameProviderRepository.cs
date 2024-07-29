@@ -52,6 +52,8 @@ public interface IGameProviderRepository
 
 	ValueTask<CrPatiConfiguration> GetCrPatiConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
+	ValueTask<CRSportsConfiguration> GetCRSportsConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
+
 	ValueTask<DreamGamingTransferConfiguration> GetDreamGamingTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
 	ValueTask<EndorphinaConfiguration> GetEndorphinaConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);

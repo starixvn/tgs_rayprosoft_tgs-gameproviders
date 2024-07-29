@@ -57,6 +57,7 @@ data:
         "GameInterfaceGa28BaseUrl": "dns:///game-gameinterface-ga28:9090/",
         "GameInterfaceGlobalTechnologyBaseUrl": "dns:///game-gameinterface-gt:9090/"
         "GameInterfaceMicroGamingBaseUrl": "dns:///game-gameinterface-mg:9090/"
+        "GameInterfaceCRSportsBaseUrl": "dns:///game-gameinterface-cr:9090/"
       }
     }
   otel-collector-config.yaml: |

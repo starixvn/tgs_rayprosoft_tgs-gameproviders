@@ -1014,6 +1014,54 @@ public class GameProviderRepositoryUnitTest
 	}
 
 	[Fact]
+	public async Task Get_CRSports_Configuration()
+	{
+		var fakeClient = Substitute.For<IGameCommandClient>();
+
+		var gameProviderId = Guid.NewGuid();
+		var gameProviderConfigurationId = Guid.NewGuid();
+
+		var settingConfiguration = new CRSportsConfiguration()
+		{
+			ApiUrl = new("https://localhost/")
+		};
+		_ = fakeClient
+			.SettingGetConfigurationAsync<CRSportsConfiguration>(Arg.Is(GameProviderConfigurations.CRSports))
+			.Returns(settingConfiguration);
+
+		_ = fakeClient.GameProviderConfigurationGetAsync(gameProviderConfigurationId).Returns(new GameProviderConfigInfo(
+			GameProviderId: gameProviderId,
+			GameProviderCode: GameProviderType.CRSports,
+			GameProviderConfigId: gameProviderConfigurationId,
+			Name: "CRS-GPI",
+			Description: "CRS-GPI Configuration",
+			ClientId: "CRS-GPI",
+			SecretKey: Guid.NewGuid().ToString("N"),
+			Status: GameProviderConfigStatus.Active,
+			DesktopEndpoint: string.Empty,
+			MobileEndpoint: string.Empty,
+			ConfigurationData: new JsonObject
+			{
+				["AgentId"] = 33,
+				["SecretKey"] = "01J3YP290XP5C28ATCX50XSFBX",
+				["AgentAccount"] = "testgpi123123",
+				["AgentPassword"] = "01J3YP2CAAE8XMVG8T6CR41BG9",
+			}.ToJsonString(),
+			IsDefault: false));
+
+		var repository = new GameProviderRepository(fakeClient);
+
+		var actual = await repository.GetCRSportsConfigurationAsync(gameProviderConfigurationId);
+
+		Assert.NotNull(actual);
+		Assert.Equal(new("https://localhost/"), actual.ApiUrl);
+		Assert.Equal(33, actual.AgentId);
+		Assert.Equal("01J3YP290XP5C28ATCX50XSFBX", actual.SecretKey);
+		Assert.Equal("testgpi123123", actual.AgentAccount);
+		Assert.Equal("01J3YP2CAAE8XMVG8T6CR41BG9", actual.AgentPassword);
+	}
+
+	[Fact]
 	public async Task Get_Game_Endpoints()
 	{
 		var fakeClient = Substitute.For<IGameCommandClient>();
