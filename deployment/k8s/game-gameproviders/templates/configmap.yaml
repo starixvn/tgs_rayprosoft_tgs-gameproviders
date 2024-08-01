@@ -55,8 +55,8 @@ data:
         "GameInterfaceCQ9GamingBaseUrl": "dns:///game-gameinterface-cq9:9090/",
         "GameInterfaceSharpSportsBaseUrl": "dns:///game-gameinterface-sharpsports:9090/",
         "GameInterfaceGa28BaseUrl": "dns:///game-gameinterface-ga28:9090/",
-        "GameInterfaceGlobalTechnologyBaseUrl": "dns:///game-gameinterface-gt:9090/"
-        "GameInterfaceMicroGamingBaseUrl": "dns:///game-gameinterface-mg:9090/"
+        "GameInterfaceGlobalTechnologyBaseUrl": "dns:///game-gameinterface-gt:9090/",
+        "GameInterfaceMicroGamingBaseUrl": "dns:///game-gameinterface-mg:9090/",
         "GameInterfaceCRSportsBaseUrl": "dns:///game-gameinterface-cr:9090/"
       }
     }
