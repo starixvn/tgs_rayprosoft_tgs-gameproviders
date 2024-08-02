@@ -37,13 +37,6 @@ push-docker-image:
   extends: .push-docker-image-template
   script:
     - |
-      #- dotnet build "Tgs.GameProviders/Tgs.GameProviders.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageName:$Tag" --no-restore
-      #- dotnet publish "Tgs.GameProviders" 
-      #   --os linux --arch x64
-      #   /t:PublishContainer
-      #   -c $BuildConfiguration
-      #   /p:ContainerRepository=$ImageName
-      #   /p:ContainerImageTag=$Tag
       - docker build -t "$ImageName:$Tag" --build-arg [BUILD_CONFIGURATION]=$BuildConfiguration -f "Tgs.GameProviders/Dockerfile" . --no-cache
       - docker push $ImageName:$Tag
       
