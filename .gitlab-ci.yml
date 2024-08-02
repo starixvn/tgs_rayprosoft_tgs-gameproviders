@@ -36,8 +36,17 @@ push-nuget:
 push-docker-image:
   extends: .push-docker-image-template
   script:
-    - push_docker "Tgs.GameProviders" $ImageName $Tag
-
+    - |
+      #- dotnet build "Tgs.GameProviders/Tgs.GameProviders.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageName:$Tag" --no-restore
+      #- dotnet publish "Tgs.GameProviders" 
+      #   --os linux --arch x64
+      #   /t:PublishContainer
+      #   -c $BuildConfiguration
+      #   /p:ContainerRepository=$ImageName
+      #   /p:ContainerImageTag=$Tag
+      - docker build -t "$ImageName:$Tag" --build-arg [BUILD_CONFIGURATION]=$BuildConfiguration -f "Tgs.GameInterface.CRSports/Dockerfile" . --no-cache
+      - docker push $ImageName:$Tag
+      
 push-k8s-template:
   extends: .push-k8s-template
   script:
