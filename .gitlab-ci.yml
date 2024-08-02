@@ -34,11 +34,27 @@ push-nuget:
       - Tgs.GameProviders.Client/bin/$BuildConfiguration/*.nupkg
 
 push-docker-image:
-  extends: .push-docker-image-template
+  stage: publish
+  needs:
+    - build-code
+    - unit-test
+  only:
+    - main
+  cache:
+    key: $BuildCacheKey
+    untracked: true   
+    policy: pull
   script:
-    - |
-      - docker build -t "$ImageName:$Tag" --build-arg [BUILD_CONFIGURATION]=$BuildConfiguration -f "Tgs.GameProviders/Dockerfile" . --no-cache
-      - docker push $ImageName:$Tag
+    #- dotnet build "Tgs.GameProviders/Tgs.GameProviders.csproj" -c $BuildConfiguration -t:ContainerBuild -p:DockerfileTag="$ImageName:$Tag" --no-restore
+    #- dotnet publish "Tgs.GameProviders" 
+    #   --os linux --arch x64
+    #   /t:PublishContainer
+    #   -c $BuildConfiguration
+    #   /p:ContainerRepository=$ImageName
+    #   /p:ContainerImageTag=$Tag
+    - docker build -t "$ImageName:$Tag" --build-arg [BUILD_CONFIGURATION]=$BuildConfiguration -f "Tgs.GameProviders/Dockerfile" . --no-cache
+    - docker push $ImageName:$Tag
+
       
 push-k8s-template:
   extends: .push-k8s-template
