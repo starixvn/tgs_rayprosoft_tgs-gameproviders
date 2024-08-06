@@ -43,10 +43,38 @@ public class LEGamingPlayerBalanceGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new PlayerBalanceResult
+		if (!reply.IsPlayerExist)
 		{
-			FreeBalance = reply.FreeBalance.ToDecimal().GetValueOrDefault(0),
-			OutstandingBalance = reply.OutstandingBalance.ToDecimal().GetValueOrDefault(0)
-		};
+			_ = await client.GameUrlAsync(
+			apiUrl: configuration.ApiUrl,
+			deskey: configuration.Deskey,
+			md5key: configuration.Md5key,
+			agentId: configuration.AgentId,
+			agentCurrency: configuration.AgentCurrency,
+			brandCode: player.BrandCode,
+			playerCode: player.PlayerCode,
+			ipAddress: "127.0.0.1",
+			externalGameId: "0",
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+
+			reply = await client.PlayerBalanceAsync(
+			   apiUrl: configuration.ApiUrl,
+			   deskey: configuration.Deskey,
+			   md5key: configuration.Md5key,
+			   agentId: configuration.AgentId,
+			   agentCurrency: configuration.AgentCurrency,
+			   playerCode: player.PlayerCode,
+			   cancellationToken: cancellationToken)
+			   .ConfigureAwait(false);
+		}
+
+		return reply.IsPlayerExist
+			? new PlayerBalanceResult
+			{
+				FreeBalance = reply.FreeBalance.ToDecimal().GetValueOrDefault(0),
+				OutstandingBalance = reply.OutstandingBalance.ToDecimal().GetValueOrDefault(0)
+			}
+			: throw new Exception($"player does not exist.({player.PlayerCode})");
 	}
 }

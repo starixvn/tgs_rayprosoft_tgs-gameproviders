@@ -35,7 +35,7 @@
 		<PackageReference Include="Tgs.GameInterface.Jili.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.GameInterface.Joker.Client" Version="1.0.3" />
 		<PackageReference Include="Tgs.GameInterface.Kaiyuan.Client" Version="1.0.14" />
-		<PackageReference Include="Tgs.GameInterface.LEGaming.Client" Version="1.0.5" />
+		<PackageReference Include="Tgs.GameInterface.LEGaming.Client" Version="1.0.6" />
 		<PackageReference Include="Tgs.GameInterface.MicroGaming.Client" Version="1.0.2" />
 		<PackageReference Include="Tgs.GameInterface.OBet.Client" Version="1.0.5" />
 		<PackageReference Include="Tgs.GameInterface.Pinnacle.Client" Version="1.0.3" />
