@@ -1597,7 +1597,7 @@ public class GameProviderRepositoryUnitTest
 			Status: GameProviderConfigStatus.Active,
 			DesktopEndpoint: string.Empty,
 			MobileEndpoint: string.Empty,
-			ConfigurationData: "{\"CurrencyCode\":\"HKD\",\"AgentId\":\"200995\"}",
+			ConfigurationData: "{\"AgentCurrency\":\"CNY\",\"AgentId\":\"200995\"}",
 			IsDefault: false));
 
 		var repository = new GameProviderRepository(fakeClient);
@@ -1609,7 +1609,7 @@ public class GameProviderRepositoryUnitTest
 		Assert.Equal(new("http://localhost:8090/"), actual.ApiRecordUrl);
 		Assert.Equal("deskey", actual.Deskey);
 		Assert.Equal("md5key", actual.Md5key);
-		Assert.Equal("HKD", actual.CurrencyCode);
+		Assert.Equal("CNY", actual.AgentCurrency);
 		Assert.Equal("200995", actual.AgentId);
 	}
 
