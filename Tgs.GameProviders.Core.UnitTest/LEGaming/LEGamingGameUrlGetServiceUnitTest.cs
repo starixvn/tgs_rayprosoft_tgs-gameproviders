@@ -52,15 +52,13 @@ public class LEGamingGameUrlGetServiceUnitTest
 			Username: "test",
 			DefaultWalletId: Guid.NewGuid(),
 			DefaultWalletCurrencyCode: "HKD");
-		_ = fakePlayer
-			.GetAsync(
+		_ = fakePlayer.GetAsync(
 			Arg.Is(query.PlayerCode),
 			Arg.Any<CancellationToken>())
 			.Returns(player);
 
 		var gameProviderConfigurationId = Guid.NewGuid();
-		_ = fakeBrand
-			.GetBrandGameProviderConfigurationIdAsync(
+		_ = fakeBrand.GetBrandGameProviderConfigurationIdAsync(
 			gameProviderId: Arg.Is(gameProviderId),
 			brandId: Arg.Is(player.BrandId),
 			cancellationToken: Arg.Any<CancellationToken>())
@@ -74,11 +72,10 @@ public class LEGamingGameUrlGetServiceUnitTest
 			ApiRecordUrl = new("http://localhost:8090/"),
 			Deskey = "deskey",
 			Md5key = "md5key",
-			CurrencyCode = "HKD",
-			AgentId = "200995"
+			AgentId = "200995",
+			AgentCurrency = "CNY"
 		};
-		_ = fakeGameProvider
-			.GetLEGamingConfigurationAsync(
+		_ = fakeGameProvider.GetLEGamingConfigurationAsync(
 			gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
 			cancellationToken: Arg.Any<CancellationToken>()).
 			Returns(ValueTask.FromResult(configuration));
@@ -102,19 +99,18 @@ public class LEGamingGameUrlGetServiceUnitTest
 			AvailableCurrencies: null,
 			Localization: null,
 			SubGameProviderCode: GameProviderType.LEGaming);
-		_ = fakeGame
-			.GetAsync(
+		_ = fakeGame.GetAsync(
 				Arg.Is(query.GameId.Value),
 				cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(gameInfo);
 
 		var gameurl = "https://localhost";
-		_ = fakeClient
-			.GameUrlAsync(
+		_ = fakeClient.GameUrlAsync(
 			apiUrl: Arg.Is(configuration.ApiUrl),
 			deskey: Arg.Is(configuration.Deskey),
 			md5key: Arg.Is(configuration.Md5key),
 			agentId: Arg.Is(configuration.AgentId),
+			agentCurrency: Arg.Is(configuration.AgentCurrency),
 			brandCode: Arg.Is(player.BrandCode),
 			playerCode: Arg.Is(player.PlayerCode),
 			ipAddress: Arg.Is(query.IPAddress),

@@ -3,11 +3,8 @@
 public record LEGamingConfiguration
 {
 	/// <summary>
-	/// Gets or sets the amount maximum.
+	/// The amount maximum
 	/// </summary>
-	/// <value>
-	/// The amount maximum.
-	/// </value>
 	public decimal AmountMaximum { get; init; }
 
 	/// <summary>
@@ -34,13 +31,14 @@ public record LEGamingConfiguration
 	/// The md5key
 	/// </summary>
 	public string Md5key { get; init; } = default!;
-	/// <summary>
-	/// The currency code
-	/// </summary>
-	public string CurrencyCode { get; init; } = default!;
 
 	/// <summary>
 	/// The agent identifier
 	/// </summary>
 	public string AgentId { get; init; } = default!;
+
+	/// <summary>
+	/// The agent currency
+	/// </summary>
+	public string AgentCurrency { get; init; } = default!;
 }

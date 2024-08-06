@@ -43,15 +43,13 @@ public class LEGamingPlayerFundCheckingGetServiceUnitTest
 			Username: "test",
 			DefaultWalletId: Guid.NewGuid(),
 			DefaultWalletCurrencyCode: "HKD");
-		_ = fakePlayer
-			.GetAsync(
+		_ = fakePlayer.GetAsync(
 			Arg.Is(query.PlayerCode),
 			Arg.Any<CancellationToken>())
 			.Returns(player);
 
 		var gameProviderConfigurationId = Guid.NewGuid();
-		_ = fakeBrand
-			.GetBrandGameProviderConfigurationIdAsync(
+		_ = fakeBrand.GetBrandGameProviderConfigurationIdAsync(
 			gameProviderId: Arg.Is(gameProviderId),
 			brandId: Arg.Is(player.BrandId),
 			cancellationToken: Arg.Any<CancellationToken>())
@@ -65,11 +63,10 @@ public class LEGamingPlayerFundCheckingGetServiceUnitTest
 			ApiRecordUrl = new("http://localhost:8090/"),
 			Deskey = "deskey",
 			Md5key = "md5key",
-			CurrencyCode = "HKD",
-			AgentId = "200995"
+			AgentId = "200995",
+			AgentCurrency = "CNY"
 		};
-		_ = fakeGameProvider
-			.GetLEGamingConfigurationAsync(
+		_ = fakeGameProvider.GetLEGamingConfigurationAsync(
 			gameProviderConfigurationId: Arg.Is(gameProviderConfigurationId),
 			cancellationToken: Arg.Any<CancellationToken>()).
 			Returns(ValueTask.FromResult(configuration));
