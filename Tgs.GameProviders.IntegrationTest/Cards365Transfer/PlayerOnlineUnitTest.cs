@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core.Cards365Transfer.ApplicationServices;
-using Tgs.GameProviders.Core.JDBTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 

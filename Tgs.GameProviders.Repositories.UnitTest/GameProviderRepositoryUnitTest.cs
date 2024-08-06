@@ -1271,9 +1271,9 @@ public class GameProviderRepositoryUnitTest
 		{
 			ApiUrl = new("https://api-stg.gmgiantgold.com/"),
 			LauncherApiUrl = new("https://api-stg.gmgiantgold.com/"),
-			DataApiUrl= new("http://gm-stage-data.gmgiantgold.com/"),
-			BrandId= 908,
-			SecretKey= "SMT1ZCVRI3uqtOXNV93q"
+			DataApiUrl = new("http://gm-stage-data.gmgiantgold.com/"),
+			BrandId = 908,
+			SecretKey = "SMT1ZCVRI3uqtOXNV93q"
 		};
 
 		_ = fakeClient

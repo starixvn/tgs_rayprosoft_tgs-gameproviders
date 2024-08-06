@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.Cards365.Client;
-using Tgs.GameInterface.Cards365.Protos;
 using Tgs.GameProviders.Core.Cards365Transfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;

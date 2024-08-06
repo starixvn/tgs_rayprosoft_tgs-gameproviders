@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.GKXGaming.Client;
-using Tgs.GameInterface.GKXGaming.Protos;
 using Tgs.GameProviders.Core.GKXGaming.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;

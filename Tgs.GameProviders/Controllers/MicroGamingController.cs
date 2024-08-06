@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.MicroGaming.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -131,5 +131,4 @@ public class MicroGamingController : ControllerBase
 				ExternalCreatedOn = request.ExternalCreatedOn
 			},
 			cancellationToken: HttpContext.RequestAborted);
-
 }

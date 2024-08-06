@@ -27,7 +27,6 @@ public class Cards365TransferPlayerFundOutGetServiceUnitTest
 			PlayerCode = "4ucmqplxb029",
 			OrderId = $"D{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
 			Amount = 100M
-
 		};
 
 		var gameProviderId = Guid.NewGuid();

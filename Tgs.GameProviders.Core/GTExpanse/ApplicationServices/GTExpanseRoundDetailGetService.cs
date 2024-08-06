@@ -47,14 +47,12 @@ internal class GTExpanseRoundDetailGetService(
 		return reply.IsSupport
 			? new RoundDetailResult()
 			{
-
 				Data = [
 				new RoundDetailDataUrl{ Url=reply.DetailUrl},
 				new RoundDetailDataJson { Value = gameBetInfo.AdditionalData.ToString() }]
 			}
 			: new RoundDetailResult()
 			{
-
 				Data = [new RoundDetailDataJson { Value = gameBetInfo.AdditionalData.ToString() }]
 			};
 	}

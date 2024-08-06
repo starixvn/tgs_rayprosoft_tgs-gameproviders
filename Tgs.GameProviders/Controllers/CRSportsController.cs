@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.CRSports.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -158,5 +158,4 @@ public class CRSportsController : ControllerBase
 				ExternalCreatedOn = request.ExternalCreatedOn
 			},
 			cancellationToken: HttpContext.RequestAborted);
-
 }

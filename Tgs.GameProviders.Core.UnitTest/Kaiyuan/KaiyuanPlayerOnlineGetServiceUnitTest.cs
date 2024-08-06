@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.Kaiyuan.Client;
-using Tgs.GameInterface.Kaiyuan.Protos;
 using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;

@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
+
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.JDBService.Client;
 using Tgs.GameProviders.Core.JDBTransfer.ApplicationServices;
-using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameProviders.Domains;
-using Microsoft.Extensions.Primitives;
-using System.Threading;
+using Tgs.GameProviders.Domains.SettingConfiguration;
 
 namespace Tgs.GameProviders.Core.UnitTest.JDBTransfer;
+
 public class JDBTransferPlayerOnlineGetServiceUnitTest
 {
 	[Fact]

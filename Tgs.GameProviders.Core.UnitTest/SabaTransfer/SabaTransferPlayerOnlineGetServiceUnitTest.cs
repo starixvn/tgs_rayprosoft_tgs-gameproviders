@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.SabaService.Client;
-using Tgs.GameInterface.SabaService.Protos;
 using Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
