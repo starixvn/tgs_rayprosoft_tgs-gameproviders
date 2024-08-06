@@ -7,6 +7,7 @@ using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Controllers;
+
 [Route("api/ga28")]
 [ApiController]
 public class GA28Controller : ControllerBase

@@ -306,7 +306,6 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 		return new PlayerOnlineResponse(
 			GameProviderSupport: true,
 			Online: playerOnlineResponse.Online);
-
 	}
 
 	public async ValueTask<RoundDetailResult?> RoundDetailAsync(string gameProviderCode, Guid roundId, DateTimeOffset externalCreatedOn, string language, CancellationToken cancellationToken = default)

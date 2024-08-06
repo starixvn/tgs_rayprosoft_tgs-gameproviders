@@ -86,6 +86,5 @@ public class CRSportsPlayerOnlineGetServiceUnitTest
 		var actual = await sut.GetAsync(command);
 
 		Assert.True(actual);
-
 	}
 }

@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Tgs.GameProviders.Client;
 using Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices;
-using Tgs.GameProviders.Core.GKXGaming.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
 

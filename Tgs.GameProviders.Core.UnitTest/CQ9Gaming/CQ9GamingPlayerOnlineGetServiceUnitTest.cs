@@ -80,6 +80,5 @@ public class CQ9GamingPlayerOnlineGetServiceUnitTest
 		var actual = await sut.GetAsync(command);
 
 		Assert.True(actual);
-
 	}
 }

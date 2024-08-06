@@ -6,6 +6,7 @@ using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Controllers;
+
 [Route("api/GT_PT")]
 [ApiController]
 public class GTPlaytechController : ControllerBase

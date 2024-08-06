@@ -1,4 +1,4 @@
-namespace Tgs.GameProviders.Domains.SettingConfiguration;
+﻿namespace Tgs.GameProviders.Domains.SettingConfiguration;
 
 public record class CRSportsConfiguration
 {

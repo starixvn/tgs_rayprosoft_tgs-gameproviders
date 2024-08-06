@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Tgs.GameProviders.Client;
-using Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
 using Tgs.GameProviders.Core.TPhere.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
+
 namespace Tgs.GameProviders.IntegrationTest.TPhere;
 
 public class PlayerOnlineUnitTest

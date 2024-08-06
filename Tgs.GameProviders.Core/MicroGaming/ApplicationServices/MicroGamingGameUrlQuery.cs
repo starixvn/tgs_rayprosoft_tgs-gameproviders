@@ -1,3 +1,3 @@
-namespace Tgs.GameProviders.Core.MicroGaming.ApplicationServices;
+﻿namespace Tgs.GameProviders.Core.MicroGaming.ApplicationServices;
 
 public record class MicroGamingGameUrlQuery : GameUrlQuery;

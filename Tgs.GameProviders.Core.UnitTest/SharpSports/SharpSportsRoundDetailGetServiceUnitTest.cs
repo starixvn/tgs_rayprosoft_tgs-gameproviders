@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameProviders.Core.SharpSports.ApplicationServices;
-using System.Linq;
 using Tgs.GameProviders.Domains.RoundDetail;
 
 namespace Tgs.GameProviders.Core.UnitTest.SharpSports;

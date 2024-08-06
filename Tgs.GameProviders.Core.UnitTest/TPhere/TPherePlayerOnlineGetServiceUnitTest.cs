@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.TPhere.Client;
-using Tgs.GameInterface.TPhere.Protos;
 using Tgs.GameProviders.Core.TPhere.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;

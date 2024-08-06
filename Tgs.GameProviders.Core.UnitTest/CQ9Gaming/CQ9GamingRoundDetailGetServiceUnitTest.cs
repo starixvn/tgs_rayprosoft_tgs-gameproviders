@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameProviders.Core.CQ9Gaming.ApplicationServices;
-using System.Linq;
 using Tgs.GameProviders.Domains.RoundDetail;
 
 namespace Tgs.GameProviders.Core.UnitTest.CQ9Gaming;

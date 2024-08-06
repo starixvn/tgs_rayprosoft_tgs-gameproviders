@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
 using Tgs.GameInterface.Ga28.Client;
-using Tgs.GameInterface.Ga28.Protos;
 using Tgs.GameProviders.Core.GA28.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;

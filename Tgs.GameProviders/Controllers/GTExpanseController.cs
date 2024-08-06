@@ -6,6 +6,7 @@ using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Controllers;
+
 [Route("api/GT_EPS")]
 [ApiController]
 public class GTExpanseController : ControllerBase
