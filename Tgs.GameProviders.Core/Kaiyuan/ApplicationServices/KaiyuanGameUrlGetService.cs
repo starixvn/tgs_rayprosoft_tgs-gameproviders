@@ -34,7 +34,7 @@ public class KaiyuanGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 		var game = await gameRepository.GetAsync(
-			gameId: query.GameId.Value,
+			gameId: query.GameId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 

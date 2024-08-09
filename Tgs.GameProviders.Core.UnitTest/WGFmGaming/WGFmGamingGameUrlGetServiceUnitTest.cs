@@ -21,16 +21,13 @@ public class WGFmGamingGameUrlGetServiceUnitTest
 
 		var query = new WGFmGamingGameUrlQuery
 		{
-			GameType = GameType.Slot,
+			PlayerCode = "4ucmqplxb029",
 			GameId = 1,
-			BrandCode = "GPI",
-			PlayerCode = "test",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
-			BackUrl = new("http://localhost/")
+			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
 
 		var gameProviderId = Guid.NewGuid();
@@ -74,7 +71,7 @@ public class WGFmGamingGameUrlGetServiceUnitTest
 		var currencyCode = "RMB";
 		_ = fakeGameProviderRepository.GetGameProviderCurrencyCodeAsync(
 			Arg.Is(gameProviderId),
-			Arg.Is(query.CurrencyCode)).Returns(currencyCode);
+			Arg.Is(player.DefaultWalletCurrencyCode)).Returns(currencyCode);
 
 		var token = Guid.NewGuid().ToString("N");
 		_ = fakeGameInterfaceWGFmGamingClient
@@ -106,7 +103,7 @@ public class WGFmGamingGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(gameUrl, actual);
+		Assert.Equal(gameUrl.ToString(), actual);
 	}
 
 	[Fact]
@@ -119,16 +116,13 @@ public class WGFmGamingGameUrlGetServiceUnitTest
 
 		var query = new WGFmGamingGameUrlQuery
 		{
-			GameType = GameType.Slot,
+			PlayerCode = "4ucmqplxb029",
 			GameId = 1,
-			BrandCode = "GPI",
-			PlayerCode = "test",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
-			BackUrl = new("http://localhost/")
+			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
 
 		var gameProviderId = Guid.NewGuid();
@@ -172,7 +166,7 @@ public class WGFmGamingGameUrlGetServiceUnitTest
 		var currencyCode = "RMB";
 		_ = fakeGameProviderRepository.GetGameProviderCurrencyCodeAsync(
 			Arg.Is(gameProviderId),
-			Arg.Is(query.CurrencyCode)).Returns(currencyCode);
+			Arg.Is(player.DefaultWalletCurrencyCode)).Returns(currencyCode);
 
 		var token = Guid.NewGuid().ToString("N");
 		_ = fakeGameInterfaceWGFmGamingClient
@@ -204,6 +198,6 @@ public class WGFmGamingGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(gameUrl, actual);
+		Assert.Equal(gameUrl.ToString(), actual);
 	}
 }

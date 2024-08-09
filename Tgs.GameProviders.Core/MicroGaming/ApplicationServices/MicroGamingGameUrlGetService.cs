@@ -13,9 +13,9 @@ public class MicroGamingGameUrlGetService(
 	IPlayerRepository player,
 	IBrandRepository brand,
 	IGameRepository gameRepository,
-	IGameInterfaceMicroGamingClient client) : IGetService<MicroGamingGameUrlQuery, Uri>
+	IGameInterfaceMicroGamingClient client) : IGetService<MicroGamingGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(MicroGamingGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(MicroGamingGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.MicroGaming,
@@ -40,7 +40,7 @@ public class MicroGamingGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "en";
 		var gameInfo = await gameRepository.GetAsync(
-			gameId: query.GameId.Value,
+			gameId: query.GameId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
@@ -62,6 +62,6 @@ public class MicroGamingGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new Uri(reply.GameUrl);
+		return reply.GameUrl;
 	}
 }

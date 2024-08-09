@@ -23,16 +23,13 @@ public class GKXGamingGameUrlGetServiceUnitTest
 
 		var query = new GKXGamingGameUrlQuery
 		{
-			GameType = GameType.CardGameLobby,
+			PlayerCode = "4ucmqplxb029",
 			GameId = 1,
-			BrandCode = "GPI",
-			PlayerCode = "test",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
-			BackUrl = new("http://localhost/")
+			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
 
 		var gameProviderId = Guid.NewGuid();
@@ -101,10 +98,9 @@ public class GKXGamingGameUrlGetServiceUnitTest
 			AvailableCurrencies: null,
 			Localization: null,
 			SubGameProviderCode: GameProviderType.GKXGaming);
-		_ = fakeGame
-			.GetAsync(
-				Arg.Is(query.GameId.Value),
-				cancellationToken: Arg.Any<CancellationToken>())
+		_ = fakeGame.GetAsync(
+			gameId: Arg.Is(query.GameId),
+			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(gameInfo);
 
 		var cultureCode = "en-us";

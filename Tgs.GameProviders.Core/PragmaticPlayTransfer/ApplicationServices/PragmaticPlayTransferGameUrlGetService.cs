@@ -12,9 +12,9 @@ internal class PragmaticPlayTransferGameUrlGetService(
 	IPlayerRepository player,
 	IBrandRepository brand,
 	IGameRepository game,
-	IGameInterfacePragmaticPlayClient client) : IGetService<PragmaticPlayTransferGameUrlQuery, Uri>
+	IGameInterfacePragmaticPlayClient client) : IGetService<PragmaticPlayTransferGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(
+	public async ValueTask<string> GetAsync(
 		PragmaticPlayTransferGameUrlQuery query,
 		CancellationToken cancellationToken = default)
 	{
@@ -41,7 +41,7 @@ internal class PragmaticPlayTransferGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "en";
 		var gameInfo = await game.GetAsync(
-			gameId: query.GameId!.Value,
+			gameId: query.GameId!,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
@@ -87,6 +87,6 @@ internal class PragmaticPlayTransferGameUrlGetService(
 				.ConfigureAwait(false);
 		}
 
-		return response.IsPlayerExist ? new Uri(response.GameUrl) : throw new Exception($"player does not exist.({playerInfo.PlayerCode})");
+		return response.IsPlayerExist ? response.GameUrl : throw new Exception($"player does not exist.({playerInfo.PlayerCode})");
 	}
 }

@@ -8,7 +8,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.HabaneroTransfer.ApplicationServices;
 
-internal class HabaneroTransferGameUrlGetService : IGetService<HabaneroTransferGameUrlQuery, Uri>
+internal class HabaneroTransferGameUrlGetService : IGetService<HabaneroTransferGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceHabaneroClient _client;
@@ -30,7 +30,7 @@ internal class HabaneroTransferGameUrlGetService : IGetService<HabaneroTransferG
 		_game = game ?? throw new ArgumentNullException(nameof(game));
 	}
 
-	public async ValueTask<Uri> GetAsync(HabaneroTransferGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(HabaneroTransferGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.HabaneroTransfer,
@@ -60,7 +60,7 @@ internal class HabaneroTransferGameUrlGetService : IGetService<HabaneroTransferG
 			.ConfigureAwait(false) ?? "en";
 
 		var game = await _game.GetAsync(
-			gameId: query.GameId.Value,
+			gameId: query.GameId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
@@ -94,8 +94,6 @@ internal class HabaneroTransferGameUrlGetService : IGetService<HabaneroTransferG
 		queryStrings.Add("mode", "real");
 		queryStrings.Add("locale", cultureCode);
 
-		var url = new Uri(configuration.GameApiUrl, $"play?{queryStrings}");
-
-		return url;
+		return new Uri(configuration.GameApiUrl, $"play?{queryStrings}").ToString();
 	}
 }

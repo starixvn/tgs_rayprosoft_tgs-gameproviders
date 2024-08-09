@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
@@ -38,16 +39,13 @@ public class SkywindTransferGameUrlGetServiceUnitTest
 
 		var query = new SkywindTransferGameUrlQuery
 		{
-			GameType = GameType.Slot,
+			PlayerCode = "4ucmqplxb029",
 			GameId = 1,
-			BrandCode = "GPI",
-			PlayerCode = "test",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
-			BackUrl = new("http://localhost/")
+			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
 
 		var gameProviderId = Guid.NewGuid();
@@ -76,7 +74,7 @@ public class SkywindTransferGameUrlGetServiceUnitTest
 		var currencyCode = "CNY";
 		_ = fakeGameProviderRepository.GetGameProviderCurrencyCodeAsync(
 			Arg.Is(gameProviderId),
-			Arg.Is(query.CurrencyCode)).Returns(currencyCode);
+			Arg.Is(playerModel.DefaultWalletCurrencyCode)).Returns(currencyCode);
 
 		var gameInfo = new GameInfo(
 			GameId: 1,
@@ -97,7 +95,9 @@ public class SkywindTransferGameUrlGetServiceUnitTest
 			AvailableCurrencies: null,
 			Localization: null,
 			SubGameProviderCode: GameProviderType.SkywindTransfer);
-		_ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
+		_ = fakeGameRepository.GetAsync(
+			gameId: Arg.Is(query.GameId),
+			cancellationToken: Arg.Any<CancellationToken>()).Returns(gameInfo);
 
 		var request = new GameUrlRequest()
 		{
@@ -129,6 +129,6 @@ public class SkywindTransferGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri("http://localhost/"), actual);
+		Assert.Equal("http://localhost/", actual);
 	}
 }

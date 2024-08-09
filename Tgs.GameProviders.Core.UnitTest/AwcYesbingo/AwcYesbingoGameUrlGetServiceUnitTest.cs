@@ -24,14 +24,11 @@ public class AwcYesbingoGameUrlGetServiceUnitTest
 
 		var query = new AwcYesbingoGameUrlQuery
 		{
-			GameType = GameType.Slot,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -108,10 +105,9 @@ public class AwcYesbingoGameUrlGetServiceUnitTest
 			AvailableCurrencies: null,
 			Localization: null,
 			SubGameProviderCode: GameProviderType.AWC_YESBINGO);
-		_ = fakeGame
-			.GetAsync(
-			Arg.Is(query.GameId.Value),
-			Arg.Any<CancellationToken>())
+		_ = fakeGame.GetAsync(
+			gameId: Arg.Is(query.GameId),
+			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(game);
 
 		var response = new GameUrlReply()
@@ -171,14 +167,11 @@ public class AwcYesbingoGameUrlGetServiceUnitTest
 
 		var query = new AwcYesbingoGameUrlQuery
 		{
-			GameType = GameType.Slot,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -255,13 +248,12 @@ public class AwcYesbingoGameUrlGetServiceUnitTest
 			AvailableCurrencies: null,
 			Localization: null,
 			SubGameProviderCode: GameProviderType.AWC_YESBINGO);
-		_ = fakeGame
-			.GetAsync(
-			Arg.Is(query.GameId.Value),
-			Arg.Any<CancellationToken>())
+		_ = fakeGame.GetAsync(
+			gameId: Arg.Is(query.GameId),
+			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(game);
 
-		var gameUrl = new Uri("http://www.google.com");
+		var gameUrl = "http://www.google.com";
 		var response = new GameUrlReply()
 		{
 			IsPlayerExist = true,

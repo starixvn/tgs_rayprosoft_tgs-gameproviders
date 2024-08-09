@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.CrPati.ApplicationServices;
 using Tgs.GameProviders.Core.CRSports.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
@@ -12,27 +13,15 @@ namespace Tgs.GameProviders.Controllers;
 public class CRSportsController : ControllerBase
 {
 	[HttpPost("gameurl")]
-	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<CRSportsGameUrlQuery, Uri> service,
-		GameUrlRequest request)
+	public async ValueTask<GameUrlResponse> GameUrlAsync(
+		[FromServices] IGetService<CRSportsGameUrlQuery, string> service,
+		CRSportsGameUrlQuery source)
 	{
 		var result = await service.GetAsync(
-				query: new CRSportsGameUrlQuery
-				{
-					GameType = request.GameType,
-					GameId = request.GameId,
-					BrandCode = request.BrandCode,
-					PlayerCode = request.PlayerCode,
-					CurrencyCode = request.CurrencyCode,
-					LoginRecordId = request.LoginRecordId,
-					PlatformType = request.PlatformType,
-					Language = request.Language,
-					IPAddress = request.IPAddress,
-					BackUrl = request.BackUrl
-				},
-				cancellationToken: HttpContext.RequestAborted)
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
-		return new GameUrlResponse { Url = result };
+		return new GameUrlResponse() { Url = new(result) };
 	}
 
 	[HttpDelete("player/{playerCode}/logout")]

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
+using Tgs.GameProviders.Core.TFGamingTransfer.ApplicationServices;
 using Tgs.GameProviders.Core.TPhere.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
@@ -12,51 +13,16 @@ namespace Tgs.GameProviders.Controllers;
 [ApiController]
 public class TPhereController : ControllerBase
 {
-	/// <summary>
-	/// Games the URL asynchronous.
-	/// </summary>
-	/// <param name="getService">The get service.</param>
-	/// <param name="request">The request.</param>
-	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "gameType": 16,
-	///             "gameId": 3000001,
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-	///             "platformType": 0,
-	///             "language": "zh-CN",
-	///             "ipAddress": "127.0.0.1",
-	///             "backUrl": "https://dev-t1.rpgp.cc/"
-	///         }
-	/// </remarks>
 	[HttpPost("gameurl")]
 	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<TPhereGameUrlQuery, string> getService,
-		GameUrlRequest request)
+		[FromServices] IGetService<TPhereGameUrlQuery, string> service,
+		TPhereGameUrlQuery source)
 	{
-		var result = await getService.GetAsync(
-				query: new TPhereGameUrlQuery()
-				{
-					GameType = request.GameType,
-					GameId = request.GameId,
-					BrandCode = request.BrandCode,
-					PlayerCode = request.PlayerCode,
-					CurrencyCode = request.CurrencyCode,
-					LoginRecordId = request.LoginRecordId,
-					PlatformType = request.PlatformType,
-					Language = request.Language,
-					IPAddress = request.IPAddress,
-					BackUrl = request.BackUrl
-				},
-				cancellationToken: HttpContext.RequestAborted)
+		var result = await service.GetAsync(
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
-		return new GameUrlResponse() { Url = new Uri(result) };
+		return new GameUrlResponse() { Url = new(result) };
 	}
 
 	/// <summary>

@@ -70,15 +70,13 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
 
 		var query = new EvolutionTransferGameUrlQuery
 		{
-			GameType = gameInfo.Type,
-			GameId = gameInfo.GameId,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
-			IPAddress = "127.0.0.1"
+			IPAddress = "127.0.0.1",
+			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
 
 		var token = "token";
@@ -95,7 +93,7 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
 		_ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
 			 Arg.Is(gameInfo.GameProviderId),
 			Arg.Is(query.Language)).Returns(gameProviderCultureCode);
-		_ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
+		_ = fakeGameRepository.GetAsync(Arg.Is(query.GameId)).Returns(gameInfo);
 		_ = fakeToken.EncryptAsync(query.LoginRecordId).Returns(token);
 		_ = fakeGameProviderRepository.GetGameProviderCurrencyCodeAsync(
 			Arg.Is(gameInfo.GameProviderId),
@@ -109,13 +107,13 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
 		};
 		_ = fakeGameInterfaceEvolutionServiceGrpc.GetLiveDealerGameUrlAsync(
 			 ua2AuthenticationUrl: configuration.Ua2AuthenticationUrl,
-			 brandCode: query.BrandCode,
+			 brandCode: playerModel.BrandCode,
 			 playerCode: playerModel.PlayerCode,
 			 platformType: (short)query.PlatformType,
 			 ipAddress: query.IPAddress,
 			 encryptedToken: token,
 			 externalCultureCode: gameProviderCultureCode,
-			 externalCurrencyCode: query.CurrencyCode,
+			 externalCurrencyCode: playerModel.DefaultWalletCurrencyCode,
 			 cancellationToken: default
 		).Returns(response);
 
@@ -131,10 +129,8 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
 
 		var path = response.Entry[1..];
 
-		var url = new Uri($"{configuration.ApiUrl}{path}");
-
 		Assert.NotNull(actual);
-		Assert.Equal(url, actual);
+		Assert.Equal($"{configuration.ApiUrl}{path}", actual);
 	}
 
 	[Fact]
@@ -193,15 +189,13 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
 
 		var query = new EvolutionTransferGameUrlQuery
 		{
-			GameType = gameInfo.Type,
-			GameId = gameInfo.GameId,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
-			IPAddress = "127.0.0.1"
+			IPAddress = "127.0.0.1",
+			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
 
 		var token = "token";
@@ -218,7 +212,7 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
 		_ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
 			 Arg.Is(gameInfo.GameProviderId),
 			Arg.Is(query.Language)).Returns(gameProviderCultureCode);
-		_ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
+		_ = fakeGameRepository.GetAsync(Arg.Is(query.GameId)).Returns(gameInfo);
 		_ = fakeToken.EncryptAsync(query.LoginRecordId).Returns(token);
 		_ = fakeGameProviderRepository.GetGameProviderCurrencyCodeAsync(
 			Arg.Is(gameInfo.GameProviderId),
@@ -232,14 +226,14 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
 		};
 		_ = fakeGameInterfaceEvolutionServiceGrpc.GetSlotGameUrlAsync(
 			 ua2AuthenticationUrl: configuration.Ua2AuthenticationUrl,
-			 brandCode: query.BrandCode,
+			 brandCode: playerModel.BrandCode,
 			 playerCode: playerModel.PlayerCode,
 			 platformType: (short)query.PlatformType,
 			 ipAddress: query.IPAddress,
 			 encryptedToken: token,
 			 externalGameId: gameInfo.GameExternalId,
 			 externalCultureCode: gameProviderCultureCode,
-			 externalCurrencyCode: query.CurrencyCode,
+			 externalCurrencyCode: playerModel.DefaultWalletCurrencyCode,
 			 cancellationToken: default
 		).Returns(response);
 
@@ -255,9 +249,7 @@ public class EvolutionTransferGameUrlGetServiceUnitTest
 
 		var path = response.Entry[1..];
 
-		var url = new Uri($"{configuration.ApiUrl}{path}");
-
 		Assert.NotNull(actual);
-		Assert.Equal(url, actual);
+		Assert.Equal($"{configuration.ApiUrl}{path}", actual);
 	}
 }

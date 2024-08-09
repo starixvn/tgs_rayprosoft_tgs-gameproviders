@@ -9,7 +9,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SBOTransfer.ApplicationServices;
 
-public class SBOTransferGameUrlGetService : IGetService<SBOTransferGameUrlQuery, Uri>
+public class SBOTransferGameUrlGetService : IGetService<SBOTransferGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brandRepository;
 	private readonly IGameInterfaceSBOClient _client;
@@ -31,7 +31,7 @@ public class SBOTransferGameUrlGetService : IGetService<SBOTransferGameUrlQuery,
 		_gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
 	}
 
-	public async ValueTask<Uri> GetAsync(SBOTransferGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(SBOTransferGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.SBOTransfer,
@@ -51,7 +51,7 @@ public class SBOTransferGameUrlGetService : IGetService<SBOTransferGameUrlQuery,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 		var game = await _gameRepository.GetAsync(
-			gameId: query.GameId.Value,
+			gameId: query.GameId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 		var cultureCode = await _gameProviderRepository.GetGameProviderCultureCodeAsync(
@@ -93,7 +93,7 @@ public class SBOTransferGameUrlGetService : IGetService<SBOTransferGameUrlQuery,
 				.ConfigureAwait(false);
 		}
 
-		return new(reply.GameUrl);
+		return reply.GameUrl;
 	}
 
 	private ValueTask<GameUrlReply> GetGameUrlReply(

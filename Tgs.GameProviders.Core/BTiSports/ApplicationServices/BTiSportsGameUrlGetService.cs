@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.BTiSports.ApplicationServices;
 
-public class BTiSportsGameUrlGetService : IGetService<BTiSportsGameUrlQuery, Uri>
+public class BTiSportsGameUrlGetService : IGetService<BTiSportsGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceBTiClient _client;
@@ -26,7 +26,7 @@ public class BTiSportsGameUrlGetService : IGetService<BTiSportsGameUrlQuery, Uri
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<Uri> GetAsync(BTiSportsGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(BTiSportsGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider
 			.GetGameProviderIdAsync(
@@ -103,6 +103,6 @@ public class BTiSportsGameUrlGetService : IGetService<BTiSportsGameUrlQuery, Uri
 
 		var layout = query.PlatformType == PlatformType.Desktop ? configuration.DesktopLayout : configuration.MobileLayout;
 
-		return new Uri(configuration.SportsbookURL, $"/{cultureCode}/{layout}/?operatorToken={response.AuthToken}");
+		return new Uri(configuration.SportsbookURL, $"/{cultureCode}/{layout}/?operatorToken={response.AuthToken}").ToString();
 	}
 }

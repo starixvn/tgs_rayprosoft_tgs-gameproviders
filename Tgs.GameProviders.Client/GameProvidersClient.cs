@@ -30,45 +30,12 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 		}
 	};
 
-	public async ValueTask<SM01PlatformLoginResponse> GamePlatformLoginBySM01Async(string playerCode, CancellationToken cancellationToken = default)
+	public async ValueTask<Uri> GameUrlAsync(string gameProviderCode, string playerCode, int gameId, string loginRecordId, string language, GameProvidersClientPlatformType platformType, string ipAddress, Uri? backUrl, CancellationToken cancellationToken = default)
 	{
 		var request = new
 		{
 			PlayerCode = playerCode,
-		};
-
-		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
-		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-		var response = await httpClient
-		   .PostAsync(
-			   requestUri: string.Format("/api/{0}/gameurl", GameProviderType.SM01),
-			   content: requestContent,
-			   cancellationToken: cancellationToken).ConfigureAwait(false);
-
-		_ = response.EnsureSuccessStatusCode();
-
-		return response.StatusCode == HttpStatusCode.NoContent
-			? throw new Exception($"取得{GameProviderType.SM01}遊戲網址失敗.")
-			: JsonSerializer.Deserialize<SM01PlatformLoginResponse>(
-				await response
-				.Content
-				.ReadAsStringAsync(
-					cancellationToken: cancellationToken)
-				.ConfigureAwait(false),
-				_SerializerOptions)
-				?? throw new Exception($"取得{GameProviderType.SM01}遊戲網址失敗.");
-	}
-
-	public async ValueTask<Uri> GameUrlAsync(string gameProviderCode, GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, CancellationToken cancellationToken = default)
-	{
-		var request = new
-		{
-			GameType = gameType,
 			GameId = gameId,
-			BrandCode = brandCode,
-			PlayerCode = playerCode,
-			CurrencyCode = currencyCode,
 			LoginRecordId = loginRecordId,
 			PlatformType = platformType,
 			Language = language,
@@ -76,14 +43,12 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 			BackUrl = backUrl
 		};
 
-		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
-		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
+		var requestContent = JsonContent.Create(request, options: _SerializerOptions);
 
-		var response = await httpClient
-		   .PostAsync(
-			   requestUri: string.Format(_GameURL, gameProviderCode),
-			   content: requestContent,
-			   cancellationToken: cancellationToken).ConfigureAwait(false);
+		var response = await httpClient.PostAsync(
+			requestUri: string.Format(_GameURL, gameProviderCode),
+			content: requestContent,
+			cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		_ = response.EnsureSuccessStatusCode();
 
@@ -97,86 +62,6 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 				.ConfigureAwait(false),
 				_SerializerOptions)?.Url
 				?? throw new Exception($"取得{gameProviderCode}遊戲網址失敗.");
-	}
-
-	public async ValueTask<Uri> GameUrlByAsiaGamingAsync(GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, decimal playerBalance, CancellationToken cancellationToken = default)
-	{
-		var request = new
-		{
-			GameType = gameType,
-			GameId = gameId,
-			BrandCode = brandCode,
-			PlayerCode = playerCode,
-			CurrencyCode = currencyCode,
-			LoginRecordId = loginRecordId,
-			PlatformType = platformType,
-			Language = language,
-			IPAddress = ipAddress,
-			BackUrl = backUrl,
-			PlayerBalance = playerBalance
-		};
-
-		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
-		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-		var response = await httpClient
-			.PostAsync(
-				requestUri: string.Format(_GameURL, GameProviderType.AsiaGaming),
-				content: requestContent,
-				cancellationToken: cancellationToken).ConfigureAwait(false);
-
-		_ = response.EnsureSuccessStatusCode();
-
-		return response.StatusCode == HttpStatusCode.NoContent
-			? throw new Exception($"取得{GameProviderType.AsiaGaming}遊戲網址失敗.")
-			: JsonSerializer.Deserialize<GameUrlResponse>(
-				await response
-				.Content
-				.ReadAsStringAsync(
-					cancellationToken: cancellationToken)
-				.ConfigureAwait(false),
-				_SerializerOptions)?.Url
-				?? throw new Exception($"取得{GameProviderType.AsiaGaming}遊戲網址失敗.");
-	}
-
-	public async ValueTask<Uri> GameUrlByBetConstructAsync(GameProvidersClientGameType gameType, int gameId, string brandCode, string playerCode, string currencyCode, Guid loginRecordId, GameProvidersClientPlatformType platformType, string language, string ipAddress, Uri? backUrl, string lobbyDomain, CancellationToken cancellationToken = default)
-	{
-		var request = new
-		{
-			GameType = gameType,
-			GameId = gameId,
-			BrandCode = brandCode,
-			PlayerCode = playerCode,
-			CurrencyCode = currencyCode,
-			LoginRecordId = loginRecordId,
-			PlatformType = platformType,
-			Language = language,
-			IPAddress = ipAddress,
-			BackUrl = backUrl,
-			LobbyDomain = lobbyDomain
-		};
-
-		var requestContent = new StringContent(JsonSerializer.Serialize(request, _SerializerOptions));
-		requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse(MediaTypeNames.Application.Json);
-
-		var response = await httpClient
-		   .PostAsync(
-			   requestUri: string.Format(_GameURL, GameProviderType.BetConstruct),
-			   content: requestContent,
-			   cancellationToken: cancellationToken).ConfigureAwait(false);
-
-		_ = response.EnsureSuccessStatusCode();
-
-		return response.StatusCode == HttpStatusCode.NoContent
-			? throw new Exception($"取得{GameProviderType.BetConstruct}遊戲網址失敗.")
-			: JsonSerializer.Deserialize<GameUrlResponse>(
-				await response
-				.Content
-				.ReadAsStringAsync(
-					cancellationToken: cancellationToken)
-				.ConfigureAwait(false),
-				_SerializerOptions)?.Url
-				?? throw new Exception($"取得{GameProviderType.BetConstruct}遊戲網址失敗.");
 	}
 
 	public async ValueTask<PlayerLogoutResponse> PlayerLogoutAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default)

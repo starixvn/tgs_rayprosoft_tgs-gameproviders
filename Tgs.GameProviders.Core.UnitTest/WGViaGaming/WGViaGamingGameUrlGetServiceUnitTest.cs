@@ -22,16 +22,13 @@ public class WGViaGamingGameUrlGetServiceUnitTest
 
 		var query = new WGViaGamingGameUrlQuery
 		{
-			GameType = GameType.Slot,
+			PlayerCode = "4ucmqplxb029",
 			GameId = 1,
-			BrandCode = "GPI",
-			PlayerCode = "test",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
-			BackUrl = new("http://localhost/")
+			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
 
 		var gameProviderId = Guid.NewGuid();
@@ -94,7 +91,7 @@ public class WGViaGamingGameUrlGetServiceUnitTest
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(currencyCode);
 
-		var gameurl = "https://localhost";
+		var gameUrl = "https://localhost";
 		_ = fakeClient
 			.GameUrlAsync(
 			apiUrl: Arg.Is(configurationData.ApiUrl),
@@ -105,7 +102,7 @@ public class WGViaGamingGameUrlGetServiceUnitTest
 			currencyCode: Arg.Is(currencyCode),
 			lang: Arg.Is(cultureCode),
 			cancellationToken: Arg.Any<CancellationToken>())
-			.Returns(gameurl);
+			.Returns(gameUrl);
 
 		var sut = new WGViaGamingGameUrlGetService(
 			fakeGameProviderRepository,
@@ -116,6 +113,6 @@ public class WGViaGamingGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri(gameurl), actual);
+		Assert.Equal(gameUrl, actual);
 	}
 }

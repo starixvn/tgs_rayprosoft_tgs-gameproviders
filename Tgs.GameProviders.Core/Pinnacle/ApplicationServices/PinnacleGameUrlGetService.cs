@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Pinnacle.ApplicationServices;
 
-public class PinnacleGameUrlGetService : IGetService<PinnacleGameUrlQuery, Uri>
+public class PinnacleGameUrlGetService : IGetService<PinnacleGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfacePinnacleClient _client;
@@ -26,7 +26,7 @@ public class PinnacleGameUrlGetService : IGetService<PinnacleGameUrlQuery, Uri>
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<Uri> GetAsync(PinnacleGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(PinnacleGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider
 			.GetGameProviderIdAsync(
@@ -67,6 +67,6 @@ public class PinnacleGameUrlGetService : IGetService<PinnacleGameUrlQuery, Uri>
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new Uri(gameUrl);
+		return gameUrl;
 	}
 }

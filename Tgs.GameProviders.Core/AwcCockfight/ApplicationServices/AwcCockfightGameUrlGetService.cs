@@ -11,9 +11,9 @@ public class AwcCockfightGameUrlGetService(
 	IBrandRepository brandRepository,
 	IGameProviderRepository gameProviderRepository,
 	IGameInterfaceAwcClient client,
-	IPlayerRepository playerRepository) : IGetService<AwcCockfightGameUrlQuery, Uri>
+	IPlayerRepository playerRepository) : IGetService<AwcCockfightGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(AwcCockfightGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(AwcCockfightGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.AWC_COCKFIGHT,
@@ -89,6 +89,6 @@ public class AwcCockfightGameUrlGetService(
 
 		return !reply.IsPlayerExist
 			? throw new Exception($"Player does not exist.({player.PlayerCode})")
-			: new Uri(reply.GameUrl);
+			: reply.GameUrl;
 	}
 }

@@ -9,7 +9,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
 
-public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferGameUrlQuery, Uri>
+public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferGameUrlQuery, string>
 {
 	private readonly IGameRepository _game;
 	private readonly IGameProviderRepository _gameProvider;
@@ -34,9 +34,9 @@ public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferG
 		_tokenProvider = tokenProvider ?? throw new ArgumentNullException(nameof(tokenProvider));
 	}
 
-	public async ValueTask<Uri> GetAsync(EvolutionTransferGameUrlQuery command, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(EvolutionTransferGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
-		var encryptedToken = await _tokenProvider.EncryptAsync(command.LoginRecordId).ConfigureAwait(false);
+		var encryptedToken = await _tokenProvider.EncryptAsync(query.LoginRecordId).ConfigureAwait(false);
 		var gameProviderId = await _gameProvider
 			.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.EvolutionTransfer,
@@ -46,26 +46,25 @@ public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferG
 			.GetEvolutionTransferConfigurationAsync(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player
-			.GetAsync(
-			playerCode: command.PlayerCode,
+		var player = await _player.GetAsync(
+			playerCode: query.PlayerCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 		var cultureCode = await _gameProvider
 			.GetGameProviderCultureCodeAsync(
 			gameProviderId,
-			command.Language,
+			query.Language,
 			cancellationToken)
 			.ConfigureAwait(false) ?? "en-US";
 		var currencyCode = await _gameProvider
 			.GetGameProviderCurrencyCodeAsync(
 			gameProviderId: gameProviderId,
-			currencyCode: command.CurrencyCode,
+			currencyCode: player.DefaultWalletCurrencyCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 		var game = await _game
 			.GetAsync(
-			gameId: command.GameId!.Value,
+			gameId: query.GameId!,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
@@ -74,10 +73,10 @@ public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferG
 			GameType.LiveDealerLobby =>
 				await _grpc.GetLiveDealerGameUrlAsync(
 				configuration.Ua2AuthenticationUrl,
-				command.BrandCode,
+				player.BrandCode,
 				player.PlayerCode,
-				(short)command.PlatformType,
-				command.IPAddress,
+				(short)query.PlatformType,
+				query.IPAddress,
 				encryptedToken,
 				cultureCode,
 				currencyCode,
@@ -85,10 +84,10 @@ public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferG
 			_ =>
 				await _grpc.GetSlotGameUrlAsync(
 				configuration.Ua2AuthenticationUrl,
-				command.BrandCode,
+				player.BrandCode,
 				player.PlayerCode,
-				(short)command.PlatformType,
-				command.IPAddress,
+				(short)query.PlatformType,
+				query.IPAddress,
 				encryptedToken,
 				cultureCode,
 				currencyCode,
@@ -98,6 +97,6 @@ public class EvolutionTransferGameUrlGetService : IGetService<EvolutionTransferG
 
 		var path = response.Entry[1..];
 
-		return new($"{configuration.ApiUrl}{path}");
+		return $"{configuration.ApiUrl}{path}";
 	}
 }

@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.JDBTransfer.ApplicationServices;
 
-public class JDBTransferGameUrlGetService : IGetService<JDBTransferGameUrlQuery, Uri>
+public class JDBTransferGameUrlGetService : IGetService<JDBTransferGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brandRepository;
 	private readonly IGameInterfaceJDBClient _client;
@@ -29,13 +29,28 @@ public class JDBTransferGameUrlGetService : IGetService<JDBTransferGameUrlQuery,
 		_gameRepository = gameRepository ?? throw new ArgumentNullException(nameof(gameRepository));
 	}
 
-	public async ValueTask<Uri> GetAsync(JDBTransferGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(JDBTransferGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(GameProviderType.JDBTransfer).ConfigureAwait(false);
-		var player = await _playerRepository.GetAsync(query.PlayerCode).ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(gameProviderId, player.BrandId).ConfigureAwait(false);
-		var configuration = await _gameProviderRepository.GetJDBTransferConfigurationAsync(gameProviderConfigurationId).ConfigureAwait(false);
-		var game = await _gameRepository.GetAsync(query.GameId.Value).ConfigureAwait(false);
+		var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.JDBTransfer,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var player = await _playerRepository.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken).ConfigureAwait(false);
+		var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: player.BrandId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var configuration = await _gameProviderRepository.GetJDBTransferConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var game = await _gameRepository.GetAsync(
+			gameId: query.GameId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 
 		var cultureCode = await _gameProviderRepository
 			.GetGameProviderCultureCodeAsync(
@@ -85,6 +100,6 @@ public class JDBTransferGameUrlGetService : IGetService<JDBTransferGameUrlQuery,
 				.ConfigureAwait(false);
 		}
 
-		return new(reply.GameUrl);
+		return reply.GameUrl;
 	}
 }

@@ -25,14 +25,11 @@ public class JiliTransferGameUrlGetServiceUnitTest
 
 		var query = new JiliTransferGameUrlQuery
 		{
-			GameType = GameType.Slot,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -104,8 +101,8 @@ public class JiliTransferGameUrlGetServiceUnitTest
 			Localization: null,
 			SubGameProviderCode: GameProviderType.JiliTransfer);
 		_ = fakeGameRepository.GetAsync(
-			Arg.Is(query.GameId.Value),
-			Arg.Any<CancellationToken>())
+			gameId: Arg.Is(query.GameId),
+			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(gameInfo);
 
 		var response = new GameUrlReply()
@@ -132,6 +129,6 @@ public class JiliTransferGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri(response.GameUrl), actual);
+		Assert.Equal(response.GameUrl, actual);
 	}
 }

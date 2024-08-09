@@ -11,9 +11,9 @@ public class CRSportsGameUrlGetService(
 	IGameProviderRepository gameProvider,
 	IPlayerRepository player,
 	IBrandRepository brand,
-	IGameInterfaceCRSportsClient client) : IGetService<CRSportsGameUrlQuery, Uri>
+	IGameInterfaceCRSportsClient client) : IGetService<CRSportsGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(CRSportsGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(CRSportsGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.CRSports,
@@ -57,6 +57,6 @@ public class CRSportsGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new Uri(reply.GameUrl);
+		return reply.GameUrl;
 	}
 }

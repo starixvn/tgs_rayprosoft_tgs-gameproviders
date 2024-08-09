@@ -22,14 +22,11 @@ public class Cards365TransferGameUrlGetServiceUnitTest
 
 		var query = new Cards365TransferGameUrlQuery
 		{
-			GameType = GameType.CardGameLobby,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
-			PlatformType = PlatformType.Desktop,
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
 			Language = "zh-CN",
+			PlatformType = PlatformType.Desktop,
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -118,6 +115,6 @@ public class Cards365TransferGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri(gameUrl), actual);
+		Assert.Equal(gameUrl, actual);
 	}
 }

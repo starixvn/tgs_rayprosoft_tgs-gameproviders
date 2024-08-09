@@ -24,15 +24,15 @@ public class EndorphinaGameUrlGetServiceUnitTest
 		var fakeGameRepository = Substitute.For<IGameRepository>();
 		var fakeSessionClient = Substitute.For<IGameRecordEndorphinaSessionClient>();
 
-		var gameId = 5500019;
-
 		var query = new EndorphinaGameUrlQuery
 		{
 			PlayerCode = "4ucmqplxb029",
-			GameId = gameId,
-			CurrencyCode = "CNY",
-			Language = "en-US",
-			BackUrl = new Uri("http://localhost")
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
+			PlatformType = PlatformType.Desktop,
+			IPAddress = "127.0.0.1",
+			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
 
 		var gameProviderId = Guid.NewGuid();
@@ -65,7 +65,7 @@ public class EndorphinaGameUrlGetServiceUnitTest
 		_ = fakeGameProviderRepository.GetEndorphinaConfigurationAsync(Arg.Is(gameProviderConfigurationId)).Returns(configuration);
 
 		var gameInfo = new GameInfo(
-			GameId: gameId,
+			GameId: query.GameId,
 			GameCode: "Ninja",
 			GameProviderId: Guid.Parse("629101fc-3b1c-4719-881b-dcf3c7263c15"),
 			GameProviderCode: "ENDOR",
@@ -84,9 +84,9 @@ public class EndorphinaGameUrlGetServiceUnitTest
 			Localization: null,
 			SubGameProviderCode: "ENDOR");
 
-		_ = fakeGameRepository.GetAsync(gameId, Arg.Any<CancellationToken>()).Returns(gameInfo);
+		_ = fakeGameRepository.GetAsync(query.GameId, Arg.Any<CancellationToken>()).Returns(gameInfo);
 
-		_ = fakeGameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProviderId, query.CurrencyCode).Returns("CNY");
+		_ = fakeGameProviderRepository.GetGameProviderCurrencyCodeAsync(gameProviderId, player.DefaultWalletCurrencyCode).Returns("CNY");
 
 		_ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(gameProviderId, query.Language).Returns("en");
 
@@ -121,6 +121,6 @@ public class EndorphinaGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri(expected), actual);
+		Assert.Equal(expected, actual);
 	}
 }

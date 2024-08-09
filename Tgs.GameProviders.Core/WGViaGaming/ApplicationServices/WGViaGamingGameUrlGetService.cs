@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.WGViaGaming.ApplicationServices;
 
-public class WGViaGamingGameUrlGetService : IGetService<WGViaGamingGameUrlQuery, Uri>
+public class WGViaGamingGameUrlGetService : IGetService<WGViaGamingGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brandRepository;
 	private readonly IGameInterfaceWGViaGamingClient _client;
@@ -26,45 +26,38 @@ public class WGViaGamingGameUrlGetService : IGetService<WGViaGamingGameUrlQuery,
 		_client = client ?? throw new ArgumentNullException(nameof(client));
 	}
 
-	public async ValueTask<Uri> GetAsync(WGViaGamingGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(WGViaGamingGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProviderRepository
-			.GetGameProviderIdAsync(
+		var gameProviderId = await _gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.WGViaGaming,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _playerRepository
-			.GetAsync(
+		var player = await _playerRepository.GetAsync(
 			playerCode: query.PlayerCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brandRepository
-			.GetBrandGameProviderConfigurationIdAsync(
+		var gameProviderConfigurationId = await _brandRepository.GetBrandGameProviderConfigurationIdAsync(
 			gameProviderId: gameProviderId,
 			brandId: player.BrandId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configurationData = await _gameProviderRepository
-			.GetWGViaGamingConfigurationAsync(
+		var configurationData = await _gameProviderRepository.GetWGViaGamingConfigurationAsync(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var cultureCode = await _gameProviderRepository
-			.GetGameProviderCultureCodeAsync(
+		var cultureCode = await _gameProviderRepository.GetGameProviderCultureCodeAsync(
 			gameProviderId: gameProviderId,
 			cultureCode: query.Language,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "2";
-		var currencyCode = await _gameProviderRepository
-			.GetGameProviderCurrencyCodeAsync(
+		var currencyCode = await _gameProviderRepository.GetGameProviderCurrencyCodeAsync(
 			gameProviderId: gameProviderId,
 			currencyCode: player.DefaultWalletCurrencyCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false)
 			?? throw new Exception($"This game product currency does not exist.({player.DefaultWalletCurrencyCode})");
 
-		return new Uri(await _client
-			.GameUrlAsync(
+		return await _client.GameUrlAsync(
 			apiUrl: configurationData.ApiUrl,
 			partnerCode: configurationData.PartnerCode,
 			secretKey: configurationData.PartnerKey,
@@ -73,6 +66,6 @@ public class WGViaGamingGameUrlGetService : IGetService<WGViaGamingGameUrlQuery,
 			currencyCode: currencyCode,
 			lang: cultureCode,
 			cancellationToken: cancellationToken)
-			.ConfigureAwait(false));
+			.ConfigureAwait(false);
 	}
 }

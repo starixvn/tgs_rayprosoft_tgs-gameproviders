@@ -24,14 +24,11 @@ public class MicroGamingGameUrlGetServiceUnitTest
 
 		var query = new MicroGamingGameUrlQuery
 		{
-			GameType = GameType.Sportsbook,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
-			PlatformType = PlatformType.Desktop,
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
 			Language = "zh-CN",
+			PlatformType = PlatformType.Desktop,
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -105,7 +102,7 @@ public class MicroGamingGameUrlGetServiceUnitTest
 			Localization: null,
 			SubGameProviderCode: GameProviderType.CQ9Gaming);
 		_ = fakeGameRepository.GetAsync(
-			gameId: Arg.Is(query.GameId.Value),
+			gameId: Arg.Is(query.GameId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(game);
 

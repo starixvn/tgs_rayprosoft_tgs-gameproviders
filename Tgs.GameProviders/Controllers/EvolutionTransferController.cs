@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.Endorphina.ApplicationServices;
 using Tgs.GameProviders.Core.EvolutionTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
@@ -11,31 +12,16 @@ namespace Tgs.GameProviders.Controllers;
 [ApiController]
 public class EvolutionTransferController : ControllerBase
 {
-	/// <summary>
-	/// Games the URL asynchronous.
-	/// </summary>
-	/// <param name="service">The service.</param>
-	/// <param name="request">The request.</param>
-	/// <returns></returns>
 	[HttpPost("gameurl")]
-	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<EvolutionTransferGameUrlQuery, Uri> service,
-		GameUrlRequest request)
+	public async ValueTask<GameUrlResponse> GameUrlAsync(
+		[FromServices] IGetService<EvolutionTransferGameUrlQuery, string> service,
+		EvolutionTransferGameUrlQuery source)
 	{
-		var result = await service.GetAsync(new EvolutionTransferGameUrlQuery()
-		{
-			GameType = request.GameType,
-			GameId = request.GameId,
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			LoginRecordId = request.LoginRecordId,
-			PlatformType = request.PlatformType,
-			Language = request.Language,
-			IPAddress = request.IPAddress,
-			BackUrl = request.BackUrl
-		}).ConfigureAwait(false);
-		return result == null ? null : new GameUrlResponse() { Url = result };
+		var result = await service.GetAsync(
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
+		return new GameUrlResponse() { Url = new(result) };
 	}
 
 	/// <summary>

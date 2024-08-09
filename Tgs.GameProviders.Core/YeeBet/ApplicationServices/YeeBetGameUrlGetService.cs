@@ -12,9 +12,9 @@ public class YeeBetGameUrlGetService(
 	IPlayerRepository playerRepository,
 	IBrandRepository brandRepository,
 	IGameInterfaceYeeBetClient client,
-	ICommandService<YeeBetPlayerCreateCommand> playerCreateService) : IGetService<YeeBetGameUrlQuery, Uri>
+	ICommandService<YeeBetPlayerCreateCommand> playerCreateService) : IGetService<YeeBetGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(YeeBetGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(YeeBetGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.YeeBet,
@@ -58,7 +58,7 @@ public class YeeBetGameUrlGetService(
 				.ConfigureAwait(false);
 		}
 
-		var response = await client.GameUrlAsync(
+		var gameUrl = await client.GameUrlAsync(
 			apiUrl: configuration.ApiUrl,
 			appId: configuration.AppId,
 			secretKey: configuration.SecretKey,
@@ -68,6 +68,6 @@ public class YeeBetGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new Uri(response);
+		return gameUrl;
 	}
 }

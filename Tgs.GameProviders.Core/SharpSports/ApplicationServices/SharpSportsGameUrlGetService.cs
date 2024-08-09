@@ -11,9 +11,9 @@ public class SharpSportsGameUrlGetService(
 	IGameProviderRepository gameProviderRepository,
 	IPlayerRepository playerRepository,
 	IBrandRepository brandRepository,
-	IGameInterfaceSharpSportsClient client) : IGetService<SharpSportsGameUrlQuery, Uri>
+	IGameInterfaceSharpSportsClient client) : IGetService<SharpSportsGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(SharpSportsGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(SharpSportsGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.SharpSports,
@@ -50,6 +50,6 @@ public class SharpSportsGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new Uri(reply.GameUrl);
+		return reply.GameUrl;
 	}
 }

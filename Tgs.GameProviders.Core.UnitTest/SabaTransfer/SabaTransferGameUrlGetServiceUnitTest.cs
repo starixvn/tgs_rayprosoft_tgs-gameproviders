@@ -22,14 +22,11 @@ public class SabaTransferGameUrlGetServiceUnitTest
 
 		var query = new SabaTransferGameUrlQuery
 		{
-			GameType = GameType.Slot,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -91,6 +88,6 @@ public class SabaTransferGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri($"http://localhost/DepositProcessLogin?token=QwAfMp4OEKSUwoe48C/CA&lang={gameProviderCultureCode}"), actual);
+		Assert.Equal($"http://localhost/DepositProcessLogin?token=QwAfMp4OEKSUwoe48C/CA&lang={gameProviderCultureCode}", actual);
 	}
 }

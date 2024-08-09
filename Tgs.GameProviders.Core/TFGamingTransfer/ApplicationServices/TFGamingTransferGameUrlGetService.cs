@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.TFGamingTransfer.ApplicationServices;
 
-internal class TFGamingTransferGameUrlGetService : IGetService<TFGamingTransferGameUrlQuery, Uri>
+internal class TFGamingTransferGameUrlGetService : IGetService<TFGamingTransferGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceTFGamingClient _client;
@@ -26,7 +26,7 @@ internal class TFGamingTransferGameUrlGetService : IGetService<TFGamingTransferG
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<Uri> GetAsync(TFGamingTransferGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(TFGamingTransferGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(GameProviderType.TFGamingTransfer).ConfigureAwait(false);
 		var player = await _player.GetAsync(query.PlayerCode).ConfigureAwait(false);
@@ -41,6 +41,6 @@ internal class TFGamingTransferGameUrlGetService : IGetService<TFGamingTransferG
 				cancellation: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new Uri(response.GameUrl);
+		return response.GameUrl;
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
 using Tgs.GameProviders.Core.SBOTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
@@ -15,14 +16,13 @@ public class SBOTransferController : ControllerBase
 	/// Games the URL asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
-	/// <param name="request">The request.</param>
+	/// <param name="source">The source.</param>
 	/// <returns></returns>
 	/// <remarks>
 	/// <b>Example</b><br />
 	///
 	///     Post Sportsbook
 	///         {
-	///             "gameType": 1,
 	///             "gameId": 4800001,
 	///             "brandCode": "GPI",
 	///             "playerCode": "4ucmqplxb029",
@@ -36,7 +36,6 @@ public class SBOTransferController : ControllerBase
 	///
 	///     Post VirtualSportsLobby
 	///         {
-	///             "gameType": 3,
 	///             "gameId": 4800002,
 	///             "brandCode": "GPI",
 	///             "playerCode": "4ucmqplxb029",
@@ -50,29 +49,14 @@ public class SBOTransferController : ControllerBase
 	/// </remarks>
 	[HttpPost("gameurl")]
 	public async ValueTask<GameUrlResponse> GameUrlAsync(
-		[FromServices] IGetService<SBOTransferGameUrlQuery, Uri> service,
-		GameUrlRequest request)
+		[FromServices] IGetService<SBOTransferGameUrlQuery, string> service,
+		SBOTransferGameUrlQuery source)
 	{
-		var query = new SBOTransferGameUrlQuery()
-		{
-			GameType = request.GameType,
-			GameId = request.GameId,
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			LoginRecordId = request.LoginRecordId,
-			PlatformType = request.PlatformType,
-			Language = request.Language,
-			IPAddress = request.IPAddress,
-			BackUrl = request.BackUrl
-		};
-
-		var gameUrl = await service.GetAsync(query).ConfigureAwait(false);
-
-		return new GameUrlResponse()
-		{
-			Url = gameUrl
-		};
+		var result = await service.GetAsync(
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
+		return new GameUrlResponse() { Url = new(result) };
 	}
 
 	/// <summary>

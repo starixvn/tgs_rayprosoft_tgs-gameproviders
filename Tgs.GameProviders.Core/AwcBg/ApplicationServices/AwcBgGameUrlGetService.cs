@@ -11,9 +11,9 @@ public class AwcBgGameUrlGetService(
 	IBrandRepository brand,
 	IGameProviderRepository gameProvider,
 	IGameInterfaceAwcClient client,
-	IPlayerRepository player) : IGetService<AwcBgGameUrlQuery, Uri>
+	IPlayerRepository player) : IGetService<AwcBgGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(AwcBgGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(AwcBgGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.AWC_BG,
@@ -89,6 +89,6 @@ public class AwcBgGameUrlGetService(
 
 		return !reply.IsPlayerExist
 			? throw new Exception($"Player does not exist.({playerInfo.PlayerCode})")
-			: new Uri(reply.GameUrl);
+			: reply.GameUrl;
 	}
 }

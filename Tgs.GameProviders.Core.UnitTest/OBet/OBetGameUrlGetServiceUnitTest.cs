@@ -23,14 +23,11 @@ public class OBetGameUrlGetServiceUnitTest
 
 		var query = new OBetGameUrlQuery
 		{
-			GameType = GameType.Slot,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
-			PlatformType = PlatformType.Desktop,
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
 			Language = "zh-CN",
+			PlatformType = PlatformType.Desktop,
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -120,7 +117,7 @@ public class OBetGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri(gameUrlReply.GameUrl), actual);
+		Assert.Equal(gameUrlReply.GameUrl, actual);
 
 		await fakeClient
 			.Received(1)

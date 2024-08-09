@@ -11,9 +11,9 @@ public class DreamGamingTransferGameUrlGetService(
 	IBrandRepository brandRepository,
 	IGameProviderRepository gameProviderRepository,
 	IGameInterfaceDreamGamingClient client,
-	IPlayerRepository playerRepository) : IGetService<DreamGamingTransferGameUrlQuery, Uri>
+	IPlayerRepository playerRepository) : IGetService<DreamGamingTransferGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(DreamGamingTransferGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(DreamGamingTransferGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.DreamGamingTransfer,
@@ -49,6 +49,6 @@ public class DreamGamingTransferGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new Uri(response.GameUrl);
+		return response.GameUrl;
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.SBOTransfer.ApplicationServices;
 using Tgs.GameProviders.Core.SharpSports.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
@@ -11,34 +12,16 @@ namespace Tgs.GameProviders.Controllers;
 [ApiController]
 public class SharpSportsController : ControllerBase
 {
-	/// <summary>
-	/// Games the URL asynchronous.
-	/// </summary>
-	/// <param name="service">The service.</param>
-	/// <param name="request">The request.</param>
-	/// <returns></returns>
 	[HttpPost("gameurl")]
 	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<SharpSportsGameUrlQuery, Uri> service,
-		GameUrlRequest request)
+		[FromServices] IGetService<SharpSportsGameUrlQuery, string> service,
+		SharpSportsGameUrlQuery source)
 	{
 		var result = await service.GetAsync(
-				query: new SharpSportsGameUrlQuery()
-				{
-					GameType = request.GameType,
-					GameId = request.GameId,
-					BrandCode = request.BrandCode,
-					PlayerCode = request.PlayerCode,
-					CurrencyCode = request.CurrencyCode,
-					LoginRecordId = request.LoginRecordId,
-					PlatformType = request.PlatformType,
-					Language = request.Language,
-					IPAddress = request.IPAddress,
-					BackUrl = request.BackUrl
-				},
-				cancellationToken: HttpContext.RequestAborted)
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
-		return new GameUrlResponse() { Url = result };
+		return new GameUrlResponse() { Url = new(result) };
 	}
 
 	/// <summary>

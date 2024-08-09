@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.WicketCricket.ApplicationServices;
 using Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
@@ -11,31 +12,16 @@ namespace Tgs.GameProviders.Controllers;
 [ApiController]
 public class WMCasinoTransferController : ControllerBase
 {
-	/// <summary>
-	/// Games the URL asynchronous.
-	/// </summary>
-	/// <param name="service">The service.</param>
-	/// <param name="request">The request.</param>
-	/// <returns></returns>
 	[HttpPost("gameurl")]
 	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<WMCasinoTransferGameUrlQuery, Uri> service,
-		GameUrlRequest request)
+		[FromServices] IGetService<WMCasinoTransferGameUrlQuery, string> service,
+		WMCasinoTransferGameUrlQuery source)
 	{
-		var result = await service.GetAsync(new WMCasinoTransferGameUrlQuery()
-		{
-			GameType = request.GameType,
-			GameId = request.GameId,
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			LoginRecordId = request.LoginRecordId,
-			PlatformType = request.PlatformType,
-			Language = request.Language,
-			IPAddress = request.IPAddress,
-			BackUrl = request.BackUrl
-		}).ConfigureAwait(false);
-		return result == null ? null : new GameUrlResponse() { Url = result };
+		var result = await service.GetAsync(
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
+		return new GameUrlResponse() { Url = new(result) };
 	}
 
 	/// <summary>

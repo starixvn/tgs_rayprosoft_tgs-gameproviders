@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.AwcYl.ApplicationServices;
 using Tgs.GameProviders.Core.BTiSports.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
@@ -15,50 +16,18 @@ public class BTiSportsController : ControllerBase
 	/// Games the URL asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
-	/// <param name="request">The request.</param>
+	/// <param name="source">The source.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "gameType": 1,
-	///             "gameId": 4800001,
-	///             "brandCode": "GPI",
-	///             "playerCode": "4ucmqplxb029",
-	///             "currencyCode": "CNY",
-	///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-	///             "platformType": 0,
-	///             "language": "zh-CN",
-	///             "ipAddress": "127.0.0.1",
-	///             "backUrl": "https://dev-t1.rpgp.cc/"
-	///         }
-	/// </remarks>
 	[HttpPost("gameurl")]
 	public async ValueTask<GameUrlResponse> GameUrlAsync(
-		[FromServices] IGetService<BTiSportsGameUrlQuery, Uri> service,
-		GameUrlRequest request)
+		[FromServices] IGetService<BTiSportsGameUrlQuery, string> service,
+		BTiSportsGameUrlQuery source)
 	{
-		var query = new BTiSportsGameUrlQuery()
-		{
-			GameType = request.GameType,
-			GameId = request.GameId,
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			LoginRecordId = request.LoginRecordId,
-			PlatformType = request.PlatformType,
-			Language = request.Language,
-			IPAddress = request.IPAddress,
-			BackUrl = request.BackUrl
-		};
-
-		var gameUrl = await service.GetAsync(query).ConfigureAwait(false);
-
-		return new GameUrlResponse()
-		{
-			Url = gameUrl
-		};
+		var result = await service.GetAsync(
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
+		return new GameUrlResponse() { Url = new(result) };
 	}
 
 	/// <summary>
