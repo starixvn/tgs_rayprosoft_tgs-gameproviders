@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Tgs.GameInterface.CQ9Gaming.Client;
 using Tgs.GameInterface.GlobalTechnology.Client;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;

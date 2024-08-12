@@ -246,7 +246,7 @@ public class PragmaticPlayTransferGameUrlGetServiceUnitTest
 			AvailableCurrencies: null,
 			Localization: null,
 			SubGameProviderCode: GameProviderType.PragmaticPlayTransfer);
-		_ = fakeGameRepository	.GetAsync(
+		_ = fakeGameRepository.GetAsync(
 			gameId: Arg.Is(query.GameId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(game);

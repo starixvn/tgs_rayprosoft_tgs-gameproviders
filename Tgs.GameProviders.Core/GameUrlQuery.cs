@@ -1,6 +1,7 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using Tgs.GameProviders.Domains;
 
 namespace Tgs.GameProviders.Core;
 

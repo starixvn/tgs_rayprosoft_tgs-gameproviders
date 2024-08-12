@@ -1,7 +1,5 @@
 ﻿using System.Net;
-using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Net.Mime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Web;
@@ -30,7 +28,7 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 		}
 	};
 
-	public async ValueTask<Uri> GameUrlAsync(string gameProviderCode, string playerCode, int gameId, string loginRecordId, string language, GameProvidersClientPlatformType platformType, string ipAddress, Uri? backUrl, CancellationToken cancellationToken = default)
+	public async ValueTask<Uri> GameUrlAsync(string gameProviderCode, string playerCode, int gameId, string loginRecordId, string language, PlatformType platformType, string ipAddress, Uri? backUrl, CancellationToken cancellationToken = default)
 	{
 		var request = new
 		{

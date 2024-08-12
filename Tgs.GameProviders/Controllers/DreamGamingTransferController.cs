@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
-using Tgs.GameProviders.Core.CRSports.ApplicationServices;
 using Tgs.GameProviders.Core.DreamGamingTransfer.ApplicationServices;
-using Tgs.GameProviders.Core.GKXGaming.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;

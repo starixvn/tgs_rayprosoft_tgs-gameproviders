@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Tgs.GameProviders.Client;
-using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.WicketCricket.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
@@ -20,7 +19,7 @@ public class GameUrlUnitTest
 		var gameId = 1;
 		var loginRecordId = Guid.NewGuid().ToString();
 		var language = "zh-CN";
-		var platformType = GameProvidersClientPlatformType.Desktop;
+		var platformType = PlatformType.Desktop;
 		var ipAddress = "127.0.0.1";
 		var backUrl = new Uri("https://dev-t1.rpgp.cc/");
 		var expected = "http://localhost/";
