@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.BTiSports.ApplicationServices;
 using Tgs.GameProviders.Core.GKXGaming.ApplicationServices;
 using Tgs.GameProviders.Core.Kaiyuan.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
@@ -16,48 +17,18 @@ public class GKXGamingController : ControllerBase
 	/// Games the URL asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
-	/// <param name="request">The request.</param>
+	/// <param name="source">The source.</param>
 	/// <returns></returns>
-	/// <remarks>
-	/// <b>Example</b><br />
-	///
-	///     Post
-	///         {
-	///             "gameType": 8,
-	///             "gameId": 2000001,
-	///             "brandCode": "GPI_PHP",
-	///             "playerCode": "4uh3pdl0lcii",
-	///             "currencyCode": "PHP",
-	///             "loginRecordId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-	///             "platformType": 0,
-	///             "language": "zh-CN",
-	///             "ipAddress": "127.0.0.1",
-	///             "backUrl": "https://dev-t1.rpgp.cc/"
-	///         }
-	/// </remarks>
 	[HttpPost("gameurl")]
 	public async ValueTask<GameUrlResponse?> GameUrlAsync(
 		[FromServices] IGetService<GKXGamingGameUrlQuery, string> service,
-		GameUrlRequest request)
+		GKXGamingGameUrlQuery source)
 	{
-		var result = await service
-			.GetAsync(
-				query: new()
-				{
-					GameType = request.GameType,
-					GameId = request.GameId,
-					BrandCode = request.BrandCode,
-					PlayerCode = request.PlayerCode,
-					CurrencyCode = request.CurrencyCode,
-					LoginRecordId = request.LoginRecordId,
-					PlatformType = request.PlatformType,
-					Language = request.Language,
-					IPAddress = request.IPAddress,
-					BackUrl = request.BackUrl
-				},
-				cancellationToken: HttpContext.RequestAborted)
+		var result = await service.GetAsync(
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
-		return result == null ? null : new GameUrlResponse() { Url = new(result) };
+		return new GameUrlResponse() { Url = new(result) };
 	}
 
 	/// <summary>

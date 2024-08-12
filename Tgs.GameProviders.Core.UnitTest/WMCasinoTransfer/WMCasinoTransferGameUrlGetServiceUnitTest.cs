@@ -23,7 +23,7 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
 		var fakeClient = Substitute.For<IGameInterfaceWMCasinoServiceClient>();
 		var fakePlayerRepository = Substitute.For<IPlayerRepository>();
 
-		var gameUrl = new Uri("http://www.google.com");
+		var gameUrl = "http://www.google.com";
 
 		var configuration = new WMCasinoTransferConfiguration
 		{
@@ -66,14 +66,11 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
 
 		var query = new WMCasinoTransferGameUrlQuery
 		{
-			GameType = gameInfo.Type,
-			GameId = gameInfo.GameId,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "0",
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -88,7 +85,7 @@ public class WMCasinoTransferGameUrlGetServiceUnitTest
 		_ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
 			Arg.Is(gameInfo.GameProviderId),
 			Arg.Is(query.Language)).Returns(gameProviderCultureCode);
-		_ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
+		_ = fakeGameRepository.GetAsync(Arg.Is(query.GameId)).Returns(gameInfo);
 
 		var response = new GameUrlReply()
 		{

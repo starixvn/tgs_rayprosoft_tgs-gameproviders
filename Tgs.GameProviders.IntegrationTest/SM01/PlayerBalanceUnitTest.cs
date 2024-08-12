@@ -7,7 +7,6 @@ using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.SM01.ApplicationServices;
 using Tgs.GameProviders.Domains;
 using Tgs.ServiceUtility;
-using Tgs.GameProviders.IntegrationTest;
 
 namespace Tgs.GameProviders.IntegrationTest.SM01;
 

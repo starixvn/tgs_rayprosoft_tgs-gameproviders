@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.AwcRcb.ApplicationServices;
 
-public class AwcRcbGameUrlGetService : IGetService<AwcRcbGameUrlQuery, Uri>
+public class AwcRcbGameUrlGetService : IGetService<AwcRcbGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceAwcClient _client;
@@ -26,7 +26,7 @@ public class AwcRcbGameUrlGetService : IGetService<AwcRcbGameUrlQuery, Uri>
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<Uri> GetAsync(AwcRcbGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(AwcRcbGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.AWC_RCB,
@@ -104,6 +104,6 @@ public class AwcRcbGameUrlGetService : IGetService<AwcRcbGameUrlQuery, Uri>
 
 		return !reply.IsPlayerExist
 			? throw new Exception($"Player does not exist.({player.PlayerCode})")
-			: new Uri(reply.GameUrl);
+			: reply.GameUrl;
 	}
 }

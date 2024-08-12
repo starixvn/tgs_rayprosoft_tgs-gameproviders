@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tgs.GameProviders.Core;
+using Tgs.GameProviders.Core.Funky.ApplicationServices;
 using Tgs.GameProviders.Core.GA28.ApplicationServices;
 using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
@@ -12,34 +13,16 @@ namespace Tgs.GameProviders.Controllers;
 [ApiController]
 public class GA28Controller : ControllerBase
 {
-	/// <summary>
-	/// Games the URL asynchronous.
-	/// </summary>
-	/// <param name="service">The service.</param>
-	/// <param name="request">The request.</param>
-	/// <returns></returns>
 	[HttpPost("gameurl")]
-	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<GA28GameUrlQuery, Uri> service,
-		GameUrlRequest request)
+	public async ValueTask<GameUrlResponse> GameUrlAsync(
+		[FromServices] IGetService<GA28GameUrlQuery, string> service,
+		GA28GameUrlQuery source)
 	{
 		var result = await service.GetAsync(
-				query: new GA28GameUrlQuery()
-				{
-					GameType = request.GameType,
-					GameId = request.GameId,
-					BrandCode = request.BrandCode,
-					PlayerCode = request.PlayerCode,
-					CurrencyCode = request.CurrencyCode,
-					LoginRecordId = request.LoginRecordId,
-					PlatformType = request.PlatformType,
-					Language = request.Language,
-					IPAddress = request.IPAddress,
-					BackUrl = request.BackUrl
-				},
-				cancellationToken: HttpContext.RequestAborted)
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
-		return new GameUrlResponse() { Url = result };
+		return new GameUrlResponse() { Url = new(result) };
 	}
 
 	/// <summary>

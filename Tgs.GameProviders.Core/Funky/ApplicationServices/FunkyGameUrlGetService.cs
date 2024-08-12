@@ -13,9 +13,9 @@ public class FunkyGameUrlGetService(
 	IPlayerRepository player,
 	IBrandRepository brand,
 	IGameRepository game,
-	IGameInterfaceFunkyClient client) : IGetService<FunkyGameUrlQuery, Uri>
+	IGameInterfaceFunkyClient client) : IGetService<FunkyGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(FunkyGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(FunkyGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.Funky,
@@ -45,7 +45,7 @@ public class FunkyGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "EN";
 		var gameInfo = await game.GetAsync(
-			gameId: query.GameId.Value,
+			gameId: query.GameId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
@@ -64,6 +64,6 @@ public class FunkyGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new Uri(response);
+		return response;
 	}
 }

@@ -12,27 +12,15 @@ namespace Tgs.GameProviders.Controllers;
 public class MicroGamingController : ControllerBase
 {
 	[HttpPost("gameurl")]
-	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<MicroGamingGameUrlQuery, Uri> service,
-		GameUrlRequest request)
+	public async ValueTask<GameUrlResponse> GameUrlAsync(
+		[FromServices] IGetService<MicroGamingGameUrlQuery, string> service,
+		MicroGamingGameUrlQuery source)
 	{
 		var result = await service.GetAsync(
-				query: new MicroGamingGameUrlQuery
-				{
-					GameType = request.GameType,
-					GameId = request.GameId,
-					BrandCode = request.BrandCode,
-					PlayerCode = request.PlayerCode,
-					CurrencyCode = request.CurrencyCode,
-					LoginRecordId = request.LoginRecordId,
-					PlatformType = request.PlatformType,
-					Language = request.Language,
-					IPAddress = request.IPAddress,
-					BackUrl = request.BackUrl
-				},
-				cancellationToken: HttpContext.RequestAborted)
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
-		return new GameUrlResponse { Url = result };
+		return new GameUrlResponse() { Url = new(result) };
 	}
 
 	[HttpGet("player/{playerCode}/balance")]

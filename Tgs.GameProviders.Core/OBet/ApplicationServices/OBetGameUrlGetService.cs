@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.OBet.ApplicationServices;
 
-public class OBetGameUrlGetService : IGetService<OBetGameUrlQuery, Uri>
+public class OBetGameUrlGetService : IGetService<OBetGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceOBetClient _client;
@@ -26,7 +26,7 @@ public class OBetGameUrlGetService : IGetService<OBetGameUrlQuery, Uri>
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<Uri> GetAsync(OBetGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(OBetGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider
 			.GetGameProviderIdAsync(
@@ -83,6 +83,6 @@ public class OBetGameUrlGetService : IGetService<OBetGameUrlQuery, Uri>
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return response.IsPlayerExist ? new Uri(response.GameUrl) : throw new Exception($"player does not exist.({player.PlayerCode})");
+		return response.IsPlayerExist ? response.GameUrl : throw new Exception($"player does not exist.({player.PlayerCode})");
 	}
 }

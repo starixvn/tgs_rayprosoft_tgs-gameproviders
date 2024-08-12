@@ -24,14 +24,11 @@ public class PragmaticPlayTransferGameUrlGetServiceUnitTest
 
 		var query = new PragmaticPlayTransferGameUrlQuery
 		{
-			GameType = GameType.LiveDealerLobby,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
-			PlatformType = PlatformType.Desktop,
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
 			Language = "zh-CN",
+			PlatformType = PlatformType.Desktop,
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -107,10 +104,9 @@ public class PragmaticPlayTransferGameUrlGetServiceUnitTest
 			AvailableCurrencies: null,
 			Localization: null,
 			SubGameProviderCode: GameProviderType.PragmaticPlayTransfer);
-		_ = fakeGameRepository
-			.GetAsync(
-				Arg.Is(query.GameId.Value),
-				cancellationToken: Arg.Any<CancellationToken>())
+		_ = fakeGameRepository.GetAsync(
+			gameId: Arg.Is(query.GameId),
+			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(game);
 
 		var gameUrlReply = new GameUrlReply
@@ -170,14 +166,11 @@ public class PragmaticPlayTransferGameUrlGetServiceUnitTest
 
 		var query = new PragmaticPlayTransferGameUrlQuery
 		{
-			GameType = GameType.LiveDealerLobby,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
-			PlatformType = PlatformType.Desktop,
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
 			Language = "zh-CN",
+			PlatformType = PlatformType.Desktop,
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -253,10 +246,9 @@ public class PragmaticPlayTransferGameUrlGetServiceUnitTest
 			AvailableCurrencies: null,
 			Localization: null,
 			SubGameProviderCode: GameProviderType.PragmaticPlayTransfer);
-		_ = fakeGameRepository
-			.GetAsync(
-				Arg.Is(query.GameId.Value),
-				cancellationToken: Arg.Any<CancellationToken>())
+		_ = fakeGameRepository.GetAsync(
+			gameId: Arg.Is(query.GameId),
+			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(game);
 
 		var gameUrlReply = new GameUrlReply
@@ -295,6 +287,6 @@ public class PragmaticPlayTransferGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri(gameUrlReply.GameUrl), actual);
+		Assert.Equal(gameUrlReply.GameUrl, actual);
 	}
 }

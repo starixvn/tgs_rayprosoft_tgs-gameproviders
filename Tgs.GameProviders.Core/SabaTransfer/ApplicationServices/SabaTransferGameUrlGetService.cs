@@ -11,9 +11,9 @@ public class SabaTransferGameUrlGetService(
 	IGameInterfaceSabaClient client,
 	IGameProviderRepository gameProviderRepository,
 	IPlayerRepository playerRepository,
-	IBrandRepository brandRepository) : IGetService<SabaTransferGameUrlQuery, Uri>
+	IBrandRepository brandRepository) : IGetService<SabaTransferGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(SabaTransferGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(SabaTransferGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.SabaTransfer,
@@ -76,6 +76,6 @@ public class SabaTransferGameUrlGetService(
 				.ConfigureAwait(false);
 		}
 
-		return new($"{reply.GameUrl}&lang={cultureCode}");
+		return $"{reply.GameUrl}&lang={cultureCode}";
 	}
 }

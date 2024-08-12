@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.AwcVenus.ApplicationServices;
 
-public class AwcVenusGameUrlGetService : IGetService<AwcVenusGameUrlQuery, Uri>
+public class AwcVenusGameUrlGetService : IGetService<AwcVenusGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceAwcClient _client;
@@ -26,7 +26,7 @@ public class AwcVenusGameUrlGetService : IGetService<AwcVenusGameUrlQuery, Uri>
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<Uri> GetAsync(AwcVenusGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(AwcVenusGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.AWC_VENUS,
@@ -103,6 +103,6 @@ public class AwcVenusGameUrlGetService : IGetService<AwcVenusGameUrlQuery, Uri>
 
 		return !reply.IsPlayerExist
 			? throw new Exception($"Player does not exist.({player.PlayerCode})")
-			: new Uri(reply.GameUrl);
+			: reply.GameUrl;
 	}
 }

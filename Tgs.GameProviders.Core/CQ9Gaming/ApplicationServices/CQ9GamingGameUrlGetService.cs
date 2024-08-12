@@ -12,9 +12,9 @@ public class CQ9GamingGameUrlGetService(
 	IPlayerRepository player,
 	IBrandRepository brand,
 	IGameRepository gameRepository,
-	IGameInterfaceCQ9GamingClient client) : IGetService<CQ9GamingGameUrlQuery, Uri>
+	IGameInterfaceCQ9GamingClient client) : IGetService<CQ9GamingGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(CQ9GamingGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(CQ9GamingGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.CQ9Gaming,
@@ -39,7 +39,7 @@ public class CQ9GamingGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "en";
 		var gameInfo = await gameRepository.GetAsync(
-			gameId: query.GameId.Value,
+			gameId: query.GameId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
@@ -70,6 +70,6 @@ public class CQ9GamingGameUrlGetService(
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new Uri(gameUrlReply.GameUrl);
+		return gameUrlReply.GameUrl;
 	}
 }

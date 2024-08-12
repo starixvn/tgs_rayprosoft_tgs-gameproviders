@@ -22,14 +22,11 @@ public class BTiSportsGameUrlGetServiceUnitTest
 
 		var query = new BTiSportsGameUrlQuery
 		{
-			GameType = GameType.Slot,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -93,6 +90,6 @@ public class BTiSportsGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri(configuration.SportsbookURL, $"/{cultureCode}/{configuration.DesktopLayout}/?operatorToken={response.AuthToken}"), actual);
+		Assert.Equal(new Uri(configuration.SportsbookURL, $"/{cultureCode}/{configuration.DesktopLayout}/?operatorToken={response.AuthToken}").ToString(), actual);
 	}
 }

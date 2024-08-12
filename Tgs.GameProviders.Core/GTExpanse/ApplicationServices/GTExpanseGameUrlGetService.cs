@@ -44,7 +44,7 @@ public class GTExpanseGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "EN";
 		var gameInfo = await gameRepository.GetAsync(
-			gameId: query.GameId.Value,
+			gameId: query.GameId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 

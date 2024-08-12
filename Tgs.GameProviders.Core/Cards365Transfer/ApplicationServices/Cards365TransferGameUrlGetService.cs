@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Cards365Transfer.ApplicationServices;
 
-public class Cards365TransferGameUrlGetService : IGetService<Cards365TransferGameUrlQuery, Uri>
+public class Cards365TransferGameUrlGetService : IGetService<Cards365TransferGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceCards365Client _client;
@@ -26,7 +26,7 @@ public class Cards365TransferGameUrlGetService : IGetService<Cards365TransferGam
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<Uri> GetAsync(Cards365TransferGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(Cards365TransferGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.Cards365Transfer,
@@ -68,6 +68,6 @@ public class Cards365TransferGameUrlGetService : IGetService<Cards365TransferGam
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new Uri(gameUrl);
+		return gameUrl;
 	}
 }

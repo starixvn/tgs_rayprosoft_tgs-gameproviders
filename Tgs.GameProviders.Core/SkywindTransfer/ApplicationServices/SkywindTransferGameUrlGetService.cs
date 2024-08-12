@@ -11,7 +11,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SkywindTransfer.ApplicationServices;
 
-public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameUrlQuery, Uri>
+public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameUrlQuery, string>
 {
 	private readonly IGameInterfaceSkywindClient _client;
 	private readonly ICommandService<SkywindTransferCreatePlayerCommand> _createPlayerCommandService;
@@ -39,42 +39,33 @@ public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameU
 		_gameTokenClient = gameTokenClient ?? throw new ArgumentNullException(nameof(gameTokenClient));
 	}
 
-	public async ValueTask<Uri> GetAsync(SkywindTransferGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(SkywindTransferGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider
-			.GetGameProviderIdAsync(
-				gameProviderCode: GameProviderType.SkywindTransfer,
-				cancellationToken: cancellationToken)
+		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.SkywindTransfer,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _setting
-			.GetSkywindTransferConfigurationAsync(
-				cancellationToken: cancellationToken)
+		var configuration = await _setting.GetSkywindTransferConfigurationAsync(
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player
-			.GetAsync(
-				playerCode: query.PlayerCode,
-				cancellationToken: cancellationToken)
+		var player = await _player.GetAsync(
+			playerCode: query.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var currencyCode = await _gameProvider
-			.GetGameProviderCurrencyCodeAsync(
-				gameProviderId: gameProviderId,
-				currencyCode: query.CurrencyCode,
-				cancellationToken: cancellationToken)
-			.ConfigureAwait(false)
-			?? throw new Exception($"This game product currency does not exist.({query.CurrencyCode})");
-		var cultureCode = await _gameProvider
-			.GetGameProviderCultureCodeAsync(
-				gameProviderId: gameProviderId,
-				cultureCode: query.Language,
-				cancellationToken: cancellationToken)
+		var currencyCode = await _gameProvider.GetGameProviderCurrencyCodeAsync(
+			gameProviderId: gameProviderId,
+			currencyCode: player.DefaultWalletCurrencyCode,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
+		var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(
+			gameProviderId: gameProviderId,
+			cultureCode: query.Language,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "en";
-		var game = await _game
-			.GetAsync(
-				gameId: query.GameId.Value,
-				cancellationToken: cancellationToken)
+		var game = await _game.GetAsync(
+			gameId: query.GameId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-
-		Uri gameUrl;
 
 		if (game.Type == GameType.LiveDealerLobby)
 		{
@@ -92,7 +83,7 @@ public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameU
 				   cancellationToken: cancellationToken)
 			   .ConfigureAwait(false);
 
-			gameUrl = new($"{configuration.LiveLobbyUrl}#/ticket/{authToken}?lang={cultureCode}");
+			return $"{configuration.LiveLobbyUrl}#/ticket/{authToken}?lang={cultureCode}";
 		}
 		else
 		{
@@ -128,9 +119,7 @@ public class SkywindTransferGameUrlGetService : IGetService<SkywindTransferGameU
 						.ConfigureAwait(false);
 			}
 
-			gameUrl = reply.IsPlayer ? new(reply.GameUrl) : null;
+			return reply.IsPlayer ? reply.GameUrl : throw new Exception($"Player does not exist.({player.PlayerCode})");
 		}
-
-		return gameUrl ?? throw new Exception($"Player does not exist.({player.PlayerCode})");
 	}
 }

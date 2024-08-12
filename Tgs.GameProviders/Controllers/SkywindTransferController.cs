@@ -11,31 +11,16 @@ namespace Tgs.GameProviders.Controllers;
 [Route("api/swtf")]
 public class SkywindTransferController : ControllerBase
 {
-	/// <summary>
-	/// Games the URL asynchronous.
-	/// </summary>
-	/// <param name="service">The service.</param>
-	/// <param name="request">The request.</param>
-	/// <returns></returns>
 	[HttpPost("gameurl")]
 	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<SkywindTransferGameUrlQuery, Uri> service,
-		GameUrlRequest request)
+		[FromServices] IGetService<SkywindTransferGameUrlQuery, string> service,
+		SkywindTransferGameUrlQuery source)
 	{
-		var result = await service.GetAsync(new SkywindTransferGameUrlQuery()
-		{
-			GameType = request.GameType,
-			GameId = request.GameId,
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			LoginRecordId = request.LoginRecordId,
-			PlatformType = request.PlatformType,
-			Language = request.Language,
-			IPAddress = request.IPAddress,
-			BackUrl = request.BackUrl
-		}).ConfigureAwait(false);
-		return result == null ? null : new GameUrlResponse() { Url = result };
+		var result = await service.GetAsync(
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
+		return new GameUrlResponse() { Url = new(result) };
 	}
 
 	/// <summary>
@@ -46,8 +31,8 @@ public class SkywindTransferController : ControllerBase
 	/// <returns></returns>
 	[HttpGet("player/{playerCode}/balance")]
 	public async ValueTask<PlayerBalanceResponse> PlayerBalanceAsync(
-		[FromServices] IGetService<SkywindTransferPlayerBalanceQuery, PlayerBalanceResult> service,
-		string playerCode)
+			[FromServices] IGetService<SkywindTransferPlayerBalanceQuery, PlayerBalanceResult> service,
+			string playerCode)
 	{
 		var result = await service.GetAsync(
 			query: new()

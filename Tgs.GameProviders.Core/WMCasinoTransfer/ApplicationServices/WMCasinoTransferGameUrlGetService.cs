@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.WMCasinoTransfer.ApplicationServices;
 
-public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGameUrlQuery, Uri>
+public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceWMCasinoServiceClient _client;
@@ -29,34 +29,29 @@ public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGam
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<Uri> GetAsync(WMCasinoTransferGameUrlQuery command, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(WMCasinoTransferGameUrlQuery command, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await _gameProvider
-			.GetGameProviderIdAsync(
-				gameProviderCode: GameProviderType.WMCasinoTransfer,
-				cancellationToken: cancellationToken)
+		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
+			gameProviderCode: GameProviderType.WMCasinoTransfer,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var player = await _player
-			.GetAsync(
-				playerCode: command.PlayerCode,
-				cancellationToken: cancellationToken)
+		var player = await _player.GetAsync(
+			playerCode: command.PlayerCode,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var gameProviderConfigurationId = await _brand
-			.GetBrandGameProviderConfigurationIdAsync(
-				gameProviderId: gameProviderId,
-				brandId: player.BrandId,
-				cancellationToken: cancellationToken)
+		var gameProviderConfigurationId = await _brand.GetBrandGameProviderConfigurationIdAsync(
+			gameProviderId: gameProviderId,
+			brandId: player.BrandId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var configuration = await _gameProvider
-			.GetWMCasinoTransferConfigurationAsync(
-				gameProviderConfigurationId: gameProviderConfigurationId,
-				cancellationToken: cancellationToken)
+		var configuration = await _gameProvider.GetWMCasinoTransferConfigurationAsync(
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
-		var cultureCode = await _gameProvider
-			.GetGameProviderCultureCodeAsync(
-				gameProviderId: gameProviderId,
-				cultureCode: command.Language,
-				cancellationToken: cancellationToken)
+		var cultureCode = await _gameProvider.GetGameProviderCultureCodeAsync(
+			gameProviderId: gameProviderId,
+			cultureCode: command.Language,
+			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "0";
 
 		var password = "TgsP@ssword";
@@ -91,6 +86,6 @@ public class WMCasinoTransferGameUrlGetService : IGetService<WMCasinoTransferGam
 
 		return !reply.IsPlayerExist
 			? throw new Exception($"Player does not exist.({player.PlayerCode})")
-			: new Uri(reply.GameUrl);
+			: reply.GameUrl;
 	}
 }

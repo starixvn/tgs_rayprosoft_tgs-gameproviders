@@ -33,7 +33,7 @@ public class VRGamingGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 		var gameInfo = await game.GetAsync(
-			gameId: query.GameId.Value,
+			gameId: query.GameId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 

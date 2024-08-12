@@ -24,14 +24,11 @@ public class TPhereGameUrlGetServiceUnitTest
 
 		var query = new TPhereGameUrlQuery
 		{
-			GameType = GameType.Slot,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
-			PlatformType = PlatformType.Desktop,
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
 			Language = "zh-CN",
+			PlatformType = PlatformType.Desktop,
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -110,7 +107,7 @@ public class TPhereGameUrlGetServiceUnitTest
 			Localization: null,
 			SubGameProviderCode: GameProviderType.TPhere);
 		_ = fakeGameRepository.GetAsync(
-			gameId: Arg.Is(query.GameId.Value),
+			gameId: Arg.Is(query.GameId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(game);
 
@@ -155,14 +152,11 @@ public class TPhereGameUrlGetServiceUnitTest
 
 		var query = new TPhereGameUrlQuery
 		{
-			GameType = GameType.Slot,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
-			PlatformType = PlatformType.Desktop,
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
 			Language = "zh-CN",
+			PlatformType = PlatformType.Desktop,
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -241,7 +235,7 @@ public class TPhereGameUrlGetServiceUnitTest
 			Localization: null,
 			SubGameProviderCode: GameProviderType.TPhere);
 		_ = fakeGameRepository.GetAsync(
-			gameId: Arg.Is(query.GameId.Value),
+			gameId: Arg.Is(query.GameId),
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(game);
 

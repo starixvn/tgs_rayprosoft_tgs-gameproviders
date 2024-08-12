@@ -15,27 +15,18 @@ public class JiliTransferController : ControllerBase
 	/// Games the URL asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
-	/// <param name="request">The request.</param>
+	/// <param name="source">The source.</param>
 	/// <returns></returns>
 	[HttpPost("gameurl")]
 	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<JiliTransferGameUrlQuery, Uri> service,
-		GameUrlRequest request)
+		[FromServices] IGetService<JiliTransferGameUrlQuery, string> service,
+		JiliTransferGameUrlQuery source)
 	{
-		var result = await service.GetAsync(new JiliTransferGameUrlQuery()
-		{
-			GameType = request.GameType,
-			GameId = request.GameId,
-			BrandCode = request.BrandCode,
-			PlayerCode = request.PlayerCode,
-			CurrencyCode = request.CurrencyCode,
-			LoginRecordId = request.LoginRecordId,
-			PlatformType = request.PlatformType,
-			Language = request.Language,
-			IPAddress = request.IPAddress,
-			BackUrl = request.BackUrl
-		}).ConfigureAwait(false);
-		return result == null ? null : new GameUrlResponse() { Url = result };
+		var result = await service.GetAsync(
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
+		return new GameUrlResponse() { Url = new(result) };
 	}
 
 	/// <summary>

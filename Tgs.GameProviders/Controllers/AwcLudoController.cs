@@ -34,31 +34,18 @@ public class AwcLudoController : ControllerBase
 	/// Games the URL asynchronous.
 	/// </summary>
 	/// <param name="service">The service.</param>
-	/// <param name="request">The request.</param>
+	/// <param name="source">The source.</param>
 	/// <returns></returns>
 	[HttpPost("gameurl")]
-	public async ValueTask<GameUrlResponse?> GameUrlAsync(
-		[FromServices] IGetService<AwcLudoGameUrlQuery, Uri> service,
-		GameUrlRequest request)
+	public async ValueTask<GameUrlResponse> GameUrlAsync(
+		[FromServices] IGetService<AwcLudoGameUrlQuery, string> service,
+		AwcLudoGameUrlQuery source)
 	{
-		var result = await service
-			.GetAsync(
-				query: new()
-				{
-					GameType = request.GameType,
-					GameId = request.GameId,
-					BrandCode = request.BrandCode,
-					PlayerCode = request.PlayerCode,
-					CurrencyCode = request.CurrencyCode,
-					LoginRecordId = request.LoginRecordId,
-					PlatformType = request.PlatformType,
-					Language = request.Language,
-					IPAddress = request.IPAddress,
-					BackUrl = request.BackUrl
-				},
-				cancellationToken: HttpContext.RequestAborted)
+		var result = await service.GetAsync(
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
-		return result == null ? null : new GameUrlResponse() { Url = result };
+		return new GameUrlResponse() { Url = new(result) };
 	}
 
 	/// <summary>

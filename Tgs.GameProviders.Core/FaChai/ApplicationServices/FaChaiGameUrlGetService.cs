@@ -12,9 +12,9 @@ public class FaChaiGameUrlGetService(
 	IPlayerRepository player,
 	IBrandRepository brand,
 	IGameRepository game,
-	IGameInterfaceFaChaiClient client) : IGetService<FaChaiGameUrlQuery, Uri>
+	IGameInterfaceFaChaiClient client) : IGetService<FaChaiGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(FaChaiGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(FaChaiGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProvider
 			.GetGameProviderIdAsync(
@@ -43,7 +43,7 @@ public class FaChaiGameUrlGetService(
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "1";
 		var gameInfo = await game.GetAsync(
-			gameId: query.GameId.Value,
+			gameId: query.GameId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
@@ -58,6 +58,6 @@ public class FaChaiGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new Uri(response);
+		return response;
 	}
 }

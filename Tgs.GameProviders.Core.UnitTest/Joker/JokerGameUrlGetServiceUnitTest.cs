@@ -24,14 +24,11 @@ public class JokerGameUrlGetServiceUnitTest
 
 		var query = new JokerGameUrlQuery
 		{
-			GameType = GameType.Slot,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -110,7 +107,7 @@ public class JokerGameUrlGetServiceUnitTest
 			SubGameProviderCode: GameProviderType.Joker);
 		_ = fakeGame
 			.GetAsync(
-				Arg.Is(query.GameId.Value),
+				Arg.Is(query.GameId),
 				cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(gameInfo);
 
@@ -140,7 +137,6 @@ public class JokerGameUrlGetServiceUnitTest
 		queryStrings.Add("mobile", (query.PlatformType == PlatformType.Mobile).ToString().ToLower());
 		queryStrings.Add("lang", (!string.IsNullOrEmpty(gameProviderCultureCode)) ? "en" : gameProviderCultureCode);
 
-		var url = $"{configuration.GameLaunchUrl.OriginalString}?{queryStrings}";
-		Assert.Equal(new Uri(url), actual);
+		Assert.Equal($"{configuration.GameLaunchUrl.OriginalString}?{queryStrings}", actual);
 	}
 }

@@ -81,6 +81,6 @@ public class DreamGamingTransferGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri(response.GameUrl), actual);
+		Assert.Equal(response.GameUrl, actual);
 	}
 }

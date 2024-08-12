@@ -24,14 +24,11 @@ public class AwcRcbGameUrlGetServiceUnitTest
 
 		var query = new AwcRcbGameUrlQuery
 		{
-			GameType = GameType.LiveDealerLobby,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -104,7 +101,7 @@ public class AwcRcbGameUrlGetServiceUnitTest
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(gameProviderCultureCode);
 
-		var gameUrl = new Uri("http://www.google.com");
+		var gameUrl = "http://www.google.com";
 		var response = new GameUrlReply()
 		{
 			IsPlayerExist = false,
@@ -161,14 +158,11 @@ public class AwcRcbGameUrlGetServiceUnitTest
 
 		var query = new AwcRcbGameUrlQuery
 		{
-			GameType = GameType.LiveDealerLobby,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -241,7 +235,7 @@ public class AwcRcbGameUrlGetServiceUnitTest
 			cancellationToken: Arg.Any<CancellationToken>())
 			.Returns(gameProviderCultureCode);
 
-		var gameUrl = new Uri("http://www.google.com");
+		var gameUrl = "http://www.google.com";
 		var response = new GameUrlReply()
 		{
 			IsPlayerExist = true,

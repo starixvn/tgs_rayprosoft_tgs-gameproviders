@@ -10,7 +10,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.InplayMatrixESports.ApplicationServices;
 
-public class InplayMatrixESportsGameUrlGetService : IGetService<InplayMatrixESportsGameUrlQuery, Uri>
+public class InplayMatrixESportsGameUrlGetService : IGetService<InplayMatrixESportsGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceInplayMatrixClient _client;
@@ -32,7 +32,7 @@ public class InplayMatrixESportsGameUrlGetService : IGetService<InplayMatrixESpo
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<Uri> GetAsync(InplayMatrixESportsGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(InplayMatrixESportsGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider
 			.GetGameProviderIdAsync(
@@ -120,6 +120,6 @@ public class InplayMatrixESportsGameUrlGetService : IGetService<InplayMatrixESpo
 			   .ConfigureAwait(false);
 		}
 
-		return response.IsPlayerExist ? new Uri(response.GameUrl) : throw new Exception($"player does not exist.({player.PlayerCode})");
+		return response.IsPlayerExist ? response.GameUrl : throw new Exception($"player does not exist.({player.PlayerCode})");
 	}
 }

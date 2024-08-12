@@ -11,9 +11,9 @@ public class GA28GameUrlGetService(
 	IGameProviderRepository gameProviderRepository,
 	IPlayerRepository playerRepository,
 	IBrandRepository brandRepository,
-	IGameInterfaceGa28Client client) : IGetService<GA28GameUrlQuery, Uri>
+	IGameInterfaceGa28Client client) : IGetService<GA28GameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(GA28GameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(GA28GameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.GA28,
@@ -47,6 +47,6 @@ public class GA28GameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-		return new Uri(reply.GameUrl);
+		return reply.GameUrl;
 	}
 }

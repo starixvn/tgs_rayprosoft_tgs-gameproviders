@@ -12,9 +12,9 @@ public class JiliTransferGameUrlGetService(
 	IGameRepository gameRepository,
 	IGameProviderRepository gameProviderRepository,
 	IGameInterfaceJiliClient client,
-	IPlayerRepository playerRepository) : IGetService<JiliTransferGameUrlQuery, Uri>
+	IPlayerRepository playerRepository) : IGetService<JiliTransferGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(JiliTransferGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(JiliTransferGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.JiliTransfer,
@@ -39,7 +39,7 @@ public class JiliTransferGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "en-US";
 		var gameInfo = await gameRepository.GetAsync(
-			gameId: query.GameId.Value,
+			gameId: query.GameId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
@@ -76,6 +76,6 @@ public class JiliTransferGameUrlGetService(
 
 		return !reply.IsPlayerExist
 			? throw new Exception($"Player does not exist.({playerInfo.PlayerCode})")
-			: new Uri(reply.GameUrl);
+			: reply.GameUrl;
 	}
 }

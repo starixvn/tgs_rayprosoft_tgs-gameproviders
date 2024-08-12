@@ -7,7 +7,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.AwcYl.ApplicationServices;
 
-public class AwcYlGameUrlGetService : IGetService<AwcYlGameUrlQuery, Uri>
+public class AwcYlGameUrlGetService : IGetService<AwcYlGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceAwcClient _client;
@@ -29,7 +29,7 @@ public class AwcYlGameUrlGetService : IGetService<AwcYlGameUrlQuery, Uri>
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<Uri> GetAsync(AwcYlGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(AwcYlGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await _gameProvider.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.AWC_YL,
@@ -59,7 +59,7 @@ public class AwcYlGameUrlGetService : IGetService<AwcYlGameUrlQuery, Uri>
 			.ConfigureAwait(false) ?? "en";
 
 		var game = await _game.GetAsync(
-			gameId: query.GameId.Value,
+			gameId: query.GameId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
@@ -110,6 +110,6 @@ public class AwcYlGameUrlGetService : IGetService<AwcYlGameUrlQuery, Uri>
 
 		return !reply.IsPlayerExist
 			? throw new Exception($"Player does not exist.({player.PlayerCode})")
-			: new Uri(reply.GameUrl);
+			: reply.GameUrl;
 	}
 }

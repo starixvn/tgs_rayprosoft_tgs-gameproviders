@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using NSubstitute;
 using Tgs.GameCommand.Common;
@@ -23,14 +24,11 @@ public class SBOTransferGameUrlGetServiceUnitTest
 
 		var query = new SBOTransferGameUrlQuery
 		{
-			GameType = GameType.Slot,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -88,7 +86,10 @@ public class SBOTransferGameUrlGetServiceUnitTest
 			AvailableCurrencies: null,
 			Localization: null,
 			SubGameProviderCode: GameProviderType.SBOTransfer);
-		_ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
+		_ = fakeGameRepository.GetAsync(
+			gameId: Arg.Is(query.GameId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(gameInfo);
 
 		var gameProviderCultureCode = "en";
 		_ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
@@ -118,7 +119,7 @@ public class SBOTransferGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri("http://localhost/"), actual);
+		Assert.Equal("http://localhost/", actual);
 	}
 
 	[Fact]
@@ -132,14 +133,11 @@ public class SBOTransferGameUrlGetServiceUnitTest
 
 		var query = new SBOTransferGameUrlQuery
 		{
-			GameType = GameType.Slot,
-			GameId = 1,
-			BrandCode = "GPI",
 			PlayerCode = "4ucmqplxb029",
-			CurrencyCode = "CNY",
-			LoginRecordId = Guid.NewGuid(),
+			GameId = 1,
+			LoginRecordId = Guid.NewGuid().ToString(),
+			Language = "zh-CN",
 			PlatformType = PlatformType.Desktop,
-			Language = "en-US",
 			IPAddress = "127.0.0.1",
 			BackUrl = new("https://dev-t1.rpgp.cc/")
 		};
@@ -197,7 +195,10 @@ public class SBOTransferGameUrlGetServiceUnitTest
 			AvailableCurrencies: null,
 			Localization: null,
 			SubGameProviderCode: GameProviderType.SBOTransfer);
-		_ = fakeGameRepository.GetAsync(Arg.Is(query.GameId.Value)).Returns(gameInfo);
+		_ = fakeGameRepository.GetAsync(
+			gameId: Arg.Is(query.GameId),
+			cancellationToken: Arg.Any<CancellationToken>())
+			.Returns(gameInfo);
 
 		var gameProviderCultureCode = "en";
 		_ = fakeGameProviderRepository.GetGameProviderCultureCodeAsync(
@@ -226,6 +227,6 @@ public class SBOTransferGameUrlGetServiceUnitTest
 		var actual = await sut.GetAsync(query);
 
 		Assert.NotNull(actual);
-		Assert.Equal(new Uri("http://localhost/"), actual);
+		Assert.Equal("http://localhost/", actual);
 	}
 }

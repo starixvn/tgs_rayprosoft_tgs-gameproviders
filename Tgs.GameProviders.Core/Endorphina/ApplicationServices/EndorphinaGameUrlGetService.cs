@@ -16,9 +16,9 @@ internal class EndorphinaGameUrlGetService(
 	IGameInterfaceEndorphinaClient client,
 	IPlayerRepository playerRepository,
 	IGameRepository gameRepository,
-	IGameRecordEndorphinaSessionClient sessionClient) : IGetService<EndorphinaGameUrlQuery, Uri>
+	IGameRecordEndorphinaSessionClient sessionClient) : IGetService<EndorphinaGameUrlQuery, string>
 {
-	public async ValueTask<Uri> GetAsync(EndorphinaGameUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<string> GetAsync(EndorphinaGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.Endorphina,
@@ -38,7 +38,7 @@ internal class EndorphinaGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 		var game = await gameRepository.GetAsync(
-			gameId: query.GameId.Value,
+			gameId: query.GameId,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 		var currency = await gameProviderRepository.GetGameProviderCurrencyCodeAsync(
@@ -63,7 +63,7 @@ internal class EndorphinaGameUrlGetService(
 
 		await sessionClient.AddSessionAsync(
 			token: response.Token,
-			brandCode: query.BrandCode,
+			brandCode: player.BrandCode,
 			playerCode: query.PlayerCode,
 			merchantId: configuration.MerchantId,
 			cancellationToken: cancellationToken)
@@ -73,7 +73,7 @@ internal class EndorphinaGameUrlGetService(
 
 		var url = $"{configuration.ApiUrl}icasino/sessions/launch?token={response.Token}&sign={sign}&lang={cultureCode}&profile=noexit.xml";
 
-		return (response != null) ? new(url) : null;
+		return url;
 	}
 
 	private static string ComputeHash(string data)

@@ -8,7 +8,7 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.Joker.ApplicationServices;
 
-internal class JokerGameUrlGetService : IGetService<JokerGameUrlQuery, Uri>
+internal class JokerGameUrlGetService : IGetService<JokerGameUrlQuery, string>
 {
 	private readonly IBrandRepository _brand;
 	private readonly IGameInterfaceJokerClient _client;
@@ -30,7 +30,7 @@ internal class JokerGameUrlGetService : IGetService<JokerGameUrlQuery, Uri>
 		_player = player ?? throw new ArgumentNullException(nameof(player));
 	}
 
-	public async ValueTask<Uri> GetAsync(
+	public async ValueTask<string> GetAsync(
 		JokerGameUrlQuery query,
 		CancellationToken cancellationToken = default)
 	{
@@ -71,7 +71,7 @@ internal class JokerGameUrlGetService : IGetService<JokerGameUrlQuery, Uri>
 
 		var game = await _game
 			.GetAsync(
-				gameId: query.GameId.Value,
+				gameId: query.GameId,
 				cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
@@ -88,8 +88,6 @@ internal class JokerGameUrlGetService : IGetService<JokerGameUrlQuery, Uri>
 		queryStrings.Add("mobile", (query.PlatformType == PlatformType.Mobile).ToString().ToLower());
 		queryStrings.Add("lang", (!string.IsNullOrEmpty(cultureCode)) ? "en" : cultureCode);
 
-		var url = $"{configuration.GameLaunchUrl.OriginalString}?{queryStrings}";
-
-		return new(url);
+		return $"{configuration.GameLaunchUrl.OriginalString}?{queryStrings}";
 	}
 }
