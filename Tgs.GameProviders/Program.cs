@@ -320,6 +320,7 @@ _ = app.UseAuthorization();
 _ = app.MapControllers();
 
 app.MapHealthChecks("/healthz");
+app.MapHealthChecks("/");
 
 _ = app.InitialMemory();
 
