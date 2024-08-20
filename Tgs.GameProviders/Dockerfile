@@ -2,19 +2,19 @@
 
 FROM hub.lumigame.com/base/dotnet/core/aspnet:8.0-alpine-24h1.1 AS base
 #Troubleshooter Start
-RUN apt-get update && apt-get install -y \
-	wget \
-	dnsutils \
-	mtr \
-	iputils-ping \
-	traceroute \
-	curl && \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/*
-
-RUN groupadd -f tools
-
-RUN usermod -aG tools app
+#RUN apt-get update && apt-get install -y \
+	#wget \
+	#dnsutils \
+	#mtr \
+	#iputils-ping \
+	#traceroute \
+	#curl && \
+	#apt-get clean && \
+	#rm -rf /var/lib/apt/lists/*
+#
+#RUN groupadd -f tools
+#
+#RUN usermod -aG tools app
 #Troubleshooter End
 USER app
 WORKDIR /app
