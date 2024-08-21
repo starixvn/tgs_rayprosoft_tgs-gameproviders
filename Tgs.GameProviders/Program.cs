@@ -3,6 +3,7 @@ using System.Net.Mime;
 using System.Net.Sockets;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -14,8 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging
 	.AddOpenTelemetry(options =>
 	{
-		options.IncludeFormattedMessage = true;
-		options.ParseStateValues = true;
+	options.IncludeFormattedMessage = true;
+	options.ParseStateValues = true;
 		_ = options.AddFluentdForwardExporter(fluentOptions =>
 		{
 			var nodeIp = builder.Configuration.GetValue<string>("NODE_IP")!;
@@ -277,7 +278,8 @@ builder.Services
 
 builder.Services
 	.AddOpenTelemetry()
-	.WithTracing(builder => builder
+	.ConfigureResource(_ => _.AddService(builder.Configuration.GetValue<string>("Otel:ServiceName")))
+	.WithTracing(tracerProviderBuilder => tracerProviderBuilder
 		.SetResourceBuilder(ResourceBuilder.CreateDefault()
 			.AddEnvironmentVariableDetector())
 		.AddSource("Tgs.*")
@@ -295,7 +297,7 @@ builder.Services
 		.AddGrpcClientInstrumentation()
 		.AddGrpcCoreInstrumentation()
 		.AddEntityFrameworkCoreInstrumentation(options => options.SetDbStatementForText = true)
-		.AddOtlpExporter())
+		.AddOtlpExporter(options => options.Endpoint = builder.Configuration.GetValue<Uri>("Otel:Collector")))
 	.WithMetrics(meterBuiler => meterBuiler
 	.SetResourceBuilder(ResourceBuilder.CreateDefault()
 		.AddEnvironmentVariableDetector())
