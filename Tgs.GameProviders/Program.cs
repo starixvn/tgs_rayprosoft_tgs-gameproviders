@@ -286,7 +286,7 @@ builder.Services
 		.AddAspNetCoreInstrumentation(options => options.Filter =
 			httpContext => !httpContext.Request.Path.HasValue
 			|| !httpContext.Request.Path.StartsWithSegments("/swagger")
-			&& !httpContext.Request.Path.StartsWithSegments("/healthz")
+			&& !httpContext.Request.Path.StartsWithSegments("/health")
 			&& !httpContext.Request.Path.StartsWithSegments("/profiler/")
 			&& !httpContext.Request.Path.StartsWithSegments("/hangfire")
 			&& !httpContext.Request.Path.StartsWithSegments("/metrics")
@@ -319,7 +319,7 @@ _ = app.UseAuthorization();
 
 _ = app.MapControllers();
 
-app.MapHealthChecks("/healthz");
+app.MapHealthChecks("/health");
 app.MapHealthChecks("/");
 
 _ = app.InitialMemory();
