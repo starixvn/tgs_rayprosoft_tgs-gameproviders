@@ -280,9 +280,8 @@ builder.Services
 
 builder.Services
 	.AddOpenTelemetry()
+	.ConfigureResource(_ => _.AddService(builder.Configuration.GetValue<string>("Otel:ServiceName")))
 	.WithTracing(tracerProviderBuilder => tracerProviderBuilder
-		.SetResourceBuilder(ResourceBuilder.CreateDefault()
-			.AddService(builder.Configuration.GetValue<string>("Otel:ServiceName")))
 		.AddSource("Tgs.*")
 		.AddSource("TGS.*")
 		.AddSource("Valhalla.*")
