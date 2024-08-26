@@ -300,6 +300,11 @@ internal class GameProviderRepository(
 			gameProviderConfiguration: GameProviderConfigurations.SabaTransfer,
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken);
+	public ValueTask<SabaSWConfiguration> GetSabaSWConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+		=> GetConfigurationAsync<SabaSWConfiguration>(
+			gameProviderConfiguration: GameProviderConfigurations.SabaSW,
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken);
 
 	public ValueTask<SBOTransferConfiguration> GetSBOTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 		=> GetConfigurationAsync<SBOTransferConfiguration>(

@@ -60,6 +60,7 @@ public static class GameProviderConfigurations
 	public static readonly string PragmaticPlayTransfer = string.Format(_template, GameProviderType.PragmaticPlayTransfer);
 	public static readonly string Saba = string.Format(_template, GameProviderType.Saba);
 	public static readonly string SabaTransfer = string.Format(_template, GameProviderType.SabaTransfer);
+	public static readonly string SabaSW = string.Format(_template, GameProviderType.SabaSW);
 	public static readonly string SBOBET = string.Format(_template, GameProviderType.SBOBET);
 	public static readonly string SBOTransfer = string.Format(_template, GameProviderType.SBOTransfer);
 	public static readonly string SexyGaming = string.Format(_template, GameProviderType.SexyGaming);

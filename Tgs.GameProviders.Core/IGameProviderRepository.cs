@@ -101,6 +101,8 @@ public interface IGameProviderRepository
 	ValueTask<PragmaticPlayTransferConfiguration> GetPragmaticPlayTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
 	ValueTask<SabaTransferConfiguration> GetSabaTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
+	
+	ValueTask<SabaSWConfiguration> GetSabaSWConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
 	ValueTask<SBOTransferConfiguration> GetSBOTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
