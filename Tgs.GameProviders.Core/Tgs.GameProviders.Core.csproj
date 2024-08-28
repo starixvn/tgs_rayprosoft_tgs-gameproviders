@@ -22,7 +22,7 @@
 		<PackageReference Include="Tgs.GameInterface.CrPati.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.GameInterface.CRSports.Client" Version="1.0.3" />
 		<PackageReference Include="Tgs.GameInterface.DreamGamingService.Client" Version="1.0.4" />
-		<PackageReference Include="Tgs.GameInterface.EndorphinaService.Client" Version="1.0.3" />
+		<PackageReference Include="Tgs.GameInterface.EndorphinaService.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.20" />
 		<PackageReference Include="Tgs.GameInterface.FaChai.Client" Version="1.0.3" />
 		<PackageReference Include="Tgs.GameInterface.Funky.Client" Version="1.0.3" />
@@ -54,7 +54,7 @@
 		<PackageReference Include="Tgs.GameInterface.WicketCricket.Client" Version="1.0.4" />
 		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="1.0.18" />
 		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameRecord.Endorphina.Session.Client" Version="1.0.0" />
+		<PackageReference Include="Tgs.GameRecord.Endorphina.Session.Client" Version="1.0.1" />
 		<PackageReference Include="Tgs.GameToken.Client" Version="1.0.0" />
 		<PackageReference Include="TGS.ServiceUtility" Version="0.2.0" />
 	</ItemGroup>
