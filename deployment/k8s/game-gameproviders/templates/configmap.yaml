@@ -32,7 +32,7 @@ data:
         "GameInterfaceTFGamingBaseUrl": "dns:///game-gameinterface-tfgaming-service:9090/",
         "GameInterfaceDreamGamingBaseUrl": "dns:///game-gameinterface-dg-service:9090/",
         "GameInterfaceEndorphinaBaseUrl": "dns:///game-gameinterface-endor-service:9090/",
-        "GameRecordEndorphinaSessionBaseUrl": "http://game-gamerecord-endorphina-session:9090/",
+        "GameRecordEndorphinaSessionBaseUrl": "http://game-gamerecord-endor-session:9090/",
         "GameInterfaceFaChaiBaseUrl": "dns:///game-gameinterface-fachai:9090/",
         "GameInterfaceOBetBaseUrl": "dns:///game-gameinterface-obet:9090/",
         "GameInterfaceYeeBetBaseUrl": "dns:///game-gameinterface-yeebet:9090/",
