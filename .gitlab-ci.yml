@@ -5,4 +5,4 @@ include:
 
 variables:
   PUBLISH_NUGET: "true"
-  PROJECT_FOLDER: Tgs.GameProviders.Pluggable.Client
+  PROJECT_FOLDER: Tgs.GameProviders.Client
