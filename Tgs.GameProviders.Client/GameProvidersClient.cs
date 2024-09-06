@@ -28,7 +28,7 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 		}
 	};
 
-	public async ValueTask<Uri> GameUrlAsync(string gameProviderCode, string playerCode, int gameId, string loginRecordId, string language, PlatformType platformType, string ipAddress, Uri? backUrl, CancellationToken cancellationToken = default)
+	public async ValueTask<Uri> GameUrlAsync(string gameProviderCode, string playerCode, int gameId, string loginRecordId, string language, PlatformType platformType, string ipAddress, Uri? backUrl, object? extraInfo, CancellationToken cancellationToken = default)
 	{
 		var request = new
 		{
@@ -38,7 +38,8 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 			PlatformType = platformType,
 			Language = language,
 			IPAddress = ipAddress,
-			BackUrl = backUrl
+			BackUrl = backUrl,
+			ExtraInfo = extraInfo
 		};
 
 		var requestContent = JsonContent.Create(request, options: _SerializerOptions);

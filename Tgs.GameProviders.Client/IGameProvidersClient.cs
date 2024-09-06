@@ -6,7 +6,7 @@ namespace Tgs.GameProviders.Client;
 
 public interface IGameProvidersClient
 {
-	ValueTask<Uri> GameUrlAsync(string gameProviderCode, string playerCode, int gameId, string loginRecordId, string language, PlatformType platformType, string ipAddress, Uri? backUrl, CancellationToken cancellationToken = default);
+	ValueTask<Uri> GameUrlAsync(string gameProviderCode, string playerCode, int gameId, string loginRecordId, string language, PlatformType platformType, string ipAddress, Uri? backUrl, object? extraInfo, CancellationToken cancellationToken = default);
 
 	ValueTask<PlayerLogoutResponse> PlayerLogoutAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default);
 

@@ -33,4 +33,7 @@ public record GameUrlQuery
 
 	[DefaultValue(typeof(Uri), "https://dev-t1.rpgp.cc/")]
 	public Uri BackUrl { get; init; }
+
+	[DefaultValue(typeof(object), null)]
+	public object ExtraInfo { get; init; }
 }
