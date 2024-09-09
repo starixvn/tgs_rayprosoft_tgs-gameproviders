@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameProviders.Domains;
@@ -8,6 +7,7 @@ using Tgs.ServiceUtility;
 namespace Tgs.GameProviders.Core.SabaSW.ApplicationServices;
 
 public class SabaSWGameUrlGetService(
+	IGameRepository gameRepository,
 	IGameInterfaceSabaClient client,
 	IGameProviderRepository gameProviderRepository,
 	IPlayerRepository playerRepository,
@@ -19,6 +19,9 @@ public class SabaSWGameUrlGetService(
 			gameProviderCode: GameProviderType.SabaSW,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
+
+
+
 		var player = await playerRepository.GetAsync(
 			playerCode: query.PlayerCode,
 			cancellationToken: cancellationToken)
@@ -37,6 +40,11 @@ public class SabaSWGameUrlGetService(
 			cultureCode: query.Language,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "en";
+
+		var gameInfo = await gameRepository.GetAsync(
+			gameId: query.GameId,
+			cancellationToken: cancellationToken)
+			.ConfigureAwait(false);
 
 		var reply = await client.GameUrlAsync(
 			apiUrl: configuration.ApiUrl,
@@ -76,6 +84,8 @@ public class SabaSWGameUrlGetService(
 				.ConfigureAwait(false);
 		}
 
-		return $"{reply.GameUrl}&lang={cultureCode}";
+		var gameUrl = $"{reply.GameUrl}&lang={cultureCode}";
+
+		return gameInfo.EndpointPath is null ? gameUrl : (gameUrl + gameInfo.EndpointPath);
 	}
 }
