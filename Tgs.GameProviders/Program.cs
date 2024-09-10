@@ -272,6 +272,11 @@ builder.Services
 		var configuration = sp.GetRequiredService<IConfiguration>();
 		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceCRSportsBaseUrl")!;
 	})
+	.AddGameInterfaceSabaPlusClient((options, sp) => {
+		var configuration = sp.GetRequiredService<IConfiguration>();
+
+		options.BaseUrl = configuration.GetValue<Uri>("GameProvidersConnectionStrings:GameInterfaceSabaPlusBaseUrl")!;
+	})
 	.AddGameBetsClient(httpClientBuilder => httpClientBuilder.ConfigureHttpClient((sp, http) =>
 	{
 		var config = sp.GetRequiredService<IConfiguration>();

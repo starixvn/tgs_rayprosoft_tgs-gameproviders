@@ -1,3 +1,9 @@
-﻿namespace Tgs.GameProviders.Core.SabaPlus.ApplicationServices;
+﻿using System.Text.Json.Serialization;
 
-public record SabaPlusGameUrlQuery : GameUrlQuery;
+namespace Tgs.GameProviders.Core.SabaPlus.ApplicationServices;
+
+public record SabaPlusGameUrlQuery : GameUrlQuery
+{
+	[JsonIgnore]
+	public string ProviderCode { get; set; }
+};

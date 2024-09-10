@@ -80,4 +80,5 @@ public static class GameProviderType
 	public static readonly string WMCasinoTransfer = "WMTF";
 	public static readonly string YeeBet = "YEEBET";
 	public static readonly string SabaSW = "SABASW";
+	public static readonly string SabaPlus = "SABAPLUS";
 }
