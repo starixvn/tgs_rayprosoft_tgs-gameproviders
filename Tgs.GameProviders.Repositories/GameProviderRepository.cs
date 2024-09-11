@@ -300,6 +300,7 @@ internal class GameProviderRepository(
 			gameProviderConfiguration: GameProviderConfigurations.SabaTransfer,
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken);
+
 	public ValueTask<SabaSWConfiguration> GetSabaSWConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 		=> GetConfigurationAsync<SabaSWConfiguration>(
 			gameProviderConfiguration: GameProviderConfigurations.SabaSW,
@@ -375,6 +376,12 @@ internal class GameProviderRepository(
 	public ValueTask<YeeBetConfiguration> GetYeeBetConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
 		=> GetConfigurationAsync<YeeBetConfiguration>(
 			gameProviderConfiguration: GameProviderConfigurations.YeeBet,
+			gameProviderConfigurationId: gameProviderConfigurationId,
+			cancellationToken: cancellationToken);
+
+	public ValueTask<SabaPlusConfiguration> GetSabaPlusConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default)
+		=> GetConfigurationAsync<SabaPlusConfiguration>(
+			gameProviderConfiguration: GameProviderConfigurations.SabaPlus,
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken);
 

@@ -101,7 +101,7 @@ public interface IGameProviderRepository
 	ValueTask<PragmaticPlayTransferConfiguration> GetPragmaticPlayTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
 	ValueTask<SabaTransferConfiguration> GetSabaTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
-	
+
 	ValueTask<SabaSWConfiguration> GetSabaSWConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
 	ValueTask<SBOTransferConfiguration> GetSBOTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
@@ -127,4 +127,6 @@ public interface IGameProviderRepository
 	ValueTask<WMCasinoTransferConfiguration> GetWMCasinoTransferConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 
 	ValueTask<YeeBetConfiguration> GetYeeBetConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
+
+	ValueTask<SabaPlusConfiguration> GetSabaPlusConfigurationAsync(Guid gameProviderConfigurationId, CancellationToken cancellationToken = default);
 }
