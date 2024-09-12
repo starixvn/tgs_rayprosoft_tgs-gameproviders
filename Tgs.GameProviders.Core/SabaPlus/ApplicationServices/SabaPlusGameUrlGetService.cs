@@ -33,11 +33,15 @@ public class SabaPlusGameUrlGetService(
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 		var subProviderConfiguration = configuration.GetSubProviderConfiguration(gameInfo.SubGameProviderCode);
 		var homeUrl = query.BackUrl.ToString();
+		var gameProviderCurrencyCode = await gameProviderRepository.GetGameProviderCurrencyCodeAsync(
+			gameProviderId,
+			player.DefaultWalletCurrencyCode,
+			cancellationToken).ConfigureAwait(false);
 
 		var url = await client.GameUrlAsync(
 			GetProviderInfo(subProviderConfiguration),
 			GetProductInfo(gameInfo, subProviderConfiguration.GameType),
-			GetCustInfo(player, query),
+			GetCustInfo(player, query, gameProviderCurrencyCode),
 			GetAgentInfo(subProviderConfiguration),
 			homeUrl,
 			subProviderConfiguration.Additional,
@@ -52,13 +56,13 @@ public class SabaPlusGameUrlGetService(
 	private static AgentInfo GetAgentInfo(SabaPlusSubProviderConfiguration configuration)
 		=> new(configuration.AgentId, configuration.AgentKey, configuration.AgentCode, configuration.AgentExtraInfo);
 
-	private static CustInfo GetCustInfo(PlayerInfo player, SabaPlusGameUrlQuery query)
+	private static CustInfo GetCustInfo(PlayerInfo player, SabaPlusGameUrlQuery query, string currency)
 		=> new(
 			player.PlayerCode,
 			player.Username,
 			query.Language,
 			GetPlatform(query.PlatformType),
-			player.DefaultWalletCurrencyCode,
+			currency,
 			query.ExtraInfo.BrowserUserAgent,
 			query.IPAddress,
 			query.LoginRecordId);
