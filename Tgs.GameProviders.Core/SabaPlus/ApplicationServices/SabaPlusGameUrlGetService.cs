@@ -38,11 +38,16 @@ public class SabaPlusGameUrlGetService(
 			player.DefaultWalletCurrencyCode,
 			cancellationToken).ConfigureAwait(false);
 
+		var providerInfo = GetProviderInfo(subProviderConfiguration);
+		var productInfo = GetProductInfo(gameInfo, subProviderConfiguration.GameType);
+		var custInfo = GetCustInfo(player, query, gameProviderCurrencyCode);
+		var agentInfo = GetAgentInfo(subProviderConfiguration);
+
 		var url = await client.GameUrlAsync(
-			GetProviderInfo(subProviderConfiguration),
-			GetProductInfo(gameInfo, subProviderConfiguration.GameType),
-			GetCustInfo(player, query, gameProviderCurrencyCode),
-			GetAgentInfo(subProviderConfiguration),
+			providerInfo,
+			productInfo,
+			custInfo,
+			agentInfo,
 			homeUrl,
 			subProviderConfiguration.Additional,
 			cancellationToken).ConfigureAwait(false);
