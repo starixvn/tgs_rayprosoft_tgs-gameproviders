@@ -39,7 +39,7 @@ public class SabaPlusGameUrlGetService(
 			player.DefaultWalletCurrencyCode,
 			cancellationToken).ConfigureAwait(false);
 
-		var walletToken = $"{query.ProviderCode}@{Guid.NewGuid()}";
+		var walletToken = $"{query.ProviderCode}@{gameInfo.GameId}@{Guid.NewGuid()}";
 		var providerInfo = GetProviderInfo(subProviderConfiguration);
 		var productInfo = GetProductInfo(gameInfo, subProviderConfiguration.GameType);
 		var custInfo = GetCustInfo(player, query, gameProviderCurrencyCode, walletToken);
@@ -75,9 +75,9 @@ public class SabaPlusGameUrlGetService(
 			walletToken);
 
 	private static ProductInfo GetProductInfo(GameInfo game, string gameType) =>
-		new(gameType, game.GameExternalId, GetGamePlatform(game.PlatformType));
+		new(gameType, game.GameExternalId, GetAppType(game.PlatformType));
 
-	private static string GetGamePlatform(GamePlatformType type)
+	private static string GetAppType(GamePlatformType type)
 		=> type switch
 		{
 			GamePlatformType.Desktop => "D",
