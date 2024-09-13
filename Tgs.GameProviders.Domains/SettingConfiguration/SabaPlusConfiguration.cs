@@ -14,10 +14,28 @@ public record SabaPlusSubProviderConfiguration
 	public string GameType { get; set; } = default!;
 }
 
-public record SabaPlusConfiguration
+public record SabaPlusConfiguration : SabaPlusSubProviderConfiguration
 {
 	public List<SabaPlusSubProviderConfiguration> SubProviders { get; set; } = [];
 
 	public SabaPlusSubProviderConfiguration? GetSubProviderConfiguration(string code)
-		=> SubProviders.FirstOrDefault(s => string.Equals(s.Code, code, StringComparison.OrdinalIgnoreCase));
+	{
+		var subProvider = SubProviders.FirstOrDefault(s => string.Equals(s.Code, code, StringComparison.OrdinalIgnoreCase)) ?? null;
+
+		return Merge(subProvider);
+	}
+
+	public SabaPlusSubProviderConfiguration Merge(SabaPlusSubProviderConfiguration? subConfigs)
+	{
+		var result = new SabaPlusSubProviderConfiguration();
+
+		foreach (var property in typeof(SabaPlusSubProviderConfiguration).GetProperties())
+		{
+			var value = property.GetValue(subConfigs) ?? property.GetValue(this);
+
+			property.SetValue(result, value);
+		}
+
+		return result;
+	}
 }

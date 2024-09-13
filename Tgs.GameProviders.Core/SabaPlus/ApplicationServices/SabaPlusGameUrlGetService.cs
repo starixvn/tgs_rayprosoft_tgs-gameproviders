@@ -66,16 +66,29 @@ public class SabaPlusGameUrlGetService(
 			player.PlayerCode,
 			player.Username,
 			query.Language,
-			GetPlatform(query.PlatformType),
+			GetUserPlatform(query.PlatformType),
 			currency,
 			query.ExtraInfo.BrowserUserAgent,
 			query.IPAddress,
 			query.LoginRecordId);
 
 	private static ProductInfo GetProductInfo(GameInfo game, string gameType) =>
-		new(gameType, game.GameExternalId, GamePlatformToAppType(game.PlatformType));
+		new(gameType, game.GameExternalId, GetGamePlatform(game.PlatformType));
 
-	private static string GamePlatformToAppType(GamePlatformType type) => type == GamePlatformType.Mobile ? "M" : "D";
+	private static string GetGamePlatform(GamePlatformType type)
+		=> type switch
+		{
+			GamePlatformType.Desktop => "D",
+			GamePlatformType.Mobile => "M",
+			GamePlatformType.DesktopAndMobile => "M",
+			_ => "M",
+		};
 
-	private static string GetPlatform(PlatformType type) => type == PlatformType.Mobile ? "M" : "D";
+	private static string GetUserPlatform(PlatformType type)
+		=> type switch
+		{
+			PlatformType.Desktop => "D",
+			PlatformType.Mobile => "M",
+			_ => "M",
+		};
 }
