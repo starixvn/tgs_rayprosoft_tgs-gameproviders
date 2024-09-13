@@ -7,6 +7,7 @@ using Tgs.GameInterface.SabaPlus.Domains.GetGameUrl;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Domains;
 using Tgs.GameProviders.Domains.SettingConfiguration;
+using System;
 
 namespace Tgs.GameProviders.Core.SabaPlus.ApplicationServices;
 
@@ -38,9 +39,10 @@ public class SabaPlusGameUrlGetService(
 			player.DefaultWalletCurrencyCode,
 			cancellationToken).ConfigureAwait(false);
 
+		var walletToken = $"{query.ProviderCode}@{Guid.NewGuid()}";
 		var providerInfo = GetProviderInfo(subProviderConfiguration);
 		var productInfo = GetProductInfo(gameInfo, subProviderConfiguration.GameType);
-		var custInfo = GetCustInfo(player, query, gameProviderCurrencyCode);
+		var custInfo = GetCustInfo(player, query, gameProviderCurrencyCode, walletToken);
 		var agentInfo = GetAgentInfo(subProviderConfiguration);
 
 		var url = await client.GameUrlAsync(
@@ -61,7 +63,7 @@ public class SabaPlusGameUrlGetService(
 	private static AgentInfo GetAgentInfo(SabaPlusSubProviderConfiguration configuration)
 		=> new(configuration.AgentId, configuration.AgentKey, configuration.AgentCode, configuration.AgentExtraInfo);
 
-	private static CustInfo GetCustInfo(PlayerInfo player, SabaPlusGameUrlQuery query, string currency)
+	private static CustInfo GetCustInfo(PlayerInfo player, SabaPlusGameUrlQuery query, string currency, string walletToken)
 		=> new(
 			player.PlayerCode,
 			player.Username,
@@ -70,7 +72,7 @@ public class SabaPlusGameUrlGetService(
 			currency,
 			query.ExtraInfo.BrowserUserAgent,
 			query.IPAddress,
-			query.LoginRecordId);
+			walletToken);
 
 	private static ProductInfo GetProductInfo(GameInfo game, string gameType) =>
 		new(gameType, game.GameExternalId, GetGamePlatform(game.PlatformType));
