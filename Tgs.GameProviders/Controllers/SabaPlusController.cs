@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Tgs.GameInterface.SabaPlus.Domains.BetResultCheck;
 using Tgs.GameInterface.SabaPlus.Domains.GetGameUrl;
 using Tgs.GameProviders.Core.SabaPlus.ApplicationServices;
 using Tgs.GameProviders.Domains;
@@ -28,4 +29,10 @@ public class SabaPlusController : ControllerBase
 
 		return new GameUrlResponse() { Url = result.Url };
 	}
+
+	[HttpPost("betresultcheck")]
+	public ValueTask<BetResultCheckResult> BetResultCheck(
+	[FromServices] IGetService<SabaPlusBetResultCheckQuery, BetResultCheckResult> service,
+	SabaPlusBetResultCheckQuery source)
+	 => service.GetAsync(query: source, cancellationToken: HttpContext.RequestAborted);
 }

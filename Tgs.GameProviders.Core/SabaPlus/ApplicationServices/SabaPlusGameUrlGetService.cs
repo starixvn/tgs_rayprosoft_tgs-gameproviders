@@ -6,7 +6,6 @@ using Tgs.GameInterface.SabaPlus.Domains.GetGameUrl;
 using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameInterface.SabaPlus.Domains.FromProviders;
-using System.Text.Json;
 
 namespace Tgs.GameProviders.Core.SabaPlus.ApplicationServices;
 
@@ -15,7 +14,7 @@ public class SabaPlusGameUrlGetService(
 	IPlayerRepository playerRepository,
 	IBrandRepository brandRepository,
 	IGameProviderRepository gameProviderRepository,
-	IGameRepository gameRepository) : IGetService<SabaPlusGameUrlQuery, GetGameUrlResult>
+	IGameRepository gameRepository) : SabaPlusService, IGetService<SabaPlusGameUrlQuery, GetGameUrlResult>
 {
 	public async ValueTask<GetGameUrlResult> GetAsync(SabaPlusGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
@@ -49,12 +48,5 @@ public class SabaPlusGameUrlGetService(
 		var url = await client.GameUrlAsync(interfaceQuery, cancellationToken).ConfigureAwait(false);
 
 		return url;
-	}
-
-	private static Target Map<Source, Target>(Source source)
-	{
-		var raw = JsonSerializer.Serialize(source);
-
-		return JsonSerializer.Deserialize<Target>(raw);
 	}
 }
