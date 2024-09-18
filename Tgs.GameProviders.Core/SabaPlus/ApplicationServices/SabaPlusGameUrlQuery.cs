@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Tgs.GameProviders.Core.SabaPlus.ApplicationServices;
+﻿namespace Tgs.GameProviders.Core.SabaPlus.ApplicationServices;
 
 public record SabaPlusExtraInfo
 {
@@ -9,8 +7,5 @@ public record SabaPlusExtraInfo
 
 public record SabaPlusGameUrlQuery : GameUrlQuery
 {
-	[JsonIgnore]
-	public string ProviderCode { get; set; }
-
 	public new SabaPlusExtraInfo ExtraInfo { get; init; }
 };

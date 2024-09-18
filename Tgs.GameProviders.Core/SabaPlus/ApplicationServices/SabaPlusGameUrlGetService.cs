@@ -18,10 +18,10 @@ public class SabaPlusGameUrlGetService(
 {
 	public async ValueTask<GetGameUrlResult> GetAsync(SabaPlusGameUrlQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
-			query.ProviderCode,
-			cancellationToken: cancellationToken).ConfigureAwait(false);
 		var gameInfo = await gameRepository.GetAsync(query.GameId, cancellationToken).ConfigureAwait(false);
+		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
+			gameInfo.GameProviderCode,
+			cancellationToken: cancellationToken).ConfigureAwait(false);
 		var player = await playerRepository.GetAsync(query.PlayerCode, cancellationToken).ConfigureAwait(false);
 		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
 			gameProviderId,

@@ -15,13 +15,8 @@ public class SabaPlusController : ControllerBase
 	[HttpPost("gameurl")]
 	public async ValueTask<GameUrlResponse> GameUrlAsync(
 		[FromServices] IGetService<SabaPlusGameUrlQuery, GetGameUrlResult> service,
-		string provider,
 		SabaPlusGameUrlQuery source)
 	{
-		var providerCode = $"{GameProviderType.SabaPlus}-{provider}".ToUpper();
-
-		source.ProviderCode = providerCode;
-
 		var result = await service.GetAsync(
 			query: source,
 			cancellationToken: HttpContext.RequestAborted)
