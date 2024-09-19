@@ -22,7 +22,7 @@ public class SabaPlusController : ControllerBase
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
 
-		return new GameUrlResponse() { Url = result.Url };
+		return new GameUrlResponse() { Url = result.ReturnUrl };
 	}
 
 	[HttpPost("betresultcheck")]
