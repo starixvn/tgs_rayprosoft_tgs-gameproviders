@@ -13,6 +13,13 @@ internal class GameRepository(IGameCommandClient client) : IGameRepository
 		.ConfigureAwait(false)
 		?? throw new ArgumentNullException(gameId.ToString(), $"This game does not exist.");
 
+	public async ValueTask<GameInfo> GetByExternalIdAsync(Guid gameProviderId, string externalId, CancellationToken cancellationToken = default)
+	{
+		var gameInfo = await client.GameGetAsync(gameProviderId, externalId, cancellationToken).ConfigureAwait(false);
+
+		return gameInfo ?? await GetByExternalIdAsync(gameProviderId, "0", cancellationToken).ConfigureAwait(false);
+	}
+
 	public IAsyncEnumerable<GameInfo> GetGameListAsync(Guid gameProviderId, GameType gameType, CancellationToken cancellationToken = default)
 		=> client.GameQueryAsync(
 			gameProviderId: gameProviderId,

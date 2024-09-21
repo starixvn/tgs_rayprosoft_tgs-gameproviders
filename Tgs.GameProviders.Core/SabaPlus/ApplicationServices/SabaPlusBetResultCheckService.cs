@@ -14,14 +14,14 @@ public class SabaPlusBetResultCheckService(
 	IPlayerRepository playerRepository,
 	IBrandRepository brandRepository,
 	IGameProviderRepository gameProviderRepository,
-	IGameRepository gameRepository) : SabaPlusService, IGetService<SabaPlusBetResultCheckQuery, BetResultCheckResult>
+	IGameRepository gameRepository) : SabaPlusService, IGetService<SabaPlusBetResultCheckQuery, SabaPlusBetResultCheckResult>
 {
-	public async ValueTask<BetResultCheckResult> GetAsync(SabaPlusBetResultCheckQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<SabaPlusBetResultCheckResult> GetAsync(SabaPlusBetResultCheckQuery query, CancellationToken cancellationToken = default)
 	{
-		var gameInfo = await gameRepository.GetAsync(query.GameId, cancellationToken).ConfigureAwait(false);
 		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
-			gameInfo.GameProviderCode,
+			query.GameProviderCode,
 			cancellationToken: cancellationToken).ConfigureAwait(false);
+		var gameInfo = await gameRepository.GetByExternalIdAsync(gameProviderId, query.ExternalGameId, cancellationToken).ConfigureAwait(false);
 		var player = await playerRepository.GetAsync(query.PlayerCode, cancellationToken).ConfigureAwait(false);
 		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
 			gameProviderId,
@@ -41,6 +41,10 @@ public class SabaPlusBetResultCheckService(
 
 		var result = await client.BetResultCheck(interfaceQuery, cancellationToken).ConfigureAwait(false);
 
-		return result;
+		return new SabaPlusBetResultCheckResult
+		{
+			Query = interfaceQuery,
+			Result = result
+		};
 	}
 }

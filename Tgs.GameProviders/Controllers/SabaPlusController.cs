@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tgs.GameInterface.SabaPlus.Domains.BetResultCheck;
 using Tgs.GameInterface.SabaPlus.Domains.GetGameUrl;
 using Tgs.GameProviders.Core.SabaPlus.ApplicationServices;
 using Tgs.GameProviders.Domains;
@@ -26,8 +25,15 @@ public class SabaPlusController : ControllerBase
 	}
 
 	[HttpPost("betresultcheck")]
-	public ValueTask<BetResultCheckResult> BetResultCheck(
-	[FromServices] IGetService<SabaPlusBetResultCheckQuery, BetResultCheckResult> service,
+	public ValueTask<SabaPlusBetResultCheckResult> BetResultCheck(
+	[FromServices] IGetService<SabaPlusBetResultCheckQuery, SabaPlusBetResultCheckResult> service,
+	string provider,
 	SabaPlusBetResultCheckQuery source)
-	 => service.GetAsync(query: source, cancellationToken: HttpContext.RequestAborted);
+	{
+		var providerCode = $"{GameProviderType.SabaPlus}-{provider}".ToUpper();
+
+		source.GameProviderCode = providerCode;
+
+		return service.GetAsync(query: source, cancellationToken: HttpContext.RequestAborted);
+	}
 }

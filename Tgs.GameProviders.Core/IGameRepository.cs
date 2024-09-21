@@ -12,6 +12,11 @@ public interface IGameRepository
 		int gameId,
 		CancellationToken cancellationToken = default);
 
+	ValueTask<GameInfo> GetByExternalIdAsync(
+		Guid gameProviderId,
+		string externalId,
+		CancellationToken cancellationToken = default);
+
 	IAsyncEnumerable<GameInfo> GetGameListAsync(
 		Guid gameProviderId,
 		GameType gameType,
