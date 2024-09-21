@@ -21,4 +21,6 @@ public interface IGameProvidersClient
 	ValueTask<PlayerOnlineResponse> PlayerOnlineAsync(string gameProviderCode, string playerCode, CancellationToken cancellationToken = default);
 
 	ValueTask<RoundDetailResult?> RoundDetailAsync(string gameProviderCode, Guid roundId, DateTimeOffset externalCreatedOn, string language, CancellationToken cancellationToken = default);
+
+	ValueTask<TResult> BetResultCheck<TResult>(string gameProviderCode, string externalGameId, string externalRoundId, string playerCode, CancellationToken cancellationToken = default);
 }

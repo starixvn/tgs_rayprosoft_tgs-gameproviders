@@ -18,6 +18,7 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 	private static readonly string _PlayerFundOutPath = "/api/{0}/player/{1}/fund/out";
 	private static readonly string _RoundDetail = "/api/{0}/round/{1}/detail";
 	private static readonly string _PlayerOnline = "/api/{0}/player/{1}/online";
+	private static readonly string _BetResultCheck = "/api/{0}/betresultcheck";
 
 	private static readonly JsonSerializerOptions? _SerializerOptions = new()
 	{
@@ -213,5 +214,29 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 			.Select(info => info!)
 			.FirstOrDefaultAsync(cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
+	}
+
+	public async ValueTask<TResult> BetResultCheck<TResult>(string gameProviderCode, string externalGameId, string externalRoundId, string playerCode, CancellationToken cancellationToken = default)
+	{
+		var uri = string.Format(_BetResultCheck, gameProviderCode);
+		var request = new
+		{
+			ExternalGameId = externalGameId,
+			ExternalRoundId = externalRoundId,
+			PlayerCode = playerCode,
+		};
+		var requestContent = JsonContent.Create(request, options: _SerializerOptions);
+
+		var response = await httpClient.PostAsync(
+			requestUri: uri,
+			content: requestContent,
+			cancellationToken: cancellationToken).ConfigureAwait(false);
+
+		response.EnsureSuccessStatusCode();
+
+		var dataInString = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+		var data = JsonSerializer.Deserialize<TResult>(dataInString, _SerializerOptions);
+
+		return data ?? throw new Exception($"Error cheking player {playerCode}'s bet result in game {externalGameId}({externalRoundId}) of {gameProviderCode} provider");
 	}
 }
