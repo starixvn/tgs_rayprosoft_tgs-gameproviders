@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tgs.GameProviders.Core;
 using Tgs.GameProviders.Core.SabaSW.ApplicationServices;
-using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
 
@@ -20,6 +18,19 @@ public class SabaSWController : ControllerBase
 			query: source,
 			cancellationToken: HttpContext.RequestAborted)
 			.ConfigureAwait(false);
+		return new GameUrlResponse() { Url = new(result) };
+	}
+
+	[HttpPost("ticketurl")]
+	public async ValueTask<GameUrlResponse> TicketUrlAsync(
+	[FromServices] IGetService<SabaSWTicketDetailUrlQuery, string> service,
+	[FromBody] SabaSWTicketDetailUrlQuery source)
+	{
+		var result = await service.GetAsync(
+			query: source,
+			cancellationToken: HttpContext.RequestAborted)
+			.ConfigureAwait(false);
+
 		return new GameUrlResponse() { Url = new(result) };
 	}
 }

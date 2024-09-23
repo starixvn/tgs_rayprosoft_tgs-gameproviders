@@ -4,9 +4,15 @@ public record SabaSWConfiguration
 {
 	public Uri ApiUrl { get; init; } = default!;
 
+	public Uri ReportUrl { get; init; } = default!;
+
 	public string OperatorId { get; init; } = default!;
 
 	public string VendorId { get; init; } = default!;
 
 	public int OddsType { get; init; } = default!;
+
+	public string Username { get; init; } = default!;
+
+	public string Password { get; init; } = default!;
 }

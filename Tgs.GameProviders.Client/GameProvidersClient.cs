@@ -16,6 +16,7 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 	private static readonly string _PlayerFundChecking = "/api/{0}/player/{1}/fund/checking";
 	private static readonly string _PlayerFundInPath = "/api/{0}/player/{1}/fund/in";
 	private static readonly string _PlayerFundOutPath = "/api/{0}/player/{1}/fund/out";
+	private static readonly string _TicketDetailUrlPath = "/api/{0}/ticketurl";
 	private static readonly string _RoundDetail = "/api/{0}/round/{1}/detail";
 	private static readonly string _PlayerOnline = "/api/{0}/player/{1}/online";
 	private static readonly string _BetResultCheck = "/api/{0}/betresultcheck";
@@ -193,6 +194,33 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 			Online: playerOnlineResponse.Online);
 	}
 
+	public async ValueTask<GameUrlResponse?> TicketDetailUrlAsync(string gameProviderCode, string playerCode, long refId, string language = "en-US", long? baseCurrency = null, string? playerUsername = null, CancellationToken cancellationToken = default)
+	{
+		var source = new
+		{
+			PlayerCode = playerCode,
+			RefId = refId,
+			Language = language,
+			BaseCurrency = baseCurrency,
+			PlayerUsername = playerUsername,
+		};
+
+		var requestContent = JsonContent.Create(source, options: _SerializerOptions);
+
+		var response = await httpClient.PostAsync(
+			requestUri: string.Format(_TicketDetailUrlPath, gameProviderCode),
+			content: requestContent,
+			cancellationToken: cancellationToken)
+		   .ConfigureAwait(false);
+
+		_ = response.EnsureSuccessStatusCode();
+
+		return (await response.Content.ReadFromJsonAsync<GameUrlResponse>(
+			_SerializerOptions,
+			cancellationToken)
+			.ConfigureAwait(false))!;
+	}
+
 	public async ValueTask<RoundDetailResult?> RoundDetailAsync(string gameProviderCode, Guid roundId, DateTimeOffset externalCreatedOn, string language, CancellationToken cancellationToken = default)
 	{
 		var path = new Uri(httpClient.BaseAddress!, string.Format(_RoundDetail, gameProviderCode, roundId));
@@ -206,7 +234,7 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 		return await httpClient.GetAsync(url, cancellationToken)
 			.ToAsyncEnumerable()
 			.Do(response => response.EnsureSuccessStatusCode())
-			.Where(response => response.StatusCode == System.Net.HttpStatusCode.OK)
+			.Where(response => response.StatusCode == HttpStatusCode.OK)
 			.SelectMany(response => response.Content
 				.ReadFromJsonAsync<RoundDetailResult>(_SerializerOptions, cancellationToken)
 				.ToAsyncEnumerable())
