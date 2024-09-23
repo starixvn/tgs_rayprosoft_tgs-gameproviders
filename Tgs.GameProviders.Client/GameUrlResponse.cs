@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameProviders.Client;
 
-public record GameUrlResponse
+internal record GameUrlResponse
 {
 	/// <summary>
 	/// The URL

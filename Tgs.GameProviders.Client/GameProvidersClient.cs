@@ -16,7 +16,7 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 	private static readonly string _PlayerFundChecking = "/api/{0}/player/{1}/fund/checking";
 	private static readonly string _PlayerFundInPath = "/api/{0}/player/{1}/fund/in";
 	private static readonly string _PlayerFundOutPath = "/api/{0}/player/{1}/fund/out";
-	private static readonly string _PlayerTicketDetailPath = "/api/{0}/player/{1}/tickets/{2}";
+	private static readonly string _TicketDetailUrlPath = "/api/{0}/ticketurl";
 	private static readonly string _RoundDetail = "/api/{0}/round/{1}/detail";
 	private static readonly string _PlayerOnline = "/api/{0}/player/{1}/online";
 	private static readonly string _BetResultCheck = "/api/{0}/betresultcheck";
@@ -196,29 +196,29 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 
 	public async ValueTask<GameUrlResponse?> TicketDetailUrlAsync(string gameProviderCode, string playerCode, long refId, string language = "en-US", long? baseCurrency = null, string? playerUsername = null, CancellationToken cancellationToken = default)
 	{
-		var path = new Uri(httpClient.BaseAddress!, string.Format(_PlayerTicketDetailPath, gameProviderCode, playerCode, refId));
-		var builder = new UriBuilder(path);
+		var source = new
+		{
+			PlayerCode = playerCode,
+			RefId = refId,
+			Language = language,
+			BaseCurrency = baseCurrency,
+			PlayerUsername = playerUsername,
+		};
 
-		var query = HttpUtility.ParseQueryString(builder.Query);
-		query["language"] = language;
-		query["baseCurrency"] = baseCurrency?.ToString();
-		query["playerUsername"] = playerUsername;
+		var requestContent = JsonContent.Create(source, options: _SerializerOptions);
 
-		builder.Query = query.ToString();
+		var response = await httpClient.PostAsync(
+			requestUri: string.Format(_TicketDetailUrlPath, gameProviderCode),
+			content: requestContent,
+			cancellationToken: cancellationToken)
+		   .ConfigureAwait(false);
 
-		string url = builder.ToString();
+		_ = response.EnsureSuccessStatusCode();
 
-		return await httpClient.GetAsync(url, cancellationToken)
-			.ToAsyncEnumerable()
-			.Do(response => response.EnsureSuccessStatusCode())
-			.Where(response => response.StatusCode == HttpStatusCode.OK)
-			.SelectMany(response => response.Content
-				.ReadFromJsonAsync<GameUrlResponse>(_SerializerOptions, cancellationToken)
-				.ToAsyncEnumerable())
-			.Where(info => info is not null)
-			.Select(info => info!)
-			.FirstOrDefaultAsync(cancellationToken: cancellationToken)
-			.ConfigureAwait(false);
+		return (await response.Content.ReadFromJsonAsync<GameUrlResponse>(
+			_SerializerOptions,
+			cancellationToken)
+			.ConfigureAwait(false))!;
 	}
 
 	public async ValueTask<RoundDetailResult?> RoundDetailAsync(string gameProviderCode, Guid roundId, DateTimeOffset externalCreatedOn, string language, CancellationToken cancellationToken = default)
