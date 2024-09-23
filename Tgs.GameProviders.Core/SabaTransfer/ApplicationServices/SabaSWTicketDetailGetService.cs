@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -44,19 +45,20 @@ public class SabaSWTicketDetailGetService(
 			password: configuration.Password,
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		var url = new StringBuilder($"{configuration.ReportUrl}BetList/Refno?access_token={result.AccessToken}&refid={query.RefId}&lang={HttpUtility.UrlEncode(query.Language)}");
+		var builder = new UriBuilder(new Uri(configuration.ReportUrl, "BetList/Refno"));
 
-		if (query.BaseCurrency is not null)
-		{
-			url.Append($"&bc={query.BaseCurrency}");
-		}
-			
-		// TO DO: For RNG Keno, Lottery, Table Game, LG Virtual Sports: Please provide username.
-		if (!string.IsNullOrEmpty(query.PlayerUsername))
-		{
-			url.Append($"&urs={HttpUtility.UrlEncode(query.PlayerUsername)}");
-		}
-			
-		return url.ToString();
+		var ticketQuery = HttpUtility.ParseQueryString(builder.Query);
+		//Require
+		ticketQuery["access_token"] = result.AccessToken;
+		ticketQuery["refid"] = query.RefId.ToString();
+
+		//Optional
+		ticketQuery["lang"] = query.Language;
+		ticketQuery["bc"] = query.BaseCurrency?.ToString();
+		ticketQuery["urs"] = query.PlayerUsername;
+
+		builder.Query = ticketQuery.ToString();
+
+		return builder.ToString();
 	}
 }
