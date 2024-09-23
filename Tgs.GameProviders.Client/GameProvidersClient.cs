@@ -194,7 +194,7 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 			Online: playerOnlineResponse.Online);
 	}
 
-	public async ValueTask<RoundDetailResult?> ReportDetailAsync(string gameProviderCode, string playerCode, long refId, string language, long? baseCurrency = null, string? playerUsername = null, CancellationToken cancellationToken = default)
+	public async ValueTask<RoundDetailResult?> TicketDetailAsync(string gameProviderCode, string playerCode, long refId, string language = "en-US", long? baseCurrency = null, string? playerUsername = null, CancellationToken cancellationToken = default)
 	{
 		var path = new Uri(httpClient.BaseAddress!, string.Format(_PlayerTicketDetailPath, gameProviderCode, playerCode, refId));
 		var builder = new UriBuilder(path);

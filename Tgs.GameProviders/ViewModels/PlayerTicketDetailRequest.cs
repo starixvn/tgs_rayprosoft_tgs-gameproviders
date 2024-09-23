@@ -1,13 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Tgs.GameProviders.ViewModels;
 
 public record PlayerTicketDetailRequest
 {
-	[Required(ErrorMessage = "Please enter Language")]
 	[DefaultValue(typeof(string), "en-US")]
-	public string Language { get; set; } = default!;
+	public string? Language { get; set; }
 
 	[DefaultValue(typeof(long?), null)]
 	public long? BaseCurrency { get; set; }
