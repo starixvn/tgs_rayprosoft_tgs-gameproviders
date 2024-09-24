@@ -31,6 +31,12 @@ public class SabaPlusBetResultCheckService(
 			gameProviderConfigurationId: gameProviderConfigurationId,
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 		var subProviderConfiguration = configuration.GetSubProviderConfiguration(gameInfo.SubGameProviderCode);
+		var gameProviderCurrencyCode = await gameProviderRepository.GetGameProviderCurrencyCodeAsync(
+			gameProviderId,
+			player.DefaultWalletCurrencyCode,
+			cancellationToken).ConfigureAwait(false);
+
+		subProviderConfiguration.AgentKey = gameProviderCurrencyCode;
 
 		var interfaceQuery = new BetResultCheckQuery
 		{
