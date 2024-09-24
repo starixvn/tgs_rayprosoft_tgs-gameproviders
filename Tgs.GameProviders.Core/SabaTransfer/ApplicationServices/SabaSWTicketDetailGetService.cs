@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -54,7 +53,7 @@ public class SabaSWTicketDetailGetService(
 
 		//Optional
 		ticketQuery["lang"] = query.Language;
-		ticketQuery["bc"] = query.BaseCurrency?.ToString();
+		ticketQuery["bc"] = query.BaseCurrency;
 		ticketQuery["urs"] = query.PlayerUsername;
 
 		builder.Query = ticketQuery.ToString();

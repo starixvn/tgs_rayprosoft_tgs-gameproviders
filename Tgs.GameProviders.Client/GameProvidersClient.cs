@@ -194,7 +194,7 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 			Online: playerOnlineResponse.Online);
 	}
 
-	public async ValueTask<GameUrlResponse?> TicketDetailUrlAsync(string gameProviderCode, string playerCode, long refId, string language = "en-US", long? baseCurrency = null, string? playerUsername = null, CancellationToken cancellationToken = default)
+	public async ValueTask<GameUrlResponse?> TicketDetailUrlAsync(string gameProviderCode, string playerCode, long refId, string language = "en-US", string? baseCurrency = null, string? playerUsername = null, CancellationToken cancellationToken = default)
 	{
 		var source = new
 		{
