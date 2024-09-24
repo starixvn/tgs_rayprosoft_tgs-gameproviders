@@ -28,9 +28,9 @@ internal class GameBetRepository(
 						GameBetId = gameBetId
 					}));
 
-		var model = await retryPolicy.ExecuteAsync(() => client.GameBetGetAsync(
-			id: gameBetId,
+		var model = await retryPolicy.ExecuteAsync(() => client.GameBetMajorGetAsync(
 			externalCreatedOn: DateTimeOffset.Now.AddDays(-45),
+			id: gameBetId,
 			cancellationToken: cancellationToken).AsTask())
 			.ConfigureAwait(false)
 			?? throw new ArgumentNullException(gameBetId.ToString(), "This game bet does not exist.");
