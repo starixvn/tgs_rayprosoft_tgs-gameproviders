@@ -11,7 +11,8 @@ public class RoundDetailDataConverter : JsonConverter<RoundDetailDataBase>
 		{ RoundDetailDataType.Table.ToString(), typeof(RoundDetailDataTable) },
 		{ RoundDetailDataType.Text.ToString(), typeof(RoundDetailDataText) },
 		{ RoundDetailDataType.Json.ToString(), typeof(RoundDetailDataJson) },
-		{ RoundDetailDataType.Xml.ToString(), typeof(RoundDetailDataXml) }
+		{ RoundDetailDataType.Xml.ToString(), typeof(RoundDetailDataXml) },
+		{ RoundDetailDataType.Iframe.ToString(), typeof(RoundDetailDataIframe) },
 	};
 
 	public override RoundDetailDataBase? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

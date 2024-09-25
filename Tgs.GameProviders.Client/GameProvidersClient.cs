@@ -194,28 +194,19 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 			Online: playerOnlineResponse.Online);
 	}
 
-	public async ValueTask<GameUrlResponse?> TicketDetailUrlAsync(string gameProviderCode, string playerCode, long refId, string language = "en-US", string? baseCurrency = null, string? playerUsername = null, CancellationToken cancellationToken = default)
+	public async ValueTask<RoundDetailResult?> TicketDetailUrlAsync(TicketDetailUrlRequest request, CancellationToken cancellationToken = default)
 	{
-		var source = new
-		{
-			PlayerCode = playerCode,
-			RefId = refId,
-			Language = language,
-			BaseCurrency = baseCurrency,
-			PlayerUsername = playerUsername,
-		};
-
-		var requestContent = JsonContent.Create(source, options: _SerializerOptions);
+		var requestContent = JsonContent.Create(request, options: _SerializerOptions);
 
 		var response = await httpClient.PostAsync(
-			requestUri: string.Format(_TicketDetailUrlPath, gameProviderCode),
+			requestUri: string.Format(_TicketDetailUrlPath, request.GameProviderCode),
 			content: requestContent,
 			cancellationToken: cancellationToken)
 		   .ConfigureAwait(false);
 
 		_ = response.EnsureSuccessStatusCode();
 
-		return (await response.Content.ReadFromJsonAsync<GameUrlResponse>(
+		return (await response.Content.ReadFromJsonAsync<RoundDetailResult>(
 			_SerializerOptions,
 			cancellationToken)
 			.ConfigureAwait(false))!;

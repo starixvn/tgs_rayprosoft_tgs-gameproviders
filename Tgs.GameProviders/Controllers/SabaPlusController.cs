@@ -2,6 +2,7 @@
 using Tgs.GameInterface.SabaPlus.Domains.GetGameUrl;
 using Tgs.GameProviders.Core.SabaPlus.ApplicationServices;
 using Tgs.GameProviders.Domains;
+using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.GameProviders.ViewModels;
 using Tgs.ServiceUtility;
 
@@ -29,6 +30,19 @@ public class SabaPlusController : ControllerBase
 	[FromServices] IGetService<SabaPlusBetResultCheckQuery, SabaPlusBetResultCheckResult> service,
 	string provider,
 	SabaPlusBetResultCheckQuery source)
+	{
+		var providerCode = $"{GameProviderType.SabaPlus}-{provider}".ToUpper();
+
+		source.GameProviderCode = providerCode;
+
+		return service.GetAsync(query: source, cancellationToken: HttpContext.RequestAborted);
+	}
+
+	[HttpPost("ticketurl")]
+	public ValueTask<RoundDetailResult> BetResultCheck(
+	[FromServices] IGetService<SabaPlusBetHistoryUrlQuery, RoundDetailResult> service,
+	string provider,
+	SabaPlusBetHistoryUrlQuery source)
 	{
 		var providerCode = $"{GameProviderType.SabaPlus}-{provider}".ToUpper();
 

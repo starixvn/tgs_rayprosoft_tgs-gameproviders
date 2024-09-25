@@ -6,5 +6,6 @@ public enum RoundDetailDataType
 	Table = 2,
 	Text = 3,
 	Json = 4,
-	Xml = 5
+	Xml = 5,
+	Iframe = 6,
 }

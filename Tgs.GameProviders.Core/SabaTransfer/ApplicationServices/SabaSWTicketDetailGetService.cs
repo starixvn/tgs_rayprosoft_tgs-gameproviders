@@ -5,6 +5,7 @@ using System.Web;
 using Tgs.GameInterface.SabaService.Client;
 using Tgs.GameProviders.Core.SabaSW.ApplicationServices;
 using Tgs.GameProviders.Domains;
+using Tgs.GameProviders.Domains.RoundDetail;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameProviders.Core.SabaTransfer.ApplicationServices;
@@ -13,9 +14,9 @@ public class SabaSWTicketDetailGetService(
 	IGameInterfaceSabaClient client,
 	IGameProviderRepository gameProviderRepository,
 	IPlayerRepository playerRepository,
-	IBrandRepository brandRepository) : IGetService<SabaSWTicketDetailUrlQuery, string>
+	IBrandRepository brandRepository) : IGetService<SabaSWTicketDetailUrlQuery, RoundDetailResult>
 {
-	public async ValueTask<string> GetAsync(SabaSWTicketDetailUrlQuery query, CancellationToken cancellationToken = default)
+	public async ValueTask<RoundDetailResult> GetAsync(SabaSWTicketDetailUrlQuery query, CancellationToken cancellationToken = default)
 	{
 		var gameProviderId = await gameProviderRepository.GetGameProviderIdAsync(
 			gameProviderCode: GameProviderType.SabaSW,
@@ -49,7 +50,7 @@ public class SabaSWTicketDetailGetService(
 		var ticketQuery = HttpUtility.ParseQueryString(builder.Query);
 		//Require
 		ticketQuery["access_token"] = result.AccessToken;
-		ticketQuery["refid"] = query.RefId.ToString();
+		ticketQuery["refid"] = query.ExternalRoundId;
 
 		//Optional
 		ticketQuery["lang"] = query.Language;
@@ -58,6 +59,11 @@ public class SabaSWTicketDetailGetService(
 
 		builder.Query = ticketQuery.ToString();
 
-		return builder.ToString();
+		return new RoundDetailResult()
+		{
+			Data = [new RoundDetailDataIframe() {
+				Value = builder.Uri
+			}]
+		};
 	}
 }

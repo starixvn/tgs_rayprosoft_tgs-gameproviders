@@ -6,7 +6,7 @@ public record SabaSWTicketDetailUrlQuery
 {
 	public required string PlayerCode { get; init; }
 
-	public required long RefId { get; set; }
+	public required string ExternalRoundId { get; set; }
 
 	[DefaultValue(typeof(string), "en-US")]
 	public string Language { get; init; } = default!;
