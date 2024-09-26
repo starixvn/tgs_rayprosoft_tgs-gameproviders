@@ -1,4 +1,5 @@
-﻿using Tgs.GameProviders.Domains;
+﻿using System.Text.Json;
+using Tgs.GameProviders.Domains;
 
 using Tgs.GameProviders.Domains.RoundDetail;
 
@@ -6,7 +7,7 @@ namespace Tgs.GameProviders.Client;
 
 public interface IGameProvidersClient
 {
-	ValueTask<RoundDetailResult?> TicketDetailUrlAsync(TicketDetailUrlRequest request, CancellationToken cancellationToken = default);
+	ValueTask<JsonDocument?> TicketDetailAsync(TicketDetailRequest request, CancellationToken cancellationToken = default);
 
 	ValueTask<Uri> GameUrlAsync(string gameProviderCode, string playerCode, int gameId, string loginRecordId, string language, PlatformType platformType, string ipAddress, Uri? backUrl, object? extraInfo, CancellationToken cancellationToken = default);
 

@@ -38,7 +38,7 @@ public class SabaPlusController : ControllerBase
 		return service.GetAsync(query: source, cancellationToken: HttpContext.RequestAborted);
 	}
 
-	[HttpPost("ticketurl")]
+	[HttpPost("ticketdetail")]
 	public ValueTask<RoundDetailResult> BetResultCheck(
 	[FromServices] IGetService<SabaPlusBetHistoryUrlQuery, RoundDetailResult> service,
 	string provider,

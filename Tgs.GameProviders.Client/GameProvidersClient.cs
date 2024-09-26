@@ -16,7 +16,7 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 	private static readonly string _PlayerFundChecking = "/api/{0}/player/{1}/fund/checking";
 	private static readonly string _PlayerFundInPath = "/api/{0}/player/{1}/fund/in";
 	private static readonly string _PlayerFundOutPath = "/api/{0}/player/{1}/fund/out";
-	private static readonly string _TicketDetailUrlPath = "/api/{0}/ticketurl";
+	private static readonly string _TicketDetailPath = "/api/{0}/ticketdetail";
 	private static readonly string _RoundDetail = "/api/{0}/round/{1}/detail";
 	private static readonly string _PlayerOnline = "/api/{0}/player/{1}/online";
 	private static readonly string _BetResultCheck = "/api/{0}/betresultcheck";
@@ -194,19 +194,19 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 			Online: playerOnlineResponse.Online);
 	}
 
-	public async ValueTask<RoundDetailResult?> TicketDetailUrlAsync(TicketDetailUrlRequest request, CancellationToken cancellationToken = default)
+	public async ValueTask<JsonDocument?> TicketDetailAsync(TicketDetailRequest request, CancellationToken cancellationToken = default)
 	{
 		var requestContent = JsonContent.Create(request, options: _SerializerOptions);
 
 		var response = await httpClient.PostAsync(
-			requestUri: string.Format(_TicketDetailUrlPath, request.GameProviderCode),
+			requestUri: string.Format(_TicketDetailPath, request.GameProviderCode),
 			content: requestContent,
 			cancellationToken: cancellationToken)
 		   .ConfigureAwait(false);
 
 		_ = response.EnsureSuccessStatusCode();
 
-		return (await response.Content.ReadFromJsonAsync<RoundDetailResult>(
+		return (await response.Content.ReadFromJsonAsync<JsonDocument>(
 			_SerializerOptions,
 			cancellationToken)
 			.ConfigureAwait(false))!;

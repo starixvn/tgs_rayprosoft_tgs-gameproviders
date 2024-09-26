@@ -22,7 +22,7 @@ public class SabaSWController : ControllerBase
 		return new GameUrlResponse() { Url = new(result) };
 	}
 
-	[HttpPost("ticketurl")]
+	[HttpPost("ticketdetail")]
 	public async ValueTask<RoundDetailResult> TicketUrlAsync(
 	[FromServices] IGetService<SabaSWTicketDetailUrlQuery, RoundDetailResult> service,
 	[FromBody] SabaSWTicketDetailUrlQuery source)

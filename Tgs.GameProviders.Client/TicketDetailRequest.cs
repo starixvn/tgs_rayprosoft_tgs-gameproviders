@@ -1,5 +1,5 @@
 ﻿namespace Tgs.GameProviders.Client;
-public record TicketDetailUrlRequest()
+public record TicketDetailRequest()
 {
 	public required string GameProviderCode { get; set; }
 
