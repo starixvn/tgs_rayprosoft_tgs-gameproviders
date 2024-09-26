@@ -6,7 +6,6 @@ using Tgs.GameCommand.Common;
 using Tgs.GameProviders.Domains.SettingConfiguration;
 using Tgs.GameInterface.SabaPlus.Domains.FromProviders;
 using Tgs.GameProviders.Domains.RoundDetail;
-using System;
 
 namespace Tgs.GameProviders.Core.SabaPlus.ApplicationServices;
 
@@ -57,31 +56,22 @@ public class SabaPlusBetHistoryUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "en";
 
-		try
+		var result = await client.BetHistoryUrlAsync(new()
 		{
-			var result = await client.BetHistoryUrlAsync(new()
-			{
-				ResultId = query.ResultId,
-				SettleDate = query.SettleDate,
-				ExternalRoundId = query.ExternalRoundId,
-				Language = cultureCode,
-				GameType = gameInfo.SubGameProviderCode,
-				Configuration = Map<SabaPlusSubProviderConfiguration, ProviderConfiguration>(subProviderConfiguration),
-				Player = Map<PlayerInfo, Player>(player),
-			}, cancellationToken).ConfigureAwait(false);
+			ResultId = query.ResultId,
+			SettleDate = query.SettleDate,
+			ExternalRoundId = query.ExternalRoundId,
+			Language = cultureCode,
+			GameType = gameInfo.SubGameProviderCode,
+			Configuration = Map<SabaPlusSubProviderConfiguration, ProviderConfiguration>(subProviderConfiguration),
+			Player = Map<PlayerInfo, Player>(player),
+		}, cancellationToken).ConfigureAwait(false);
 
-			return new RoundDetailResult()
-			{
-				Data = [new RoundDetailDataIframe() {
-				Value = result.ReturnUrl
-			}]};
-		} catch
+		return new RoundDetailResult()
 		{
-			return new RoundDetailResult()
-			{
-				Data = [new RoundDetailDataIframe() {
-				Value = null
-			}]};
-		}
+			Data = [new RoundDetailDataIframe() {
+				Value = result.ReturnUrl
+			}]
+		};
 	}
 }
