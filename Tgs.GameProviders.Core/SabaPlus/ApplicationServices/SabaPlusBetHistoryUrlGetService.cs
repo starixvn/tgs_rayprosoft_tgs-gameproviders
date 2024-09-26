@@ -60,8 +60,8 @@ public class SabaPlusBetHistoryUrlGetService(
 		//TODO: Add result ID, SettleDate
 		var result = await client.BetHistoryUrlAsync(new()
 		{
-			ResultId = "",
-			SettleDate = DateTime.Now.Date,
+			ResultId = query.ResultId,
+			SettleDate = query.SettleDate,
 			ExternalRoundId = query.ExternalRoundId,
 			Language = cultureCode,
 			GameType = gameInfo.SubGameProviderCode,

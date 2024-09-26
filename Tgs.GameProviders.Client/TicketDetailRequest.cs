@@ -1,6 +1,10 @@
 ﻿namespace Tgs.GameProviders.Client;
 public record TicketDetailRequest()
 {
+	public string ResultId { get; init; } = default!;
+
+	public DateTime SettleDate { get; init; } = default!;
+
 	public required string GameProviderCode { get; set; }
 
 	public required string PlayerCode { get; set; }

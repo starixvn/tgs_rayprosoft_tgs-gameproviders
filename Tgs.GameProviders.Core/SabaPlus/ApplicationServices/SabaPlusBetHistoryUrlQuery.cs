@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -20,4 +21,8 @@ public record SabaPlusBetHistoryUrlQuery
 
 	[DefaultValue(typeof(string), "en-US")]
 	public string Language { get; init; } = default!;
+
+	public string ResultId { get; init; } = default!;
+
+	public DateTime SettleDate { get; init; } = default!;
 };
