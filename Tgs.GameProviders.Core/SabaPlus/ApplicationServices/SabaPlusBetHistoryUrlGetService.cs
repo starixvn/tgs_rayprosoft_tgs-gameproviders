@@ -57,23 +57,31 @@ public class SabaPlusBetHistoryUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false) ?? "en";
 
-		//TODO: Add result ID, SettleDate
-		var result = await client.BetHistoryUrlAsync(new()
+		try
 		{
-			ResultId = query.ResultId,
-			SettleDate = query.SettleDate,
-			ExternalRoundId = query.ExternalRoundId,
-			Language = cultureCode,
-			GameType = gameInfo.SubGameProviderCode,
-			Configuration = Map<SabaPlusSubProviderConfiguration, ProviderConfiguration>(subProviderConfiguration),
-			Player = Map<PlayerInfo, Player>(player),
-		}, cancellationToken).ConfigureAwait(false);
+			var result = await client.BetHistoryUrlAsync(new()
+			{
+				ResultId = query.ResultId,
+				SettleDate = query.SettleDate,
+				ExternalRoundId = query.ExternalRoundId,
+				Language = cultureCode,
+				GameType = gameInfo.SubGameProviderCode,
+				Configuration = Map<SabaPlusSubProviderConfiguration, ProviderConfiguration>(subProviderConfiguration),
+				Player = Map<PlayerInfo, Player>(player),
+			}, cancellationToken).ConfigureAwait(false);
 
-		return new RoundDetailResult()
-		{
-			Data = [new RoundDetailDataIframe() {
+			return new RoundDetailResult()
+			{
+				Data = [new RoundDetailDataIframe() {
 				Value = result.ReturnUrl
-			}]
-		};
+			}]};
+		} catch
+		{
+			return new RoundDetailResult()
+			{
+				Data = [new RoundDetailDataIframe() {
+				Value = null
+			}]};
+		}
 	}
 }
