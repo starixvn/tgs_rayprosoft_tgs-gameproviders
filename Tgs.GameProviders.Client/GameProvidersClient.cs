@@ -30,7 +30,7 @@ internal class GameProvidersClient(HttpClient httpClient) : IGameProvidersClient
 		}
 	};
 
-	public async ValueTask<Uri> GameUrlAsync(string gameProviderCode, string playerCode, int gameId, string loginRecordId, string language, PlatformType platformType, string ipAddress, Uri? backUrl, object? extraInfo, CancellationToken cancellationToken = default)
+	public async ValueTask<Uri> GameUrlAsync(string gameProviderCode, string playerCode, int gameId, string loginRecordId, string language, PlatformType platformType, string ipAddress, Uri? backUrl, object? extraInfo = null, CancellationToken cancellationToken = default)
 	{
 		var request = new
 		{

@@ -23,6 +23,7 @@ public class GameUrlUnitTest
 		var ipAddress = "127.0.0.1";
 		var backUrl = new Uri("https://dev-t1.rpgp.cc/");
 		var expected = "http://localhost/";
+		var extraInfo = new object();
 		var web = new TestGameProvidersApplication(builder => _ = builder.ConfigureServices(services =>
 		{
 			var fakeService = Substitute.For<IGetService<AwcBgGameUrlQuery, string>>();
@@ -49,7 +50,7 @@ public class GameUrlUnitTest
 
 		var sut = new GameProvidersClient(httpClient);
 
-		var actual = await sut.GameUrlAsync(gameProviderCode: GameProviderType.AWC_BG, playerCode, gameId, loginRecordId, language, platformType, ipAddress, backUrl);
+		var actual = await sut.GameUrlAsync(gameProviderCode: GameProviderType.AWC_BG, playerCode, gameId, loginRecordId, language, platformType, ipAddress, backUrl, extraInfo);
 
 		Assert.NotNull(actual);
 		Assert.Equal(expected, actual.ToString());
