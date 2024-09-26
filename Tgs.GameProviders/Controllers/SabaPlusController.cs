@@ -39,7 +39,7 @@ public class SabaPlusController : ControllerBase
 	}
 
 	[HttpPost("ticketdetail")]
-	public ValueTask<RoundDetailResult> BetResultCheck(
+	public ValueTask<RoundDetailResult> TicketDetail(
 	[FromServices] IGetService<SabaPlusBetHistoryUrlQuery, RoundDetailResult> service,
 	string provider,
 	SabaPlusBetHistoryUrlQuery source)
