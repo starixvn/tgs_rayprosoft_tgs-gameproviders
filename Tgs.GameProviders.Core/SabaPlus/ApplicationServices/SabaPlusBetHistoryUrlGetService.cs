@@ -22,10 +22,6 @@ public class SabaPlusBetHistoryUrlGetService(
 			query.GameProviderCode,
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 
-		var gameProvider = await gameProviderRepository.GetAsync(
-			gameProviderId,
-			cancellationToken: cancellationToken).ConfigureAwait(false);
-
 		var player = await playerRepository.GetAsync(query.PlayerCode, cancellationToken).ConfigureAwait(false);
 
 		var gameProviderConfigurationId = await brandRepository.GetBrandGameProviderConfigurationIdAsync(
@@ -40,15 +36,6 @@ public class SabaPlusBetHistoryUrlGetService(
 			cancellationToken: cancellationToken).ConfigureAwait(false);
 
 		var subProviderConfiguration = configuration.GetSubProviderConfiguration(gameInfo.SubGameProviderCode);
-		if (subProviderConfiguration is null)
-		{
-			return new RoundDetailResult()
-			{
-				Data = [new RoundDetailDataIframe() {
-					Value = null
-				}]
-			};
-		}
 
 		var cultureCode = await gameProviderRepository.GetGameProviderCultureCodeAsync(
 			gameProviderId: gameProviderId,
