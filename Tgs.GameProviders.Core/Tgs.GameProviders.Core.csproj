@@ -13,7 +13,7 @@
 		<PackageReference Include="StackExchange.Redis" Version="2.8.16" />
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 		<PackageReference Include="Tgs.Core.Infrastructures.Security" Version="0.0.2" />
-		<PackageReference Include="Tgs.GameBets.Client" Version="1.0.7" />
+		<PackageReference Include="Tgs.GameBets.Client" Version="1.0.8" />
 		<PackageReference Include="Tgs.GameCommand.Client" Version="1.0.0" />
 		<PackageReference Include="Tgs.GameInterface.Awc.Client" Version="1.0.3" />
 		<PackageReference Include="Tgs.GameInterface.BTiService.Client" Version="1.0.3" />
