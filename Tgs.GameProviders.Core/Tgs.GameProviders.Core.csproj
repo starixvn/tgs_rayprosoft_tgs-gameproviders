@@ -40,7 +40,7 @@
 		<PackageReference Include="Tgs.GameInterface.OBet.Client" Version="1.0.5" />
 		<PackageReference Include="Tgs.GameInterface.Pinnacle.Client" Version="1.0.3" />
 		<PackageReference Include="Tgs.GameInterface.PragmaticPlay.Client" Version="1.0.5" />
-		<PackageReference Include="Tgs.GameInterface.SabaPlus.Client" Version="1.0.14" />
+		<PackageReference Include="Tgs.GameInterface.SabaPlus.Client" Version="1.0.15" />
 		<PackageReference Include="Tgs.GameInterface.SabaPlus.Domains" Version="1.0.9" />
 		<PackageReference Include="Tgs.GameInterface.SabaService.Client" Version="1.0.6" />
 		<PackageReference Include="Tgs.GameInterface.SBOService.Client" Version="1.0.4" />
