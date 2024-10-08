@@ -43,7 +43,7 @@
 		<PackageReference Include="Tgs.GameInterface.SabaService.Client" Version="8.0.1" />
 		<PackageReference Include="Tgs.GameInterface.SBOService.Client" Version="8.0.1" />
 		<PackageReference Include="Tgs.GameInterface.SharpSports.Client" Version="8.0.1" />
-		<PackageReference Include="Tgs.GameInterface.SkywindService.Client" Version="1.0.3" />
+		<PackageReference Include="Tgs.GameInterface.SkywindService.Client" Version="8.0.1" />
 		<PackageReference Include="Tgs.GameInterface.SM01Service.Client" Version="8.0.1" />
 		<PackageReference Include="Tgs.GameInterface.TFGamingService.Client" Version="8.0.1" />
 		<PackageReference Include="Tgs.GameInterface.TPhere.Client" Version="8.0.1" />
