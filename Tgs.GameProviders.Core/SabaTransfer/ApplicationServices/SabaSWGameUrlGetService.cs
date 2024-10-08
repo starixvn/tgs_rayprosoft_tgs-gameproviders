@@ -20,8 +20,6 @@ public class SabaSWGameUrlGetService(
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
-
-
 		var player = await playerRepository.GetAsync(
 			playerCode: query.PlayerCode,
 			cancellationToken: cancellationToken)
@@ -48,10 +46,10 @@ public class SabaSWGameUrlGetService(
 
 		var reply = await client.GameUrlAsync(
 			apiUrl: configuration.ApiUrl,
-			operatorId: configuration.OperatorId,
 			vendorId: configuration.VendorId,
 			playerCode: player.PlayerCode,
 			isMobile: query.PlatformType == PlatformType.Mobile,
+			brandCode: player.BrandCode,
 			cancellationToken: cancellationToken)
 			.ConfigureAwait(false);
 
@@ -76,10 +74,10 @@ public class SabaSWGameUrlGetService(
 
 			reply = await client.GameUrlAsync(
 				apiUrl: configuration.ApiUrl,
-				operatorId: configuration.OperatorId,
 				vendorId: configuration.VendorId,
 				playerCode: player.PlayerCode,
 				isMobile: query.PlatformType == PlatformType.Mobile,
+				brandCode: player.BrandCode,
 				cancellationToken: cancellationToken)
 				.ConfigureAwait(false);
 		}
