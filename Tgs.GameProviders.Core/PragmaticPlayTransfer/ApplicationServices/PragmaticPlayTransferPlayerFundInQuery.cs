@@ -1,3 +1,0 @@
-﻿namespace Tgs.GameProviders.Core.PragmaticPlayTransfer.ApplicationServices;
-
-public record PragmaticPlayTransferPlayerFundInQuery : PlayerFundQuery;

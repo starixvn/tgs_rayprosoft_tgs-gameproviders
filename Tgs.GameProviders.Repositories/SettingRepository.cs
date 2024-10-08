@@ -13,14 +13,6 @@ internal class SettingRepository(
 		CancellationToken cancellationToken = default)
 		=> GetAsync<TConfiguration>(key, cancellationToken);
 
-	public ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync(
-		CancellationToken cancellationToken = default)
-		=> GetAsync<EvolutionTransferConfiguration>(GameProviderConfigurations.EvolutionTransfer, cancellationToken);
-
-	public ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync(
-		CancellationToken cancellationToken = default)
-		=> GetAsync<SkywindTransferConfiguration>(GameProviderConfigurations.SkywindTransfer, cancellationToken);
-
 	private async ValueTask<TConfiguration> GetAsync<TConfiguration>(
 		string key,
 		CancellationToken cancellationToken = default)

@@ -20,10 +20,5 @@ public static class ServiceCollectionExtensions
 		.Configure(configure)
 		.Services
 		.AddSingleton<RedisConnectionFactory>()
-		.AddGameProvidersRepositories()
-		.AddGameProvidersCore(
-			ipAddressOptions: ipAddressOptions,
-			gameTokenClientOptions: gameTokenClientOptions,
-			gameCommandClientOptions: gameCommandClientOptions,
-			gameRecordEndorphinaClientOptions: gameRecordEndorphinaSessionClientOptions);
+		.AddGameProvidersRepositories();
 }

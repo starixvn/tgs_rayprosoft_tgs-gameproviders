@@ -9,10 +9,4 @@ public interface ISettingRepository
 	ValueTask<TConfiguration> GetConfigurationAsync<TConfiguration>(
 		string key,
 		CancellationToken cancellationToken = default);
-
-	ValueTask<EvolutionTransferConfiguration> GetEvolutionTransferConfigurationAsync(
-		CancellationToken cancellationToken = default);
-
-	ValueTask<SkywindTransferConfiguration> GetSkywindTransferConfigurationAsync(
-		CancellationToken cancellationToken = default);
 }
