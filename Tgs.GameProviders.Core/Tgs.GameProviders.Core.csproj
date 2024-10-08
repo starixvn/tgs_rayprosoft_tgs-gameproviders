@@ -13,47 +13,47 @@
 		<PackageReference Include="StackExchange.Redis" Version="2.8.16" />
 		<PackageReference Include="System.Linq.Async" Version="6.0.1" />
 		<PackageReference Include="Tgs.Core.Infrastructures.Security" Version="0.0.2" />
-		<PackageReference Include="Tgs.GameBets.Client" Version="1.0.8" />
+		<PackageReference Include="Tgs.GameBets.Client" Version="8.0.1" />
 		<PackageReference Include="Tgs.GameCommand.Client" Version="1.0.0" />
-		<PackageReference Include="Tgs.GameInterface.Awc.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.BTiService.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.Cards365.Client" Version="1.0.4" />
-		<PackageReference Include="Tgs.GameInterface.CQ9Gaming.Client" Version="1.0.4" />
-		<PackageReference Include="Tgs.GameInterface.CrPati.Client" Version="1.0.4" />
-		<PackageReference Include="Tgs.GameInterface.CRSports.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.DreamGamingService.Client" Version="1.0.5" />
-		<PackageReference Include="Tgs.GameInterface.EndorphinaService.Client" Version="1.0.4" />
-		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="1.0.20" />
-		<PackageReference Include="Tgs.GameInterface.FaChai.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.Funky.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.Ga28.Client" Version="1.0.6" />
-		<PackageReference Include="Tgs.GameInterface.GKXGaming.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.GlobalTechnology.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.HabaneroService.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.InplayMatrix.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.JDBService.Client" Version="1.0.4" />
-		<PackageReference Include="Tgs.GameInterface.Jili.Client" Version="1.0.4" />
-		<PackageReference Include="Tgs.GameInterface.Joker.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.Kaiyuan.Client" Version="1.0.14" />
-		<PackageReference Include="Tgs.GameInterface.LEGaming.Client" Version="1.0.6" />
-		<PackageReference Include="Tgs.GameInterface.MicroGaming.Client" Version="1.0.2" />
-		<PackageReference Include="Tgs.GameInterface.OBet.Client" Version="1.0.5" />
-		<PackageReference Include="Tgs.GameInterface.Pinnacle.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.PragmaticPlay.Client" Version="1.0.5" />
-		<PackageReference Include="Tgs.GameInterface.SabaService.Client" Version="1.0.5" />
-		<PackageReference Include="Tgs.GameInterface.SBOService.Client" Version="1.0.4" />
-		<PackageReference Include="Tgs.GameInterface.SharpSports.Client" Version="1.0.8" />
+		<PackageReference Include="Tgs.GameInterface.Awc.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.BTiService.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.Cards365.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.CQ9Gaming.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.CrPati.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.CRSports.Client" Version="6.0.1" />
+		<PackageReference Include="Tgs.GameInterface.DreamGamingService.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.EndorphinaService.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.EvolutionService.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.FaChai.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.Funky.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.Ga28.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.GKXGaming.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.GlobalTechnology.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.HabaneroService.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.InplayMatrix.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.JDBService.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.Jili.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.Joker.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.Kaiyuan.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.LEGaming.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.MicroGaming.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.OBet.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.Pinnacle.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.PragmaticPlay.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.SabaService.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.SBOService.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.SharpSports.Client" Version="8.0.1" />
 		<PackageReference Include="Tgs.GameInterface.SkywindService.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.SM01Service.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.TFGamingService.Client" Version="1.0.4" />
-		<PackageReference Include="Tgs.GameInterface.TPhere.Client" Version="1.0.5" />
-		<PackageReference Include="Tgs.GameInterface.V8Poker.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.VRGaming.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.WGFmGamingService.Client" Version="1.0.4" />
-		<PackageReference Include="Tgs.GameInterface.WGViaGaming.Client" Version="1.0.3" />
-		<PackageReference Include="Tgs.GameInterface.WicketCricket.Client" Version="1.0.4" />
-		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="1.0.18" />
-		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="1.0.3" />
+		<PackageReference Include="Tgs.GameInterface.SM01Service.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.TFGamingService.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.TPhere.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.V8Poker.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.VRGaming.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.WGFmGamingService.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.WGViaGaming.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.WicketCricket.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.WMCasinoService.Client" Version="8.0.1" />
+		<PackageReference Include="Tgs.GameInterface.YeeBet.Client" Version="8.0.1" />
 		<PackageReference Include="Tgs.GameRecord.Endorphina.Session.Client" Version="1.0.1" />
 		<PackageReference Include="Tgs.GameToken.Client" Version="1.0.0" />
 		<PackageReference Include="TGS.ServiceUtility" Version="0.2.0" />
